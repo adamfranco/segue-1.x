@@ -268,7 +268,7 @@ if ($save) {
 		}
 
 		// add or remove any changes to the site editor list.
-		$query = "update sites set editors='$settings[editors]' where  name='$settings[site]'";
+		$query = "update sites set editors='$settings[editors]',editedtimestamp=NOW() where  name='$settings[site]'";
 		db_query($query);
 		
 		// do the recursive update of active flag and such... .... ugh

@@ -44,13 +44,13 @@ if ($settings[type]=='section') {
 
 	printc("<div class=leftmargin>");
 	
-	if (isclass($settings[sitename])) {
+	if (isclass($settings[site])) {
 		?>
 		<script lang='javascript'>
 		function addClassEditor() {
 			f = document.addform;
 			f.edaction.value='add';
-			f.edname.value='<?echo $settings[sitename]?>';
+			f.edname.value='<?echo $settings[site]?>';
 			f.submit();
 		}
 		</script>

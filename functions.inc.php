@@ -220,7 +220,14 @@ function getuserclasses($user,$time="now") {
 //						print "goood!";
 						$semester = currentsemester ();
 						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
-							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
+							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];					
+							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
+							$classinfo = db_get_line("classes","name='$class'");
+							if (!$classinfo) {
+								$query = "insert into classes set name='$class', uname='$user'";
+								db_query($query);
+							}	
+							
 						} else if ($time == "past" && ($r[5] < date('y') || $r[4] != $semester)) {
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						} else if ($time == "future" && ($r[5] > date('y') || semorder($r[4]) > semorder($semester))) {

@@ -9,7 +9,7 @@ $color = 0;
 $sitesprinted=array();
 
 $urls = array(
-	"Educational Technology"=>"et.middlebury.edu",
+	"Educational Technology"=>"sitesdb.middlebury.edu/sites/ET",
 	"Academic Programs"=>"www.middlebury.edu/academics/",
 	"Libraries"=>"www.middlebury.edu/~lib/",
 	"Middlebury College"=>"www.middlebury.edu"
@@ -17,8 +17,8 @@ $urls = array(
 
 if ($_loggedin) {
 	// -------------------------------------------------------------------
-	add_link(leftnav,"Home","index.php?$sid","","");
-	add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
+	//add_link(leftnav,"Home","index.php?$sid","","");
+	//add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
 	foreach ($urls as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
@@ -231,8 +231,8 @@ if ($_loggedin) {
 	
 	printc("</table>");
 } else {
-	add_link(leftnav,"Home","index.php?$sid","","");
-	add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
+	//add_link(leftnav,"Home","index.php?$sid","","");
+	//add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
 	foreach ($urls as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
@@ -243,7 +243,11 @@ if ($_loggedin) {
 	printc("<div class=leftmargin>");
 	printc("<p>Welcome to SitesDB! To access your personal and class websites, please login with your username and password above. For Middlebury College users, these are identical to your email username and password.</p>");
 	printc("<p>With SitesDB, you can quickly and easily create websites for yourself and, if you are a professor, for your classes.</p>");
-	
+	printc("<hr size=1>");
+	printc("<font class=small>If you are not affliated with Middlebury College and you would like a demo of SitesDB, log in above as follows:<br>");
+	printc("username: demo<br>");
+	printc("password: demo<br><br>");
+	printc("For more information, contact: <a href='mailto:achapin@middlebury.edu'>achapin@middlebury.edu</a></font>");
 	
 	
 }
