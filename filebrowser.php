@@ -24,7 +24,8 @@ if ($delete) {
 } 
 
 $sitelist = array();
-//$source = $_REQUEST[editor];
+$owner = $_REQUEST[owner];
+//print $owner;
 //printpre($_SESSION);
 //printpre($_REQUEST);
 
@@ -64,8 +65,13 @@ while ($a = db_fetch_assoc($r)) {
  ******************************************************************************/
 if ($_REQUEST[source]) {		
 	$user_id = $_SESSION[aid];
-	$userfilter = "AND user_id = $user_id";
-	//print "userid=".$user_id;
+	$username = $_SESSION[auser];
+	if ($username == $owner) {
+		$userfilter = "";
+	} else {
+		$userfilter = "AND user_id = $user_id";
+	}
+	print "useruname=".$username;
 } else {
 	$userfilter = "";
 }
@@ -337,8 +343,7 @@ input,select {
 	function useFileDiscuss(fileID,fileName) { 
 		o = opener.document.postform; 
 		o.libraryfileid.value=fileID; 
-		o.libraryfilename.value=fileName; 
-		o.submit(); 
+		o.libraryfilename.value=fileName;  
 		window.close(); 
 	}  
 <? } ?> 
@@ -659,8 +664,7 @@ if (db_num_rows($r)) {
 			if ($comingfrom != "viewsite") {
 				if ($source == 'discuss') {
 					print "<input type=button name='use' value='use' onClick=\"useFileDiscuss('".$a[media_id]."','".$a[media_tag]."')\">";				
-				} 
-                if ($editor == 'none') {
+				} else if ($editor == 'none') {
 					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
                 }
                 else if ($editor == 'text') {

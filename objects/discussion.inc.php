@@ -7,7 +7,7 @@ class discussion {
 //	var $author = array("id"=>0,"uname"=>"","fname"=>"");
 	var $authorid=0,$authoruname,$authorfname,$authoremail;
 	
-	var $libraryfilename, $libraryfilenameid=0;
+	var $libraryfilename,$libraryfileid,$media_tag;
 	var $tstamp,$content,$subject,$order;
 	
 	var $children=array();
@@ -197,8 +197,20 @@ class discussion {
 		if (!$this->id) return false;
 		
 		$query = "
-	WHERE
-		discussion_id=".$this->id;
+		SELECT
+			discussion_tstamp,discussion_content,discussion_subject,user_uname,user_fname,FK_story,FK_author,FK_parent,media_tag
+		FROM
+			discussion
+		INNER JOIN
+			user
+		ON
+			FK_author = user_id
+		LEFT JOIN
+			media
+		ON
+			FK_media = media_id
+		WHERE
+			discussion_id=".$this->id;
 
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
@@ -223,13 +235,17 @@ class discussion {
 		
 		$query = "
 	SELECT
-		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,FK_story,discussion_order,user_uname,user_fname,user_email
+		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,FK_story,media_tag,discussion_order,user_uname,user_fname,user_email
 	FROM
 		discussion
 		LEFT JOIN
 			user
 		ON
 			FK_author = user_id
+		LEFT JOIN
+			media
+		ON
+			FK_media = media_id
 	WHERE
 		FK_story = ".$this->storyid.
 		// check if we're not top-level - if !flat disc, fetch all children, otherwise fetch all discussions
@@ -265,6 +281,7 @@ class discussion {
 	SET
 		".$this->_generateSQLdata();
 		db_query($query);
+		//printc($query);
 		return true;
 	}
 	
@@ -288,8 +305,8 @@ class discussion {
 	function _generateSQLdata() {
 		$query = "FK_author=".$this->authorid;
 		if ($this->parentid) $query .= ",FK_parent=".$this->parentid;
-		if ($this->libraryfilenameid) {
-			$media_id = $this->libraryfilenameid;
+		if ($this->libraryfileid) {
+			$media_id = $this->libraryfileid;
 			$query .= ",FK_media=".$media_id;
 		}
 		
@@ -381,10 +398,12 @@ class discussion {
 		
 		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
 			$site = $_REQUEST['site'];
+			//$action = $_REQUEST['action'];
 			$a = $_REQUEST['discuss'];
 			if (!$_REQUEST['subject']) error("You must enter a subject.");
 			if (!$_REQUEST['content']) error("You must enter some text to post.");
 			if ($error) { unset($_REQUEST['commit']); return false; }
+			
 			if ($a=='edit') {
 				$d = & new discussion($_REQUEST['story']);
 				$d->fetchID($_REQUEST['id']);
@@ -396,6 +415,7 @@ class discussion {
 
 				unset($d);
 			}
+			
 			if ($a=='reply'||$a=='newpost') {
 				$d = & new discussion($_REQUEST['story']);
 				$d->subject = $_REQUEST['subject'];
@@ -414,6 +434,7 @@ class discussion {
 
 			$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
 			$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:0;
+			$d->libraryfileid = $_REQUEST['libraryfileid'];
 			$d->insert();
 			if ($mailposts == 1) {
 				$this->sendemail();
@@ -429,7 +450,7 @@ class discussion {
 
 	
 	function _outputform($t) { // outputs a post form of type $t (newpost,edit,reply)
-		global $sid,$error;
+		global $sid,$error,$site_owner;
 		$script = $_SERVER['SCRIPT_NAME'];
 		
 		
@@ -469,12 +490,12 @@ class discussion {
 		printc ("<input type=hidden name=action value='".$_REQUEST['action']."'>");
 		//added site variable for discussion logging
 		printc ("<input type=hidden name=site value='".$_REQUEST['site']."'>");	
-		printc ("<input type=hidden name=libraryfileid value='".$_REQUEST['libraryfilenameid']."'>");	
+		printc ("<input type=hidden name=libraryfileid value='".$_REQUEST['libraryfileid']."'>");	
 		printc ("<input type=hidden name=commit value=1>");
 		if ($t=='edit') printc ("<input type=hidden name=id value=".$_REQUEST['id'].">");
 		if ($t=='reply') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">");
-				
-		printc ("<br>Upload a File:<input type=text name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size=25 readonly><input type=button name='browsefiles' value='Browse...' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?source=discuss&editor=none\")' target='filebrowser' style='text-decoration: none'>");
+		$site = $_REQUEST[site];		
+		printc ("<br>Upload a File:<input type=text name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size=25 readonly><input type=button name='browsefiles' value='Browse...' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?site=$site&source=discuss&owner=$site_owner&editor=none\")' target='filebrowser' style='text-decoration: none'>");
 		//printc ("<input type=submit name='browsefiles' value='Add'>");
 		printc ("</form>");
 		
@@ -489,7 +510,7 @@ class discussion {
  ******************************************************************************/
 	
 	function _output($cr,$o) {
-		global $sid,$error,$showallauthors,$showposts,$uploadurl;
+		global $sid,$error,$showallauthors,$showposts,$uploadurl,$site_owner;
 		
 		if ($showposts == 1 || $o == 1 || $_SESSION[auser] == $this->authoruname) {
 			// check to see if we have any info to commit
@@ -537,9 +558,9 @@ class discussion {
 				 * Actual discussion posting content
 				 ******************************************************************************/
 				printc ("<table width=100% cellspacing=0px>");
-					printc ("<tr><td align=left><span class=subject>$s</span><br>$a</td><td align=right valign=bottom>$c</td></tr>");
-					if ($media_tag) {
-						$media_link = "<a href='".$uploadurl."/".$media_tag."'>".$media_tag."</a>";
+					printc ("<tr><td align=left><span class=subject>$s</span><br>$a</td><td align=right valign=bottom>$c</td></tr>"); 
+					if ($this->media_tag) {
+						$media_link = "refer to: <a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target=media>".$this->media_tag."</a>";
 						printc ("<tr><td align=left>$media_link</td></tr>");
 					}
 				printc("</table>");
@@ -568,6 +589,7 @@ class discussion {
 		global $sid,$error;
 		global $_full_uri;
 		
+		$script = $_SERVER['SCRIPT_NAME'];
 		$site =& new site($_REQUEST[site]);
 		$siteowneremail = $site->owneremail;
 		$sitetitle = $site->title;
@@ -577,16 +599,32 @@ class discussion {
 		$to = $siteowneremail;
 		$from = $_SESSION['afname']."<".$_SESSION['aemail'].">";
 		$subject = "Segue Discussion: ".$_REQUEST['subject'];
-		$body = $_REQUEST['subject'];
-		$body .= "<br>by ".$_SESSION['afname'];
-		$body .= "<br>".$_REQUEST['content'];
-		$body .= "<br><br>See:<br>";
-		$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
-		$body .= "<a href='".$discussurl."'>".$sitetitle."</a><br><br>";
+
+		$html = 0;
+		if ($html == 1) {
+			$body = $_REQUEST['subject']."<br>";
+			$body .= "by ".$_SESSION['afname']."<br>";
+			$body .= $_REQUEST['content']."<br><br>";
+			$body .= "See:<br>";
+			$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
+			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
+			$body .= "<a href='".$discussurl."'>".$_full_uri.$discussurl2."</a><br><br>";			
+		} else {
+			$body = $_REQUEST['subject']."\n";		
+			$body .= "by ".$_SESSION['afname']."\n";
+			$body .= $_REQUEST['content']."\n";
+			$body .= "See:\n";
+			//$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
+			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
+			$body .= $_full_uri.$discussurl2."\n";
+		}
 		
 		//print "To:".$to."<br>";
 		//print "From:".$from."<br><br>";
-		//print $body."<br><br>";
+		//print $body."<br>";
+		//print "discussurl=".$discussurl."<br>";
+		//print "script=".$script."<br>";
+		//print "_full_uri=".$_full_uri."<br>";
 		//printpre($_SESSION);
 		//printpre($_REQUEST);
 		// send it!
