@@ -50,8 +50,9 @@ class section extends segue {
 		if ($formdates) $this->initFormDates();
 	}
 	
-	function fetchUp() {
-		if (!$this->fetchedup) {
+	function fetchUp($full=0) {
+		if (!$this->fetchedup || $full) {
+/* 			print "<br>Fetching Up<br>"; */
 			$this->owningSiteObj = new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB();
 			$this->fetchedup = 1;
@@ -152,14 +153,17 @@ class section extends segue {
 		}
 
 		$query = "insert into sections set ".implode(",",$a);
-		print $query; //debug
+/* 		print $query; //debug */
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
 		
-		$this->fetchUp();
+		$this->fetchUp(1);
 		$this->owningSiteObj->addSection($this->id);
+/* 		print "<br>remove origionl: $removeOrigional<br>"; */
 		if ($removeOrigional) $this->owningSiteObj->delSection($origid,0);
+/* 		print "<pre>this->owningsiteobject: "; print_r($this->owningSiteObj); print "</pre>"; */
+
 		$this->owningSiteObj->updateDB();
 		
 		// add new permissions entry.. force update

@@ -134,6 +134,7 @@ if ($_REQUEST[save]) {
 		if ($_SESSION[settings][add]) {
 			$_SESSION[sectionObj]->setPermissions($thisSite->getPermissions());
 			$_SESSION[sectionObj]->insertDB();
+			log_entry("edit_section",$_SESSION[sectionObj]->owning_site,
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[sectionObj]->updateDB();

@@ -180,7 +180,7 @@ class story extends segue {
 			$a[] = "addedtimestamp='".$this->getField("addedtimestamp")."'";
 		}
 		$query = "insert into stories set ".implode(",",$a);
-		print $query."<br>"; //debug
+/* 		print $query."<br>"; //debug */
 		db_query($query);
 		
 		$this->id = mysql_insert_id();

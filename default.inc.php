@@ -6,6 +6,18 @@ $pagetitle = "Segue";
 $color = 0;
 $sitesprinted=array();
 
+/******************************************************************************
+ * handle site copy
+ ******************************************************************************/
+if ($copysite) {
+	$origSite = new site($origname);
+	$origSite->fetchDown(1);
+	$origSite->copySite($newname);
+}
+
+/******************************************************************************
+ * Links to other segue instances
+ ******************************************************************************/
 if ($allowclasssites != $allowpersonalsites && ($personalsitesurl || $classsitesurl)) {
 	if ($allowclasssites) {
 		add_link(topnav,"Classes");
@@ -209,8 +221,18 @@ if ($_loggedin) {
 			printSiteLine($s);
 	}
 	
-	if ($_SESSION[ltype]=='admin') printc("<tr><td class='inlineth' colspan=7 align=right><a href='$PHP_SELF?$sid&action=add_site'>add new site</a></td></tr>");
-	
+/******************************************************************************
+ * copy site bar
+ ******************************************************************************/
+	printc("<tr><td class='inlineth'><form action=$PHP_SELF?$sid method=post name='copyform'><table width=100%><tr><td>");
+	printc("Copy Site: ");
+	printSiteMenu($_SESSION[auser],1);
+	printc(" to ");
+	printSiteMenu($_SESSION[auser],0);
+	printc(" <input type=submit name='copysite' value='Copy'></form>");
+	printc("</td><td align=right>");
+	if ($_SESSION[ltype]=='admin') printc("<a href='$PHP_SELF?$sid&action=add_site'>add new site</a>");
+	printc("</td></tr></table></td></tr>");
 	
 	printc("</table>");
 } else {
@@ -227,6 +249,46 @@ if ($_loggedin) {
 	printc($defaultmessage);
 	
 	
+}
+
+/******************************************************************************
+ * functions
+ ******************************************************************************/
+
+function printSiteMenu($user,$existingSites) {
+	global $classes, $futureclasses;
+	$allsites = array();
+	$allsites[] = $user;
+	$sitesOwnerOf = segue::getAllSites($user);
+	$sitesEditorOf = array();
+	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor($user));
+	foreach ($esites as $o) {
+		if ($o->hasPermission("add and edit and delete",$user)) $sitesEditorOf[] = $o->name;
+	}
+	$allclasses = array();
+	foreach ($classes as $n => $v) $allclasses[] = $n;
+	foreach ($futureclasses as $n => $v) $allclasses[] = $n;
+	$allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf));
+/* 	print "<pre>"; print_r($allclasses); print "</pre>"; */
+	if ($existingSites) {
+		printc("<select name='origname'>");
+		foreach ($allsites as $n=>$site) {
+			$siteObj = new site($site);
+			$exists = $siteObj->fetchFromDB();
+			if ($exists)
+				printc("<option value='$site'>$site\n");
+		}
+		printc("</select>");
+	} else {
+		printc("<select name='origname'>");
+		foreach ($allsites as $n=>$site) {
+			$siteObj = new site($site);
+			$exists = $siteObj->fetchFromDB();
+			if (!$exists)
+				printc("<option value='$site'>$site\n");
+		}
+		printc("</select>");
+	}
 }
 
 function removePrinted($sites) {
@@ -257,7 +319,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 /* 	if ($exists) $a = db_get_line("sites","name='$name'"); */
 	
 	printc("<tr>");
-	printc("<td class=td$color>");
+	printc("<td class=td$color colspan=2>");
 	$status = ($exists)?"Created":"Not Created";
 	if ($exists) {
 		if ($obj->canview("anyuser")) $active = "<span class=green>active</span>";

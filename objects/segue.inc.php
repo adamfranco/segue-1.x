@@ -214,9 +214,9 @@ class segue {
 		// check that the newParent can be a parent
 		$thisClass = get_class($this);
 		$parentClass = get_class($newParent);
-		print $this->id."$thisClass - $parentClass<br>";
+/* 		print $this->id."$thisClass - $parentClass<br>"; */
 		if (!($_a[$parentClass]-1 == $_a[$thisClass])) return 0;
-		print " Before ".$this->fetcheddown."<br>";
+/* 		print " Before ".$this->fetcheddown."<br>"; */
 
 /* 		print "<pre>this: "; print_r($this); print " newparent: "; print "</pre>";		 */
 		$this->fetchDown(1);
@@ -224,7 +224,7 @@ class segue {
 /* 		print "title: ".$this->data[title]."<br>";		 */
 /* 		print "title: ".$this->getField("title")."<br>"; */
 /* 		print "<pre>this: "; print_r($this); print " newparent: "; print_r($newParent); print "</pre>"; */
-		return 0;
+/* 		return 0; */
 
 		if ($thisClass == 'section') {
 			$owning_site = $newParent->name;
@@ -243,7 +243,7 @@ class segue {
 			$this->insertDB(1,$owning_site,$owning_section,$owning_page,$removeOrigional,$keepaddedby);
 		}
 
-//		print_r($newParent);
+/* 		print_r($newParent); */
 		return 1;
 	}
 	
@@ -412,6 +412,19 @@ class segue {
 		}
 		$this->setField("deactivatedate",$year."-".$month."-".$day);
 		return true;
+	}
+	
+/******************************************************************************
+ * cropString - crops a string to an appropriate length and adds elipses if
+ * 				nessisary.
+ ******************************************************************************/
+	function cropString ($string, $maxChars) {
+		$length = strlen($string);
+		if ($length > $maxChars) {
+			$length = $maxChars-3;
+			$string =  substr($string,0,$length)."...";
+		}
+		return $string;
 	}
 	
 /******************************************************************************
@@ -703,7 +716,7 @@ class segue {
 				} else {
 					$query = "insert into permissions set ".implode(",",$a2).",".implode(",",$a3);
 				}
-				print "$query<BR><BR>";
+/* 				print "$query<BR><BR>"; */
 				db_query($query);
 			}
 			// delete the appropriate entries from the table

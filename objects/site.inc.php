@@ -79,6 +79,7 @@ class site extends segue {
 /* 				if (strlen($this->data[type])) $this->data[type] = 'personal'; */
 /* 				return true; */
 /* 			} */
+			print "<pre>allFields: "; print_r($_allfields); print "</pre>";
 			foreach ($this->$_allfields as $f) {
 				$this->getField($f);
 			}
@@ -102,12 +103,18 @@ class site extends segue {
 	}
 	
 	function setSiteName($name, $copySite=0) {
-		if ($this->tobefetched) { // we are trying to change the name of an existing site!! bad.
+		if ($this->tobefetched && !$copySite) { // we are trying to change the name of an existing site!! bad.
 			return 0;
 		}
 		$this->name = $this->owning_site = $name;
 		$this->setField("name",$name);
 		return 1;
+	}
+	
+	function copySite($newName) {
+		$newSiteObj = $this;
+		$newSiteObj->setSiteName($newName, 1);
+		$newSiteObj->insertDB(1,1);
 	}
 	
 	function updateDB($down=0) {
@@ -135,13 +142,13 @@ class site extends segue {
 		return 1;
 	}
 	
-	function insertDB($down=0) {
+	function insertDB($down=0,$copysite=0) {
 		$a = $this->createSQLArray(1);
 		$a[] = "addedby='$_SESSION[auser]'";
 		$a[] = "addedtimestamp=NOW()";
 		$a[] = "name='".$this->name."'";
 		$query = "insert into sites set ".implode(",",$a);
-		print "<BR>query = $query<BR>";
+/* 		print "<BR>query = $query<BR>"; */
 		db_query($query);
 		
 		// add new permissions entry.. force update
@@ -152,16 +159,17 @@ class site extends segue {
 		
 		// insert down
 		if ($down && $this->fetcheddown) {
-			foreach ($this->sections as $i=>$o) $o->insertDB(1,$this->name);
+			foreach ($this->sections as $i=>$o) $o->insertDB(1,$this->name,$copysite);
 		}
 		return 1;
 	}
 	
 	function addSection($id) {
 		if (!is_array($this->getField("sections"))) $this->data[sections] = array();
-		print "<br>adding section $id to ".$this->name."<br>"; //debug
+/* 		print "<br>adding section $id to ".$this->name."<br>"; //debug */
 		array_push($this->data[sections],$id);
 		$this->changed[sections] = 1;
+/* 		print "<pre>this: "; print_r($this->data[sections]); print "</pre>"; */
 	}
 	
 	function delSection($id,$delete=1) {

@@ -81,7 +81,7 @@ class page extends segue {
 		}
 		$this->data[stories] = $d;
 		$this->changed[stories]=1;
-		print "------------------------ <br><pre>"; print_r($this); print "</pre>";
+/* 		print "------------------------ <br><pre>"; print_r($this); print "</pre>"; */
 		if ($delete) {
 			$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
 			$story->delete();
@@ -176,7 +176,7 @@ class page extends segue {
 		}
 
 		$query = "insert into pages set ".implode(",",$a);
-		print $query."<br>"; //debug
+/* 		print $query."<br>"; //debug */
 		db_query($query);
 		
 		$this->id = mysql_insert_id();

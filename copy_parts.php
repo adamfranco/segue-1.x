@@ -123,13 +123,13 @@ if (($_SESSION[type] != "section" && !isset($section)) || $selecttype == "site")
 /* print "section = ".$section."<br>"; */
 /* print "section = ".$site."<br>"; */
 
-if (($type == "story" && !isset($page)) || ($selecttype == "site" || $selecttype == "section")) {
+if (($_SESSION[type] == "story" && !isset($page)) || ($selecttype == "site" || $selecttype == "section")) {
 	$pagesArray = $siteObj->sections[$section]->getField("pages");
 	$page = $pagesArray[0];
 }
 /* print "<pre>"; print_r($siteObj->sections); print "</pre>"; */
 /* return 1; */
-/* if ($type == "story") { */
+/* if ($_SESSION[type] == "story") { */
 /* 	$pages = $sectionObj->getField("pages"); */
 /* 	$newpages = array(); */
 /* 	foreach ($pages as $p) { */
@@ -150,19 +150,19 @@ $actionlc = strtolower($action);
 
 if ($domove) {
 	// set the origional objects to move/copy	
-	if ($type == "section") {
+	if ($_SESSION[type] == "section") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]];
 		$parentObj = $siteObj;
-		if ($action == "COPY" && $parentObj->id == $_SESSION[origSite]) $removeOrigional = 0;
+		if ($action == "COPY" && $parentObj->name == $_SESSION[origSite]) $removeOrigional = 0;
 		else $removeOrigional = 1;
 	}
-	else if ($type == "page") {
+	else if ($_SESSION[type] == "page") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]];
 		$parentObj = $siteObj->sections[$section];
 		if ($action == "COPY" && $parentObj->id == $_SESSION[origSection]) $removeOrigional = 0;
 		else $removeOrigional = 1;
 	}
-	else if ($type == "story") {
+	else if ($_SESSION[type] == "story") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]];
 		$parentObj = $siteObj->sections[$section]->pages[$page];
 		if ($action == "COPY" && $parentObj->id == $_SESSION[origPage]) $removeOrigional = 0;
@@ -272,7 +272,7 @@ function finishUp(action) {
 	if (action == "COPY") {
 		opener.history.go(0);
 	} else {
-		opener.window.location = "index.php?$sid&action=viewsite&site=<? echo $origionalsite; ?>";
+		opener.window.location = "index.php?$sid&action=viewsite&site=<? echo $_SESSION[origSite]; ?>";
 	}
 }
 
@@ -297,11 +297,11 @@ print "<form action='$PHP_SELF?$sid' name='moveform' method='post'>";
 /* print "<input type=hidden name='origionalpage' value='$origionalpage'>"; */
 print "<input type=hidden name='selecttype'>";
 /* print "<input type=hidden name='sites' value='".encode_array($sites)."'>"; */
-if ($type == "story")
+if ($_SESSION[type] == "story")
 	print "<input type=hidden name='story' value='$story'>";
-if ($type == "page")
+if ($_SESSION[type] == "page")
 	print "<input type=hidden name='page' value='$page'>";
-if ($type == "section")
+if ($_SESSION[type] == "section")
 	print "<input type=hidden name='section' value='$section'>";
 
 print "<table cellspacing=1 width='100%'>";
@@ -319,10 +319,10 @@ if (!$domove) {
 print "<tr>";
 	print "<th style='text-align: left;' colspan=1>";
 	if (!$domove) {
-		print ucwords($actionlc)." ".ucwords($type);
+		print ucwords($actionlc)." ".ucwords($_SESSION[type]);
 		print " to:";
 	} else {
-		print ucwords($actionlc)." ".ucwords($type)." Successfull";
+		print ucwords($actionlc)." ".ucwords($_SESSION[type])." Successfull";
 	}
 	print "</th>";
 	print "<th style='text-align: right'>";
@@ -330,49 +330,85 @@ print "<tr>";
 	print "</th>";
 print "</tr>";
 
+/******************************************************************************
+ * print out the Site row
+ ******************************************************************************/
 print "<tr>";
 	print "<td style='text-align: left;'>Site: </td>";
-	print "<td>";
+	print "<td style='text-align: left'>";
 	if (!$domove) {
-		print "<select name='site' onChange=\"updateForm('site')\">";
+		print "<select name='site' onChange=\"updateForm('site')\" style='";
+		if ($siteObj->name == $_SESSION[origSite] && $action=="MOVE" && $_SESSION[type] == "section") {
+			print "background-color: #F00;";
+			$cantmovehere=1;
+			$cantmovereason = "You can not move this section to the same place it exists. Try copying or moving to a new location instead.";
+/* 		} else if (!$siteObj->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) { */
+/* 	//		print "background-color: #F00;"; */
+/* 			$cantmovehere=1; */
+/* 			$cantmovereason = "You do not have permission to $actionlc this section here."; */
+		}
+		if ($siteObj->name == $_SESSION[origSite]) print " font-weight: bold;";
+		else print " font-weight: normal;";
+		print "'>";
 		foreach ($_SESSION[sites] as $s=>$v) {
-			$name = $_SESSION[sites][$s]->getField("title");
-			print "<option value='$s'".(($_SESSION[sites][$s]->name == $site)?" selected":"").">$name\n";
+			$title = $_SESSION[sites][$s]->getField("title");
+			$title = segue::cropString($title,25);
+			print "<option value='$s'";
+			print (($siteObj->name == $s)?" selected":"");
+			print " style='";
+			print (($s == $_SESSION[origSite] && $action == "MOVE" && $_SESSION[type] == "section")?"background-color: #F00;":"background-color: #FFF;");
+			print (($s == $_SESSION[origSite])?" font-weight: bold;":" font-weight: normal;");
+			print "'";
+			print ">$title\n";
 		}
 		print "</select>";
-//	} else {
+	} else {
 		$oname = $_SESSION[origSiteObj]->getField("title");
 		$name = $siteObj->getField("title");
 		print "$oname => $name";
 	}	
 	print "</td>";
 print "</tr>";
-	
-if ($type != "section") {
+
+/******************************************************************************
+ * print out the Section row
+ ******************************************************************************/
+if ($_SESSION[type] != "section") {
 	print "<tr>";
 		print "<td style='text-align: left'>Section: </td>";
-		print "<td>";
+		print "<td style='text-align: left'>";
 		if (!$domove) {
 			if (count($siteObj->sections)) {
-				print "<select name='section' onChange=\"updateForm('section')\"";
-				if (!$siteObj->sections[$section]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
-					print " style='background-color: #F00'";
+				print "<select name='section' onChange=\"updateForm('section')\" style='";
+				if ($siteObj->sections[$section]->id == $_SESSION[origSection] && $action=="MOVE" && $_SESSION[type] == "page") {
+					print "background-color: #F00;";
 					$cantmovehere=1;
+					$cantmovereason = "You can not move this page to the same place it exists. Try copying or moving to a new location instead.";
+				} else if (!$siteObj->sections[$section]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
+					print "background-color: #F00;";
+					$cantmovehere=1;
+					$cantmovereason = "You do not have permission to $actionlc this page here.";
 				}
-				print ">";
+				if ($siteObj->sections[$section]->id == $_SESSION[origSection]) print " font-weight: bold;";
+				else print " font-weight: normal;";
+				print "'>";
 				foreach ($siteObj->sections as $s=>$v) {
-					$name = $siteObj->sections[$s]->getField("title");
+					$title = $siteObj->sections[$s]->getField("title");
+					$title = segue::cropString($title,25);
 					print "<option value='$s'";
 					print (($siteObj->sections[$s]->id == $section)?" selected":"");
-					print ((!$siteObj->sections[$s]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]))?" style='background-color: #F00'":" style='background-color: #FFF'");
-					print ">$name\n";
+					print " style='";
+					print ((!$siteObj->sections[$s]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$s]->id == $_SESSION[origSection] && $action == "MOVE" && $_SESSION[type] == "page"))?"background-color: #F00;":"background-color: #FFF;");
+					print (($siteObj->sections[$s]->id == $_SESSION[origSection])?" font-weight: bold;":" font-weight: normal;");
+					print "'";
+					print ">$title\n";
 				}
 				print "</select>";
 			} else {
 				print "No Sections.";
 				$cantmovehere=1;
 			}
-//		} else {
+		} else {
 			$oname = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->getField("title");
 			$name = $siteObj->sections[$section]->getField("title");
 			print "$oname => $name";
@@ -381,31 +417,45 @@ if ($type != "section") {
 	print "</tr>";
 }
 
-if ($type == "story") {
+/******************************************************************************
+ * print out the page row
+ ******************************************************************************/
+if ($_SESSION[type] == "story") {
 	print "<tr>";
 		print "<td style='text-align: left'>Page: </td>";
-		print "<td>";
+		print "<td style='text-align: left'>";
 		if (!$domove) {
 			if (count($siteObj->sections[$section]->pages)) {
-				print "<select name='page' onChange=\"updateForm('page')\"";
-				if (!$siteObj->sections[$section]->pages[$page]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
-					print " style='background-color: #F00'";
+				print "<select name='page' onChange=\"updateForm('page')\" style='";
+				if ($siteObj->sections[$section]->pages[$page]->id == $_SESSION[origPage] && $action=="MOVE") {
+					print "background-color: #F00;";
 					$cantmovehere=1;
+					$cantmovereason = "You can not move this story to the same place it exists. Try copying or moving to a new location instead.";
+				} else if (!$siteObj->sections[$section]->pages[$page]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
+					print "background-color: #F00;";
+					$cantmovehere=1;
+					$cantmovereason = "You do not have permission to $actionlc this story here.";
 				}
-				print ">";
+				if ($siteObj->sections[$section]->pages[$page]->id == $_SESSION[origPage]) print "font-weight: bold;";
+				print "'>";
 				foreach ($siteObj->sections[$section]->pages as $p=>$v) {
-					$name = $siteObj->sections[$section]->pages[$p]->getField("title");
+					$title = $siteObj->sections[$section]->pages[$p]->getField("title");
+					$title = segue::cropString($title,25);
 					print "<option value='$p'";
 					print (($siteObj->sections[$section]->pages[$p]->id == $page)?" selected":"");
-					print ((!$siteObj->sections[$section]->pages[$p]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]))?" style='background-color: #F00'":" style='background-color: #FFF'");
-					print ">$name\n";
+					print " style='";
+					print ((!$siteObj->sections[$section]->pages[$p]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$section]->pages[$p]->id == $_SESSION[origPage] && $action=="MOVE"))?"background-color: #F00;":"background-color: #FFF;");
+					if ($siteObj->sections[$section]->pages[$p]->id == $_SESSION[origPage]) print "font-weight: bold;";
+					else print "font-weight: normal;";
+					print "'>$title\n";
 				}
 				print "</select>";
 			} else {
 				print "No Pages.";
 				$cantmovehere=1;
+				$cantmovereason = "There are no pages in this section.";
 			}
-//		} else {
+		} else {
 			$oname = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->getField("title");
 			if (is_object($siteObj->sections[$section]->pages[$page])) 
 				$name = $siteObj->sections[$section]->pages[$page]->getField("title");
@@ -415,39 +465,44 @@ if ($type == "story") {
 	print "</tr>";
 }
 
-	print "<tr>";
-		print "<td colspan=2>";
-		if (!$domove) {
-			if (!$cantmovehere)
-				print "<input type=submit name='domove' value='$action'>";
-			else 
-				print "<input type=button value='$action' style='background-color: #F00;' onClick=\"showError('$_SESSION[type]','$actionlc')\">";				
-		} else {
-			print "<input type=button value='Go To ".(($action=="MOVE")?"Moved":"Copied")." $type' onClick=\"followLink('";
-			if ($type == "story")
-				print "index.php?$sid&action=viewsite&site=$site&section=$section&page=$page";
-			if ($type == "page")
-				print "index.php?$sid&action=viewsite&site=$site&section=$section&page=$newid";
-			if ($type == "section")
-				print "index.php?$sid&action=viewsite&site=$site&section=$newid";
-			print "')\">";
-		}
-		print "</td>";
-	print "</tr>";
+/******************************************************************************
+ * print buttons
+ ******************************************************************************/
+print "<tr>";
+	print "<td colspan=2>";
+	if (!$domove) {
+		if (!$cantmovehere)
+			print "<input type=submit name='domove' value='$action'>";
+		else 
+			print "<input type=button value='$action' style='background-color: #F00;' onClick=\"alert('$cantmovereason')\">";				
+	} else {
+		print "<input type=button value='Go To ".(($action=="MOVE")?"Moved":"Copied")." $_SESSION[type]' onClick=\"followLink('";
+		if ($_SESSION[type] == "story")
+			print "index.php?$sid&action=viewsite&site=$site&section=$section&page=$page";
+		if ($_SESSION[type] == "page")
+			print "index.php?$sid&action=viewsite&site=$site&section=$section&page=$newid";
+		if ($_SESSION[type] == "section")
+			print "index.php?$sid&action=viewsite&site=$site&section=$newid";
+		print "')\">";
+	}
+	print "</td>";
+print "</tr>";
+
+
 ?>
 </table>
 </form>
  
 <input type=button value='Cancel' onClick='window.close()' align=right><BR> 
-------------------------------------
+
 <?
 // debug output -- handy :)
-print "<pre>";
+/* print "<pre>"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
 /* print "session:\n"; */
 /* print_r($_SESSION); */
 /* print "\n\n"; */
-print "request:\n";
-print_r($_REQUEST);
 /* if (is_object($thisPage)) { */
 /* 	print "\n\n"; */
 /* 	print "thisPage:\n"; */
