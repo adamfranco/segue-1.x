@@ -458,7 +458,7 @@ class discussion {
 
 			} else {
 				if (!$_SESSION[auser]) {
-					$newpostbar.="You must be logged in to do contribute to this discussion.\n";
+					$newpostbar.="You must be logged in to contribute to this discussion.\n";
 				} else {
 					$newpostbar.="Only specified groups or individuals can participant.\n";
 				}
