@@ -151,7 +151,11 @@ $_textcolor = array(
 $_linkcolor = array(
 	"red"=>						"990000",
 	"blue"=>					"003366",
-	"green"=>					"006633",
+	"green"=>					"006633"
 );
 
+$_nav_arrange = array(
+	"Top Sections"=>			"1",
+	"Side Sections"=>			"2"
+);
 

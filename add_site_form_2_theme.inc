@@ -44,7 +44,7 @@ function doThemeSettings() {
 	var theme = "<? print $settings[theme]; ?>";
 	var themesettings = document.addform.themesettings.value;
 	var site = "<? print $settings[sitename]; ?>";
-	var settings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=400");
+	var settings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=500");
 }
 
 </script>

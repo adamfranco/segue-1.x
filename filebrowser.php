@@ -187,13 +187,18 @@ input,select {
 ?> 
 
 <? } else { 
-	// if using the activeX editor 
+	// if using the activeX editor
+		$site = $site; 
 ?> 
-	function useFile(fileID,fileName) { 
-		o = opener.document.addform; 
-		o.libraryfileid.value=fileID; 
-		o.libraryfilename.value=fileName; 
-		o.submit(); 
+	function useFile(siteName,fileName,fileID) { 
+		opener = window.dialogArguments;
+		var _editor_url = opener._editor_url;
+		var objname     = location.search.substring(1,location.search.length);
+		var config      = opener.document.all[objname].config;
+		var editor_obj  = opener.document.all["_" +objname+  "_editor"];
+		var editdoc     = editor_obj.contentWindow.document;
+  		var image 	= '<img src="<?echo $uploadurl ?>/' +siteName+ '/' +fileName+ '" imageID=\"' +fileID+ '\">\n';
+  		opener.editor_insertHTML(objname, image);
 		window.close();
 	} 
 <? } ?> 
@@ -405,7 +410,15 @@ if (db_num_rows($r)) {
 		print "<tr>"; 
  
 		print "<td class=td$color>"; 
-			print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";  
+                if ($editor == 'none') {
+			print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
+                }
+                else if ($editor == 'text') {
+                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
+                }
+                else {
+                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[site_id]."','".$a[name]."','".$a[id]."')\">";
+                }   
 //			print "<input type=button name='use' value='use' onClick=\"useFile()\">";  
 		print "</td>"; 
  

@@ -319,7 +319,7 @@ function editor_action(button_id) {
       showModalDialog(_editor_url + "insert_date_time.php?"+objname, window, "resizable: yes; help: no; status: no; scroll: no; ");
     }
 
-    // Custom3
+    // insert linebreaks
     else if (cmdID.toLowerCase() == 'linebreak'){
       editor_insertHTML(objname, "<br>");
     }
@@ -330,7 +330,7 @@ function editor_action(button_id) {
     //}
     
     if (cmdID.toLowerCase() == 'insertfilebrowser'){
-      showModalDialog(_editor_url + "../filebrowser.php?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
+      showModalDialog(_editor_url + "../filebrowser.php?"+objname, window, "resizable: yes; help: no; status: no; scroll: auto; dialogwidth:600px; dialogheight:450px; ");
     }
 
     // insert image
