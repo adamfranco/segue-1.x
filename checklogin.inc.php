@@ -95,24 +95,15 @@ if (!isset($name)) {  // they have not yet entered any login info
 function db_valid($name,$pass,$admin_auser=0) {
 	global $dbhost, $dbuser,$dbpass, $dbdb;
 	db_connect($dbhost,$dbuser,$dbpass,$dbdb);
-	$query = "select * from users where uname='$name'".(($admin_auser)?"":" and pass='$pass' and status='db'");
+	$query = "SELECT * FROM user WHERE user_uname='$name'".(($admin_auser)?"":" AND user_pass='$pass' and user_authtype='db'");
 //	print $query; // debug
-//    $query = "select * from users where uname='$name'and pass='$pass' and status!='ldap'";
-	//$query = "select * from users where uname='$name'";
 	$r = db_query($query);
 	//$a = db_fetch_assoc($r);
 	
 	//if (db_num_rows($r)  && $a['pass'] == $pass) {
 	if (db_num_rows($r)) {
 		return $r;
-	} /*else {
-	    $query = "select * from users where email='$name' and pass='$pass' and status='open'";
-	    $r = db_query($query);
-	    if (db_num_rows($r)) {
-	        $logmethod = "open";
-	        return $r;
-	    }
-	}*/
+	}
 	return 0;
 }
 
@@ -141,7 +132,7 @@ function ldap_valid($name,$pass,$admin_auser=0) {
 		
 		// check if they're in the database yet
 		db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-		$query = "select * from users where uname='$name'";
+		$query = "SELECT * FROM user WHERE user_uname='$name'";
 		$res = db_query($query);
 		$num = db_num_rows($res);
 //		print "res=$res num=$num<BR>";//debug
@@ -185,139 +176,6 @@ function ldap_valid($name,$pass,$admin_auser=0) {
 	}
 	return 0;
 }
-
-// this entire function should not be needed for coursesdb
-/*
-// in this function we will make sure that the student is registered for mots
-// classes only and faculty will see all their classes listed in mots
-function update_user_classes($ldap_results, $id, $type) {
-	global $dbhost,$dbuser,$dbpass, $dbdb;
-	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-	$classes = db_get_value("users","classes","id=$id"); // pull down their classes list
-	$classes = unserialize($classes);
-	$blacklist = unserialize(db_get_value("users","blacklist","id=$id")); // pull down their blacklist
-	$status = db_get_value("users","status","id=$id");
-	if ($status != 'ldap') {	// they're not an ldap user -- exit
-		return;
-	}
-	
-	$memberlist = $ldap_results[0][memberof];
-	
-	$madeachange = 0;
-	
-	//may not need this foreach anymore since classes is now an array of course codes
-	$classlist = array();
-	if ($classes) {
-		foreach ($classes as $c) {
-			//$code = db_get_value("classes","code","id=$c");
-			array_push($classlist,$c);
-		}
-	}
-	
-	if (!$classes) $classes = array();
-	$blist = array();
-	if ($blacklist) {
-		foreach ($blacklist as $c) {
-			$code = db_get_value("classes","code","id=$c");
-			array_push($blist,$code);
-		}
-	}
-	
-	foreach ($memberlist as $group) {	// go through each memberof entry and check for classes
-		$parts = explode(',',$group);
-		$iscourse = $courseinfo = 0;
-		foreach ($parts as $p) {
-			if ($p == 'cn=Courses')
-				$iscourse = 1;
-			if (ereg("([a-z]{2})([0-9]{3})([a-z]{1})-([a-z]{1,2})([0-9]{2})",$p,$regs)) { // a class name
-				$courseinfo =1;
-            }
-		}		
-			    	
-		if ($iscourse && $courseinfo) {		// ok, let's check if they're in the class
-			$coursecode = $regs[1] . $regs[2] . $regs[3] ."-". $regs[4] . $regs[5];
-			$semester = $regs[4];
-			//year info is 2 digits
-			$year = $regs[5];
-			
-		if ($type == 'stud') {
-			if (db_num_rows($r=db_query("select code from classes where code='$coursecode'"))) {
-			//include("test_functions.php");
-				// the course exists in MOTS	
-				// let's add the course to student classlist
-				$query = "select * from classes where code='$coursecode'";
-				$r = db_query($query);
-				$a=db_fetch_assoc($r);
-				$studlist=unserialize($a[users]);
-				
-				 if (!$studlist) $studlist = array();
-				       
-				 if (!in_array($id,$studlist)) {
-					  array_push($studlist,$id);
-				      // update user array for class in classes table
-				      db_query("update classes set users='".serialize($studlist)."' where code='$coursecode'");
-			      }		        
-	        }
-	     }
-	     		        
-        	
-			print "Check if student is in class $coursecode (found in LDAP).<BR>";//debug
-			
-			if (!in_array($coursecode,$classlist) && !in_array($coursecode,$blist)) {
-				// ok, so they are not added or blacklisted to this course
-				print "    --> they are not in the class, nor blacklisted.<BR>";//debug
-				
-				//
-				if ($type == 'stud') {
-					if (db_num_rows($r=db_query("select code from classes where code='$coursecode'"))) {
-						// the course exists in MOTS
-						
-						// let's add the course to their classlist
-						$query = "select * from classes where code='$coursecode'";
-						$a=db_fetch_assoc($r);
-						array_push($classes,$coursecode);
-						print "--> 1 - exists! adding... id=$classid carray=".serialize($classes)."<BR>";//debug
-						$madeachange=1; // we made a change to the classes list
-						
-						//now lets add them to the course user list
-						$query = "select * from classes where code='$coursecode'";
-						$r = db_query($query);
-						$a=db_fetch_assoc($r);
-						$studlist=unserialize($a[users]);
-
-						 if (!$studlist) $studlist = array();
-						       
-						 if (!in_array($id,$studlist)) {
-							  array_push($studlist,$id);
-						      // update user array for class in classes table
-						      db_query("update classes set users='".serialize($studlist)."' where code='$coursecode'");
-					      }						
-						
-					} else { 
-					    print "--> 0 - the class doesnt exist in mots<BR>"; 
-					} //debug
-				}
-				
-				//add to prof classes array all the classes taught by prof based on LDAP info
-				if ($type == 'prof') {		
-				   if (!in_array($coursecode,$classlist)) {
-						array_push($classes,$coursecode);
-						$madeachange=1; // we made a change to the classes list	
-					}
-			    }
-				
-			}
-			
-		}
-	}
-	if ($madeachange) {	// the classes list was updated
-		// only now do we update the db
-		$query = "update users set classes='".serialize($classes)."' where id=$id";		
-		db_query($query);
-		
-	}
-}
-*/
 
 // this exit line is very important!!! do no remove it!
 exit();
