@@ -240,7 +240,7 @@ function htmlbr($string) {
 }
 
 function sitenamevalid($name) {
-	global $auser,$atype,$classes,$ltype;
+	global $auser,$atype,$classes,$ltype, $settings;
 	$auser = strtolower($auser);
 	$name = strtolower($name);
 	if ($name == $auser) return 1;
@@ -248,6 +248,7 @@ function sitenamevalid($name) {
 	// look at the classes list.. if the site is in the classes list, then it's valid
 /* 	print "$atype -- $name"; */
 /* 	print_r($classes); */
+	if ($settings[type]=="other" && $auser==$settings[addedby]) return 1; 
 	if ($atype == 'prof' && is_array($classes[$name])) return 1;
 	if ($atype == 'prof' && db_line_exists("classgroups","name='$name' and owner='$auser'")) return 1;
 	
@@ -443,6 +444,8 @@ function handlearchive($stories,$pa) {
 }
 
 function handlestoryorder($stories,$order) {
+	// reorders the stories array passed to it depending on the order specified.
+	// Orders: addedesc, addedasc, editeddesc, editedasc, author, editor, category, titledesc, titleasc
 	$newstories = array();
 
 	foreach ($stories as $s) {
@@ -482,6 +485,164 @@ function handlestoryorder($stories,$order) {
 	return $newstories;
 }
 
+function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
+	// $action can have value MOVE or COPY
+	$action = strtolower($action);
+	
+	// Get part and newparent info
+	if ($parttype == 'story') {
+		$parttable = "stories";
+		$partarray = "stories";
+		$parenttable = "pages";
+		$parenttype = "page";
+	} else if ($parttype == 'page') {
+		$parttable = "pages";
+		$partarray = "pages";
+		$parenttable = "sections";
+		$parenttype = "section";
+		$childarray = "stories";
+		$childtype = "story";
+	} else if ($parttype == 'section') {
+		$parttable = "sections";
+		$partarray = "sections";
+		$parenttable = "sites";
+		$parenttype = "site";
+		$childarray = "pages";
+		$childtype = "page";
+	}
+	
+	$part = db_get_line($parttable,"id=$id");
+	if ($parenttype == "site")
+		$newparent = db_get_line($parenttable,"name='$newparentid'");
+	else	
+		$newparent = db_get_line($parenttable,"id='$newparentid'");
+
+	// Log the move if this is not part of a larger move call
+	if (!$isSubCall) {
+		if ($parttype == 'story') log_entry("$action_story",$newparent[site_id],$newparent[section_id],$newparentid,"$auser MOVED story $id FROM site $part[site_id], section $part[section_id], page $part[page_id]  TO site $newparent[site_id], section $newparent[section_id], page $newparentid");
+		if ($parttype == 'page') log_entry("$action_page",$newparent[site_id],$newparent[section_id],$id,"$auser MOVED page $id FROM site $part[site_id], section $part[section_id]  TO site $newparent[site_id], section $newparent[section_id]");
+		if ($parttype == 'section') log_entry("$action_section",$newparent[site_id],$id,"","$auser MOVED section $id FROM site $part[site_id] TO site $newparent[site_id]");
+	}
+	
+	// if MOVING remove the reference to the part in the old parent's array
+	if ($action == "move" && !$isSubCall) {
+		$tmp = $parenttype."_id";
+		$parentid = $part[$tmp];
+		if ($parenttype == "site")
+			$parentparts = decode_array(db_get_value($parenttable,$partarray,"name=$parentid"));
+		else
+			$parentparts = decode_array(db_get_value($parenttable,$partarray,"id=$parentid"));
+		$parentnewparts = array();
+		foreach ($partarray as $p) {
+			if ($p != $id) array_push($parentnewparts,$p);
+		}
+		$parentparts = encode_array($parentnewpartss);
+		if ($parenttype == "site")
+			$query = "update $parenttable set $partarray='$parentparts' where name='$parentid'";
+		else
+			$query = "update $parenttable set $partarray='$parentparts' where id='$parentid'";
+		db_query($query);
+	}
+	
+	// Update the part's fields if MOVING, if COPYING insert into new row
+	if ($action == "move") {	// MOVE
+		$query = "update $parttable set editedby='$auser',"; 
+		$where = " where id='$id'";
+	} else {	// COPY
+		$query = "insert into $parttable set addedby='$auser',"; 
+		$where = "";
+	}
+			
+	$chg = array();
+	if ($parttype == 'story') {
+		$chg[] = "site_id='$newparent[site_id]'";
+		$chg[] = "section_id='$newparent[section_id]'";
+		$chg[] = "page_id='$newparentid'";
+		$chg[] = "permissions='$newparent[permissions]'";
+		if ($action == "copy") {
+			$chg[] = "discuss='$part[discuss]'";
+			$chg[] = "discusspermissions='$part[discusspermissions]'";
+			$chg[] = "texttype='$part[texttype]'";
+			$chg[] = "category='$part[category]'";
+			$chg[] = "shorttext='$part[shorttext]'";
+			$chg[] = "longertext='$part[longertext]'";
+			$chg[] = "url='$part[url]'";
+			$chg[] = "type='$part[type]'";
+			$chg[] = "title='$part[title]'";
+			$chg[] = "locked=$part[locked]";
+			$chg[] = "activatedate='$part[activatedate]'";
+			$chg[] = "deactivatedate='$part[deactivatedate]'";
+		}
+	}
+	if ($parttype == 'page') {
+		$chg[] = "site_id='$newparent[site_id]'";
+		$chg[] = "section_id='$newparentid'";
+		$chg[] = "permissions='$newparent[permissions]'";
+		if ($action == "copy") {
+			$chg[] = "ediscussion=$part[ediscussion]";
+			$chg[] = "archiveby='$part[archiveby]'";
+			$chg[] = "url='$part[url]'";
+			$chg[] = "type='$part[type]'";
+			$chg[] = "title='$part[title]'";
+			$chg[] = "showcreator=$part[showcreator]";
+			$chg[] = "showdate=$part[showdate]";
+			$chg[] = "showhr=$part[showhr]";
+			$chg[] = "locked=$part[locked]";
+			$chg[] = "activatedate='$part[activatedate]'";
+			$chg[] = "deactivatedate='$part[deactivatedate]'";
+			$chg[] = "active=$part[active]";
+			$chg[] = "storyorder='$part[storyorder]'";
+		}
+	}
+	if ($parttype == 'section') {
+		$chg[] = "site_id='$newparent[site_id]'";
+		$chg[] = "permissions='$newparent[permissions]'";
+		if ($action == "copy") {
+			$chg[] = "url='$part[url]'";
+			$chg[] = "type='$part[type]'";
+			$chg[] = "title='$part[title]'";
+			$chg[] = "locked=$part[locked]";
+			$chg[] = "activatedate='$part[activatedate]'";
+			$chg[] = "deactivatedate='$part[deactivatedate]'";
+			$chg[] = "active=$part[active]";
+		}
+	}
+		
+	$query .= implode(",",$chg);
+//	print $query.$where."<BR>";
+	if (count($chg)) db_query($query.$where);
+
+	// Make sure that we have the correct new ID
+	if ($action == "copy") $newid = lastid();
+	else $newid = $id;
+	
+	// Update the stories array in the newparent
+	$newparentparts = decode_array($newparent[$partarray]);
+	array_push($newparentparts,$newid);
+	$newparentparts = encode_array($newparentparts);
+	if ($parenttype == "site")
+		$query = "update $parenttable set $partarray='$newparentparts' where name='$newparentid'";
+	else
+		$query = "update $parenttable set $partarray='$newparentparts' where id='$newparentid'";
+	db_query($query);
+	
+	// Update the appropriate ids and permissions of pages lower in the hierarchy.
+	if ($parttype != "story") {
+		if (move) {
+			// update the foreign keys and permissions for the entry
+			$children = decode_array($part[$childarray]);
+			foreach ($children as $childid) {
+				copyPart(MOVE,$childtype,$childid,$newid,1);
+			}
+		} else { // copy
+			// recursively copy all of the lower parts.
+			foreach ($children as $childid) {
+				copyPart(COPY,$childtype,$childid,$newid,1);
+			}
+		}
+	}
+}
+
 function copySite($orig,$dest) {
 	// This function does not support the copying of userfiles in this implementation.
 
@@ -518,7 +679,7 @@ function copySite($orig,$dest) {
 			$pchg = array();
 			$pchg[] = "site_id='$dest'";
 			$pchg[] = "section_id='$section'";
-			$pchg[] = "ediscussion=1";
+			$pchg[] = "ediscussion=1"; 
 			$pchg[] = "archiveby='$pa[archiveby]'";
 			$pchg[] = "url='$pa[url]'";
 			$pchg[] = "type='$pa[type]'";
