@@ -127,7 +127,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->getField("type") == 'file') {
 	printc("<br><br>");
 	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
-	printc("<input type=hidden name='libraryfileid' value='$_SESSION[settings][libraryfileid]'>");
+	printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
 	printc((($_SESSION[storyObj]->getField("type")=='image')?"Image":"File").": <input type=text name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=25 readonly> <input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'> <br><br>");
 	if ($_SESSION[storyObj]->getField("type")=='image') printc("<div class=desc>Accepted image types are GIF, JPEG (JPG), and PNG.</div>");
 	else // printc("<div class=desc>Select the file you would like to make available by clicking the 'Browse...' button above.</div>");
