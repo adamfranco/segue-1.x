@@ -47,7 +47,7 @@ $query = "
 		COUNT(*) AS log_count
 	FROM 
 		log
-			INNER JOIN
+			LEFT JOIN
 		slot
 			ON
 		log.FK_siteunit = slot.FK_site
@@ -80,10 +80,10 @@ SELECT
 		slot_name
 	FROM 
 		log
-			INNER JOIN
+			LEFT JOIN
 		slot
 			ON
-		log.FK_siteunit = slot.FK_site
+		log.FK_site = slot.FK_site
 			INNER JOIN
 		user AS user1
 			ON

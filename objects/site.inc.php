@@ -303,7 +303,7 @@ ORDER BY
 			$query = "UPDATE site SET ".implode(",",$a)." WHERE site_id=".$this->id;
 /*  			print "site->updateDB: $query<BR>"; */
 			db_query($query);
-			print mysql_error()."<br>";
+/* 			print mysql_error()."<br>"; */
 
 		// the hard step: update the fields in the JOIN tables
 
@@ -368,7 +368,7 @@ ORDER BY
 			$where = "";
 		}
 		$query .= " SET slot_name = '".$this->data[name]."',FK_owner=".$_SESSION[aid].",slot_type='".$this->data[type]."', FK_site = ".$this->id.$where;
-		echo $query."<br>";
+/* 		echo $query."<br>"; */
 		db_query($query);
 		
 		// the sections haven't been created yet, so we don't have to insert data[sections] for now

@@ -50,7 +50,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 
 print "<p>$aid, $afname, $auser, $aemail, $atype<BR>";
 
-//header("Location: index.php?$sid");
+header("Location: index.php?$sid");
 
 ?>
 	

@@ -127,7 +127,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	}
 	if (!$r) {
 		print "Upload file error!<br>";
-		log_entry("media_error","File upload attempt by $auser in site $site failed.",$siteid,"site");
+		log_entry("media_error","File upload attempt by $auser in site $site failed.",$site,$siteid,"site");
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
@@ -138,7 +138,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		
 		$media_id = $replace_id;
 		
-		log_entry("media_update","$auser updated file: $name, id: $media_id, in site $site",$siteid,"site");
+		log_entry("media_update","$auser updated file: $name, id: $media_id, in site $site",$site,$siteid,"site");
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
@@ -148,7 +148,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 //		print mysql_error()."<br>";
 		
 		$media_id = lastid();
-		log_entry("media_upload","$auser uploaded file: $name, id: $media_id, to site $site",$siteid,"site");
+		log_entry("media_upload","$auser uploaded file: $name, id: $media_id, to site $site",$site,$siteid,"site");
 		return $media_id;
 	}
 }
@@ -207,13 +207,13 @@ function deleteuserfile($fileid) {
 		if ($success) {
 			$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
 			db_query($query);
-			log_entry("media_delete","$auser deleted file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name"),$siteObj->id,"site");
+			log_entry("media_delete","$auser deleted file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name"),$siteObj->name,$siteObj->id,"site");
 		} else {
-			log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $auser",$siteObj->id,"site");
+			log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $auser",$siteObj->name,$siteObj->id,"site");
 			error("File could not be Deleted");
 		}
 	} else {
-		log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $auser. File does not exist. Removed entry.",$siteObj->id,"site");
+		log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $auser. File does not exist. Removed entry.",$siteObj->name,$siteObj->id,"site");
 		error("File does not exist. Its Entry was deleted");
 		$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
 		db_query($query);
@@ -301,8 +301,24 @@ function spchars($string) {
 	return htmlspecialchars(stripslashes($string),ENT_QUOTES);
 }
 
-function log_entry($type,$content,$siteunit=0,$siteunit_type="site") {
+function log_entry($type,$content,$site=0,$siteunit=0,$siteunit_type="site") {
 	global $dbhost, $dbuser,$dbpass, $dbdb, $auser, $luser;
+	
+	if ($site) {
+		$query = " 
+			SELECT 
+				FK_site
+			FROM
+				slot
+			WHERE
+				slot_name = '$site'
+		";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		$site_id = "'".$a[FK_site]."'";
+	} else {
+		$site_id = "NULL";
+	}
 	
 	db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 	db_query("insert into log set 
@@ -310,6 +326,7 @@ function log_entry($type,$content,$siteunit=0,$siteunit_type="site") {
 		log_desc='$content',
 		FK_luser='".$_SESSION[lid]."',
 		FK_auser='".$_SESSION[aid]."',
+		FK_site=$site_id,
 		FK_siteunit='$siteunit',
 		log_siteunit_type='$siteunit_type'
 	");

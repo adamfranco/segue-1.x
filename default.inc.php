@@ -17,7 +17,7 @@ if ($copysite && $newname && $origname) {
 /*      print "</pre>"; */
         /* $origSite->copySite($newname,$clearpermissions); */
         $origSite->copySite($newname);
-        log_entry("copy_site","$_SESSION[auser] copied site ".$origname." to ".$newname,$origSite->id); // Should maybe be the newsite's id.
+        log_entry("copy_site","$_SESSION[auser] copied site ".$origname." to ".$newname,$newname,$origSite->id,"site"); // Should maybe be the newsite's id.
 }
 
 /******************************************************************************
@@ -112,12 +112,12 @@ if ($_loggedin) {
                                         $groupObj->updateDB();
                                         $list = implode(",",$groupObj->classes);
 /*                                         log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list","$_REQUEST[newgroup]"); */
-                                        log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list",$groupObj->id,"classgroup");
+                                        log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list","NULL",$groupObj->id,"classgroup");
                                 } else error("Somebody has already created a class group with that name. Please try another name.");
                         } else {        // new group
                                 $groupObj->addClasses($_REQUEST[group]);
                                 $groupObj->updateDB();
-                                log_entry("classgroups","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes),$groupObj->id,"classgroup");
+                                log_entry("classgroups","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes),"NULL",$groupObj->id,"classgroup");
                         }
                 } else
                         error("Your group name is invalid. It may only contain alphanumeric characters, '_', '-', and be under 21 characters. No spaces, punctuation, etc.");
@@ -479,4 +479,4 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
         $color=1-$color;
 }
 
-$sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gabe@schine.net'>Gabriel Schine</a>, <a href='mailto:achapin@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>,  and <a href='mailto:afranco@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a></div>";
+$sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gschineATmiddleburyDOTedu'>Gabriel Schine</a>, <a href='mailto:achapinATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>,  and <a href='mailto:afrancoATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a></div>";

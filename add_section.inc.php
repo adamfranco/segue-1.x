@@ -134,11 +134,11 @@ if ($_REQUEST[save]) {
 		if ($_SESSION[settings][add]) {
 			$_SESSION[sectionObj]->setPermissions($thisSite->getPermissions());
 			$_SESSION[sectionObj]->insertDB();
-			log_entry("add_section","$_SESSION[auser] added section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
+			log_entry("add_section","$_SESSION[auser] added section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[sectionObj]->updateDB();
-			log_entry("edit_section","$_SESSION[auser] edited section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
+			log_entry("edit_section","$_SESSION[auser] edited section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
 		}
 		
 		// do the recursive update of active flag and such... .... ugh

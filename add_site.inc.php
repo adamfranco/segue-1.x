@@ -152,11 +152,11 @@ if ($_REQUEST[save]) {
 		print "<BR><BR>".$_SESSION[settings][sitename]."<BR><BR>";
 		if ($_SESSION[settings][add]) {
 			$_SESSION[siteObj]->insertDB();
-			log_entry("add_site","$_SESSION[auser] added ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->id,"site");
+			log_entry("add_site","$_SESSION[auser] added ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name,$_SESSION[siteObj]->id,"site");
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[siteObj]->updateDB(1);
-			log_entry("edit_site","$_SESSION[auser] edited ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->id,"site");
+			log_entry("edit_site","$_SESSION[auser] edited ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name,$_SESSION[siteObj]->id,"site");
 		}
 		
 		/* ----------------------------------------------------- */

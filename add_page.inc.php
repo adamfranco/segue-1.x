@@ -150,14 +150,14 @@ if ($_REQUEST[save]) {
 		
 		if ($_SESSION[settings][edit]) { 
 			$_SESSION[pageObj]->updateDB();
-			log_entry("edit_page","$_SESSION[auser] edited page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->id,"page");
+			log_entry("edit_page","$_SESSION[auser] edited page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->id,"page");
 /* 			$query = "update pages set editedby='$auser',"; $where = " where id=$_SESSION[settings][page]";  */
 		}
 		if ($_SESSION[settings][add]) {
 			// automatically inherit permissions from above;
 			$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 			$_SESSION[pageObj]->insertDB();
-			log_entry("add_page","$_SESSION[auser] added page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->id,"page");
+			log_entry("add_page","$_SESSION[auser] added page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->id,"page");
 		}
 		
 		// do the recursive update of active flag and such... .... ugh

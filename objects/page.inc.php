@@ -373,11 +373,11 @@ ORDER BY
 			$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
 			$query = "UPDATE page SET ".implode(",",$a)." WHERE page_id=".$this->id;
-			print "<pre>Page->UpdateDB: $query<br>";
+/* 			print "<pre>Page->UpdateDB: $query<br>"; */
 			db_query($query);
-			print mysql_error()."<br>";
-			print_r($this->data['stories']);
-			print "</pre>";
+/* 			print mysql_error()."<br>"; */
+/* 			print_r($this->data['stories']); */
+/* 			print "</pre>"; */
 			
 			// the hard step: update the fields in the JOIN tables
 			
