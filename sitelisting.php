@@ -119,11 +119,12 @@ function changeOrder(order) {
 	<? print $content; ?>
 	<div align=center style='font-size: 14px;'><b><? echo $cfg[inst_name] ?> Segue</b></div><br>
 	<div align=left style='font-size: 10px;'>
-	Listed here are all the publically accessible sites created in 
-	<? echo $cfg[inst_name] ?> Segue sorted by those that have been most recently updated.
+	Included here are all <b>class</b> sites and any other sites that requested to be included in this public listing of
+	<? echo $cfg[inst_name] ?> Segue. These are sorted by those that have been most recently updated.<br>
+	<i>(Note: not all sites listed here are viewable to all users)</i>
 	</div>
 	<br>
-	<? print "Total active public Segue sites: ".$numSites ?>
+	<? print "Total active listed Segue sites: ".$numSites ?>
 
 
 </td></tr>
