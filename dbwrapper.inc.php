@@ -22,7 +22,7 @@ $db_type = "MySQL";
 
 // $debug: set this to 1 if you would like all debug output to be printed to the browser.
 //		possible values: 1, 0
-$debug = 0;
+$debug = 1;
 
 /*--------------------------------------------------------------------------------------*/
 /* --------------------------  /end GLOBALS ----------------------------------------	*/
@@ -205,13 +205,13 @@ function db_query ($query, $cid=-1) {
   global $db_type; global $debug;
   global $_connect_id;
   if ($debug) {
-    echo "<br><br>QUERY:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$query;
+    echo "<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$query;
   }
   if ($cid==-1) $cid = $_connect_id;
   if ($db_type == "mysql") {
     $res = mysql_query($query, $cid);
 	if ($debug) {
-		echo "<br>RESULT:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$res;
+		echo "<br>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res;
 	}
 	echo mysql_error();
     return $res;

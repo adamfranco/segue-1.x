@@ -17,7 +17,7 @@ if ($copysite && $newname && $origname) {
 /*      print "</pre>"; */
         /* $origSite->copySite($newname,$clearpermissions); */
         $origSite->copySite($newname);
-        log_entry("copy_site","$_SESSION[auser] copied site ".$origname." to ".$newname,$newname);
+        log_entry("copy_site","$_SESSION[auser] copied site ".$origname." to ".$newname,$origSite->id); // Should maybe be the newsite's id.
 }
 
 /******************************************************************************
@@ -111,13 +111,14 @@ if ($_loggedin) {
                                         $groupObj->addClasses($_REQUEST[group]);
                                         $groupObj->updateDB();
                                         $list = implode(",",$groupObj->classes);
-                                        log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list","$_REQUEST[newgroup]");
+/*                                         log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list","$_REQUEST[newgroup]"); */
+                                        log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list",$groupObj->id,"classgroup");
                                 } else error("Somebody has already created a class group with that name. Please try another name.");
                         } else {        // new group
                                 $groupObj->addClasses($_REQUEST[group]);
                                 $groupObj->updateDB();
 /*                              $query = "insert into classgroups set name='$newgroup',classes='$list',owner='$auser'"; */
-                                log_entry("classgroups","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes),"$_REQUEST[newgroup]");
+                                log_entry("classgroups","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes),$groupObj->id,"classgroup");
                         }
                 } else
                         error("Your group name is invalid. It may only contain alphanumeric characters, '_', '-', and be under 21 characters. No spaces, punctuation, etc.");

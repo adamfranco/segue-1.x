@@ -438,14 +438,14 @@ ORDER BY
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
-			$a[] = $this->_datafields[addedby][1][0]."=".$_SESSION[aid];
+			$a[] = "FK_createdby=".$_SESSION[aid];
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
 		} else {
-			$a[] = $this->_datafields[addedby][1][0]."=".$this->getField('addeby');
+			$a[] = "FK_createdby=".$this->getField('addeby');	// We need to save an id, this might be a string. might need to Fix!
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
 
-		$query = "INSERT INTO stories SET ".implode(",",$a);
+		$query = "INSERT INTO story SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
 		db_query($query);
 		
@@ -473,10 +473,10 @@ ORDER BY
 		$d = $this->data;
 		$a = array();
 
-		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
-		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'";
-		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section);
-		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->getField("id")."'";
+/* 		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site); */
+/* 		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'"; */
+/* 		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section); */
+/* 		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->getField("id")."'"; */
 		if (!isset($this->owningPageObj)) $this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
 		if ($all) $a[] = $this->_datafields[page_id][1][0]."='".$this->owningPageObj->getField("id")."'";
 		
