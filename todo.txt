@@ -1,1 +1,0 @@
-11/24/02changed: default.inc-added link to MOTS for profs only11/8/02changed: default.inc-added code to get info about websites from web courses database and add to class listing11/1/02changed: config.inc.php, add_site_form.inc-added template0 to _template array in config-moved none in template drop down to end of list
