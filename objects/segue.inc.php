@@ -1631,7 +1631,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		foreach ($entitiesToCheck as $entity) {
 			$evalString = $perms;
 			foreach ($validGrants as $grant) {
-				$evalString = str_replace($grant,'$grantermissions[\''.$entity.'\'][permissions::'.strtoupper($grant).'()]',$evalString);
+				$evalString = str_replace($grant,'$permissions[\''.$entity.'\'][permissions::'.strtoupper($grant).'()]',$evalString);
 			}
 			$evalStrings[] = "(".$evalString.")";
 		}
