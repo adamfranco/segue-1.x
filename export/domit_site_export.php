@@ -24,7 +24,10 @@ if ($argc != 3 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) {
 ?>
 
 This script will export the specified Segue site 
-and its media to the specified directory.
+and its media to the specified directory. Be sure 
+to run this script as a user who has permission to
+access the segue media directory or media files will
+not be copied.
 
 Usage:
 
