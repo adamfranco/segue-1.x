@@ -173,7 +173,7 @@ function generateCodeFromData($dept,$number,$section,$semester,$year,$ext_id="",
 }
 
 function generateTermsFromCode($code) {
-	ereg("([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]{1})([0-9]{2})",$code,$r);
+	ereg("([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2})",$code,$r);
 	$department = $r[1];
 	$number = $r[2];
 	$section = $r[3];

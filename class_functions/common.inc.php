@@ -60,7 +60,7 @@ function synchronizeClassDB($department, $number, $section, $semester, $year) {
  * Takes a class code and calls above function after parsing the code.
  */
 function synchronizeClassDBFromCode($code) {
-	ereg("([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2})",$code,$r);
+	ereg("([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([a-zA-Z]{1,})([0-9]{2})",$code,$r);
 	synchronizeClassDB($r[1],$r[2],$r[3],$r[4],$r[5]);
 }
 

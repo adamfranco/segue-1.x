@@ -105,7 +105,7 @@ if ($curraction == 'edit') {
 		if (!ereg("^[a-zA-Z]{1,}$",$_REQUEST['department'])) error("You must enter a department. Only charactors \"a-z\" and \"A-Z\" are allowed.");
 		if (!ereg("^[0-9]{1,}$",$_REQUEST['number'])) error("You must enter a numeric number.");
 		if (!ereg("^[a-zA-Z]{0,}$",$_REQUEST['section'])) error("Your course section must be letters \"a-z\" and \"A-Z\" only");
-		if (!ereg("^[fwsl]{1}$",$_REQUEST['semester'])) error("You must enter a semester.");
+		if (!array_key_exists($_REQUEST['semester'], $cfg['semesters'])) error("You must enter a semester.");
 		if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 		$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
 		if (!$owner_id) error("The class owner you selected is not a register Segue user.");

@@ -80,7 +80,7 @@ function getclassstudents($class_id) {
 	 ******************************************************************************/
 
 		
-	ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]|bl{1})([0-9]{2})",$class_id,$r);
+	ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2})",$class_id,$r);
 	$department = $r[1];
 	$number = $r[2];
 	$section = $r[3];
@@ -302,9 +302,7 @@ function getuserclasses($user,$time="all") {
 	//				print "$f<br>";
 					$parts = explode(",",$f);
 					foreach ($parts as $p) {
-	//					print "$p<br>";
-	//					if (ereg("cn=([a-zA-Z]{0,3})([0-9]{1,3})([a-zA-Z]{0,1})-([lsfw]|bl{1})([0-9]{2})",$p,$r)) {
-						if (eregi($cfg[ldap_groupname_attribute]."=([a-zA-Z]{0,4})([0-9]{1,4})([a-zA-Z]{0,1})-([lsfw]|bl{1})([0-9]{2})",$p,$r)) {
+						if (eregi($cfg[ldap_groupname_attribute]."=([a-zA-Z]{0,4})([0-9]{1,4})([a-zA-Z]{0,1})-([a-zA-Z]{1,})([0-9]{2})",$p,$r)) {
 	//						print "goood!";
 							$semester = currentsemester ();
 	/* 						print "<pre>"; */
@@ -461,7 +459,7 @@ function generateCodeFromData($dept,$number,$section,$semester,$year,$ext_id="",
 }
 
 function generateTermsFromCode($code) {
-	ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]|bl{1})([0-9]{2})",$code,$r);
+	ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2})",$code,$r);
 	$department = $r[1];
 	$number = $r[2];
 	$section = $r[3];
@@ -482,7 +480,7 @@ function generateTermsFromCode($code) {
 function coursefoldersite($cl) {
 	global $cfg;
 	db_connect($cfg[coursefolders_host],$cfg[coursefolders_username],$cfg[coursefolders_password],$cfg[coursefolders_db]);
-	if (ereg("([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2})",$cl,$regs)) {
+	if (ereg("([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([a-zA-Z]{1,})([0-9]{2})",$cl,$regs)) {
 		$class = $regs[1].$regs[2].$regs[3];
 
 		$curr_semester = $regs[4];	
