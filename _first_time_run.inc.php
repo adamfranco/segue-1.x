@@ -4,4 +4,4 @@
 
 $u = new user();
 $u->_genDefaultAdminUser();
-$u->insert();
+$u->insertDB();

@@ -127,7 +127,7 @@ class user {
 	FROM
 		user
 	WHERE
-		user_ltype='db'";
+		user_authtype='db'";
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
 		return $a['count'];
