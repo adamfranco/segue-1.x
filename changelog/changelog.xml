@@ -6,6 +6,11 @@
 			When Changing to a differnt active user as admin, you are now kept on
 			the same page.
 		</change>
+		<new author='gabe'>
+			Segue can now be configured to restrict users to given sites based
+			on the virtual host asked for. Each vhost must be set up on the webserver
+			as well as in the Segue config.
+		</new>
 		<fix author='alex'>
 			stripped html tags from of first 25 characters of content that is the topic
 			of discussion and is displayed in discussion/assessment participation summary.

@@ -8,6 +8,8 @@ v. 1.3.0 (the future)
 		
 	* Change: When Changing to a differnt active user as admin, you are now kept on the same page. (Adam Franco)
 		
+	* New feature: Segue can now be configured to restrict users to given sites based on the virtual host asked for. Each vhost must be set up on the webserver as well as in the Segue config. (Gabe Schine)
+		
 	* Bug Fix: stripped html tags from of first 25 characters of content that is the topic of discussion and is displayed in discussion/assessment participation summary. (Alex Chapin)
 		
 	* Change: Changed the way semesters are defined and handled. Segue can now be configured to have as few or many semesters as desired, each with custom start/end days. (Adam Franco)
