@@ -252,11 +252,11 @@ Participants<br><br>
 			print "<a href=$PHP_SELF?$sid&action=list&$getvariables&order=user_fname>List</a> | ";
 			
 			if ($userid) {
-				print "<a href=$PHP_SELF?$sid&action=review&$getvariables>Review all</a> - ";
-				print urldecode($userfname)." posts ";
+				print "<a href=$PHP_SELF?$sid&action=review&$getvariables>Review all</a> | ";
+				print $numrows." posts from ".urldecode($userfname);
 			} else {
 				print "Review - ";
-				print $numparticipants." participants";
+				print $numrows." posts from ".$numparticipants." participants";
 			}
 			
 		} else if ($curraction == 'email') {
