@@ -88,7 +88,7 @@ class story extends segue {
 	
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown) {
-			if (!$this->tobefetched) $this->fetchFromDB($full);
+			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			$this->fetcheddown = 1;
 		}
 	}
@@ -165,7 +165,7 @@ class story extends segue {
 			$a[] = "addedtimestamp = NOW()";
 		} else {
 			$a[] = "addedby='".$this->getField("addedby")."'";
-			$a[] = "addedtimestamp=".$this->getField("addedtimestamp");
+			$a[] = "addedtimestamp='".$this->getField("addedtimestamp")."'";
 		}
 		$query = "insert into stories set ".implode(",",$a);
 		print $query; //debug

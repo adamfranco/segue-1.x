@@ -69,7 +69,7 @@ class section extends segue {
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown) {
 /* 			print "-->section fetchdown".$this->id."<BR>"; */
-			if (!$this->tobefetched) $this->fetchFromDB($full);
+			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			foreach ($this->getField("pages") as $p) {
 				$this->pages[$p] = new page($this->owning_site,$this->id,$p);
 				$this->pages[$p]->fetchDown($full);
@@ -132,7 +132,7 @@ class section extends segue {
 			$a[] = "addedtimestamp = NOW()";
 		} else {
 			$a[] = "addedby='".$this->getField("addedby")."'";
-			$a[] = "addedtimestamp=".$this->getField("addedtimestamp");
+			$a[] = "addedtimestamp='".$this->getField("addedtimestamp")."'";
 		}
 
 		$query = "insert into sections set ".implode(",",$a);

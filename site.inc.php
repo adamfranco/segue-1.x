@@ -1,7 +1,7 @@
 <? /* $Id$ */
 
 // check view permissions
-if (!$thisSite->canview()) {
+if (!$thisSite->canview() && !$thisSite->hasPermissionDown("add or edit or delete")) {
 	error("You may not view this site. This may be due to any of the following reasons:<BR><ul><li>The site has not been activated by the owner.<li>You are not on a computer within $cfg[inst_name].<li>You are not logged in.<li>You are not part of a set of specific users or groups allowed to view this site.</ul>");
 }	
 
@@ -34,7 +34,7 @@ if ($thisSite) {
 	if (!$thisSection && count($thisSite->getField("sections"))) {
 		$thisSite->fetchDown();
 		foreach ($thisSite->sections as $s=>$o) {
-			if ($o->getField("type") == 'section' && $o->canview()) { $thisSection = &$thisSite->sections[$s]; break; }
+			if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisSection = &$thisSite->sections[$s]; break; }
 		}
 	}
 	$sitetype = $thisSite->getField("type");
@@ -43,7 +43,7 @@ if ($thisSection) {
 	if (!$thisPage && count($thisSection->getField("pages"))) {
 		$thisSection->fetchDown();
 		foreach ($thisSection->pages as $p=>$o) {
-			if ($o->getField("type") == 'page' && $o->canview()) { $thisPage = &$thisSection->pages[$p]; break; }
+			if ($o->getField("type") == 'page' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisPage = &$thisSection->pages[$p]; break; }
 		}
 	}
 	$st = " > " . $thisSection->getField("title");
@@ -67,7 +67,7 @@ $thisSite->fetchDown();			// just in case we haven't already
 
 $i=0;
 foreach ($thisSite->sections as $s=>$o) {
-	if ($o->canview()) {
+	if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 		if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=site";
 		if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
 		$extra = '';
@@ -82,7 +82,7 @@ if ($thisSection) {
 	$i = 0;
 	foreach ($thisSection->pages as $p=>$o) {
 		$extra = '';
-		if ($o->canview()) {
+		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 			if ($o->getField("type") == 'page')
 				add_link(leftnav,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
 			if ($o->getField("type") == 'url')
@@ -110,7 +110,7 @@ if ($thisPage) {
 	
 	foreach ($thisPage->stories as $s=>$o) {
 	
-		if ($o->canview()) {		
+		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {		
 			if (($thisPage->getField("showcreator") || $thisPage->getField("showdate") || $thisPage->getField("showhr")) && $i!=0) 
 				printc("<hr size='1' noshade style='margin-top: 10px'>");
 			if ($o->getField("category")) {

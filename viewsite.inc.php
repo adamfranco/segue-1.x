@@ -213,8 +213,7 @@ $text .= "<td><form method=post action='$u&$sid'><input type=submit value='Previ
 $text .= "<td><form action='site_map.php?$sid&site=$site' onClick='doWindow(\"sitemap\",600,400)' target='sitemap' method=post><input type=submit value=' &nbsp; Site Map &nbsp;'></form></td>";
 if ($thisSite->hasPermission("edit")) $text .= "</tr><tr><td><form action='$PHP_SELF?$sid&action=edit_site&edit_site=$site&commingFrom=viewsite' method=post><input type=submit value='Edit Site Settings'></form></td>";
 else $text .= "</tr><tr><td> &nbsp; </td>";
-if ($thisSite->getField("addedby") == $auser) $text .= "<td><form action='edit_permissions.php?$sid&site=$site' onClick='doWindow(\"permissions\",600,400)' target='permissions' method=post><input type=submit value='Permissions'></form></td>";
-else $text .= "<td> &nbsp; </td>";
+$text .= "<td><form action='edit_permissions.php?$sid&site=$site' onClick='doWindow(\"permissions\",600,400)' target='permissions' method=post><input type=submit value='Permissions'></form></td>";
 $text .= "</tr><tr>";
 $text .= "<td><form action='$PHP_SELF?$sid&action=site&site=sample' target='_blank' method=post><input type=submit value='View Sample Site'></form></td>";
 $text .= "</tr></table></div>";

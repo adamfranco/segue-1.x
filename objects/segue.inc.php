@@ -185,34 +185,58 @@ class segue {
 			}
 		}
 	}
+	
+/* 	function setSiteNameDown($name) { */
+/* //		if (!$this->fetcheddown) $this->fetchDown(); */
+/* 		$class=get_class($this); */
+/* 		$ar = $this->_object_arrays[$class]; */
+/* 		$this->owning_site = $name; */
+/* 		if ($class == "site") { */
+/* 			$this->name = $name; */
+/* 			$this->setField("name",$name); */
+/* 		} else { */
+/* 			$this->setField("site_id",$name); */
+/* 		} */
+/* 		if ($ar) { */
+/* 			$a = &$this->$ar; */
+/* 			foreach ($a as $i=>$o) { */
+/* 				$a[$i]->setSiteNameDown($name); */
+/* 			} */
+/* 		} */
+/* 	} */
 		
 	
 /******************************************************************************
  * copyObj - Copies an object to a new parent
  ******************************************************************************/
-	function copyObj($object,$newParent,$keepaddedby=0) {
+	function copyObj(&$object,&$newParent,$keepaddedby=0) {
 		$_a = array("site"=>3,"section"=>2,"page"=>1,"story"=>0);
 		// check that the newParent can be a parent
 		$objClass = get_class($object);
 		$parentClass = get_class($newParent);
-		if (!($_a[$parentClass] == ($_a[$objClass] - 1))) return 0;
-		
-		$object->fetchDown();
+		print "$objClass - $parentClass";
+		if (!($_a[$parentClass]-1 == $_a[$objClass])) return 0;
+//		print " Hi ";
+		$object->fetchDown(1);
+//		print "<pre>";		print_r($object);print "</pre>";
 		if ($objClass == 'section') {
 			$owning_site = $newParent->name;
 			$object->insertDB(1,$owning_site,$keepaddedby);
 		}
 		if ($objClass == 'page') {
-			$owning_site = $newParent->site_id;
+			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->id;
 			$object->insertDB(1,$owning_site,$owning_section,$keepaddedby);
 		}
 		if ($objClass == 'story') {
-			$owning_site = $newParent->site_id;
-			$owning_section = $newParent->section_id;
+			print "asdasdasd";
+			$owning_site = $newParent->owning_site;
+			$owning_section = $newParent->owning_section;
 			$owning_page = $newParent->id;
 			$object->insertDB(1,$owning_site,$owning_section,$owning_page,$keepaddedby);
 		}
+
+//		print_r($newParent);
 		return 1;
 	}
 	

@@ -86,7 +86,22 @@ class site extends segue {
 		return $this->id;
 	}
 	
-	function setSiteName($name) {
+/* 	function copySite ($newName, $clearPermissions=0) { */
+/* 		$this->fetchDown(1); */
+/* 		print "<pre>"; print_r($this); print "</pre>"; */
+/* 		$this->setSiteNameDown($newName); */
+/* 		if ($clearPermissions) $this->clearPermissions(); */
+/* 		print "<pre>"; print_r($this); print "</pre>"; */
+/* 		$this->updateDB(1); */
+/* 	} */
+	
+	function applyTemplate ($template) {
+		$templateObj = new site($template);
+		$templateObj->fetchDown(1);
+		foreach ($templateObj->sections as $i=>$o) segue::copyObj($o,$this);
+	}
+	
+	function setSiteName($name, $copySite=0) {
 		if ($this->tobefetched) { // we are trying to change the name of an existing site!! bad.
 			return 0;
 		}

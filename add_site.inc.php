@@ -117,9 +117,11 @@ if ($_REQUEST[save]) {
 		
 		// --- Copy the Template on add ---
 		if ($_SESSION[settings][add] && $_SESSION[settings][template] != "") {
-			copySite($_SESSION[settings][template],$_SESSION[siteObj]->getField("name"));
+/* 			copySite($_SESSION[settings][template],$_SESSION[siteObj]->getField("name")); */
+			$_SESSION[siteObj]->applyTemplate($_SESSION[settings][template]);
 		} else if ($_SESSION[settings][add]) {
-			copySite("template0",$_SESSION[siteObj]->getField("name"));
+/* 			copySite("template0",$_SESSION[siteObj]->getField("name")); */
+			$_SESSION[siteObj]->applyTemplate("template0");
 		}
 	
 		// do recursive enable

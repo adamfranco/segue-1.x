@@ -29,7 +29,7 @@ if ($domove) {
 		$parentObj = new section($site,$section);
 	}
 	else if ($type == "story") {
-		$partObj = new story($origionalsite,$origionalsection,$origionalpage,story);
+		$partObj = new story($origionalsite,$origionalsection,$origionalpage,$story);
 		$parentObj = new page($site,$section,$page);
 	} else 
 		print "Major Error!!!!!!!!!!!!!!!!!!!!!!  AHHHHHhhhhhhhh!!!!!!!!!!!!!!!!!!!!";
@@ -42,6 +42,7 @@ if ($domove) {
 	
 	// move the object.
 	$succesfull = segue::copyObj($partObj,$parentObj,$keepaddedby);
+	return 1;
 	
 	// delete the origional
 	if ($successfull && $action == "MOVE") {
