@@ -171,10 +171,11 @@ if (count($rightnav)) {
 	foreach ($topnav as $item) {
 		$samepage = (isset($section) && ($section == $item[id]))?1:0;
 		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
+		$item[extra] = "";
 		print makelink($item,$samepage);
 		print " | ";
 	}	
-	print $topnav_extra;
+
 */	?>
 </div>
 </div> 

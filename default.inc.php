@@ -242,7 +242,8 @@ if ($_loggedin) {
 	
 	printc("<div class=title>SitesDB</div>");
 	printc("<div class=leftmargin>");
-	printc("<p>Welcome to SitesDB! To access your personal and class websites, please login with your username and password above. For Middlebury College users, these are identical to your email username and password.</p>");
+	printc("<p>Welcome to SitesDB! To access your personal and class websites, please login with your username and password above. For Middlebury College users, these are identical to your email username and password.  See:<br>");
+	printc("<a href=http://www.middlebury.edu/webemailtools.html target=new_window>http://www.middlebury.edu/webemailtools.html</a></p>");	
 	printc("<p>With SitesDB, you can quickly and easily create websites for yourself and, if you are a professor, for your classes.</p>");
 	printc("<hr size=1>");
 	printc("<font class=small>If you are not affliated with Middlebury College and you would like a demo of SitesDB, log in above as follows:<br>");

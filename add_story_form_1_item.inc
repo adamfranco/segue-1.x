@@ -126,7 +126,7 @@ if ($settings[type] == 'image' || $settings[type] == 'file') {
 	printc("<br><br>");
 	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
 	printc("<input type=hidden name='libraryfileid' value='$settings[libraryfileid]'>");
-	printc((($settings[type]=='image')?"Image":"File").": <input type=text name='libraryfilename' value='$settings[libraryfilename]' size=25 readonly> <input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",500,600,\"filebrowser.php?\")' target='filebrowser' style='text-decoration: none'> <br><br>");
+	printc((($settings[type]=='image')?"Image":"File").": <input type=text name='libraryfilename' value='$settings[libraryfilename]' size=25 readonly> <input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",600,600,\"filebrowser.php?\")' target='filebrowser' style='text-decoration: none'> <br><br>");
 	if ($settings[type]=='image') printc("<div class=desc>Accepted image types are GIF, JPEG (JPG), and PNG.</div>");
 	else // printc("<div class=desc>Select the file you would like to make available by clicking the 'Browse...' button above.</div>");
 	printc("<br>");

@@ -76,7 +76,7 @@ table, td { border: 0px solid black }
 	border-bottom: 1px solid #<? echo $c['title-under-color']; ?>;
 	padding: 5px;
 	font-size: 16px;
-	padding-left: 40px;
+	padding-left: 5px;
 	margin-bottom: 2px;
 	font-variant: small-caps;
 	font-weight: bolder;
@@ -123,6 +123,9 @@ th {
 	border: 1px solid #<? echo $c['box-border-color']; ?>;
 	padding: 5px;
 	padding-left: 15px;
+}
+.editnote {
+	color: #<? echo $c['a']; ?>;
 }
 
 

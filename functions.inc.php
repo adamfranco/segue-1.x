@@ -7,13 +7,14 @@ function makedownloadbar($a) {
 	$b = db_get_line("media","id=$a[longertext]");
 	$filename = $b[name];
 	$dir = $b[site_id];
+	$size = $b[size];
 	$fileurl = "$uploadurl/$dir/$filename";
 	$filepath = "$uploaddir/$dir/$filename";
-	$filesize = mkfilesize($filepath);
+	$filesize = convertfilesize($size);
 	$t = '';
 	$t .= "<div class=downloadbar style='margin-bottom: 10px'>";
 	if ($a[title]) $t.="<b>".spchars($a[title])."</b><br>";
-	$t .= "<table width=70% cellpadding=0 cellspacing=0 style='margin: 0px'><tr><td class=leftmargin align=left><a href='$fileurl'><img src='downarrow.gif' border=0 width=15 height=15 align=absmiddle> $name</a></td><td align=right><b>$filesize</b></td></tr></table>";
+	$t .= "<table width=70% cellpadding=0 cellspacing=0 style='margin: 0px'><tr><td class=leftmargin align=left><a href='$fileurl' target='new_window'><img src='downarrow.gif' border=0 width=15 height=15 align=absmiddle> $name</a></td><td align=right><b>$filesize</b></td></tr></table>";
 	if ($a[shorttext]) $t .= "".stripslashes(urldecode($a[shorttext]));
 	$t.="</div>";
 	return $t;

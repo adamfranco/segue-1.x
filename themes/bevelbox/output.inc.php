@@ -37,10 +37,7 @@ include("themes/$theme/css.inc.php");
 
 <body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
 
-<?/* ------------------------------------------- */
-/* -------------- STATUS BAR ----------------- */
-/* ------------------------------------------- */
-include("themes/common/status.inc.php"); ?>
+
 
 <table width=90% align=center cellpadding=0 cellspacing=0>
 <tr><td>
@@ -49,6 +46,10 @@ include("themes/common/status.inc.php"); ?>
 	/* ------------- SITE HEADER ----------------- */
 	/* ------------------------------------------- */
 	print $siteheader; 
+	/* ------------------------------------------- */
+	/* -------------- STATUS BAR ----------------- */
+	/* ------------------------------------------- */
+include("themes/common/status.inc.php"); 
 	print $sitecrumbs; 
 	?>
 </tr></td>
@@ -177,10 +178,10 @@ if (count($rightnav)) {
 	foreach ($topnav as $item) {
 		$samepage = (isset($section) && ($section == $item[id]))?1:0;
 		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
+		$item[extra] = "";
 		print makelink($item,$samepage);
 		print " | ";
 	}	
-	print $topnav_extra;
 	?>
 </div>
 </div> 

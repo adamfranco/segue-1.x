@@ -10,6 +10,7 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
  
 // include all necessary files 
 include("includes.inc.php"); 
+include("sniffer.inc.php");
  
 //if ($ltype != 'admin') exit; 
  
@@ -197,8 +198,15 @@ function changeOrder(order) {
 				<td style='text-align: left; padding-top:10px;' width=50% valign=top> 
 					<form action="filebrowser.php" name='addform' method="POST" enctype="multipart/form-data"> 
 					<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'"> 
-					<input type=file name='file' class=textfield onClick="document.addform.submit()">   
-			http://www.ea.com/eagames/official/battlefield1942/home.jsp		<input type=hidden name='upload' value='1'> 
+					<input type=hidden name='upload' value='1'> 
+					<?
+					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
+						print "<input type=file name='file' class=textfield>";
+						print "<input type=submit value='Upload'>";
+					} else {
+						print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";
+					}
+					?>
 					<div class=desc>Select the file or image you would like to upload<br>by clicking the 'Browse...' button above.</div> 
 					</form> 
 				</td> 

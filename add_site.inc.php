@@ -303,42 +303,42 @@ else if ($settings[edit] && $settings[step] == 3) $settings[step] = 4;
 // --- The Navigation Links for the sidebar ---
 $leftlinks = "________________<br><table>";
 $leftlinks .= "<tr><td>";
-if ($settings[step] == 1) $leftlinks .= "&rArr; ";
+if ($settings[step] == 1) $leftlinks .= "<span class=editnote>&rArr;</span>";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=1&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Title & Availability";
 if ($settings[step] != 1 && $settings[edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 2) $leftlinks .= "&rArr; ";
+if ($settings[step] == 2) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=2&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Appearance";
 if ($settings[step] != 2 && $settings[edit]) $leftlinks .= "</a>";
 
 if ($settings[add]) $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 3 && $settings[add]) $leftlinks .= "&rArr; ";
+if ($settings[step] == 3 && $settings[add]) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=3&link=1 onClick=\"submitForm()\">";
 if ($settings[add]) $leftlinks .= "Template";
 if ($settings[step] != 3 && $settings[edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 4) $leftlinks .= "&rArr; ";
+if ($settings[step] == 4) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=4&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Editing Permissions";
 if ($settings[step] != 4 && $settings[edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 5) $leftlinks .= "&rArr; ";
+if ($settings[step] == 5) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=5&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Custom Header";
 if ($settings[step] != 5 && $settings[edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 6) $leftlinks .= "&rArr; ";
+if ($settings[step] == 6) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 6) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=6&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Custom Footer";

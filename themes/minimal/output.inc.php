@@ -41,16 +41,15 @@ include("themes/common/header.inc.php"); ?>
 
 <?
 /* ------------------------------------------- */
-/* -------------- STATUS BAR ----------------- */
-/* ------------------------------------------- */
-include("themes/common/status.inc.php"); ?>
-
-
-<?
-/* ------------------------------------------- */
 /* ------------- SITE HEADER ----------------- */
 /* ------------------------------------------- */
 print $siteheader; 
+
+/* ------------------------------------------- */
+/* -------------- STATUS BAR ----------------- */
+/* ------------------------------------------- */
+include("themes/common/status.inc.php");
+
 print $sitecrumbs; 
 ?>
 
@@ -132,11 +131,11 @@ print $sitecrumbs;
 	foreach ($topnav as $item) {
 		$samepage = (isset($section) && ($section == $item[id]))?1:0;
 		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
+		$item[extra] = "";
 		print makelink($item,$samepage);
 		print " | ";
 	}
 	
-	print $topnav_extra;
 	?>
 </td>
 </tr>

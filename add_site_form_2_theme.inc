@@ -73,7 +73,7 @@ foreach ($possible_themes as $themename=>$longname) {
 	printc("<tr><td align=center><a name='row$i'>");
 	printc("<input type=radio name=theme value='$themename' ".(($settings[theme]==$themename)?" checked":"")." onClick=\"selectTheme('row$i')\"></td>");
 	printc("<td align=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0></a></td>");
-	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'>$longname</td>");
+	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'>$longname<br><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
 	if ($settings[theme]==$themename)
 		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='doThemeSettings()'></td>");
 	else 

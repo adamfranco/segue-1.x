@@ -196,17 +196,20 @@ if (!$settings && !$error) {
 		$a = db_get_line("stories","id=$settings[story]");
 		foreach ($a as $n=>$v) $settings[$n]=$v;
 		list($settings[activateyear],$settings[activatemonth],$settings[activateday]) = explode("-",$settings[activatedate]);
-		list($settings[deactivateyear],$settings[deactivatemonth],$settings[deactivateday]) = explode("-",$settings[deactivatedate]);
+		list($settings[deactivateyear],$settings[deactivatemonth],$settings[deactivateday]) = explode("-",$settings[deactivatedate]);		
 		$settings[activatemonth]-=1;
 		$settings[deactivatemonth]-=1;
 		$settings[activatedate]=($settings[activatedate]=='0000-00-00')?0:1;
 		$settings[deactivatedate]=($settings[deactivatedate]=='0000-00-00')?0:1;
 		$settings[permissions] = decode_array($settings[permissions]);
 		$settings[shorttext] = urldecode($settings[shorttext]);
-		$settings[longertext] = urldecode($settings[longertext]);
-		$settings[libraryfileid] = $settings[longertext];
-		$settings[libraryfilename] = db_get_value("media","name","id=$settings[libraryfileid]");
+		$settings[longertext] = urldecode($settings[longertext]);		
 		
+		if ($settings[type] == 'image' || $settings[type] == 'file') {
+			$settings[libraryfileid] = $settings[longertext];
+			$settings[libraryfilename] = db_get_value("media","name","id=$settings[libraryfileid]");
+		}
+
 		if ($settings[type] == 'story') {
 			$settings[shorttext] = str_replace("src='####","####",$settings[shorttext]);
 			$settings[shorttext] = str_replace("####'","####",$settings[shorttext]);

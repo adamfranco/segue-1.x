@@ -45,31 +45,32 @@ printc("</div>");
 printc("<br>");
 printc("<br>");
 
-printc("<div class=title>1. Title</div>");
-printc("<div class=desc>Enter the site <b>title</b>. This is required.</div>");
+printc("<div class=title>1. Title</div><br>");
+//printc("<div class=desc>Enter the site <b>title</b>. This is required.</div>");
 
 printc("Title: <input type=text size=35 name='title' value='".spchars($settings[title])."'>");
+printc("<span class=editnote> *required</span>");
 printc("<br><br><br>");
 
 
-printc("<div class=title>2. Availability</div>");
+printc("<div class=title>2. Who do you want to be able to view this site?</div>");
 
 printc("Allow: <b><input type=radio name=viewpermissions value='anyone'".(($settings[viewpermissions]=='anyone')?" checked":"")."> anyone ");
 printc("<input type=radio name=viewpermissions value='midd'".(($settings[viewpermissions]=='midd')?" checked":"")."> Middlebury College users ");
 if (isclass($settings[sitename])) printc("<input type=radio name=viewpermissions value='class'".(($settings[viewpermissions]=='class')?" checked":"")."> students in class");
-printc("</b> to view this site.");
-if (!isclass($settings[sitename])) printc("<br><input type=checkbox name='listed' value=1".(($settings[listed])?" checked":"")."> Include in public listing of personal sites.");
+//printc("</b> to view this site.");
+if (!isclass($settings[sitename])) printc("<br><br><input type=checkbox name='listed' value=1".(($settings[listed])?" checked":"")."> Include site in public listing.".helplink("listing"));
 else printc("<input type=hidden name='listed' value=1>");
 printc("<br><br><br>");
 
 
-printc("<div class=title>3. Activation".helplink("daterange")." &nbsp; - &nbsp; <i>Optional</i></div>");
-printc("<div class=desc>If you would like this site to be available only during a certain range of dates, enter them below and select the checkbox to the left of that date.</div>");
+printc("<div class=title>3. When is this site available?".helplink("daterange")." &nbsp; - &nbsp; <i>Optional</i></div>");
+//printc("<div class=desc>If you would like this site to be available only during a certain range of dates, enter them below and select the checkbox to the left of that date.</div>");
 
 printc("<table>");
 printc("<tr>");
 printc("<td align=right>");
-printc("Activate date: </td><td><input type=checkbox name='activatedate' value=1".(($settings[activatedate])?" checked":"")."> <select name='activateday'>");
+printc("Make site available beginning: </td><td><input type=checkbox name='activatedate' value=1".(($settings[activatedate])?" checked":"")."> <select name='activateday'>");
 for ($i=1;$i<=31;$i++) {
 	printc("<option" . (($settings[activateday] == $i)?" selected":"") . ">$i\n");
 }
@@ -88,7 +89,7 @@ printc("</td></tr>");
 
 printc("<tr>");
 printc("<td align=right>");
-printc("Deactivate date: </td><td><input type=checkbox name='deactivatedate' value=1".(($settings[deactivatedate])?" checked":"")."> <select name='deactivateday'>");
+printc("Make site unavailable after: </td><td><input type=checkbox name='deactivatedate' value=1".(($settings[deactivatedate])?" checked":"")."> <select name='deactivateday'>");
 for ($i=1;$i<=31;$i++) {
 	printc("<option" . (($settings[deactivateday] == $i)?" selected":"") . ">$i\n");
 }
@@ -105,11 +106,12 @@ printc("</select>");
 printc("</td></tr></table>");
 printc("<br>");
 
-
-printc("<div class=desc>To prevent the site from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
-
-printc("<input type=radio name=active value=1 " . (($settings[active])?" checked":"") . "> Enabled | ");
-printc("<input type=radio name=active value=0 " . (($settings[active])?"":" checked") . "> Disabled <br>");
+printc("<div class=title>4. Hide my site".helplink("available")."</div>");
+//printc("<div class=desc>To prevent the site from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
+printc("<br>");
+printc("<input type=radio name=active value=1 " . (($settings[active])?" checked":"") . "> Hide ");
+printc("<input type=radio name=active value=0 " . (($settings[active])?"":" checked") . "> Don't Hide <br>");
+printc("<br>(this overrides availability option above)<br>");
 
 if ($settings[edit]) {
 	printc("<p><div class=desc>");

@@ -66,6 +66,7 @@ if ($page) $envvars .= "&page=$page";
 
 // first build list of categories
 $topnav_extra = ((permission($auser,SITE,ADD,$site))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&commingFrom=viewsite' class='btnlink' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"");
+
 /* $sections = decode_array($siteinfo['sections']); */
 $i=0;
 foreach ($sections as $s) {
