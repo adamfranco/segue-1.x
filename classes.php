@@ -25,25 +25,27 @@ $curraction = $_REQUEST['action'];
 
 if ($curraction == 'del') {
 	$id = $_REQUEST['id'];
-	if ($id > 0) { user::delUser($id); $message = "User ID $id deleted successfully."; }
+	if ($id > 0) { class::delClass($id); $message = "Class ID $id deleted successfully."; }
 }
 
 // if they want to add a user...
 if ($curraction == 'add') {
 	// check for errors first
-	if (user::userExists($_REQUEST['uname'])) error("A user with that username already exists.");
-	if (!$_REQUEST['uname']) error("You must enter a username.");
-	if (!$_REQUEST['email']) error("You must enter a valid email address.");
+	if (class::classExists($_REQUEST['code'])) error("A class with that code already exists.");
+	if (!$_REQUEST['code']) error("You must enter a code.");
+	if (!$_REQUEST['year']) error("You must enter a valid 4-digit year.");
 	// all good
 	if (!$error) {
-		$obj = &new user();
-		$obj->uname = $_REQUEST['uname'];
-		$obj->fname = $_REQUEST['fname'];
-		$obj->email = $_REQUEST['email'];
-		$obj->type = $_REQUEST['type'];
-		$obj->randpass(5,3);
+		$obj = &new class();
+		$obj->code = $_REQUEST['code'];
+		$obj->name = $_REQUEST['name'];
+		$obj->semester = $_REQUEST['semester'];
+		$obj->year = $_REQUEST['year'];
+		$obj->owner = $_REQUEST['owner'];
+		$obj->ugroup = $_REQUEST['ugroup'];
+//		$obj->classgroup = $_REQUEST['classgroup'];
 		$obj->insertDB();
-		$obj->sendemail();
+		
 		unset($_REQUEST['uname'],$_REQUEST['fname'],$_REQUEST['email'],$_REQUEST['type']);
 		$message = "User '".$obj->uname."' added successfully.";
 	}
@@ -83,13 +85,28 @@ if ($curraction == 'resetpw') {
 		
 $query = "
 	SELECT
-		user_id,user_uname,user_fname,user_email,user_type
+		class_id,
+		class_code,
+		class_name,
+		class_semester,
+		class_year,
+		classowner.user_id AS classowner_id,
+		classowner.user_uname AS classowner_uname,
+		classowner.user_fname AS classowner_fname,
+		classgroup_id,
+		classgroup_name
 	FROM
-		user
-	WHERE
-		user_authtype='db'
+		class
+			LEFT JOIN
+		user AS classowner
+			ON
+		class.FK_owner = user_id
+			LEFT JOIN
+		classgroup
+			ON
+		FK_classgroup = classgroup_id
 	ORDER BY
-		user_uname ASC";
+		class_year DESC, class_code ASC";
 
 $r = db_query($query);
 
@@ -113,28 +130,31 @@ printerr();
 		<table width='100%'>
 			<tr>
 			<th>id</th>
-			<th>user</th>
-			<th>full name</th>
-			<th>email</th>
-			<th>type</th>
-			<th>options</th>
+			<th>code</th>
+			<th>name</th>
+			<th>semester</th>
+			<th>year</th>
+			<th>owner</th>
+			<th>group</th>
 			</tr>
 			
 			<? // now output all the users
 			while ($a = db_fetch_assoc($r)) {
-				if ($curraction == 'edit' && $_REQUEST['id'] == $a['user_id'])
-					doUserForm($a,'user_',1);
+				if ($curraction == 'edit' && $_REQUEST['id'] == $a['class_id'])
+					doUserForm($a,'class_',1);
 				else {
 					print "<tr>";
-					print "<td align=center>".$a['user_id']."</td>";
-					print "<td>".$a['user_uname']."</td>";
-					print "<td>".$a['user_fname']."</td>";
-					print "<td>".$a['user_email']."</td>";
-					print "<td>".$a['user_type']."</td>";
+					print "<td align=center>".$a['class_id']."</td>";
+					print "<td>".$a['class_code']."</td>";
+					print "<td>".$a['class_name']."</td>";
+					print "<td>".$_semesters[$a['class_semester']]."</td>";
+					print "<td>".$a['class_year']."</td>";
+					print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
+					print "<td>".$a['classgroup_name']."</td>";
 					print "<td align=center><nobr>";
-					print "<a href='users.php?$sid&action=del&id=".$a['user_id']."'>[del]</a>\n";
-					print "<a href='users.php?$sid&action=edit&id=".$a['user_id']."'>[edit]</a>\n";
-					print "<a href='users.php?$sid&action=resetpw&id=".$a['user_id']."'>[reset pwd]</a>\n";
+					print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>[del]</a>\n";
+					print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>[edit]</a>\n";
+					print "<a href='classes.php?$sid&action=students&id=".$a['class_id']."'>[students]</a>\n";
 					print "</nobr></td>";
 					print "</tr>";
 				}
@@ -152,24 +172,27 @@ printerr();
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doUserForm($a,$p='',$e=0) {
+	global $_semesters;
 	?>
 			<form method='post' name='addform'>
 			<tr>
 			<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-			<td><input type=text name='uname' size=10 value="<?=$a[$p.'uname']?>"></td>
-			<td><input type=text name='fname' size=20 value="<?=$a[$p.'fname']?>"></td>
-			<td><input type=text name='email' size=30 value="<?=$a[$p.'email']?>"></td>
-			<td><select name=type>
-				<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
-				<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof
-				<option<?=($a[$p.'type']=='staff')?" selected":""?>>staff
-				<option<?=($a[$p.'type']=='admin')?" selected":""?>>admin
+			<td><input type=text name='code' size=10 value="<?=$a[$p.'code']?>"></td>
+			<td><input type=text name='name' size=20 value="<?=$a[$p.'name']?>"></td>
+			<td><select name=semester>
+				<option<?=($a[$p.'semester']=='f')?" selected":""?> value='f'><?=$_semesters[f]?>
+				<option<?=($a[$p.'semester']=='w')?" selected":""?> value='w'><?=$_semesters[w]?>
+				<option<?=($a[$p.'semester']=='s')?" selected":""?> value='s'><?=$_semesters[s]?>
+				<option<?=($a[$p.'semester']=='l')?" selected":""?> value='l'><?=$_semesters[l]?>
 			</select>
 			</td>
+			<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>
+			<td><?=$a['$classowner_uname']?><a href=''>[choose]</a></td>
+			<td><?=$a[classgroup_name]?></td>
 			<td align=center>
 			<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
 			<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-			<a href='#' onClick='document.addform.submit()'>[<?=($e)?"update":"add user"?>]</a>
+			<a href='#' onClick='document.addform.submit()'>[<?=($e)?"update":"add class"?>]</a>
 			</td>
 			</tr>
 			</form>
