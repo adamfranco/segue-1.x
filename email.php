@@ -434,6 +434,8 @@ Participants<br><br>
 								
 				$discussion_date = $a['discussion_tstamp'];
 				$discussion_date = timestamp2usdate($discussion_date);
+				$page_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id'];
+				$fullstory_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id'];
 				$dicuss_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id']."#".$a['discussion_id'];
 				$shory_text_all = urldecode($a['story_text_short']);
 				$shory_text = substr($shory_text_all,0,25)."...";
@@ -441,8 +443,8 @@ Participants<br><br>
 				
 				if ($curraction == 'review') {
 					print "<td><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
-					print "<td>".$a['page_title']." > ".$shory_text."</td>";
-					print "<td>".urldecode($a['discussion_subject'])."</td>";
+					print "<td><a href='#' onClick='opener.window.location=\"$page_link\"'>".$a['page_title']."</a> > <a href='#' onClick='opener.window.location=\"$fullstory_link\"'>".$shory_text."</a></td>";
+					print "<td><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".urldecode($a['discussion_subject'])."</a></td>";
 					print "<td>".$a['discussion_rate']."</td>";
 					print "<td><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
 				} else {
