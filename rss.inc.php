@@ -93,7 +93,10 @@ if ($error) {
 		if (!$thisPage && count($thisSection->getField("pages"))) {
 			$thisSection->fetchDown();
 			foreach ($thisSection->pages as $p=>$o) {
-				if ($o->getField("type") == 'page' && $o->canview()) { $thisPage = &$thisSection->pages[$p]; break; }
+				if ($o->getField("type") == 'page' && $o->canview()) { 
+					$thisPage =& $thisSection->pages[$p]; 
+					break; 
+				}
 			}
 		}
 	}
