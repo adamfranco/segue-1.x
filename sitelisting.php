@@ -47,7 +47,6 @@ if (count($w)) {
 	$where = " where ".implode(" and ",$w);
 	$where2 = " where ".implode(" and ",array_merge($w,$wExtra));
 }
-
 $query = "
 	SELECT 
 		COUNT(*) AS log_count
@@ -62,6 +61,24 @@ $query = "
 			ON
 		FK_owner = user_id	
 	$where";
+$r=db_query($query); 
+$a = db_fetch_assoc($r);
+$totalNumSites = $a[log_count];
+
+$query = "
+	SELECT 
+		COUNT(*) AS log_count
+	FROM 
+		slot
+			INNER JOIN
+		site
+			ON
+		FK_site = site_id
+			INNER JOIN
+		user
+			ON
+		FK_owner = user_id	
+	$where2";
 $r=db_query($query); 
 $a = db_fetch_assoc($r);
 $numSites = $a[log_count];
@@ -124,7 +141,7 @@ function changeOrder(order) {
 	<i>(Note: not all sites listed here are viewable to all users)</i>
 	</div>
 	<br>
-	<? print "Total active listed Segue sites: ".$numSites ?>
+	<? print "Total active listed Segue sites: ".$totalNumSites ?>
 
 
 </td></tr>
@@ -176,7 +193,7 @@ function changeOrder(order) {
 		if ($next >= $numSites) $next = $numSites-$numPerPage;
 		if ($next < 0) $next = 0;
 		print "$curr of $tpages ";
-//		print "$prev $lowerlimit $next ";
+// 		print "(Prev: $prev LL: $lowerlimit Next: $next )";
 		if ($prev != $lowerlimit)
 			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
