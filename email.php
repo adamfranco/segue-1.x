@@ -46,7 +46,9 @@ if ($_REQUEST['order']) {
 	$order = urldecode($_REQUEST['order']);
 } else if (!$_REQUEST['order'] && $action == "user") {
 	$order = "discussion_tstamp DESC";
-} 
+} else {
+	$order = "user_fname ASC";
+}
 
 $orderby = " ORDER BY $order";
 
@@ -56,6 +58,7 @@ $orderby = " ORDER BY $order";
  ******************************************************************************/
 if ($_REQUEST['findall']) {
 	$userid = "'%'";
+	$findall = "all";
 } else if ($_REQUEST['useruname']) {
 	$useruname = $_REQUEST['useruname'];
 	$userid = db_get_value ("user", "user_id", "user_uname = '$useruname'");
@@ -69,7 +72,7 @@ if ($_REQUEST['findall']) {
 
 if ($_REQUEST['userfname'] && !$_REQUEST['useruname']) {
 	$userfname = urldecode($_REQUEST['userfname']);
-} else {
+//} else {
 	$userfname = db_get_value ("user", "user_fname", "user_id = $userid");
 	$useruname = db_get_value ("user", "user_uname", "user_id = $userid");
 }
@@ -101,18 +104,18 @@ if (isclass($class_id)) {
  * story, site, and/or user or 
  * all users, all sites
  ******************************************************************************/
-		
-if ($scope == "site") {
+
+if ($_REQUEST['findall']) {
+	$where = "user_id > 0";		
+} else if ($scope == "site") {
 	$where = "site_id = $siteid";
 } else if ($action != "user") {
 	$where = "story_id = $storyid";	
-}
-
-if ($_REQUEST['findall']) {
-	$where .= "user_id > 0";
 } else if ($userid && $action == "user") {
 	$where .= "user_id = $userid";
-} else if ($userid) {
+}
+
+if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action != "list" && $action != "email") {
 	$where .= " AND user_id = $userid";
 }
 
@@ -202,8 +205,8 @@ if ($action == "review" || $action == "user") {
 		$where $orderby $limit
 	";	
 		
-	//printpre($query);
 	//printpre($_REQUEST);
+	//printpre("where: ".$where);	
 	//printpre($action);
 	//printpre($curraction);
 	$r = db_query($query);
@@ -325,9 +328,9 @@ print "</div><br>";
 		print "$curr of $tpages ";
 		//print "(prev=$prev lowerlimit=$lowerlimit next=$next )";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables&action=$curraction\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables&action=$curraction&findall=$findall\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction&findall=$findall\"'>\n";
 		?>
 
 <!-- 		</form> -->
@@ -419,9 +422,8 @@ print "</div><br>";
 				($scope=='discussion')? print " value='discussion' selected": print "";
 				print ">discussion/assessment";
 			}
-			
-			
-			if ($scope=='site') {
+						
+			if ($scope=='site' || $_REQUEST[site] != "") {
 				print "<option";
 				($scope=='site')? print " value='site' selected": print "";
 				print ">site";
@@ -431,19 +433,6 @@ print "</div><br>";
 			
 		} 
 		
-		if ($_SESSION['ltype']=='admin') {
-/* 			if ($sql) { */
-/* 				print "<input type='checkbox' name='sql' checked>"; */
-/* 			} else { */
-/* 				print "<input type='checkbox' name='sql'>"; */
-/* 			} */
-			//print "(show sql)<br>";
-			//if ($sql) {
-			//	print "<textarea name=newquery cols=80 rows=10>";
-			//	print $query;
-			//	print "</textarea>";
-			//}
-		}
 		?>
 		</form>
 		</div></td></tr></table>	
