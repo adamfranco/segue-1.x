@@ -7,21 +7,24 @@
 <!-- Configure the path to the editor.  We make it relative now, so that the
     example ZIP file will work anywhere, but please NOTE THAT it's better to
     have it an absolute path, such as '/htmlarea/'. -->
+    
+<? global $cfg;  ?>
+
 <script type="text/javascript">
 /*   _editor_url = "../"; */
-  _editor_url = "/segue/htmleditor/htmlarea/";
+  _editor_url = "<? echo $cfg[full_uri] ?>/htmleditor/htmlarea/";
   _editor_lang = "en";
 
 </script>
 <!-- <script type="text/javascript" src="../htmlarea.js"></script> -->
-<script type="text/javascript" src="/segue/htmleditor/htmlarea/htmlarea.js"></script>
+<script type="text/javascript" src="<? echo $cfg[full_uri] ?>/htmleditor/htmlarea/htmlarea.js"></script>
 
 <!-- <style type="text/css"> -->
 <!-- html, body { -->
-<!-- 	font-family: Verdana,sans-serif; -->
-<!-- 	background-color: #fea; -->
-<!-- 	color: #000; -->
-<!-- } -->
+<!-- font-family: Verdana,sans-serif; -->
+<!-- background-color: #fea; -->
+<!-- color: #000; -->
+<!-- } */ -->
 <!-- a:link, a:visited { color: #00f; } -->
 <!-- a:hover { color: #048; } -->
 <!-- a:active { color: #f00; } -->
@@ -33,37 +36,22 @@
 var editor = null;
 
 function initEditor() {
-/*   editor = new HTMLArea("ta"); */  
+	/*   editor = new HTMLArea("ta"); */  
 	var config = new HTMLArea.Config();
-	config.width = "500px";
+	config.width = "400px";
 	config.height = "300px";
 	
 	config.toolbar = [
-	[ "fontname", "space",
-	  "fontsize", "space",
-	  "formatblock", "space",
-	  "bold", "italic", "underline", "strikethrough", "separator",
-	  "subscript", "superscript"],
-	
-	["copy", "cut", "paste", "space", "undo", "redo", "lefttoright", "righttoleft", "separator",
-	"insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
-	"forecolor", "hilitecolor", "separator",
-	"inserthorizontalrule", "createlink", "insertimage", "inserttable", "htmlmode", "separator",
-	"popupeditor", "separator"]
-	];
-	
+	["createlink", "bold", "italic", "underline","insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
+	"forecolor","undo", "redo","htmlmode","lefttoright", "righttoleft", "separator" ]];
+
+	  
 	editor = new HTMLArea("<? echo $textarea ?>", config);
 	
 	editor.generate();
 	return false;
 }
 
-function insertHTML() {
-  var html = prompt("Enter some HTML code here");
-  if (html) {
-    editor.insertHTML(html);
-  }
-}
 function highlight() {
   editor.surroundHTML('<span style="background-color: yellow">', '</span>');
 }
@@ -82,22 +70,22 @@ function highlight() {
 <? print spchars($text); ?>
 </textarea>
 
-<p />
+<!-- <p /> -->
 
 <!-- <input type="submit" name="ok" value="  submit  " /> -->
-<input type="button" name="ins" value="  insert html  " onclick="return insertHTML();" />
+<!-- <input type="button" name="ins" value="  insert html  " onclick="return insertHTML();" /> -->
 <!-- <input type="button" name="hil" value="  highlight text  " onclick="return highlight();" /> -->
 
 <!-- <a href="javascript:mySubmit()">submit</a> -->
 
-<script type="text/javascript">
-function mySubmit() {
-/* document.edit.save.value = "yes"; */
-/* document.edit.onsubmit(); // workaround browser bugs. */
-/* document.edit.submit(); */
-};
-</script>
-
+<!-- <script type="text/javascript"> -->
+<!-- function mySubmit() { -->
+<!-- // document.edit.save.value = "yes"; -->
+<!-- document.edit.onsubmit(); // workaround browser bugs. -->
+<!-- document.edit.submit(); -->
+<!-- }; -->
+<!-- </script> -->
+<!--  -->
 <!-- </form> -->
 
 <!-- </body> -->
