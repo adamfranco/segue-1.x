@@ -1405,13 +1405,16 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 
 	function hasPermission($perms,$ruser='',$useronly=0) {
 		global $allclasses, $_loggedin, $cfg;
-				
+		
+			
 		if (!$this->builtPermissions && $this->id) 
 			$this->buildPermissionsArray();
 
 		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
+		
+		if (!is_array($allclasses)) $allclasses = getuserclasses($user,"all");
 		
 		/* Debuging stuff */
 /* 		$class = get_class($this); */
@@ -1515,8 +1518,11 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 	
 	function returnEditorOverlap($classes) {
 		$toCheck = array();
+//		print_r($classes);
 		foreach ($this->editors as $u) {
 			$good=0;
+//			print "$u - ";
+//			if (isclass($u)) print "class";
 			$c = array();
 			if (isclass($u)) $c[] = $u;
 			if ($g = isgroup($u)) $c = array_merge($c,$g);

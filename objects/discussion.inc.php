@@ -226,6 +226,7 @@ class discussion {
 //		print "outputAll($canreply,$owner,$copt)<BR>";
 		// spider down and output every one
 		if ($top) {
+//			print_r($this->storyObj->permissions);
 			$cand = $this->storyObj->hasPermission("discuss");
 			if ($cand) {
 				// just in case...
