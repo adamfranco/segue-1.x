@@ -4,11 +4,11 @@ function makedownloadbar($o) {
 	global $site,$uploaddir,$uploadurl;
 	if ($o->getField("type")!='file') return;
 	
-	$b = db_get_line("media","id=".$o->getField("longertext"));
-	$filename = urldecode($b[name]);
-	print $filename;
-	$dir = $b[site_id];
-	$size = $b[size];
+	$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id=".$o->getField("longertext"));
+	$filename = urldecode($b[media_tag]);
+/* 	print $filename; */
+	$dir = $b[slot_name];
+	$size = $b[media_size];
 	$fileurl = "$uploadurl/$dir/$filename";
 	$filepath = "$uploaddir/$dir/$filename";
 	$filesize = convertfilesize($size);
