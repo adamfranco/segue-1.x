@@ -53,12 +53,37 @@ include("themes/common/status.inc.php"); ?>
 
 <table width=90% align=center cellpadding=0 cellspacing=0>
   <tr> 
-    <td class="topleft"></td>
+    <td class="topleft"> </td>
     <td class="top"> 
 	<table width=100% align=center cellpadding=0 cellspacing=0>
     <tr>
-    <td class="sitetitle">
+    <td class="sitetitle" width=70%>
     <? echo $title ?>
+    
+       <div class=topnav align=center>
+	<div class='nav'>
+	<?
+	/* ------------------------------------------- */
+	/* -------------- TOP NAV    ----------------- */
+	/* ------------------------------------------- */
+
+	if (count($topnav) > 0) {
+		print " | ";
+		foreach ($topnav as $item) {
+		
+			$samepage = (isset($section) && ($section == $item[id]))?1:0;
+			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
+			print makelink($item,$samepage);
+			print " | ";
+			
+		}
+		
+		print $topnav_extra;
+	}
+	?>
+	</div>
+	</div>
+          
 	</td>
 	<td>
     <div align="right"><img src='<? echo "$themesdir/$theme/images/$c[bg]/midd.gif" ?>' width="121" height="51"></div>
@@ -77,27 +102,7 @@ include("themes/common/status.inc.php"); ?>
     <!--<td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;-->
   
     
-    <!--<div class=topnav align=center>-->
-	<!--<div class='nav'>-->
-	<?
-	/* ------------------------------------------- */
-	/* -------------- TOP NAV    ----------------- */
-	/* ------------------------------------------- */
-	
-/*		print " | ";
-		foreach ($topnav as $item) {
-		
-			$samepage = (isset($section) && ($section == $item[id]))?1:0;
-			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-			print makelink($item,$samepage);
-			print " | ";
-			
-		}
-		
-		print $topnav_extra;
-*/		?>
-	<!--</div>-->
-	<!--</div>-->
+
     
     <!--</td>-->
     <!--<td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;</td>-->

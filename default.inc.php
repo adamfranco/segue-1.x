@@ -8,12 +8,23 @@ $pagetitle = "SitesDB";
 $color = 0;
 $sitesprinted=array();
 
+if ($allowclasssites != $allowpersonalsites && ($personalsitesurl || $classsitesurl)) {
+	if ($allowclasssites) {
+		add_link(topnav,"Classes");
+		add_link(topnav,"Community","$personalsitesurl",'','','');
+	} else {
+		add_link(topnav,"Classes","$classsitesurl",'','','');
+		add_link(topnav,"Community");
+	}
+}
+
 $urls = array(
 	"Educational Technology"=>"sitesdb.middlebury.edu/sites/ET",
 	"Academic Programs"=>"www.middlebury.edu/academics/",
 	"Libraries"=>"www.middlebury.edu/~lib/",
 	"Middlebury College"=>"www.middlebury.edu"
 );
+
 
 if ($_loggedin) {
 	// -------------------------------------------------------------------
@@ -24,84 +35,85 @@ if ($_loggedin) {
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
 	
      /* -------------------- list of sites -------------------- */	
-	// for students: print out list of classes
-	if ($atype=='stud') {
-		printc("<table width=100%>");
-		
-		if (count($classes)) {
-			//print out current classes
-			printc("<tr>");
-			printc("<td valign=top>");		
-			printc("<div class=title>Your Current Classes</div>");
-			//print class list
-			printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
-			$c=0;
-			foreach (array_keys($classes) as $cl) {
+	if ($allowclasssites) {	
+		// for students: print out list of classes
+		if ($atype=='stud') {
+			printc("<table width=100%>");
 			
-				printc("<tr><td class=td$c width= 150>$cl</td>");
-				if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) {
-					if ($gr) $db=db_get_line("sites","name='$gr'");
-					if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>");
-					else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
-					
-				//check webcourses databases to see if course website was created in course folders (instead of SitesDB)
-				} else if ($course_site = coursefoldersite($cl)) {					
-					$course_url = urldecode($course_site['url']);
-					$title = urldecode($course_site['title']);
-					printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>");
-					db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-									
-				} else
-					printc("<td style='color: #999' class=td$c>not created</td>");
-					printc("</tr>");
-					$c = 1-$c;
-					db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+			if (count($classes)) {
+				//print out current classes
+				printc("<tr>");
+				printc("<td valign=top>");		
+				printc("<div class=title>Your Current Classes</div>");
+				//print class list
+				printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
+				$c=0;
+				foreach (array_keys($classes) as $cl) {
+				
+					printc("<tr><td class=td$c width= 150>$cl</td>");
+					if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) {
+						if ($gr) $db=db_get_line("sites","name='$gr'");
+						if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>");
+						else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
+						
+					//check webcourses databases to see if course website was created in course folders (instead of SitesDB)
+					} else if ($course_site = coursefoldersite($cl)) {					
+						$course_url = urldecode($course_site['url']);
+						$title = urldecode($course_site['title']);
+						printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>");
+						db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+										
+					} else
+						printc("<td style='color: #999' class=td$c>not created</td>");
+						printc("</tr>");
+						$c = 1-$c;
+						db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+				}
+				printc("</tr></table>");
+				printc("</td>");
+				printc("</tr>");
+	
 			}
-			printc("</tr></table>");
+			
+			//print out student classes for previous semester
+			if (count($oldclasses)) {
+				printc("<tr>");
+				printc("<td valign=top>");		
+				printc("<div class=title>Previous Semester</div>");
+		//		print "debug: count(oldclasses) = ".count($oldclasses)."<BR>";//debug
+				//print class list
+				printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
+				$c=0;
+				foreach (array_keys($oldclasses) as $cl) {
+					printc("<tr><td class=td$c width= 150>$cl</td>");
+					if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) {
+						if ($gr) $db=db_get_line("sites","name='$gr'");
+						if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>");
+						else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
+						
+					//check webcourses databases to see if course website was created in course folders (instead of SitesDB)
+					} else if ($course_site = coursefoldersite($cl)) {					
+						$course_url = urldecode($course_site['url']);
+						$title = urldecode($course_site['title']);
+						printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>");
+						db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+										
+					} else
+						printc("<td style='color: #999' class=td$c>not created</td>");
+						printc("</tr>");
+						$c = 1-$c;
+						db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+				}
+				printc("<tr><td></td><td align=right>Show All Semesters</td></tr>");
+				printc("</tr></table>");
+	
+			}
 			printc("</td>");
 			printc("</tr>");
-
+			printc("</table>");
+	
 		}
-		
-		//print out student classes for previous semester
-		if (count($oldclasses)) {
-			printc("<tr>");
-			printc("<td valign=top>");		
-			printc("<div class=title>Previous Semester</div>");
-	//		print "debug: count(oldclasses) = ".count($oldclasses)."<BR>";//debug
-			//print class list
-			printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
-			$c=0;
-			foreach (array_keys($oldclasses) as $cl) {
-				printc("<tr><td class=td$c width= 150>$cl</td>");
-				if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) {
-					if ($gr) $db=db_get_line("sites","name='$gr'");
-					if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>");
-					else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
-					
-				//check webcourses databases to see if course website was created in course folders (instead of SitesDB)
-				} else if ($course_site = coursefoldersite($cl)) {					
-					$course_url = urldecode($course_site['url']);
-					$title = urldecode($course_site['title']);
-					printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>");
-					db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-									
-				} else
-					printc("<td style='color: #999' class=td$c>not created</td>");
-					printc("</tr>");
-					$c = 1-$c;
-					db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-			}
-			printc("<tr><td></td><td align=right>Show All Semesters</td></tr>");
-			printc("</tr></table>");
-
-		}
-		printc("</td>");
-		printc("</tr>");
-		printc("</table>");
-
 	}
-
 	// handle group adding backend here
 	if (count($group) && ($newgroup || $groupname)) { // they chose a group
 		if (!$newgroup) $newgroup = $groupname;
@@ -135,56 +147,58 @@ if ($_loggedin) {
 /* 		printc("<th>name</th><th>title</th><th>theme</th><th>status</th><th>active</th><th colspan=2>options</th>"); */
 /* 	printc("</tr>"); */
 	
+	if ($allowpersonalsites) {
+		// print out the personal site
+		printc("<tr><td class='inlineth' colspan=7>Personal Site</td></tr>");
+		printSiteLine($auser);
+	}
 	
-	// for faculty: print out the personal site
-	printc("<tr><td class='inlineth' colspan=7>Personal Site</td></tr>");
-	printSiteLine($auser);
-	
-	//class sites for professors (for student see above)
-	if ($atype == 'prof' && count($classes)) {
-		//current classes
-		printc("<tr><td class='inlineth' colspan=7>Current Class Sites</td></tr>");
-		$gs = array();
-		foreach ($classes as $c=>$a) {
-			if ($g = inclassgroup($c)) {
-				if (!$gs[$g]) printSiteLine($g,$atype);
-				$gs[$g] = 1;
-			} else
-				printSiteLine($c,0,1,$atype);
-		}
-		//upcoming classes
-		if (count($futureclasses)) {		
-			printc("<tr><td class='inlineth' colspan=7>Upcoming Classes</td></tr>");
+	if ($allowclasssites) {	
+		//class sites for professors (for student see above)
+		if ($atype == 'prof' && count($classes)) {
+			//current classes
+			printc("<tr><td class='inlineth' colspan=7>Current Class Sites</td></tr>");
 			$gs = array();
-			foreach ($futureclasses as $c=>$a) {
+			foreach ($classes as $c=>$a) {
 				if ($g = inclassgroup($c)) {
-					if (!$gs[$g]) printSiteLine($g);
+					if (!$gs[$g]) printSiteLine($g,$atype);
 					$gs[$g] = 1;
 				} else
-					printSiteLine($c,0,1);
+					printSiteLine($c,0,1,$atype);
 			}
-		} 	
-		
-		//info/interface for groups
-		printc("<tr><th colspan=7 align=right>add checked sites to group: <input type=text name=newgroup size=10 class=textfield>");
-		$r = db_query("select * from classgroups where owner='$auser'");
-		$havegroups = db_num_rows($r);
-		if ($havegroups) {
-			printc(" <select name='groupname' onChange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
-			printc("<option value=''>-choose-");
-			while ($g = db_fetch_assoc($r)) {
-				printc("<option value='$g[name]'>$g[name]\n");
+			//upcoming classes
+			if (count($futureclasses)) {		
+				printc("<tr><td class='inlineth' colspan=7>Upcoming Classes</td></tr>");
+				$gs = array();
+				foreach ($futureclasses as $c=>$a) {
+					if ($g = inclassgroup($c)) {
+						if (!$gs[$g]) printSiteLine($g);
+						$gs[$g] = 1;
+					} else
+						printSiteLine($c,0,1);
+				}
+			} 	
+			
+			//info/interface for groups
+			printc("<tr><th colspan=7 align=right>add checked sites to group: <input type=text name=newgroup size=10 class=textfield>");
+			$r = db_query("select * from classgroups where owner='$auser'");
+			$havegroups = db_num_rows($r);
+			if ($havegroups) {
+				printc(" <select name='groupname' onChange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
+				printc("<option value=''>-choose-");
+				while ($g = db_fetch_assoc($r)) {
+					printc("<option value='$g[name]'>$g[name]\n");
+				}
+				printc("</select>");
 			}
-			printc("</select>");
+			printc(" <input type=submit class=button value='add'>");
+			printc("</th></tr>");
+			printc("<tr><th colspan=7 align=left>");
+			printc("<div style='padding-left: 10px; font-size: 10px;'>By adding sites to a group you can consolidate multiple class sites into one entity. This is useful if you teach multiple sections of the same class and want to work on only one site for those classes/sections. Check the boxes next to the classes you would like to add, and either type in a new group name or choose an existing one.");
+			if ($havegroups) printc("<div class=desc><a href='edit_groups.php?$sid' target='groupeditor' onClick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a></div>");
+			printc("</th></tr>");
+				
 		}
-		printc(" <input type=submit class=button value='add'>");
-		printc("</th></tr>");
-		printc("<tr><th colspan=7 align=left>");
-		printc("<div style='padding-left: 10px; font-size: 10px;'>By adding sites to a group you can consolidate multiple class sites into one entity. This is useful if you teach multiple sections of the same class and want to work on only one site for those classes/sections. Check the boxes next to the classes you would like to add, and either type in a new group name or choose an existing one.");
-		if ($havegroups) printc("<div class=desc><a href='edit_groups.php?$sid' target='groupeditor' onClick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a></div>");
-		printc("</th></tr>");
-		
-		
 	}
 	
 	// get a list of sites for which the user is an editor
