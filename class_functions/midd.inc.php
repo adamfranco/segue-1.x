@@ -5,7 +5,7 @@ function isclass ($class) {
 	global $auser,$_isclass_cache;
 	if (isset($_isclass_cache[$class])) return $_isclass_cache[$class];
 	$auser = strtolower($auser);
-	$v = ereg("^(([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2}))$",$class);
+	$v = ereg("^(([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]{1})([0-9]{2}))$",$class);
 	if (!$v && isgroup($class)) $v = 1;
 	$_isclass_cache[$class] = $v;
 	return $v;
