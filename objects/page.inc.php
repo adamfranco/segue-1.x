@@ -119,6 +119,11 @@ class page extends segue {
 			array("page_created_tstamp"),
 			"page_id"
 		),
+		"ediscussion" => array(
+			"page",
+			array("page_ediscussion"),
+			"page_id"
+		),
 		"stories" => array(
 			"page
 				INNER JOIN

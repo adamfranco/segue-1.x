@@ -17,7 +17,28 @@ class story extends segue {
 			array("story_id"),
 			"story_id"
 		),
-		"owning_page" => array(
+		"site_id" => array(
+			"story
+				INNER JOIN
+			 page
+			 	ON FK_page = page_id
+				INNER JOIN
+			 section
+			 	ON FK_section = section_id
+			",
+			array("FK_site"),
+			"story_id"
+		),
+		"section_id" => array(
+			"story
+				INNER JOIN
+			 page
+			 	ON FK_page = page_id
+			",
+			array("FK_section"),
+			"story_id"
+		),
+		"page_id" => array(
 			"story",
 			array("FK_page"),
 			"story_id"
@@ -57,7 +78,7 @@ class story extends segue {
 			"story
 				INNER JOIN
 			media
-				FK_media = media_id",
+				ON FK_media = media_id",
 			array("media_id"),
 			"story_id"
 		),
@@ -102,6 +123,15 @@ class story extends segue {
 			"story_id"
 		),
 
+		"discussions" => array(
+			"story
+				INNER JOIN
+			 discussion
+			 	ON FK_story = story_id
+			",
+			array("discussion_id"),
+			"story_id"
+		),
 		"shorttext" => array(
 			"story",
 			array("story_text_short"),
