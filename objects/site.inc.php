@@ -51,6 +51,7 @@ class site extends segue {
 		$this->data[footer] = stripslashes(urldecode($this->data[footer]));
 		$this->parseMediaTextForEdit("header");
 		$this->parseMediaTextForEdit("footer");
+		$this->buildPermissionsArray();
 		return 1;
 	}
 	
@@ -97,6 +98,9 @@ class site extends segue {
 		$a[] = "editedtimestamp=NOW()";
 		$query = "update sites set ".implode(",",$a)." where id=".$this->id." and name='".$this->name."'";
 		db_query($query);
+		
+		// now update the permissions
+		$this->updatePermissionsDB();
 		return 1;
 	}
 	
