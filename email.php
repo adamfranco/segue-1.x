@@ -147,7 +147,7 @@ printerr();
 	} else {
 		//$numusers = db_num_rows($r);
 		//print "Total participants found: ".$numparticipants;
-		if ($curraction != 'email') {
+		if ($curraction != 'email' && $curraction != 'send') {
 			print "<a href=$PHP_SELF?$sid&story=$storyid&action=email>Email</a> | ".$numparticipants." participants<br>";
 		} else if ($curraction == 'email') {
 			print "<a href=$PHP_SELF?$sid&story=$storyid&action=>List</a> | ".$numparticipants." participants<br><hr>";
@@ -192,6 +192,7 @@ printerr();
 			$r = db_query($query);
 			exit();
 		} else if ($curraction == 'send') {
+			print "<a href=$PHP_SELF?$sid&story=$storyid&action=email>Email</a> | ".$numparticipants." participants<br>";
 			print "<table>";
 			print "<tr><td>to:</td><td>".$to."</td></tr>";
 			print "<tr><td>from:</td><td>".$_SESSION['afname']."</td></tr>";
@@ -226,43 +227,6 @@ printerr();
 <BR>
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div>
 <?
-function doUserForm($a,$p='',$e=0) {
-	?>
-	<form method='post' name='addform'>
-	<tr>
-	<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='uname' size=10 value=".$a[$p.'uname'].">":$a[$p.'uname']?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='fname' size=20 value=".$a[$p.'fname'].">":$a[$p.'fname']?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='email' size=30 value=".$a[$p.'email'].">":$a[$p.'email']?></td>
-	<td><select name=type>
-		<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
-		<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof
-		<option<?=($a[$p.'type']=='staff')?" selected":""?>>staff
-		<option<?=($a[$p.'type']=='admin')?" selected":""?>>admin
-	</select>
-	</td>
-	<td><?=($e)?$a[$p.'authtype']:"db"?></td>
-	<td align=center>
-	<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
-	<?
-	if ($e) {
-		print "<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>";
-		if ($a[$p.'authtype'] != "db") {
-			print "<input type=hidden name='uname' value=".$a[$p.'uname'].">";
-			print "<input type=hidden name='fname' value=".$a[$p.'fname'].">";
-			print "<input type=hidden name='email' value=".$a[$p.'email'].">";
-		}
-	} else {
-		print "";
-	}	
-	?>
-<!-- 	<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add user"?></a> -->
-	<!-- | <a href='users.php'>cancel</a> -->
-	</td>
-	</tr>
-	</form>
-	<?
-}
 
 function email($emaillist=0) {
 	global $sid,$error;
