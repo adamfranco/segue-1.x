@@ -235,6 +235,11 @@ function CarpSetCache($cachefile,$cachefunction=1) {
 			$cache=($carpconf['mtime']>$limtime-(($nowtime<$limtime)?86400:0))?1:2;
 		} else $cache=(($nowtime-$carpconf['mtime'])<($carpconf['cacheinterval']*60))?1:2;
 	} else $cache=2;
+	
+	if ($cache == 2)
+		print "Cache == 2, updating";
+	else
+		print "Cache == $cache, doing something.";
 	return $cache;
 }
 
