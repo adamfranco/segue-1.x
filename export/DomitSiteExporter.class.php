@@ -2,6 +2,15 @@
 
 require_once(dirname(__FILE__).'/SiteExporter.class.php');
 require_once(dirname(__FILE__).'/../objects/discussion.inc.php');
+require_once(dirname(__FILE__).'/../dbwrapper.inc.php');
+require_once(dirname(__FILE__).'/../functions.inc.php');
+require_once(dirname(__FILE__).'/../objects/slot.inc.php');
+require_once(dirname(__FILE__).'/../objects/segue.inc.php');
+require_once(dirname(__FILE__).'/../objects/site.inc.php');
+require_once(dirname(__FILE__).'/../objects/section.inc.php');
+require_once(dirname(__FILE__).'/../objects/page.inc.php');
+require_once(dirname(__FILE__).'/../objects/story.inc.php');
+require_once(dirname(__FILE__).'/../permissions.inc.php');
 
 /**
  * This class exports a Segue Site to a string in a specified format.

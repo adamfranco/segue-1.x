@@ -413,12 +413,15 @@ class story extends segue {
 		return $this->id;
 	}
 	
-	function updateDB($down=0, $force=0) {
+	function updateDB($down=0, $force=0, $keeptimestamp=0) {
 		if ($this->changed) {
 			$this->parseMediaTextForDB("shorttext");
 			$this->parseMediaTextForDB("longertext");
 			$a = $this->createSQLArray();
-			$a[] = "FK_updatedby=".$_SESSION[aid];
+			if ($keeptimestamp)
+				$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+			else
+				$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
 			$query = "UPDATE story SET ".implode(",",$a)." WHERE story_id=".$this->id;
 /* 			print "<pre>Story->UpdateDB: $query<br>"; */
@@ -508,11 +511,13 @@ WHERE
 		if (!$keepaddedby) {
 			$a[] = "FK_createdby=".$_SESSION[aid];
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
+			$a[] = "FK_updatedby=".$_SESSION[aid];
 		} else {
-			$a[] = "FK_createdby=".$this->getField('addeby');	// We need to save an id, this might be a string. might need to Fix!
+			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".$this->getField("addedby")."'");
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
+			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".$this->getField("editedby")."'");
+			$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
 		}
-		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		// insert media (url)
 		if ($this->data[url] && $this->data['type'] == 'link') {

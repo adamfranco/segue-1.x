@@ -280,8 +280,14 @@ class discussion {
 		discussion
 	SET
 		".$this->_generateSQLdata();
+		// If we've set a timestamp before saving, we probably want to keep it.
+		if ($this->tstamp) $query .= ",discussion_tstamp='".$this->tstamp."'";
+
 		db_query($query);
 		//printc($query);
+		
+		$this->id = lastid();
+		
 		return true;
 	}
 	

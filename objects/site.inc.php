@@ -141,7 +141,7 @@ class site extends segue {
 			
 		$this->name = $name;
 		$this->owning_site = $name;
-		$this->owningSiteObj = &$this;
+		$this->owningSiteObj =& $this;
 		$this->fetchedup = 1;		
 		$this->sections = array();
 		$this->data = array();
@@ -990,11 +990,18 @@ ORDER BY
 		return 1;
 	}
 	
-	function insertDB($down=0,$copysite=0) {
+	function insertDB($down=0,$copysite=0,$importing=0) {
 		$a = $this->createSQLArray(1);
-		$a[] = "FK_createdby=".$_SESSION[aid];
-		$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
-		$a[] = "FK_updatedby=".$_SESSION[aid];
+		if (!$importing) {
+			$a[] = "FK_createdby=".$_SESSION[aid];
+			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
+			$a[] = "FK_updatedby=".$_SESSION[aid];
+		} else {
+			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".$this->data[addedby]."'");
+			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
+			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".$this->data[editedby]."'");
+			$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+		}
 
 		// insert into the site table
 		$query = "INSERT INTO site SET ".implode(",",$a).";";
