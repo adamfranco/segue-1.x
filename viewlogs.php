@@ -24,20 +24,21 @@ if ($clear) {
 	$_luser = "";
 }
 
+if ($_REQUEST[order]) $order = $_REQUEST[order];
 if (!isset($order)) $order = "log_tstamp ASC";
 $orderby = " order by $order";
 
 $w = array();
-if ($type) $w[]="log_type='$type'";
-if ($user) $w[]="log_desc like '%$user%'";
-if ($_luser) $w[]="FK_luser='$_luser'";
-if ($_auser) $w[]="FK_auser='$_auser'";
-if ($ltype != 'admin') {
+if ($_REQUEST[type]) $w[]="log_type='$type'";
+if ($_REQUEST[user]) $w[]="log_desc like '%$user%'";
+if ($_REQUEST[_luser]) $w[]="FK_luser='$_luser'";
+if ($_REQUEST[_auser]) $w[]="FK_auser='$_auser'";
+if ($_SESSION[ltype] != 'admin') {
 	$w[]="slot_name LIKE '%$site%'";
 } else {
-	if ($site) $w[]="slot_name LIKE '%$site%'";
+	if ($_REQUEST[site]) $w[]="slot_name LIKE '%$site%'";
 }
-if ($hideadmin) $w[]="log_type NOT LIKE 'change_auser'";
+if ($_REQUEST[hideadmin]) $w[]="log_type NOT LIKE 'change_auser'";
 	
 
 if (count($w)) $where = " WHERE ".implode(" AND ",$w);

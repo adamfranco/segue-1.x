@@ -17,14 +17,19 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 $siteinfo = db_get_line("site INNER JOIN slot on site_id = FK_site","slot_name='$site'");
 $site_type = $siteinfo[type];
 
-if ($site_type =="class") {
+if ($_REQUEST[site_type] =="class") {
 	//print "<div align=center>Students in $site</div>";
 }
-if ($clear) {
+if ($_REQUEST[clear]) {
 	$type = "";
 	$user = "";
 	$site = "";
 	$title = "";
+} else {
+	$type = $_REQUEST[type];
+	$user = $_REQUEST[user];
+	$site = $_REQUEST[site];
+	$title = $_REQUEST[title];
 }
 
 if (!isset($order)) $order = "fname asc";
@@ -33,9 +38,9 @@ $orderby = " order by $order";
 $w = array();
 //if ($type) $w[]="type='$type'";
 //if ($site) $w[]="site='$name'";
-if ($user) $w[]="user2.user_uname like '%$user%'";
-if ($site) {
-	$isgroup = ($classlist = group::getClassesFromName($site))?1:0;
+if ($_REQUEST[user]) $w[]="user2.user_uname like '%$user%'";
+if ($_REQUEST[site]) {
+	$isgroup = ($classlist = group::getClassesFromName($_REQUEST[site]))?1:0;
 	if ($isgroup) {
 		$arg = "(class_code='";
 		$arg .= implode("' or class_code='",$classlist);

@@ -26,15 +26,16 @@ if ($clear) {
 	$title = "";
 }
 
+if ($_REQUEST[order]) $order = $_REQUEST[order];
 if (!isset($order)) $order = "editedtimestamp DESC";
 $orderby = " ORDER BY $order";
 
 $w = array();
-if ($type) $w[]="slot_type='$type'";
-if ($user) $w[]="user_uname like '%$user%'";
+if ($_REQUEST[type]) $w[]="slot_type='$type'";
+if ($_REQUEST[user]) $w[]="user_uname like '%$user%'";
 //if ($site) $w[]="site like '%$name%'";
-if ($site) $w[]="slot_name like '%$site%'";
-if ($title) $w[]="site_title like '%$title%'";
+if ($_REQUEST[site]) $w[]="slot_name like '%$site%'";
+if ($_REQUEST[title]) $w[]="site_title like '%$title%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
 $query = "
@@ -277,3 +278,30 @@ if (db_num_rows($r)) {
 ?>
 </table><BR>
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+
+<?
+// debug output -- handy :)
+print "<pre>";
+print "request:\n";
+print_r($_REQUEST);
+print "\n\n";
+print "session:\n";
+print_r($_SESSION);
+print "\n\n";
+
+/*
+ if (is_object($thisPage)) { 
+ 	print "\n\n"; 
+ 	print "thisPage:\n"; 
+ 	print_r($thisPage); 
+ } /*else if (is_object($thisSection)) { 
+	print "\n\n"; 
+ 	print "thisSection:\n"; 
+ 	print_r($thisSection); 
+ } else if (is_object($thisSite)) { 
+ 	print "\n\n"; 
+ 	print "thisSite:\n"; 
+ 	print_r($thisSite); 
+ } */
+ 
+print "</pre>";
