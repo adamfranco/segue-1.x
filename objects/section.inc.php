@@ -220,6 +220,12 @@ class section extends segue {
 			print "</pre>";
 			
 			// the hard step: update the fields in the JOIN tables
+			
+			// Urls are now stored in the media table
+			if ($this->changed[url]) {
+				 
+			}
+						
 			// now update all the page ids in the children, if the latter have changed
 			if ($this->changed[pages]) {
 				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent
@@ -262,8 +268,9 @@ class section extends segue {
 		$origid = $this->id;
 		if ($newsite) {
 			$this->owning_site = $newsite;
-			$this->owningSiteObj = new site($newsite);
 		}
+		
+		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
@@ -309,14 +316,16 @@ class section extends segue {
 		$d = $this->data;
 		$a = array();
 		
+		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
+		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'";
+		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-//		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".addslashes($d[owning_site])."'";
 		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
 		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
 //		if ($all || $this->changed[pages]) $a[] = "pages='".encode_array($this->getField("pages"))."'";
-		if ($all || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
+//		if ($all || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
 		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
 		
 		return $a;

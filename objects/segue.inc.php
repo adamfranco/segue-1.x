@@ -950,7 +950,7 @@ FROM
 /* 		$class = get_class($this); */
 /* 		print "checking $perms for $user on  $class ".$this->id."<br>"; */
 		
-		if (isset($this->cachedPermissions[$user.$perms]) && count($this->chachedPermissions)) return $this->cachedPermissions[$user.$perms];
+		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
 		$owner = $this->owningSiteObj->getField('addedby');
 		if (strtolower($user) == strtolower($owner)) return true;
