@@ -322,7 +322,7 @@ FROM
 		LEFT JOIN
 	media
 		ON story.FK_media = media_id
-WHERE section_id = ".$this->id;
+WHERE story_id = ".$this->id;
 
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);

@@ -267,10 +267,15 @@ ORDER BY
 
 
 	function applyTemplate ($template) {
+		print "<br>################  Line 1<br>";
 		$templateObj = new site($template);
-		$templateObj->fetchDown(1);
+		print "<br>################  Line 2<br>";
+		$templateObj->fetchDown(1);	
+		print "<br>################  Line 3<br>";
 		print "<pre>templateObj: "; print_r($templateObj); print "</pre>";
-		foreach ($templateObj->sections as $i=>$o) $o->copyObj($this);
+		foreach ($templateObj->sections as $i=>$o) 
+			$o->copyObj($this);
+		print "<br>################  Line 4<br>";
 	}
 	
 	function setSiteName($name, $copySite=0) {

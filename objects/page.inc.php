@@ -310,10 +310,11 @@ FROM
 		LEFT JOIN
 	media
 		ON page.FK_media = media_id
-WHERE section_id = ".$this->id;
+WHERE page_id = ".$this->id;
 
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);
+			
 			array_change_key_case($a); // make all keys lower case
 			// for each field returned by the query
 			foreach ($a as $field => $value)
