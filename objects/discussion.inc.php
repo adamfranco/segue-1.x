@@ -16,6 +16,7 @@ class discussion {
 	
 	var $flat=false;
 	var $recent=false;
+	var $dis_order="recentlast";
 	var $opt = array(
 			"showcontent"=>false,
 			"showsubject"=>true,
@@ -153,8 +154,10 @@ class discussion {
 	function flat() { $this->flat = true; }
 	function threaded() { $this->flat = false; }
 	
-	function recentfirst() { $this->recent = true; }
-	function recentlast() { $this->recent = false; }
+	function recentfirst() { $this->dis_order = "recentfirst"; }
+	function recentlast() { $this->dis_order = "recentlast"; }
+	function rating() { $this->dis_order = "rating"; }
+	function author() { $this->dis_order = "author"; }
 	
 	function count() { return $this->numchildren; }
 	function dbcount() {
@@ -229,15 +232,19 @@ class discussion {
 		if ($this->numchildren) return false; // they've already called _fetchchildren();
 		$this->_commithttpdata();
 		
-		if ($this->recent == "true") {
-			$order = "DESC";
-		} else {
-			$order = "ASC";
+		if ($this->dis_order == "recentfirst") {
+			$order = " discussion_order DESC";
+		} else if ($this->dis_order == "recentlast") {
+			$order = " discussion_order ASC";
+		} else if ($this->dis_order == "rating") {
+			$order = " discussion_rate DESC";
+		} else if ($this->dis_order == "author") {
+			$order = "user_last_name DESC";
 		}
-		
+				
 		$query = "
 	SELECT
-		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,discussion_rate,FK_story,media_tag,discussion_order,user_uname,user_fname,user_email
+		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,discussion_rate,FK_story,media_tag,discussion_order,user_uname,user_fname,user_last_name,user_email
 	FROM
 		discussion
 		LEFT JOIN
@@ -253,8 +260,8 @@ class discussion {
 		// check if we're not top-level - if !flat disc, fetch all children, otherwise fetch all discussions
 		(($this->flat)?"":" and FK_parent<=>".(($this->id)?$this->id:"NULL"))
 		."
-	ORDER BY
-		discussion_order $order";
+	ORDER BY ".
+		$order;
 		//print $query;
 		
 		$r = db_query($query);
@@ -330,7 +337,7 @@ class discussion {
 			$query .= ",discussion_rate=".$this->rating;
 		}
 		$query .= ",FK_story=".$this->storyid;
-		if ($this->order) $query .= ",discussion_order=".$this->order;
+		//if ($this->order) $query .= $this->order;
 		return $query;
 	}
 	
@@ -445,7 +452,7 @@ class discussion {
 				$d->subject = $_REQUEST['subject'];
 				$d->content = $_REQUEST['content'];
 				$d->rating = $_REQUEST['rating'];
-				//printc ($d->rating);
+				
 				$d->update();
 				//log_entry("discussion","$_SESSION[auser] edited story ".$_REQUEST['story']." discussion post id ".$_REQUEST['id']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
 				
@@ -453,7 +460,7 @@ class discussion {
 				// unset($d);
 			}
 			
-			if ($a=='reply'||$a=='newpost') {
+			if ($a=='reply'|| $a=='newpost') {
 				$d = & new discussion($_REQUEST['story']);
 				$d->subject = $_REQUEST['subject'];
 				$d->content = $_REQUEST['content'];
@@ -463,15 +470,15 @@ class discussion {
 				} else {
 					//log_entry("discussion","$_SESSION[auser] posted to story ".$_REQUEST['story']." discussion in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");				
 				}
+				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
+				$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:0;
+				$d->libraryfileid = $_REQUEST['libraryfileid'];
 				$newid = $d->insert();	
 			}
 			/******************************************************************************
  			* gather data for sendmail function
 			 ******************************************************************************/
 
-			$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
-			$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:0;
-			$d->libraryfileid = $_REQUEST['libraryfileid'];
 			
 			if ($mailposts == 1) {
 				$this->sendemail($newid);
@@ -511,9 +518,10 @@ class discussion {
 		}
 		if ($t == 'rate') {
 			$b = 'rate';
-			$d = "You are rating &quot;".$this->subject."&quot;";
-			$c = ($_REQUEST['content'])?$_REQUEST['content']:$this->content;
+			//$d = "<a name='".$this->id."'>You are editing your post &quot;".$this->subject."&quot;</a>";
 			$s = ($_REQUEST['subject'])?$_REQUEST['subject']:$this->subject;
+			$a .= "by <span class=subject>".$this->authorfname."</span>";
+			$c = ($_REQUEST['content'])?$_REQUEST['content']:$this->content;						
 		}
 				
 		$p = ($t=='reply')?" style='padding-left: 15px'":'';
@@ -521,34 +529,58 @@ class discussion {
 		printc ("\n<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
 		printc ("<tr><td$p><b>$d</b></td></tr>");
 		printc ("<tr><td$p>");
-		printc ("<table width=100%  cellspacing=0px><tr><td align=left>");
+		printc ("<table width=100%  cellspacing=0px>");
 		
 		if ($t == 'rate') {	
-			printc ("Subject: <input type=text size=50 name=subject value='".spchars($s)."' readonly>");
+			//printc ("Subject: <input type=text size=50 name=subject value='".spchars($s)."' readonly>");
+			printc ("<td class=dheader3>");
+							
+			printc ("<table width=100% cellspacing=0px>");
+			printc ("<tr><td align=left>");
+			printc ("<span class=subject><a name='".$this->id."'>");
+			printc ($s);
+			printc ("</a><input type=hidden name=subject value='".spchars($s)."'>");
+			//if ($o) {
+				printc (" (<input type=text size= 3 class='textfield small' name='rating' value=".$this->rating.">");
+				//printc ("<a href='#' onClick='document.postform.submit()'>[$b]</a>");
+				printc("<input type=submit class='button small' value='rate'>)");
+			//}
+			printc ("</span></td>");
+			
+			printc ("<td align=right></td>");
+			printc ("</tr><tr>");
+			printc ("<td align=left>");
+			printc ($a);
+			if ($this->media_tag) {
+				$media_link = "<a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target=media>".$this->media_tag."</a>";
+				printc ("<br>attached: $media_link");
+			}				
+			printc ("</td>");
+			printc ("<td align=right valign=bottom></td></tr>"); 
+			printc("</table>");
+			
+			printc ("</td>");
+						
 		} else {
+			printc ("<tr><td align=left>");
 			printc ("Subject: <input type=text size=50 name=subject value='".spchars($s)."'>");
 		}
 		printc ("</td><td align=right>");
 		
-		// if rate, put rate field and submit button
-		if ($t == 'rate') {			
-			printc ("<input type=text size= 3 class='textfield small' name='rating' value=".$this->rating.">");
-			printc ("<a href='#' onClick='document.postform.submit()'>[$b]</a>");
-		// if edit or reply, put form submit link
-		} else {
+		// if not rate, print edit, update or post
+		if ($t != 'rate') {			
 			printc ("<a href='#' onClick='document.postform.submit()'>[$b]</a>");		
 		}
 		printc ("</td></tr></table>");
 		printc ("</td></tr>");
 		
 		// print out post content
-		printc ("<tr><td class=content$p>");
+		//printc ("<tr><td class=content$p>");
 		if ($t != 'rate') {			
-			printc ("<textarea name=content rows=10 cols=60>".spchars($c)."</textarea>");
+			printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>");
 		} else {
-			printc ("<br>".spchars($c)."<br>");
+			printc ("<td>".spchars($c)."<br><br>");
 			printc ("<input type=hidden name=content value='".spchars($c)."'>");
-			//printc ("<textarea name=content rows=10 cols=60 readonly>".spchars($c)."</textarea>");
 		}
 		
 		// print hidden fields
@@ -558,6 +590,7 @@ class discussion {
 		//added site variable for discussion logging
 		printc ("<input type=hidden name=site value='".$_REQUEST['site']."'>");	
 		printc ("<input type=hidden name=libraryfileid value='".$_REQUEST['libraryfileid']."'>");	
+		//printc ("<input type=hidden name=dis_order value='".$this->dis_order>."'");
 		printc ("<input type=hidden name=commit value=1>");
 		if ($t=='edit' || $t=='rate') printc ("<input type=hidden name=id value=".$_REQUEST['id'].">");
 		if ($t=='reply') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">");
@@ -611,7 +644,7 @@ class discussion {
  ******************************************************************************/
 
 			if (!$this->id) return false;
-			printc ("\n<tr><td class=dheader3>");			
+			//printc ("\n<tr><td class=dheader3>");			
 			$s = "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
 			printc ("</form>");
 	//		$s = $this->subject;
@@ -628,38 +661,50 @@ class discussion {
 			// collect possible actions to current post (rely | del | edit | rate)
 			$b = array();
 			if ($cr) 
-				$b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a> | ";
+				$b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>";
 				
 			if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) 
-				$b[] = "<a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'>del</a> | ";
+				$b[] = "| <a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'>delete</a>";
 				
 			if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-				$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'>edit</a> | ";
+				$b[] = " | <a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'>edit</a>";
 				
 			if ($o) 
-				$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>";
+				$ratelink = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>";
 				
 			if ($a != "" || count($b)) {
 				$c = '';
 				if (count($b)) $c .= implode(" ",$b);
 				/******************************************************************************
-				 * Actual discussion posting content
+				 * discussion post header info (subject=$s, author and timestamp=$a, options=$c)
 				 ******************************************************************************/
-				printc ("\n<table width=100% cellspacing=0px>");
+				printc ("\n<tr><td class=dheader3>");
+				
+				printc ("<table width=100% cellspacing=0px>");
 				printc ("<tr><td align=left>");
-				if ($o) printc ("(rating=".$this->rating.")");
-				printc ("<span class=subject>$s</span><br>$a</td><td align=right valign=bottom>$c</td></tr>"); 
-					if ($this->media_tag) {
-						$media_link = "refer to: <a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target=media>".$this->media_tag."</a>";
-						printc ("<tr><td align=left>$media_link</td></tr>");
-					}
+				printc ("<span class=subject>");
+				printc ($s);
+				if ($o) printc (" (Rating: ".$this->rating.")");
+				printc ("</span></td>");
+				printc ("<td align=right>$ratelink</td>");
+				printc ("</tr><tr>");
+				printc ("<td align=left>$a");
+				if ($this->media_tag) {
+					$media_link = "<a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target=media>".$this->media_tag."</a>";
+					printc ("<br>attached: $media_link");
+				}				
+				printc ("</td>");
+				
+				printc ("<td align=right valign=bottom>$c</td></tr>"); 
 				printc("</table>");
 			} else
 				printc ($s);
 			
 			printc ("</td></tr>");
 			
-			// now output the content
+			/******************************************************************************
+			 * 	discussion entry content
+			 ******************************************************************************/
 			if ($this->opt("showcontent")) {
 				printc ("<tr><td class=dtext>");
 				printc (htmlbr($this->content));
@@ -669,7 +714,7 @@ class discussion {
 			
 			// now check if we're replying to this post
 			if ($_REQUEST['discuss'] == 'reply' && $_REQUEST['replyto'] == $this->id) $this->_outputform('reply');
-			if ($_REQUEST['discuss'] == 'rate' && $_REQUEST['replyto'] == $this->id) $this->_outputform('rate');
+			//if ($_REQUEST['discuss'] == 'rate' && $_REQUEST['replyto'] == $this->id) $this->_outputform('rate');
 		}
 	}
 /******************************************************************************

@@ -153,12 +153,16 @@ if ($storyObj->getField("discuss")) {
 	printc("</select>");
 	printc("</td><td>");
 
-	$r = $_SESSION['recent'];
-	printc("<select name='recent'>");
+	$r = $_SESSION['order'];
+	printc("<select name='order'>");
 /* 	printc("<option value='true'".(($r)?" selected":"")." onClick='javascript:document.viewform.submit()'>Recent First"); */
 /* 	printc("<option value='false'".((!$r)?" selected":"")." onClick='javascript:document.viewform.submit()'>Recent Last"); */
-	printc("<option value='true'".(($r)?" selected":"").">Recent First");
-	printc("<option value='false'".((!$r)?" selected":"").">Recent Last");
+	printc("<option value='1'".(($order == 1)?" selected":"").">Recent First");
+	printc("<option value='2'".(($order == 2)?" selected":"").">Recent Last");
+	if ($_SESSION[auser]==$site_owner) {
+		printc("<option value='3'".(($order == 3)?" selected":"").">Highest Rating");
+		printc("<option value='4'".(($order == 4)?" selected":"").">Author");
+	}
 	printc("</select>");
 	printc("<input type=submit class='button' value='Change'>");
 	printc("</td></tr></table>");
@@ -194,11 +198,17 @@ if ($storyObj->getField("discuss")) {
 
 	$ds = & new discussion(&$storyObj);
 	if ($f) $ds->flat(); // must be called before _fetchchildren();
-	if ($r) {
+	
+	if ($order == 1) {
 		$ds->recentfirst();
-	} else {
+	} else if ($order == 2) {
 		$ds->recentlast();
+	} else if ($order == 3) {
+		$ds->rating();
+	} else if ($order == 4) {
+		$ds->author();
 	}
+	
 	$ds->_fetchchildren();
 	
 	$ds->opt("showcontent",true);
