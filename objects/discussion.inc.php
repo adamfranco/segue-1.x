@@ -447,7 +447,7 @@ class discussion {
 					if (!$_SESSION[auser] && $showposts != 1) {	
 						$newpostbar.="You must be logged in to do this assessment.\n";
 					} else {				
-						$newpostbar.="<div align=right><a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>new post</a></div>\n";
+						$newpostbar.="<div align=right><a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost#new'>new post</a></div>\n";
 					}
 				//	$newpostbar.="</td></tr>";
 				}
@@ -667,16 +667,16 @@ class discussion {
 		
 		if ($t == 'edit') {
 			$b = 'update';
-			$d = "<a name='".$this->id."'>You are editing your post &quot;".$this->subject."&quot;</a>\n";
+			$d = "You are editing your post &quot;<a name='".$this->id."'>".$this->subject."</a>&quot;\n";
 			$c = ($_REQUEST['content'])?$_REQUEST['content']:$this->content;
 			$s = ($_REQUEST['subject'])?$_REQUEST['subject']:$this->subject;
 		}
 		if ($t == 'reply' || $t == 'newpost') {
 			$b = 'post';
-			$d = "You are posting a new entry.\n";
+			$d = "<a name='new'>You are posting a new entry.</a>\n";
 			$c = $_REQUEST['content'];
 			if ($t == 'reply') {
-				$d = "You are replying to &quot;".$this->subject."&quot;";
+				$d = "You are replying to &quot;<a name='reply' href=#".$this->id.">".$this->subject."</a>&quot;";
 				if (!$_REQUEST['subject'] && !ereg("^Re:",$this->subject))
 					$s = "Re: ". $this->subject;
 				else $s = $this->subject;
@@ -872,7 +872,7 @@ class discussion {
 			 ******************************************************************************/
 			$b = array();
 			if ($cr) 
-				$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>\n";
+				$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#reply'>reply</a>\n";
 				
 			if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) 
 				$b[] = "| <a href='".$_full_uri."/index.php?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'>delete</a>\n";
@@ -935,7 +935,8 @@ class discussion {
 			if ($this->opt("showcontent")) {
 				printc ("<tr><td class=dtext>");
 				printc (convertTagsToInteralLinks ($_REQUEST[site], stripslashes($this->content)));
-				printc ("</td></tr>\n");
+				//printc ("- [ $c]</td></tr>\n");
+				//printc ("<tr><td align=right>$c</td></tr>\n"); 
 			}
 			// done
 		

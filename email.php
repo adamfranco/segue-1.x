@@ -115,7 +115,7 @@ if ($_REQUEST['findall']) {
 	$where = "user_id = $userid";
 }
 
-if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action == "review") {
+if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action == "review" && $_REQUEST['userfname']) {
 	$where .= " AND user_id = $userid";
 }
 
@@ -284,17 +284,19 @@ if ($_REQUEST[from] != "home") {
 		print " <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	} else {
 		print " Participation";
-	}	
+	}
+	if ($action == "user") {
+		print " - Your Posts";
+	} else {
+		print " - <a href='email.php?$sid&siteid=$siteid&site=$site&action=user'>Your Posts</a>";
+	}
+	
 	// logs (not link when coming from home)
-	print " | <a href='viewlogs.php?$sid&site=$site'>Logs</a> |";
+	print " | <a href='viewlogs.php?$sid&site=$site'>Logs</a>";
+} else {
+	print " Your Posts";
 }
 
-// your posts
-if ($action == "user") {
-	print " Your Posts";
-} else {
-	print " <a href='email.php?$sid&siteid=$siteid&site=$site&action=user'>Your Posts</a>";
-}
 print "</td></tr>";
 print "</table><br>";
 ?>
@@ -314,6 +316,7 @@ print "</table><br>";
 		<input type=hidden name='site' value='<? echo $site ?>'>
 		<input type=hidden name='userid' value='<? echo $userid ?>'>
 		<input type=hidden name='from' value='<? echo $from ?>'>
+		<input type=hidden name='findall' value='<? echo $findall ?>'>
 		<input type=hidden name='userfname' value='<? echo urlencode($userfname) ?>'>
 
 <!-- 		<input type=submit name='search' value='Find'> -->
