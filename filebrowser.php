@@ -27,11 +27,11 @@ $sitelist = array();
 
 $w = array(); 
 if ($ltype == 'admin') { 
-	if ($site) 
-		$w[]="slot_name='$site'"; 
+	if ($_REQUEST[site]) 
+		$w[]="slot_name='$_REQUEST[site]'"; 
 	else if ($all) $w[]="slot_name like '%'"; 
 	else $w[]="slot_name='$settings[site]'"; 
-} else $w[]="slot_name='".(($site)?"$site":"$settings[site]")."'"; 
+} else $w[]="slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'"; 
 if (count($w)) $where = " WHERE ".implode(" and ",$w); 
 
 $query = "
@@ -77,7 +77,7 @@ if ($upload) {
 				ON
 			media.FK_createdby = user_id
 		WHERE
-			slot_name='".(($site)?"$site":"$settings[site]")."'"; 
+			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'"; 
 //	print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
@@ -93,12 +93,12 @@ if ($upload) {
 	} else if (($_FILES[file][size] + $totalsize) > $userdirlimit) {
 		$upload_results = "<li>There is not enough room in your directory for $filename."; 
 	} else if ($overwrite && $nameUsed) {
-		$newID = copyuserfile($_FILES['file'],(($site)?"$site":"$settings[site]"),1,$usedId,0); 
+		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
 	} else { 
-		$newID = copyuserfile($_FILES['file'],(($site)?"$site":"$settings[site]"),0,0); 
+		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
 	}	 
 } 
@@ -110,6 +110,8 @@ if ($clear) {
 		$name = ""; 
 	} else {
 		$name = "";
+		$user = $_REQUEST[user];
+		$site = $_REQUEST[site];
 	}
 } 
 

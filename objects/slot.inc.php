@@ -139,7 +139,7 @@ class slot {
 				$assocSite = "NULL";
 			
 			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite=".$assocSite;
-			print $query;
+			/* print $query; */
 			db_query($query);
 			echo mysql_error();
 		}
