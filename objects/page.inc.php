@@ -345,7 +345,7 @@ class page extends segue {
 		if ($order == '' || $order=='custom') return;
 		$this->fetchDown();
 		foreach ($this->stories as $s=>$o) {
-			$added = ereg_replace("[:- ]","",$o->getField("addedtimestamp"));
+			$added = ereg_replace("[: -]","",$o->getField("addedtimestamp"));
 /* 			$added = str_replace("-","",$added); */
 /* 			$added = str_replace(" ","",$added); */
 	

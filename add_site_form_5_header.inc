@@ -71,7 +71,7 @@ printc("$header");
 printc("<br>");
 printc("<br>");
 
-if ($_SESSION[settings][footer] != "") {
+if ($_SESSION[siteObj]->getField("footer") != "") {
 	printc("<div class=title>Current Footer:</div>");
 	$footer = stripslashes($_SESSION[siteObj]->getField("footer"));
 	printc("$footer");

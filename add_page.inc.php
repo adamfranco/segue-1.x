@@ -42,12 +42,12 @@ if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 	$_SESSION[pageObj]->handleFormDates();	// handle de/activate dates
 	if ($_REQUEST[active] != "") $_SESSION[pageObj]->setField("active",$_REQUEST[active]);
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("ediscussion",$_REQUEST[ediscussion]);
-	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("locked",$_REQUEST[locked]);
+/* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("locked",$_REQUEST[locked]); */
 	if ($_REQUEST[copydownpermissions] != "") $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions];
-	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showcreator",$_REQUEST[showcreator]);
-	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showdate",$_REQUEST[showdate]);
-	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("storyorder",$_REQUEST[storyorder]);
-	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showhr",$_REQUEST[showhr]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showcreator",$_REQUEST[showcreator]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showdate",$_REQUEST[showdate]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("storyorder",$_REQUEST[storyorder]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showhr",$_REQUEST[showhr]);
 //	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setPermissions($_REQUEST[permissions]);
 	if ($_REQUEST[archiveby]) $_SESSION[pageObj]->setField("archiveby",$_REQUEST[archiveby]);
 	if ($_REQUEST[url]) $_SESSION[pageObj]->setField("url",$_REQUEST[url]);

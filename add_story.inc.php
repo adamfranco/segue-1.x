@@ -28,11 +28,11 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
 	$_SESSION[storyObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[storyObj]->setField("active",$_REQUEST[active]);
-	if ($_SESSION[settings][step] == 5 && !$_REQUEST[link]) $_SESSION[storyObj]->setPermissions($_REQUEST[permissions]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setPermissions($_REQUEST[permissions]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("locked",$_REQUEST[locked]);
 	if ($_REQUEST[url]) $_SESSION[storyObj]->setField("url",$_REQUEST[url]);
 	if ($_REQUEST[texttype]) $_SESSION[storyObj]->setField("texttype",$_REQUEST[texttype]);
-	if ($_SESSION[settings][step] == 5 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discuss",$_REQUEST[discuss]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discuss",$_REQUEST[discuss]);
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("category",$_REQUEST[category]);
 	if ($_REQUEST[newcategory]) {
 		$_SESSION[storyObj]->setField("category",$_REQUEST[newcategory]);
@@ -94,7 +94,13 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 	
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[storyObj]->fetchFromDB($_REQUEST[edit_story]);
+/* 		$_SESSION[storyObj]->fetchDown(1); */
 		$_SESSION[storyObj]->buildPermissionsArray();
+		
+		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
+			$_SESSION[settings][libraryfileid] = $_SESSION[storyObj]->getField("longertext");
+			$_SESSION[settings][libraryfilename] = db_get_value("media","name","id=".$_SESSION[settings][libraryfileid]);
+		}
 	}
 	
 	$_SESSION[settings][categories]=array_unique($thisSite->getAllValues("story","category"));
@@ -213,7 +219,7 @@ if (1) {
 	$leftlinks .= "</td></tr>";
 }
 
-if ($_SESSION[storyObj]->getField("type") == "story" && ($thisPage->getField("ediscussion") || $_SESSION[auser] == $site_owner)) {
+if ($thisPage->getField("ediscussion") || $_SESSION[auser] == $site_owner) {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";

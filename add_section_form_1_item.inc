@@ -1,6 +1,5 @@
 <? /* $Id$ */
 
-print "hi";
 printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
 printc("<input type=hidden name='step'>");
 
