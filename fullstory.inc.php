@@ -175,9 +175,6 @@ if ($storyObj->getField("discuss")) {
 	printc("</th></tr>");
 	printc("</table>");
 	
-	//printc("showposts=$showposts<br>");
-	//printc("showallauthors=$showallauthors<br><br>");
-	//printpre ($siteObj);
 	if ($showposts == 2 && $showallauthors == 1) {
 		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
 		if ($_SESSION[auser]==$site_owner) {

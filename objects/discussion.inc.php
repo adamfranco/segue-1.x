@@ -358,6 +358,8 @@ class discussion {
 		if ($top) {
 //			print_r($this->storyObj->permissions);
 //			$cand = $this->storyObj->hasPermission("discuss");
+			$newpostbar='';
+			$newpostbar.="<tr><td>";
 			if ($cr) {
 				// just in case...
 				$this->_commithttpdata();
@@ -368,23 +370,31 @@ class discussion {
 				if ($_REQUEST['discuss'] == 'newpost') {
 					$this->_outputform('newpost');
 				} else {
-					$newpostbar='';
-					$newpostbar.="<tr><td align=right>";
+					//$newpostbar='';
+					//$newpostbar.="<tr><td align=right>";
 					if (!$_SESSION[auser] && $showposts != 1) {	
 						$newpostbar.="You must be logged in to do this assessment.";
 					} else {				
-						$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>new post</a>";
+						$newpostbar.="<div align=right><a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>new post</a></div>";
 					}
-					$newpostbar.="</td></tr>";
+				//	$newpostbar.="</td></tr>";
 				}
-				printc ($newpostbar);
+			} else {
+				if (!$_SESSION[auser]) {
+					$newpostbar.="You must be logged in to do contribute to this discussion.";
+				} else {
+					$newpostbar.="Only specified groups or individuals can post to this discussion.";
+				}
 			}
+			$newpostbar.="</td></tr>";
+			printc ($newpostbar);
 		}
-			if ($this->id) $this->_output($cr,$o);
-			
-			$this->_outputChildren($cr,$o,(($top)?$this->opt:NULL));
-			
-			if ($this->numchildren && $showposts == 1) printc ($newpostbar);
+		
+		if ($this->id) $this->_output($cr,$o);
+		
+		$this->_outputChildren($cr,$o,(($top)?$this->opt:NULL));
+		
+		if ($this->numchildren && $showposts == 1) printc ($newpostbar);
 	}
 	
 /******************************************************************************
@@ -438,6 +448,7 @@ class discussion {
 			$a = $_REQUEST['discuss'];
 			if (!$_REQUEST['subject']) error("You must enter a subject.");
 			if (!$_REQUEST['content']) error("You must enter some text to post.");
+			if ($_REQUEST['rate'] && !is_numeric($_REQUEST['rate'])) $error = "Post rating must be numeric.";
 			if ($error) { unset($_REQUEST['commit']); return false; }
 			
 			if ($a=='edit') {
@@ -503,8 +514,9 @@ class discussion {
 	
 	function _outputform($t) { // outputs a post form of type $t (newpost,edit,reply)
 		global $sid,$error,$site_owner,$_full_uri;
-		$script = $_SERVER['SCRIPT_NAME'];
-		
+		//$script = $_SERVER['SCRIPT_NAME'];
+		//printpre ("fulluri: ".$_full_uri);
+		//printpre ("thisinfo: ".$this->getinfo);
 		
 		if ($t == 'edit') {
 			$b = 'update';
@@ -535,8 +547,8 @@ class discussion {
 		}
 				
 		$p = ($t=='reply')?" style='padding-left: 15px'":'';
-		//
-		printc ("\n<form action='".$_full_uri."index.php?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
+		
+		printc ("\n<form action='".$_full_uri."index.php?$sid&action=site&".$this->getinfo."#".$this->id."' method=post name=postform>");
 		printc ("<tr><td$p><b>$d</b></td></tr>");
 		printc ("<tr><td$p>");
 		printc ("<table width=100%  cellspacing=0px>");
@@ -551,7 +563,7 @@ class discussion {
 			printc ($s);
 			printc ("</a><input type=hidden name=subject value='".spchars($s)."'>");
 			printc (" (<input type=text size= 3 class='textfield small' name='rating' value=".$this->rating.">");
-			printc("<input type=submit class='button small' value='rate'>)");
+			printc("<input type=submit class='button small' value='rate'> numeric only)");
 			printc ("</span></td>");
 			
 			printc ("<td align=right></td>");
@@ -644,7 +656,7 @@ class discussion {
 				return true;
 			}
 			
-			$script = $_SERVER['SCRIPT_NAME'];
+			//$script = $_SERVER['SCRIPT_NAME'];
 			
 /******************************************************************************
  * 	Outputs html for displaying posts
@@ -652,7 +664,7 @@ class discussion {
 
 			if (!$this->id) return false;
 			//printc ("\n<tr><td class=dheader3>");			
-			$s = "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
+			$s = "<a href='".$_full_uri."index.php?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
 			printc ("</form>");
 	//		$s = $this->subject;
 	
@@ -668,16 +680,16 @@ class discussion {
 			// collect possible actions to current post (rely | del | edit | rate)
 			$b = array();
 			if ($cr) 
-				$b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply=".$script."</a>";
+				$b[] = "<a href='".$_full_uri."index.php?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>";
 				
 			if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) 
-				$b[] = "| <a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'>delete</a>";
+				$b[] = "| <a href='".$_full_uri."index.php?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'>delete</a>";
 				
 			if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-				$b[] = " | <a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'>edit</a>";
+				$b[] = " | <a href='".$_full_uri."index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'>edit</a>";
 				
 			if ($o) 
-				$ratelink = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>";
+				$ratelink = "<a href='".$_full_uri."index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>";
 				
 			if ($a != "" || count($b)) {
 				$c = '';
@@ -732,7 +744,7 @@ class discussion {
 		global $sid,$error;
 		global $_full_uri;
 		
-		$script = $_SERVER['SCRIPT_NAME'];
+		//$script = $_SERVER['SCRIPT_NAME'];
 		$site =& new site($_REQUEST[site]);
 		$siteowneremail = $site->owneremail;
 		$sitetitle = $site->title;
@@ -752,9 +764,8 @@ class discussion {
 			$body .= "author: ".$_SESSION['afname']."<br>";
 			$body .= $_REQUEST['content']."<br><br>";
 			$body .= "See:<br>";
-			$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
-			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
-			$body .= "<a href='".$discussurl."'>".$_full_uri.$discussurl2."</a><br><br>";			
+			$discussurl = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
+			$body .= "<a href='".$_full_uri.$discussurl2."'>".$_full_uri.$discussurl2."</a><br><br>";			
 		} else {
 			$body = "site: ".$sitetitle."\n";
 			//$body .= "topic: ".$this->story."\n";	
@@ -762,7 +773,6 @@ class discussion {
 			$body .= "author: ".$_SESSION['afname']."\n";
 			$body .= $_REQUEST['content']."\n\n";
 			$body .= "See:\n";
-			//$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
 			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
 			$body .= $_full_uri."/".$discussurl2."\n";
 		}
