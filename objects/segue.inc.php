@@ -1285,7 +1285,7 @@ FROM
 //				echo "EID: $ed_id; ETYPE: $ed_type <br>";
 				
 
-				// if this is a site object, see if the editor is in the site_editors table
+				// see if the editor is in the site_editors table
 				if ($scope == "site")
 					$site_id = $id;
 				else
