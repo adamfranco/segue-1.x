@@ -653,7 +653,7 @@ SET
 		$txtstart = date("n/j/y",$start);
 		$txtend = date("n/j/y",$end);
 		
-		print "start $start, end: $end<BR>";
+//		print "start $start, end: $end<BR>";
 		
 		$this->fetchDown();
 		foreach ($this->stories as $s=>$o) {
@@ -666,7 +666,7 @@ SET
 			$month = (integer)$regs[2];
 			$day = (integer)$regs[3];
 			$t = mktime(0,0,0,$month,$day,$year);
-			print $t."<br>";
+//			print $t."<br>";
 	// 			$week = date("W",$t-(date("w",$t)*86400)); 
 	//
 	// 			if ($startyear == $year && $startweek == $week) 

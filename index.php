@@ -239,7 +239,7 @@ print "</pre>";
 
 
 // debug output -- handy :)
-/*  print "<pre>";  */
+ print "<pre>"; 
 /*  print "session:\n";  */
 /*  print_r($_SESSION);  */
 /*  print "\n\n";  */
@@ -260,7 +260,7 @@ print "</pre>";
 /*  	print "***************************** *************** * thisSection:\n";  */
 /*  	print_r($thisSection);  */
 /*  }  */
-/*  print "</pre>";  */
+ print "</pre>"; 
 print "<p>Total Queries: ".$_totalQueries."</p>";
 
 ?>

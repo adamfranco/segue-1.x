@@ -52,6 +52,7 @@ if ($_REQUEST[site]) {
 		$w[]=$arg;
 	} else {
 //		$w[]="class_code like '%$site%'";
+		$w[] = generateTermsFromCode($site);
 	}
 }
 //if ($title) $w[]="title like '%$title%'";
