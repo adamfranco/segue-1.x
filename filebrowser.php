@@ -177,7 +177,7 @@ if ($upload) {
 		if ($newID && $newID != 'ERROR') {
 			$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
 		} else {
-			$upload_results = "<li>An error occurred when trying to upload ".$filename.". <li>Please look above for any additional messages.";
+			$upload_results = "<li>An error occurred when trying to upload ".$filename.". <li>Please see above for any additional messages.";
 		}
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
@@ -188,7 +188,7 @@ if ($upload) {
 		if ($newID && $newID != 'ERROR') {
 			$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
 		} else {
-			$upload_results = "<li>An error occurred when trying to upload ".$filename.". <li>Please look above for any additional messages.";
+			$upload_results = "<li>An error occurred when trying to upload ".$filename.". <li>Please see above for any additional messages.";
 		}
 	}	 
 } 
