@@ -116,20 +116,20 @@ function _auth_check_db($x,$add_to_db=0) {
 	// $x[user] and $x[method] must be set
 	global $dbuser,$dbhost,$dbpass,$dbdb;
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-	$query = "select * from users where uname='".$x[user]."' and status='".$x[method]."'";
-	$r = db_query($query);	
+	$query = "SELECT * FROM user WHERE user_id='".$x[id]."' AND user_authtype='".$x[method]."'";
+	$r = db_query($query);
 	if (db_num_rows($r)) {		// they have an entry already -- pull down their info
 		$a = db_fetch_assoc($r);
-		$x[fullname] = $a[fname];
-		$x[email] = $a[email];
-		$x[type] = $a[type];
-		$x[id] = $a[id];
+		$x[fullname] = $a[user_fname];
+		$x[email] = $a[user_email];
+		$x[type] = $a[user_type];
+		$x[id] = $a[user_id];
 		
 		// return the new array with info
 		return $x;
 	} else {					// they have no database entry
 		if ($add_to_db) {		// add them to the database and return new id
-			$query = "insert into users set uname='$x[user]', email='$x[email]', fname='$x[fullname]', type='$x[type]', pass='".strtoupper($x[method])." PASS', status='$x[method]'";
+			$query = "INSERT INTO user SET user_uname='$x[user]', user_email='$x[email]', user_fname='$x[fullname]', user_type='$x[type]', user_pass='".strtoupper($x[method])." PASS', user_authtype='$x[method]'";
 			$r = db_query($query);
 			// if (!$r) error occured;
 			$x[id] = lastid();
