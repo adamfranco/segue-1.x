@@ -202,6 +202,7 @@ function db_query ($query, $cid=-1) {
 	global $_totalQueries;
 	$_totalQueries++;
 	
+  echo "<br><br>QUERY:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$query;
   global $db_type; global $debug;
   global $_connect_id;
   if ($debug) {
@@ -212,7 +213,8 @@ function db_query ($query, $cid=-1) {
   if ($cid==-1) $cid = $_connect_id;
   if ($debug) print "db_query: cid is now $cid<BR>";
   if ($db_type == "mysql") {
-    $res = mysql_query($query, $cid);  
+    $res = mysql_query($query, $cid);
+	echo "<br>RESULT:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$res;  
     return $res;
   } else if ($db_type == "oracle") {
     $stmt = OCIParse($cid, $query) or ocidie ("db_query: could not query the server with $query");

@@ -31,7 +31,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 	$valid = 0;
 	foreach ($_auth_mods as $_auth) {
 		$func = "_valid_".$_auth;
-//			print "<BR>AUTH: trying ".$_auth ."..."; //debug
+			print "<BR>AUTH: trying ".$_auth ."..."; //debug
 		if ($x = $func($changeauser,"",1)) {
 			$valid = 1;
 			break;
@@ -48,9 +48,9 @@ if ($ltype == 'admin') {	// must be admin to do this:
 	}
 }
 
-//print "$aid, $afname, $auser, $aemail, $atype<BR>";
+print "<p>$aid, $afname, $auser, $aemail, $atype<BR>";
 
-header("Location: index.php?$sid");
+//header("Location: index.php?$sid");
 
 ?>
 	

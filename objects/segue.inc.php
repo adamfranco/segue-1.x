@@ -4,8 +4,10 @@
  ******************************************************************************/
 
 class segue {
-	var $permissions = array("everyone"=>array(3=>1),"institute"=>array(3=>1));
-	var $editors = array("everyone","institute");
+//	var $permissions = array("everyone"=>array(3=>1),"institute"=>array(3=>1));
+	var $permissions = array();
+//	var $editors = array("everyone","institute");
+	var $editors = array();
 	var $editorsToDelete = array();
 	var $editorsToDeleteInScope = array();
 	var $changedpermissions = 0;
@@ -986,8 +988,10 @@ FROM
 		}
 
 		// execute the query
-		echo $query;
+//		echo $query;
 		$r = db_query($query);
+		//echo "Query result: ".$r."<br>";
+		
 		
 		// reset the editor array		
 		if ($r) {
@@ -1013,7 +1017,7 @@ FROM
 			else
 				$t_editor = $row[editor_type];
 			
-			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 
 			// set the permissions for this editor
 			$this->permissions[strtolower($t_editor)] = array(
@@ -1027,6 +1031,8 @@ FROM
 			// now add the editor to the editor array
 			$this->editors[]=strtolower($t_editor);
 		}
+		
+//		print_r($this->permissions);
 
 		$this->builtPermissions=1;
 		

@@ -54,7 +54,7 @@ if (ereg("\.",$action)) $action="no_action";	// security to prevent someone from
 // include all necessary files
 include("includes.inc.php");
 
-echo "<pre>";
+//echo "<pre>";
 
 // if we are logged in, get a list of classes the user has
 // but only if login method was LDAP.. otherwise don't waste the time
@@ -151,7 +151,7 @@ if (!$loginerror) {
 	}
 }
 
-echo "</pre>";
+//echo "</pre>";
 
 // output any errors that may exist to the content variables
 printerr();
@@ -235,18 +235,20 @@ if (!ini_get("register_globals")) {
  print "\n\n"; 
  print "request:\n"; 
  print_r($_REQUEST); 
+ if (is_object($thisSite)) { 
+ 	print "\n\n"; 
+ 	print "****************************** ***************  thisSite:\n"; 
+ 	print_r($thisSite); 
+ } 
  if (is_object($thisPage)) { 
  	print "\n\n"; 
- 	print "thisPage:\n"; 
+ 	print "*************** *************** *************** thisPage:\n"; 
  	print_r($thisPage); 
- } else if (is_object($thisSection)) { 
+ } 
+ if (is_object($thisSection)) { 
  	print "\n\n"; 
- 	print "thisSection:\n"; 
+ 	print "***************************** *************** * thisSection:\n"; 
  	print_r($thisSection); 
- } else if (is_object($thisSite)) { 
- 	print "\n\n"; 
- 	print "thisSite:\n"; 
- 	print_r($thisSite); 
  } 
  print "</pre>"; 
 print "<p>Total Queries: ".$_totalQueries."</p>";

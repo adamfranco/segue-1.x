@@ -322,10 +322,16 @@ function insite($site,$section,$page=0,$story=0) {
 
 function isgroup ($group) {
 	global $auser;
-	$r = db_query("select * from classgroups where name='$group'");
+	$query = ("SELECT classgroup_id FROM classgroup WHERE classgroup_name='$group'");
+	$r = db_query($query);
 	if (db_num_rows($r)) {
 		$a = db_fetch_assoc($r);
-		return explode(",",$a[classes]);
+		$query = "SELECT class_code FROM class INNER JOIN classgroup ON classgroup_id = ".$a[classgroup_id];
+		$r = db_query($query);
+		$temp_c = array();
+		while ($a = db_fetch_assoc($r))
+			$temp_c[] = $a[class_code];
+		return $temp_c;
 	}
 	return 0;
 }
@@ -421,7 +427,7 @@ function handlearchive($stories,$pa) {
 	for ($i=1;$i<=31;$i++) {
 		printc("<option" . (($startday == $i)?" selected":"") . ">$i\n");
 	}
-	printc("</select>\n");
+	printc("/select>\n");
 	printc("<select name='startmonth'>");
 	for ($i=0; $i<12; $i++)
 		printc("<option value=".($i+1). (($startmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -431,13 +437,13 @@ function handlearchive($stories,$pa) {
 	for ($i=$curryear-10; $i <= ($curryear); $i++) {
 		printc("<option" . (($startyear == $i)?" selected":"") . ">$i\n");
 	}
-	printc("</select>");
+	printc("/select>");
 //	printc("<br>");
 	printc(" to <select name='endday'>");
 	for ($i=1;$i<=31;$i++) {
 		printc("<option" . (($endday == $i)?" selected":"") . ">$i\n");
 	}
-	printc("</select>\n");
+	printc("/select>\n");
 	printc("<select name='endmonth'>");
 	for ($i=0; $i<12; $i++) {
 		printc("<option value=".($i+1) . (($endmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -446,7 +452,7 @@ function handlearchive($stories,$pa) {
 	for ($i=$curryear; $i <= ($curryear+5); $i++) {
 		printc("<option" . (($endyear == $i)?" selected":"") . ">$i\n");
 	}
-	printc("</select>");
+	printc("/select>");
 	printc(" <input type=submit class=button value='go'>");
 	printc("</form></div>");
 
@@ -678,7 +684,7 @@ function handlestoryorder($stories,$order) {
 /*  */
 /* 	$query .= implode(",",$chg); */
 /* 	if (count($chg)) db_query($query.$where); */
-/* //	print $query.$where."<BR>"; */
+/* //	print $query.$where."BR>"; */
 /* //	print mysql_error()."<br>"; */
 /*  */
 /* 	// Make sure that we have the correct new ID */

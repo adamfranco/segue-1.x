@@ -5,7 +5,7 @@ function _valid_db($name,$pass,$admin_auser=0) {
 	global $dbhost, $dbuser,$dbpass, $dbdb;
 	db_connect($dbhost,$dbuser,$dbpass,$dbdb);
 	$query = "SELECT * FROM user WHERE user_uname='$name'".(($admin_auser)?"":" AND user_pass='$pass' AND user_authtype='db'");
-	print $query; // debug
+//	print $query; // debug
 //	$query = "select * from users where uname='$name'and pass='$pass' and status!='ldap'";
 //	$query = "select * from users where uname='$name'";
 	$r = db_query($query);

@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-/* print "canview: ".$thisSite->canview()."<br>"; */
+/* print "canview: ".$thisSite->canview()."br>"; */
 /* print "hasperm: ".$thisSite->hasPermissionDown("add or edit or delete","",0,1)."<br>"; */
 /* print "<pre>"; print_r($thisSite); print "</pre>"; */
 
@@ -44,15 +44,25 @@ do {
 	if ($error) return;
 	
 	if ($thisSite) {
+		// If no section is specified, select the first one that we can view.
 		if (!$thisSection && count($thisSite->getField("sections"))) {
 			$thisSite->fetchDown();
 			foreach ($thisSite->sections as $s=>$o) {
-				if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisSection = &$thisSite->sections[$s]; break; }
+//				$o->buildPermissionsArray();
+//				print_r($o);
+				print "<br>hasPermission: ".$o->hasPermissionDown("add or edit or delete");
+				print "<br>Canview: ".$o->canview();
+//				print_r($o->permissions);
+				if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { 
+					$thisSection = &$thisSite->sections[$s]; 
+					break; 
+				}
 			}
 		}
 		$sitetype = $thisSite->getField("type");
 	}
 	if ($thisSection) {
+		// If no page is specified, select the first one that we can view.
 		if (!$thisPage && count($thisSection->getField("pages"))) {
 			$thisSection->fetchDown();
 			foreach ($thisSection->pages as $p=>$o) {

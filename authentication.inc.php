@@ -10,7 +10,6 @@ foreach ($_auth_mods as $i) include("auth_mods/$i.inc.php");
 // this array contains a list of actions that don't *require* the user to be authenticated
 $actions_noauth = array("index.php","site","login","default","previewtheme","fullstory","list","username_lookup","listarticles","listissues");
 
-
 $loginerror=0;
 $_loggedin=0;
 
@@ -77,7 +76,7 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 		
 //		$valid = $x = _valid_pam($user,$pass);
 //		print_r($_auth_mods);
-		
+
 		foreach ($_auth_mods as $_auth) {
 			$func = "_valid_".$_auth;
 			print "<BR>AUTH: trying ".$_auth ."..."; //debug
@@ -115,7 +114,7 @@ function _auth_check_db($x,$add_to_db=0) {
 	// $x[user] and $x[method] must be set
 	global $dbuser,$dbhost,$dbpass,$dbdb;
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-	$query = "SELECT * FROM user WHERE user_uname='".$x[user]."' and user_authtype='".$x[method]."'";
+	$query = "SELECT * FROM user WHERE user_uname='".$x[user]."' AND user_authtype='".$x[method]."'";
 	$r = db_query($query);	
 	if (db_num_rows($r)) {		// they have an entry already -- pull down their info
 		$a = db_fetch_assoc($r);
@@ -123,13 +122,16 @@ function _auth_check_db($x,$add_to_db=0) {
 		$x[email] = $a[user_email];
 		$x[type] = $a[user_type];
 		$x[id] = $a[user_id];
-		
 		// return the new array with info
 		return $x;
 	} else {					// they have no database entry
 		if ($add_to_db) {		// add them to the database and return new id
 			$query = "INSERT INTO user SET user_uname='$x[user]', user_email='$x[email]', user_fname='$x[fullname]', user_type='$x[type]', user_pass='".strtoupper($x[method])." PASS', user_authtype='$x[method]'";
 			$r = db_query($query);
+			
+			// the query could fail if a user with that username is already in the database, but:
+			if (!$r) return 0;
+			//echo $query."<br>";
 			// if (!$r) error occured;
 			$x[id] = lastid();
 			return $x;
