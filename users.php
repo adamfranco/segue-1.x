@@ -280,7 +280,7 @@ printerr();
 			doUserForm($a,'user_',1);
 		
 		// output found users				
-		} else if ($name || $id) {	
+		} else {	
 				
 			while ($a = db_fetch_assoc($r)) {
 				print "<tr>";

@@ -7,6 +7,9 @@
 			to flat XML files.
 		</new>
 		<fix author='alex'>
+			Fixed bug in admin tools search users UI (users.php) so search pagination working properly.
+		</fix>
+		<fix author='alex'>
 			Posting to discussions now works reliably on all browsers (PC Internet Explorer sometimes
 			would not post because did not interpret postform action path correctly).
 		</fix>

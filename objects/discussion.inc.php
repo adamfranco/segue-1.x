@@ -287,7 +287,7 @@ class discussion {
 		} else if ($this->dis_order == "rating") {
 			$order = " discussion_rate DESC";
 		} else if ($this->dis_order == "author") {
-			$order = "user_last_name DESC";
+			$order = " user_fname ASC";
 		}
 				
 		$query = "
@@ -331,7 +331,7 @@ class discussion {
 	}
 	
 /******************************************************************************
- * insert new posts into dicussion table
+ * insert new posts into discussion table
  ******************************************************************************/
 	
 	function _insert() {
@@ -364,7 +364,7 @@ class discussion {
 	
 	
 /******************************************************************************
- * update posts in dicussion table
+ * update posts in discussion table
  ******************************************************************************/
 	
 	function _update() {
@@ -579,7 +579,7 @@ class discussion {
 				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
 				$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:0;
 				$d->libraryfileid = $_REQUEST['libraryfileid'];
-				$newid = $d->insert();	
+				$newid = $d->insert();
 			}
 			/******************************************************************************
  			* gather data for sendmail function
