@@ -130,7 +130,7 @@ if ($_loggedin) {
         
         if ($allowpersonalsites) {
                 // print out the personal site
-                printc("<tr><td class='inlineth' colspan=7>Personal Site</td></tr>");
+                printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
                 printSiteLine($_SESSION[auser]);
         }
         
@@ -139,7 +139,7 @@ if ($_loggedin) {
                 if ($_SESSION[atype] == 'prof') {
                         //current classes
                         if (count($classes)) {
-                                printc("<tr><td class='inlineth' colspan=7>Current Class Sites</td></tr>");
+                                printc("<tr><td class='inlineth' colspan=2>Current Class Sites</td></tr>");
                                 $gs = array();
                                 foreach ($classes as $c=>$a) {
                                         if ($g = group::getNameFromClass($c)) {
@@ -151,7 +151,7 @@ if ($_loggedin) {
                         }
                         //upcoming classes
                         if (count($futureclasses)) {                
-                                printc("<tr><td class='inlineth' colspan=7>Upcoming Classes</td></tr>");
+                                printc("<tr><td class='inlineth' colspan=2>Upcoming Classes</td></tr>");
                                 $gs = array();
                                 foreach ($futureclasses as $c=>$a) {
                                         if ($g = group::getNameFromClass($c)) {
@@ -163,7 +163,7 @@ if ($_loggedin) {
                         }         
                         
                         //info/interface for groups
-                        printc("<tr><th colspan=7 align=right>add checked sites to group: <input type=text name=newgroup size=10 class=textfield>");
+                        printc("<tr><th colspan=2 align=right>add checked sites to group: <input type=text name=newgroup size=10 class=textfield>");
                         $havegroups = count(($grs = group::getGroupsOwnedBy($_SESSION[auser])));
                         if ($havegroups) {
                                 printc(" <select name='groupname' onChange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
@@ -175,7 +175,7 @@ if ($_loggedin) {
                         }
                         printc(" <input type=submit class=button value='add'>");
                         printc("</th></tr>");
-                        printc("<tr><th colspan=7 align=left>");
+                        printc("<tr><th colspan=2 align=left>");
                         printc("<div style='padding-left: 10px; font-size: 10px;'>By adding sites to a group you can consolidate multiple class sites into one entity. This is useful if you teach multiple sections of the same class and want to work on only one site for those classes/sections. Check the boxes next to the classes you would like to add, and either type in a new group name or choose an existing one.");
                         if ($havegroups) printc("<div class=desc><a href='edit_groups.php?$sid' target='groupeditor' onClick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a></div>");
                         printc("</th></tr>");
@@ -202,7 +202,7 @@ if ($_loggedin) {
         // if they are editors for any sites, they will be in the $sites[] array
         
         if (count($sites)) {
-                printc("<tr><td class='inlineth' colspan=7>Sites to which you have editor permissions</td></tr>");
+                printc("<tr><td class='inlineth' colspan=2>Sites to which you have editor permissions</td></tr>");
                 foreach ($sites as $s) {
                         printSiteLine($s,1);
                 }
@@ -260,7 +260,7 @@ if ($_loggedin) {
         $sites = removePrinted($sites);
         
         if (count($sites)) {
-                printc("<tr><td class='inlineth' colspan=7>Other Sites".helplink("othersites","What are these?")."</td></tr>");
+                printc("<tr><td class='inlineth' colspan=2>Other Sites".helplink("othersites","What are these?")."</td></tr>");
                 foreach ($sites as $s)
                         printSiteLine($s);
         }
