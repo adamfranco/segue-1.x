@@ -19,7 +19,7 @@ require_once('../objects/story.inc.php');
 require_once('../permissions.inc.php');
 
 // temporary configs
-$sitename = 'afranco';
+$sitename = 'segue';
 $exportpath = '/www/afranco/segue_backup/';
 $compressCommand = 'tar -czf ';
 $compressOrder = 'destFirst'; // 'destFirst' or 'destLast'

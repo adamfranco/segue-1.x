@@ -29,18 +29,18 @@ class DomitSiteExporter {
 		$this->_document =& new DOMIT_Document();
 		$this->_document->xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" '.'?'.'>';
 		$doctype = "<!DOCTYPE site [";
-		$doctype .= "\n\t<!ELEMENT site (title,history,permissions,(section|navlink)*)>";
+		$doctype .= "\n\t<!ELEMENT site (title,history,(permissions?),(section|navlink)*)>";
 		$doctype .= "\n\t<!ATTLIST site id CDATA #REQUIRED owner CDATA #REQUIRED type (system|class|personal|other) #REQUIRED>";
  		
- 		$doctype .= "\n\t<!ELEMENT section (title,history,permissions,(page|navlink|heading|divider)*)>";
-		$doctype .= "\n\t<!ELEMENT page (title,history,permissions,(story|link|image|file)*)>";
-		$doctype .= "\n\t<!ELEMENT story (title,history,permissions,shorttext,longtext?,discussion?)>";
-		$doctype .= "\n\t<!ELEMENT navlink (title,history,permissions,url)>";
-		$doctype .= "\n\t<!ELEMENT heading (title,history,permissions)>";
-		$doctype .= "\n\t<!ELEMENT divider (history,permissions)>";
-		$doctype .= "\n\t<!ELEMENT link (title,history,permissions,description,url)>";
-		$doctype .= "\n\t<!ELEMENT image (title,history,permissions,description,(filename|url))>";
-		$doctype .= "\n\t<!ELEMENT file (title,history,permissions,description,(filename|url))>";
+ 		$doctype .= "\n\t<!ELEMENT section (title,history,(permissions?),(page|navlink|heading|divider)*)>";
+		$doctype .= "\n\t<!ELEMENT page (title,history,(permissions?),(story|link|image|file)*)>";
+		$doctype .= "\n\t<!ELEMENT story (title,history,(permissions?),shorttext,longtext?,discussion?)>";
+		$doctype .= "\n\t<!ELEMENT navlink (title,history,(permissions?),url)>";
+		$doctype .= "\n\t<!ELEMENT heading (title,history,(permissions?))>";
+		$doctype .= "\n\t<!ELEMENT divider (history,(permissions?))>";
+		$doctype .= "\n\t<!ELEMENT link (title,history,(permissions?),description,url)>";
+		$doctype .= "\n\t<!ELEMENT image (title,history,(permissions?),description,(filename|url))>";
+		$doctype .= "\n\t<!ELEMENT file (title,history,(permissions?),description,(filename|url))>";
 		
 		$doctype .= "\n\t<!ELEMENT discussion (discussion_node*)>";
 		$doctype .= "\n\t<!ELEMENT discussion_node (creator,created_time,title,text,(discussion_node*))>";
@@ -109,8 +109,9 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$siteElement->appendChild($permissions);
-		$this->getPermissions($site, $permissions);
+		$hasPerms = $this->getPermissions($site, $permissions);
+		if ($hasPerms)
+			$siteElement->appendChild($permissions);
 		
  		foreach ($site->sections as $key => $val) {
   			if ($site->sections[$key]->getField('type') == 'link')
@@ -146,9 +147,10 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$sectionElement->appendChild($permissions);
-		$this->getPermissions($section, $permissions);
-
+		$hasPerms = $this->getPermissions($section, $permissions);
+		if ($hasPerms)
+			$sectionElement->appendChild($permissions);
+			
 		foreach ($section->pages as $key => $val) {
  			if ($section->pages[$key]->getField('type') == 'link')
  				$this->addNavLink($section->pages[$key], $sectionElement);
@@ -183,8 +185,9 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$pageElement->appendChild($permissions);
-		$this->getPermissions($page, $permissions);
+		$hasPerms = $this->getPermissions($page, $permissions);
+		if ($hasPerms)
+			$pageElement->appendChild($permissions);
 		
 		foreach ($page->stories as $key => $val) {
   			if ($page->stories[$key]->getField('type') == 'link')
@@ -221,8 +224,9 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$storyElement->appendChild($permissions);
-		$this->getPermissions($story, $permissions);
+		$hasPerms = $this->getPermissions($story, $permissions);
+		if ($hasPerms)
+			$storyElement->appendChild($permissions);
 		
  		if ($story->getField('shorttext')) {
  			$shorttext =& $this->_document->createElement('shorttext');
@@ -259,8 +263,9 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$linkElement->appendChild($permissions);
-		$this->getPermissions($link, $permissions);
+		$hasPerms = $this->getPermissions($link, $permissions);
+		if ($hasPerms)
+			$linkElement->appendChild($permissions);
 		
 		// url
 		$url =& $this->_document->createElement('url');
@@ -290,8 +295,9 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$headingElement->appendChild($permissions);
-		$this->getPermissions($heading, $permissions);
+		$hasPerms = $this->getPermissions($heading, $permissions);
+		if ($hasPerms)
+			$headingElement->appendChild($permissions);
 	}
 	
 	/**
@@ -311,8 +317,9 @@ class DomitSiteExporter {
 	
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$dividerElement->appendChild($permissions);
-		$this->getPermissions($divider, $permissions);
+		$hasPerms = $this->getPermissions($divider, $permissions);
+		if ($hasPerms)
+			$dividerElement->appendChild($permissions);
 	}
 
 	/**
@@ -337,8 +344,9 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$storyElement->appendChild($permissions);
-		$this->getPermissions($story, $permissions);
+		$hasPerms = $this->getPermissions($story, $permissions);
+		if ($hasPerms)
+			$storyElement->appendChild($permissions);
 		
  		// description
 		$shorttext =& $this->_document->createElement('description');
@@ -375,8 +383,9 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$storyElement->appendChild($permissions);
-		$this->getPermissions($story, $permissions);
+		$hasPerms = $this->getPermissions($story, $permissions);
+		if ($hasPerms)
+			$storyElement->appendChild($permissions);
 		
  		// description
 		$shorttext =& $this->_document->createElement('description');
@@ -413,8 +422,9 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$storyElement->appendChild($permissions);
-		$this->getPermissions($story, $permissions);
+		$hasPerms = $this->getPermissions($story, $permissions);
+		if ($hasPerms)
+			$storyElement->appendChild($permissions);
 		
  		// description
 		$shorttext =& $this->_document->createElement('description');
@@ -485,8 +495,9 @@ class DomitSiteExporter {
 		$element =& $this->_document->createElement($type.'_permission');
 		
 		foreach ($permissionsArray as $editorName => $array) {
+			
 			// if they have permission here, create an entry for them.
-			if ($this->hasPermission($permissions, $editorName, $type) && !$obj->getField("l%$editorName%".$type)) {
+			if ($this->hasPermission($permissionsArray, $editorName, $type) && !$obj->getField("l%$editorName%".$type)) {
 				$agent =& $this->_document->createElement('agent');
 				$agent->appendChild($this->_document->createTextNode($editorName));
 				$element->appendChild($agent);
