@@ -9,7 +9,7 @@ $s->fetchDown();
 if (sitenamevalid($_REQUEST[name])) {
 	if ($_REQUEST[confirm]) {
 		$s->delete();
-		log_entry("delete_site","$_REQUEST[name]","","","$_SESSION[auser] deleted site $_REQUEST[name]");
+		log_entry("delete_site","$_SESSION[auser] deleted site $_REQUEST[name]","$_REQUEST[name]");
 	} else {
 		printc("Are you <b>SURE</b> you want to delete the site <i>".$s->getField("title")."</i>?? This operation is <b>irreversable</b>. You will <b>never</b> see any of the content of this site again, including all sections, pages, content, and discussions. You better be <b>ABSOLUTELY SURE</b> you want to do this! If so, hit 'Delete'.<br><br>");
 		printc("<form action='$PHP_SELF?$sid&action=delete_site&name=$_REQUEST[name]'><input type=hidden name=confirm value=1>");
@@ -19,6 +19,6 @@ if (sitenamevalid($_REQUEST[name])) {
 		printc("</form>");
 		return;
 	}
-} else log_entry("failed: delete_site","$_REQUEST[name]","","","$_SESSION[auser] deleting site $_REQUEST[name]");
+} else log_entry("delete_site","$_SESSION[auser] deleting site $_REQUEST[name] failed","$_REQUEST[name]");
 
 header("Location: $PHP_SELF?$sid");

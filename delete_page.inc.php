@@ -26,7 +26,7 @@ if (/* in_array($delete_page,$pages) &&  */permission($_SESSION[auser],SECTION,D
 /* 			deleteuserfile($s,urldecode(db_get_value("stories","longertext","id=$s"))); */
 /* 		db_query("delete from stories where id=$s"); */
 /* 	} */
-	log_entry("delete_page",$_REQUEST[site],$_REQUEST[section],"","$_SESSION[auser] deleted page id $_REQUEST[delete_page]");
-} else log_entry("failed: delete_page",$_REQUEST[site],$_REQUEST[section],$_REQUEST[delete_page],"$_SESSION[auser] deleting page id $_REQUEST[delete_page]");
+	log_entry("delete_page","$_SESSION[auser] deleted page id $_REQUEST[delete_page]",$_REQUEST[site],$_REQUEST[section]);
+} else log_entry("delete_page","$_SESSION[auser] deleting page id $_REQUEST[delete_page] failed",$_REQUEST[site],$_REQUEST[section],$_REQUEST[delete_page]);
 
 header("Location: $PHP_SELF?$sid&site=$_REQUEST[site]&section=$_REQUEST[section]&action=viewsite");

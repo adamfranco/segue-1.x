@@ -73,7 +73,7 @@ if (!isset($name)) {  // they have not yet entered any login info
 		$afname = $lfname;
 		$atype = $ltype;
 		$aid = $lid;
-		log_entry("login","$luser");
+		log_entry("login","$luser logged in");
 		session_register("luser");
 		session_register("lpass");
 		session_register("lemail");

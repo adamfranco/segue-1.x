@@ -44,7 +44,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 		$atype = $x[type];
 		$aid = $x[id];
 		$amethod = $x[method];
-		log_entry("change_auser","","","","$luser as $auser");
+		log_entry("change_auser","$luser as $auser");
 	}
 }
 

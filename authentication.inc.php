@@ -100,7 +100,7 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 			$_SESSION[aemail] = $_SESSION[lemail] = $x[email];
 			$_SESSION[atype] = $_SESSION[ltype] = $x[type];
 			$_SESSION[amethod] = $_SESSION[lmethod] = $x[method];
-			log_entry("login","","","",$_SESSION[luser]);
+			log_entry("login","$_SESSION[luser] authenticated");
 			return 1;
 				
 		} else return 0;

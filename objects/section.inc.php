@@ -126,7 +126,7 @@ class section extends segue {
 		$this->updatePermissionsDB();
 		
 		// add log entry
-		log_entry("edit_section",$this->owning_site,$this->id,"","$_SESSION[auser] edited section id ".$this->id." in site ".$this->owning_site);
+/* 		log_entry("edit_section",$this->owning_site,$this->id,"","$_SESSION[auser] edited section id ".$this->id." in site ".$this->owning_site); */
 		
 		// update down
 		if ($down) {
@@ -172,7 +172,7 @@ class section extends segue {
 		$this->updatePermissionsDB(1);
 		
 		// add log entry
-		log_entry("add_section",$this->owning_site,$this->id,"","$_SESSION[auser] added section id ".$this->id." to site ".$this->owning_site);
+/* 		log_entry("add_section",$this->owning_site,$this->id,"","$_SESSION[auser] added section id ".$this->id." to site ".$this->owning_site); */
 		
 		// insert down
 		if ($down && $this->fetcheddown && $this->pages) {

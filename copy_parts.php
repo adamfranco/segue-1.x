@@ -155,18 +155,21 @@ if ($domove) {
 		$parentObj = $siteObj;
 		if ($action == "COPY" && $parentObj->name == $_SESSION[origSite]) $removeOrigional = 0;
 		else $removeOrigional = 1;
+		log_entry($actionlc."_section","$_SESSION[auser] ".$actionlc."d section ".$partObj->id." from site ".$_SESSION[origSiteObj]->name." to ".$parentObj->name,$parentObj->name);
 	}
 	else if ($_SESSION[type] == "page") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]];
 		$parentObj = $siteObj->sections[$section];
 		if ($action == "COPY" && $parentObj->id == $_SESSION[origSection]) $removeOrigional = 0;
 		else $removeOrigional = 1;
+		log_entry($actionlc."_page","$_SESSION[auser] ".$actionlc."d page ".$partObj->id." from site ".$_SESSION[origSite].", section ".$_SESSION[origSection]." to site ".$parentObj->owning_site.", section ".$parentObj->id,$parentObj->owning_site,$parentObj->id);
 	}
 	else if ($_SESSION[type] == "story") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]];
 		$parentObj = $siteObj->sections[$section]->pages[$page];
 		if ($action == "COPY" && $parentObj->id == $_SESSION[origPage]) $removeOrigional = 0;
 		else $removeOrigional = 1;
+		log_entry($actionlc."_story","$_SESSION[auser] ".$actionlc."d story ".$partObj->id." from site ".$_SESSION[origSite].", section ".$_SESSION[origSection].", page ".$_SESSION[origPage]." to site ".$parentObj->owning_site.", section ".$parentObj->owning_section.", page ".$parentObj->id,$parentObj->owning_site,$parentObj->owning_section,$parentObj->id);
 	} else 
 		print "Major Error!!!!!!!!!!!!!!!!!!!!!!  AHHHHHhhhhhhhh!!!!!!!!!!!!!!!!!!!!";
 	

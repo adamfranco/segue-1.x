@@ -148,7 +148,7 @@ class page extends segue {
 		$this->updatePermissionsDB();
 		
 		// add log entry
-		log_entry("edit_page",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] edited page id ".$this->id." in site ".$this->owning_site);
+/* 		log_entry("edit_page",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] edited page id ".$this->id." in site ".$this->owning_site); */
 
 		// update down
 		if ($down) {
@@ -192,7 +192,7 @@ class page extends segue {
 		$this->updatePermissionsDB(1);
 		
 		// add log entry
-		log_entry("add_page",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added page id ".$this->id." to site ".$this->owning_site);
+/* 		log_entry("add_page",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added page id ".$this->id." to site ".$this->owning_site); */
 		
 		// insert down
 		if ($down && $this->fetcheddown && $this->stories) {

@@ -259,10 +259,10 @@ function spchars($string) {
 	return htmlspecialchars(stripslashes($string),ENT_QUOTES);
 }
 
-function log_entry($type,$site,$section,$page,$content) {
+function log_entry($type,$content,$site="",$section="",$page="",$story="") {
 	global $dbhost, $dbuser,$dbpass, $dbdb, $auser, $luser;
 	db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-	db_query("insert into logs set type='$type',content='$content',luser='$luser',auser='$auser',site='$site',section='$section',page='$page'");
+	db_query("insert into logs set type='$type',content='$content',luser='$luser',auser='$auser',site='$site',section='$section',page='$page',story='$story'");
 }
 
 function htmlbr($string) {
@@ -485,321 +485,319 @@ function handlestoryorder($stories,$order) {
 /******************************************************************************
  * copyPart - holy god... um, re-write to use objects... should be substantially shorter
  ******************************************************************************/
-
-function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
-	// $action can have value MOVE or COPY
-	global $auser;
-	$action = strtolower($action);
-//	print "--------------------------<br>";
-//	print "action = $action<br>parttype = $parttype<br>id = $id<br>newparentid = $newparentid<br>isSubCall = $isSubCall<br>";
-	
-	// Get part and newparent info
-	if ($parttype == 'story') {
-		$parttable = "stories";
-		$partarray = "stories";
-		$parenttable = "pages";
-		$parenttype = "page";
-	} else if ($parttype == 'page') {
-		$parttable = "pages";
-		$partarray = "pages";
-		$parenttable = "sections";
-		$parenttype = "section";
-		$childarray = "stories";
-		$childtype = "story";
-	} else if ($parttype == 'section') {
-		$parttable = "sections";
-		$partarray = "sections";
-		$parenttable = "sites";
-		$parenttype = "site";
-		$childarray = "pages";
-		$childtype = "page";
-	}
-	
-	$part = db_get_line($parttable,"id=$id");
-//	print_r($part);
-//	print "<br>";
-	if ($parenttype == "site")
-		$newparent = db_get_line($parenttable,"name='$newparentid'");
-	else	
-		$newparent = db_get_line($parenttable,"id='$newparentid'");
-
-	// Log the move if this is not part of a larger move call
-	if (!$isSubCall) {
-		if ($parttype == 'story') log_entry("$action_story",$newparent[site_id],$newparent[section_id],$newparentid,"$auser MOVED story $id FROM site $part[site_id], section $part[section_id], page $part[page_id]  TO site $newparent[site_id], section $newparent[section_id], page $newparentid");
-		if ($parttype == 'page') log_entry("$action_page",$newparent[site_id],$newparent[section_id],$id,"$auser MOVED page $id FROM site $part[site_id], section $part[section_id]  TO site $newparent[site_id], section $newparent[section_id]");
-		if ($parttype == 'section') log_entry("$action_section",$newparent[site_id],$id,"","$auser MOVED section $id FROM site $part[site_id] TO site $newparent[site_id]");
-	}
-	
-	// if MOVING remove the reference to the part in the old parent's array
-	if ($action == "move" && !$isSubCall) {
-		$tmp = $parenttype."_id";
-		$parentid = $part[$tmp];
-		if ($parenttype == "site")
-			$parentparts = decode_array(db_get_value($parenttable,$partarray,"name='$parentid'"));
-		else
-			$parentparts = decode_array(db_get_value($parenttable,$partarray,"id=$parentid"));
-		$parentnewparts = array();
-		foreach ($parentparts as $p) {
-			if ($p != $id) array_push($parentnewparts,$p);
-		}
-		$parentparts = encode_array($parentnewparts);
-		if ($parenttype == "site")
-			$query = "update $parenttable set $partarray='$parentparts' where name='$parentid'";
-		else
-			$query = "update $parenttable set $partarray='$parentparts' where id='$parentid'";
-		db_query($query);
-//		print "$query<br>";
-	}
-	
-	// Copy any associated images
-	if ($parttype == "story" && $part[site_id] != $newparent[site_id]) {
-		// If we're moving a story to another site.
-		$images = array();
-		if ($part[type] == "image" || $part[type] == "file") {
-			$media_id = $part[longertext];
-			$part[longertext] = copy_media($media_id,$newparent[site_id]);
-		} else if ($part[type] == "story") {
-			$st = stripslashes(urldecode($part[shorttext]));
-			$st = str_replace("src='####","####",$st);
-			$st = str_replace("src=####","####",$st);
-			$st = str_replace("####'","####",$st);
-			$textarray1 = explode("####", $st);
-			if (count($textarray1) > 1) {
-				for ($i=1; $i<count($textarray1); $i=$i+2) {
-					$id = $textarray1[$i];
-					$newid = copy_media($id,$newparent[site_id]);
-					$textarray1[$i] = "src='####".$newid."####'";
-				}		
-				$st = implode("",$textarray1);
-				$part[shorttext] = urlencode(addslashes($st));
-			}
-			$st = stripslashes(urldecode($part[longertext]));
-			$st = str_replace("src='####","####",$st);
-			$st = str_replace("src=####","####",$st);
-			$st = str_replace("####'","####",$st);
-			$textarray1 = explode("####", $st);
-			if (count($textarray1) > 1) {
-				for ($i=1; $i<count($textarray1); $i=$i+2) {
-					$id = $textarray1[$i];
-					$newid = copy_media($id,$newparent[site_id]);
-					$textarray1[$i] = "src='####".$newid."####'";
-				}		
-				$st = implode("",$textarray1);
-				$part[longertext] = urlencode(addslashes($st));
-			}
-		}
-	}
-	
-	// Update the part's fields if MOVING, if COPYING insert into new row
-	if ($action == "move") {	// MOVE
-		$query = "update $parttable set editedby='$auser',"; 
-		$where = " where id='$id'";
-	} else {	// COPY
-		$query = "insert into $parttable set addedby='$auser',addedtimestamp=NOW(),"; 
-		$where = "";
-	}
-			
-	$chg = array();
-	if ($parttype == 'story') {
-		$chg[] = "site_id='$newparent[site_id]'";
-		$chg[] = "section_id='$newparent[section_id]'";
-		$chg[] = "page_id='$newparentid'";
-		$chg[] = "permissions='$newparent[permissions]'";
-		if ($action == "copy") {
-			$chg[] = "discuss='$part[discuss]'";
-			$chg[] = "discusspermissions='$part[discusspermissions]'";
-			$chg[] = "texttype='$part[texttype]'";
-			$chg[] = "category='$part[category]'";
-			$chg[] = "shorttext='$part[shorttext]'";
-			$chg[] = "longertext='$part[longertext]'";
-			$chg[] = "url='$part[url]'";
-			$chg[] = "type='$part[type]'";
-			$chg[] = "title='$part[title]'";
-			$chg[] = "locked=$part[locked]";
-			$chg[] = "activatedate='$part[activatedate]'";
-			$chg[] = "deactivatedate='$part[deactivatedate]'";
-		}
-	}
-	if ($parttype == 'page') {
-		$chg[] = "site_id='$newparent[site_id]'";
-		$chg[] = "section_id='$newparentid'";
-		$chg[] = "permissions='$newparent[permissions]'";
-		if ($action == "copy") {
-			$chg[] = "ediscussion=$part[ediscussion]";
-			$chg[] = "archiveby='$part[archiveby]'";
-			$chg[] = "url='$part[url]'";
-			$chg[] = "type='$part[type]'";
-			$chg[] = "title='$part[title]'";
-			$chg[] = "showcreator=$part[showcreator]";
-			$chg[] = "showdate=$part[showdate]";
-			$chg[] = "showhr=$part[showhr]";
-			$chg[] = "locked=$part[locked]";
-			$chg[] = "activatedate='$part[activatedate]'";
-			$chg[] = "deactivatedate='$part[deactivatedate]'";
-			$chg[] = "active=$part[active]";
-			$chg[] = "storyorder='$part[storyorder]'";
-		}
-	}
-	if ($parttype == 'section') {
-		$chg[] = "site_id='$newparentid'";
-		$chg[] = "permissions='$newparent[permissions]'";
-		if ($action == "copy") {
-			$chg[] = "url='$part[url]'";
-			$chg[] = "type='$part[type]'";
-			$chg[] = "title='$part[title]'";
-			$chg[] = "locked=$part[locked]";
-			$chg[] = "activatedate='$part[activatedate]'";
-			$chg[] = "deactivatedate='$part[deactivatedate]'";
-			$chg[] = "active=$part[active]";
-		}
-	}
-
-	$query .= implode(",",$chg);
-	if (count($chg)) db_query($query.$where);
-//	print $query.$where."<BR>";
-//	print mysql_error()."<br>";
-
-	// Make sure that we have the correct new ID
-	if ($action == "copy") $newid = lastid();
-	else $newid = $id;
-	
-	// Update the stories array in the newparent if not a move sub call.
-	if (!($action == "move" && $isSubCall)) {
-		$newparentparts = decode_array($newparent[$partarray]);
-		array_push($newparentparts,$newid);
-		$newparentparts = encode_array($newparentparts);
-		if ($parenttype == "site")
-			$query = "update $parenttable set $partarray='$newparentparts' where name='$newparentid'";
-		else
-			$query = "update $parenttable set $partarray='$newparentparts' where id='$newparentid'";
-		db_query($query);
-//		print "$query<br>";
-	}
-	
-	// Update the appropriate ids and permissions of pages lower in the hierarchy.
-	if ($parttype != "story") {
-		$children = decode_array($part[$childarray]);
-		if ($action == "move") {
-			// update the foreign keys and permissions for the entry
-			foreach ($children as $childid) {
-				copyPart(MOVE,$childtype,$childid,$newid,1);
-			}
-		} else { // copy
-			// recursively copy all of the lower parts.
-			foreach ($children as $childid) {
-				copyPart(COPY,$childtype,$childid,$newid,1);
-			}
-		}
-	}
-	
-	if (!$isSubCall) return $newid;
-}
+/*  */
+/* function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) { */
+/* 	// $action can have value MOVE or COPY */
+/* 	global $auser; */
+/* 	$action = strtolower($action); */
+/* //	print "--------------------------<br>"; */
+/* //	print "action = $action<br>parttype = $parttype<br>id = $id<br>newparentid = $newparentid<br>isSubCall = $isSubCall<br>"; */
+/* 	 */
+/* 	// Get part and newparent info */
+/* 	if ($parttype == 'story') { */
+/* 		$parttable = "stories"; */
+/* 		$partarray = "stories"; */
+/* 		$parenttable = "pages"; */
+/* 		$parenttype = "page"; */
+/* 	} else if ($parttype == 'page') { */
+/* 		$parttable = "pages"; */
+/* 		$partarray = "pages"; */
+/* 		$parenttable = "sections"; */
+/* 		$parenttype = "section"; */
+/* 		$childarray = "stories"; */
+/* 		$childtype = "story"; */
+/* 	} else if ($parttype == 'section') { */
+/* 		$parttable = "sections"; */
+/* 		$partarray = "sections"; */
+/* 		$parenttable = "sites"; */
+/* 		$parenttype = "site"; */
+/* 		$childarray = "pages"; */
+/* 		$childtype = "page"; */
+/* 	} */
+/* 	 */
+/* 	$part = db_get_line($parttable,"id=$id"); */
+/* //	print_r($part); */
+/* //	print "<br>"; */
+/* 	if ($parenttype == "site") */
+/* 		$newparent = db_get_line($parenttable,"name='$newparentid'"); */
+/* 	else	 */
+/* 		$newparent = db_get_line($parenttable,"id='$newparentid'"); */
+/*  */
+/* 	// Log the move if this is not part of a larger move call */
+/* 	if (!$isSubCall) { */
+/* 		if ($parttype == 'story') log_entry("$action_story",$newparent[site_id],$newparent[section_id],$newparentid,"$auser MOVED story $id FROM site $part[site_id], section $part[section_id], page $part[page_id]  TO site $newparent[site_id], section $newparent[section_id], page $newparentid"); */
+/* 		if ($parttype == 'page') log_entry("$action_page",$newparent[site_id],$newparent[section_id],$id,"$auser MOVED page $id FROM site $part[site_id], section $part[section_id]  TO site $newparent[site_id], section $newparent[section_id]"); */
+/* 		if ($parttype == 'section') log_entry("$action_section",$newparent[site_id],$id,"","$auser MOVED section $id FROM site $part[site_id] TO site $newparent[site_id]"); */
+/* 	} */
+/* 	 */
+/* 	// if MOVING remove the reference to the part in the old parent's array */
+/* 	if ($action == "move" && !$isSubCall) { */
+/* 		$tmp = $parenttype."_id"; */
+/* 		$parentid = $part[$tmp]; */
+/* 		if ($parenttype == "site") */
+/* 			$parentparts = decode_array(db_get_value($parenttable,$partarray,"name='$parentid'")); */
+/* 		else */
+/* 			$parentparts = decode_array(db_get_value($parenttable,$partarray,"id=$parentid")); */
+/* 		$parentnewparts = array(); */
+/* 		foreach ($parentparts as $p) { */
+/* 			if ($p != $id) array_push($parentnewparts,$p); */
+/* 		} */
+/* 		$parentparts = encode_array($parentnewparts); */
+/* 		if ($parenttype == "site") */
+/* 			$query = "update $parenttable set $partarray='$parentparts' where name='$parentid'"; */
+/* 		else */
+/* 			$query = "update $parenttable set $partarray='$parentparts' where id='$parentid'"; */
+/* 		db_query($query); */
+/* //		print "$query<br>"; */
+/* 	} */
+/* 	 */
+/* 	// Copy any associated images */
+/* 	if ($parttype == "story" && $part[site_id] != $newparent[site_id]) { */
+/* 		// If we're moving a story to another site. */
+/* 		$images = array(); */
+/* 		if ($part[type] == "image" || $part[type] == "file") { */
+/* 			$media_id = $part[longertext]; */
+/* 			$part[longertext] = copy_media($media_id,$newparent[site_id]); */
+/* 		} else if ($part[type] == "story") { */
+/* 			$st = stripslashes(urldecode($part[shorttext])); */
+/* 			$st = str_replace("src='####","####",$st); */
+/* 			$st = str_replace("src=####","####",$st); */
+/* 			$st = str_replace("####'","####",$st); */
+/* 			$textarray1 = explode("####", $st); */
+/* 			if (count($textarray1) > 1) { */
+/* 				for ($i=1; $i<count($textarray1); $i=$i+2) { */
+/* 					$id = $textarray1[$i]; */
+/* 					$newid = copy_media($id,$newparent[site_id]); */
+/* 					$textarray1[$i] = "src='####".$newid."####'"; */
+/* 				}		 */
+/* 				$st = implode("",$textarray1); */
+/* 				$part[shorttext] = urlencode(addslashes($st)); */
+/* 			} */
+/* 			$st = stripslashes(urldecode($part[longertext])); */
+/* 			$st = str_replace("src='####","####",$st); */
+/* 			$st = str_replace("src=####","####",$st); */
+/* 			$st = str_replace("####'","####",$st); */
+/* 			$textarray1 = explode("####", $st); */
+/* 			if (count($textarray1) > 1) { */
+/* 				for ($i=1; $i<count($textarray1); $i=$i+2) { */
+/* 					$id = $textarray1[$i]; */
+/* 					$newid = copy_media($id,$newparent[site_id]); */
+/* 					$textarray1[$i] = "src='####".$newid."####'"; */
+/* 				}		 */
+/* 				$st = implode("",$textarray1); */
+/* 				$part[longertext] = urlencode(addslashes($st)); */
+/* 			} */
+/* 		} */
+/* 	} */
+/* 	 */
+/* 	// Update the part's fields if MOVING, if COPYING insert into new row */
+/* 	if ($action == "move") {	// MOVE */
+/* 		$query = "update $parttable set editedby='$auser',";  */
+/* 		$where = " where id='$id'"; */
+/* 	} else {	// COPY */
+/* 		$query = "insert into $parttable set addedby='$auser',addedtimestamp=NOW(),";  */
+/* 		$where = ""; */
+/* 	} */
+/* 			 */
+/* 	$chg = array(); */
+/* 	if ($parttype == 'story') { */
+/* 		$chg[] = "site_id='$newparent[site_id]'"; */
+/* 		$chg[] = "section_id='$newparent[section_id]'"; */
+/* 		$chg[] = "page_id='$newparentid'"; */
+/* 		$chg[] = "permissions='$newparent[permissions]'"; */
+/* 		if ($action == "copy") { */
+/* 			$chg[] = "discuss='$part[discuss]'"; */
+/* 			$chg[] = "discusspermissions='$part[discusspermissions]'"; */
+/* 			$chg[] = "texttype='$part[texttype]'"; */
+/* 			$chg[] = "category='$part[category]'"; */
+/* 			$chg[] = "shorttext='$part[shorttext]'"; */
+/* 			$chg[] = "longertext='$part[longertext]'"; */
+/* 			$chg[] = "url='$part[url]'"; */
+/* 			$chg[] = "type='$part[type]'"; */
+/* 			$chg[] = "title='$part[title]'"; */
+/* 			$chg[] = "locked=$part[locked]"; */
+/* 			$chg[] = "activatedate='$part[activatedate]'"; */
+/* 			$chg[] = "deactivatedate='$part[deactivatedate]'"; */
+/* 		} */
+/* 	} */
+/* 	if ($parttype == 'page') { */
+/* 		$chg[] = "site_id='$newparent[site_id]'"; */
+/* 		$chg[] = "section_id='$newparentid'"; */
+/* 		$chg[] = "permissions='$newparent[permissions]'"; */
+/* 		if ($action == "copy") { */
+/* 			$chg[] = "ediscussion=$part[ediscussion]"; */
+/* 			$chg[] = "archiveby='$part[archiveby]'"; */
+/* 			$chg[] = "url='$part[url]'"; */
+/* 			$chg[] = "type='$part[type]'"; */
+/* 			$chg[] = "title='$part[title]'"; */
+/* 			$chg[] = "showcreator=$part[showcreator]"; */
+/* 			$chg[] = "showdate=$part[showdate]"; */
+/* 			$chg[] = "showhr=$part[showhr]"; */
+/* 			$chg[] = "locked=$part[locked]"; */
+/* 			$chg[] = "activatedate='$part[activatedate]'"; */
+/* 			$chg[] = "deactivatedate='$part[deactivatedate]'"; */
+/* 			$chg[] = "active=$part[active]"; */
+/* 			$chg[] = "storyorder='$part[storyorder]'"; */
+/* 		} */
+/* 	} */
+/* 	if ($parttype == 'section') { */
+/* 		$chg[] = "site_id='$newparentid'"; */
+/* 		$chg[] = "permissions='$newparent[permissions]'"; */
+/* 		if ($action == "copy") { */
+/* 			$chg[] = "url='$part[url]'"; */
+/* 			$chg[] = "type='$part[type]'"; */
+/* 			$chg[] = "title='$part[title]'"; */
+/* 			$chg[] = "locked=$part[locked]"; */
+/* 			$chg[] = "activatedate='$part[activatedate]'"; */
+/* 			$chg[] = "deactivatedate='$part[deactivatedate]'"; */
+/* 			$chg[] = "active=$part[active]"; */
+/* 		} */
+/* 	} */
+/*  */
+/* 	$query .= implode(",",$chg); */
+/* 	if (count($chg)) db_query($query.$where); */
+/* //	print $query.$where."<BR>"; */
+/* //	print mysql_error()."<br>"; */
+/*  */
+/* 	// Make sure that we have the correct new ID */
+/* 	if ($action == "copy") $newid = lastid(); */
+/* 	else $newid = $id; */
+/* 	 */
+/* 	// Update the stories array in the newparent if not a move sub call. */
+/* 	if (!($action == "move" && $isSubCall)) { */
+/* 		$newparentparts = decode_array($newparent[$partarray]); */
+/* 		array_push($newparentparts,$newid); */
+/* 		$newparentparts = encode_array($newparentparts); */
+/* 		if ($parenttype == "site") */
+/* 			$query = "update $parenttable set $partarray='$newparentparts' where name='$newparentid'"; */
+/* 		else */
+/* 			$query = "update $parenttable set $partarray='$newparentparts' where id='$newparentid'"; */
+/* 		db_query($query); */
+/* //		print "$query<br>"; */
+/* 	} */
+/* 	 */
+/* 	// Update the appropriate ids and permissions of pages lower in the hierarchy. */
+/* 	if ($parttype != "story") { */
+/* 		$children = decode_array($part[$childarray]); */
+/* 		if ($action == "move") { */
+/* 			// update the foreign keys and permissions for the entry */
+/* 			foreach ($children as $childid) { */
+/* 				copyPart(MOVE,$childtype,$childid,$newid,1); */
+/* 			} */
+/* 		} else { // copy */
+/* 			// recursively copy all of the lower parts. */
+/* 			foreach ($children as $childid) { */
+/* 				copyPart(COPY,$childtype,$childid,$newid,1); */
+/* 			} */
+/* 		} */
+/* 	} */
+/* 	 */
+/* 	if (!$isSubCall) return $newid; */
+/* } */
 
 /******************************************************************************
  * copySite - to be re-written to use objects... should be much shorter
  ******************************************************************************/
-
-
-function copySite($orig,$dest) {
-	// This function does not support the copying of userfiles in this implementation.
-
-	global $auser;
-	$sections = decode_array(db_get_value("sites","sections","name='$orig'"));
-	$nsections = array();
-	foreach ($sections as $s) {
-		$sa = db_get_line("sections","id=$s");
-		$squery = "insert into sections set addedby='$auser', addedtimestamp=NOW(),";
-		$schg = array();
-		$schg[] = "site_id='$dest'";
-		$schg[] = "title='$sa[title]'";
-		$schg[] = "url='$sa[url]'";
-		$schg[] = "type='$sa[type]'";
-		$schg[] = "locked=$sa[locked]";
-		$schg[] = "active=$sa[active]";
-//		$schg[] = "activatedate='$sa[activatedate]'";
-//		$schg[] = "deactivatedate='$sa[deactivatedate]'";
-//		$schg[] = "permissions='$sa[permissions]'";
-
-		$squery .= implode(",",$schg);
-		db_query($squery);
-		print " &nbsp; &nbsp; &nbsp; ".$squery."<BR>";
-		print " &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>";
-
-		$section = lastid();
-		$nsections[] = lastid();
-		
-		$pages = decode_array($sa[pages]);
-		$npages = array();
-		foreach ($pages as $p) {
-			$pa = db_get_line("pages","id=$p");
-			$pquery = "insert into pages set addedby='$auser', addedtimestamp=NOW(),";
-			$pchg = array();
-			$pchg[] = "site_id='$dest'";
-			$pchg[] = "section_id='$section'";
-			$pchg[] = "ediscussion=1"; 
-			$pchg[] = "archiveby='$pa[archiveby]'";
-			$pchg[] = "url='$pa[url]'";
-			$pchg[] = "type='$pa[type]'";
-			$pchg[] = "title='$pa[title]'";
-			$pchg[] = "showcreator=$pa[showcreator]";
-			$pchg[] = "showdate=$pa[showdate]";
-			$pchg[] = "locked=$pa[locked]";
-			$pchg[] = "active=$pa[active]";
-//			$pchg[] = "activatedate='$pa[activatedate]'";
-//			$pchg[] = "deactivatedate='$pa[deactivatedate]'";
-//			$pchg[] = "permissions='$pa[permissions]'";
-			
-			$pquery .= implode(",",$pchg);
-			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".$pquery."<BR>";
-			db_query($pquery);
-			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".mysql_error()."<BR>";
-			$page=lastid();
-			$npages[]=lastid();
-		
-			$stories = decode_array($pa[stories]);
-			$nstories = array();
-			foreach ($stories as $st) {
-				$sta = db_get_line("stories","id=$st");
-				$stquery = "insert into stories set addedby='$auser', addedtimestamp=NOW(),";
-				$stchg = array();
-				$stchg[] = "site_id='$dest'";
-				$stchg[] = "section_id='$section'";
-				$stchg[] = "page_id='$page'";
-				$stchg[] = "discuss='$sta[discuss]'";
-				$stchg[] = "discusspermissions='$sta[discusspermissions]'";
-				$stchg[] = "texttype='$sta[texttype]'";
-				$stchg[] = "category='$sta[category]'";
-				$stchg[] = "shorttext='$sta[shorttext]'";
-				$stchg[] = "longertext='$sta[longertext]'";
-				$stchg[] = "url='$sta[url]'";
-				$stchg[] = "type='$sta[type]'";
-				$stchg[] = "title='$sta[title]'";
-				$stchg[] = "locked=$sta[locked]";
-//				$stchg[] = "activatedate='$sta[activatedate]'";
-//				$stchg[] = "deactivatedate='$sta[deactivatedate]'";
-//				$stchg[] = "permissions='$sta[permissions]'";
-	
-				$stquery .= implode(",",$stchg);
-				print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ".$stquery."<BR>";
-				db_query($stquery);
-				print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>";
-
-				$nstories[] = lastid();
-			}
-			$stories = encode_array($nstories);
-			$pquery = "update pages set stories='$stories' where id='$page'";
-			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".$pquery."<BR>";
-			db_query($pquery);
-			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".mysql_error()."<BR>";
-		}
-		$pages = encode_array($npages);
-		$squery = "update sections set pages='$pages' where id='$section'";
-		db_query($squery);
-		print " &nbsp; &nbsp; &nbsp; ".$squery."<BR>";
-		print " &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>";
-	}
-	$sections = encode_array($nsections);
-	$query = "update sites set sections='$sections' where name='$dest'";
-	db_query($query);
-	print $query."<BR>";
-}
+/* function copySite($orig,$dest) { */
+/* 	// This function does not support the copying of userfiles in this implementation. */
+/*  */
+/* 	global $auser; */
+/* 	$sections = decode_array(db_get_value("sites","sections","name='$orig'")); */
+/* 	$nsections = array(); */
+/* 	foreach ($sections as $s) { */
+/* 		$sa = db_get_line("sections","id=$s"); */
+/* 		$squery = "insert into sections set addedby='$auser', addedtimestamp=NOW(),"; */
+/* 		$schg = array(); */
+/* 		$schg[] = "site_id='$dest'"; */
+/* 		$schg[] = "title='$sa[title]'"; */
+/* 		$schg[] = "url='$sa[url]'"; */
+/* 		$schg[] = "type='$sa[type]'"; */
+/* 		$schg[] = "locked=$sa[locked]"; */
+/* 		$schg[] = "active=$sa[active]"; */
+/* //		$schg[] = "activatedate='$sa[activatedate]'"; */
+/* //		$schg[] = "deactivatedate='$sa[deactivatedate]'"; */
+/* //		$schg[] = "permissions='$sa[permissions]'"; */
+/*  */
+/* 		$squery .= implode(",",$schg); */
+/* 		db_query($squery); */
+/* 		print " &nbsp; &nbsp; &nbsp; ".$squery."<BR>"; */
+/* 		print " &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>"; */
+/*  */
+/* 		$section = lastid(); */
+/* 		$nsections[] = lastid(); */
+/* 		 */
+/* 		$pages = decode_array($sa[pages]); */
+/* 		$npages = array(); */
+/* 		foreach ($pages as $p) { */
+/* 			$pa = db_get_line("pages","id=$p"); */
+/* 			$pquery = "insert into pages set addedby='$auser', addedtimestamp=NOW(),"; */
+/* 			$pchg = array(); */
+/* 			$pchg[] = "site_id='$dest'"; */
+/* 			$pchg[] = "section_id='$section'"; */
+/* 			$pchg[] = "ediscussion=1";  */
+/* 			$pchg[] = "archiveby='$pa[archiveby]'"; */
+/* 			$pchg[] = "url='$pa[url]'"; */
+/* 			$pchg[] = "type='$pa[type]'"; */
+/* 			$pchg[] = "title='$pa[title]'"; */
+/* 			$pchg[] = "showcreator=$pa[showcreator]"; */
+/* 			$pchg[] = "showdate=$pa[showdate]"; */
+/* 			$pchg[] = "locked=$pa[locked]"; */
+/* 			$pchg[] = "active=$pa[active]"; */
+/* //			$pchg[] = "activatedate='$pa[activatedate]'"; */
+/* //			$pchg[] = "deactivatedate='$pa[deactivatedate]'"; */
+/* //			$pchg[] = "permissions='$pa[permissions]'"; */
+/* 			 */
+/* 			$pquery .= implode(",",$pchg); */
+/* 			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".$pquery."<BR>"; */
+/* 			db_query($pquery); */
+/* 			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".mysql_error()."<BR>"; */
+/* 			$page=lastid(); */
+/* 			$npages[]=lastid(); */
+/* 		 */
+/* 			$stories = decode_array($pa[stories]); */
+/* 			$nstories = array(); */
+/* 			foreach ($stories as $st) { */
+/* 				$sta = db_get_line("stories","id=$st"); */
+/* 				$stquery = "insert into stories set addedby='$auser', addedtimestamp=NOW(),"; */
+/* 				$stchg = array(); */
+/* 				$stchg[] = "site_id='$dest'"; */
+/* 				$stchg[] = "section_id='$section'"; */
+/* 				$stchg[] = "page_id='$page'"; */
+/* 				$stchg[] = "discuss='$sta[discuss]'"; */
+/* 				$stchg[] = "discusspermissions='$sta[discusspermissions]'"; */
+/* 				$stchg[] = "texttype='$sta[texttype]'"; */
+/* 				$stchg[] = "category='$sta[category]'"; */
+/* 				$stchg[] = "shorttext='$sta[shorttext]'"; */
+/* 				$stchg[] = "longertext='$sta[longertext]'"; */
+/* 				$stchg[] = "url='$sta[url]'"; */
+/* 				$stchg[] = "type='$sta[type]'"; */
+/* 				$stchg[] = "title='$sta[title]'"; */
+/* 				$stchg[] = "locked=$sta[locked]"; */
+/* //				$stchg[] = "activatedate='$sta[activatedate]'"; */
+/* //				$stchg[] = "deactivatedate='$sta[deactivatedate]'"; */
+/* //				$stchg[] = "permissions='$sta[permissions]'"; */
+/* 	 */
+/* 				$stquery .= implode(",",$stchg); */
+/* 				print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ".$stquery."<BR>"; */
+/* 				db_query($stquery); */
+/* 				print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>"; */
+/*  */
+/* 				$nstories[] = lastid(); */
+/* 			} */
+/* 			$stories = encode_array($nstories); */
+/* 			$pquery = "update pages set stories='$stories' where id='$page'"; */
+/* 			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".$pquery."<BR>"; */
+/* 			db_query($pquery); */
+/* 			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".mysql_error()."<BR>"; */
+/* 		} */
+/* 		$pages = encode_array($npages); */
+/* 		$squery = "update sections set pages='$pages' where id='$section'"; */
+/* 		db_query($squery); */
+/* 		print " &nbsp; &nbsp; &nbsp; ".$squery."<BR>"; */
+/* 		print " &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>"; */
+/* 	} */
+/* 	$sections = encode_array($nsections); */
+/* 	$query = "update sites set sections='$sections' where name='$dest'"; */
+/* 	db_query($query); */
+/* 	print $query."<BR>"; */
+/* } */

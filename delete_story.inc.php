@@ -22,7 +22,7 @@ if (/* in_array($delete_story,$stories) && permission($auser,PAGE,DELETE,$page) 
 /* 	$stories = encode_array($newstories); */
 /* 	$query = "update pages set stories='$stories' where id=$page"; */
 /* 	db_query($query); */
-	log_entry("delete_story",$_REQUEST[site],$_REQUEST[section],$_REQUEST[page],"$_SESSION[auser] deleted story id $_REQUEST[delete_story]");
-} else log_entry("failed: delete_story",$_REQUEST[site],$_REQUEST[section],$_REQUEST[page],"$_SESSION[auser] deleting story id $_REQUEST[delete_story]");
+	log_entry("delete_story","$_SESSION[auser] deleted story id $_REQUEST[delete_story]",$_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story]);
+} else log_entry("delete_story","$_SESSION[auser] deleting story id $_REQUEST[delete_story] failed",$_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story]);
 
 header("Location: $PHP_SELF?$sid&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]&action=viewsite");

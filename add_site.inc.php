@@ -112,8 +112,14 @@ if ($_REQUEST[save]) {
 	if (!$error) { // save it to the database
 		
 		print "<BR><BR>".$_SESSION[settings][sitename]."<BR><BR>";
-		if ($_SESSION[settings][add]) $_SESSION[siteObj]->insertDB();
-		if ($_SESSION[settings][edit]) $_SESSION[siteObj]->updateDB();
+		if ($_SESSION[settings][add]) {
+			$_SESSION[siteObj]->insertDB();
+			log_entry("add_site","$_SESSION[auser] added ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name);
+		}
+		if ($_SESSION[settings][edit]) {
+			$_SESSION[siteObj]->updateDB();
+			log_entry("edit_site","$_SESSION[auser] edited ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name);
+		}
 		
 		/* ----------------------------------------------------- */
 		/*   will have to update this to use object-related site copy functions */
@@ -138,13 +144,13 @@ if ($_REQUEST[save]) {
 		$sitename = $_SESSION[siteObj]->getField("name");
 		$commingFrom = $_SESSION[settings][commingFrom];
 		$add = $_SESSION[settings][add];
-/*  */
-/* 		if ($add) { */
-/* 			header("Location: index.php?$sid&action=viewsite&site=$sitename"); */
-/* 		} else { */
-/* 			if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename"); */
-/* 			else header("Location: index.php?$sid"); */
-/* 		} */
+
+		if ($add) {
+			header("Location: index.php?$sid&action=viewsite&site=$sitename");
+		} else {
+			if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename");
+			else header("Location: index.php?$sid");
+		}
 		
 	} else {
 		printc ("<br>There was an error");

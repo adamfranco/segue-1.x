@@ -126,7 +126,7 @@ class site extends segue {
 		$this->updatePermissionsDB();
 		
 		// add log entry
-		log_entry("edit_site",$this->name,"","","$_SESSION[auser] edited ".$this->name);
+/* 		log_entry("edit_site",$this->name,"","","$_SESSION[auser] edited ".$this->name); */
 		
 		// update down
 		if ($down) {
@@ -151,7 +151,7 @@ class site extends segue {
 		$this->updatePermissionsDB(1);
 		
 		// add log entry
-		log_entry("add_site",$this->name,"","","$_SESSION[auser] added ".$this->name);
+/* 		log_entry("add_site",$this->name,"","","$_SESSION[auser] added ".$this->name); */
 		
 		// insert down
 		if ($down && $this->fetcheddown && $this->sections) {

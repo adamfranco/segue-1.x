@@ -96,7 +96,7 @@ function changeOrder(order) {
 </td></tr>
 </table>
 
-<table cellspacing=1 width='100%' style='border: 1px solid #555'>
+<table cellspacing=1 width='100%' id='maintable'>
 <tr>
 	<td colspan=6>
 		<table width='100%'>

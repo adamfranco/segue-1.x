@@ -17,6 +17,7 @@ if ($copysite && $newname && $origname) {
 /*      print "</pre>"; */
         /* $origSite->copySite($newname,$clearpermissions); */
         $origSite->copySite($newname);
+        log_entry("copy_site","$_SESSION[auser] copied site ".$origname." to ".$newname,$newname);
 }
 
 /******************************************************************************
@@ -108,13 +109,13 @@ if ($_loggedin) {
                                         $groupObj->addClasses($_REQUEST[group]);
                                         $groupObj->updateDB();
                                         $list = implode(",",$groupObj->classes);
-                                        log_entry("classgroups","$_REQUEST[newgroup]","","","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list");
+                                        log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list","$_REQUEST[newgroup]");
                                 } else error("Somebody has already created a class group with that name. Please try another name.");
                         } else {        // new group
                                 $groupObj->addClasses($_REQUEST[group]);
                                 $groupObj->updateDB();
 /*                              $query = "insert into classgroups set name='$newgroup',classes='$list',owner='$auser'"; */
-                                log_entry("classgroups","$_REQUEST[newgroup]","","","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes));
+                                log_entry("classgroups","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes),"$_REQUEST[newgroup]");
                         }
                 } else
                         error("Your group name is invalid. It may only contain alphanumeric characters, '_', '-', and be under 21 characters. No spaces, punctuation, etc.");

@@ -139,8 +139,8 @@ class story extends segue {
 		// update permissions
 		$this->updatePermissionsDB();
 		
-		// add log entry
-		log_entry("edit_story",$this->owning_site,$this->owning_section,$this->owning_page,"$_SESSION[auser] edited content id ".$this->id." in site ".$this->owning_site);
+		// add log entry, now handled elsewhere
+/* 		log_entry("edit_story",$this->owning_site,$this->owning_section,$this->owning_page,"$_SESSION[auser] edited content id ".$this->id." in site ".$this->owning_site); */
 
 		return true;
 	}
@@ -194,7 +194,7 @@ class story extends segue {
 		$this->updatePermissionsDB(1);
 		
 		// add log entry
-		log_entry("add_story",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added content id ".$this->id." to site ".$this->owning_site);
+/* 		log_entry("add_story",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added content id ".$this->id." to site ".$this->owning_site); */
 		
 		// insert down
 /* 		if ($down && $this->fetcheddown) { */

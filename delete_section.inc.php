@@ -32,7 +32,7 @@ if (/* in_array($delete_section,$sections) &&  */permission($_SESSION[auser],SIT
 /* 		} */
 /* 	} */
 /* 	// done; */
-	log_entry("delete_section",$_REQUEST[site],"","","$_SESSION[auser] deleted section id $_REQUEST[delete_section]");
-} else log_entry("failed: delete_section",$_REQUEST[site],$_REQUEST[delete_section],"","$_SESSION[auser] deleting section id $_REQUEST[delete_section]");
+	log_entry("delete_section","$_SESSION[auser] deleted section id $_REQUEST[delete_section]",$_REQUEST[site]);
+} else log_entry("delete_section","$_SESSION[auser] deleting section id $_REQUEST[delete_section] failed",$_REQUEST[site],$_REQUEST[delete_section]);
 
 header("Location: $PHP_SELF?$sid&site=$_REQUEST[site]&action=viewsite");

@@ -160,8 +160,14 @@ if ($_REQUEST[save]) {
 /* 			else $_SESSION[storyObj]->setPermissions($thisPage->getPermissions()); */
 /* 		} */
 
-		if ($_SESSION[settings][add]) $_SESSION[storyObj]->insertDB();
-		if ($_SESSION[settings][edit]) $_SESSION[storyObj]->updateDB();
+		if ($_SESSION[settings][add]) {
+			$_SESSION[storyObj]->insertDB();
+			log_entry("add_story","$_SESSION[auser] added content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->owning_section,$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->id);
+		}
+		if ($_SESSION[settings][edit]) {
+			$_SESSION[storyObj]->updateDB();
+			log_entry("edit_story","$_SESSION[auser] edited content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->owning_section,$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->id);
+		}
 		
 /* 			log_entry("add_story",$_SESSION[settings][site],$_SESSION[settings][section],$page,"$auser added content id $newid to page $_SESSION[settings][page] in section $_SESSION[settings][section] of site $_SESSION[settings][site]"); */
 /* 		} */
