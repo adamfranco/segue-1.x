@@ -33,7 +33,7 @@ function initEditor() {
 	  "fontsize", "space",
 	  "formatblock", "space",
 	  "bold", "italic", "underline", "strikethrough", "separator",
-	  "subscript", "superscript","copy", "cut", "paste"],
+	  "subscript", "superscript"],
 	
 	["justifyleft", "justifycenter", "justifyright", "justifyfull", "separator", "space", "undo", "redo", "lefttoright", "righttoleft", "separator",
 	"insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",

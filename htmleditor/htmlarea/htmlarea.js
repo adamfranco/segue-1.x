@@ -1680,7 +1680,9 @@ HTMLArea.prototype._editorEvent = function(ev) {
 		    case 'j': cmd = "justifyfull"; break;
 		    case 'z': cmd = "undo"; break;
 		    case 'y': cmd = "redo"; break;
-		    case 'v': cmd = "paste"; break;
+//		    case 'v': cmd = "paste"; break; // This causes paste to be captured by
+											// HTMLAREA and violate Mozilla's security
+											// setup.
 
 		    case '0': cmd = "killword"; break;
 
