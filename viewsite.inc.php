@@ -3,106 +3,99 @@
 // session variable reset has moved to index.php
 		
 
-$site_owner = db_get_value("sites","addedby","name='$site'");
-if ($site) {
-//	$query = "select * from sites where id=$site";
-	$siteinfo = db_get_line("sites","name='$site'");
-	$sections = decode_array($siteinfo['sections']);
-	if (!$section && count($sections)) {
-		for ($i=0; $i<count($sections) && !$section; $i++) {
-			if (db_get_value("sections","type","id=$sections[$i]")=='section')$section=$sections[$i];
+if ($thisSite) {
+	if (!$thisSection && count($thisSite->getField("sections")) {
+		$thisSite->fetchDown();
+		for($i = 0; $i<count($thisSite->sections) && !$thisSection; $i++) {
+			if ($thisSite->sections[$i]->getField("type") == 'section') $thisSection = &$thisSite->sections[$i];
 		}
 	}
-	$sitetype = $siteinfo['type'];
-	// once sites are objects this will no longer be needed -- the check can be done within the object
-	if (!$sitetype || $sitetype=='') $sitetype = "personal";
+	$sitetype = $thisSite->getField("type");
 }
-if ($section) {
-//	$query = "select * from sections where id=$category";
-	$sectioninfo = db_get_line("sections","id=$section");
-	$st = " > " . $sectioninfo['title'];
-	$pages = decode_array($sectioninfo['pages']);
-	if (!$page && count($pages)) {
-		for ($i=0;$i<count($pages) && !$page;$i++) {
-			if (db_get_value("pages","type","id=$pages[$i]") == 'page') $page = $pages[$i];
+if ($thisSection) {
+	if (!$thisPage && count($thisSection->getField("pages"))) {
+		$thisSection->fetchDown();
+		for ($i=0;$i<count($thisSection->pages) && !$thisPage;$i++) {
+			if ($thisSection->pages[$i]->getField("type") == 'page') $thisPage = &$thisSection->pages[$i];
 		}
 	}
+	$st = " > " . $thisSection->getField("title");
 	// check category permissions
 }
-if ($page) {		// we're viewing a page
-//	$query = "select * from pages where id=$page";
-	$pageinfo = db_get_line("pages","id=$page");
-	$stories = decode_array($pageinfo[stories]);
-	$pt = " > " . $pageinfo['title'];
+if ($thisPage) {		// we're viewing a page
+	$pt = " > " . $thisPage->getField("title");
 	// check page permissions
 }
-$pagetitle = $siteinfo['title'] . $st . $pt;
+$pagetitle = $thisSite->getField("title") . $st . $pt;
 
-if (!is_editor($auser,$site)) {
+if (!$thisSite->isEditor()) {
 	error("You are not an editor for this site.");
 	return;
 }
 
 // check for proper instance of scripts
 if ($allowclasssites != $allowpersonalsites) {
-	$type = db_get_value("sites","type","name='$site'");
+	$type = $thisSite->getField("type");
 	if ($allowclasssites && !$allowpersonalsites) {
 		if ($type == 'personal')
 			header("Location: $personalsitesurl/index.php?action=viewsite&site=$site&section=$section&page=&page");
 	} else if (!$allowclasssites && $allowpersonalsites) {
 		if ($type != 'personal' && $type != 'system')
 			header("Location: $classsitesurl/index.php?action=viewsitesite=$site&section=$section&page=&page");
-	} else {
-		// Do nothing
 	}
 }
 
 // we are reordering either pages or sections (or stories?)
-if ($reorder) {
-	if ($reorder == 'page' && permission($auser,SECTION,EDIT,$section)) {
-		$pages = reorder($pages,$id,$direction);
-		$query = "update sections set pages='".encode_array($pages)."' where id=$section";
-		db_query($query);
+if ($_REQUEST[reorder]) {
+	if ($_REQUEST[reorder] == 'page' && $thisSection->hasPermission("edit")) {
+		$thisSection->setField("pages",reorder($thisSection->getField("pages"),$_REQUEST[id],$_REQUEST[direction]));
+		$thisSection->updateDB();
+/* 		$thisSection->fetcheddown=0; */
+/* 		$thisSection->fetchDown(); */
 	}
-	if ($reorder == 'section' && permission($auser,SITE,EDIT,$site)) {
-		$sections = reorder($sections, $id,$direction);
-		$query = "update sites set sections='".encode_array($sections)."' where name='$site'";
-		db_query($query);
+	if ($_REQUEST[reorder] == 'section' && $thisSite->hasPermission("edit")) {
+		$thisSite->setField("sections",reorder($thisSite->getField("sections"), $_REQUEST[id],$_REQUEST[direction]));
+		$thisSite->updateDB();
+		$thisSite->fetcheddown=0;
+		$thisSite->fetchDown();
 	}
-	if ($reorder == 'story' && permission($auser,PAGE,EDIT,$page)) {
-		$stories = reorder($stories,$id,$direction);
-		$query = "update pages set stories='".encode_array($stories)."' where id=$page";
-		db_query($query);
+	if ($_REQUEST[reorder] == 'story' && $thisPage->hasPermission("edit")) {
+		$thisPage->setField("stories",reorder($thisPage->getField("stories"),$_REQUEST[id],$_REQUEST[direction]));
+		$thisPage->updateDB();
+/* 		$thisPage->fetcheddown=0; */
+/* 		$thisPage->fetchDown(); */
 	}
 }
 
 
-$envvars = "site=$site";
-if ($section) $envvars .= "&section=$section";
-if ($page) $envvars .= "&page=$page";
+$envvars = "site=".$thisSite->name;
+if ($thisSection) $envvars .= "&section=".$thisSection->id;
+if ($thisPage) $envvars .= "&page=".$thisPage->id;
 
 // first build list of categories
-$topnav_extra = ((permission($auser,SITE,ADD,$site))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&commingFrom=viewsite' class='btnlink' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"");
+$topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&commingFrom=viewsite' class='btnlink' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"");
 
-/* $sections = decode_array($siteinfo['sections']); */
+$site=$thisSite->name;
+$section=$thisSection->id;
+$page=$thisPage->id;
+$thisSite->fetchDown();			// just in case we haven't already
 $i=0;
-foreach ($sections as $s) {
-	$a = db_get_line("sections","id=$s");
-	if ($a[type] == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=viewsite";
-	if ($a[type] == 'url') { $link = $a[url]; $target="_blank";}
+foreach ($thisSite->sections as $id=>$s) {
+	if ($s->getField("type") == 'section') $link = "$PHP_SELF?$sid&site=$site&section=$id&action=viewsite";
+	if ($s->getField("type") == 'url') { $link = $s->getField("url"); $target="_blank";}
 	$extra = '';
-	if (($section == $s) || ($a[type] == 'url')) {
-		if (permission($auser,SITE,EDIT,$site)) {
-			if ($i != 0) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=up&id=$s' class=btnlink title='Move this section to the left'>&larr;</a>";
-			if ($i != count($sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$s' class=btnlink title='Move this section to the right'>&rarr;</a>";
+	if (($section == $i) || ($s->getField("type") == 'url')) {
+		if ($thisSite->hasPermission("edit")) {
+			if ($i != 0) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=up&id=$id' class=btnlink title='Move this section to the left'>&larr;</a>";
+			if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$id' class=btnlink title='Move this section to the right'>&rarr;</a>";
 		}
-		$extra .= (permission($auser,SITE,EDIT,$site))?" <a href='copy_parts.php?$sid&site=$site&section=$s&type=section' class='btnlink' title='Move/Copy this section to another site' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
-		$extra .= (permission($auser,SITE,EDIT,$site))?" <a href='$PHPSELF?$sid&site=$site&section=$s&action=edit_section&edit_section=$s&commingFrom=viewsite' class='btnlink' title='Edit the title and properties of this section'>edit</a>":"";
-		$extra .= (permission($auser,SITE,DELETE,$site))?" <a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHPSELF?$sid&$envvars&action=delete_section&delete_section=$s\")' class='btnlink' title='Delete this section'>del</a>":"";
+		$extra .= ($thisSite->hasPermission("edit"))?" <a href='copy_parts.php?$sid&site=$site&section=$id&type=section' class='btnlink' title='Move/Copy this section to another site' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
+		$extra .= ($thisSite->hasPermission("edit"))?" <a href='$PHP_SELF?$sid&site=$site&section=$id&action=edit_section&edit_section=$id&commingFrom=viewsite' class='btnlink' title='Edit the title and properties of this section'>edit</a>":"";
+		$extra .= ($thisSite->hasPermission("delete"))?" <a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHP_SELF?$sid&$envvars&action=delete_section&delete_section=$id\")' class='btnlink' title='Delete this section'>del</a>":"";
 	}
 	$i++;
-	if ($a[active] || has_permissions($auser,SECTION,$site,$s,"","")) {
-		add_link(topnav,$a['title'],$link,$extra,$s,$target);
+	if ($s->canview() || $s->hasPermissionDown("add or edit or delete")) {
+		add_link(topnav,$s->getField("title"),$link,$extra,$id,$target);
 	}	
 }
 

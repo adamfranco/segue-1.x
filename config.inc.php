@@ -8,19 +8,20 @@ $sid = SID;
 error_reporting(E_ERROR | E_WARNING);	// more errors
 //error_reporting(E_ERROR | E_WARNING | E_NOTICE); 		// lots of errors
 //error_reporting(E_ALL);			// all errors !!
-// NOTE: the last two options here enable so much error reporting that they will
-// seriously screw up MOTS's functionality with HTML forms. Just don't use them.
+/* NOTE: the last two options here enable so much error reporting that they will */
+/* seriously screw up Segue's functionality with HTML forms. Just don't use them */
 
-#$this_computer = "etdev";
-#$this_computer = "et";
-#$this_computer = "chunky";
+//defines - DO NOT CHANGE THESE!!!
+define("leftnav","leftnav",TRUE);
+define("rightnav","rightnav",TRUE);
+define("topnav","topnav",TRUE);
+
 $file = file("machine");
 $this_computer = trim($file[0]);
 //print $this_computer;
 if (!$this_computer) $this_computer = "etdev";
 
 include("configs/config_".$this_computer.".inc.php");
-
-$networknames = array("midd"=>"Middlebury","kenyon"=>"Kenyon");
+unset($this_computer,$file);
 
 ?>

@@ -8,7 +8,7 @@ function isclass ($class) {
 	return $v;
 }
 
-function getuserclasses($user,$time="now") {
+function getuserclasses($user,$time="all") {
 	$user = strtolower($user);
 	global $ldap_voadmin_user, $ldap_voadmin_pass,$ldapserver;
 	$ldap_user = "cn=$ldap_voadmin_user,cn=Recipients,ou=Midd,o=MC";
@@ -52,7 +52,8 @@ function getuserclasses($user,$time="now") {
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						} else if ($time == "future" && ($r[5] > date('y') || semorder($r[4]) > semorder($semester))) {
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
-						}
+						} else if ($time == "all")
+							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 					}
 				}
 			}

@@ -36,6 +36,14 @@ class site extends segue {
 		}
 	}
 	
+	function fetchUp() {
+		if (get_class($this) == 'site') $this->owningSiteObj = &$this;
+		else {
+			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj->fetchFromDB();
+		}
+	}
+	
 	function fetchFromDB() {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		global $cfg;
@@ -58,6 +66,7 @@ class site extends segue {
 			$this->parseMediaTextForEdit("header");
 			$this->parseMediaTextForEdit("footer");
 			$this->buildPermissionsArray();
+			if (strlen($this->data[type])) $this->data[type] = 'personal';
 			return true;
 		}
 		return false;

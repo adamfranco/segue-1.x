@@ -7,6 +7,7 @@ class segue {
 	var $permissions = array("everyone"=>array(3=>1),"institute"=>array(3=>1));
 	var $editors = array("everyone","institute");
 	var $editorsToDelete = array();
+	var $editorsToDeleteInScope = array();
 	var $changedpermissions = 0;
 	
 	var $id = 0;
@@ -273,7 +274,40 @@ class segue {
  * PERMISSIONS FUNCTIONS
  *
  * these functions handle part-specific permissions
+ *	addEditor($e)		adds $e as an editor with default permissions (view only)
+ *	delEditor($e)		removes all of $e's site permissions (ALL OF THEM)
+ *	getEditors()		returns an array of editors for the site
+ *	setPermissions($p)	set permissions to $p (a permission-formatted array)
+ *	getPermissions()	returns a permission-formatted array of permissions
+ *	clearPermissions()	flags all editor's scope-specific permissions to be removed
+ *	setUserPermissions($user,$add,$edit,$del,$view,$discuss)
+ *						sets $user's permissions to values of parameters (0 or 1)
+ *	setUserPermissionsFromArray($user,$p)
+ *						sets $user's permissions from permission-formatted array $p
+ *	buildPermissionsArray()
+ *						builds a permission-formatted array from the database
+ *	updatePermissionsDB()
+ *						updates the permissions database to reflect changes made above
+ *	canview($user)		returns true/false depending on whether $user can view
+ *						this part of the site. takes into account de/activate dates
+ *						and active flag
+ *	hasPermission($perms,$user)
+ *						takes a formatted string $perms (ex, 'add and (edit or delete)')
+ *						and returns true/false if $user has those permissions
  ******************************************************************************/
+
+	function isEditor($user='') {
+		if ($user=='') $user=$_SESSION[auser];
+		$this->fetchUp();
+		$owner = $this->owningSiteObj->getField("type");
+		if (strtolower($user) == strtolower($owner)) return 1;
+		$toCheck = array(strtolower($user));
+		$toCheck = array_merge($toCheck,$this->getEditorOverlap(getuserclasses($user)));
+		foreach ($this->editors as $e) {
+			if (in_array(strtolower($e),$toCheck)) return 1;
+		}
+		return 0;
+	}
 
 	function addEditor($e) { 
 		if ($e == 'institute' || $e == 'everyone') return false;
@@ -281,8 +315,6 @@ class segue {
 		if (!in_array($e,$this->editors)) {
 			$this->editors[]=$e;
 			$this->setUserPermissions($e);
-/* 			print_r($this->permissions); */
-//			unset($_REQUEST[permissions]);
 		}
 	}
 
@@ -296,10 +328,6 @@ class segue {
 			$this->editors = $n;
 			unset($this->permissions[$e]);
 			$this->editorsToDelete[] = $e;
-			
-			// remove any pertinent entries from the permissions table
-			// to be added later -- not sure exactly how to handle this yet.
-			// -- the higher power will enlighten me :)
 		}
 	}
 	
@@ -308,7 +336,6 @@ class segue {
 	}
 	
 	function setPermissions($p) {
-		// set the permissions array
 		if (is_array($p)) {
 			$this->permissions = $p;
 			$this->editors = array_unique(array_merge(array_keys($p),$this->editors));	// add new editors from new permissions array
@@ -317,7 +344,7 @@ class segue {
 	}
 	
 	function clearPermissions() {
-		$this->editorsToDelete = array_unique(array_merge(array_keys($p),$this->editors));
+		$this->editorsToDeleteInScope = array_unique(array_merge(array_keys($p),$this->editors));
 		$this->editors = array();
 		$this->permissions = array();
 	}
@@ -329,8 +356,6 @@ class segue {
 	function setUserPermissionsFromArray($user,$p) {
 		$this->permissions[$user] = $p;
 		$this->changedpermissions = 1;
-/* 		print "Setting permissions from array for $user:<BR><BR>"; */
-/* 		print_r($p); */
 	}
 	
 	function getPermissions() {
@@ -416,6 +441,9 @@ class segue {
 			foreach ($this->editorsToDelete as $e) {
 				db_query("delete from permissions where user='$e' and site='$site'");
 			}
+			foreach ($this->editorsToDeleteInScope as $e) {
+				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");
+			}
 		}
 	}
 
@@ -429,6 +457,8 @@ class segue {
 		$_ignore_types = array("page"=>array("heading","divider"));
 		$scope = get_class($this);
 		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
+		$this->fetchUp();
+		if ($this->owningSiteObj->getField("addedby") == $user) return 1;
 		if ($scope != 'story') {
 			if (!$this->getField("active")) return 0;
 		}
@@ -444,7 +474,7 @@ class segue {
  ******************************************************************************/
 
 	function hasPermission($perms,$ruser='') {
-		global $allclasses, $_logged_in;
+		global $allclasses, $_logged_in, $cfg;
 
 		$_a = array('add','edit','delete','view','discuss');
 		
@@ -469,22 +499,24 @@ class segue {
 		else $user = $ruser;
 		$permissions = $this->getPermissions();
 		$toCheck = array();
-		if ($user && $user != '') $toCheck[] = strtolower($user);
+		if (strlen($user)) $toCheck[] = strtolower($user);
 		$toCheck[] = "everyone";
 		if ($_logged_in) $toCheck[] = "institute";
-/* 		else { */
-			
-		foreach ($permissions as $u=>$p) {
-			$permissions[strtolower($u)] = $p;
+		else {
+			// check if our IP is in inst_ips
 			$good=0;
-			$c = array();
-			if (isclass($u)) $c[] = $u;
-			if ($g = isgroup($u)) $c = array_merge($c,$g);
-			foreach($c as $class) {
-				if (is_array($allclasses[$class])) $good=1;
+			$ip = $_SERVER[REMOTE_ADDR];
+			if (is_array($cfg[inst_ips])) {
+				foreach ($cfg[inst_ips] as $i) {
+					if (ereg("^$i",$ip)) $good=1;
+				}
 			}
-			if ($good) $toCheck[]=strtolower($u);
+			if ($good) $toCheck[]="institute";
 		}
+		$toCheck = array_merge($this->returnEditorOverlap($allclasses),$toCheck);
+		
+		foreach ($permissions as $u=>$p) $permissions[strtolower($u)] = $p;
+		
 		$pArray = array();
 		
 //		print "$perms<BR>";
@@ -497,13 +529,33 @@ class segue {
 			foreach ($_a as $p) {
 				$exec = str_replace($p,'$permissions[\''.$u.'\'][permissions::'.strtoupper($p).'()]',$exec);
 			}
-			//print $exec;
 			$pArray[] = "(".$exec.")";
 		}
 		$isgood = 0;
 		$condition = '$isgood = ('.implode(' || ',$pArray).')?1:0;';
 		eval($condition);
-		print $condition;
+//		print $condition;
 		return $isgood;
+	}
+	
+	function hasPermissionDown($perms,$user='') {
+		// write the darned CODE gabe!
+		// ... or just return 1
+		return 1;
+	}
+	
+	function returnEditorOverlap($classes) {
+		$toCheck = array();
+		foreach ($this->editors as $u) {
+			$good=0;
+			$c = array();
+			if (isclass($u)) $c[] = $u;
+			if ($g = isgroup($u)) $c = array_merge($c,$g);
+			foreach($c as $class) {
+				if (is_array($classes[$class])) $good=1;
+			}
+			if ($good) $toCheck[]=strtolower($u);
+		}
+		return $toCheck;
 	}
 }
