@@ -33,7 +33,7 @@ do {
 	}
 	
 	// if we're an admin, override all errors
-	if ($_SESSION[ltype] == 'admin') {
+	if ($_SESSION[ltype] == 'admin' && $_SESSION[luser]==$_SESSION[auser]) {
 		clearerror();
 	}
 	
