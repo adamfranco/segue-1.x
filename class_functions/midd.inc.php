@@ -42,9 +42,13 @@ function getuserclasses($user,$time="all") {
 						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
 							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];					
 							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
-							$classinfo = db_get_line("classes","name='$class'");
+							$classinfo = db_get_line("class","class_code='$class'");
 							if (!$classinfo) {
-								$query = "insert into classes set name='$class', uname='$user'";
+								$query = "SELECT user_id FROM user WHERE user_uname = '$user'";
+								$r = db_query($query);
+								$a = db_fetch_assoc($r);
+								$user_id = $a[user_id];
+								$query = "insert into class set class_code='$class', FK_owner=$user_id";
 								db_query($query);
 							}	
 							
