@@ -55,7 +55,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		// are they prof?
 		if (is_array($results[0]["memberof"])) {
 			foreach ($results[0]["memberof"] as $item) {
-				if (eregi("all_faculty",$item)) {
+				if (eregi("All_Staff",$item) || eregi("All_Faculty",$item)) {
 					$areprof=1;
 				}
 			}
