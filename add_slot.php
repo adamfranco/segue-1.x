@@ -19,7 +19,7 @@ if ($add) {
 	
 	
 	if (!$error) {
-		$slotObj = new slot($owner,$name,$assocsite);
+		$slotObj = new slot($owner,$name,$type,$assocsite);
 		$successful = $slotObj->insertDB();
 		if ($successful) {
 			$name = "";
@@ -29,7 +29,7 @@ if ($add) {
 
 if ($delete) {
 	// delete a slot
-	$slotObj = new slot("","","",$delete);
+	$slotObj = new slot("","","","",$delete);
 	$slotObj->delete();
 }
 
@@ -110,6 +110,15 @@ input,select {
 <td><input type=text name="owner" value="<? echo $owner ?>"></td>
 </tr>
 <tr>
+<td valign=top>Type:</td>
+<td>
+<input type=radio name="type" value="class"<? print (($type == 'class' || !isset($type))?" checked":""); ?>> Class
+<br><input type=radio name="type" value="personal"<? print (($type == 'personal')?" checked":""); ?>> Personal
+<br><input type=radio name="type" value="other"<? print (($type == 'other')?" checked":""); ?>> Other
+<br><input type=radio name="type" value="system"<? print (($type == 'system')?" checked":""); ?>> System
+</td>
+</tr>
+<tr>
 <td>Associated Site: (optional)</td>
 <td><input type=text name="assocsite" value="<? echo $assocsite ?>"></td>
 </tr>
@@ -127,6 +136,7 @@ input,select {
 <th>id</th>
 <th>name</th>
 <th>owner</th>
+<th>type</th>
 <th>assocSite</th>
 </tr>
 
@@ -138,7 +148,8 @@ foreach ($allSlots as $slot) {
 	print "<td>$slot[id]</td>";
 	print "<td>$slot[name]</td>";
 	print "<td>$slot[owner]</td>";
-	print "<td>$slot[assocSite]</td>";
+	print "<td>$slot[type]</td>";
+	print "<td>$slot[assocsite]</td>";
 	print "</tr>";
 }
 ?>

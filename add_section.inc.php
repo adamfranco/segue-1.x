@@ -31,7 +31,7 @@ if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
 	if ($_REQUEST[type]) $_SESSION[sectionObj]->setField("type",$_REQUEST[type]);
-	if ($_SESSION[settings][step] == 1 && $_REQUEST[title] != "") $_SESSION[sectionObj]->setField("title",$_REQUEST[title]);
+	if ($_SESSION[settings][step] == 1) $_SESSION[sectionObj]->setField("title",$_REQUEST[title]);
 	// handle de/activate dates
 	$_SESSION[sectionObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[sectionObj]->setField("active",$_REQUEST[active]);

@@ -6,16 +6,17 @@ class slot {
 	var $assocSite="";
 	var $id=0;
 	
-	function slot($owner,$name,$assocSite="",$id=0) {
+	function slot($owner,$name,$type="class",$assocSite="",$id=0) {
 		$this->owner = $owner;
 		$this->name = $name;
+		$this->type = $type;
 		$this->assocSite = $assocSite;
 		$this->id = $id;
 	}
 
 	function exists($name) {
-		$query = "select * from slots where name='$site'";
-		if (db_num_rows(db_query($query))) return 1;
+		$query = "select * from slots where name='$name'";
+		if (db_num_rows(db_query($query)) > 0) return 1;
 		// check the ldap
 		if (ldapfname($name)) return 1;
 		return 0;
@@ -29,10 +30,10 @@ class slot {
 	
 	function insertDB() {
 		global $error;
-		if (segue::siteExists($this->name) || slot::exists($this->name)) error("That site name is already in use.");
+		if (segue::siteExists($this->name) || slot::exists($this->name)) error("That site name, ".$this->name.", is already in use.");
 		if (!ereg("^([0-9a-zA-Z_.-]{0,})$",$this->name)) error("Your slot name is invalid. It may only contain alphanumeric characters, '-', '_' and '.'");
 		if (!$error) {
-			$query = "insert into slots set owner='".$this->owner."',name='".$this->name."',assocsite='".$this->assocSite."'";				
+			$query = "insert into slots set owner='".$this->owner."',name='".$this->name."',type='".$this->type."',assocsite='".$this->assocSite."'";				
 //			print $query;
 			return db_query($query);
 		}
@@ -69,6 +70,7 @@ class slot {
 			$allSlots[$i][id] = $a[id];
 			$allSlots[$i][name] = $a[name];
 			$allSlots[$i][owner] = $a[owner];
+			$allSlots[$i][type] = $a[type];
 			$allSlots[$i][assocsite] = $a[assocsite];
 			$i++;
 		}
