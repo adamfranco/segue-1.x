@@ -27,8 +27,7 @@ class Update130
      * @return string Description of the update
 	 */
 	function getDescription() {
-		return "This update modifies Segue to allow the use of RSS Feeds as content-types.  As well 
-		it adds visitor and guest usertypes to the user table and adds a discussion label to story table";
+		return "This update modifies Segue to allow the use of RSS Feeds as content-types.  As well it adds visitor and guest usertypes to the user table, adds a discussion label to story table, and changes the column-type of the class_semester column in the class table to allow for user-specified semesters.";
 	}
 	
     /**
@@ -85,6 +84,20 @@ class Update130
 		} else {
 			$hasRun = FALSE;
 			print "\nNeeds discuss link label field in story table.<br>";
+		}
+		
+		// check that the class_semester field in the class table is of type varchar
+		$query = "
+		DESCRIBE
+			class class_semester
+		";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		if ($a['Type'] == "varchar(50)") {
+			$hasRun = TRUE;
+		} else {
+			$hasRun = FALSE;
+			print "\nThe class_semester field in the class table needs to be of type varchar.<br>";
 		}
 				
 		return $hasRun;	
@@ -171,7 +184,27 @@ class Update130
 			";
 			$r = db_query($query);
 		}
-
+		
+		
+		// check that the class_semester field in the class table is of type varchar
+		$query = "
+		DESCRIBE
+			class class_semester
+		";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		if ($a['Type'] != "varchar(50)") {
+			$query = "ALTER TABLE 
+							class
+						CHANGE 
+							class_semester
+							class_semester 
+							VARCHAR(50) 
+							DEFAULT 'w' 
+							NOT NULL";
+			$r = db_query($query);
+		}
+		
 	}
 }
 
