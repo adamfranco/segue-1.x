@@ -1,237 +1,1 @@
-#
-# Table structure for table `classes`
-#
-
-CREATE TABLE classes (
-  id bigint(20) NOT NULL auto_increment,
-  name varchar(255) NOT NULL default '0',
-  uname varchar(10) NOT NULL default '0',
-  fname varchar(200) default NULL,
-  semester varchar(10) default NULL,
-  year smallint(10) default NULL,
-  type varchar(15) NOT NULL default '',
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `classgroups`
-#
-
-CREATE TABLE classgroups (
-  id bigint(20) NOT NULL auto_increment,
-  owner varchar(100) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
-  classes blob NOT NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `discussions`
-#
-
-CREATE TABLE discussions (
-  id bigint(20) NOT NULL auto_increment,
-  author varchar(100) NOT NULL default '',
-  authortype varchar(20) NOT NULL default '',
-  timestamp timestamp(14) NOT NULL,
-  content longblob NOT NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `logs`
-#
-
-CREATE TABLE logs (
-  timestamp timestamp(14) NOT NULL,
-  type varchar(255) NOT NULL default '',
-  luser varchar(255) default NULL,
-  auser varchar(255) default NULL,
-  site varchar(255) default NULL,
-  section varchar(255) default NULL,
-  page varchar(255) default NULL,
-  content text NOT NULL
-) TYPE=MyISAM COMMENT='Log entries';
-# --------------------------------------------------------
-
-#
-# Table structure for table `media`
-#
-
-CREATE TABLE media (
-  id bigint(20) NOT NULL auto_increment,
-  site_id varchar(255) NOT NULL default '',
-  name varchar(255) NOT NULL default '',
-  addedtimestamp datetime NOT NULL default '0000-00-00 00:00:00',
-  addedby varchar(100) NOT NULL default '',
-  type varchar(20) NOT NULL default '',
-  size bigint(20) default NULL,
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `pages`
-#
-
-CREATE TABLE pages (
-  id bigint(20) NOT NULL auto_increment,
-  section_id bigint(20) NOT NULL default '0',
-  site_id varchar(255) NOT NULL default '',
-  title varchar(255) NOT NULL default '',
-  addedtimestamp datetime default NULL,
-  addedby varchar(100) NOT NULL default '',
-  editedby varchar(100) NOT NULL default '',
-  editedtimestamp timestamp(14) NOT NULL,
-  activatedate date NOT NULL default '0000-00-00',
-  deactivatedate date NOT NULL default '0000-00-00',
-  active tinyint(4) NOT NULL default '0',
-  locked tinyint(4) NOT NULL default '0',
-  permissions blob NOT NULL,
-  showcreator tinyint(4) NOT NULL default '0',
-  showdate tinyint(4) NOT NULL default '0',
-  showhr tinyint(4) NOT NULL default '0',
-  stories blob NOT NULL,
-  storyorder varchar(255) NOT NULL default '',
-  type varchar(20) NOT NULL default '',
-  url varchar(255) NOT NULL default '',
-  ediscussion tinyint(4) NOT NULL default '0',
-  archiveby varchar(20) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
-) TYPE=MyISAM COMMENT='pages';
-# --------------------------------------------------------
-
-#
-# Table structure for table `permissions`
-#
-
-CREATE TABLE permissions (
-  id bigint(20) NOT NULL auto_increment,
-  user varchar(255) NOT NULL default '',
-  site varchar(255) NOT NULL default '',
-  scope varchar(255) NOT NULL default '',
-  scopeid bigint(20) NOT NULL default '0',
-  v enum('0','1') NOT NULL default '0',
-  a enum('0','1') NOT NULL default '0',
-  e enum('0','1') NOT NULL default '0',
-  d enum('0','1') NOT NULL default '0',
-  UNIQUE KEY id (id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `sections`
-#
-
-CREATE TABLE sections (
-  id bigint(20) NOT NULL auto_increment,
-  site_id varchar(255) NOT NULL default '',
-  title varchar(255) NOT NULL default '',
-  editedtimestamp timestamp(14) NOT NULL,
-  addedby varchar(100) NOT NULL default '',
-  editedby varchar(100) NOT NULL default '',
-  addedtimestamp datetime NOT NULL default '0000-00-00 00:00:00',
-  activatedate date NOT NULL default '0000-00-00',
-  deactivatedate date NOT NULL default '0000-00-00',
-  active tinyint(4) NOT NULL default '1',
-  permissions blob NOT NULL,
-  pages blob NOT NULL,
-  type varchar(20) NOT NULL default '',
-  url varchar(250) NOT NULL default '',
-  locked tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
-) TYPE=MyISAM COMMENT='site sections';
-# --------------------------------------------------------
-
-#
-# Table structure for table `sites`
-#
-
-CREATE TABLE sites (
-  id bigint(20) NOT NULL auto_increment,
-  name varchar(255) NOT NULL default '',
-  title varchar(250) NOT NULL default '',
-  theme varchar(100) NOT NULL default '',
-  themesettings blob NOT NULL,
-  header blob NOT NULL,
-  footer blob NOT NULL,
-  editors blob NOT NULL,
-  permissions blob NOT NULL,
-  viewpermissions varchar(100) NOT NULL default '',
-  addedtimestamp datetime default NULL,
-  addedby varchar(200) NOT NULL default '',
-  editedby varchar(200) NOT NULL default '',
-  editedtimestamp timestamp(14) NOT NULL,
-  activatedate date NOT NULL default '0000-00-00',
-  deactivatedate date NOT NULL default '0000-00-00',
-  active tinyint(4) NOT NULL default '1',
-  sections blob NOT NULL,
-  listed tinyint(4) NOT NULL default '0',
-  type varchar(23) default NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `stories`
-#
-
-CREATE TABLE stories (
-  id bigint(20) NOT NULL auto_increment,
-  page_id bigint(20) NOT NULL default '0',
-  section_id bigint(20) NOT NULL default '0',
-  site_id varchar(255) NOT NULL default '',
-  title varchar(255) NOT NULL default '',
-  addedby varchar(100) NOT NULL default '',
-  addedtimestamp datetime default NULL,
-  editedby varchar(100) NOT NULL default '',
-  editedtimestamp timestamp(14) NOT NULL,
-  shorttext longblob NOT NULL,
-  longertext longblob NOT NULL,
-  permissions blob NOT NULL,
-  activatedate date NOT NULL default '0000-00-00',
-  deactivatedate date NOT NULL default '0000-00-00',
-  discuss tinyint(4) NOT NULL default '0',
-  discusspermissions varchar(100) NOT NULL default '',
-  locked tinyint(4) NOT NULL default '0',
-  category varchar(200) NOT NULL default '',
-  discussions blob NOT NULL,
-  texttype varchar(20) NOT NULL default '',
-  type varchar(20) NOT NULL default '',
-  url varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id),
-  KEY id_2 (id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `users`
-#
-
-CREATE TABLE users (
-  id bigint(10) unsigned NOT NULL auto_increment,
-  uname varchar(10) NOT NULL default '',
-  pass varchar(20) NOT NULL default '',
-  fname varchar(200) NOT NULL default '',
-  email varchar(100) NOT NULL default '',
-  type varchar(10) NOT NULL default '',
-  status varchar(25) NOT NULL default '',
-  PRIMARY KEY  (id),
-  UNIQUE KEY id_2 (id),
-  KEY id (id)
-) TYPE=MyISAM;
-
+# phpMyAdmin MySQL-Dump# version 2.3.3pl1# http://www.phpmyadmin.net/ (download page)## Host: localhost# Generation Time: Feb 12, 2003 at 12:15 PM# Server version: 3.23.52# PHP Version: 4.3.0-dev# Database : `segue`# --------------------------------------------------------## Table structure for table `classes`#CREATE TABLE classes (  id bigint(20) NOT NULL auto_increment,  name varchar(255) NOT NULL default '0',  uname varchar(10) NOT NULL default '0',  fname varchar(200) default NULL,  semester varchar(10) default NULL,  year smallint(10) default NULL,  type varchar(15) NOT NULL default '',  PRIMARY KEY  (id)) TYPE=MyISAM;# --------------------------------------------------------## Table structure for table `classgroups`#CREATE TABLE classgroups (  id bigint(20) NOT NULL auto_increment,  owner varchar(100) NOT NULL default '',  name varchar(100) NOT NULL default '',  classes blob NOT NULL,  PRIMARY KEY  (id),  UNIQUE KEY id (id),  KEY id_2 (id)) TYPE=MyISAM;# --------------------------------------------------------## Table structure for table `discussions`#CREATE TABLE discussions (  id bigint(20) NOT NULL auto_increment,  author varchar(100) NOT NULL default '',  authortype varchar(20) NOT NULL default '',  timestamp timestamp(14) NOT NULL,  content longblob NOT NULL,  PRIMARY KEY  (id),  UNIQUE KEY id (id),  KEY id_2 (id)) TYPE=MyISAM;# --------------------------------------------------------## Table structure for table `logs`#CREATE TABLE logs (  timestamp timestamp(14) NOT NULL,  type varchar(255) NOT NULL default '',  luser varchar(255) default NULL,  auser varchar(255) default NULL,  site varchar(255) default NULL,  section varchar(255) default NULL,  page varchar(255) default NULL,  story varchar(255) default NULL,  content text NOT NULL) TYPE=MyISAM COMMENT='Log entries';# --------------------------------------------------------## Table structure for table `media`#CREATE TABLE media (  id bigint(20) NOT NULL auto_increment,  site_id varchar(255) NOT NULL default '',  name varchar(255) NOT NULL default '',  addedtimestamp datetime NOT NULL default '0000-00-00 00:00:00',  addedby varchar(100) NOT NULL default '',  type varchar(20) NOT NULL default '',  size bigint(20) default NULL,  PRIMARY KEY  (id)) TYPE=MyISAM;# --------------------------------------------------------## Table structure for table `pages`#CREATE TABLE pages (  id bigint(20) NOT NULL auto_increment,  section_id bigint(20) NOT NULL default '0',  site_id varchar(255) NOT NULL default '',  title varchar(255) NOT NULL default '',  addedtimestamp datetime default NULL,  addedby varchar(100) NOT NULL default '',  editedby varchar(100) NOT NULL default '',  editedtimestamp timestamp(14) NOT NULL,  activatedate date NOT NULL default '0000-00-00',  deactivatedate date NOT NULL default '0000-00-00',  active tinyint(4) NOT NULL default '0',  locked tinyint(4) NOT NULL default '0',  permissions blob NOT NULL,  showcreator tinyint(4) NOT NULL default '0',  showdate tinyint(4) NOT NULL default '0',  showhr tinyint(4) NOT NULL default '0',  stories blob NOT NULL,  storyorder varchar(255) NOT NULL default '',  type varchar(20) NOT NULL default '',  url varchar(255) NOT NULL default '',  ediscussion tinyint(4) NOT NULL default '0',  archiveby varchar(20) NOT NULL default '',  PRIMARY KEY  (id),  UNIQUE KEY id (id),  KEY id_2 (id),  KEY section_id (section_id),  KEY site_id (site_id)) TYPE=MyISAM COMMENT='pages';# --------------------------------------------------------## Table structure for table `permissions`#CREATE TABLE permissions (  id bigint(20) NOT NULL auto_increment,  user varchar(255) NOT NULL default '',  site varchar(255) NOT NULL default '',  scope varchar(255) NOT NULL default '',  scopeid bigint(20) NOT NULL default '0',  v enum('0','1') NOT NULL default '0',  a enum('0','1') NOT NULL default '0',  e enum('0','1') NOT NULL default '0',  d enum('0','1') NOT NULL default '0',  di enum('0','1') NOT NULL default '0',  UNIQUE KEY id (id),  KEY user (user),  KEY site (site),  KEY scope (scope),  KEY scopeid (scopeid)) TYPE=MyISAM;# --------------------------------------------------------## Table structure for table `sections`#CREATE TABLE sections (  id bigint(20) NOT NULL auto_increment,  site_id varchar(255) NOT NULL default '',  title varchar(255) NOT NULL default '',  editedtimestamp timestamp(14) NOT NULL,  addedby varchar(100) NOT NULL default '',  editedby varchar(100) NOT NULL default '',  addedtimestamp datetime NOT NULL default '0000-00-00 00:00:00',  activatedate date NOT NULL default '0000-00-00',  deactivatedate date NOT NULL default '0000-00-00',  active tinyint(4) NOT NULL default '1',  permissions blob NOT NULL,  pages blob NOT NULL,  type varchar(20) NOT NULL default '',  url varchar(250) NOT NULL default '',  locked tinyint(4) NOT NULL default '0',  PRIMARY KEY  (id),  UNIQUE KEY id (id),  KEY id_2 (id),  KEY site_id (site_id)) TYPE=MyISAM COMMENT='site sections';# --------------------------------------------------------## Table structure for table `sites`#CREATE TABLE sites (  id bigint(20) NOT NULL auto_increment,  name varchar(255) NOT NULL default '',  title varchar(250) NOT NULL default '',  theme varchar(100) NOT NULL default '',  themesettings blob NOT NULL,  header blob NOT NULL,  footer blob NOT NULL,  editors blob NOT NULL,  permissions blob NOT NULL,  viewpermissions varchar(100) NOT NULL default '',  addedtimestamp datetime default NULL,  addedby varchar(200) NOT NULL default '',  editedby varchar(200) NOT NULL default '',  editedtimestamp timestamp(14) NOT NULL,  activatedate date NOT NULL default '0000-00-00',  deactivatedate date NOT NULL default '0000-00-00',  active tinyint(4) NOT NULL default '1',  sections blob NOT NULL,  listed tinyint(4) NOT NULL default '0',  type varchar(23) default NULL,  PRIMARY KEY  (id),  UNIQUE KEY id (id),  KEY id_2 (id),  KEY name (name)) TYPE=MyISAM;# --------------------------------------------------------## Table structure for table `slots`#CREATE TABLE slots (  id bigint(20) NOT NULL auto_increment,  name varchar(255) NOT NULL default '',  owner varchar(255) NOT NULL default '',  assocsite varchar(255) NOT NULL default '',  type varchar(255) default NULL,  PRIMARY KEY  (id)) TYPE=MyISAM;# --------------------------------------------------------## Table structure for table `stories`#CREATE TABLE stories (  id bigint(20) NOT NULL auto_increment,  page_id bigint(20) NOT NULL default '0',  section_id bigint(20) NOT NULL default '0',  site_id varchar(255) NOT NULL default '',  title varchar(255) NOT NULL default '',  addedby varchar(100) NOT NULL default '',  addedtimestamp datetime default NULL,  editedby varchar(100) NOT NULL default '',  editedtimestamp timestamp(14) NOT NULL,  shorttext longblob NOT NULL,  longertext longblob NOT NULL,  permissions blob NOT NULL,  activatedate date NOT NULL default '0000-00-00',  deactivatedate date NOT NULL default '0000-00-00',  active tinyint(2) NOT NULL default '1',  discuss tinyint(4) NOT NULL default '0',  discusspermissions varchar(100) NOT NULL default '',  locked tinyint(4) NOT NULL default '0',  category varchar(200) NOT NULL default '',  discussions blob NOT NULL,  texttype varchar(20) NOT NULL default '',  type varchar(20) NOT NULL default '',  url varchar(255) NOT NULL default '',  PRIMARY KEY  (id),  UNIQUE KEY id (id),  KEY id_2 (id),  KEY page_id (page_id),  KEY section_id (section_id),  KEY site_id (site_id)) TYPE=MyISAM;# --------------------------------------------------------## Table structure for table `users`#CREATE TABLE users (  id bigint(10) unsigned NOT NULL auto_increment,  uname varchar(96) NOT NULL default '',  pass varchar(20) NOT NULL default '',  fname varchar(200) NOT NULL default '',  email varchar(100) NOT NULL default '',  type varchar(10) NOT NULL default '',  status varchar(25) NOT NULL default '',  PRIMARY KEY  (id),  UNIQUE KEY id_2 (id),  KEY id (id),  KEY uname (uname)) TYPE=MyISAM;
