@@ -17,8 +17,20 @@ header("Content-type: text/html; charset=utf-8");
 
 if (ereg("^login",getenv("QUERY_STRING"))) {
 	if (session_id()) {
-		session_unset();
-		session_destroy();
+		// clear only our session variables as to not interfere with other apps
+		$vars = array("luser","auser",
+					  "lemail","aemail",
+					  "lid","aid",
+					  "lfname","afname",
+					  "ltype","atype",
+					  "lmethod","amethod",
+					  "settings","obj","editors","siteObj","origSiteObj","sectionObj","pageObj","storyObj");
+		foreach ($vars as $var) {
+			if (ini_get("register_globals")) session_unregister($var);
+			unset($_SESSION[$var]);
+		}
+//		session_unset();
+//		session_destroy();
 	}
 	header("Location: index.php");
 }
