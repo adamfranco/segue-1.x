@@ -122,12 +122,15 @@ function getuserclasses($user,$time="now") {
 	while ($a = db_fetch_assoc($r)) {
 		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
 		if (!$classes[$class_code]) {
-			if ($time == "now" && ($a[class_year] == date('Y') && $a[class_semester] == $semester)) {
+			if ($time == "now" && isSemesterNow($a[class_semester], $a[class_year])) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
-			} else if ($time == "past" && ($a[class_year] < date('Y') || ($a[class_year] == date('Y') && semorder($a[class_semester]) < semorder($semester)))) {
+
+			} else if ($time == "past" && isSemesterPast($a[class_semester], $a[class_year])) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
-			} else if ($time == "future" && (($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y')))) {
+
+			} else if ($time == "future" && isSemesterFuture($a[class_semester], $a[class_year])) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+
 			} else if ($time == "all") {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			}

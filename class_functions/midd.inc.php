@@ -363,18 +363,18 @@ function getuserclasses($user,$time="all") {
 	/******************************************************************************
 	 * end update
 	 ******************************************************************************/
-	
-							if ($time == "now" && $r[5] == date('y') && semorder($r[4]) == semorder($semester)) {
-	//							print "<br>------------>now<br>";
+							
+							
+							if ($time == "now" && isSemesterNow($r[4], $r[5])) {
 								$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
-							} else if ($time == "past" && ($r[5] < date('y') || semorder($r[4]) < semorder($semester))) {
-	//							print "<br>------------>past<br>";
+								
+							} else if ($time == "past" && isSemesterPast($r[4], $r[5])) {
 								$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
-							} else if ($time == "future" && (($r[5] == date('y') && semorder($r[4]) > semorder($semester)) || ($r[5] > date('y')))) {
-	//							print "<br>------------>future<br>";
+								
+							} else if ($time == "future" && isSemesterFuture($r[4], $r[5])) {
 								$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
+								
 							} else if ($time == "all") {
-	//							print "<br>------------>all<br>";
 								$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 							}
 						}
@@ -409,12 +409,15 @@ function getuserclasses($user,$time="all") {
 	while ($a = db_fetch_assoc($r)) {
 		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
 		if (!$classes[$class_code]) {
-			if ($time == "now" && ($a[class_year] == date('Y') && semorder($a[class_semester]) == semorder($semester))) {
+						if ($time == "now" && isSemesterNow($a[class_semester], $a[class_year])) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
-			} else if ($time == "past" && ($a[class_year] < date('Y') || ($a[class_year] == date('Y') && semorder($a[class_semester]) < semorder($semester)))) {
+
+			} else if ($time == "past" && isSemesterPast($a[class_semester], $a[class_year])) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
-			} else if ($time == "future" && (($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y')))) {
+
+			} else if ($time == "future" && isSemesterFuture($a[class_semester], $a[class_year])) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+
 			} else if ($time == "all") {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			}
