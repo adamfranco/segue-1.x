@@ -6,7 +6,9 @@ Name: Segue ChangeLog
 v. 1.3.0 (the future)
 ----------------------------------------------------
 		
-	* Change: The 'Site not availible' error is now more informative. (Adam Franco)
+	* Change: When logging in and logging out, users are kept on the same page if possible instead of being redirected back to the default page. (Adam Franco)
+		
+	* Change: The 'Site not availible' error is now more informative and includes links to "Home" as well as a "create site" link if the active user is allowed to create a site in that place. The latter is useful when taking advantage of the vhost functionality. (Adam Franco)
 		
 	* Change: When Changing to a differnt active user as admin, you are now kept on the same page. (Adam Franco)
 		

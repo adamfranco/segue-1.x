@@ -11,6 +11,9 @@ ob_start();		// start the output buffer so we can use headers if needed
 // we need to include the config before we start the session 
 require_once("config.inc.php");
 
+// this array contains a list of actions that don't *require* the user to be authenticated
+$actions_noauth = array("site","login","default","previewtheme","fullstory","fullstory.php","list","username_lookup","listarticles","listissues","sitelisting.php");
+
 // check if we are only allowing access to one site based on virtual host
 if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
 //      print "checking vhosts...";
@@ -62,7 +65,23 @@ if (ereg("^login",getenv("QUERY_STRING"))) {
 //		session_unset();
 //		session_destroy();
 	}
-	header("Location: index.php");
+	
+	// --------- upon logout, send the user back where they were if possible -----------
+	$getVars = "";
+	
+	// common thing is to logout while editing a site. Just translate that to
+	// the "site" action to avoid confusing people.
+	if ($_GET['action'] == "viewsite")
+		$_GET['action'] = "site";
+	
+	// Make sure that we can stay at our current action. If not, send to
+	// the default page.	
+	if ($_GET['action'] && in_array($_GET['action'], $actions_noauth)) {
+		foreach ($_GET as $key => $val) {
+			$getVars .= "&".$key."=".$val;
+		}
+	}
+	header("Location: index.php?".$getVars);
 }
 
 // actions for which we use pervasive themes (if enabled)

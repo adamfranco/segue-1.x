@@ -7,7 +7,14 @@
 			prevent edit and discuss/assess links from shifting across stories
 		</fix>
 		<change author='adam'>
-			The 'Site not availible' error is now more informative.
+			When logging in and logging out, users are kept on the same page if
+			possible instead of being redirected back to the default page.
+		</change>
+		<change author='adam'>
+			The 'Site not availible' error is now more informative and includes
+			links to "Home" as well as a "create site" link if the active user
+			is allowed to create a site in that place. The latter is useful when
+			taking advantage of the vhost functionality.
 		</change>
 		<change author='adam'>
 			When Changing to a differnt active user as admin, you are now kept on

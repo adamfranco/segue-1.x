@@ -30,6 +30,7 @@ if (!$thisSite->canview()) {
 	print "\n</ul>";
 	error(ob_get_contents());
 	ob_end_clean();
+	printc("<a href='index.php?$sid'>Home</a>");
 	return;
 }	
 
