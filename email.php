@@ -26,7 +26,7 @@ $scope = $_REQUEST['scope'];
 $sql = $_REQUEST['sql'];
 $query_custom = $_REQUEST['newquery'];
 
-if ($_REQUEST['order']) $order = $_REQUEST['order'];
+if ($_REQUEST['order']) $order = urldecode($_REQUEST['order']);
 if (!isset($order)) $order = "discussion_tstamp DESC";
 $orderby = " ORDER BY $order";
 
@@ -153,7 +153,7 @@ Participants<br><br>
 	<table cellspacing=1 width='100%'>
 	<tr><td>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		<input type=hidden name='order' value='<? echo $order ?>'>
+		<input type=hidden name='order' value='<? echo urlencode($order) ?>'>
 		<input type=hidden name='action' value='<? echo $action ?>'>
 		<input type=hidden name='storyid' value='<? echo $storyid ?>'>
 		<input type=hidden name='siteid' value='<? echo $siteid ?>'>
@@ -166,7 +166,7 @@ Participants<br><br>
 		</td>
 		<td align=right>
 		<?
-		
+		//$order = urlencode($order);
 		$getvariables = "storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&order=$order";
 		if ($userid) {
 			$userfname = urlencode($userfname);
@@ -213,7 +213,7 @@ Participants<br><br>
 		 ******************************************************************************/
 		//print "<form action=$PHP_SELF method=post name=emailform>";
 		print "<table><tr><td><div style='font-size: 12px'>";
-		//$getvariables = "storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&order=$order&";
+
 		if ($curraction == "list") {
 			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
 			print "List | ";
@@ -223,17 +223,19 @@ Participants<br><br>
 
 			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
 			print "<a href=$PHP_SELF?$sid&action=list&$getvariables>List</a> | ";
-			print "Review - ";
+			
 			if ($userid) {
+				print "<a href=$PHP_SELF?$sid&action=review&$getvariables>Review all</a> - ";
 				print urldecode($userfname);
 			} else {
+				print "Review - ";
 				print $numparticipants." participants";
 			}
 			
 		} else if ($curraction == 'email') {
 			print "Email | ";
 			print "<a href=$PHP_SELF?$sid&action=list&$getvariables>List</a> | ";
-			print "<a href=$PHP_SELF?$sid&&action=review$getvariables$getusers>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers>Review</a> - ";
 			print $numparticipants." participants";
 		} else if ($curraction == 'send') {
 			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
@@ -245,8 +247,8 @@ Participants<br><br>
 		?>
 		in this
 		<select name=scope>
-		<option<?=($scope=='discussion')?" selected":""?>>discussion
-		<option<?=($scope=='site')?" selected":""?>>site
+		<option<?=($scope=='discussion')?" value='discussion' selected":""?>>discussion/assessment
+		<option<?=($scope=='site')?" value='site' selected":""?>>site
 		</select>
 		<input type=submit name='update' value='Update'>
 		
@@ -333,7 +335,12 @@ Participants<br><br>
 			$r = db_query($query);
 			exit();
 		}
-	// } 	
+	// } 
+	
+	/******************************************************************************
+	 * Print out table of participant names
+	 ******************************************************************************/
+	
 	?>
 	<table width='100%'>
 		<tr>
@@ -379,37 +386,46 @@ Participants<br><br>
 		?>
 		</tr>		
 		<? 
+		/******************************************************************************
+		 * Print out stats and links
+		 ******************************************************************************/
 			while ($a = db_fetch_assoc($r)) {
-				$userid = $a[user_id];
-				$query2 = "
-				SELECT 
-					user_id, user_email, discussion_rate, discussion_tstamp
-				FROM 
-					discussion
-				INNER JOIN story ON FK_story = story_id
-				INNER JOIN page ON FK_page = page_id
-				INNER JOIN section ON FK_section = section_id
-				INNER JOIN site ON FK_site = site_id
-				INNER JOIN user ON FK_author = user_id
-				WHERE 
-					$where AND user_id = $userid $orderby $limit
-				";		
-				$r2 = db_query($query2);
-				//$a2 = db_fetch_assoc($r2);
-				$postcount = db_num_rows($r2);
-				$rating_sum = 0;
-				if ($postcount == 1) {
-					$avg_rating = $a2['discussion_rate'];
-				} else {
-					$adjpostcount = $postcount;
-					while ($a2 = db_fetch_assoc($r2)) {
-						if ($a2['discussion_rate'] == 0) $adjpostcount = $adjpostcount - 1;
-						$rating_sum = $rating_sum + $a2['discussion_rate'];
+			
+				/******************************************************************************
+				 * If listing participants, get # of posts and avg. rating
+				 ******************************************************************************/
+
+				if ($curraction == 'list') {
+					$userid = $a[user_id];
+					$query2 = "
+					SELECT 
+						user_id, user_email, discussion_rate, discussion_tstamp
+					FROM 
+						discussion
+					INNER JOIN story ON FK_story = story_id
+					INNER JOIN page ON FK_page = page_id
+					INNER JOIN section ON FK_section = section_id
+					INNER JOIN site ON FK_site = site_id
+					INNER JOIN user ON FK_author = user_id
+					WHERE 
+						$where AND user_id = $userid $orderby $limit
+					";		
+					$r2 = db_query($query2);
+					//$a2 = db_fetch_assoc($r2);
+					$postcount = db_num_rows($r2);
+					$rating_sum = 0;
+					if ($postcount == 1) {
+						$avg_rating = $a2['discussion_rate'];
+					} else {
+						$adjpostcount = $postcount;
+						while ($a2 = db_fetch_assoc($r2)) {
+							if ($a2['discussion_rate'] == 0) $adjpostcount = $adjpostcount - 1;
+							$rating_sum = $rating_sum + $a2['discussion_rate'];
+						}
+						$avg_rating = round($rating_sum/$adjpostcount, 1);
 					}
-					$avg_rating = round($rating_sum/$adjpostcount, 1);
 				}
-				
-				
+								
 				$discussion_date = $a['discussion_tstamp'];
 				$discussion_date = timestamp2usdate($discussion_date);
 				$dicuss_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id']."#".$a['discussion_id'];
@@ -418,7 +434,7 @@ Participants<br><br>
 				print "<tr>";
 				
 				if ($curraction == 'review') {
-					print "<td>".$a['user_fname']."</td>";
+					print "<td><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
 					print "<td>".$a['page_title']." > ".$shory_text."</td>";
 					print "<td>".urldecode($a['discussion_subject'])."</td>";
 					print "<td>".$a['discussion_rate']."</td>";

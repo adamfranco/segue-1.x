@@ -42,7 +42,8 @@ function initEditor() {
 	config.height = "300px";
 	
 	config.toolbar = [
-	["createlink", "bold", "italic", "underline","insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
+	["createlink", "bold", "italic", "underline","justifyleft", "justifycenter", "justifyright", "justifyfull", "separator",
+	"insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
 	"forecolor","undo", "redo","htmlmode","lefttoright", "righttoleft", "separator" ]];
 
 	  

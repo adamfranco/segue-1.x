@@ -29,7 +29,8 @@ printc("<input type=hidden value='0' name='cancel'>");
 printc("<input type=hidden value='0' name='prevbutton'>");
 printc("<input type=hidden value='0' name='nextbutton'>");
 
-
+//printc($_REQUEST[shorttext]);
+//printc($_REQUEST[title]);
 printc("Type:".helplink("storytypes"));
 
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
