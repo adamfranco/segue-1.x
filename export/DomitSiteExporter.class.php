@@ -54,7 +54,7 @@ class DomitSiteExporter {
 		
 		$doctype .= "\n\t<!ELEMENT discussion (discussion_node*)>";
 		$doctype .= "\n\t<!ATTLIST discussion email_owner (TRUE|FALSE) #REQUIRED show_authors (TRUE|FALSE) #REQUIRED show_others_posts (TRUE|FALSE) #REQUIRED>";
-		$doctype .= "\n\t<!ELEMENT discussion_node (creator,created_time,title,text,(discussion_node*))>";
+		$doctype .= "\n\t<!ELEMENT discussion_node (creator,created_time,title,text,rating?,filename?,(discussion_node*))>";
 		
 		$doctype .= "\n\t<!ELEMENT media (media_file*)>";
 		$doctype .= "\n\t<!ELEMENT media_file (creator,last_editor,last_edited_time,filename,type)>";
@@ -100,6 +100,7 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ATTLIST shorttext text_type (text|html) #REQUIRED>";
 		$doctype .= "\n\t<!ELEMENT longtext (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT filename (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT rating (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT url (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT description (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT header (#PCDATA)>";
@@ -573,6 +574,16 @@ class DomitSiteExporter {
 		$text =& $this->_document->createElement('text');
 		$discussionNode->appendChild($text);
 		$text->appendChild($this->_document->createTextNode(htmlspecialchars($node->content)));
+		
+		// rating
+		$rating =& $this->_document->createElement('rating');
+		$discussionNode->appendChild($rating);
+		$rating->appendChild($this->_document->createTextNode(htmlspecialchars($node->rating)));
+		
+		// filename
+		$filename =& $this->_document->createElement('filename');
+		$discussionNode->appendChild($filename);
+		$filename->appendChild($this->_document->createTextNode($node->media_tag));
 		
 		// If this node has children, add them.
 		$node->_fetchchildren();

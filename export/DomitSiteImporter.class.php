@@ -582,6 +582,27 @@ class DomitSiteImporter {
 		}
 		$textElement =& $textList->item(0);
 		$discussion->content = html_entity_decode(trim($textElement->getText()));
+		
+		// Assume that the files have been added to the media table.
+		$filenameList =& $discussion_nodeElement->getElementsByPath("filename");
+		$filenameElement =& $filenameList->item(0);
+		$filename = trim($filenameElement->getText());
+		
+		if ($filename) {
+			$mediaID = db_get_value("media","media_id", "media_tag='".$filename."'");
+			$discussion->libraryfileid = $mediaID;
+			$discussion->libraryfilename = $filename;
+			$discussion->media_tag = $filename;
+		}
+		
+		// rating
+		$ratingList =& $discussion_nodeElement->getElementsByPath("rating");
+		if ($ratingList->getLength() != 1) {
+			print "\nRequired 'rating' element is missing from the discussion!";
+			return FALSE;
+		}
+		$ratingElement =& $ratingList->item(0);
+		$discussion->rating = html_entity_decode(trim($ratingElement->getText()));
 	
 	/*********************************************************
 	 * Save
