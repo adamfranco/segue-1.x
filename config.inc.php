@@ -19,7 +19,7 @@ define("topnav","topnav",TRUE);
 $file = file("machine");
 $this_computer = trim($file[0]);
 //print $this_computer;
-if (!$this_computer) $this_computer = "etdev";
+if (!$this_computer) $this_computer = "devo";
 
 include("configs/config_".$this_computer.".inc.php");
 unset($this_computer,$file);

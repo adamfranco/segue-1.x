@@ -107,8 +107,8 @@ if ($thisSite->sections) {
 				if ($i != 0) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=up&id=$id' class='".(($topsections)?"btnlink":"small")."' title='Move this section to the left'>".(($topsections)?"&larr;":"&uarr;")."</a>";
 				if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$id' class=".(($topsections)?"btnlink":"small")." title='Move this section to the right'>".(($topsections)?"&rarr;":"&darr;")."</a>";
 			}
-			$extra .= ($thisSite->hasPermission("edit"))?" ".(($topsections)?"":"| ")."<a href='copy_parts.php?$sid&site=$site&section=$id&type=section' class='".(($topsections)?"btnlink":"small")."' title='Move/Copy this section to another site' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
 			$extra .= ($thisSite->hasPermission("edit"))?" ".(($topsections)?"":"| ")."<a href='$PHP_SELF?$sid&site=$site&section=$id&action=edit_section&edit_section=$id&comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Edit the title and properties of this section'>edit</a>":"";
+			$extra .= ($thisSite->hasPermission("edit"))?" ".(($topsections)?"":"| ")."<a href='copy_parts.php?$sid&site=$site&section=$id&type=section' class='".(($topsections)?"btnlink":"small")."' title='Move/Copy this section to another site' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>copy</a>":"";
 			$extra .= ($thisSite->hasPermission("delete"))?" ".(($topsections)?"":"| ")."<a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHP_SELF?$sid&$envvars&action=delete_section&delete_section=$id\")' class='".(($topsections)?"btnlink":"small")."' title='Delete this section'>del</a>":"";
 		}
 		$i++;
@@ -133,8 +133,8 @@ if ($thisSection) {
 					if ($i != count($thisSection->pages)-1) $extra .= "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=page&direction=down&id=$id' class='".(($topsections)?"small":"btnlink")."' title='Move this page/link/heading/divider down'><b>".(($topsections)?"&darr;":"&rarr;")."</b></a>";
 					//if (count($pages)!=1) $extra .= "<BR>";
 				}
-				$extra .= ($thisSection->hasPermission("edit"))?" ".(($topsections)?"| ":"")."<a href='copy_parts.php?$sid&site=$site&section=$section&page=$id&type=page' class='".(($topsections)?"small":"btnlink")."' title='Move/Copy this page to another section' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
 				$extra .= ($thisSection->hasPermission("edit"))?" ".(($topsections)?"| ":"")."<a href='$PHP_SELF?$sid&$envvars&action=edit_page&edit_page=$id&comingFrom=viewsite' class='".(($topsections)?"small":"btnlink")."' title='Edit the name/settings for this page/link/heading/divider'>edit</a>":"";
+				$extra .= ($thisSection->hasPermission("edit"))?" ".(($topsections)?"| ":"")."<a href='copy_parts.php?$sid&site=$site&section=$section&page=$id&type=page' class='".(($topsections)?"small":"btnlink")."' title='Move/Copy this page to another section' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>copy</a>":"";
 				$extra .= ($thisSection->hasPermission("delete"))?" ".(($topsections)?"| ":"")."<a href='javascript:doconfirm(\"Are you sure you want to permanently delete this item and any data that may be contained within it?\",\"$PHPSELF?$sid&$envvars&action=delete_page&delete_page=$id\")' class='".(($topsections)?"small":"btnlink")."' title='Delete this page/link/heading/divider'>del</a>":"";
 			}
 			$i++;
@@ -217,8 +217,8 @@ if ($thisPage) {
 						if ($i!=0 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == ''))$l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=up&id=$s' class=small title='Move this Content Block up'><b>&uarr;</b></a>";
 						if ($i!=count($thisPage->stories)-1 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) $l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=down&id=$s' class=small title='Move this Content Block down'><b>&darr;</b></a>";
 					}
-					if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='copy_parts.php?$sid&site=$site&section=$section&page=$page&story=$s&type=story' class='small' title='Move/Copy this Content Block to another page' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>";
 					if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='$PHP_SELF?$sid&$envvars&action=edit_story&edit_story=$s&comingFrom=viewsite' class='small' title='Edit this Content Block'>edit</a>";
+					if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='copy_parts.php?$sid&site=$site&section=$section&page=$page&story=$s&type=story' class='small' title='Move/Copy this Content Block to another page' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>copy</a>";
 					if ($thisPage->hasPermission("delete") || $o->hasPermission("delete")) $l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&$envvars&action=delete_story&delete_story=$s\")' class=small title='Delete this Content Block'>delete</a>";
 				}
 				printc(implode(" | ",$l));
