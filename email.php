@@ -402,6 +402,7 @@ Participants<br><br>
 					$avg_rating = $a2['discussion_rate'];
 				} else {
 					while ($a2 = db_fetch_assoc($r2)) {
+						if ($a2['discussion_rate'] == 0) $postcount = $postcount - 1;
 						$rating_sum = $rating_sum + $a2['discussion_rate'];
 					}
 					$avg_rating = round($rating_sum/$postcount, 1);
