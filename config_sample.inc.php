@@ -146,6 +146,7 @@
 		 * ldap_voadmin_pass		the above user's password
 		 ******************************************************************************/
 		$cfg[ldap_server] = "";				// "ldap.myinsitute.edu"
+		$cfg[ldap_user_bind_dn] = "";		// "cn"
 		$cfg[ldap_voadmin_user] = "";		// "jdoe"
 		$cfg[ldap_voadmin_pass] = "";		// "secret"		
 		$cfg[ldap_base_dn] = "";   			// "o=institute"

@@ -4,7 +4,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 //	print "hallooo!";
 	$name = strtolower($name);
 	global $cfg;
-	$ldap_user = $cfg[ldap_username_attribute]."=".(($admin_auser)?$cfg[ldap_voadmin_user]:$name);
+	$ldap_user = $cfg[ldap_user_bind_dn]."=".(($admin_auser)?$cfg[ldap_voadmin_user]:$name);
 	$ldap_pass = ($admin_auser)?$cfg[ldap_voadmin_pass]:$pass;
 
 	
@@ -15,6 +15,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 //	print "@ldap_bind($c,$ldap_user,$ldap_pass);";
 		
 	if ($r) { // they're good!
+	
 		// pull down their info
 		$return = array (
 			$cfg[ldap_username_attribute], 
@@ -24,7 +25,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		);
 		
 		$dn = $cfg[ldap_base_dn].",".$cfg[ldap_user_dn];
-		$filter = $cfg[ldap_username_attribute]."=".$userid;		
+		$filter = $cfg[ldap_username_attribute]."=".$name;		
 		
 //		print "$name with $pass was in the LDAP database!<BR>";//debug
 		
@@ -45,7 +46,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		
 		if (is_array($results[0][$cfg[ldap_group_attribute]])) {
 			$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
-			foreach ($results[0]{$cfg[ldap_group_attribute]] as $item) {
+			foreach ($results[0][$cfg[ldap_group_attribute]] as $item) {
 				if (eregi($isProfSearchString,$item)) {
 					$areprof=1;
 				}
