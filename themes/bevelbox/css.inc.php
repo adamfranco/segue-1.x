@@ -68,7 +68,7 @@ body {
 
 .sitetitle {
 	color: #<? echo $c['navtext']; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 16px;
 }
 

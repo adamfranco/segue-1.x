@@ -1,8 +1,8 @@
 <style type='text/css'>
 div, p, td, span, input { 
 	color: #<? echo $textcolor; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
-	font-size: 12;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
 }
 </style>
 <?
