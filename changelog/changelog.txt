@@ -6,6 +6,10 @@ Name: Segue ChangeLog
 v. 1.3.2 (2004-10-07)
 ----------------------------------------------------
 		
+	* Bug Fix: Replaced preview links in permissions window with a link to the new preview screen. (Adam Franco)
+		
+	* Bug Fix: 'Build permissions array' now doesn't confuse delete and discuss permissions. (Adam Franco)
+		
 	* Bug Fix: #1042319 Classes with the external ID different from the internal code now are pulled properly in the roster. (Adam Franco)
 		
 	* Change: #854782 Headers have been reworked to print a doctype tag as well as html and head tags in the right order. Some attributes, such as align='right', have their attributes quoted, and br tags have trailing slashes added. Much more cleaning up of the HTML needs to be done before Segue code will validate, but it is now partially along the way. (Adam Franco)
