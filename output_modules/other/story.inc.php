@@ -35,9 +35,9 @@ if ($o->getField("discuss") || $o->getField("longertext")) {
 		$discusslabel = $o->getField("discusslabel");
 		// check if discuss label exists for backward compatibility
 		if ($discusslabel) {
-			printc("<a href=".$link."#discuss>".$discusslabel."</a>");
+			printc("<a href=".$link.">".$discusslabel."</a>");
 		} else {
-			printc("<a href=".$link."#discuss>Discuss</a>");
+			printc("<a href=".$link.">Discuss</a>");
 		}
 		printc(" (".discussion::generateStatistics($o->id).")");	
 	}

@@ -224,7 +224,10 @@ do {
 
 
 // add the key to the footer of the page
-if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
+if ($thisSite->isEditor()
+	&& $thisSite->hasPermissionDown("add || edit || delete")
+	&& !$_REQUEST[themepreview]) 
+{
 	$text .= "\n<br> \n\n<div align=right>";
 	if (ereg('preview_as', $_REQUEST['action'])) {
 		$editAction = ereg_replace('preview_as', '&action=preview_edit_as', $_REQUEST['action']);

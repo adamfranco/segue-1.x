@@ -45,8 +45,10 @@ do {
 	}
 	$pagetitle = $previewTitle . $thisSite->getField("title") . $st . $pt;
 	
-	if (!$thisSite->isEditor()) {
-		error("You are not an editor for this site.");
+	if (!$thisSite->isEditor()
+		|| !$thisSite->hasPermissionDown("add || edit || delete")) 
+	{
+		error("You do not have permission to edit this site.");
 		return;
 	}
 	

@@ -8,6 +8,7 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		
 		<fix author='adam'>
 			'...more.' links now don't print for stories if the extended content 
 			is just a line-return and a line break inserted by the editor.
