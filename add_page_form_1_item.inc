@@ -62,15 +62,15 @@ if ($settings[type]=='divider') {
 }
 if ($settings[type]=='heading') {
 	printc("<div class=title>Heading</div>");
-	printc("<div class=desc>Enter a title for your header below and click the <b>Add</b> button.</div>");
+	printc("<div class=desc>Enter a title for your header below.</div>");
 }
 if ($settings[type]=='url') {
 	printc("<div class=title>URL</div>");
-	printc("<div class=desc>Enter a title and URL for your link, and click the <b>Add</b> button.</div>");
+	printc("<div class=desc>Enter a title and URL for your link.</div>");
 }
 if ($settings[type]=='page') {
 	printc("<div class=title>Content Page</div>");
-	printc("<div class=desc>Enter a title for your page below. When you are done click the <b>Add</b> button.</div>");
+	printc("<div class=desc>Enter a title for your page below.</div>");
 }
 
 

@@ -103,7 +103,7 @@ if ($settings) {
 		$settings[archiveby] = "none";
 		
 		if ($settings[add]) {
-			print "<p> deleting settings[permissions]....</p>";
+			//print "<p> deleting settings[permissions]....</p>";
 			//$settings[permissions] = "";
 			$settings[permissions] = decode_array(db_get_value("sections","permissions","id=$settings[section]"));
 		}
@@ -257,10 +257,10 @@ if ($save) {
 			$pages = encode_array($pages);
 			$query = "update sections set pages='$pages' where id=$settings[section]";
 			db_query($query);
-			log_entry("add_page","$auser added page id $newid to $settings[site]");
+			log_entry("add_page","$auser added page id $newid to site $settings[site]");
 		}
 		if ($settings[edit]) {
-			log_entry("edit_page","$auser edited page id $settings[page] in $settings[site]");
+			log_entry("edit_page","$auser edited page id $settings[page] in site $settings[site]");
 			$newid=$settings[page];
 		}
 		
