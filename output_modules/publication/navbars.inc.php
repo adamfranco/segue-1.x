@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-if ($_SESSION[ltype] == 'admin' && $action=='viewsite') { include("output_modules/other/navbars.inc.php"); return; }
+//if ($_SESSION[ltype] == 'admin' && $action=='viewsite') { include("output_modules/other/navbars.inc.php"); return; }
 
 //if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 

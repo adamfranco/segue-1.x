@@ -36,7 +36,6 @@ include("themes/$theme/css.inc.php");
 </head>
 
 <body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
-
 <table border=0 width=700 cellpadding=0 cellspacing=0>
 <tr>
 <td width=700 height=150 background='<? echo "$themesdir/$theme/images/banner.gif"; ?>'>
@@ -60,9 +59,9 @@ include("themes/$theme/css.inc.php");
 	foreach ($topnav as $item) {
 		$samepage = (isset($navtype) && ($page == $item[id]))?1:0;
 		if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-		print "<td class=topbar width=180 align=center valign=middle><nobr>";
+		print "<td class=topbar width=180 align=center valign=middle><nobr><b>";
 		print makelink($item,$samepage, " class='navlink' ");
-		print "</nobr></td>";
+		print "</b></nobr></td>";
 		$next=$next+1;
 	}
 	if ($topnav_extra) print "<td class=topbar align=center valign=middle><nobr>$topnav_extra</nobr></td>";
@@ -111,7 +110,7 @@ include("themes/$theme/css.inc.php");
 	}
 	
 	foreach ($leftnav2 as $item) {
-		print "<tr>";
+		print "<tr style='margin-bottom: 3px'>";
 		if ($item[type] == 'normal') {
 			$samepage = (isset($section) && ($section == $item[id]))?1:0;
 			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
@@ -142,6 +141,7 @@ include("themes/$theme/css.inc.php");
 	
 	<td width=520 class=content valign=top>
 	<!-- content goes here -->
+	<? include("themes/common/status.inc.php"); ?>
 	<? print $sitecrumbs; ?>
 	<? print $content; ?>
 
