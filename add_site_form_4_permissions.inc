@@ -74,7 +74,7 @@ if ($settings[editors]) {
 			}
 			printc("</td>");
 			printc("<td class=td$color align=center>");
-			printc("<a href='#' onClick='delEditor(\"$e\");'>del</a>");
+			printc("<a href='#' onClick='delEditor(\"$e\");'>remove</a>");
 			printc("</td></tr>");
 			$color = 1-$color;
 		}

@@ -128,6 +128,10 @@ th {
 	color: #<? echo $c['a']; ?>;
 }
 
+.error {
+	color: #E00;
+	font-weight: bold;
+}
 
 /* ------------------------------------------ */
 /* THEME-SPECIFIC CLASSES */

@@ -58,7 +58,7 @@ if ($settings[add] || $settings[type] == 'link') {
 
    
 if ($settings[type]=='image') {
-	printc("<div class=title>Image</div>");
+	printc("<div class=title>Image - ".helplink("image")."</div>");
 	printc("<div class=desc>Select an image file to use, and enter optional title and caption text.</div>");
 }
 if ($settings[type]=='file') {
@@ -79,6 +79,7 @@ if ($settings[type]=='story') {
 //if ($settings[type] !='divider') {
 	printc("<div class=leftmargin>");
 	printc("Title: <input type=text size=35 name=title value='".spchars($settings[title])."'>");
+	if ($settings[type] == 'file') printc(" <span style='color: #D00'> * required</span>");
 	printc("<br></div>");
 //}
 
@@ -116,8 +117,8 @@ if ($settings[type]=='story') {
 	printc("<option value=html".(($settings[texttype]=='html')?" selected":"").">Preformatted HTML");
 	printc("</select>");
 	printc("</div>");
-	printc("<div class=desc>Choose above if the text you entered is formatted HTML (the formatting commands used by the WWW). If you are unsure, select <b>Plain text</b>.</div>");
-	printc("<div class=desc><b>NOTE</b>: <b>Plain text</b> may still contain HTML commands. By choosing <b>Preformatted HTML</b>, Segue will not convert newline characters to the HTML equivalent: &lt;br&gt;</div>");
+	printc("<div class=desc style>If you choose \"Preformatted HTML\" Segue will not convert newline characters to the HTML equivalent: &lt;br&gt;. If you are unsure, select <b>Plain text</b>.</div>");
+
 	//	end modification 1 - 11.1.02 - achapin
 }
 
@@ -137,7 +138,16 @@ if ($settings[type] == 'image' || $settings[type] == 'file') {
 	
 }
 
-//if ($settings[type] != 'story') printc("<br><br>");
+ printc("<br>");
 
+//----Cancel/Save/Next/Previous Buttons -----
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	printc("<input type=submit name=save value='Save Now'>\n");
+printc("</td></tr></table>");
 printc("</form>");
 

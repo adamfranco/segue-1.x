@@ -11,7 +11,7 @@ function doHelpWin() {
 
 // this function is used to create a link to the help page
 function helplink($topic,$text="help") {
-	$var= " (<a href='help/help.php?helptopic=$topic' onClick='doHelpWin()' target='help'>$text</a>) ";
+	$var= " <span style='font-variant: small-caps; font-weight: bold; font-size: 16px;'>(<a href='help/help.php?helptopic=$topic' onClick='doHelpWin()' target='help'>$text</a>)</span> ";
 	return $var;
 }
 ?>

@@ -26,7 +26,7 @@ function editor_activex($textarea,$cols,$rows,$text) {
 	
 	//	Begin modification 4 - 11.11.02 - afranco
 	//	Add explanation of how to get <br>s
-	printc("<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter</div>");	
+	printc("<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter.");	
 	
 			   
 	//	Begin modification 2 - 10.26.02 - rlange
@@ -186,7 +186,7 @@ function editor_generate(objname,w,h) {
   +    '<button title="Insert Special Characters" id="_' +objname+ '_InsertCharacters" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_insert_characters.gif" unselectable="on"></button>\n'
   +    '<button title="Insert Annotation" id="_' +objname+ '_InsertAnnotation" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_annotation.gif" unselectable="on"></button>\n'
   +    '<button title="Insert Date/Time" id="_' +objname+ '_DateTime" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_date_time.gif" unselectable="on"></button>'
-  
+  +    '<button title="Insert Linebreak" id="_' +objname+ '_LineBreak" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_linebreak.gif" unselectable="on"></button>'  
   + '</td></tr></table>\n'
   
   + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;" unselectable="on"><tr><td style="border: inset 1px;">\n'
@@ -271,14 +271,38 @@ function editor_action(button_id) {
     }
 
     // insert link
-    if (cmdID.toLowerCase() == 'insertlink'){
-      showModalDialog(_editor_url + "insert_link.html?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
-    }
+    //     if (cmdID.toLowerCase() == 'insertlink'){
+    //       showModalDialog(_editor_url + "insert_link.html?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
+    //     }
+
+    //  insert link
+      if (cmdID.toLowerCase() == 'insertlink') {
+         if (editdoc.selection.createRange().text != "") {
+            var highlightedText = editdoc.selection.createRange().text;
+         }
+         else {
+            var highlightedText = "";
+         }
+      var myText = showModalDialog(_editor_url + "insert_hyperlink.html", highlightedText, "resizable: no; help: no; status: no; scroll: no; ");
+      if (myText) { editor_insertHTML(objname, unescape( myText) );}
+      }
 
     // insert email link
-    else if (cmdID.toLowerCase() == 'insertemail'){
-      showModalDialog(_editor_url + "insert_email.html?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
-    }
+    //else if (cmdID.toLowerCase() == 'insertemail'){
+    //  showModalDialog(_editor_url + "insert_email.html?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
+    //}
+    
+    // insert email link
+    if (cmdID.toLowerCase() == 'insertemail') {
+         if (editdoc.selection.createRange().text != "") {
+            var highlightedText = editdoc.selection.createRange().text;
+         }
+         else {
+            var highlightedText = "";
+         }
+      var myText = showModalDialog(_editor_url + "insert_email.html", highlightedText, "resizable: no; help: no; status: no; scroll: no; ");
+      if (myText) { editor_insertHTML(objname, unescape( myText) );}
+      }
 
     // insert special characters
     else if (cmdID.toLowerCase() == 'insertcharacters'){

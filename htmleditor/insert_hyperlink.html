@@ -1,0 +1,162 @@
+<html STYLE="width: 475px; height: 240px; ">
+<head><title>Insert Hyperlink</title><head>
+<style>
+  html, body, button, div, input, select, td, fieldset { font-family: MS Shell Dlg; font-size: 8pt; };
+</style>
+<script language="javascript">
+
+//document.title = "HyperLink Editor";
+
+var highlightedText = window.dialogArguments;
+var target = "";
+//var title = "";
+
+function returnSelected() {
+
+	var text = escape( "<a href='" );
+	text = text + escape( document.set.text.value );
+	text = text + escape( "' target='" );
+	text = text + escape( target );
+	text = text + escape( "' title='" );
+	text = text + escape( document.set.title.value );
+	text = text + escape( "'>" );
+	text = text + escape( document.set.desc.value );
+	text = text + escape( "</a>" );
+
+	if (document.all.text.value == "http://") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"Link\" field!");
+          document.all.text.focus();
+          return;
+	}
+	if (document.all.text.value == "https://") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"Link\" field!");
+          document.all.text.focus();
+          return;
+	}
+	if (document.all.text.value == "ftp://") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"Link\" field!");
+          document.all.text.focus();
+          return;
+	}
+	if (document.all.text.value == "") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"Link\" field!");
+          document.all.text.focus();
+          return;
+	}
+	if (document.all.text.value == " ") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"Link\" field!");
+          document.all.text.focus();
+          return;
+	}
+
+	if (document.all.desc.value == "") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"Text\" field!");
+          document.all.desc.focus();
+          return;
+	}
+	if (document.all.desc.value == " ") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"Text\" field!");
+          document.all.desc.focus();
+          return;
+	}
+		
+	window.returnValue = text;          // set return value
+	window.close();                     // close dialog
+
+}
+
+
+// Now, if a person changes the protocol AFTER having entered the 
+// link, the inputted link info isn't erased.  
+function myChange() {
+				 
+  var selectedItem      	= document.set.type.selectedIndex;
+  var selectedItemValue 	= document.set.type.options[selectedItem].value;
+  var selectedItemText  	= document.set.type.options[selectedItem].text;
+  var inputtedText		= document.set.text.value;
+	
+  var protocol = document.set.text.value.split(":");
+  if (protocol[1]) {
+     var datum = protocol[1].replace(/^\/\//, "");
+	}
+	else {
+	   var datum = protocol[0];
+	}
+	document.set.text.value = selectedItemValue + datum;
+
+}
+
+function updateTarget() {
+
+  var selectedItem 		= document.set.target.selectedIndex;
+  var selectedItemValue		= document.set.target.options[selectedItem].value;	
+  target = selectedItemValue;
+	
+}
+
+function paste_link() {
+  document.set.desc.value = highlightedText;
+}
+
+
+</script>
+<script language="JavaScript"> 
+<!--
+function no_error()
+{ return true; }
+window.onerror=no_error;
+-->
+</script>
+</head>
+<body onload="javascript: paste_link();" style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll=no>
+<FIELDSET style="width: 100%; text-align: center">
+<LEGEND>Insert Link&nbsp;</LEGEND>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+ <form method="post" name="set">
+  <tr>
+   <td>
+    <table border="0" cellspacing="4" width="100%" cellpadding="0">
+     <tr>
+      <td align="right" nowrap="nowrap">Type: </td>
+      <td nowrap="nowrap"><select name="type" onchange="javascript: myChange();">
+			   <option value="ftp://">ftp
+			   <option value="http://" selected>http
+			   <option value="https://">https
+		          </select></td>
+     </tr>
+     <tr>
+      <td align="right" nowrap="nowrap">Link: </td>
+      <td nowrap="nowrap"><input type="text" name="text" value="http://" size="30"></td>
+     </tr>
+     <tr>
+      <td align="right" nowrap="nowrap">Text: </td>
+      <td nowrap="nowrap"><input type="text" name="desc" value="" size="30"></td>
+     </tr>
+     <tr>
+      <td align="right">Target:</td>
+      <td><select name="target" onChange="javascript: updateTarget();">
+           <option value="_self" selected>Same Window
+           <option value="_blank">New Window					
+          </select></td>
+     </tr>
+     <tr>
+      <td align="right">Mouseover Title:</td>
+      <td nowrap="nowrap"><input type="text" name="title" value="" size="30"></td>
+     </tr>																		 
+    </table> 
+   </td>
+   <td><input type="hidden" value="" name="empty"></td>
+  </tr>
+  <tr>
+   <td colspan="2" align="center"><input type="button" value=" OK " onClick="returnSelected()">
+	                          <input type="button" value="Cancel" onClick="window.close()"></td>
+  </tr>
+  <tr>
+   <td colspan="2" align="center">&nbsp;</td>
+  </tr>
+ </form>
+</table>
+</FIELDSET>
+</body>
+</html>
+

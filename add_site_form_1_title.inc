@@ -37,7 +37,7 @@ if ($ltype=='admin') {
 } else
 	printc("<input type=hidden name=sitename value='$sitename'>");
 
-printc ("<div style='font-size: 10px; margin-left: 30px; margin-right: 30px;'>");
+printc ("<div class='desc'>");
 if ($settings[add]) printc ("On this and the following pages, you can specify the settings for your new site. Except for the template, you can come back and change every one of these settings after you have created your site.");
 if ($settings[edit]) printc ("Click the Next/Previous Buttons or the links to the left to navigate through the site settings widows. <br>Clicking \"Cancel\" will drop all changes without saving.");
 printc("</div>");
@@ -107,11 +107,11 @@ printc("</td></tr></table>");
 printc("<br>");
 
 printc("<div class=title>4. Hide my site".helplink("available")."</div>");
-//printc("<div class=desc>To prevent the site from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
+//printc("<div class=desc>To prevent the site from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</b></div>");
 printc("<br>");
 
 printc("<input type=radio name=active value=0 " . (($settings[active])?"":" checked") . "> Hide ");
-printc("<input type=radio name=active value=1 " . (($settings[active])?" checked":"") . "> Don't Hide  <br>");
+printc("<input type=radio name=active value=1 " . (($settings[active])?" checked":"") . "> Don't Hide  <br></b>");
 printc("<br>(this overrides availability option above)<br>");
 
 if ($settings[edit]) {

@@ -309,6 +309,8 @@ if ($save) {
 		error("You must enter a URL.");
 	if ($settings[type]=='file' && (!$settings[libraryfileid] || $settings[libraryfileid] == ''))
 		error("You must select a file to upload.");
+	if ($settings[type]=='file' && (!$settings[title] || $settings[title] == ''))
+		error("You must enter a title.");
 	if ($settings[type]=='image' && (!$settings[libraryfileid] || $settings[libraryfileid] == ''))
 		error("You must select an image to upload.");
 		
@@ -451,7 +453,7 @@ if ($settings[type] == "story") {
 	if ($settings[step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
 	if ($settings[step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=2&link=1 onClick=\"submitForm()\">";
-	$leftlinks .= "Full Content";
+	$leftlinks .= "Extended Content";
 	if ($settings[step] != 2) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }

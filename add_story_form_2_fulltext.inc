@@ -35,7 +35,7 @@ if ($settings[type]=='story') {
 		
 	printc("<br>");
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
-	printc("Full Content (Optional):");
+	printc("Extended Content (Optional):");
 	printc("<br>");
 		
 	//	print out text areas with editor (determined by addeditor function)

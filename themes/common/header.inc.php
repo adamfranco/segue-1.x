@@ -38,7 +38,7 @@ function delEditor(n) {
 <style type="text/css">
 .desc {
 	padding-left: 40px;
-	font-size: 10px;
+	font-size: 11px;
 	margin-bottom: 5px;
 }
 

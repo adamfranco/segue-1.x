@@ -1,91 +1,95 @@
-<html STYLE="width: 435px; height: 137px; ">
-<head><title>Insert E-Mail Address</title><head>
+<html STYLE="width: 475px; height: 150px; ">
+<head><title>Insert Email Link</title><head>
 <style>
   html, body, button, div, input, select, td, fieldset { font-family: MS Shell Dlg; font-size: 8pt; };
 </style>
-<script>
+<script language="javascript">
 
-// if we pass the "window" object as a argument and then set opener to
-// equal that we can refer to dialogWindows and popupWindows the same way
-opener = window.dialogArguments;
+var highlightedText = window.dialogArguments;
 
-var _editor_url = opener._editor_url;
-var objname     = location.search.substring(1,location.search.length);
-var config      = opener.document.all[objname].config;
-var editor_obj  = opener.document.all["_" +objname+  "_editor"];
-var editdoc     = editor_obj.contentWindow.document;
+function returnSelected() {
 
-function _CloseOnEsc() {
-  if (event.keyCode == 27) { window.close(); return; }
+	var text = escape( "<a href='mailto:" );
+	text = text + escape( document.set.text.value );
+	
+	text = text + escape( "'>" );
+	text = text + escape( document.set.desc.value );
+	text = text + escape( "</a>" );
+
+	if (document.all.text.value == "mailto:") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"E-Mail Address\" field!");
+          document.all.text.focus();
+          return;
+	}
+
+	if (document.all.text.value == "") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"E-Mail Address\" field!");
+          document.all.text.focus();
+          return;
+	}
+
+	if (document.all.text.value == " ") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"E-Mail Address\" field!");
+          document.all.text.focus();
+          return;
+	}
+
+	if (document.all.desc.value == "") {
+          alert("Easy Editor Alert!\nPlease specify a value for the \"Name\" field!");
+          document.all.desc.focus();
+          return;
+	}
+		
+	window.returnValue = text;          // set return value
+
+	window.close();                     // close dialog
+
 }
 
-window.onerror = HandleError
-
-function HandleError(message, url, line) {
-  var str = "An error has occurred in this dialog." + "\n\n"
-  + "Error: " + line + "\n" + message;
-  alert(str);
-  return true;
+function paste_link() {
+  document.set.desc.value = highlightedText;
 }
 
-function Init() {
-  document.body.onkeypress = _CloseOnEsc;
-}
 
-function btnOKClick() {
-  var curRange = editdoc.selection.createRange();
-
-  if (document.all.address.value == "") {
-    alert("Easy Editor Alert!\nPlease specify a value for the \"E-Mail Address\" field!");
-    document.all.address.focus();
-    return;
-  }
-
-  if (document.all.name.value == "") {
-    alert("Easy Editor Alert!\nPlease specify a value for \"Name\" field!");
-    document.all.name.focus();
-    return;
-  }
-
-  // delete selected content (if applicable)
-  if (editdoc.selection.type == "Control" || curRange.htmlText) {
-
-    if (!confirm("Easy Editor Alert!\nThis will overwrite the currently selected text!")) { return; }
-
-    curRange.execCommand('Delete');
-    curRange = editdoc.selection.createRange();
-  }
-
-  var email = '<a href=mailto:' +document.all.address.value+ '>'
-            + '' +document.all.name.value+ ''
-            + '</a>\n';
-
-  // insert email address
-  opener.editor_insertHTML(objname, email);
-
-
-  // close popup window
-  window.close();
-}
-</SCRIPT>
-</HEAD>
-<BODY id=bdy onload="Init()" style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll=no>
-
-<FIELDSET style="width: 1%; text-align: center">
-<LEGEND>Insert E-Mail Address&nbsp;</LEGEND>
-
-<table border=0 cellspacing=0 cellpadding=2 style="margin: 5 5 5 5">
- <tr>
-  <td>E-Mail Address: &nbsp;</td>
-  <td><input type="text" name="address" value="" style="width: 220px" maxlength=60 tabindex=1></td>
-  <td rowspan="2"><BUTTON style="width: 7em; height: 2.2em; margin: 0 0 3 0" type=submit onclick="btnOKClick()" tabindex=3>OK</BUTTON><br>
-                  <BUTTON style="width: 7em; height: 2.2em;" type=reset onClick="window.close();" tabindex=4>Cancel</BUTTON></td>
- </tr>
- <tr>
-  <td>Name:</td>
-  <td><input type="text" name="name" value="" style="width: 220px" maxlength=60 tabindex=2></td>
- </tr>
+</script>
+<script language="JavaScript"> 
+<!--
+function no_error()
+{ return true; }
+window.onerror=no_error;
+-->
+</script>
+</head>
+<body onload="javascript: paste_link();" style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll=no>
+<FIELDSET style="width: 100%; text-align: center">
+<LEGEND>Insert Email Address&nbsp;</LEGEND>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+ <form method="post" name="set">
+  <tr>
+   <td>
+    <table border="0" cellspacing="4" width="100%" cellpadding="0">
+     <tr>
+      <td align="right" nowrap="nowrap">Email Address: </td>
+      <td nowrap="nowrap"><input type="text" name="text" value="" size="30"></td>
+     </tr>
+     <tr>
+      <td align="right" nowrap="nowrap">Name: </td>
+      <td nowrap="nowrap"><input type="text" name="desc" value="" size="30"></td>
+     </tr>																		 
+    </table> 
+   </td>
+   <td><input type="hidden" value="" name="empty"></td>
+  </tr>
+  <tr>
+   <td colspan="2" align="center"><input type="button" value=" OK " onClick="returnSelected()">
+	                          <input type="button" value="Cancel" onClick="window.close()"></td>
+  </tr>
+  <tr>
+   <td colspan="2" align="center">&nbsp;</td>
+  </tr>
+ </form>
 </table>
 </FIELDSET>
-</BODY>
-</HTML>
+</body>
+</html>
+
