@@ -66,6 +66,12 @@ if ($error) { printerr2(); return; }
 if ($_REQUEST[savechanges]) {
 	if ($isOwner) {
 		/* print "<pre>"; print_r($_SESSION[obj]); print "</pre>"; */
+		/* begin bug-fix X-294273alpha. thank you, Adam. */
+		// go through each editor and make sure that they are in the local DB.
+		foreach ($_SESSION[editors] as $_editor) {
+			synchronizeLocalUserAndClassDB($_editor);
+		}
+		/* end bug-fix. Again, thank you, Adam. */
 		$_SESSION[obj]->updateDB(1);
 //		print_r($_SESSION[obj]->editorsToDelete);
 		$_SESSION[obj]->deletePendingEditors();
