@@ -34,7 +34,7 @@ if (!isset($name)) {  // they have not yet entered any login info
 	// first off, if the ldap name and password works, use that
 	if ($results = ldap_valid($name,$password)) {
 		$valid=1;
-		$lid = db_get_value("users","id","uname='$name'");
+		$lid = db_get_value("user","user_id","user_uname='$name'");
 		$luser = $name;
 		$lpass = $password;
 		$fname = $results[0]["cn"][0];
@@ -51,12 +51,12 @@ if (!isset($name)) {  // they have not yet entered any login info
 	} else if ($r = db_valid($name,$password)) {
 		$valid=1;
 		$a = db_fetch_assoc($r);
-		$lid = $a[id];
+		$lid = $a[user_id];
 		$luser = $name;
 		$lpass = $password;
-		$lfname = $a[fname];
-		$lemail = $a[email];
-		$ltype = $a[type];
+		$lfname = $a[user_fname];
+		$lemail = $a[euser_mail];
+		$ltype = $a[user_type];
 		$lmethod = 'db';
 	// otherwise, they just entered an incorrect password
 	} else {
@@ -158,15 +158,15 @@ function ldap_valid($name,$pass,$admin_auser=0) {
 			$usertype = ($areprof)?"prof":"stud";
 //			print "type=$usertype<BR>";//debug
 			$status = 'ldap';
-			$query = "insert into users set uname='$uname', email='$email', fname='$fname',type='$usertype',pass='LDAP PASS',status='ldap'";
+			$query = "INSERT INTO user SET user_uname='$uname', user_email='$email', user_fname='$fname',user_type='$usertype',user_pass='LDAP PASS',user_authtype='ldap'";
 			db_query($query);
 		} else {
 			$a = db_fetch_assoc($res); // get their info
 //			print "They were already in the users db.<BR>";//debug
-			if ($a[status] != 'ldap') { // looks like they are valid w/ ldap, but don't have the ldap status set
+			if ($a[user_authtype] != 'ldap') { // looks like they are valid w/ ldap, but don't have the ldap status set
 				// let's repair this
 //				print "for some reason, ldap status was not set for them... updating...<BR>";//debug
-				$query = "update users set status='ldap' where id=$a[id]";
+				$query = "UPDATE user SET user_authtype='ldap' WHERE user_id=$a[id]";
 				db_query($query);
 			}
 			// Otherwise everything is dandy!
