@@ -235,11 +235,11 @@ while ($a = db_fetch_assoc($r)) {
 <?
 
 // debug output -- handy :)
-print "<pre>";
-print "request:\n";
-print_r($_REQUEST);
-print "\n\n";
-print "session:\n";
-print_r($_SESSION);
-print "\n\n"; 
-print "</pre>";
+/* print "<pre>"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n";  */
+/* print "</pre>"; */
