@@ -166,6 +166,6 @@ if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
 	$u = "$PHP_SELF?$sid&action=viewsite&site=$site";
 	if ($section) $u .= "&section=$section";
 	if ($page) $u .= "&page=$page";
-	$text .= " <div align=right><form method=post action='$u&$sid'><input type=submit value='edit this site'></form></div>";
+	$text .= " <div align=right><input type=submit value='edit this site' onClick=\"window.location='$u&$sid'\"></div>";
 	$sitefooter = $sitefooter . $text;
 }
