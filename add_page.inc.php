@@ -79,6 +79,7 @@ if ($settings) {
 	if ($settings[step] == 4 && !$link) $settings[showcreator] = $showcreator;
 	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
 	if ($settings[step] == 4 && !$link) $settings[storyorder] = $storyorder;
+	if ($settings[step] == 4 && !$link) $settings[showhr] = $showhr;
 	if ($archiveby) $settings[archiveby] = $archiveby;
 	if ($url) $settings[url] = $url;
 	
@@ -101,6 +102,7 @@ if ($settings) {
 		$settings[locked] = 0;
 		$settings[showcreator] = 0;
 		$settings[showdate] = 0;
+		$settings[showhr] = 0;
 		$settings[archiveby] = "none";
 		$settings[copydownpermissions] = 0;
 		$settings[storyorder] = "";
@@ -226,6 +228,7 @@ if ($save) {
 		$settings[locked] = ($settings[locked])?1:0;
 		$settings[showcreator] = ($settings[showcreator])?1:0;
 		$settings[showdate] = ($settings[showdate])?1:0;
+		$settings[showhr] = ($settings[showhr])?1:0;
 		$settings[ediscussion] = ($settings[ediscussion])?1:0;
 		
 		// check make sure the owner is the current user if they are changing permissions
@@ -260,6 +263,7 @@ if ($save) {
 		$chg[] = "title='$settings[title]'";
 		$chg[] = "showcreator=$settings[showcreator]";
 		$chg[] = "showdate=$settings[showdate]";
+		$chg[] = "showhr=$settings[showhr]";
 		$chg[] = "locked=$settings[locked]";
 		$chg[] = "activatedate='$settings[activatedate]'";
 		$chg[] = "deactivatedate='$settings[deactivatedate]'";

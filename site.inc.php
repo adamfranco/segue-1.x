@@ -114,8 +114,17 @@ if ($page) {
 	
 	foreach ($stories as $s) {
 		$a = db_get_line("stories","id=$s");
-		if (canview($a,STORY)) {
-			printc("<div style='margin-bottom: 4px'>");
+		if (canview($a,STORY)) {		
+			if (($pageinfo[showcreator] || $pageinfo[showdate] || $pageinfo[showhr]) && $i!=0) 
+					printc("<hr size='1' noshade style='margin-top: 10px'>");
+			if ($a[category]) {
+				printc("<div class=contentinfo id=contentinfo2 align=right>");
+				printc("Category: <b>".spchars($a[category])."</b>");
+				printc("</div>");
+			}
+					
+			printc("<div style='margin-bottom: 10px'>");
+			
 			if ($a[type]=='story' || $a[type]=='') {
 			
 				$st = urldecode($a['shorttext']);
@@ -135,11 +144,7 @@ if ($page) {
 				
 				if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
 				if ($a[texttype] == 'text') $st = htmlbr($st);
-				if ($a[category]) {
-					printc("<div class=contentinfo align=right>");
-					printc("Category: <b>".spchars($a[category])."</b>");
-					printc("</div>");
-				}
+
 				printc("<div>" . stripslashes($st) . "</div>");
 				if ($a[discuss] || $a[longertext]) {
 					printc("<div class=contentinfo align=right>");
@@ -151,20 +156,6 @@ if ($page) {
 					printc(implode(" | ",$l));
 					printc("</div>");
 				}
-				if ($pageinfo[showcreator] || $pageinfo[showdate]) {
-					printc("<div class=contentinfo align=right>");
-					$added = datetime2usdate($a[addedtimestamp]);
-					printc("added");
-					if ($pageinfo[showcreator]) printc(" by $a[addedby]");
-					if ($pageinfo[showdate]) printc(" on $added");
-					if ($a[editedby]) {
-						printc(", edited");
-						if ($pageinfo[showcreator]) printc(" by $a[editedby]");
-						if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
-					}
-					printc("</div>");
-					printc("<hr size='1' noshade><br>");
-				}
 			}
 			if ($a[type]=='image') {
 				$filename = urldecode(db_get_value("media","name","id=$a[longertext]"));
@@ -174,63 +165,39 @@ if ($page) {
 				if ($a[title]) printc("<tr><td align=center><b>".spchars($a[title])."</b></td></tr>");
 				if ($a[shorttext]) printc("<tr><td align=left>".stripslashes(urldecode($a[shorttext]))."</td></tr>");
 				printc("</table>");
-
-				if ($pageinfo[showcreator] || $pageinfo[showdate]) {
-					printc("<div class=contentinfo align=right>");
-					$added = datetime2usdate($a[addedtimestamp]);
-					printc("added");
-					if ($pageinfo[showcreator]) printc(" by $a[addedby]");
-					if ($pageinfo[showdate]) printc(" on $added");
-					if ($a[editedby]) {
-						printc(", edited");
-						if ($pageinfo[showcreator]) printc(" by $a[editedby]");
-						if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
-					}
-					printc("</div>");
-					printc("<hr size='1' noshade><br>");
-				}
 			}
 			if ($a[type]=='file') {
 				$t = makedownloadbar($a);
 				printc($t);
-
-				if ($pageinfo[showcreator] || $pageinfo[showdate]) {
-					printc("<div class=contentinfo align=right>");
-					$added = datetime2usdate($a[addedtimestamp]);
-					printc("added");
-					if ($pageinfo[showcreator]) printc(" by $a[addedby]");
-					if ($pageinfo[showdate]) printc(" on $added");
-					if ($a[editedby]) {
-						printc(", edited");
-						if ($pageinfo[showcreator]) printc(" by $a[editedby]");
-						if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
-					}
-					printc("</div>");
-					printc("<hr size='1' noshade><br>");
-				}
 			}
 			if ($a[type]=='link') {
+				if ($a[category]) {
+					printc("<div class=contentinfo align=right>");
+					printc("Category: <b>".spchars($a[category])."</b>");
+					printc("</div>");
+				}
+				
 				if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
 				printc("<div><a href='$a[url]' target='_blank'>$a[url]</a></div>");
 				if ($a[shorttext]) printc("<div class=desc>".stripslashes(urldecode($a[shorttext]))."</div>");
+			}
 
-				if ($pageinfo[showcreator] || $pageinfo[showdate]) {
-					printc("<div class=contentinfo align=right>");
-					$added = datetime2usdate($a[addedtimestamp]);
-					printc("added");
-					if ($pageinfo[showcreator]) printc(" by $a[addedby]");
-					if ($pageinfo[showdate]) printc(" on $added");
-					if ($a[editedby]) {
-						printc(", edited");
-						if ($pageinfo[showcreator]) printc(" by $a[editedby]");
-						if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
-					}
-					printc("</div>");
-					printc("<hr size='1' noshade><br>");
+			if ($pageinfo[showcreator] || $pageinfo[showdate]) {				
+				printc("<div class=contentinfo align=right>");
+				$added = datetime2usdate($a[addedtimestamp]);
+				printc("added");
+				if ($pageinfo[showcreator]) printc(" by $a[addedby]");
+				if ($pageinfo[showdate]) printc(" on $added");
+				if ($a[editedby]) {
+					printc(", edited");
+					if ($pageinfo[showcreator]) printc(" by $a[editedby]");
+					if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
 				}
+				printc("</div>");		
 			}
 			printc("</div>");
 		}
+		$i++;
 	}
 }
 

@@ -144,12 +144,20 @@ if ($page) {
 		$stories = handlestoryorder($stories,$pageinfo[storyorder]);
 		
 	if (permission($auser,PAGE,ADD,$page) && ($pageinfo[storyorder] == 'addeddesc' || $pageinfo[storyorder] == 'editeddesc' || $pageinfo[storyorder] == 'author' || $pageinfo[storyorder] == 'editor' || $pageinfo[storyorder] == 'category')) 
-	printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br><hr class=block>");
+	printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br>");
 	
 	$i=0;
 	foreach ($stories as $s) {
 		$a = db_get_line("stories","id=$s");
 		if ($a[active] || has_permissions($auser,STORY,$site,$section,$page,$s)) {
+			if ($i!=0)
+				printc("<hr class=block style='margin-top: 10px'>");
+				
+			if ($a[category]) {
+				printc("<div class=contentinfo id=contentinfo2 align=right>");
+				printc("Category: <b>".spchars($a[category])."</b>");
+				printc("</div>");
+			}
 		
 			if ($a[type] == 'story' || $a[type]=='') {
 			
@@ -167,15 +175,11 @@ if ($page) {
 						$textarray1[$i] = "src='".$filepath."'";
 					}		
 					$st = implode("",$textarray1);
-				}
-			
+				}		
+
 				if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
 				if ($a[texttype] == 'text') $st = htmlbr($st);
-				if ($a[category]) {
-					printc("<div class=contentinfo align=right>");
-					printc("Category: <b>".spchars($a[category])."</b>");
-					printc("</div>");
-				}
+
 				printc("<div>" . stripslashes($st) . "</div>");
 				if ($a[discuss] || $a[longertext]) {
 					printc("<div class=contentinfo align=right>");
@@ -186,20 +190,6 @@ if ($page) {
 					if ($a[longertext]) $l[] = $link."full text</a>";
 					printc(implode(" | ",$l));
 					printc("</div>");
-				}
-				if ($pageinfo[showcreator] || $pageinfo[showdate]) {
-					printc("<div class=contentinfo align=right>");
-					$added = datetime2usdate($a[addedtimestamp]);
-					printc("added");
-					if ($pageinfo[showcreator]) printc(" by $a[addedby]");
-					if ($pageinfo[showdate]) printc(" on $added");
-					if ($a[editedby]) {
-						printc(", edited");
-						if ($pageinfo[showcreator]) printc(" by $a[editedby]");
-						if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
-					}
-					printc("</div>");
-					//printc("<hr size='1' noshade><br>");
 				}
 			}
 			if ($a[type]=='image') {
@@ -216,10 +206,32 @@ if ($page) {
 				printc($t);
 			}
 			if ($a[type]=='link') {
+				if ($a[category]) {
+					printc("<div class=contentinfo align=right>");
+					printc("Category: <b>".spchars($a[category])."</b>");
+					printc("</div>");
+				}
+				
 				if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
 				printc("<div><a href='$a[url]' target='_blank'>$a[url]</a></div>");
 				if ($a[shorttext]) printc("<div class=desc>".stripslashes(urldecode($a[shorttext]))."</div>");
 			}
+			
+			if ($pageinfo[showcreator] || $pageinfo[showdate]) {
+				printc("<div class=contentinfo align=right>");
+				$added = datetime2usdate($a[addedtimestamp]);
+				printc("added");
+				if ($pageinfo[showcreator]) printc(" by $a[addedby]");
+				if ($pageinfo[showdate]) printc(" on $added");
+				if ($a[editedby]) {
+					printc(", edited");
+					if ($pageinfo[showcreator]) printc(" by $a[editedby]");
+					if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
+				}
+				printc("</div>");
+				//printc("<hr size='1' noshade><br>");
+			}
+			
 			printc("<div align=right>");
 //			$s1=$s2=NULL;
 			$l = array();
@@ -230,13 +242,14 @@ if ($page) {
 				}
 				$i++;
 				if (permission($auser,PAGE,EDIT,$page) || permission($auser,STORY,EDIT,$s)) $l[]="<a href='$PHP_SELF?$sid&$envvars&action=edit_story&edit_story=$s&commingFrom=viewsite' class='small' title='Edit this Content Block'>edit</a>";
-				if (permission($auser,PAGE,DELETE,$page) || permission($auser,STORY,DELETE,$s)) $l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&$envvars&action=delete_story&delete_story=$s\")' class=small title='Delete this Content Block'>delete</a><hr class=block>";
+				if (permission($auser,PAGE,DELETE,$page) || permission($auser,STORY,DELETE,$s)) $l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&$envvars&action=delete_story&delete_story=$s\")' class=small title='Delete this Content Block'>delete</a>";
 			}
 			printc(implode(" | ",$l));
 			printc("</div>");
+			$i++;
 		}
 	}
-	if (permission($auser,PAGE,ADD,$page) && ($pageinfo[storyorder] == '' || $pageinfo[storyorder] == 'custom' || $pageinfo[storyorder] == 'addedasc' || $pageinfo[storyorder] == 'editedasc')) printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+	if (permission($auser,PAGE,ADD,$page) && ($pageinfo[storyorder] == '' || $pageinfo[storyorder] == 'custom' || $pageinfo[storyorder] == 'addedasc' || $pageinfo[storyorder] == 'editedasc')) printc("<br><hr class=block><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 }
 
 

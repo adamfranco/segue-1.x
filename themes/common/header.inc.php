@@ -55,7 +55,16 @@ input.small {
 
 .smaller {font-size: smaller;}
 .contenttitle {font-weight: bolder;}
-.contentinfo {font-size: 10px;}
+.contentinfo {
+	margin-top: 10px;
+	font-size: 10px;
+}
+
+#contentinfo2 {
+	margin-top: 0px;
+	font-size: 10px;
+}
+
 .content {padding-bottom: 5px;}
 
 .red {color: #900;}

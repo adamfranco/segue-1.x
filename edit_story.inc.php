@@ -86,7 +86,7 @@ if ($settings) {
 	if ($texttype) $settings[texttype] = $texttype;
 	if ($settings[step] == 5 && !$link) $settings[discuss] = $discuss;
 	if ($settings[step] == 5 && !$link) $settings[discusspermissions] = $discusspermissions;
-	if ($settings[step] == 5 && !$link) $settings[category] = $category;
+	if ($settings[step] == 3 && !$link) $settings[category] = $category;
 	if ($newcategory) {
 		$settings[category] = $newcategory;
 		$settings[categories][] = $newcategory;

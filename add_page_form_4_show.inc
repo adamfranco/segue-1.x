@@ -41,6 +41,9 @@ if ($settings[type]=='page') {
 		printc("<option value='editor'".(($settings[storyorder]=='editor')?" selected":"").">Editor");
 		printc("<option value='category'".(($settings[storyorder]=='category')?" selected":"").">Category");
 	printc("</select><br><br>");
+	
+	printc("Show horizontal rule: <input type=checkbox name='showhr' value=1". (($settings[showhr])?" checked":"") . "><br>");
+	printc("<div class=desc>By checking the above box, a horizontal rule will be placed between content blocks. A horizontal rule will also be displayed if either of the following two checkboxes are checked.</div>");
 		
 	printc("Show added/edited by <i>username</i> for content: <input type=checkbox name='showcreator' value=1". (($settings[showcreator])?" checked":"") . "><BR>");
 	printc("<div class=desc>By checking the above box, the usernames of the people that added or edited the content on this page will be displayed along with the story text.</div>");
