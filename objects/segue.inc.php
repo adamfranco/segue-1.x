@@ -1086,12 +1086,18 @@ FROM
 			// decode 'final_permissions'; 
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
-			$a[a] = (strpos($row[permissions],'a') !== false) ? 1 : 0; // look for 'a' in 'final_permissions'
-			$a[e] = (strpos($row[permissions],'e') !== false) ? 1 : 0; // !== is very important here, because a position 0 is interpreted by != as FALSE
-			$a[d] = (strpos($row[permissions],'d') !== false) ? 1 : 0;
-			$a[v] = (strpos($row[permissions],'v') !== false) ? 1 : 0;
-			$a[di] = (strpos($row[permissions],'di') !== false) ? 1 : 0;
+			$dbPerms = explode(",", $row[permissions]);
 			
+			$a[v] = in_array('v', $dbPerms);
+			$a[a] = in_array('a', $dbPerms);
+			$a[e] = in_array('e', $dbPerms);
+			$a[d] = in_array('d', $dbPerms);
+			$a[di] = in_array('di', $dbPerms);
+			
+			// Trash the db perms variable.
+			$dbPerms = NULL;
+			unset ($dbPerms);
+						
 			// if the editor is a user then the editor's name is just the user name
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
 			if ($row[editor_type]=='user')
