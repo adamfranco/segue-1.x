@@ -49,19 +49,50 @@ printc("<div class=title>1. Title</div><br>");
 
 printc("Title: <input type=text size=35 name='title' value='".spchars($_SESSION[siteObj]->getField("title"))."'>");
 printc("<span class=editnote> *required</span>");
+printc("<br>");
+
+if (!isclass($_SESSION[siteObj]->getField("name"))) printc("<br><br><input type=checkbox name='listed' value=1".(($_SESSION[siteObj]->getField("listed"))?" checked":"")."> Include site in public listing.".helplink("listing"));
+else printc("<input type=hidden name='listed' value=1>");
 printc("<br><br>");
 
 /* ------------------------------------------------------------ */
 /* this will be replace by our new permissions system -- hence the comments */
-//printc("Allow: <b><input type=radio name=viewpermissions value='anyone'".(($_SESSION[settings][viewpermissions]=='anyone')?" checked":"")."> anyone ");
-//printc("<input type=radio name=viewpermissions value='midd'".(($_SESSION[settings][viewpermissions]=='midd')?" checked":"")."> $cfg[inst_name] users ");
-//if (isclass($_SESSION[settings][sitename])) printc("<input type=radio name=viewpermissions value='class'".(($_SESSION[settings][viewpermissions]=='class')?" checked":"")."> students in class");
+/* Actually, this will be in addition to the new system, and interface with it. - Adam 2003:02 */
+printc("Allow: <b><input type=radio name=viewpermissions value='everyone'".(($_SESSION[siteObj]->permissions[everyone][3])?" checked":"")."> anyone ");
+printc(" <input type=radio name=viewpermissions value='institute'".(($_SESSION[siteObj]->permissions[institute][3] && !$_SESSION[siteObj]->permissions[everyone][3])?" checked":"")."> $cfg[inst_name] users ");
+if ($_SESSION[siteObj]->getField("type") == "class") {
+	printc(" <input type=radio name=viewpermissions value='".$_SESSION[siteObj]->getField("name")."'");
+	if (in_array($_SESSION[siteObj]->getField("name"), $_SESSION[siteObj]->permissions)) {
+		$name = $_SESSION[siteObj]->getField("name");
+		if($_SESSION[siteObj]->permissions[$name][3] && !$_SESSION[siteObj]->permissions[institute][3] && !$_SESSION[siteObj]->permissions[everyone][3])
+			printc(" checked");
+	}
+	printc("> students in class");
 
-//printc("</b> to view this site.");
-if (!isclass($_SESSION[siteObj]->getField("name"))) printc("<br><br><input type=checkbox name='listed' value=1".(($_SESSION[siteObj]->getField("listed"))?" checked":"")."> Include site in public listing.".helplink("listing"));
-else printc("<input type=hidden name='listed' value=1>");
-printc("<br><br><br>");
-
+	if ($_SESSION[settings][edit]) {
+		printc(" <input type=radio name=viewpermissions value='custom'");
+		
+		print (!$_SESSION[siteObj]->permissions[everyone][3] && $_SESSION[siteObj]->hasPermissionDown("view","everyone"))?"1":"0";
+		print (!$_SESSION[siteObj]->permissions[institute][3] && $_SESSION[siteObj]->hasPermissionDown("view","institue"))?"1":"0";
+		print (in_array($_SESSION[siteObj]->getField("name"), $_SESSION[siteObj]->permissions) && !$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3] && $_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name")))?"1":"0";
+		print (!$_SESSION[siteObj]->hasPermissionDown("view","everyone") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone") && !$_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name")))?"1":"0";
+		print (count($_SESSION[siteObj]->editors) > 3) ?"1":"0";
+		
+		if ((!$_SESSION[siteObj]->permissions[everyone][3] && $_SESSION[siteObj]->hasPermissionDown("view","everyone")) || (!$_SESSION[siteObj]->permissions[institute][3] && $_SESSION[siteObj]->hasPermissionDown("view","institue")) || (in_array($_SESSION[siteObj]->getField("name"), $_SESSION[siteObj]->permissions) && !$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3] && $_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name"))) || (!$_SESSION[siteObj]->hasPermissionDown("view","everyone") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone") && !$_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name"))) || (count($_SESSION[siteObj]->editors) > 3)) {
+			printc(" checked");
+		}
+		printc(" onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=".$_SESSION[siteObj]->getField("name")."\")'> custom");
+	}
+} else {
+	if ($_SESSION[settings][edit]) {
+		printc(" <input type=radio name=viewpermissions value='custom'");
+		if ((!$_SESSION[siteObj]->permissions[everyone][3] && $_SESSION[siteObj]->hasPermissionDown("view","everyone")) || (!$_SESSION[siteObj]->permissions[institute][3] && $_SESSION[siteObj]->hasPermissionDown("view","institue")) || (!$_SESSION[siteObj]->hasPermissionDown("view","everyone") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone")) || (count($_SESSION[siteObj]->editors) > 2)) {
+			printc(" checked");
+		}
+		printc(" onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=".$_SESSION[siteObj]->getField("name")."\")'> custom");
+	}
+}
+printc("</b> to view this site.<br><br>");
 
 printc("<div class=title>2. When is this site available?".helplink("daterange")." &nbsp; - &nbsp; <i>Optional</i></div>");
 //printc("<div class=desc>If you would like this site to be available only during a certain range of dates, enter them below and select the checkbox to the left of that date.</div>");
