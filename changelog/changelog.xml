@@ -27,7 +27,10 @@
 			Added summary of discussion/assessment settings that is displayed for
 			 site owners when they view discussions/assessments on their sites.
 		</new>
-
+		<fix author='alex'>
+			Fixed bug that allowed discussions to be enabled without granting
+			permissions to discuss to any group/users 
+		</fix>
 	</version>
 	<version number="1.1.0" date="2004-04-22">	
 		<new author='adam'>

@@ -221,9 +221,9 @@ if ($storyObj->getField("discuss")) {
 		printc("<tr><td align=left><div style='font-size: 9px'>");
 		printc("<b>Mail Posts:</b>");
 		if ($mailposts == 1) {
-			printc(" All posts to this discussion will be mailed to you.");
+			printc(" All posts to this discussion/assessment will be mailed to you.");
 		} else {
-			printc(" Email notification of posts to this discussion has been disabled.");
+			printc(" Email notification of posts to this discussion/assessment has been disabled.");
 		}
 		printc("</div></td></tr>");		
 		printc("<tr><td align=left><div style='font-size: 9px'>");
