@@ -34,7 +34,7 @@ if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
 	}
 }
 
-// if they clicked a 'goback' button
+// if they clicked a 'goback' button -- this is OBSOLETE
 if ($goback && $gobackurl) {
 	header("Location: $gobackurl");
 	exit;

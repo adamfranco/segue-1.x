@@ -20,6 +20,23 @@ class segue {
 	
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 	
+	function getAllValues($scope,$name) {
+		if (!$this->fetcheddown) $this->fetchDown();
+		$class = get_class($this);
+		$ar = $this->_object_arrays[$class];
+//		print "getting all values for $name in $class ".$this->getField("title")." with scope $scope<BR>";
+		if ($class==$scope) {
+			return array($this->getField($name));
+		}
+		if ($ar) {
+			$a = array();
+			foreach ($this->$ar as $i=>$o) {
+				$a = array_merge($a,$o->getAllValues($scope,$name));
+			}
+		}
+		return $a;
+	}
+	
 	function fetchData() {
 		if ($fetched) return $this->data;
 		else return 0;
@@ -41,7 +58,7 @@ class segue {
 	function setField($name,$value) {
 		$this->data[$name] = $value;
 		$this->changed = 1;
-		if ($name == "footer" || $name == "header") {
+		if ($name == "footer" || $name == "header" || $name == "shorttext" || $name == "longertext") {
 			$this->parseMediaTextForEdit($name);
 		}
 	}

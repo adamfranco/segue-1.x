@@ -58,15 +58,8 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 			$_SESSION[siteObj]->setSiteName($_REQUEST[edit_site]);
 		}
 		$_SESSION[siteObj]->fetchFromDB();
-		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$_SESSION[siteObj]->getField("activatedate"));
-		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$_SESSION[siteObj]->getField("deactivatedate"));
-		$_SESSION[settings][activatemonth]-=1;
-		$_SESSION[settings][deactivatemonth]-=1;
-		$_SESSION[settings][activatedate]=($_SESSION[siteObj]->getField("activatedate")=='0000-00-00')?0:1;
-		$_SESSION[settings][deactivatedate]=($_SESSION[siteObj]->getField("deactivatedate")=='0000-00-00')?0:1;
-/* ---------------------------------------------------- */
-/*  uncomment this line when permissions are set and done */
-//		$_SESSION[settings][permissions] = $_SESSION[siteObj]->buildPermissionsArray();
+/* ---------------------------------------------------- 
+	 uncomment this line when permissions are set and done */
 		$_SESSION[settings][copydownpermissions] = decode_array($_SESSION[settings][copydownpermissions]);
 		$_SESSION[settings][site_owner] = $_SESSION[siteObj]->getField("addedby");	
 	}
@@ -100,11 +93,12 @@ if (!sitenamevalid($_SESSION[siteObj]->getField("name"))) {// check if the site 
 	error("You are not allowed to edit this site. Nice try.");
 	return;
 }
+
 if ($_REQUEST[cancel]) {
 	$commingFrom = $_SESSION[settings][commingFrom];
 	$site = $_SESSION[siteObj]->getField("name");
-	if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("siteObj"); }
-	unset($_SESSION[siteObj],$_SESSION[setting]);
+//	if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("siteObj"); }
+//	unset($_SESSION[siteObj],$_SESSION[setting]);
 	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
 	else header("Location: index.php?$sid");
 }
@@ -191,8 +185,6 @@ if ($_REQUEST[save]) {
 		$sitename = $_SESSION[siteObj]->getField("name");
 		$commingFrom = $_SESSION[settings][commingFrom];
 		$add = $_SESSION[settings][add];
-		if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("siteObj"); }
-		unset($_SESSION[siteObj],$_SESSION[setting]);
 
 		if ($add) {
 			header("Location: index.php?$sid&action=viewsite&site=$sitename");

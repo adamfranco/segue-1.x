@@ -147,7 +147,7 @@ if ($_REQUEST[save]) {
 	if (!$error) { // save it to the database
 		
 		// check make sure the owner is the current user if they are changing permissions
-		if ($site_owner != $_REQUEST[auser])
+		if ($site_owner != $_SESSION[auser])
 			$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 		
 		if ($_SESSION[settings][edit]) { 

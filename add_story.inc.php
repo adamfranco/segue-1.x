@@ -1,277 +1,122 @@
 <? /* $Id$ */
 
-//--------------------------------------------------------------------------------------------------------
-// Begining of new code
-
-// ---  variables for debugging ---
-/*$vars = $settings;
-ksort($vars);
-$variables .= "<br>----------------------<br>";
-foreach ($vars as $n => $v) {
-	$variables .= "$n = $v <br>";	
-}
-if ($settings[file]) foreach ($settings[file] as $n => $v) $variables .= "<br>$n - $v";
-//add_link(leftnav,'','',"$variables");
-//printc("$variables");
-*///------------------------------------
-
 // first check if we are allowed to edit this site at all
-if ($auser != $site_owner && $auser != $settings[site_owner] && !is_editor($auser,$site) && !is_editor($auser,$settings[site])) {
-	error("You're not even an editor for this site! Bad person!");
-	return;
-}
-if ($edit && !permission($auser,SECTION,EDIT,$section) && !permission($auser,SECTION,EDIT,$settings[section])) {
-	error("You don't have permission to edit this page. Nice try.");
-	return;
-}
-if ($add && !permission($auser,SECTION,ADD,$section)  && !permission($auser,SECTION,ADD,$settings[section])) {
-	error("You don't have permission to add sections to this site. Nice try.");
-	return;
-}
-if ($edit && !insite($site,$section,$page,$edit_story)) {
-	error("Oh, you're good, but not good enough!");
-	return;
-}
+/* if ($auser != $site_owner && $auser != $settings[site_owner] && !is_editor($auser,$site) && !is_editor($auser,$settings[site])) { */
+/* 	error("You're not even an editor for this site! Bad person!"); */
+/* 	return; */
+/* } */
+/* if ($edit && !permission($auser,SECTION,EDIT,$section) && !permission($auser,SECTION,EDIT,$settings[section])) { */
+/* 	error("You don't have permission to edit this page. Nice try."); */
+/* 	return; */
+/* } */
+/* if ($add && !permission($auser,SECTION,ADD,$section)  && !permission($auser,SECTION,ADD,$settings[section])) { */
+/* 	error("You don't have permission to add sections to this site. Nice try."); */
+/* 	return; */
+/* } */
+/* if ($edit && !insite($site,$section,$page,$edit_story)) { */
+/* 	error("Oh, you're good, but not good enough!"); */
+/* 	return; */
+/* } */
 
-if ($settings) {
+if ($_SESSION[settings]) {
 	// if we have already started editing...
 
-	// ---- Editor actions ----
-	if ($edaction == 'add') {
-		if ($settings[editors])
-			$edlist = explode(",",$settings[editors]);
-		else $edlist = array();
-		if (!in_array($edname,$edlist) && $edname != $auser) $edlist[]=$edname;
-		$editors = implode(",",$edlist);
-		if ($edname == $auser) error("You do not need to add yourself as an editor.");
-	}
-	
-	if ($edaction == 'del') {
-		if ($settings[editors])
-			$edlist = explode(",",$settings[editors]);
-		else $edlist = array();
-		$nlist = array();
-		foreach ($edlist as $e) {
-			if ($e != $edname) $nlist[]=$e;
-		}
-		$editors = implode(",",$nlist);
-	}
-
 	// --- Load any new variables into the array ---
-	// Checkboxes need a "if ($settings[step] == 1 && !$link)" tag.
+	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-	if ($type) $settings[type] = $type;
-	if ($settings[step] == 1 && !$link) $settings[title] = $title;
-	if ($activateyear != "") $settings[activateyear] = $activateyear;
-	if ($activatemonth != "") $settings[activatemonth] = $activatemonth;
-	if ($activateday != "") $settings[activateday] = $activateday;
-	if ($settings[step] == 3 && !$link) $settings[activatedate] = $activatedate;
-	if ($deactivateyear != "") $settings[deactivateyear] = $deactivateyear;
-	if ($deactivatemonth != "") $settings[deactivatemonth] = $deactivatemonth;
-	if ($deactivateday != "") $settings[deactivateday] = $deactivateday;
-	if ($settings[step] == 3 && !$link) $settings[deactivatedate] = $deactivatedate;
-	if ($active != "") $settings[active] = $active;
-	if ($viewpermissions != "") $settings[viewpermissions] = $viewpermissions;
-	if ($settings[step] == 4 && !$link) $settings[editors] = strtolower($editors);
-	if ($settings[step] == 4 && !$link) $settings[permissions] = $permissions;
-//	if ($settings[step] == 4 && !$link) $settings[ediscussion] = $ediscussion;
-	if ($settings[step] == 4 && !$link) $settings[locked] = $locked;
-//	if ($settings[step] == 1 && !$link) $settings[recursiveenable] = $recursiveenable;
-//	if ($copydownpermissions != "") $settings[copydownpermissions] = $copydownpermissions;
-//	if ($settings[step] == 4 && !$link) $settings[showcreator] = $showcreator;
-//	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
-//	if ($archiveby) $settings[archiveby] = $archiveby;
-	if ($url) $settings[url] = $url;	
-//	if ($file && $_FILES['file']['tmp_name'] != 'none' && $settings[step] == 1 && !$link) $settings[file] = $_FILES['file'];	
-	if ($texttype) $settings[texttype] = $texttype;
-	if ($settings[step] == 5 && !$link) $settings[discuss] = $discuss;
-	if ($settings[step] == 5 && !$link) $settings[discusspermissions] = $discusspermissions;
-	if ($settings[step] == 3 && !$link) $settings[category] = $category;
-	if ($newcategory) {
-		$settings[category] = $newcategory;
-		$settings[categories][] = $newcategory;
-		sort($settings[categories]);
+	if ($_REQUEST[type]) $_SESSION[storyObj]->setField("type",$_REQUEST[type]);
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
+	$_SESSION[storyObj]->handleFormDates();
+	if ($_REQUEST[active] != "") $_SESSION[storyObj]->setField("active",$_REQUEST[active]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setPermissions($_REQUEST[permissions]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("locked",$_REQUEST[locked]);
+	if ($_REQUEST[url]) $_SESSION[storyObj]->setField("url",$_REQUEST[url]);
+	if ($_REQUEST[texttype]) $_SESSION[storyObj]->setField("texttype",$_REQUEST[texttype]);
+	if ($_SESSION[settings][step] == 5 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discuss",$_REQUEST[discuss]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("category",$_REQUEST[category]);
+	if ($_REQUEST[newcategory]) {
+		$_SESSION[storyObj]->setField("category",$_REQUEST[newcategory]);
+		$_SESSION[settings][categories][] = $_REQUEST[newcategory];
+		sort($_SESSION[settings][categories]);
 	}
-	if ($settings[step] == 1 && !$link) $settings[shorttext] = $shorttext;
-	if ($settings[step] == 2 && !$link) $settings[longertext] = $longertext;
-	if ($settings[step] == 1 && !$link) $settings[libraryfilename] = $libraryfilename;
-	if ($settings[step] == 1 && !$link) $settings[libraryfileid] = $libraryfileid;
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("shorttext",$_REQUEST[shorttext]);
+	if ($_SESSION[settings][step] == 2 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("longertext",$_REQUEST[longertext]);
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][libraryfilename] = $_REQUEST[libraryfilename];
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][libraryfileid] = $_REQUEST[libraryfileid];
 
 	//---- If switching type, take values to defaults ----
 	if ($typeswitch) {
-		$editors = db_get_value("sites","editors","name='$settings[site]'");
-		$settings[title] = "";
-		$settings[url] = "http://";
-		$settings[active] = 1;
-		$settings[activateyear] = "0000";
-		$settings[activatemonth] = "00";
-		$settings[activateday] = "00";
-		$settings[activatedate] = 0;
-		$settings[deactivateyear] = "0000";
-		$settings[deactivatemonth] = "00";
-		$settings[deactivateday] = "00";
-		$settings[deactivatedate] = 0;
-		$settings[active] = 1;
-		$settings[editors] = $editors;
-		$settings[ediscussion] = db_get_value("pages","ediscussion","id=$settings[page]");
-		$settings[locked] = 0;
-		$settings[showcreator] = 0;
-		$settings[showdate] = 0;
-//		$settings[archiveby] = "none";
-		$settings[discuss] = 0;
-		$settings[discusspermissions] = "";
-		$settings[texttype] = "text";
-		$settings[category] = "";
-		$settings[shorttext] = "";
-		$settings[longertext] = "";
-		$settings[libraryfilename] = "";
-		$settings[libraryfileid] = "";
-//		$settings[file] = "";
+		$_SESSION[settings][ediscussion] = $thisPage->getField("ediscussion");
+		$_SESSION[settings][libraryfilename] = "";
+		$_SESSION[settings][libraryfileid] = "";
+		$_SESSION[storyObj]->init(1);
 		
-		if ($settings[add]) {
-			//print "<p> deleting settings[permissions]....</p>";
-			//$settings[permissions] = "";
-			$settings[permissions] = decode_array(db_get_value("pages","permissions","id=$settings[page]"));
+		if ($_SESSION[settings][add]) {
+			$_SESSION[storyObj]->setPermissions($thisPage->getPermissions());
 		}
 	}
 }
 
-if (!$settings && !$error) {
+if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 //	print "Making a new settings array<br>";
-	// create the settings array with default values. $settings must be passed along with each link.
+	// create the settings array with default values. $_SESSION[settings] must be passed along with each link.
 	// The array will be saved on clicking a save button.
 	$editors = db_get_value("sites","editors","name='$site'");
 	session_register("settings");
-	$settings = array(
+	$_SESSION[settings] = array(
 		"site_owner" => $site_owner,
 		"add" => 0,
 		"edit" => 0,
 		"step" => 1,
-		"site" => $site,
-		"section" => $section,
-		"page" => $page,
-		"story" => $edit_story,
-		"title" => "",
-		"activateyear" => "0000",
-		"activatemonth" => "00",
-		"activateday" => "00",
-		"activatedate" => 0,
-		"deactivateyear" => "0000",
-		"deactivatemonth" => "00",
-		"deactivateday" => "00",
-		"deactivatedate" => 0,
-		"active"  => 1,
-		"editors" => $editors,
-		"permissions" => "",
-//		"ediscussion" => 1,
-		"type" => "story",
-		"url" => "http://",
-		"discuss" => 0,
-		"discusspermissions" => "",
-		"texttype" => "text",
-		"category" => "",
-		"shorttext" => "",
-		"longertext" => "",
-		"commingFrom" => $commingFrom
+		"site" => $_REQUEST[site],
+		"section" => $_REQUEST[section],
+		"page" => $_REQUEST[page],
+		"commingFrom" => $_REQUEST[commingFrom]
 	);
 	
-	$settings[pagetitle]=db_get_value("sites","title","name='$site'") . " > " . db_get_value("sections","title","id=$section") . " > ";
+	$_SESSION[storyObj] = new story($thisSite->name,$thisSection->id,$thisPage->id);
+	
+	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > " . $thisPage->getField("title") . " > ";
 	
 	if ($action == 'add_story') {
-		$settings[add]=1;
-		$settings[edit]=0;
-		$settings[pagetitle] .= " Add Item";
+		$_SESSION[settings][add]=1;
+		$_SESSION[settings][edit]=0;
+		$_SESSION[settings][pagetitle] .= " Add Item";
 	}	
 	if ($action == 'edit_story') { 
-		$settings[add]=0;
-		$settings[edit]=1;
-		$settings[pagetitle] .= " Edit Item";
+		$_SESSION[settings][add]=0;
+		$_SESSION[settings][edit]=1;
+		$_SESSION[settings][pagetitle] .= " Edit Item";
 	}
 	
-	if ($settings[add]) {
-		$settings[permissions] = decode_array(db_get_value("pages","permissions","id=$page"));
+	if ($_SESSION[settings][add]) {
+		$_SESSION[storyObj]->setPermissions($thisPage->getPermissions());
 	}
 	
-	if ($settings[edit]) {	
-		$a = db_get_line("stories","id=$settings[story]");
-		foreach ($a as $n=>$v) $settings[$n]=$v;
-		list($settings[activateyear],$settings[activatemonth],$settings[activateday]) = explode("-",$settings[activatedate]);
-		list($settings[deactivateyear],$settings[deactivatemonth],$settings[deactivateday]) = explode("-",$settings[deactivatedate]);		
-		$settings[activatemonth]-=1;
-		$settings[deactivatemonth]-=1;
-		$settings[activatedate]=($settings[activatedate]=='0000-00-00')?0:1;
-		$settings[deactivatedate]=($settings[deactivatedate]=='0000-00-00')?0:1;
-		$settings[permissions] = decode_array($settings[permissions]);
-		$settings[shorttext] = urldecode($settings[shorttext]);
-		$settings[longertext] = urldecode($settings[longertext]);		
-		
-		if ($settings[type] == 'image' || $settings[type] == 'file') {
-			$settings[libraryfileid] = $settings[longertext];
-			$settings[libraryfilename] = db_get_value("media","name","id=$settings[libraryfileid]");
-		}
+	if ($_SESSION[settings][edit]) {
+		$_SESSION[storyObj]->fetchFromDB($_REQUEST[edit_story]);
+	}
+	
+	$_SESSION[settings][categories]=array_unique($thisSite->getAllValues("story","category"));
+	sort($_SESSION[settings][categories]);
 
-		if ($settings[type] == 'story') {
-			$settings[shorttext] = str_replace("src='####","####",$settings[shorttext]);
-			$settings[shorttext] = str_replace("src=####","####",$settings[shorttext]);
-			$settings[shorttext] = str_replace("####'","####",$settings[shorttext]);
-			$textarray1 = explode("####", $settings[shorttext]);
-			if (count($textarray1) > 1) {
-				for ($i=1; $i<count($textarray1); $i=$i+2) {
-					$id = $textarray1[$i];
-					$filename = db_get_value("media","name","id=$id");
-					$dir = db_get_value("media","site_id","id=$id");
-					$filepath = $uploadurl."/".$dir."/".$filename;
-					$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
-				}		
-				$settings[shorttext] = implode("",$textarray1);
-			}
-			$settings[longertext] = str_replace("src='####","####",$settings[longertext]);
-			$settings[longertext] = str_replace("src=####","####",$settings[longertext]);
-			$settings[longertext] = str_replace("####'","####",$settings[longertext]);
-			$textarray1 = explode("####", $settings[longertext]);
-			if (count($textarray1) > 1) {
-				for ($i=1; $i<count($textarray1); $i=$i+2) {
-					$id = $textarray1[$i];
-					$filename = db_get_value("media","name","id=$id");
-					$dir = db_get_value("media","site_id","id=$id");
-					$filepath = $uploadurl."/".$dir."/".$filename;
-					$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
-				}		
-				$settings[longertext] = implode("",$textarray1);
-			}
-		}
-	}
 	
-	$settings[categories]=array();
-	if (db_num_rows(($r=db_query("select distinct category,id from stories")))) {
-		while ($a=db_fetch_assoc($r)) {
-			if ($a[category]!='' && insite($settings[site],$settings[section],$settings[page],$a[id])) {
-				$settings[categories][] = $a[category];
-//	 			$strs = decode_array(db_get_value("pages","stories","id=$settings[page]")); 
-//	 			print_r($strs); 
-//	 			print "$a[id] => ".in_array($a[id],$strs)."<BR>"; 
-				
-			}
-		}
-		sort($settings[categories]);
-	}
-	
-	$settings[ediscussion] = db_get_value("pages","ediscussion","id=$settings[page]");
+	$_SESSION[settings][ediscussion] = $thisPage->getField("ediscussion");
 }
 
-if ($prevbutton) $settings[step] = $settings[step] - 1;
-if ($nextbutton) $settings[step] = $settings[step] + 1; 
-if ($step != "") $settings[step] = $step;
-if ($settings[step] ==2 && $settings[type] != 'story') {
-	if ($prevbutton) $settings[step] = 1;
-	if ($nextbutton) $settings[step] = 3;
+if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] - 1;
+if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] + 1; 
+if ($_REQUEST[step] != "") $_SESSION[settings][step] = $_REQUEST[step];
+if ($_SESSION[settings][step] ==2 && $_SESSION[storyObj]->getField("type") != 'story') {
+	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 1;
+	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 3;
 }
-if ($settings[step] ==4 && $auser != $settings[site_owner]) {
-	if ($prevbutton) $settings[step] = 3;
-	if ($nextbutton) $settings[step] = 5;
+if ($_SESSION[settings][step] ==4 && $_SESSION[auser] != $site_owner) {
+	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 3;
+	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 5;
 }
 
-$pagetitle=$settings[pagetitle];
+$pagetitle=$_SESSION[settings][pagetitle];
 
 //-----for some reason siteheader and sitefooter keep being define prior to this point on button click. I'm killing them here until their origen is found ----
 $site = "";
@@ -281,159 +126,68 @@ $siteheader = "";
 $sitefooter = "";
 
 // ---  variables for debugging ---
-/*$vars = $settings;
+/*$vars = $_SESSION[settings];
 ksort($vars);
 $variables .= "<br>----------------------<br>";
 foreach ($vars as $n => $v) {
 	$variables .= "$n = $v <br>";	
 }
-if ($settings[file]) foreach ($settings[file] as $n => $v) $variables .= "<br>$n - $v";
+if ($_SESSION[settings][file]) foreach ($_SESSION[settings][file] as $n => $v) $variables .= "<br>$n - $v";
 //add_link(leftnav,'','',"$variables");
 //printc("$variables");
 *///------------------------------------
 
-if ($cancel) {
-	$commingFrom = $settings[commingFrom];
-	$site = $settings[site];
-	session_unregister("settings");
+/* print "coming from: ".$_SESSION[settings][commingFrom]."<BR>"; */
+
+if ($_REQUEST[cancel]) {
+	$commingFrom = $_SESSION[settings][commingFrom];
+	$site = $thisSite->name;
+	print "cancelling...";
 	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
 	else header("Location: index.php?$sid");
 }
 
-if ($save) {
+if ($_REQUEST[save]) {
 	$error = 0;
 	// error checking
-	if ($settings[type]=='story' && (!$settings[shorttext] || trim($settings[shorttext])==''))
+	if ($_SESSION[storyObj]->getField("type")=='story' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))==''))
 			error ("You must enter some story content.");
-	if ($settings[type]=='link' && (!$settings[url] || $settings[url]=='' || $settings[url]=='http://'))
+	if ($_SESSION[storyObj]->getField("type")=='link' && (!$_SESSION[storyObj]->getField("url") || $_SESSION[storyObj]->getField("url")=='' || $_SESSION[storyObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
-	if ($settings[type]=='file' && (!$settings[libraryfileid] || $settings[libraryfileid] == ''))
+	if ($_SESSION[storyObj]->getField("type")=='file' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
 		error("You must select a file to upload.");
-	if ($settings[type]=='file' && (!$settings[title] || $settings[title] == ''))
+	if ($_SESSION[storyObj]->getField("type")=='file' && (!$_SESSION[storyObj]->getField("title") || $_SESSION[storyObj]->getField("title") == ''))
 		error("You must enter a title.");
-	if ($settings[type]=='image' && (!$settings[libraryfileid] || $settings[libraryfileid] == ''))
+	if ($_SESSION[storyObj]->getField("type")=='image' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
 		error("You must select an image to upload.");
 		
 	if (!$error) { // save it to the database
-		$addedby=$auser;
-		if ($settings[activatedate]) $settings[activatedate] = $settings[activateyear] . "-" . ($settings[activatemonth]+1) . "-" . $settings[activateday];
-		else $settings[activatedate] = "0000-00-00";
-		if ($settings[deactivatedate]) $settings[deactivatedate] = $settings[deactivateyear] . "-" . ($settings[deactivatemonth]+1) . "-" . $settings[deactivateday];
-		else $settings[deactivatedate] = "0000-00-00";
-		$settings[active] = ($settings[active])?1:0;
-		$settings[locked] = ($settings[locked])?1:0;
-		$settings[showcreator] = ($settings[showcreator])?1:0;
-		$settings[showdate] = ($settings[showdate])?1:0;
-		$settings[ediscussion] = ($settings[ediscussion])?1:0;
-		
-		// Break up the short and long text and properly configure image urls
-		if ($settings[type]=='story') {
-			$textarray1 = explode("&&&&", $settings[shorttext]);
-			if (count($textarray1) > 1) {
-				for ($i=1; $i<count($textarray1); $i=$i+2) {
-					$textarray2 = explode("@@@@", $textarray1[$i]);
-					$id = $textarray2[1];
-					$textarray1[$i] = "src='####".$id."####'";
-				}		
-				$settings[shorttext] = implode("",$textarray1);
-			}
-			
-			$textarray1 = explode("&&&&", $settings[longertext]);
-			if (count($textarray1) > 1) {
-				for ($i=1; $i<count($textarray1); $i=$i+2) {
-					$textarray2 = explode("@@@@", $textarray1[$i]);
-					$id = $textarray2[1];
-					$textarray1[$i] = "src='####".$id."####'";
-				}		
-				$settings[longertext] = implode("",$textarray1);
-			}
-		}
-		
-		print "$settings[shorttext]<br>";
-		print "$settings[longertext]<br>";		
-		$settings[shorttext]=urlencode($settings[shorttext]);
-		$settings[longertext]=urlencode($settings[longertext]);
 		
 		// put image id into the longer text field
-		if ($settings[type] == "image" || $settings[type] == "file") {
-			$settings[longertext] = $settings[libraryfileid];
+		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
+			$_SESSION[storyObj]->setField("longertext",$_SESSION[settings][libraryfileid]);
 		}
 		
 		// check make sure the owner is the current user if they are changing permissions
-		if ($settings[site_owner] != $auser) {
-			if ($settings[edit]) $settings[permissions] = decode_array(db_get_value("stories","permissions","id=$settings[story]"));
-			else $settings[permissions] = decode_array(db_get_value("pages","permissions","id=$settings[page]"));
+		if ($site_owner != $_SESSION[auser]) {
+			if ($_SESSION[settings][edit]) $_SESSION[storyObj]->buildPermissionsArray();
+			else $_SESSION[storyObj]->setPermissions($thisPage->getPermissions());
 		}
-		// make sure that the permissions array represents all of the editors (giving them either permission (1) or not (0))
-		//$settings[editors] = db_get_value("sites","editors","name='$settings[site]'");
-		if ($settings[editors]) {
-			$edlist = explode(",",$settings[editors]);
-			foreach ($edlist as $e) {
-				for ($i=0;$i<3;$i++) {
-					$settings[permissionsdf+e][$i] = ($settings[permissions][$e][$i])?1:0;
-				}
-			}
-		}
+
+		if ($_SESSION[settings][add]) $_SESSION[storyObj]->insertDB();
+		if ($_SESSION[settings][edit]) $_SESSION[storyObj]->updateDB();
 		
-		$settings[permissions] = encode_array($settings[permissions]);
-		if ($settings[add]) $query = "insert into stories set addedby='$auser',addedtimestamp=NOW(),";
-		$where = '';
-		if ($settings[edit]) { 
-			$query = "update stories set editedby='$auser',"; $where = " where id=$settings[story]"; 
-		}
-		
-		$chg = array();
-		$chg[] = "site_id='$settings[site]'";
-		$chg[] = "section_id='$settings[section]'";
-		$chg[] = "page_id='$settings[page]'";
-		$chg[] = "discuss='$settings[discuss]'";
-		$chg[] = "discusspermissions='$settings[discusspermissions]'";
-		$chg[] = "texttype='$settings[texttype]'";
-		$chg[] = "category='$settings[category]'";
-		$chg[] = "shorttext='$settings[shorttext]'";
-		$chg[] = "longertext='$settings[longertext]'";
-		$chg[] = "url='$settings[url]'";
-		$chg[] = "type='$settings[type]'";
-		$chg[] = "title='$settings[title]'";
-		$chg[] = "locked=$settings[locked]";
-		$chg[] = "activatedate='$settings[activatedate]'";
-		$chg[] = "deactivatedate='$settings[deactivatedate]'";
-		$chg[] = "permissions='$settings[permissions]'";
-		
-		$query .= implode(",",$chg);
-		print $query.$where."<BR>";
-		if (count($chg)) db_query($query.$where);
-		print mysql_error();
-		
-		// add the new story id to the pages table
-		if ($settings[add]) {
-			$newid = lastid();
-			
-			$stories = decode_array(db_get_value("pages","stories","id=$settings[page]"));
-			array_push($stories,$newid);
-			$stories = encode_array($stories);
-			$query = "update pages set stories='$stories' where id=$settings[page]";
-			db_query($query);
-			log_entry("add_story",$settings[site],$settings[section],$page,"$auser added content id $newid to page $settings[page] in section $settings[section] of site $settings[site]");
-		}
-		if ($settings[edit]) {
-			log_entry("edit_page",$settings[site],$settings[section],$settings[page],"$auser edited content id $settings[story] in page $settings[page] of section $settings[section] of site $settings[site]");
-			$newid=$settings[page];
-		}
-		
-		// add or remove any changes to the site editor list.
-		$query = "update sites set editors='$settings[editors]',editedtimestamp=NOW() where  name='$settings[site]'";
-		db_query($query);
-		print "$query <br>";
-		
-//		$query = "update sites set editedtimestamp=NOW() where  name='$settings[site]'";
-//		db_query($query);
-//		print "$query <br>";
-		
-		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]&page=$settings[page]");
+/* 			log_entry("add_story",$_SESSION[settings][site],$_SESSION[settings][section],$page,"$auser added content id $newid to page $_SESSION[settings][page] in section $_SESSION[settings][section] of site $_SESSION[settings][site]"); */
+/* 		} */
+/* 		if ($_SESSION[settings][edit]) { */
+/* 			log_entry("edit_page",$_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page],"$auser edited content id $_SESSION[settings][story] in page $_SESSION[settings][page] of section $_SESSION[settings][section] of site $_SESSION[settings][site]"); */
+/* 			$newid=$_SESSION[settings][page]; */
+/* 		} */
+
+		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
 		
 	} else {
-		$settings[step] = 1;
+		$_SESSION[settings][step] = 1;
 	}
 }
 
@@ -441,50 +195,50 @@ if ($save) {
 // --- The Navigation Links for the sidebar ---
 $leftlinks = "_________________<br><table>";
 $leftlinks .= "<tr><td>";
-if ($settings[step] == 1) $leftlinks .= "&rArr; ";
+if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
-if ($settings[step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=1&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=1&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Content";
-if ($settings[step] != 1) $leftlinks .= "</a>";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
 
-if ($settings[type] == "story") {
+if ($_SESSION[storyObj]->getField("type") == "story") {
 	$leftlinks .= "<tr><td>";
-	if ($settings[step] == 2) $leftlinks .= "&rArr; ";
+	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($settings[step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=2&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=2&link=1 onClick=\"submitForm()\">";
 	$leftlinks .= "Extended Content";
-	if ($settings[step] != 2) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
 if (1) {
 	$leftlinks .= "<tr><td>";
-	if ($settings[step] == 3) $leftlinks .= "&rArr; ";
+	if ($_SESSION[settings][step] == 3) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($settings[step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=3&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=3&link=1 onClick=\"submitForm()\">";
 	$leftlinks .= "Activation & Category";
-	if ($settings[step] != 3) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-if ($auser == $settings[site_owner]) {
+if ($_SESSION[auser] == $site_owner) {
 	$leftlinks .= "<tr><td>";
-	if ($settings[step] == 4) $leftlinks .= "&rArr; ";
+	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($settings[step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=4&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=4&link=1 onClick=\"submitForm()\">";
 	$leftlinks .= "Permissions";
-	if ($settings[step] != 4) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 4) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-if ($settings[type] == "story" && ($settings[ediscussion] || $auser == $settings[site_owner])) {
+if ($_SESSION[settings][type] == "story" && ($_SESSION[settings][ediscussion] || $auser == $_SESSION[settings][site_owner])) {
 	$leftlinks .= "<tr><td>";
-	if ($settings[step] == 5) $leftlinks .= "&rArr; ";
+	if ($_SESSION[settings][step] == 5) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($settings[step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=5&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=5&link=1 onClick=\"submitForm()\">";
 	$leftlinks .= "Discussion";
-	if ($settings[step] != 5) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 5) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
@@ -492,30 +246,30 @@ $leftlinks .= "</table>_________________<br><a href=$PHP_SELF?$sid&action=add_pa
 
 add_link(leftnav,'','',"$leftlinks");
 
-if ($settings[step] == 1) {
+if ($_SESSION[settings][step] == 1) {
 	include("add_story_form_1_item.inc");
 }
-if ($settings[step] == 2) {
+if ($_SESSION[settings][step] == 2) {
 	include("add_story_form_2_fulltext.inc");
 }
-if ($settings[step] == 3) {
+if ($_SESSION[settings][step] == 3) {
 	include("add_story_form_3_activation.inc");
 }
-if ($settings[step] == 4) {
+if ($_SESSION[settings][step] == 4) {
 	include("add_story_form_4_permissions.inc");
 }
-if ($settings[step] == 5) {
+if ($_SESSION[settings][step] == 5) {
 	include("add_story_form_5_discussion.inc");
 }
 
 // ---  variables for debugging ---
-$vars = $settings;
+$vars = $_SESSION[settings];
 ksort($vars);
 $variables .= "<br>----------------------<br>";
 foreach ($vars as $n => $v) {
 	$variables .= "$n = $v <br>";	
 }
-if ($settings[file]) foreach ($settings[file] as $n => $v) $variables .= "<br>$n - $v";
+if ($_SESSION[settings][file]) foreach ($_SESSION[settings][file] as $n => $v) $variables .= "<br>$n - $v";
 //add_link(leftnav,'','',"$variables");
 //printc("$variables");
 //------------------------------------
