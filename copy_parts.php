@@ -173,10 +173,11 @@ if ($domove) {
 	// move the object.
 	$partObj->copyObj($parentObj,$keepaddedby);
 	
-/* 	// delete the origional */
-/* 	if ($successfull && $action == "MOVE") { */
-/* 		$partObj->delete(); */
-/* 	} */
+	// delete the origional
+	if ($action == "MOVE") {
+		/* print "<pre>"; print_r($origPartObj); print "</pre>"; */
+		$origPartObj->delete(1);
+	}
 	
 }
 

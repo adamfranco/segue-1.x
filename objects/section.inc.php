@@ -16,18 +16,26 @@ class section extends segue {
 		$this->data[type] = "section";
 	}
 	
-	function delete() {	// delete from db
-		$query = "delete from sections where id=".$this->id;
-		db_query($query);
-		
-		// remove pages
-		$this->fetchDown();
-		foreach ($this->pages as $p=>$o) {
-			$o->delete();
+	function delete($deleteFromParent=0) {	// delete from db
+		if (!$this->id) return false;
+		if ($deleteFromParent) {
+			$parentObj = new site ($this->owning_site);
+			$parentObj->fetchDown();
+			$parentObj->delSection($this->id);
+			$parentObj->updateDB();
+		} else {
+			$query = "delete from sections where id=".$this->id;
+			db_query($query);
+			
+			// remove pages
+			$this->fetchDown();
+			foreach ($this->pages as $p=>$o) {
+				$o->delete();
+			}
+			
+			$this->clearPermissions();
+			$this->updatePermissionsDB();
 		}
-		
-		$this->clearPermissions();
-		$this->updatePermissionsDB();
 	}
 	
 	function init($formdates=0) {
@@ -151,7 +159,7 @@ class section extends segue {
 		
 		$this->fetchUp();
 		$this->owningSiteObj->addSection($this->id);
-		$this->owningSiteObj->delSection($origid,0);
+		if ($down) $this->owningSiteObj->delSection($origid,0);
 		$this->owningSiteObj->updateDB();
 		
 		// add new permissions entry.. force update

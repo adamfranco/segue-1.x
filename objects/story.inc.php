@@ -65,13 +65,21 @@ class story extends segue {
 		$this->changed[discussiosn] = 1;
 	}
 	
-	function delete() {	// delete from db
+	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
-		$query = "delete from stories where id=".$this->id;
-		db_query($query);
-		
-		$this->clearPermissions();
-		$this->updatePermissionsDB();
+		if ($deleteFromParent) {
+			$parentObj = new page ($this->owning_site,$this->owning_section,$this->owning_page);
+			$parentObj->fetchDown();
+			/* print "<br>delStory - ".$this->id."<br>"; */
+			$parentObj->delStory($this->id);
+			$parentObj->updateDB();
+		} else {
+			$query = "delete from stories where id=".$this->id;
+			db_query($query);
+			
+			$this->clearPermissions();
+			$this->updatePermissionsDB();
+		}
 	}
 	
 	function fetchUp() {
@@ -179,7 +187,7 @@ class story extends segue {
 		
 		$this->fetchUp();
 		$this->owningPageObj->addStory($this->id);
-		$this->owningPageObj->delStory($origid,0);
+		if ($down) $this->owningPageObj->delStory($origid,0);
 		$this->owningPageObj->updateDB();
 		
 		// add new permissions entry.. force update

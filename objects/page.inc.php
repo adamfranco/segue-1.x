@@ -44,19 +44,26 @@ class page extends segue {
 		if ($formdates) $this->initFormDates();
 	}
 	
-	function delete() {	// delete from db
+	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
-		$query = "delete from pages where id=".$this->id;
-		db_query($query);
-		
-		// remove stories
-		$this->fetchDown();
-		foreach ($this->stories as $s=>$o) {
-			$o->delete();
+		if ($deleteFromParent) {
+			$parentObj = new section ($this->owning_site,$this->owning_section);
+			$parentObj->fetchDown();
+			$parentObj->delPage($this->id);
+			$parentObj->updateDB();
+		} else {
+			$query = "delete from pages where id=".$this->id;
+			db_query($query);
+			
+			// remove stories
+			$this->fetchDown();
+			foreach ($this->stories as $s=>$o) {
+				$o->delete();
+			}
+			
+			$this->clearPermissions();
+			$this->updatePermissionsDB();
 		}
-		
-		$this->clearPermissions();
-		$this->updatePermissionsDB();
 	}
 	
 	function addStory($id) {
@@ -66,12 +73,15 @@ class page extends segue {
 	}
 	
 	function delStory($id,$delete=1) {
+/* 		print "<br> deleting - $id - $delete<br>"; */
+/* 		print "<pre>"; print_r($this); print "</pre>"; */
 		$d = array();
 		foreach ($this->getField("stories") as $s) {
 			if ($s != $id) $d[]=$s;
 		}
 		$this->data[stories] = $d;
 		$this->changed[stories]=1;
+		print "------------------------ <br><pre>"; print_r($this); print "</pre>";
 		if ($delete) {
 			$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
 			$story->delete();
@@ -173,7 +183,7 @@ class page extends segue {
 		
 		$this->fetchUp();
 		$this->owningSectionObj->addPage($this->id);
-		$this->owningSectionObj->delPage($origid,0);
+		if ($down) $this->owningSectionObj->delPage($origid,0);
 		$this->owningSectionObj->updateDB();
 		
 		// add new permissions entry.. force update
