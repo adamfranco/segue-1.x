@@ -40,8 +40,16 @@ th, td {
 	background-color: #ddd;
 }
 
-th { 
+.td1 { 
 	background-color: #ccc; 
+}
+
+.td0 { 
+	background-color: #ddd; 
+}
+
+th { 
+	background-color: #bbb; 
 	font-variant: small-caps;
 }
 
@@ -89,21 +97,23 @@ if ($auser == $site_owner) {
 	print "<tr>";
 		print "<th> &nbsp; </th>";
 		foreach($editors as $editor) {
-			print "<th colspan=3>$editor</th>";
+			print "<th colspan=3  style='border-left: 2px solid #fff;'>$editor</th>";
 		}
 	print "</tr>";
 	
 	print "<tr>";
 		print "<th>Section</th>";
 		foreach($editors as $editor) {
-			print "<td align=center>Add</td>";
-			print "<td align=center>Edit</td>";
-			print "<td align=center>Delete</td>";
+			print "<td align=center  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
+			print "<td align=center style='background-color: #bbb;'>Edit</td>";
+			print "<td align=center style='background-color: #bbb;'>Del</td>";
 		}
 	print "</tr>";
-
+	
+	$color = 0;
+	
 	print "<tr>";
-	print "<td style='font-variant: small-caps'><a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site\"'>$sa[title]</a></td>";
+	print "<td class=td$color style='font-variant: small-caps'><a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site\"'>$sa[title]</a></td>";
 	$permissions=decode_array($sa[permissions]);
 	foreach($editors as $user) {
 		$classes=getuserclasses($user);
@@ -122,19 +132,20 @@ if ($auser == $site_owner) {
 			}
 		}
 		for ($i=0;$i<3;$i++) {
-			print "<td align=center>";
+			print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 			print ($permissions[$user][$i])?"X":"&nbsp;";
 			print "</td>";
 		}
 	}
 	print "</tr>";
+	$color = 1-$color;
 
 	if (count($sections)) {
 		foreach ($sections as $s) {
 			print "<tr>";
 			$seca = db_get_line("sections","id=$s");
 			$secp = decode_array($seca[permissions]);
-			print "<td style='padding-left: 10px'>";
+			print "<td class=td$color style='padding-left: 10px'>";
 			if ($seca[type]=='section') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s\"'>";
 			print "$seca[title]";
 			if ($seca[type]=='section') print "</a>";
@@ -142,35 +153,37 @@ if ($auser == $site_owner) {
 			print "</td>";
 			foreach($editors as $user) {
 				for ($i=0;$i<3;$i++) {
-					print "<td align=center>";
+					print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 					print ($seca[type]!='url' && $secp[$user][$i])?"X":"&nbsp;";
 					print "</td>";
 				}
 			}
 			print "</tr>";
+			$color = 1-$color;
 			$pages = decode_array($seca['pages']);
 			foreach ($pages as $p) {
 				$pa = db_get_line("pages","id=$p");
 				$pp = decode_array($pa[permissions]);
 				if ($pa[type]=='divider' || $pa[type]=='heading') next;
 				print "<tr>";
-				print "<td style='padding-left: 20px'>";
+				print "<td class=td$color style='padding-left: 20px'>";
 				print "-&gt; ";
 				if ($pa[type]=='page') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s&page=$p\"'>";
 				print "$pa[title]";
 				if ($pa[type]=='page') print "</a>";
 				foreach($editors as $user) {
 					for ($i=0;$i<3;$i++) {
-						print "<td align=center>";
+						print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 						print ($pa[type]!='url' && $pp[$user][$i])?"X":"&nbsp;";
 						print "</td>";
 					}
 				}
 				print "</tr>";
+				$color = 1-$color;
 			}
 		}
 	} else {
-		print "<tr><td colspan=4>No sections in this site.</td></tr>";
+		print "<tr><td class=td$color colspan=4>No sections in this site.</td></tr>";
 	}
 
 	print "</table><BR>";
