@@ -44,7 +44,7 @@ $themesdir = "themes";
 
 //folder for data uploads (images and files)
 $uploaddir = "/web/sitesdb_userfiles";
-$uploadurl = "/sitesdb_userfiles";
+$uploadurl = "../sitesdb_userfiles";
 
 // Theme for login/default pages
 $defaulttheme = "program";

@@ -51,7 +51,7 @@ if ($settings) {
 	if ($header != "") $settings[header] = $header;
 	if ($footer != "") $settings[footer] = $footer;
 	if ($copyfooter) $settings[header] = $settings[footer];
-	if ($copyheader) $settings[footer] = $settings[header];
+	if ($copyheader) $settings[footer] = $settings[header];	
 }
 
 if (!session_is_registered("settings")) {

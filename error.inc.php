@@ -23,6 +23,23 @@ function printerr() {
 	preprintc($string);
 }
 
+function printerr2() {
+ // this prints out all the errors stored in the error array
+	global $errors,$numerrs,$message;
+	$string = '';
+	if ($numerrs) {
+		$string .="<div class='error' align=left>The following errors occured:<ul>\n";
+		foreach ($errors as $id) {
+			$string .="<li class=smaller>" . $id . "\n";
+		}
+		$string .="</ul></div>";
+	}
+	if ($message) {
+		$string .="<div class=desc><b>$message</b><BR></div>";
+	}
+	print $string;
+}
+
 function error($id, $flagonly=0) {
 	global $errors,$numerrs,$error;
 	if (!$flagonly) {

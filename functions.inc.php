@@ -30,6 +30,49 @@ function mkfilesize($filename) {
 	return $file_size;
 }
 
+function convertfilesize($size) {
+	$j = 0;
+	$ext = array("B","KB","MB","GB","TB");
+	while ($size >= pow(1024,$j)) ++$j;
+	$size = round($size / pow(1024,$j-1) * 100) / 100 . $ext[$j-1];
+	return $size;
+}
+
+function get_size($pic) {
+	$imageInfo = GetImageSize($pic);
+	$size[x]=$imageInfo[0];
+	$size[y]=$imageInfo[1];
+	
+	return $size;
+}
+
+function get_sizes($pic,$maxsize) {
+	//-----This function takes an image and a maximum dimension and returns scaled dimensions 
+	$imageInfo=getimagesize($pic);
+	$iwidth=$imageInfo[0];
+	$iheight=$imageInfo[1];
+	
+	if ($iwidth > $maxsize || $iheight > $maxsize) {
+	       	$winX = $maxsize;
+		$winY = $maxsize;
+
+		if ($iwidth > $iheight) {
+	    		$winY = $winX*$iheight/$iwidth;
+	    	} else {
+	   		$winX = $winY*$iwidth/$iheight;
+	   	}
+	} else {
+		$winX = $iwidth;
+		$winY = $iheight;
+	}
+	
+	$size = array();
+	$size['x'] = $winX;
+	$size['y'] = $winY;
+
+	return $size;
+}
+
 function copyuserfile($file,$replace,$replace_id) {
 	global $uploaddir, $auser, $site, $settings;
 	if (!$file[name]) {
@@ -70,21 +113,51 @@ function copyuserfile($file,$replace,$replace_id) {
 	}
 }
 
-function deleteuserfile($id,$file) {
+function deleteuserfile($fileid) {
 	global $uploaddir, $auser, $site, $settings;
-	if (!$file[name]) return 0;
-	else {
-		if ($site) $userdir = "$uploaddir/$site";
-		else $userdir = "$uploaddir/$settings[site]";
-//		$fdir = "$userdir/$id";
-		$f = "$userdir/$file";
-//		print "$userdir - $fdir<br>";
-		if (file_exists($f)) unlink($f);
-//		if (is_dir($fdir)) rmdir($fdir);
-		print "deleted file $f<br>";
-		return 1;
+	$query = "select * from media where id='$fileid'";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$a[name] = urldecode($a[name]);
+	$file_path = $uploaddir."/".$a[site_id]."/".$a[name];
+//	$file_path = "../sitesdb_userfiles/afranco/close2.gif";
+//	print "file = \"$file_path\" <br>";
+	if (file_exists($file_path)) {
+//		$exists = file_exists($file_path);
+//		print "fileexists = $exists $file_path<br> ";
+		$success = unlink($file_path);
+//		print "success = $success <br>";
+		if ($success) {
+			$query = "DELETE FROM media WHERE id='$fileid' LIMIT 1";
+			db_query($query);
+		} else {
+			error("File could not be Deleted");
+		}
+	} else {
+		error("File does not exist. Its Entry was deleted");
+		$query = "DELETE FROM media WHERE id='$fileid' LIMIT 1";
+		db_query($query);
 	}
 }
+
+function deleteComplete($file) {
+	// posted by georg@spieleflut.de on PHP.net 24-Dec-2001 10:28
+	// This function will completely delete even a non-empty directory.
+	chmod($file,0777);
+	if (is_dir($file)) {
+		$handle = opendir($file);
+ 		while($filename = readdir($handle)) {
+  			if ($filename != "." && $filename != "..") {
+  				deleteComplete($file."/".$filename);
+  			}
+ 		}
+		closedir($handle);
+ 		rmdir($file);
+	} else {
+		unlink($file);
+	}
+}
+
 
 function decode_array($string) {
 	$array = array();

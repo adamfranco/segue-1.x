@@ -19,12 +19,20 @@ if (sitenamevalid($name)) {
 				foreach ($stories as $s) {
 					$type = db_get_value("stories","type","id=$s");
 					$site = $name;
-					if ($type == 'file' || $type=='image')
-						deleteuserfile($s,urldecode(db_get_value("stories","longertext","id=$s")));
+//					if ($type == 'file' || $type=='image')
+//						deleteuserfile($s,urldecode(db_get_value("stories","longertext","id=$s")));
 					db_query("delete from stories where id=$s");
 				}
 			}
 		}
+		
+		// remove the userfiles, their media table entries, and the userfiles directory
+		$r = db_query("select * from media where site_id='$name'");
+		while ($a = db_fetch_assoc($r)) {
+			deleteuserfile($a[id]);
+		}
+		deleteComplete($uploaddir."/".$name);
+		
 		db_query("delete from sites where name='$name'");
 		// done;
 		log_entry("delete_site","$name","","","$auser deleted site $name");

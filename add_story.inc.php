@@ -95,7 +95,9 @@ if ($settings) {
 	if ($settings[step] == 1 && !$link) $settings[shorttext] = $shorttext;
 	if ($settings[step] == 2 && !$link) $settings[longertext] = $longertext;
 	if ($useagain) $settings[useagain] = 1;
-	if ($overwrite) $settings[overwrite] = 1;	
+	if ($overwrite) $settings[overwrite] = 1;
+	if ($settings[step] == 1 && !$link) $settings[libraryfilename] = $libraryfilename;
+	if ($settings[step] == 1 && !$link) $settings[libraryfileid] = $libraryfileid;
 
 	//---- If switching type, take values to defaults ----
 	if ($typeswitch) {

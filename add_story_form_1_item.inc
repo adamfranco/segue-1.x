@@ -1,6 +1,6 @@
 <? // add_site_form.inc -- the form that people use to add/edit a site
 
-printc("<form action='index.php?$sid&action=add_story' method=post name=addform".(($settings[type] !='story' && $settings[type] != 'url')?" enctype='multipart/form-data'":"").">");
+printc("<form action='index.php?$sid&action=add_story' method=post name='addform'".(($settings[type] !='story' && $settings[type] != 'url')?" enctype='multipart/form-data'":"").">");
 
 //printc("<input type=hidden name=site value='$settings[site]'>");
 //printc("<input type=hidden name=section value=$settings[section]>");
@@ -124,6 +124,10 @@ if ($settings[type]=='story') {
 if ($settings[type] == 'image' || $settings[type] == 'file') {
 	printc("<br><br>");
 	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
+	printc ("<input type=radio name='filefrom' value='medialibrary' ".(($settings[filefrom]=='medialibrary')?" selected":"")."> ");
+	printc("<input type=hidden name='libraryfileid' value='$settings[libraryfileid]'>");
+	printc((($settings[type]=='image')?"Image":"File")." from Media Library: <input type=text name='libraryfilename' value='$settings[libraryfilename]' size=25 readonly> <a href=filebrowser.php? onClick='doWindow(\"filebrowser\",500,600)' target='filebrowser' style='text-decoration: none'><input type=button name='browsefiles' value='Media Library...'></a> <br><br>");
+	printc ("<input type=radio name='filefrom' value='medialibrary' ".(($settings[filefrom]=='local')?" selected":"")."> ");
 	if ($settings[edit]) printc("New ");
 	if ($settings[type] == 'image') printc("Image: ");
 	else printc("File: ");
