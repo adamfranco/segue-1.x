@@ -78,6 +78,7 @@ if ($settings) {
 	if ($copydownpermissions != "") $settings[copydownpermissions] = $copydownpermissions;
 	if ($settings[step] == 4 && !$link) $settings[showcreator] = $showcreator;
 	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
+	if ($settings[step] == 4 && !$link) $settings[storyorder] = $storyorder;
 	if ($archiveby) $settings[archiveby] = $archiveby;
 	if ($url) $settings[url] = $url;
 	
@@ -102,6 +103,7 @@ if ($settings) {
 		$settings[showdate] = 0;
 		$settings[archiveby] = "none";
 		$settings[copydownpermissions] = 0;
+		$settings[storyorder] = "";
 		
 		if ($settings[add]) {
 			//print "<p> deleting settings[permissions]....</p>";
@@ -139,7 +141,8 @@ if (!$settings && !$error) {
 		"ediscussion" => 1,
 		"type" => "page",
 		"url" => "http://",
-		"commingFrom" => $commingFrom
+		"commingFrom" => $commingFrom,
+		"storyorder" => ""
 	);
 	
 	$settings[pagetitle]=db_get_value("sites","title","name='$site'") . " > " . db_get_value("sections","title","id=$section") . " > ";
@@ -262,6 +265,7 @@ if ($save) {
 		$chg[] = "deactivatedate='$settings[deactivatedate]'";
 		$chg[] = "active=$settings[active]";
 		$chg[] = "permissions='$settings[permissions]'";
+		$chg[] = "storyorder='$settings[storyorder]'";
 		
 		$query .= implode(",",$chg);
 		print $query.$where."<BR>";

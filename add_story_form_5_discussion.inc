@@ -42,13 +42,6 @@ printc("</td></tr></table>");
 		printc("<input type=hidden name=discuss value=$settings[discuss]>");
 		printc("<input type=hidden name=discusspermissions value='$settings[discusspermissions]'>");
 	}
-	
-	printc("Category: <input type=text name=newcategory size=20 value='$settings[newcategory]'> <select name=category onChange='document.storyform.newcategory.value = document.storyform.category.value'>");
-	printc("<option value=''".(($settings[category]=='')?" selected":"").">none");
-	foreach ($settings[categories] as $c) {
-		printc("<option value='$c'".(($settings[category]==$c)?" selected":"").">$c");
-	}
-	printc("</select>");
 
 printc("<br><br>");
 

@@ -463,7 +463,7 @@ if (1) {
 	if ($settings[step] == 3) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
 	if ($settings[step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=3&link=1 onClick=\"submitForm()\">";
-	$leftlinks .= "Activation";
+	$leftlinks .= "Activation & Category";
 	if ($settings[step] != 3) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }

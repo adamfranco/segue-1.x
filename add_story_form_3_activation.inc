@@ -72,7 +72,14 @@ printc("</td></tr></table>");
 //	printc("<input type=radio name=active value=1 " . (($settings[active])?" checked":"") . "> Enabled | ");
 //	printc("<input type=radio name=active value=0 " . (($settings[active])?"":" checked") . "> Disabled <br>");
 
-
+	printc("<br><br><div class=title style='font-size: 14px'>Category</div>");
+	printc("Category: <input type=text name=newcategory size=20 value='$settings[newcategory]'> <select name=category onChange='document.storyform.newcategory.value = document.storyform.category.value'>");
+	printc("<option value=''".(($settings[category]=='')?" selected":"").">none");
+	foreach ($settings[categories] as $c) {
+		printc("<option value='$c'".(($settings[category]==$c)?" selected":"").">$c");
+	}
+	printc("</select>");
+	
 printc("<br><br>");
 
 
