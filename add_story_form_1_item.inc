@@ -289,13 +289,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	
 	printc("<br>");
 			
-	if ($_SESSION[storyObj]->getField("texttype")=='text' && $supported == 1) {
-		$text = htmlbr($_SESSION[storyObj]->getField("shorttext"));
-		$_SESSION[settings][editorinitstate] = "text";
-		//$_SESSION[storyObj]->getField("texttype") = "html";		
-	} else {
-		$text = $_SESSION[storyObj]->getField("shorttext");
-	}
+	$text = $_SESSION[storyObj]->getField("shorttext");
 	
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
@@ -321,7 +315,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	//$action_site = "action=site";			
 	//$text = eregi_replace($action_viewsite, $action_site, $text);
 
-	printc(addeditor ("shorttext",60,20,$text));
+	printc(addeditor ("shorttext",60,20,$text, "story", $_SESSION[storyObj]->getField("texttype")));
 	printc("</td></tr></table>");
 	
 	/******************************************************************************

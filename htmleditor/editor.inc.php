@@ -5,7 +5,7 @@
 //include("htmleditor/editor_activex.inc.php");
 //include("htmleditor/editor_txt.inc.php");
 
-function addeditor($textarea,$cols,$rows,$text,$context="story") {
+function addeditor($textarea,$cols,$rows,$text,$context="story", $texttype = NULL) {
 	//sniffer determines browser and os
 	include("sniffer.inc.php");
 	
@@ -23,7 +23,8 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 		}
 		
 	} else if ($supported == 0) {
-		editor_txt($textarea,$cols,$rows,$text);
+		$replaceBRs = ($texttype == 'html')?FALSE:TRUE;
+		editor_txt($textarea,$cols,$rows,$text, $replaceBRs);
 	} else {
 		editor_htmlarea($textarea,$text,$context);
 	}
@@ -39,20 +40,24 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
  * @access public
  * @date 9/15/04
  */
-function cleanEditorText ($text) {
+function cleanEditorText ($text, $texttype = NULL) {
 	// If we are using a plain text-field convert any linereturns to <br /> tags
 	// Make sure that we have the content formatted correctly.
 		
 	include ("sniffer.inc.php");
+	
 	// If we just have a text box, replace new lines with <br> tags
-	if (!$supported) {
+	// If the user didn't specify "html" as the texttype.
+	if (!$supported && $texttype != 'html') {
 		$text = htmlbr($text);
 	}
 	// This is a hack, but HTMLAREA adds a \n at the begining of the text.
 	// Let remove it instead of wading through all of the htmlarea code.
-	else {
+	else if ($supported) {
 		$text = preg_replace("/$\n/", "", $text);
 	}
+	
+	return $text;
 }
 
 
@@ -80,10 +85,13 @@ function editor_htmlarea($textarea,$text,$context="story") {
  * includes standard textarea
  ******************************************************************************/
 
-function editor_txt($textarea,$cols,$rows,$text) {		   
+function editor_txt($textarea,$cols,$rows,$text,$replaceBRs=TRUE) {		   
 	printc("<textarea name=$textarea id=$textarea cols=$cols rows=$rows>");
 	// Replace the <br> and <br /> tags with \n's for the textarea.
-	printc(preg_replace("/<br(\s\/)?>/", "\n", $text));
+	if ($replaceBRs)
+		printc(preg_replace("/<br(\s\/)?>/", "\n", $text));
+	else
+		printc($text);
 	printc("</textarea>");
 }
 

@@ -234,7 +234,8 @@ if ($_REQUEST[save]) {
 			$text = eregi_replace($action_viewsite, $action_site, $text);
 			
 			// Lets pass the cleaning of editor text off to the editor.
-			$text = cleanEditorText($text);
+			$texttype = $_SESSION[storyObj]->getField("texttype");
+				$text = cleanEditorText($text, $texttype);
 			
 			// save general mediapath and internal_linkpath to object			
 			$_SESSION[storyObj]->setField("shorttext",$text);
@@ -269,12 +270,9 @@ if ($_REQUEST[save]) {
 			$_SESSION[storyObj]->setField("url",$url);
 		}
 		
-		
-		/******************************************************************************
-		 * if the longertext field = <br />,then set field to ''
-		 ******************************************************************************/
- 
-		$_SESSION[storyObj]->setField("longertext", cleanEditorText($_SESSION[storyObj]->getField("longertext")));
+ 		// Lets pass the cleaning of editor text off to the editor.
+		$texttype = $_SESSION[storyObj]->getField("texttype");
+		$_SESSION[storyObj]->setField("longertext", cleanEditorText($_SESSION[storyObj]->getField("longertext"), $texttype));
 		
 		// check make sure the owner is the current user if they are changing permissions
 /* 		if ($site_owner != $_SESSION[auser]) { */
