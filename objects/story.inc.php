@@ -357,7 +357,7 @@ class story extends segue {
 	//				if (in_array($field,$this->_parse)) 
 	//					$value = $this->parseMediaTextForEdit($value);
 					$this->data[$field] = $value;
-					print "$field] = $value<br>";
+//					print "$field] = $value<br>";
 					$this->fetched[$field] = 1;
 				}
 				else
