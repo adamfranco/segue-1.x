@@ -301,7 +301,8 @@
 	 *
 	 *    NOTE: You PROBABLY (definitely) don't want this unless you're crazy.
 	 ******************************************************************************/
-	$debug = 0;
+	$debug = FALSE;
+	$printAllQueries = FALSE;
 	
 	/******************************************************************************
 	 * Semester definitions

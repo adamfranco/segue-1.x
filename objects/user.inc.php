@@ -153,8 +153,12 @@ class user {
 	WHERE
 		user_authtype='db'";
 		$r = db_query($query);
-		$a = db_fetch_assoc($r);
-		return $a['count'];
+		if ($r) {
+			$a = db_fetch_assoc($r);
+			return $a['count'];
+		} else {
+			return FALSE;
+		}
 	}
 	
 	function _genDefaultAdminUser() {

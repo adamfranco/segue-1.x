@@ -94,7 +94,7 @@ $_connect_id = -1;
 $db_type = strtolower($db_type);
 
 // Print out some debug info
-if ($debug) {
+if ($debug && $printAllQueries) {
   print "dbwrapper.php: Starting.<BR>";
 }
 
@@ -135,7 +135,7 @@ function db_get_line($table,$where) {
 	global $debug;
 	db_connect($dbhost, $dbuser, $dbpass,$dbdb);
 	$query = "select * from $table where $where";
-	if ($debug) printpre ($query);
+	if ($debug && $printAllQueries) printpre ($query);
 	$line = db_fetch_assoc(db_query($query));
 	return $line;
 }
@@ -204,7 +204,7 @@ function db_query ($query, $cid=-1) {
 	
 	global $db_type; global $debug;
 	global $_connect_id;
-	if ($debug) {
+	if ($debug && $printAllQueries) {
 		// The $debug variable is set at the top of this script
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
 		echo "\n\n<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".printpre($query, TRUE);
@@ -213,7 +213,7 @@ function db_query ($query, $cid=-1) {
 		$cid = $_connect_id;
 	if ($db_type == "mysql") {
 		$res = mysql_query($query, $cid);
-	if ($debug) {
+	if ($debug && $printAllQueries) {
 		// The $debug variable is set at the top of this script	
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
 		echo "\n\n<br><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$res."</b>";

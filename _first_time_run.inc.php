@@ -26,13 +26,13 @@ $neededTables = array (
 $query = "SHOW TABLES";
 $r = db_query($query);
 $existingTables = array();
-while($a = db_fetch_assoc($r)) {
-	foreach($a as $k => $v) {
-		$existingTables[] = $v;
+if (is_resource($r)) {
+	while($a = db_fetch_assoc($r)) {
+		foreach($a as $k => $v) {
+			$existingTables[] = $v;
+		}
 	}
 }
-
-print_r($tables);
 
 $allTablesExist = true;
 foreach ($neededTables as $table) {
