@@ -68,7 +68,9 @@ if ($_REQUEST[savechanges]) {
 		/* print "<pre>"; print_r($_SESSION[obj]); print "</pre>"; */
 		/* begin bug-fix X-294273alpha. thank you, Adam. */
 		// go through each editor and make sure that they are in the local DB.
-		foreach ($_SESSION[editors] as $_editor) {
+		print_r($_SESSION[obj]->getEditors());
+		foreach ($_SESSION[obj]->getEditors() as $_editor) {
+			print "synchronizing $_editor...<BR>";
 			synchronizeLocalUserAndClassDB($_editor);
 		}
 		/* end bug-fix. Again, thank you, Adam. */

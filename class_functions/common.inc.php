@@ -70,6 +70,7 @@ function synchronizeClassDBFromCode($code) {
  * otherwise, checks the user db
  */
 function synchronizeLocalUserAndClassDB($systemName) {
+	if ($systemName == 'everyone' || $systemName == 'institute') return;
 	if (isclass($systemName)) { // it's a class code
 		synchronizeClassDBFromCode($systemName);
 	} else { // we're going to assume this is a user

@@ -150,7 +150,7 @@ input,select {
 $allSlots = slot::getAllSlotsInfo();
 foreach ($allSlots as $slot) {
 	print "<tr>";
-	print "<td>".(($slot[FK_site])?"":"<a href='$PHP_SELF?$SID&delete=$slot[id]'>")."delete".(($slot[FK_site])?"":"</a>")."</td>";
+	print "<td>".(($slot[FK_site])?"-":"<a href='$PHP_SELF?$SID&delete=$slot[id]'>delete</a>")."</td>";
 	print "<td>$slot[id]</td>";
 	print "<td>$slot[name]</td>";
 	print "<td>$slot[owner]</td>";
