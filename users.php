@@ -12,7 +12,11 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 // include all necessary files
 include("includes.inc.php");
 
-if ($_SESSION['ltype'] != 'admin') exit;
+if ($_SESSION['ltype'] != 'admin') {
+	// take them right to the user lookup page
+	header("Location: username_lookup.php");
+	exit;
+}
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
@@ -32,7 +36,7 @@ if ($curraction == 'add') {
 	if (!$_REQUEST['email']) error("You must enter a valid email address.");
 	// all good
 	if (!$error) {
-		$obj = new user();
+		$obj = &new user();
 		$obj->uname = $_REQUEST['uname'];
 		$obj->fname = $_REQUEST['fname'];
 		$obj->email = $_REQUEST['email'];
@@ -51,7 +55,7 @@ if ($curraction == 'edit') {
 		if (!$_REQUEST['uname']) error("You must enter a username.");
 		if (!$_REQUEST['email']) error("You must enter a valid email address.");
 		if (!$error) {
-			$obj = new user();
+			$obj = &new user();
 			$obj->fetchUserID($_REQUEST['id']);
 			$obj->uname = $_REQUEST['uname'];
 			$obj->fname = $_REQUEST['fname'];
@@ -67,7 +71,7 @@ if ($curraction == 'edit') {
 if ($curraction == 'resetpw') {
 	$id = $_REQUEST['id'];
 	if ($id > 0) {
-		$obj = new user();
+		$obj = &new user();
 		$obj->fetchUserID($id);
 		$obj->randpass(5,3);
 		$obj->updateDB();
@@ -98,6 +102,8 @@ printerr();
 <title>Users</title>
 <? include("themes/common/logs_css.inc.php"); ?>
 </head>
+
+<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | add/edit users</div>":""?>
 
 <?=$content?>
 
@@ -142,6 +148,8 @@ printerr();
 </tr>
 </table>
 
+<BR>
+<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doUserForm($a,$p='',$e=0) {
 	?>

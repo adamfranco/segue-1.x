@@ -145,7 +145,7 @@ if ($passwordGood) {
 </tr>
 <tr>
 	<td>
-		New Password: 
+		Again: 
 	</td>
 	<td>
 		<input type=password name='newpass2' size=30 value='<?echo $newpass2?>'>  <span style='color: #a00'>*</span>
