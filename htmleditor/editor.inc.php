@@ -10,7 +10,7 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 	include("sniffer.inc.php");
 		
 	//chose editor based on browser and platfrom
-	if ($browser_os == "pcie5+") {
+	if ($winIEVersion > 5.5) {
 		if ($context=="story") {	
 			include("htmleditor/editor_activex.inc.php");
 			editor_activex($textarea,$cols,$rows,$text);
@@ -18,10 +18,10 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 			editor_htmlarea($textarea,$text,$context);
 		}	
 		
-	} else if ($browser_os != "macsafari") {
-		editor_htmlarea($textarea,$text,$context);
-	} else {
+	} else if ($supported == 0) {
 		editor_txt($textarea,$cols,$rows,$text);
+	} else {
+		editor_htmlarea($textarea,$text,$context);
 	}
 	
 	//return $editorType;

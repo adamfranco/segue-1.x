@@ -37,18 +37,27 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//print $shorttext;
 	
 	printc("<div style='font-size:10px; color:#D00'>");
-	printc("<br>Note: Links to other pages in this site must use the address displayed in the preview site mode not the edit mode.<br>");
+	printc("<br>Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode.<br>");
 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
 	printc("</div>");
 
 	//sniffer determines browser and os
 	//sniffer included in editor.inc.php
-	//include("sniffer.inc.php");
-	$uagent = $_SERVER["HTTP_USER_AGENT"];
-	$isSafari = (ereg("Safari",$uagent) || ereg("safari",$uagent));	
-	if ($isSafari) {
-		printc("<br>Looks like you are using Safari. Currently this browser does not have support for a browser-based WYSIWYG HTML editor. If you want a built-in HTML editor, we recommend you use Mozilla 1.3 or greater.");
-		printc("<div style='font-size:10px; color:#999'>($uagent)</div>");
+	include("sniffer.inc.php");
+	//$uagent = $_SERVER["HTTP_USER_AGENT"];
+	//printc("<div style='font-size:10px; color:#999'>($uagent)</div>");
+
+	if ($supported == 0) {
+		printc("<br><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
+		if ($isWin) {
+			printc("We recommend you use either <a href=http://www.microsoft.com/windows/ie/ target=new_window>Internet Explorer or greater</a> 
+			or <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a>.");
+		} else {
+			printc("We recommend you use <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a>.");
+		}		
+		//printc("<div style='font-size:10px; color:#999'>browser information: $uagent</div>");		
+		printc("  In the meantime, if you are editing existing content that is in HTML format, you will need to work
+		around the html tags.</div>");
 	}
 
 
@@ -66,8 +75,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("</td></tr></table>");
 
 	//sniffer determines browser and os
-	include("sniffer.inc.php");
-	if ($browser_os == "pcie5+") {
+	if ($supported == 1) {
 		printc("<input type=hidden name='texttype' value='html'>");
 	} else {
 		printc("<div align=right>");

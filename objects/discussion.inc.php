@@ -693,7 +693,9 @@ class discussion {
 		if ($t != 'rate') {			
 			//printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>\n");
 			include("htmleditor/editor.inc.php");
+			include("sniffer.inc.php");
 			printc ("<td class=content$p>\n");
+			if ($supported == 1) $c = htmlbr($c);
 			printc(addeditor ("content",60,20,$c,"discuss"));
 		} else {
 			printc ("<td>".$c."<br><br>\n");
