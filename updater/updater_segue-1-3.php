@@ -15,7 +15,7 @@ global $dbuser, $dbpass, $dbdb, $dbhost;
 db_connect($dbhost,$dbuser,$dbpass,$dbdb);
 
 $destinationDB = $dbdb;
-$sourceDB = "segue_et";
+$sourceDB = "segue";
 echo "<pre>";
 
 // Set up the tables and copy most of the data
@@ -313,7 +313,7 @@ $query = "
 $query .= "
 INSERT 
 
-INTO segue2.user 
+INTO ".$destinationDB.".user 
 
 	(user_id, user_uname, user_pass, user_fname,
 
@@ -325,7 +325,7 @@ SELECT
 
 FROM 
 
-	segue_et.users 
+	".$sourceDB.".users 
 
 ORDER BY uname;
 
@@ -344,7 +344,7 @@ ORDER BY uname;
 $query .= "
 INSERT 
 
-INTO segue2.slot 
+INTO ".$destinationDB.".slot 
 
 	(slot_name, FK_owner, FK_site, slot_type)
 
@@ -354,11 +354,11 @@ SELECT
 
 FROM 
 
-	segue_et.sites 
+	".$sourceDB.".sites 
 
 		LEFT JOIN
 
-	segue2.user
+	".$destinationDB.".user
 
 		ON addedby = user_uname
 
@@ -378,7 +378,7 @@ ORDER BY name;
 $query .= "
 INSERT
 
-INTO segue2.site
+INTO ".$destinationDB.".site
 
 	(site_id, site_title, site_theme, site_themesettings, site_header, 
 
@@ -386,7 +386,7 @@ INTO segue2.site
 
 SELECT 
 
-	segue_et.sites.id, title, theme, themesettings, header, footer, u1.user_id, 
+	".$sourceDB.".sites.id, title, theme, themesettings, header, footer, u1.user_id, 
 
 	editedtimestamp, u2.user_id, addedtimestamp, CONV(active,2,2), 
 
@@ -396,29 +396,29 @@ SELECT
 
 FROM 
 
-	segue_et.sites
+	".$sourceDB.".sites
 
 		LEFT JOIN
 
-	segue2.user AS u1
+	".$destinationDB.".user AS u1
 
 		ON editedby = u1.user_uname
 
 		LEFT JOIN
 
-	segue2.user AS u2
+	".$destinationDB.".user AS u2
 
 		ON addedby = u2.user_uname
 
 ORDER BY
 
-	segue_et.sites.name;
+	".$sourceDB.".sites.name;
 
 
 
 UPDATE
 
-	segue2.site
+	".$destinationDB.".site
 
 SET
 
@@ -441,7 +441,7 @@ WHERE
 $query .= "
 INSERT
 
-INTO segue2.section
+INTO ".$destinationDB.".section
 
 	(section_id, FK_site, section_order, section_title, FK_updatedby, section_updated_tstamp,
 
@@ -459,35 +459,35 @@ SELECT
 
 FROM 
 
-	segue_et.sections
+	".$sourceDB.".sections
 
 		INNER JOIN
 
-	segue2.slot
+	".$destinationDB.".slot
 
 		ON slot.slot_name = sections.site_id
 
 		LEFT JOIN
 
-	segue2.user AS u1
+	".$destinationDB.".user AS u1
 
 		ON editedby = u1.user_uname
 
 		LEFT JOIN
 
-	segue2.user AS u2
+	".$destinationDB.".user AS u2
 
 		ON addedby = u2.user_uname
 
 ORDER BY
 
-	segue_et.sections.site_id;
+	".$sourceDB.".sections.site_id;
 
 
 
 UPDATE
 
-	segue2.section
+	".$destinationDB.".section
 
 SET
 
@@ -510,7 +510,7 @@ WHERE
 $query .= "
 INSERT
 
-INTO segue2.page
+INTO ".$destinationDB.".page
 
 	(page_id, FK_section, page_order, page_title, FK_updatedby, page_updated_tstamp, FK_createdby, 		 		 page_created_tstamp, page_active, page_activate_tstamp, page_deactivate_tstamp, page_show_creator, 	 		 page_show_date, page_show_hr, page_display_type, page_story_order, page_archiveby, page_locked, page_ediscussion)
 
@@ -528,29 +528,29 @@ SELECT
 
 FROM 
 
-	segue_et.pages
+	".$sourceDB.".pages
 
 		LEFT JOIN
 
-	segue2.user AS u1
+	".$destinationDB.".user AS u1
 
 		ON editedby = u1.user_uname
 
 		LEFT JOIN
 
-	segue2.user AS u2
+	".$destinationDB.".user AS u2
 
 		ON addedby = u2.user_uname
 
 ORDER BY
 
-	segue_et.pages.section_id;
+	".$sourceDB.".pages.section_id;
 
 
 
 UPDATE
 
-	segue2.page
+	".$destinationDB.".page
 
 SET
 
@@ -573,7 +573,7 @@ WHERE
 $query .= "
 INSERT
 
-INTO segue2.story
+INTO ".$destinationDB.".story
 
 	(story_id, FK_page, story_order, story_title, FK_updatedby, story_updated_tstamp, FK_createdby, 
 
@@ -591,29 +591,29 @@ SELECT
 
 FROM 
 
-	segue_et.stories
+	".$sourceDB.".stories
 
 		LEFT JOIN
 
-	segue2.user AS u1
+	".$destinationDB.".user AS u1
 
 		ON editedby = u1.user_uname
 
 		LEFT JOIN
 
-	segue2.user AS u2
+	".$destinationDB.".user AS u2
 
 		ON addedby = u2.user_uname
 
 ORDER BY
 
-	segue_et.stories.page_id;
+	".$sourceDB.".stories.page_id;
 
 
 
 UPDATE
 
-	segue2.story
+	".$destinationDB.".story
 
 SET
 
@@ -636,7 +636,7 @@ WHERE
 $query .= "
 INSERT
 
-INTO segue2.site_editors
+INTO ".$destinationDB.".site_editors
 
 	(FK_site, FK_editor, site_editors_type)
 
@@ -646,7 +646,7 @@ SELECT
 
 FROM
 
-	segue_et.sites
+	".$sourceDB.".sites
 
 ORDER BY
 
@@ -656,7 +656,7 @@ ORDER BY
 
 INSERT
 
-INTO segue2.site_editors
+INTO ".$destinationDB.".site_editors
 
 	(FK_site, FK_editor, site_editors_type)
 
@@ -666,7 +666,7 @@ SELECT
 
 FROM
 
-	segue_et.sites
+	".$sourceDB.".sites
 
 ORDER BY
 
@@ -676,7 +676,7 @@ ORDER BY
 
 INSERT
 
-INTO segue2.permission
+INTO ".$destinationDB.".permission
 
 	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
 
@@ -686,7 +686,7 @@ SELECT
 
 FROM
 
-	segue_et.sites
+	".$sourceDB.".sites
 
 WHERE
 
@@ -700,7 +700,7 @@ ORDER BY
 
 INSERT
 
-INTO segue2.permission
+INTO ".$destinationDB.".permission
 
 	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
 
@@ -710,7 +710,7 @@ SELECT
 
 FROM
 
-	segue_et.sites
+	".$sourceDB.".sites
 
 WHERE
 
@@ -736,7 +736,7 @@ $query .= "
 
 INSERT
 
-INTO segue2.media
+INTO ".$destinationDB.".media
 
 	(media_id, FK_site, FK_createdby, media_tag, media_location, media_type, FK_updatedby, media_size)
 
@@ -746,17 +746,17 @@ SELECT
 
 FROM
 
-	segue_et.media
+	".$sourceDB.".media
 
 		INNER JOIN
 
-	segue2.slot
+	".$destinationDB.".slot
 
 		ON slot_name = site_id
 
 		LEFT JOIN
 
-	segue2.user
+	".$destinationDB.".user
 
 		ON addedby = user_uname
 ";
