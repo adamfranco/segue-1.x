@@ -15,7 +15,7 @@ include_once (dirname(__FILE__)."/carprss/carp.php");
 //  print "</pre>";
  
  ob_start();
- CarpCacheShow($o->getField("url"));
+ CarpCacheShow($o->getField("url"), $_SESSION['auser']);
  printc (ob_get_contents());
  ob_clean();
 

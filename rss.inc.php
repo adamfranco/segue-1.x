@@ -107,10 +107,10 @@ if ($error) {
 		if ($error)
 			print $errorString;
 		else {
-			print "You may not view this site. This may be due to any of the following reasons:<br />";
+			print "You may not view this RSS Feed. This may be due to any of the following reasons:<br />";
 			print "<ul>";
 			if ($thisSite->site_does_not_exist) {
-				print "<li>This site does not exist. ";
+				print "<li>This feed does not exist. ";
 				if (
 					$_SESSION[auser] == slot::getOwner($thisSite->name)
 						|| (
@@ -128,8 +128,8 @@ if ($error) {
 					print "<li>You are not logged in.</li>";
 					print "<li>You are not on a computer within $cfg[inst_name]</li>";
 				}
-				print "<li>The site has not been activated by the owner.</li>";
-				print "<li>You are not part of a set of specific users or groups allowed to view this site.</li>";
+				print "<li>The feed has not been activated by the owner.</li>";
+				print "<li>You are not part of a set of specific users or groups allowed to view this feed.</li>";
 			}
 			print "</ul>";
 		}
