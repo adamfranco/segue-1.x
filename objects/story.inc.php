@@ -376,9 +376,9 @@ ORDER BY
 			$this->parseMediaTextForDB("shorttext");
 			$this->parseMediaTextForDB("longertext");
 			$a = $this->createSQLArray();
-			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
+			$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
-			$query = "UPDATE page SET ".implode(",",$a)." WHERE page_id=".$this->id;
+			$query = "UPDATE story SET ".implode(",",$a)." WHERE story_id=".$this->id;
 			print "<pre>Page->UpdateDB: $query<br>";
 			db_query($query);
 			print mysql_error()."<br>";
