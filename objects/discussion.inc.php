@@ -417,7 +417,7 @@ class discussion {
  ******************************************************************************/
 	
 	function outputAll($cr=false,$o=false,$top=false,$showposts=1,$showallauthors=1,$mailposts=0) {
-		global $sid,$content;
+		global $sid,$content, $cfg;
 		// debug
 //		print "outputAll($canreply,$owner,$copt)<BR>";
 		// spider down and output every one
@@ -458,7 +458,7 @@ class discussion {
 				if (!$_SESSION[auser]) {
 					$newpostbar.="You must be logged in to do contribute to this discussion.\n";
 				} else {
-					$newpostbar.="Only specified groups or individuals can post to this discussion.\n";
+					$newpostbar.="Only specified groups or individuals can participant.\n";
 				}
 			}
 			$newpostbar.="</td></tr>\n";
@@ -526,7 +526,7 @@ class discussion {
  ******************************************************************************/
 	
 	function _commithttpdata() {
-		global $sid,$error;
+		global $sid,$error,$_full_uri;
 		global $mailposts;
 		
 		//include("htmleditor/editor.inc.php");
@@ -537,7 +537,37 @@ class discussion {
 			if (!$_REQUEST['subject']) error("You must enter a subject.\n");
 			if (!$_REQUEST['content']) error("You must enter some text to post.\n");
 			if ($_REQUEST['rate'] && !is_numeric($_REQUEST['rate'])) $error = "Post rating must be numeric.\n";
+			
 			if ($error) { unset($_REQUEST['commit']); return false; }
+			
+			/******************************************************************************
+			 * if public discussion and no log in then add user to user table
+			 * uname = email address, type = visitor
+			 ******************************************************************************/
+			
+			if (!$_SESSION[auser]) {
+				if (user::userEmailExists($_REQUEST['visitor_email'])) {
+					 error("A user with that email address already exists.  Please log in before posting.");
+				}
+				if (!$_REQUEST['visitor_name']) error("You must enter a username.");
+				if (!$_REQUEST['visitor_email'] || !ereg("@", $_REQUEST['visitor_email'])) error("You must enter a valid email address.");
+				// all good
+				if (!$error) {
+					$obj = &new user();
+					$obj->uname = $_REQUEST['visitor_email'];
+					$obj->fname = $_REQUEST['visitor_name'];
+					$obj->email = $_REQUEST['visitor_email'];
+					$obj->type = "visitor";
+					$obj->authtype = 'db';
+					$obj->randpass(5,3);
+					$obj->insertDB();
+					$obj->sendemail();
+					$visitor_id = lastid();
+				}			
+			}
+			
+			if ($error) { unset($_REQUEST['commit']); return false; }
+
 			
 			if ($a=='edit') {
 				$d = & new discussion($_REQUEST['story']);
@@ -577,8 +607,8 @@ class discussion {
 				} else {
 					//log_entry("discussion","$_SESSION[auser] posted to story ".$_REQUEST['story']." discussion in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");				
 				}
-				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
-				$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:0;
+				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:$visitor_id;
+				$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:$_REQUEST['visitor_name'];
 				$d->libraryfileid = $_REQUEST['libraryfileid'];
 				$newid = $d->insert();
 			}
@@ -603,7 +633,7 @@ class discussion {
 
 	
 	function _outputform($t) { // outputs a post form of type $t (newpost,edit,reply)
-		global $sid,$error,$site_owner,$_full_uri;
+		global $sid,$error,$site_owner,$_full_uri, $cfg;
 		//$script = $_SERVER['SCRIPT_NAME'];
 		//printpre ("fulluri: ".$_full_uri);
 		//printpre ("thisinfo: ".$this->getinfo);
@@ -672,7 +702,15 @@ class discussion {
 						
 		} else {
 			printc ("<tr><td align=left>\n");
-			printc ("Subject: <input type=text size=50 name=subject value='".spchars($s)."'>\n");
+			printc ("<table>");
+			if (!$_SESSION[auser]) {
+				printc ("<tr><td  colspan = 2><div style='font-size: 9px'>If you part of the ".$cfg[inst_name]." community, please log in at top of page before posting.</div></td></tr>\n");
+				printc ("<tr><td>Full Name:</td><td><input type=text size=50 name=visitor_name value='".$_REQUEST['visitor_name']."'></td></tr>\n");
+				printc ("<tr><td>Email:</td><td><input type=text size=30 name=visitor_email value='".$_REQUEST['visitor_email']."'>\n");
+				//printc ("Register me: <input type=checkbox name=visitor_reg></td></tr>\n");
+			}			
+			printc ("<tr><td>Subject:</td><td><input type=text size=50 name=subject value='".spchars($s)."'></td></tr>\n");
+			printc ("</table>\n");
 		}
 		printc ("</td><td align=right>\n");
 		

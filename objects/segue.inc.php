@@ -1409,6 +1409,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 	function canview($user="") {
 		if ($user == "") $user = $_SESSION[auser];
 		if ($user == 'anyuser') $noperms=1;
+		
 //		$_ignore_types = array("page"=>array("heading","divider"));
 		$scope = get_class($this);
 //		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
@@ -1416,16 +1417,17 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		$this->fetchUp();
 //		if (slot::getOwner($this->owningSiteObj->name) == $user) { return 1;}
 		if ($this->owningSiteObj->owner == $user) { return 1;}
+				
 		if ($scope != 'story' && $this->getField("type") != 'heading') {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
 		
-//		echo "<pre>\nCANVIEW\n";
-//		echo "USER: $user\n";
-//		echo "CLASS: ".get_class($this)."\n";
-//		print_r($this->canview);
-//		echo "\nCANVIEW </pre>";
+/* 		echo "<pre>\nCANVIEW\n"; */
+/* 		echo "USER: $user\n"; */
+/* 		echo "CLASS: ".get_class($this)."\n"; */
+/* 		print_r($this->canview); */
+/* 		echo "\nCANVIEW </pre>"; */
 		
 		if (!$noperms) {
 			if ($this->fetched_forever_and_ever && get_class($this)=="site") {
@@ -1437,10 +1439,14 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 					foreach ($cfg[inst_ips] as $i)
 						if (ereg("^$i",$ip)) $ipgood=1;
 
-				if ($ipgood || $_SESSION[auser]) $institute = true;
+				if (($ipgood || $_SESSION[auser]) && $_SESSION[atype] != 'visitor') $institute = true;
+				//if ($ipgood || $_SESSION[auser]) $institute = true;
 				else $institute = false;
-
-				$canview = ($this->canview[everyone] || $this->canview[$user] || (($institute) ? $this->canview[institute] : false));
+				
+				//if (!$institute && $_SESSION[atype] == 'visitor') { print_r("visitor, institute");}
+				
+			//  $canview = ($this->canview[everyone] || $this->canview[$user] || (($institute) ? $this->canview[institute] : false));
+				$canview = ($this->canview[everyone] || $this->canview[$user] || (($institute && $_SESSION[atype] != 'visitor') ? $this->canview[institute] : false));
 				if ($canview)
 					return $canview;
 				

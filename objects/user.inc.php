@@ -119,6 +119,22 @@ class user {
 		return false;
 	}
 	
+	function userEmailExists($u) {
+		if (!$u) return false;
+		$query = "
+	SELECT
+		COUNT(*) as count
+	FROM
+		user
+	WHERE
+		user_email='$u'";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		if ($a['count'] != 0) return true;
+		return false;
+	}
+
+	
 	function delUser($id) {
 		$query = "
 	DELETE FROM

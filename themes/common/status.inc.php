@@ -39,6 +39,7 @@ if (!$_REQUEST[nostatus]) {
 			"stud"=>"student",
 			"prof"=>"professor",
 			"staff"=>"staff",
+			"visitor"=>"visitor",
 			"admin"=>"administrator");
 		if (!$_REQUEST[partialstatus]) {
 			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'

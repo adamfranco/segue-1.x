@@ -86,7 +86,8 @@ if ($_loggedin) {
 				if (count($$var)) {
 					//print out current classes
 					printc("<tr>");
-					printc("<td valign=top>");		  
+					printc("<td valign=top>");	
+						  
 					printc("<div class=title>$t</div>");
 					//print class list
 					//printclasses($classes);
@@ -160,8 +161,14 @@ if ($_loggedin) {
 	if ($allowpersonalsites) {
 		// print out the personal site
 		if ($_SESSION[auser] == slot::getOwner($_SESSION['auser']) || !slot::exists($_SESSION['auser'])) {
-			printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
-			printSiteLine(new site($_SESSION[auser]));
+			// visitor are users who post to public discussions w/o logging in
+			// visitors are not allowed to create sites
+			if ($_SESSION[atype] == 'visitor') {
+				printc("Welcome to Segue.  This user account will allow you to post to all public discussions.");
+			} else {
+				printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
+				printSiteLine(new site($_SESSION[auser]));
+			}
 		}
 	}
 	
@@ -308,9 +315,17 @@ if ($_loggedin) {
 	$sites =& removePrinted($da_sites);
 	
 	if (count($sites)) {
-		printc("<tr><td class='inlineth' colspan=2>Other Sites".helplink("othersites","What are these?")."</td></tr>");
-		foreach (array_keys($sites) as $i=>$n)
-			printSiteLine($sites[$n]);
+/* 		printc("<tr><td class='inlineth' colspan=2>"); */
+/* 		if ($_REQUEST[expand_other] == 0) { */
+/* 			printc("<a href=$PHP_SELF?expand_other=1>+</a> "); */
+/* 		} else { */
+/* 			printc("<a href=$PHP_SELF?expand_other=0>-</a> "); */
+/* 		} */
+		printc ("Other Sites".helplink("othersites","What are these?")."</td></tr>");
+//		if ($expand_other) {
+			foreach (array_keys($sites) as $i=>$n)
+				printSiteLine($sites[$n]);
+//		}
 	}
 	
 /******************************************************************************

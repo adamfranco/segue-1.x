@@ -301,7 +301,7 @@ if ($storyObj->getField("discuss")) {
 	
 	// Unless everyone is specifically given permission; i.e "anonymous posting" is allowed,
 	// make sure that the user is logged in.
-	if (!$_SESSION[auser] && !$storyObj->hasPermission("discuss", "everyone", 1))
+	if ((!$_SESSION[auser] || $_SESSION[atype] == "visitor") && !$storyObj->hasPermission("discuss", "everyone", 1))
 		$canReply = FALSE;
 	
 	$ds->outputAll($canReply,($_SESSION[auser]==$site_owner),true,$showposts,$showallauthors,$mailposts);
