@@ -2,10 +2,17 @@
 
 
 function isclass ($class) {
-	return 0;
+	global $auser,$_isclass_cache;
+	if (isset($_isclass_cache[$class])) return $_isclass_cache[$class];
+	$auser = strtolower($auser);
+	$v = ereg("^(([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2}))$",$class);
+	if (!$v && isgroup($class)) $v = 1;
+	$_isclass_cache[$class] = $v;
+	return $v;
 }
 
 function getuserclasses($user,$time="now") {
+	$user = strtolower($user);
 	$classes = array();
 	$semester = currentsemester ();
 
@@ -30,25 +37,63 @@ function getuserclasses($user,$time="now") {
 		WHERE
 			user_uname = '$user'
 	";
+	$semester = currentsemester ();
 	$r = db_query($query);
 	while ($a = db_fetch_assoc($r)) {
 		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
-/* 		print "<pre>"; print_r($a); print "</pre>"; */
-/* 		print $class_code."<br>"; */
 		if (!$classes[$class_code]) {
-			if ($time == "now" && $a[class_year] == date('Y') && $a[class_semester] == $semester) {
+			if ($time == "now" && ($a[class_year] == date('Y') && $a[class_semester] == $semester)) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
-			} else if ($time == "past" && ($a[class_year] < date('Y') || semorder($a[class_semester]) < semorder($semester))) {
+			} else if ($time == "past" && (($a[class_year] < date('Y') || semorder($a[class_semester]) < semorder($semester)))) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
-			} else if ($time == "future" && ($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y'))) {
+			} else if ($time == "future" && (($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y')))) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			} else if ($time == "all") {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			}
 		}
 	}
-	
 	return $classes;
+}
+
+function generateCourseCode($id) {
+	$query = "
+		SELECT
+			class_department,
+			class_number,
+			class_section,
+			class_semester,
+			class_year
+		FROM
+			class
+		WHERE
+			class_id = $id
+	";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$code = $a[class_department].$a[class_number].$a[class_section]."-".$a[class_semester].substr($a[class_year],2);
+	return $code;
+}
+
+function generateCodeFromData($dept,$number,$section,$semester,$year,$ext_id="",$owner="") {
+	$code = $dept.$number.$section."-".$semester.substr($year,2);
+	return $code;
+}
+
+function generateTermsFromCode($code) {
+	$department = substr($code,0,2);
+	$number = substr($code,2,3);
+	$section = substr($code,5,1);
+	$semester = substr($code,7,1);
+	$year = "20".substr($code,8,2);
+	
+	$terms = "
+		class_department='$department' AND
+		class_number='$number' AND
+		class_section='$section' AND
+		class_semester='$semester' AND
+		class_year='$year'
+	";
 }
 
 function coursefoldersite($cl) {
@@ -60,12 +105,7 @@ function ldapfname($uname) {
 }
 
 function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0) {
-	
 	$usernames = array();
-
-/******************************************************************************
- * add in the db users
- ******************************************************************************/
 	$query = "
 		SELECT
 			user_uname,

@@ -12,8 +12,6 @@ function isclass ($class) {
 }
 
 function getuserclasses($user,$time="all") {
-//	print "time=$time";
-
 	$user = strtolower($user);
 	global $ldap_voadmin_user, $ldap_voadmin_pass,$ldapserver;
 	$ldap_user = "cn=$ldap_voadmin_user,cn=midd";
@@ -148,26 +146,19 @@ function getuserclasses($user,$time="all") {
 	$r = db_query($query);
 	while ($a = db_fetch_assoc($r)) {
 		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
-/* 		print "<pre>"; print_r($a); print "</pre>"; */
-/* 		print $class_code."<br>"; */
 		if (!$classes[$class_code]) {
 			if ($time == "now" && ($a[class_year] == date('Y') && $a[class_semester] == $semester)) {
-//				print "<br>$time == 'now' && ".$a[class_year]." == ".date('Y')." && ".$a[class_semester]." == ".$semester."<br>";
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			} else if ($time == "past" && (($a[class_year] < date('Y') || semorder($a[class_semester]) < semorder($semester)))) {
-//				print "<br>$time == 'past' && (".$a[class_year]." < ".date('Y')." || ".semorder($a[class_semester])." < ".semorder($semester).")<br>";
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			} else if ($time == "future" && (($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y')))) {
-//				print "<br>$time == 'future' && ((".$a[class_year]." == ".date('Y')." && ".semorder($a[class_semester])." > ".semorder($semester).") || (".$a[class_year]." > ".date('Y')."))<br>";
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			} else if ($time == "all") {
-//				print "<br>$time == 'all'<br>";
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			}
 		}
 	}
 	
-/* 	print "<pre>"; print_r($classes); print "</pre>";	 */
 	return $classes;
 }
 
