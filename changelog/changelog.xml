@@ -8,6 +8,9 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		<fix author='adam' ref='1036562' reftype='bug'>
+			CopySite now copies all media, not just those referenced by stories.
+		</fix>
 		<new author='adam'>
 			Added a configuration checking function and some more helpful error
 			messages so that installing and configuring Segue is more straight forward.

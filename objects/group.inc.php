@@ -172,7 +172,7 @@ FROM
 					if (!segue::siteExists($this->name)) {
 						$siteObj =& new site ($class);
 						$siteObj->fetchDown(1);
-						$siteObj->copySite($this->name);
+						$siteObj->copySite($this->name, FALSE, TRUE);
 						$siteObj =& new site ($class);
 						$siteObj->fetchDown(1);
 						$siteObj->delete();

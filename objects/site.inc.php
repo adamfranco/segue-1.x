@@ -978,7 +978,8 @@ ORDER BY
 		if ($newName == $this->name) return FALSE;
 		if ($newName == "" || !$newName) return FALSE;
 		
-				
+		$oldName = $this->name;
+		
 		// Make a hash array of site, section, and page ids so that
 		makeSiteHash($this);
 		$newSiteObj = $this;
@@ -987,6 +988,23 @@ ORDER BY
 		// Since we are specifying TRUE for the 'copy' option, each
 		// part should add its new id to the global hash
 		$newSiteObj->insertDB(1, 1, 0, $copyDiscussions);
+		
+		// Copy all the media
+		$query = "
+SELECT
+	media_id
+FROM
+	media
+		INNER JOIN
+	slot
+		ON
+			media.FK_site = slot.FK_site
+WHERE
+	slot_name='".$oldName."'";
+		$r = db_query($query);
+		while ($a = db_fetch_assoc($r)) {
+			copy_media($a['media_id'], $newName);
+		}
 		
 		$newSiteObj = NULL;
 		unset($newSiteObj);
@@ -1139,6 +1157,7 @@ ORDER BY
 	}
 	
 	function delete() {	// delete from db
+		global $cfg;
 		if (!$this->id) return false;
 		$this->fetchDown();
 		$query = "DELETE FROM site WHERE site_id=".$this->id;
@@ -1165,6 +1184,10 @@ ORDER BY
 //		echo $query = "DELETE FROM site_editors WHERE FK_site = ".$this->id;
 		db_query($query);
 //		exit(0);
+
+		// delete the userfiles
+		$file_path = $cfg['uploaddir']."/".$this->getField("name");
+		deletePath($file_path);
 	}
 	
 	function createSQLArray($all=0) {
