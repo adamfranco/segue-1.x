@@ -12,7 +12,7 @@ include("objects/objects.inc.php");
  ******************************************************************************/
 	$updates = array();
 	
-	include("updates/update_1.0.3.inc.php");
+	require_once("updates/update_1.0.3.inc.php");
 	$updates[] =& new Update103;
 	
 /******************************************************************************
@@ -29,16 +29,6 @@ session_start();
 //output a meta tag
 print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
-/* // debug output -- handy :) */
-/* print "<pre>"; */
-/* print "request:\n"; */
-/* print_r($_REQUEST); */
-/* print "\n\n"; */
-/* print "session:\n"; */
-/* print_r($_SESSION); */
-/* print "\n\n"; */
-/* print "</pre>"; */
-
 // include all necessary files
 include("includes.inc.php");
 
@@ -49,47 +39,6 @@ if ($_SESSION['ltype'] != 'admin') {
 }
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-
-
-
-/* 	$query = " */
-/* 		SELECT */
-/* 			class_id, */
-/* 			class_external_id, */
-/* 			class_name, */
-/* 			class_department, */
-/* 			class_number, */
-/* 			class_section, */
-/* 			class_semester, */
-/* 			class_year, */
-/* 			classowner.user_id AS classowner_id, */
-/* 			classowner.user_uname AS classowner_uname, */
-/* 			classowner.user_fname AS classowner_fname, */
-/* 			classgroup_id, */
-/* 			classgroup_name, */
-/* 			ugroup_id */
-/* 		FROM */
-/* 			class */
-/* 				LEFT JOIN */
-/* 			user AS classowner */
-/* 				ON */
-/* 			class.FK_owner = user_id */
-/* 				LEFT JOIN */
-/* 			classgroup */
-/* 				ON */
-/* 			FK_classgroup = classgroup_id */
-/* 				LEFT JOIN */
-/* 			ugroup */
-/* 				ON */
-/* 			FK_ugroup = ugroup_id */
-/* 		WHERE */
-/* 			$where */
-/* 		ORDER BY */
-/* 			class_year DESC, class_department ASC, class_number ASC, class_section ASC */
-/* 		$limit"; */
-/* 			 */
-/* 	 */
-/* 	$r = db_query($query); */
 
 printerr();
 
@@ -119,10 +68,23 @@ include("themes/common/header.inc.php");
 <?=$content?>
 
 <table cellspacing=1 width='100%' id='maintable'>
-<tr><td>
+<?
+// print out the updates
+foreach ($updates as $key => $obj) {
+	print "<tr><td>";
+	print "<b>".$obj->getName()."</b>";
+	print "<br>".$obj-getDescription();
+	print "</td><td>";
+	
+	if ($obj->hasRun())
+		print "<b>This update is in place</b>";
+	else
+		print "<b>This update has not been run.</b>";
+		
+	print "</td></tr>";
+}
 
-
-</td></tr>
+?>
 </table>
 
 <BR>
