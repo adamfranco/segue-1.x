@@ -34,8 +34,8 @@ $site = $_SESSION[settings][site];
 /* 	$site = $_SESSION[settings][site]; */
 /* } */
 
-printpre($_SESSION[settings]);
-//printpre($site);
+//printpre($_SESSION[settings]);
+//printpre($_REQUEST);
 
 if ($_REQUEST[site]) {
 	$site = $_REQUEST[site];
@@ -73,7 +73,7 @@ $query = "
 	$where AND media_location = 'local'
 "; 
 $r = db_query($query); 
-
+//printpre($query);
 $totalsize = 0;
 while ($a = db_fetch_assoc($r)) {
 	$totalsize = $totalsize + $a[media_size];
