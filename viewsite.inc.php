@@ -19,23 +19,29 @@ do {
 	if ($thisSite) {
 		if (!$thisSection && count($thisSite->getField("sections"))) {
 			$thisSite->fetchDown();
-			foreach ($thisSite->sections as $s=>$o) {
-				if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisSection = &$thisSite->sections[$s]; break; }
+			foreach (array_keys($thisSite->sections) as $k=>$s) {
+				$o =& $thisSite->sections[$s];
+				if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisSection =& $o; break; }
 			}
 		}
 	/* 	print count($thisSite->sections); */
 		$sitetype = $thisSite->getField("type");
 	}
+	unset($o);
+	
 	if ($thisSection) {
 		if (!$thisPage && count($thisSection->getField("pages"))) {
 			$thisSection->fetchDown();
-			foreach ($thisSection->pages as $p=>$o) {
-				if ($o->getField("type") == 'page' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisPage = &$thisSection->pages[$p]; break; }
+			foreach (array_keys($thisSection->pages) as $k=>$p) {
+				$o =& $thisSection->pages[$p];
+				if ($o->getField("type") == 'page' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisPage =& $o; break; }
 			}
 		}
 		$st = " > " . $thisSection->getField("title");
 		// check category permissions
 	}
+	unset($o);
+
 	if ($thisPage) {		// we're viewing a page
 		$pt = " > " . $thisPage->getField("title");
 		// check page permissions
@@ -63,25 +69,43 @@ do {
 	if ($_REQUEST[reorder]) {
 		if ($_REQUEST[reorder] == 'page' && $thisSection->hasPermission("edit")) {
 			$thisSection->setField("pages",reorder($thisSection->getField("pages"),$_REQUEST[id],$_REQUEST[direction]));
-			$thisSection->updateDB();
-			$thisSection->fetcheddown=0;
-			$thisSection->fetchDown();
+			foreach(array_keys($thisSection->pages) as $k=>$id)
+				$thisSection->pages[$id]->changed[order] = 1;
+			$thisSection->updateDB(1);
+//			$thisSection->fetcheddown=0;
+//			$thisSection->fetchDown();
 		}
 		if ($_REQUEST[reorder] == 'section' && $thisSite->hasPermission("edit")) {
 			echo "<pre>";
-			print_r($thisSite->getField("sections"));
+			print_r ($thisSite->getField("sections"));
 			$thisSite->setField("sections",reorder($thisSite->getField("sections"), $_REQUEST[id],$_REQUEST[direction]));
-			print_r($thisSite->getField("sections"));
+			print_r ($thisSite->getField("sections"));
+	
+			foreach(array_keys($thisSite->sections) as $k=>$id)
+				$thisSite->sections[$id]->changed[order] = 1;
+
+			$thisSite->updateDB(1);
+			$section_id = $page_id = 0;
+			if ($thisSection)
+				$section_id = $thisSection->id;
+			if ($thisPage)
+				$page_id = $thisPage->id;
+			$thisSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_REQUEST[section],$_REQUEST[page]);
+			if ($thisSection)
+				$thisSection =& $thisSite->sections[$section_id];
+			if ($thisPage)
+				$thisPage =& $thisSite->sections[$section_id]->pages[$page_id];
+
 			print_r($thisSite);
-			$thisSite->updateDB();
-			$thisSite->fetcheddown=0;
-			$thisSite->fetchDown();
+				
+//			$thisSite->fetcheddown=0;
+//			$thisSite->fetchDown();
 		}
 		if ($_REQUEST[reorder] == 'story' && $thisPage->hasPermission("edit")) {
 			$thisPage->setField("stories",reorder($thisPage->getField("stories"),$_REQUEST[id],$_REQUEST[direction]));
 			$thisPage->updateDB();
-			$thisPage->fetcheddown=0;
-			$thisPage->fetchDown();
+//			$thisPage->fetcheddown=0;
+//			$thisPage->fetchDown();
 		}
 	}	
 	
@@ -101,7 +125,7 @@ do {
 	// build the navbar
 	include ("output_modules/".$thisSite->getField("type")."/navbars.inc.php");
 	
-	
+
 	
 	if ($thisPage) {
 		$thisPage->fetchDown();
@@ -120,7 +144,8 @@ do {
 		
 		$i=0;
 		if ($thisPage->stories) {
-			foreach ($thisPage->stories as $s=>$o) {
+			foreach (array_keys($thisPage->stories) as $k=>$s) {
+				$o =& $thisPage->stories[$s];
 		/* 		$a = db_get_line("stories","id=$s"); */
 				if ($o->canview() || $thisPage->hasPermissionDown("add or edit or delete")) {
 					if ($i!=0)
@@ -166,12 +191,14 @@ do {
 					printc("</div>");
 					$i++;
 				}
+				unset($o);
 			}
 		}
 		$_b = array("","custom","addedasc","editedasc");
 		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) printc("<br><hr class=block><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 	}
 } while (0);
+
 
 
 // add the key to the footer of the page
