@@ -230,7 +230,7 @@ Participants<br><br>
 			
 			if ($userid) {
 				print "<a href=$PHP_SELF?$sid&action=review&$getvariables>Review all</a> - ";
-				print urldecode($userfname);
+				print urldecode($userfname)." posts ";
 			} else {
 				print "Review - ";
 				print $numparticipants." participants";

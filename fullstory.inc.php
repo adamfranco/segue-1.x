@@ -38,7 +38,7 @@ $pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$secti
 $storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$pageObj);
 $getinfo = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&story=".$storyObj->id."&detail=".$storyObj->id;
 $getinfo2 = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id;
-
+$editsettingsurl = "&site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&action=edit_story&edit_story=".$storyObj->id."&detail=".$storyObj->id."&comingFrom=viewsite&step=4";
 
 $storyObj->fetchFromDB();
 $storyObj->owningSiteObj->fetchFromDB();
@@ -110,6 +110,13 @@ if ($storyObj->getField("type") == 'file') {
 	padding-left: 5px;
 	padding-right: 5px;
 }
+
+.dinfo1 {
+	border: 1px solid #000;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
 
 </style>
 <!--</head>
@@ -193,31 +200,42 @@ if ($storyObj->getField("discuss")) {
 	// hide posts (assessment)
 	if ($showposts == 2 && $showallauthors == 1) {
 		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
-		if ($_SESSION[auser]==$site_owner) {
-			if ($mailposts == 1) {
-				printc("<br><div style='font-size: 9px'> All posts to this discussion will be mailed to you.  To disable emailing of posts, edit the display options for this content block and deselect Email Posts.</div>");
-			}
-			printc("<div style='font-size: 9px'> To make posts to this assessment available for discussion by all participants, edit the display options for this content block and select Show Posts.</div>");		
-		}
 	// show posts, hide author names (Anonymous Discussion)
 	} else if ($showposts == 1 && $showallauthors == 2) {
-		printc("Author of posts to this discussion or assessment are known only to the site owner, <i>$siteowner</i>.  Other participants will not see your name associated with your posts.");
-		if ($_SESSION[auser]==$site_owner) {
-			if ($mailposts == 1) {
-				printc("<br><div style='font-size: 9px'> All posts to this discussion will be mailed to you.  To disable emailing of posts, edit the display options for this content block and deselect Email Posts.</div>");
-			}
-			printc("<div style='font-size: 9px'> To make authors known to all participants, edit the display options for this content block and select Show Authors.</div>");
-		}
+		printc("Author of posts to this discussion are known only to the site owner, <i>$siteowner</i>.  Other participants will not see your name associated with your posts.");
 	// hide posts, hide authornames  (assessment)
 	} else if ($showposts == 2 && $showallauthors == 2) {
 		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
-		if ($_SESSION[auser]==$site_owner) {
-			if ($mailposts == 1) {
-				printc("<br><div style='font-size: 9px'> All posts to this discussion will be mailed to you.  To disable emailing of posts, edit the display options for this content block and deselect Email Posts.</div>");
-			}
-
-			printc("<div style='font-size: 9px'> To make posts and their authors viewable by all participants, edit the display options for this content block and select both Show Authors and Show Posts.</div>");
+	}
+	if ($_SESSION[auser]==$site_owner) {
+		printc("<br><table class=dinfo1 width=90% align=center>");
+		printc("<tr><td align=left><div style='font-size: 9px'>");
+		printc("<b>Mail Posts:</b>");
+		if ($mailposts == 1) {
+			printc(" All posts to this discussion will be mailed to you.");
+		} else {
+			printc(" Email notification of posts to this discussion has been disabled.");
 		}
+		printc("</div></td></tr>");		
+		printc("<tr><td align=left><div style='font-size: 9px'>");
+		if ($showposts == 1) {
+			$type = "discussion";
+			printc("<b>Discussion:</b> Participants can read and respond to each other's posts.");
+		} else {
+			$type = "assessment";
+			printc("<b>Assessment:</b> Participants will not be able to read each other's posts.");
+		}
+		printc("</div></td></tr>");		
+		printc("<tr><td align=left><div style='font-size: 9px'>");
+		if ($showallauthors == 2 && $showposts == 1) {
+			printc("<b>Hide Authors:</b> Authors of posts have been hidden from participants to allow for anonymous discussion.");
+		} else if ($showallauthors == 1) {
+			printc("<b>Show Authors:</b> Author of each and every post is identified to all participants.");
+		}		
+		printc("</div></td></tr>");		
+		printc("<tr><td align=left><div style='font-size: 9px'><i>To change these settings and determine who can participant in this ".$type.", click on edit link below.</i></div></td></tr>");
+		printc("<tr><td align=right><div style='font-size: 10px'><a href=index.php?".$editsettingsurl.">edit</a></div></td></tr>");
+		printc("</table>");	
 	}
 
 	
