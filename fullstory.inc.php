@@ -149,7 +149,6 @@ if ($storyObj->getField("discuss")) {
 	$showallauthors = $storyObj->getField("discussauthor");	
 	$siteowner = $siteObj->ownerfname;	
 	$discusslabel = $storyObj->getField("discusslabel");	
-	printpre($siteObj);
 	printc("<td align='left'><table width=100% border=0 cellspacing='0' cellpadding='0'><tr><td align='left' class=dheader><a name=discuss></a>");
 	printc(($discusslabel)? $discusslabel:"Discuss");
 	
@@ -166,10 +165,11 @@ if ($storyObj->getField("discuss")) {
 	$site=$siteObj->name;
 	//printpre($_SESSION);
 	printc("<div style='font-size: 10px'>");
-	if ($_SESSION[auser]==$site_owner) {		
-		printc("<a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list' onClick='doWindow(\"email\",700,500)' target='email'>List</a> | \n");
-		printc("<a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email' onClick='doWindow(\"email\",700,500)' target='email'>Email</a> - \n");
+	if ($_SESSION[auser]==$site_owner) {	
 		printc($numparticipants." participants");
+		printc(" - <a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list' onClick='doWindow(\"email\",700,500)' target='email'>Email</a> \n");
+		//printc("<a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email' onClick='doWindow(\"email\",700,500)' target='email'>Email</a> - \n");
+		
 	} else {
 		printc($numparticipants." participants");
 	}

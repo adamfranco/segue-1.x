@@ -233,6 +233,8 @@ if ($action == "review" || $action == "user") {
 	//printpre($query);
 	//printpre($curraction);
 	$r = db_query($query);
+	$r2 = db_query($query);
+
 	
 printerr();
 
@@ -447,7 +449,7 @@ print "</table><br />";
 		
 		// lists all participants with summary of posts and avg. rating
 		if ($curraction == "list") {
-			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
+			//print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
 			print "List | ";
 			print "<a href=$PHP_SELF?$sid&action=review&$getvariables&order=$order>Review</a> - ";
 			print $numparticipants." participants";
@@ -455,7 +457,7 @@ print "</table><br />";
 		// reviews posts by a given user to a given site/discussion/assessment
 		// or reviews all posts by all users to a given site/discussion/assessment
 		} else if ($curraction == 'review') {
-			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers&order=user_fname>Email</a> | ";
+			//print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers&order=user_fname>Email</a> | ";
 			print "<a href=$PHP_SELF?$sid&action=list&$getvariables&order=user_fname>List</a> | ";
 			
 			if ($userid) {
@@ -485,14 +487,14 @@ print "</table><br />";
 					
 		// emails all participants currently listed	
 		} else if ($curraction == 'email') {
-			print "Email | ";
+			//print "Email | ";
 			print "<a href=$PHP_SELF?$sid&action=list&$getvariables&order=user_fname>List</a> | ";
 			print "<a href=$PHP_SELF?$sid&action=review&$getvariables>Review</a> - ";
 			print $numparticipants." participants";
 		
 		// sends email to all participants in email list	
 		} else if ($curraction == 'send') {
-			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers&order=user_fname>Email</a> | ";
+			//print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers&order=user_fname>Email</a> | ";
 			print "<a href=$PHP_SELF?$sid&action=list&$getvariables&order=user_fname>List</a> | ";
 			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers&order=$order>Review</a> - ";
 			print $numparticipants." participants";
@@ -702,151 +704,201 @@ print "</table><br />";
 		?>
 		</tr>		
 		<? 
-		/******************************************************************************
-		 * Print out stats and links
-		 ******************************************************************************/
+
 		 	$color = 0;
 		 	
-/******************************************************************************
- * 		 	$editors = array();
-			while ($a2 = db_fetch_assoc($r)) {
-				array_push($editors, $a2['user_id']);	
+		 	// get ids of all discussion participants
+			while ($a = db_fetch_assoc($r2)) {
+				$logged_participants_id[] = $a[user_id];				
+			}
+			
+			//printpre($editors);
+			/******************************************************************************
+			 * if a class site, print out list of students
+			 * if student has participated get post stats
+			 * get # of posts and avg. rating
+			 ******************************************************************************/
+			if (is_array($students) && $curraction == 'list') {
+				$rostercount = count($students);
+				print "<tr><td colspan=4><b>".$rostercount." Participants from Roster</b></tr>";
+				foreach (array_keys($students) as $key) {
+					$e = $students[$key][id];
+					print "<tr>";
+					print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
+				
+					// if not in logged participant array, then just print out name
+					if (!in_array($students[$key]['id'], $logged_participants_id)) {
+						print "<td class=td$color>".$students[$key][fname]."</td>";
+						print "<td class=td$color>".$students[$key][email]."</td>";
+						print "<td class=td$color>0</td>";
+						print "<td class=td$color></td>";
+						
+					// if in logged participants, then query for post and print summary
+					} else {
+						$userid = $students[$key]['id'];
+						$postcount = getNumPosts($userid);
+						$avg_rating = getAvgRating($userid);
+						print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$students[$key][id]."&userfname=".urlencode($students[$key][fname])."&".$getvariables.">".$students[$key][fname]."</a></td>";
+						print "<td class=td$color>".$students[$key][email]."</td>";
+						print "<td class=td$color>".$postcount."</td>";
+						print "<td class=td$color>".$avg_rating."</td>";
+						$logged_students_id[] = $students[$key][id];
+					}
+					print "</tr>";
+					$color = 1-$color;
+				}
 			}
 
- ******************************************************************************/
-
+			print "<tr><td colspan=4><b>Participants not in Roster</b></tr>";
 
 			while ($a = db_fetch_assoc($r)) {
 			
+				$userid = $a['user_id'];
 				$e = $a['user_id'];
-				//printpre($e);
 				/******************************************************************************
-				 * If listing participants, get # of posts and avg. rating
+				 * if listing participants and site has roster, 
+				 * include only non-roster participants
+				 * for each participant get # of posts and avg. rating
 				 ******************************************************************************/
-
-				if ($curraction == 'list') {
-					$userid = $a[user_id];
-					$logged_participants[] = $a[user_uname];
+				 
+				if (!in_array($userid, $logged_students_id) && $curraction == 'list') {
+				
+					//if ($curraction == 'list') {
+						$userid = $a[user_id];
+						$logged_participants[] = $a[user_uname];
+						
+						$postcount = getNumPosts($userid);
+						$avg_rating = getAvgRating($userid);
+						
+					//}
 					
-					$query2 = "
-					SELECT 
-						user_id, user_email, discussion_rate, discussion_tstamp
-					FROM 
-						discussion
-					INNER JOIN story ON FK_story = story_id
-					INNER JOIN page ON FK_page = page_id
-					INNER JOIN section ON FK_section = section_id
-					INNER JOIN site ON FK_site = site_id
-					INNER JOIN user ON FK_author = user_id
-					WHERE 
-						$where AND user_id = $userid $orderby $limit
-					";		
-					$r2 = db_query($query2);
-					//$a2 = db_fetch_assoc($r2);
-					$postcount = db_num_rows($r2);
-					$rating_sum = 0;
-					if ($postcount == 1) {
-						$avg_rating = $a2['discussion_rate'];
-					} else {
-						$adjpostcount = $postcount;
-						while ($a2 = db_fetch_assoc($r2)) {
-							if ($a2['discussion_rate'] == 0) 
-								$adjpostcount = $adjpostcount - 1;
-							$rating_sum = $rating_sum + $a2['discussion_rate'];
-						}
-						if ($adjpostcount)
-							$avg_rating = round($rating_sum/$adjpostcount, 1);
-						else
-							$avg_rating = "n/a";
-					}
-				}
-							
-				$discussion_date = $a['discussion_tstamp'];
-				$discussion_date = timestamp2usdate($discussion_date);
-				if ($action == "user") $sitename = $a['slot_name'];
-				$page_link = $_full_uri."/index.php?action=site&site=".$a['slot_name']."&section=".$a['section_id']."&page=".$a['page_id'];
-				$fullstory_link = $_full_uri."/index.php?action=site&site=".$a['slot_name']."&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id'];
-				$dicuss_link = $_full_uri."/index.php?action=site&site=".$a['slot_name']."&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id']."#".$a['discussion_id'];
-				$shory_text_all = strip_tags(urldecode($a['story_text_short']));
-				$shory_text = substr($shory_text_all,0,15)."...";
-				$discussion_subject_all = urldecode($a['discussion_subject']);
-				$discussion_subject = substr($discussion_subject_all,0,15)."...";
-				
-		
-				/******************************************************************************
-				 * Print Participants (depends on curraction
-				 * Review: participant name, page > topic, discussion subject, rating, time
-				 * User: participant name, site, page > topic, discussion subject, rating, time
-				 * List: participant name, email, # of posts, average rating
-				 ******************************************************************************/
-				
-				print "<tr>";
-				
-				if ($curraction == 'review'  || $curraction == 'user') {
-					// user full name
-					if ($curraction == 'user') {
-					//	print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
-						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' checked></td>";
-						print "<td class=td$color>".$a['user_fname']." (".$a['user_uname'].")</td>";
-					} else {
-						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' checked></td>";
-						print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
-					}
-					//site links
-					if ($curraction == 'user') {
-						print "<td class=td$color><a href='#' onClick='opener.window.location=\"$_full_uri/index.php?action=site&site=".$a['slot_name']."\"'>".$a['slot_name']."</a></td>";
-					}
-					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$page_link\"'>".$a['page_title']."</a> > <a href='#' onClick='opener.window.location=\"$fullstory_link\"'>".$shory_text."</a></td>";
-					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_subject."</a></td>";
-					print "<td class=td$color>".$a['discussion_rate']."</td>";
-					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
-				//list
-				} else {
-					print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' checked></td>";
+					print "<tr>";
+					print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
 					print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
 					print "<td class=td$color>".$a['user_email']."</td>";
 					print "<td class=td$color>".$postcount."</td>";
 					print "<td class=td$color>".$avg_rating."</td>";
+					print "</tr>";
 				}
-								
-				print "</tr>";
-				$color = 1-$color;
-			}
-			
-			/******************************************************************************
-			 * Add to list of participants students in class who have not yet
-			 * participated 
-			 ******************************************************************************/
-			if ($curraction != 'review' && $curraction != 'user') {
-			
-				if (is_array($students)) {
-					foreach (array_keys($students) as $key) {
-							if (!in_array($students[$key][uname], $logged_participants)) {
-								$e = $students[$key]['id'];
-								//printpre ($e);
-								print "<tr>";
-								print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e'  checked></td>";
-								print "<td class=td$color>".$students[$key][fname]."</td>";
-								print "<td class=td$color>".$students[$key][email]."</td>";
-								print "<td class=td$color>0</td>";
-								print "<td class=td$color></td>";
-								print "</tr>";
-							}
+				
+				
+					$discussion_date = $a['discussion_tstamp'];
+					$discussion_date = timestamp2usdate($discussion_date);
+					if ($action == "user") $sitename = $a['slot_name'];
+					$page_link = $_full_uri."/index.php?action=site&site=".$a['slot_name']."&section=".$a['section_id']."&page=".$a['page_id'];
+					$fullstory_link = $_full_uri."/index.php?action=site&site=".$a['slot_name']."&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id'];
+					$dicuss_link = $_full_uri."/index.php?action=site&site=".$a['slot_name']."&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id']."#".$a['discussion_id'];
+					$shory_text_all = strip_tags(urldecode($a['story_text_short']));
+					$shory_text = substr($shory_text_all,0,15)."...";
+					$discussion_subject_all = urldecode($a['discussion_subject']);
+					$discussion_subject = substr($discussion_subject_all,0,15)."...";
+					
+		
+					/******************************************************************************
+					 * Print Participants (depends on curraction
+					 * Review: participant name, page > topic, discussion subject, rating, time
+					 * User: participant name, site, page > topic, discussion subject, rating, time
+					 * List: participant name, email, # of posts, average rating
+					 ******************************************************************************/
+					
+					print "<tr>";
+					
+					if ($curraction == 'review'  || $curraction == 'user') {
+						// user full name
+						if ($curraction == 'user') {
+						//	print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
+							print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
+							print "<td class=td$color>".$a['user_fname']." (".$a['user_uname'].")</td>";
+						} else {
+							print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
+							print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
+						}
+						//site links
+						if ($curraction == 'user') {
+							print "<td class=td$color><a href='#' onClick='opener.window.location=\"$_full_uri/index.php?action=site&site=".$a['slot_name']."\"'>".$a['slot_name']."</a></td>";
+						}
+						print "<td class=td$color><a href='#' onClick='opener.window.location=\"$page_link\"'>".$a['page_title']."</a> > <a href='#' onClick='opener.window.location=\"$fullstory_link\"'>".$shory_text."</a></td>";
+						print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_subject."</a></td>";
+						print "<td class=td$color>".$a['discussion_rate']."</td>";
+						print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
 					}
-				}
+									
+					print "</tr>";
+					$color = 1-$color;				
 			}
-
+			
 		?>
 	</table>	
 	<? print $buttons; ?>
 </td></tr>
-</form></table>
+</table></form>
 
 <br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 
-printpre($_REQUEST);
+//printpre($_SESSION[editors]);
 //printpre($emaillist);
+
+function getNumPosts ($userid) {
+	global $where, $orderby, $limit;
+	
+	$query2 = "
+	SELECT 
+		user_id, user_email, discussion_rate, discussion_tstamp
+	FROM 
+		discussion
+	INNER JOIN story ON FK_story = story_id
+	INNER JOIN page ON FK_page = page_id
+	INNER JOIN section ON FK_section = section_id
+	INNER JOIN site ON FK_site = site_id
+	INNER JOIN user ON FK_author = user_id
+	WHERE 
+		$where AND user_id = $userid $orderby $limit
+	";		
+	$r2 = db_query($query2);
+	//$a2 = db_fetch_assoc($r2);
+	$postcount = db_num_rows($r2);
+	return $postcount;
+	
+}
+
+function getAvgRating ($userid) {
+	global $where, $orderby, $limit;
+	
+	$query2 = "
+	SELECT 
+		user_id, user_email, discussion_rate, discussion_tstamp
+	FROM 
+		discussion
+	INNER JOIN story ON FK_story = story_id
+	INNER JOIN page ON FK_page = page_id
+	INNER JOIN section ON FK_section = section_id
+	INNER JOIN site ON FK_site = site_id
+	INNER JOIN user ON FK_author = user_id
+	WHERE 
+		$where AND user_id = $userid $orderby $limit
+	";		
+	$r2 = db_query($query2);
+	$postcount = db_num_rows($r2);
+	$rating_sum = 0;
+	if ($postcount == 1) {
+		$avg_rating = $a2['discussion_rate'];
+	} else {
+		$adjpostcount = $postcount;
+		
+		
+		while ($a2 = db_fetch_assoc($r2)) {
+			if ($a2['discussion_rate'] == 0) 
+				$adjpostcount = $adjpostcount - 1;
+			$rating_sum = $rating_sum + $a2['discussion_rate'];
+		}
+		if ($adjpostcount)
+			$avg_rating = round($rating_sum/$adjpostcount, 1);
+		else
+			$avg_rating = "n/a";
+	}
+	return $avg_rating;
+}
 
 ?>
