@@ -64,14 +64,15 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 	if ($alreadyloggedin) {	
 //		print "lmethod: $lmethod - $luser<BR>";
 		if (!$_SESSION[lmethod]) {
-			error("An unknown error happened during authentication. Please <a href='index.php?login'>logout</a> and try again. Ignore the error below.");
+			error("An unknown error happened during authentication. Please <a href='index.php?login'>logout</a> and try again. Ignore the error(s) below.");
 			return 0;
 		}
 		$func = "_valid_".$_SESSION[lmethod];		
-		if ($func($user,$pass))
-			return 1;		// ok, they passed the test
-		else
-			return 0;			
+/* 		if ($func($user,$pass)) */
+/* 			return 1;		// ok, they passed the test */
+/* 		else */
+/* 			return 0; */
+		return 1;
 	} else {
 		$valid=0;
 		
@@ -95,7 +96,7 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 			// set the acting user variables.. default to same as login -- may change later
 			$_SESSION[aid] = $_SESSION[lid] = $x[id];
 			$_SESSION[auser] = $_SESSION[luser] = $user;
-			$_SESSION[lpass] = $pass;
+//			$_SESSION[lpass] = $pass;
 			$_SESSION[afname] = $_SESSION[lfname] = $x[fullname];
 			$_SESSION[aemail] = $_SESSION[lemail] = $x[email];
 			$_SESSION[atype] = $_SESSION[ltype] = $x[type];
