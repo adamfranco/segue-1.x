@@ -10,40 +10,9 @@ include("includes.inc.php");
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 //printpre($_REQUEST);
 
-if (isset($_REQUEST[name])) {
-	//printpre($name);
-	$class_external_id = $_REQUEST[name];
-	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_external_id'");
-	$_REQUEST[ugroup_id] = $ugroup_id;
-	//printpre($ugroup_id);
-	$participants = getclassstudents($class_external_id);
-	//printpre($class_external_id);
-	//printpre($participants);
-
-} else {
-	$ugroup_id = $_REQUEST[ugroup_id];
-	$class_external_id = db_get_value("class","class_external_id","FK_ugroup = $ugroup_id");
-	$participants = getclassstudents($class_external_id);
-
-}
-
-
-if ($_REQUEST[n]) {
-	//include("config.inc.php");
-	//include("functions.inc.php");
-	$usernames=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
-	//$participants=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
-}
-
-// sort alphabetically
-if (count($usernames)) {
-	asort($usernames);
-	reset($usernames);
-}
-if (count($participants)) {
-	asort($participants);
-	reset($participants);
-}
+/******************************************************************************
+ * Add Associated Site: 
+ ******************************************************************************/
 
 if ($action == "addsite" && $addclassid && $adduname) {
 
@@ -52,13 +21,16 @@ if ($action == "addsite" && $addclassid && $adduname) {
 	$obj = &new slot($slotname);
 	$obj->owner = strtolower($adduname);
 	$obj->assocSite = strtolower($addclassid);
-	$obj->type = 'other';
+	$obj->type = 'class';
 	$obj->uploadlimit = 'NULL';
 	
 	$obj->insertDB();
 	//db_query($query);
 }
 
+/******************************************************************************
+ * Add student to a class site
+ ******************************************************************************/
 
 if ($action == "add" && $addstudent) {
 	// make sure the user is in the db
@@ -90,6 +62,10 @@ if ($action == "add" && $addstudent) {
 	}
 }
 
+/******************************************************************************
+ * Delete student from a class site
+ ******************************************************************************/
+
 if ($action == "delete" && $delstudent) {
 	$query = "
 		DELETE
@@ -102,6 +78,59 @@ if ($action == "delete" && $delstudent) {
 	";
 	db_query($query);
 }
+
+/******************************************************************************
+ * Lookup a student in userlookup
+ ******************************************************************************/
+
+if ($_REQUEST[n]) {
+	//include("config.inc.php");
+	//include("functions.inc.php");
+	$usernames=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
+
+}	
+
+
+/******************************************************************************
+ * Site Owner add student UI
+ ******************************************************************************/
+
+if (isset($_REQUEST[name])) {
+	//printpre($name);
+	$class_external_id = $_REQUEST[name];
+	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_external_id'");
+	$_REQUEST[ugroup_id] = $ugroup_id;
+	//printpre($ugroup_id);
+	$participants = getclassstudents($class_external_id);
+	//printpre($class_external_id);
+	//printpre($participants);
+
+/******************************************************************************
+ * Admin add student UI
+ ******************************************************************************/
+
+} else {
+	$ugroup_id = $_REQUEST[ugroup_id];
+	$class_external_id = db_get_value("class","class_external_id","FK_ugroup = $ugroup_id");
+	$participants = getclassstudents($class_external_id);
+
+}
+
+
+
+/******************************************************************************
+ * Sort alphabetically usernames from userlookup and participant names
+ ******************************************************************************/
+if (count($usernames)) {
+	asort($usernames);
+	reset($usernames);
+}
+/* if (count($participants)) { */
+/* 	asort($participants); */
+/* 	reset($participants); */
+/* } */
+
+
 
 ?>
 <html>
@@ -225,30 +254,6 @@ if (count($usernames)) {
 </table>
 </form>
 
-<?
-
-$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
-
-$query = "
-	SELECT
-		user_id,
-		user_fname,
-		user_uname,
-		user_type
-	FROM
-		ugroup_user
-			INNER JOIN
-		user
-			ON
-		FK_user = user_id
-	WHERE
-		FK_ugroup = $ugroup_id
-	ORDER BY
-		user_type DESC, user_uname
-";
-$r = db_query($query);
-?>
-
 <p>
 
 <table width=100%>
@@ -260,85 +265,28 @@ $r = db_query($query);
 <?
 
 /******************************************************************************
- * adds all students who have logged in and are members of the class
- * all these students are added to an logged students array
- ******************************************************************************/
-
-while ($a = db_fetch_assoc($r)) {
-
-	$logged_participants[] = $a[user_uname];
-	print "<tr>";
-		print "<td align=center>";
-			if ($owner_id != $a[user_id])
-				print "<input type=button name='use' value='remove' onClick=\"delStudent('".$a[user_id]."','".$a[user_fname]." (".$a[user_uname].")')\">";
-		print "</td>";
-		print "<td>";
-		print $a[user_fname]." (".$a[user_uname].")";
-		if ($a[user_type] == "prof") print " - ".$a[user_type]."";
-		print "</td>";
-		print "<td align=center>";
-		if ($_SESSION[ltype]=='admin' && $a[user_type] != "prof") {
-			$slotname = $class_external_id."-".$a[user_uname];
-			$query = "
-			SELECT 
-				slot.slot_name AS name,
-				user.user_uname AS owner,
-				slot.slot_type AS type,
-				assocsite.slot_name AS assocsite_name,
-				slot.FK_site as inuse,
-				slot.slot_uploadlimit AS uploadlimit
-			FROM 
-				slot
-					LEFT JOIN
-				user
-					ON
-						slot.FK_owner = user_id
-					LEFT JOIN
-						slot AS assocsite
-					ON
-						slot.FK_assocsite = assocsite.slot_id
-			WHERE
-				slot.slot_name = '$slotname'
-			";
-			$r = db_query($query);
-			$a = db_fetch_assoc($r);
-			if (!db_num_rows($r)) {
-				print "<input type=button name='classsite' value='add site' onClick=\"addStudentSite('".$class_external_id."','".$a[user_uname]."')\">";
-			} else {
-				if ($a['inuse']) {
-					print "in use";
-				} else {
-					print "not in use";
-				}
-			}
-		}
-		print "</td>";
-	print "</tr>";
-}
-//printpre($logged_students);
-
-/******************************************************************************
  * adds all students who are members of the class EXCEPT:
  * -those who have logged in
  * need to check if these students are in the fetched array above...
  ******************************************************************************/
+$owner_uname = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
 
 foreach (array_keys($participants) as $key) {
 	//printpre($participants[$key][uname]);
 	
-	if (!in_array($participants[$key][uname], $logged_participants)) {
 		print "<tr>";
 			print "<td align=center>";
-				//if ($owner_id != $a[user_id])
-				//	print "<input type=button name='use' value='remove' onClick=\"delStudent('".$a[user_id]."','".$a[user_fname]." (".$a[user_uname].")')\">";
+			if ($owner_uname != $participants[$key][uname] && $participants[$key][memberlist] != "external") {
+				print "<input type=button name='use' value='remove' onClick=\"delStudent('".$participants[$key][id]."','".$participants[$key][fname]." (".$participants[$key][uname].")')\">";
+			}
 			print "</td>";
 			print "<td>";
 			print $participants[$key][fname]." (".$participants[$key][uname].")";
 			if ($participants[$key][type] == "prof") print " - ".$participants[$key][type]."";
 			print "</td>";
 			print "<td align=center>";
-			if ($_SESSION[ltype]=='admin' && $a[user_type] != "prof") {
-				$slotname = $class_external_id."-".$a[user_uname];
+			if ($_SESSION[ltype]=='admin' && $participants[$key][type] != "prof") {
+				$slotname = $class_external_id."-".$participants[$key][uname];
 				$query = "
 				SELECT 
 					slot.slot_name AS name,
@@ -363,7 +311,7 @@ foreach (array_keys($participants) as $key) {
 				$r = db_query($query);
 				$a = db_fetch_assoc($r);
 				if (!db_num_rows($r)) {
-					print "<input type=button name='classsite' value='add site' onClick=\"addStudentSite('".$class_external_id."','".$a[user_uname]."')\">";
+					print "<input type=button name='classsite' value='add site' onClick=\"addStudentSite('".$class_external_id."','".$participants[$key][uname]."')\">";
 				} else {
 					if ($a['inuse']) {
 						print "in use";
@@ -374,7 +322,7 @@ foreach (array_keys($participants) as $key) {
 			}
 			print "</td>";
 		print "</tr>";
-	}
+	//}
 
 
 }

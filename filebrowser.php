@@ -27,6 +27,16 @@ $sitelist = array();
 $owner = $_REQUEST[owner];
 $editor = $_REQUEST[editor];
 $site = $_SESSION[settings][site];
+
+/* if (isset($_SESSION[settings][sitename])) { */
+/* 	$site = $_SESSION[settings][sitename]; */
+/* } else if (isset($_SESSION[settings][site])) { */
+/* 	$site = $_SESSION[settings][site]; */
+/* } */
+
+//printpre($_SESSION[settings][sitename]);
+//printpre($site);
+
 if ($_REQUEST[site]) {
 	$site = $_REQUEST[site];
 } else {
@@ -34,8 +44,6 @@ if ($_REQUEST[site]) {
 }
 
 //print $owner;
-//printpre($_SESSION);
-//printpre($_REQUEST);
 //printpre($settings[site]);
 
 $w = array(); 
@@ -364,7 +372,8 @@ input,select {
 /******************************************************************************
  * Use button action:
  * if source is discuss then values pasted to discussion post form
- * if source is not discuss, then must be image or text content block
+ * if source is not discuss, then is one of following:
+ *  site header/footer image or text content block
  ******************************************************************************/
  
 //if ($source == 'discuss') { 

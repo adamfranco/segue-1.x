@@ -21,16 +21,7 @@ function isclass ($class) {
 
 function getclassstudents($class_id) {
 	global $cfg;
-	
-/******************************************************************************
- * my $ldap_server = "oncilla.middlebury.edu"; 
- * my $BASEDN      = "OU=Fall03,OU=Classes,OU=Groups,DC=Middlebury,DC=edu"; 
- * my $user        = "cn=White\\, Betty,cn=users,dc=middlebury,dc=edu"; 
- * my $pass        = "*********"; 
- * my $filter      = "(cn=*ac210a-f03*)"; 
- * my @fields      = ("member"); 
- ******************************************************************************/
-	
+		
 	ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]|bl{1})([0-9]{2})",$class_id,$r);
 	$department = $r[1];
 	$number = $r[2];
