@@ -50,6 +50,30 @@ class discussion {
 		return $this->children[$this->pointer];
 	}
 	
+	function _del() {
+		global $site_owner;
+		if ($_SESSION['auser'] != $site_owner || $this->authorid != $_SESSION['aid']) return false;
+		if (!$this->id) return false;
+		if ($this->count() || $this->dbcount()) {
+			$this->_fetchchildren();
+			for ($i = 0; $i < $this->numchildren; $i++) {
+				$this->children[$i]->_del();
+			}
+			$this->numchildren=0;
+		}
+		$this->_delID($this->id);
+	}
+	
+	function _delID($id) {
+		$query = "
+	DELETE FROM
+		discussion
+	WHERE
+		discussion_id=$id";
+		db_query($query);
+		// done;
+	}
+	
 	function rewind() { $this->pointer = -1; }
 	function reverse() { $this->direction*=-1; }
 	function setstep($s) { $this->direction=$s; }
@@ -195,7 +219,7 @@ class discussion {
 	}
 	
 	function outputAll($cr=false,$o=false,$top=false) {
-		global $sid;
+		global $sid,$content;
 		// debug
 //		print "outputAll($canreply,$owner,$copt)<BR>";
 		// spider down and output every one
@@ -204,6 +228,8 @@ class discussion {
 			if ($cand) {
 				// just in case...
 				$this->_commithttpdata();
+				printerr();
+				if ($content) print "<tr><td>$content</td></tr>";
 				
 				if ($_REQUEST['action'] == 'newpost') {
 					$this->_outputform('newpost');
@@ -220,7 +246,7 @@ class discussion {
 		
 		if ($this->id) $this->_output($cr,$o);
 		$this->_outputChildren($cr,$o,(($top)?$this->opt:NULL));
-		print $newpostbar;
+		if ($this->numchildren) print $newpostbar;
 	}
 	
 	function _outputChildren($cr,$o,$opt=NULL) {
@@ -327,18 +353,25 @@ class discussion {
 			return true;
 		}
 		
+		if ($_REQUEST['action'] == 'del' && $_REQUEST['id'] == $this->id) {
+			$this->_del();
+			return true;
+		}
+		
 		$script = $_SERVER['SCRIPT_NAME'];
 		
 		// output the html and stuff
 		if (!$this->id) return false;
 		print "<tr><td>";
-		$s = "<a href='#' name='".$this->id."'>".$this->subject."</a>";
+		$s = "<a href='$script?$sid&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
+//		$s = $this->subject;
+
 		$a = array();
 		if ($this->opt("showauthor")) $a[] = $this->authorfname;
 		if ($this->opt("showtstamp")) $a[] = timestamp2usdate($this->tstamp);
 		$b = array();
 		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=reply#".$this->id."' class=info>[reply]</a>";
-		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='#' class=info>[del]</a>";
+		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=del&id=".$this->id."' class=info>[del]</a>";
 		if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
 			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=edit#".$this->id."' class=info>[edit]</a>";
 		if (count($a) || count($b)) {
@@ -352,7 +385,7 @@ class discussion {
 		// now output the content
 		if ($this->opt("showcontent")) {
 			print "<tr><td class=content>";
-			print $this->content;
+			print htmlbr($this->content);
 			print "</td></tr>";
 		}
 		// done

@@ -173,7 +173,7 @@ function doEditorLine(&$o) {
 function getBgColor($class,$special=0) {
 	$baseR = 7;
 	$baseG = 7;
-	$baseB = 7;
+	$baseB = 8;
 	$step = 2;
 	$lockedR = 1;  
 	$viewG = 1;

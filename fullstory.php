@@ -20,7 +20,7 @@ $partialstatus = 1;$site =& new site($_REQUEST[site]);
 $section =& new section($_REQUEST[site],$_REQUEST[section], &$site);
 $page =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$section);
 $story =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$page);
-$getinfo = "site=".$site->name."&section=".$second->id."&page=".$page->id."&story=".$story->id;
+$getinfo = "site=".$site->name."&section=".$section->id."&page=".$page->id."&story=".$story->id;
 
 $story->fetchFromDB();
 $site_owner=$story->owningSiteObj->getField("addedby");
@@ -110,6 +110,8 @@ th.info { color: #888; }
 			$ds->_fetchchildren();
 			
 			$ds->opt("showcontent",true);
+			$ds->opt("showauthor",false);
+			$ds->opt("showtstamp",false);
 			$ds->opt("useoptforchildren",true);
 			$ds->getinfo = $getinfo;
 			
@@ -122,4 +124,5 @@ th.info { color: #888; }
 
 </tr></td>
 </table>
-<? print "<pre>"; print_r($_SESSION) ?>
+<BR><BR>
+<div align=right><input type=button value="Close Window" onClick="window.close()"></div>
