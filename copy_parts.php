@@ -181,9 +181,33 @@ if ($domove) {
 	if ($action == "MOVE" && $site == $origionalsite) $keepaddedby = 1;
 	else $keepaddedby = 0;
 	
-	
+	// If we are moving to a new site, build a site hash
+	if ($_SESSION[origSiteObj]->name != $parentObj->owningSiteObj->name
+		 && !is_array($GLOBALS['__site_hash']))
+	{
+		makeSiteHash($_SESSION[origSiteObj]);
+		
+		// Make sure that we have our "NEXT" value set for the object we are copying.
+		if ($_SESSION[type] == "section") {
+			$GLOBALS['__site_hash']['sections'][$partObj->id] = 'NEXT';
+		} else if ($_SESSION[type] == "page") {
+			$GLOBALS['__site_hash']['pages'][$partObj->id] = 'NEXT';
+		} else if ($_SESSION[type] == "story") {
+			$GLOBALS['__site_hash']['stories'][$partObj->id] = 'NEXT';
+		}
+	}
+		
 	// move the object.
 	$partObj->copyObj($parentObj,$removeOrigional,$keepaddedby);
+	
+	// If we have moved to a new site, update the site links from the hash.
+	if ($_SESSION[origSiteObj]->name != $parentObj->owningSiteObj->name) {
+		$newSiteObj = new site($parentObj->owningSiteObj->name);
+		$newSiteObj->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
+		updateSiteLinksFromHash($parentObj->owningSiteObj);
+		$newSiteObj->updateDB(1,1);
+	}
+	
 	
 	// delete the origional
 	if ($action == "MOVE") {

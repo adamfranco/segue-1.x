@@ -34,9 +34,28 @@ if (!$thisSite->canview()) {
 	return;
 }	
 
-if ($thisSite) $site=$thisSite->name;
-if ($thisSection) $section=$thisSection->id;
-if ($thisPage) $page = $thisPage->id;
+if (get_class($thisSite) == 'site')
+	$site=$thisSite->name;
+else if ($thisSite) {
+	unset($thisSite);
+	error("The requested site does not exist. Please update your link.");
+	return;
+}
+if (get_class($thisSection) == 'section')
+	$section=$thisSection->id;
+else if ($thisSection) {
+	unset($thisSection);
+	error("The requested section does not exist. Please update your link.");
+	return;
+}
+
+if (get_class($thisPage) == 'page')
+	$page=$thisPage->id;
+else if ($thisPage) {
+	unset($thisPage);
+	error("The requested page does not exist. Please update your link.");
+	return;
+}
 
 do {
 	// for publication sites
