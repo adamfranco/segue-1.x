@@ -236,9 +236,10 @@ if ($storyObj->getField("discuss")) {
 		}
 		printc("</div></td></tr>");		
 		printc("<tr><td align=left><div style='font-size: 9px'>");
-		if ($showallauthors == 2 && ($showposts == 1 || !showposts)) {
+		// if showposts == 2 (assessment), info about authors display is not necessary
+		if ($showallauthors == 2 && $showposts != 2) {
 			printc("<b>Hide Authors:</b> Authors of posts have been hidden from participants to allow for anonymous discussion (only you can see participant names).");
-		} else if ($showallauthors == 1) {
+		} else if ($showallauthors == 1 && $showposts != 2) {
 			printc("<b>Show Authors:</b> Author of each and every post is identified to all participants.");
 		}		
 		printc("</div></td></tr>");		
