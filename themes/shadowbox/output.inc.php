@@ -9,7 +9,7 @@ if (file_exists("$themesdir/$theme/colors.inc.php"))
 	
 //$nav_arrange=2;
 
-if ($themesettings[theme] == 'shadowbox') {   // indeed these settings are for this theme
+if ($themesettings[theme] == 'beveledge') {   // indeed these settings are for this theme
 
 	$usebg = $themesettings[bgcolor];
 	$usecolor = $themesettings[colorscheme];
@@ -21,8 +21,13 @@ if ($themesettings[theme] == 'shadowbox') {   // indeed these settings are for t
 	$usenavwidth = $themesettings[nav_width];
 	$usesectionnavsize = $themesettings[sectionnav_size];	
 	$usenavsize = $themesettings[nav_size];	
+
+	$usenav = $themesettings[nav_arrange];
+	$usenavwidth = $themesettings[nav_width];
+	
 }
-if (!$usebg) $usebg = 'white';
+
+if (!$usebg) $usebg = 'blue';
 $bg = $_bgcolor[$usebg];
 
 if (!$usecolor) $usecolor = 'white';
@@ -43,7 +48,6 @@ $linkcolor = $_linkcolor[$uselinkcolor];
 if (!$usenav) $usenav = 'Top Sections';
 $nav_arrange = $_nav_arrange[$usenav];
 
-
 if (!$usenavwidth) $usenavwidth = '150 pixels';
 $navwidth = $_nav_width[$usenavwidth];
 
@@ -52,6 +56,11 @@ $sectionnavsize = $_sectionnav_size[$usesectionnavsize];
 
 if (!$usenavsize) $usenavsize = '12 pixels';
 $navsize = $_nav_size[$usenavsize];
+
+
+if (!$usenavwidth) $usenavwidth = '150 pixels';
+$navwidth = $_nav_width[$usenavwidth];
+
 
 /* ------------------- END ---------------------------	*/
 
@@ -140,12 +149,13 @@ if ($nav_arrange==1) {
 <td class=leftnav>
 <table width=100% cellpadding=2 cellspacing=0>	
 <?
+
 //use this if page navigation is in left nav
 if ($nav_arrange==1) {
 	/* ------------------------------------------- */
 	/* -------------- LEFT NAV   ----------------- */
 	/* ------------------------------------------- */
-			
+		
 	foreach ($leftnav as $item) {
 		print "<tr><td>";
 		if ($item[type] == 'normal') {
@@ -170,12 +180,14 @@ if ($nav_arrange==1) {
 //use this if Section navigation is in left nav
 if ($nav_arrange==2) {
 
+
 /* ------------------------------------------- */
 /* -------------- LEFT NAV-sections ---------- */
 /* ------------------------------------------- */
 		
+
 	foreach ($topnav as $item) {
-		print "<tr><td>";
+	print "<tr><td>";
 		if ($item[type] == 'normal') {
 			$samepage = (isset($section) && ($section == $item[id]))?1:0;
 			//$samepage = (isset($page) && ($page == $item[id]))?1:0;

@@ -128,18 +128,23 @@ $_bordercolor = array(
 );
 
 $_bgcolor = array(
-	"white"=>array(
-			"bgshadow"=>		"white",
-			"bg"=>				"FFFFFF"					
+	"blue"=>array(
+			"bgshadow"=>		"blue",
+			"bg"=>				"5F7082"					
 	),
 	"gray"=>array(
 			"bgshadow"=>		"gray",
-			"bg"=>				"CCCCCC"					
+			"bg"=>				"999999"					
 	),
+	"white"=>array(
+			"bgshadow"=>		"white",
+			"bg"=>				"FFFFFF"					
+	),	
 	"yellow"=>array(
 			"bgshadow"=>		"yellow",
 			"bg"=>				"FFFFCC"					
 	)	
+
 );
 
 $_textcolor = array(
@@ -180,3 +185,4 @@ $_nav_size = array(
 	"14 pixels"=>				"14",
 	"16 pixels"=>				"16"
 );
+

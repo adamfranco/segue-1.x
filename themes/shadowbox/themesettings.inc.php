@@ -20,7 +20,7 @@ $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
 
 
-if ($themesettings[theme] == 'shadowbox') {
+if ($themesettings[theme] == 'beveledge') {
 	$bgcolor = $themesettings[bgcolor];
 	$colorscheme = $themesettings[colorscheme];
 	$borderstyle = $themesettings[borderstyle];
@@ -32,13 +32,14 @@ if ($themesettings[theme] == 'shadowbox') {
 	$sectionnav_size = $themesettings[sectionnav_size];
 	$nav_size = $themesettings[nav_size];
 } else {
-	$themesettings[theme] = 'shadowbox';
+	$themesettings[theme] = 'beveledge';
 	$themesettings[bgcolor] = $bgcolor;
 	$themesettings[colorscheme] = $colorscheme;
 	$themesettings[borderstyle] = $borderstyle;
 	$themesettings[bordercolor] = $bordercolor;
 	$themesettings[textcolor] = $textcolor;
 	$themesettings[linkcolor] = $linkcolor;
+
 	$themesettings[nav_arrange] = $nav_arrange;
 	$themesettings[nav_width] = $nav_width;
 	$themesettings[sectionnav_size] = $sectionnav_size;
@@ -46,7 +47,8 @@ if ($themesettings[theme] == 'shadowbox') {
 }
 
 ?>
-<b>Shadow Box</b><br>
+
+<b>Bevel Edge</b><br>
 This theme creates the illusion of a page that is cast out of a flat surface.  
 This illusion is created by surrounding boxes each of which is larger and less opaque.
 <hr noshade size=1>
@@ -113,7 +115,6 @@ foreach ($linkcolors as $s) {
 Note: Make sure that your text stands out from background and that your text and link colors are contrasting.
 <hr noshade size=1>
 <?
-
 //All settings for Navigation are included here
 include("$themesdir/common/settings.inc.php");
 ?>
