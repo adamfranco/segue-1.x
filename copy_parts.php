@@ -178,7 +178,7 @@ if ($domove) {
 	// make a copy of the origional to delete later.
 	$origPartObj = $partObj;
 	
-	if ($action == "MOVE" && $site == $origionalsite) $keepaddedby = 1;
+	if ($site == $_SESSION['origSite']) $keepaddedby = 1;
 	else $keepaddedby = 0;
 	
 	// build a site hash
