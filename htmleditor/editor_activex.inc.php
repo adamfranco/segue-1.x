@@ -5,62 +5,39 @@
 //printc("<script>\n");
 //printc("_editor_url = \"htmleditor/\";\n");
 //printc("</script>\n");
-printc("<style type=\"text/css\">\n");
-printc("<!--\n");
-printc("  .btn   { BORDER-WIDTH: 1; width: 26px; height: 24px; }\n");
-printc("  .btnDN { BORDER-WIDTH: 1; width: 26px; height: 24px; BORDER-STYLE: inset; BACKGROUND-COLOR: buttonhighlight; }\n");
-printc("  .btnNA { BORDER-WIDTH: 1; width: 26px; height: 24px; filter: alpha(opacity=25); }\n");
-printc("-->\n");
-printc("</style>\n");
-printc("<style type=\"text/css\">\n");
-printc("<!--\n");
-printc("   body, td { font-family: arial; font-size: 12px; }\n");
-printc("  .headline { font-family: arial black, arial; font-size: 28px; letter-spacing: -2px; }\n");
-printc("  .subhead  { font-family: arial, verdana; font-size: 12px; let!ter-spacing: -1px; }\n");
-printc("-->\n");
-printc("</style>\n");
 
-//	End modification 1 - 10.26.02 - rlange
-       
-	printc("</td></tr></table>");
-//	Begin modification 2 - 10.26.02 - rlange
-//	Added an id tag to the textarea definition	
-	printc("<textarea name=shorttext id=shorttext cols=80 rows=16>");
-	printc(spchars($shorttext));
-	printc("</textarea>");
-//	End modification 2 - 10.26.02 - rlange	
-	
-	
-//	Begin modification 3 - 10.26.02 - rlange
-//	Create the iView from JavaScript for the above textarea
-	printc("<script language=\"javascript1.2\">\n");
-	printc("editor_generate('shorttext');\n");
-	printc("</script>\n");
-//	End modification 3 - 10.26.02 - rlange	
-		
-	printc("<br>");
-	printc("<table width=80%><tr><td style='padding-left: 15px'>");
-	printc("Full Content: (optional)");
-	printc("</td><td align=right>");
-	
-//	Begin modification 4 - 10.26.02 - rlange	
-//	Original link include to existing ActiveX Editor	
-//	if ($editorType=='html') printc("<a href='htmleditor/editor.inc.php?element=longertext' target='editor' onClick='doWindow(\"editor\",700,500);'>[easy editor]</a>");
-//	End modification 4 - 10.26.02 - rlange
-	printc("</td></tr></table>");
-//	Begin modification 5 - 10.26.02 - rlange
-//	Added an id tag to the textarea definition	
-	printc("<textarea name=longertext id=longertext cols=80 rows=16>");
-	printc(spchars($longertext));
-	printc("</textarea>");
-//	End modification 5 - 10.26.02 - rlange
+function editor_activex($textarea,$cols,$rows,$text) {
 
-//	Begin modification 6 - 10.26.02 - rlange
-//	Create the iView from JavaScript for the above textarea
+	//style sheet for active-x editor
+	printc("<style type=\"text/css\">\n");
+	printc("<!--\n");
+	printc("  .btn   { BORDER-WIDTH: 1; width: 26px; height: 24px; }\n");
+	printc("  .btnDN { BORDER-WIDTH: 1; width: 26px; height: 24px; BORDER-STYLE: inset; BACKGROUND-COLOR: buttonhighlight; }\n");
+	printc("  .btnNA { BORDER-WIDTH: 1; width: 26px; height: 24px; filter: alpha(opacity=25); }\n");
+	printc("-->\n");
+	printc("</style>\n");
+	printc("<style type=\"text/css\">\n");
+	printc("<!--\n");
+	printc("   body, td { font-family: arial; font-size: 12px; }\n");
+	printc("  .headline { font-family: arial black, arial; font-size: 28px; letter-spacing: -2px; }\n");
+	printc("  .subhead  { font-family: arial, verdana; font-size: 12px; let!ter-spacing: -1px; }\n");
+	printc("-->\n");
+	printc("</style>\n");
+	
+		   
+	//	Begin modification 2 - 10.26.02 - rlange
+	//	Added an id tag to the textarea definition	
+	printc("<textarea name=$textarea id=$textarea cols=$cols rows=$rows>");
+	printc(spchars($text));
+	printc("</textarea>");
+	//	End modification 2 - 10.26.02 - rlange	
+				
+	//	Begin modification 3 - 10.26.02 - rlange
+	//	Create the iView from JavaScript for the above textarea
 	printc("<script language=\"javascript1.2\">\n");
-	printc("editor_generate('longertext');\n");
+	printc("editor_generate('$textarea');\n");
 	printc("</script>\n");
-//	End modification 6 - 10.26.02 - rlange	
+}
 
 
 ?>

@@ -54,7 +54,7 @@ if ($settings) {
 
 if (!$settings) {
 	// create the settings array with default values. $settings must be passed along with each link.
-	// The array will be saved on clicking a save button.
+	// The array will be saved on clicking a save button.	
 	session_register("settings");
 	$settings = array(
 		"add" => 0,
@@ -75,7 +75,7 @@ if (!$settings) {
 		"theme" => "minimal",
 		"themesettings" => "",
 		"template" => "template0",
-		"editors" => "",
+		"editors" =>""),
 		"permissions" => "",
 		"recursiveenable" => "",
 		"copydownpermissions" => "",

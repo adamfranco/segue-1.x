@@ -54,10 +54,16 @@ printc ("<input type=button name=update value='Update Header' onClick=\"submitFo
 if ($settings[footer]) printc("<input type=submit name=copyfooter value='Copy From Footer'>");
 printc("<br>");
 
-printc("<textarea name=header cols=70 rows=8>");
-$temp = spchars($settings[header]);
-printc("$temp");
-printc("</textarea>");
+//	print out text areas with editor (determined by addeditor function)
+//  addeditor function (defined in editor.inc.php)
+//  addeditor function variables (textarea, cols, rows, text)
+include("htmleditor/editor.inc.php");
+printc(addeditor ("header",60,8,$text));
+
+//printc("<textarea name=header cols=70 rows=8>");
+//$temp = spchars($settings[header]);
+//printc("$temp");
+//printc("</textarea>");
 printc("<br>");
 printc("<br>");
 

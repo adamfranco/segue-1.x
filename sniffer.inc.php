@@ -1,8 +1,7 @@
-<? // editor control --
+<? // browser/platform sniffer
 
-function addeditor($textarea,$cols,$rows,$text) {	
 	global $HTTP_SERVER_VARS;
-	// browser/platform sniffer
+	
 	$uagent = $HTTP_SERVER_VARS["HTTP_USER_AGENT"];
 	$isMac = ereg("mac",$uagent);
 	$uagent = explode("; ",$uagent);
@@ -10,16 +9,9 @@ function addeditor($textarea,$cols,$rows,$text) {
 	$bname = strtoupper($uagent[0]);
 	$bvers = $uagent[1];
 	if(($bname == "MSIE") && (intval($bvers) >= 5) && (!$isMac) ) {
-		$editorType = "activex";
+		$browser_os = "pcie5+";
 	} else {
-		$editorType = "txt";
+		$browser_os = "mac";
 	}
-	
-	if ($editorType == "activex") {
-		include("htmleditor/editor_activex.inc.php");
-	
-	}
-		
-}
 
 ?>

@@ -1,7 +1,7 @@
 <? // add_story_form.inc -- the form that people use to add/edit a story
 
 // what kind of editor will we use?
-// now included in editor_control.inc.php
+// now included in editor.inc.php
 /*
 $uagent = $HTTP_SERVER_VARS["HTTP_USER_AGENT"];
 $isMac = ereg("Mac",$uagent);
@@ -108,22 +108,31 @@ if ($type == 'link') {
 
 
 if ($type == 'story') {
+	//	Begin modification 1 - 11.1.02 - achapin
+	// remove active-x editor code to editor_activex.php
+	// editor.inc.php determines browser/platform and choses appropriate editor
+	include("htmleditor/editor.inc.php");
+		
 	printc("<br>");
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	printc("Content (or Abstract):");
-	printc("</td><td align=right>");
+	printc("<br>");
+		
+	//	print out text areas with editor (determined by addeditor function)
+	//  addeditor function (defined in editor.inc.php)
+	//  addeditor function variables (textarea, cols, rows, text)
+	printc(addeditor ("shorttext",80,16,$text));
+	printc("</td></tr></table>");
+		
+	printc("<br>");
 	
-//	Begin modification 1 - 10.26.02 - rlange	
-//	Original link include to existing ActiveX Editor
-//	if ($editorType=='html') printc("<a href='htmleditor/editor.inc.php?element=shorttext' target='editor' onClick='doWindow(\"editor\",700,500);'>[easy editor]</a>");
-
-//	print out text areas with editor (determined by addeditor function
-
-	include("htmleditor/editor_control.inc.php");
-	//include("htmleditor/editor_activex.inc.php");
+	printc("<table width=80%><tr><td style='padding-left: 15px'>");
+	printc("Full Content: (optional)");
+	printc("<br>");
 	
-	addeditor ("shorttext",80,60,$shorttext);
-
+	printc(addeditor ("longertext",80,16,$text));
+	printc("</td></tr></table>");
+			
 	printc("<div align=right>");
 	printc("What type of text did you enter? <select name=texttype>");
 	printc("<option value=text".(($texttype=='text')?" selected":"").">Plain text");
@@ -132,6 +141,7 @@ if ($type == 'story') {
 	printc("</div>");
 	printc("<div class=desc>Choose above if the text you entered is formatted HTML (the formatting commands used by the WWW). If you are unsure, select <b>Plain text</b>.</div>");
 	printc("<div class=desc><b>NOTE</b>: <b>Plain text</b> may still contain HTML commands. By choosing <b>Preformatted HTML</b>, SitesDB will not convert newline characters to the HTML equivalent: &lt;br&gt;</div>");
+	//	end modification 1 - 11.1.02 - achapin
 }
 
 printc("</div>");
