@@ -14,6 +14,7 @@ if ($_REQUEST[n]) {
 
 // sort alphabetically
 if (count($usernames)) {
+//	$usernames = array_change_key_case($usernames, CASE_LOWER);
 	asort($usernames);
 	reset($usernames);
 }

@@ -40,6 +40,13 @@ if ($_SESSION['ltype'] != 'admin') {
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
+/******************************************************************************
+ * Run any requested updates
+ ******************************************************************************/
+if ($_REQUEST[action] == "update") {
+	$updates[$_REQUEST[update]]->run();
+}
+
 printerr();
 
 ?>
@@ -68,23 +75,30 @@ include("themes/common/header.inc.php");
 <?=$content?>
 
 <table cellspacing=1 width='100%' id='maintable'>
+<tr><td>
+
+<table width='90%' align=center>
 <?
 // print out the updates
 foreach ($updates as $key => $obj) {
-	print "<tr><td>";
-	print "<b>".$obj->getName()."</b>";
-	print "<br>".$obj-getDescription();
-	print "</td><td>";
+	print "<tr><td colspan=2><hr></td></tr>\n";
+	print "<tr>\n<td width='50%'>\n";
+	print "<b>".$obj->getName()."</b>\n";
+	print "<br>".$obj->getDescription();
+	print "\n</td>\n<td width='50%' align=center valign=center>\n";
 	
 	if ($obj->hasRun())
-		print "<b>This update is in place</b>";
+		print "<b>This update is in place</b>\n";
 	else
-		print "<b>This update has not been run.</b>";
+		print "<a href='".$_SERVER[PHP_SELF]."?&action=update&update=".$key."'><b>Run this update</b></a>\n";
 		
-	print "</td></tr>";
+	print "</td>\n</tr>\n";
 }
 
 ?>
+</table>
+
+</td></tr>
 </table>
 
 <BR>

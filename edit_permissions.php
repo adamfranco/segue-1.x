@@ -1,5 +1,6 @@
 <? /* $Id$ */
 
+
 /******************************************************************************
  * edit_permissions takes in one variable: $site
  *
@@ -315,10 +316,6 @@ print $content;
 if ($step == 2) require("edit_permissions_form2.inc.php");
 else require("edit_permissions_form1.inc.php");
 
-print "<div align=right>";
-print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
-if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
-print "</div>";
 
 // debug output -- handy :)
 /* print "<pre>"; */

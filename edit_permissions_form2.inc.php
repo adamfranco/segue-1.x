@@ -23,7 +23,14 @@ print "<input type=hidden name='step' value=$step>";
 
 print "<table cellspacing=1 width='100%'>";
 print "<tr>";
-print "<td align=center colspan=$totalcolumns style='text-size: 25; font-weight: bold'>Permissions</td>";
+print "<td align=center colspan=$totalcolumns style='text-size: 25; font-weight: bold'>Permissions";
+
+print "<div align=right style='padding: 5px;'>";
+print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
+if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
+print "</div>";
+
+print "</td>";
 print "</tr>";
 
 /******************************************************************************
@@ -32,7 +39,7 @@ print "</tr>";
  ******************************************************************************/
 $buttons = "<tr>";
 $c = $totalcolumns - 1;
-$buttons .= "<td align=left>";
+$buttons .= "<td align=left style='font-weight: bold'>";
 if ($isOwner) $buttons .= "<input type=submit name='chooseeditors' value='<- Choose Editors'> ";
 $buttons .= "</td><td align=left colspan=$c>";
 $buttons .= "L = Locked; v = View; a = Add; e = Edit; d = Delete; ".helplink("editors","help");
@@ -104,6 +111,17 @@ if ($sections) {
  * print again.
  ******************************************************************************/
 print $buttons;
+
+print "<tr>";
+print "<td align=center colspan=$totalcolumns style='text-size: 25; font-weight: bold'>";
+
+print "<div align=right style='padding: 5px;'>";
+print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
+if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
+print "</div>";
+
+print "</td>";
+print "</tr>";
 
 /******************************************************************************
  * close up form & table

@@ -10,7 +10,15 @@ print "<input type=hidden name=edname value=''>";
 
 print "<table cellspacing=1 width='100%'>";
 print "<tr>";
-print "<th colspan=3>Editors</th>";
+print "<th colspan=3>Editors";
+
+print "<div align=right style='padding: 5px;'>";
+print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
+if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
+print "</div>";
+
+print "</th>";
+
 print "</tr>";
 
 /******************************************************************************
@@ -26,7 +34,7 @@ $buttons .= "<input type=button name='add' value='Add Editor' onClick=\"sendWind
 $edlist = $_SESSION[obj]->getEditors();
 $buttons .= ((isclass($_SESSION[obj]->getField("name")) && !in_array($_SESSION[obj]->getField("name"),$edlist))?"<div><a href='#' onClick='addClassEditor();'>Add students in ".$_SESSION[obj]->getField("name")."</a></div>":"");
 $buttons .= "</th><th align=right>";
-$buttons .= "<input type=submit name='editpermissions' value='Edit Permissions of Checked'>";
+$buttons .= "<input type=submit name='editpermissions' value='Edit Permissions of Checked -&gt;'>";
 $buttons .= "</th></tr>";
 print $buttons;
 
@@ -70,6 +78,15 @@ if ($edlist = $_SESSION[obj]->getEditors()) {
  * print again.
  ******************************************************************************/
 print $buttons;
+
+print "<th align=center colspan=3 style='text-size: 25; font-weight: bold'>";
+
+print "<div align=right style='padding: 5px;'>";
+print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
+if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
+print "</div>";
+
+print "</th>";
 
 /******************************************************************************
  * close up form & table

@@ -33,6 +33,9 @@ class user {
 	
 	function _insert() {
 		if ($this->authtype != 'db') return false; // we only edit db-type users
+		// Segue expects unames to be lowercase, so lets force that.
+		$this->uname = strtolower($this->uname);
+		
 		$data = "user_uname='".$this->uname."'";
 		$data .= ",user_fname='".addslashes($this->fname)."'";
 		$data .= ",user_email='".$this->email."'";

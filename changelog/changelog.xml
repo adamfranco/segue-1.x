@@ -22,10 +22,10 @@
 			Two new site templates: "Advanced: Single Section" and 
 			"Advanced: Blank".
 		</change>
-		<important>
-			To create the new templates, log in as an administrator, then enter
-			the url 
-			"http://...your_segue_directory/index.php?action=update_1.0.3".
+		<important author='adam'>
+			New templates have been added. To create the new templates, log in 
+			as an administrator, then go to 'admin tools' --> 'segue updates'
+			and run the 1.0.3 update if needed.
 		</important>
 		<change author='alex'>
 			Discussions now appear in-line instead of in a popup window.

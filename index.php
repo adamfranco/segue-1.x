@@ -258,22 +258,22 @@ if (!ini_get("register_globals")) {
 
 
 // debug output -- handy :)
- print "<pre>"; 
+// print "<pre>"; 
 /*  print "session:\n";  */
 /*  print_r($_SESSION);  */
 /*  print "\n\n";  */
 /*  print "request:\n";  */
 /*  print_r($_REQUEST);  */
- if (is_object($thisSite)) { 
- 	print "\n\n"; 
- 	print "****************************** ***************  thisSite:\n"; 
- 	$serializedSite = rawurlencode(serialize($thisSite));
- 	print $serializedSite."\n";
- 	
+/*  if (is_object($thisSite)) {  */
+/*  	print "\n\n";  */
+/*  	print "****************************** ***************  thisSite:\n";  */
+/*  	$serializedSite = rawurlencode(serialize($thisSite)); */
+/*  	print $serializedSite."\n"; */
+/*  	 */
 // 	$newSite = unserialize($serializedSite);
 // 	print_r($newSite);
 // 	print_r($thisSite); 
- } 
+/*  }  */
 /*  if (is_object($thisPage)) {  */
 /*  	print "\n\n";  */
 /*  	print "*************** *************** *************** thisPage:\n";  */
@@ -284,7 +284,7 @@ if (!ini_get("register_globals")) {
 /*  	print "***************************** *************** * thisSection:\n";  */
 /*  	print_r($thisSection);  */
 /*  }  */
- print "</pre>"; 
+// print "</pre>"; 
 //print "<p>Total Queries: ".$_totalQueries."</p>";
 
 ?>

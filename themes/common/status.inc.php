@@ -47,7 +47,7 @@ if (!$_REQUEST[nostatus]) {
 			}
 			if ($_SESSION[ltype]=='admin') {
 //				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>user lookup</a>";
-				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"users\",700,500)' target='users' class='navlink'>users</a>";
+				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"users\",700,500)' target='users' class='navlink'>admin tools</a>";
 				print " | change active user: <input type='text' name='changeauser' size=10 class='textfield small'> <input type='submit' class='button small' value='GO'>";
 			}	
 			

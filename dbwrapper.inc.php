@@ -214,7 +214,8 @@ function db_query ($query, $cid=-1) {
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
 		echo "<br><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res."</b>";
 	}
-	echo "<b>".mysql_error()."</b>";
+	if (mysql_error())
+		echo "<b>".mysql_error()."</b>";
     return $res;
   } else if ($db_type == "oracle") {
     $stmt = OCIParse($cid, $query) or ocidie ("db_query: could not query the server with $query");
