@@ -221,8 +221,44 @@ if ($_loggedin) {
         
         $slots = slot::getAllSlots($_SESSION[auser]);
 /*      print_r($slots); */
+        
+ /******************************************************************************
+ * remove sites & slots if $allowclasssites or $allowpersonalsites is disabled.
+ ******************************************************************************/
+		if (!$allowclasssites || !$allowpersonalsites) {
+/* 		if (1) { */
+			$sites2 = array();
+	        foreach ($sites as  $s) {
+        		$siteObj = new site($s);
+        		$siteObj->fetchDown();
+/*         		print "<br>$s: ".$siteObj->getField("type"); */
+        		if (!$allowclasssites) {
+        			if ($siteObj->getfield("type") == "personal") $sites2[] = $s;
+        		}
+	       		if (!$allowpersonalsites) {
+        			if ($siteObj->getfield("type") != "personal") $sites2[] = $s;
+        		}
+        	}
+        	$sites = $sites2;        	
+        
+			$slots2 = array();
+	        foreach ($slots as  $s) {
+        		$slotObj = new slot($s);
+        		/* $slotObj->fetchDown(); */
+/*         		print "<br>$s: ".$slotObj->getField("type"); */
+        		if (!$allowclasssites) {
+        			if ($slotObj->getfield("type") == "personal") $slots2[] = $s;
+        		}
+	       		if (!$allowpersonalsites) {
+        			if ($slotObj->getfield("type") != "personal") $slots2[] = $s;
+        		}
+        	}
+        	$slots = $slots2;        	
+        }
+        
         $sites = array_merge($slots,$sites);
         $sites = removePrinted($sites);
+        
         if (count($sites)) {
                 printc("<tr><td class='inlineth' colspan=7>Other Sites".helplink("othersites","What are these?")."</td></tr>");
                 foreach ($sites as $s)
@@ -251,7 +287,7 @@ if ($_loggedin) {
         }
         
         printc("</td><td align=right>");
-        if ($_SESSION[ltype]=='admin') printc("<a href='$PHP_SELF?$sid&action=add_site'>add new site</a>");
+        if ($_SESSION[ltype]=='admin') printc("<a href='add_slot.php' onClick='doWindow(\"slots\",375,300)' target='slots' class='navlink'>add new slot</a>");
         printc("</td></tr></table></td></tr>");
         
         printc("</table>");

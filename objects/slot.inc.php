@@ -5,21 +5,47 @@ class slot {
 	var $name;
 	var $assocSite="";
 	var $id=0;
+	var $_allfields = array("name","owner","assocSite","id","type");
+	var $fetched = array();
 	
-	function slot($owner,$name,$type="class",$assocSite="",$id=0) {
+	function slot($name,$owner="",$type="class",$assocSite="",$id=0) {
 		$this->owner = $owner;
 		$this->name = $name;
 		$this->type = $type;
 		$this->assocSite = $assocSite;
 		$this->id = $id;
 	}
-
+	
 	function exists($name) {
 		$query = "select * from slots where name='$name'";
 		if (db_num_rows(db_query($query)) > 0) return 1;
 		// check the ldap
 		if (ldapfname($name)) return 1;
 		return 0;
+	}
+	
+	function fetchDown($force=1) {
+		foreach ($this->_allfields as $field) $this->getField($field);
+	}
+	
+	function getField ($field) {
+		global $dbuser, $dbpass, $dbdb, $dbhost;
+		if (!$this->fetched[$field]) {
+			$class = get_class($this);
+			$table = "slots"; // the table to use
+			if ($class=='site' || $class == 'slot') $where = "name='".$this->name."'";
+			else $where = "id=".$this->id;
+			$query = "select $field from $table where $where limit 1";
+			/* print "<br>".$query; */
+			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+			$r = db_query($query);
+			if (!db_num_rows($r)) return false;
+			$a = db_fetch_assoc($r);
+			$val = $a[$field];
+			$this->$field = $val;
+			$this->fetched[$field] = 1;
+		}
+		return $this->$field;
 	}
 	
 	function delete() {	// delete from db

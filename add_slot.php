@@ -19,7 +19,7 @@ if ($add) {
 	
 	
 	if (!$error) {
-		$slotObj = new slot($owner,$name,$type,$assocsite);
+		$slotObj = new slot($name,$owner,$type,$assocsite);
 		$successful = $slotObj->insertDB();
 		if ($successful) {
 			$name = "";

@@ -17,13 +17,17 @@ if ($_SESSION[settings][edit]) printc("<div class=title>Edit Site</div>");
 
 
 if ($ltype=='admin') {
-	printc("name: <input type=text size=20 name=sitename value='".$_SESSION[siteObj]->getField("name")."'>");
-	printc("<br>type:");
-	printc("<br><input type=radio name=type value='class'".(($_SESSION[siteObj]->getField("type")=='class')?" checked":"")."> class");
-	printc("<br><input type=radio name=type value='personal'".(($_SESSION[siteObj]->getField("type")=='personal')?" checked":"")."> personal");
-	printc("<br><input type=radio name=type value='system'".(($_SESSION[siteObj]->getField("type")=='system')?" checked":"")."> system");
-	printc("<br><input type=radio name=type value='other'".(($_SESSION[siteObj]->getField("type")=='other')?" checked":"")."> other");
+	printc("name: ".$_SESSION[siteObj]->getField("name"));
+	printc("<br>type: ".$_SESSION[siteObj]->getField("type"));
 	printc("<BR><BR>");
+
+/* 	printc("name: <input type=text size=20 name=sitename value='".$_SESSION[siteObj]->getField("name")."'>"); */
+/* 	printc("<br>type:"); */
+/* 	printc("<br><input type=radio name=type value='class'".(($_SESSION[siteObj]->getField("type")=='class')?" checked":"")."> class"); */
+/* 	printc("<br><input type=radio name=type value='personal'".(($_SESSION[siteObj]->getField("type")=='personal')?" checked":"")."> personal"); */
+/* 	printc("<br><input type=radio name=type value='system'".(($_SESSION[siteObj]->getField("type")=='system')?" checked":"")."> system"); */
+/* 	printc("<br><input type=radio name=type value='other'".(($_SESSION[siteObj]->getField("type")=='other')?" checked":"")."> other"); */
+/* 	printc("<BR><BR>"); */
 } else
 	printc("<input type=hidden name=sitename value='".$_SESSION[siteObj]->getField("name")."'>");
 
