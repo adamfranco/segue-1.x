@@ -594,7 +594,19 @@ class discussion {
 				$d->fetchID($_REQUEST['id']);
 				if ($_SESSION['auser'] != $d->authoruname) return false;
 				$d->subject = $_REQUEST['subject'];
-				$d->content = $_REQUEST['content'];
+				
+				// Make sure that we have the content formatted correctly.
+				include ("sniffer.inc.php");
+				// If we are using a WYSIWYG editor, just take the content
+				// straight from that
+				if ($supported) {
+					$d->content = $_REQUEST['content'];
+				}
+				// If we just have a text box, replace new lines with <br> tags
+				else {
+					$d->content = htmlbr($_REQUEST['content']);
+				}
+				
 				$d->update();
 				//log_entry("discussion","$_SESSION[auser] edited story ".$_REQUEST['story']." discussion post id ".$_REQUEST['id']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
 				
@@ -620,7 +632,19 @@ class discussion {
 			if ($a=='reply'|| $a=='newpost') {
 				$d = & new discussion($_REQUEST['story']);
 				$d->subject = $_REQUEST['subject'];
-				$d->content = $_REQUEST['content'];
+				
+				// Make sure that we have the content formatted correctly.
+				include ("sniffer.inc.php");
+				// If we are using a WYSIWYG editor, just take the content
+				// straight from that
+				if ($supported) {
+					$d->content = $_REQUEST['content'];
+				}
+				// If we just have a text box, replace new lines with <br> tags
+				else {
+					$d->content = htmlbr($_REQUEST['content']);
+				}
+					
 				if ($a=='reply') {
 					$d->parentid = $_REQUEST['replyto'];
 					//log_entry("discussion","$_SESSION[auser] replied to story ".$_REQUEST['story']." discussion post id ".$_REQUEST['replyto']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
@@ -774,7 +798,6 @@ class discussion {
 			include("htmleditor/editor.inc.php");
 			include("sniffer.inc.php");
 			printc ("<td class=content$p>\n");
-			if ($supported == 1) $c = htmlbr($c);
 			addeditor ("content",60,20,$c,"discuss");
 		} else {
 			printc ("<td>".$c."<br><br>\n");
@@ -930,7 +953,7 @@ class discussion {
 			 ******************************************************************************/
 			if ($this->opt("showcontent")) {
 				printc ("<tr><td class=dtext>");
-				printc (htmlbr(stripslashes($this->content)));
+				printc (stripslashes($this->content));
 				printc ("</td></tr>\n");
 			}
 			// done

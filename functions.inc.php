@@ -396,7 +396,9 @@ function log_entry($type,$content,$site=0,$siteunit=0,$siteunit_type="site") {
 }
 
 function htmlbr($string) {
-	return ereg_replace("\n","<br>\n",$string);
+	// It seems that Safari (at least) submits line returns that are \r\n instead
+	// of just \n. This was causing a doubling of line-returns.
+	return preg_replace("/((\r?)\n(\r?))/","<br />",$string);
 }
 
 function sitenamevalid($name) {

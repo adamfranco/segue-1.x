@@ -53,9 +53,7 @@ function highlight() {
 <!-- <form action="test.cgi" method="post" id="edit" name="edit"> -->
 
 <!-- <textarea id="ta" name="ta" style="width:100%" rows="20" cols="80"> -->
-<textarea id="<? echo $textarea ?>" name="<? echo $textarea ?>" style="width:100%" rows=<? echo $rows ?> cols=<? echo $cols ?>>
-<? print spchars($text); ?>
-</textarea>
+<textarea id="<? echo $textarea ?>" name="<? echo $textarea ?>" style="width:100%" rows=<? echo $rows ?> cols=<? echo $cols ?>><? print spchars($text); ?></textarea>
 
 <!-- <script> -->
 <!-- initEditor(); -->

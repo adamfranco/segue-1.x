@@ -209,7 +209,7 @@ if ($_REQUEST[save]) {
 		 * replace specific url with general url ($linkpath)
 		 ******************************************************************************/
 
-		if ($_SESSION[storyObj]->getField("type") == "story") {
+		if ($_SESSION[storyObj]->getField("type") != "rss") {
 
 			$text = $_SESSION[storyObj]->getField("shorttext");
 			
@@ -232,6 +232,14 @@ if ($_REQUEST[save]) {
 			$action_viewsite = "action=viewsite";
 			$action_site = "action=site";			
 			$text = eregi_replace($action_viewsite, $action_site, $text);
+			
+			 // Also, if we are using a plain text-field convert any linereturns to <br /> tags
+			 // Make sure that we have the content formatted correctly.
+			include ("sniffer.inc.php");
+			// If we just have a text box, replace new lines with <br> tags
+			if (!$supported) {
+				$text = htmlbr($text);
+			}
 			
 			// save general mediapath and internal_linkpath to object			
 			$_SESSION[storyObj]->setField("shorttext",$text);

@@ -56,7 +56,8 @@ function editor_htmlarea($textarea,$text,$context="story") {
 
 function editor_txt($textarea,$cols,$rows,$text) {		   
 	printc("<textarea name=$textarea id=$textarea cols=$cols rows=$rows>");
-	printc($text);
+	// Replace the <br> and <br /> tags with \n's for the textarea.
+	printc(preg_replace("/<br(\s\/)?>/", "\n", $text));
 	printc("</textarea>");
 }
 
