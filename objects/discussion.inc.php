@@ -694,7 +694,7 @@ class discussion {
 			//printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>\n");
 			include("htmleditor/editor.inc.php");
 			printc ("<td class=content$p>\n");
-			printc(addeditor ("content",10,20,$c,"discuss"));
+			printc(addeditor ("content",60,20,$c,"discuss"));
 		} else {
 			printc ("<td>".spchars($c)."<br><br>\n");
 			printc ("<input type=hidden name=content value='".spchars($c)."'>\n");
