@@ -770,7 +770,7 @@ FROM
 			// decode 'final_permissions'; 
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
-//			print_r($row[permissions]);print "<br>"; //debug
+//			printpre($row);
 
 			// if the editor is a user then the editor's name is just the user name
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
@@ -800,7 +800,7 @@ FROM
 					$this->owningSiteObj->setUserPermissionDown('delete', $t_editor, 0);
 					$this->owningSiteObj->updatePermissionsDB(TRUE);
 					if (is_numeric($row[permission_id])) {
-						if (strpos($row[permissions],'di'))
+						if ($row[permissions]!='d')
 							$cleanupQuery = "UPDATE permission SET  permission_value='di' WHERE permission_id=".$row[permission_id];
 						else
 							$cleanupQuery = "DELETE FROM permission WHERE permission_id=".$row[permission_id];
