@@ -157,7 +157,7 @@ class page extends segue {
 		return true;
 	}
 	
-	function insertDB($down=0,$newsite=null,$newsection=0,$keepaddedby=0) {
+	function insertDB($down=0,$newsite=null,$newsection=0,$removeOrigional=0,$keepaddedby=0) {
 		$origsite = $this->owning_site;
 		$origid = $this->id;
 		if ($newsite) $this->owning_site = $newsite;
@@ -183,7 +183,7 @@ class page extends segue {
 		
 		$this->fetchUp();
 		$this->owningSectionObj->addPage($this->id);
-		if ($down) $this->owningSectionObj->delPage($origid,0);
+		if ($removeOrigional) $this->owningSectionObj->delPage($origid,0);
 		$this->owningSectionObj->updateDB();
 		
 		// add new permissions entry.. force update
@@ -194,7 +194,7 @@ class page extends segue {
 		
 		// insert down
 		if ($down && $this->fetcheddown) {
-			foreach ($this->stories as $i=>$o) $o->insertDB(1,$this->owning_site,$this->owning_section,$this->id,$keepaddedby);
+			foreach ($this->stories as $i=>$o) $o->insertDB(1,$this->owning_site,$this->owning_section,$this->id,1,$keepaddedby);
 		}
 		return true;
 	}

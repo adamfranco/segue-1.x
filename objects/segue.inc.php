@@ -209,35 +209,38 @@ class segue {
 /******************************************************************************
  * copyObj - Copies an object to a new parent
  ******************************************************************************/
-	function copyObj(&$newParent,$keepaddedby=0) {
+	function copyObj(&$newParent,$removeOrigional=1,$keepaddedby=0) {
 		$_a = array("site"=>3,"section"=>2,"page"=>1,"story"=>0);
 		// check that the newParent can be a parent
 		$thisClass = get_class($this);
 		$parentClass = get_class($newParent);
-		print "$thisClass - $parentClass<br>";
+		print $this->id."$thisClass - $parentClass<br>";
 		if (!($_a[$parentClass]-1 == $_a[$thisClass])) return 0;
 		print " Before ".$this->fetcheddown."<br>";
 
+/* 		print "<pre>this: "; print_r($this); print " newparent: "; print "</pre>";		 */
 		$this->fetchDown(1);
 /* 		print " After <br>"; */
 /* 		print "title: ".$this->data[title]."<br>";		 */
 /* 		print "title: ".$this->getField("title")."<br>"; */
 /* 		print "<pre>this: "; print_r($this); print " newparent: "; print_r($newParent); print "</pre>"; */
+		return 0;
+
 		if ($thisClass == 'section') {
 			$owning_site = $newParent->name;
-			$this->insertDB(1,$owning_site,$keepaddedby);
+			$this->insertDB(1,$owning_site,$removeOrigional,$keepaddedby);
 		}
 		if ($thisClass == 'page') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->id;
-			$this->insertDB(1,$owning_site,$owning_section,$keepaddedby);
+			$this->insertDB(1,$owning_site,$owning_section,$removeOrigional,$keepaddedby);
 		}
 		if ($thisClass == 'story') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->owning_section;
 			$owning_page = $newParent->id;
 /* 			print "insertDB: 1,$owning_site,$owning_section,$owning_page,$keepaddedby<br>"; */
-			$this->insertDB(1,$owning_site,$owning_section,$owning_page,$keepaddedby);
+			$this->insertDB(1,$owning_site,$owning_section,$owning_page,$removeOrigional,$keepaddedby);
 		}
 
 //		print_r($newParent);

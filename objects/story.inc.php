@@ -145,7 +145,7 @@ class story extends segue {
 		return true;
 	}
 	
-	function insertDB($down=0,$newsite=null,$newsection=0,$newpage=0,$keepaddedby=0) {
+	function insertDB($down=0,$newsite=null,$newsection=0,$newpage=0,$removeOrigional=0,$keepaddedby=0) {
 		$origsite = $this->owning_site;
 		$origid = $this->id;
 		if ($newsite) $this->owning_site = $newsite;
@@ -187,7 +187,7 @@ class story extends segue {
 		
 		$this->fetchUp();
 		$this->owningPageObj->addStory($this->id);
-		if ($down) $this->owningPageObj->delStory($origid,0);
+		if ($removeOrigional) $this->owningPageObj->delStory($origid,0);
 		$this->owningPageObj->updateDB();
 		
 		// add new permissions entry.. force update

@@ -153,14 +153,20 @@ if ($domove) {
 	if ($type == "section") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]];
 		$parentObj = $siteObj;
+		if ($action == "COPY" && $parentObj->id == $_SESSION[origSite]) $removeOrigional = 0;
+		else $removeOrigional = 1;
 	}
 	else if ($type == "page") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]];
 		$parentObj = $siteObj->sections[$section];
+		if ($action == "COPY" && $parentObj->id == $_SESSION[origSection]) $removeOrigional = 0;
+		else $removeOrigional = 1;
 	}
 	else if ($type == "story") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]];
 		$parentObj = $siteObj->sections[$section]->pages[$page];
+		if ($action == "COPY" && $parentObj->id == $_SESSION[origPage]) $removeOrigional = 0;
+		else $removeOrigional = 1;
 	} else 
 		print "Major Error!!!!!!!!!!!!!!!!!!!!!!  AHHHHHhhhhhhhh!!!!!!!!!!!!!!!!!!!!";
 	
@@ -168,10 +174,11 @@ if ($domove) {
 	$origPartObj = $partObj;
 	
 	if ($action == "MOVE" && $site == $origionalsite) $keepaddedby = 1;
-	else $keepaddedby = 0;	
+	else $keepaddedby = 0;
+	
 	
 	// move the object.
-	$partObj->copyObj($parentObj,$keepaddedby);
+	$partObj->copyObj($parentObj,$removeOrigional,$keepaddedby);
 	
 	// delete the origional
 	if ($action == "MOVE") {
