@@ -354,6 +354,7 @@ ORDER BY
 		$a = $this->createSQLArray(1);
 		$a[] = "FK_createdby=".$_SESSION[aid];
 		$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
+		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		// insert into the site table
 		$query = "INSERT INTO site SET ".implode(",",$a).";";
@@ -365,7 +366,7 @@ ORDER BY
 		// update the name for that slot
 		if (slot::exists($this->data[name])) {
 			$query = "UPDATE slot";
-			$where = " WHERE FK_owner = ".$_SESSION[aid];
+			$where = " WHERE slot_name = '".$this->data[name]."' AND FK_owner = ".$_SESSION[aid];
 		} else {
 			$query = "INSERT INTO slot";
 			$where = "";

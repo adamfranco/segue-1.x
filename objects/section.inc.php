@@ -375,6 +375,7 @@ ORDER BY
 			$a[] = "FK_createdby=".$this->getField('addedby');
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
+		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		$query = "INSERT INTO section SET ".implode(",",$a);
 		print "<BR>query = $query<BR>";

@@ -444,6 +444,7 @@ ORDER BY
 			$a[] = "FK_createdby=".$this->getField('addeby');	// We need to save an id, this might be a string. might need to Fix!
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
+		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		$query = "INSERT INTO story SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
