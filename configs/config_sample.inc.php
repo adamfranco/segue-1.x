@@ -16,7 +16,7 @@ $cfg[inst_ips] = array("140.233.");
  * Network - the name of the network you are on. specifies what class functions
  *				are to be used. will be phased out eventually
  ******************************************************************************/
-$cfg[network] = $_network = "kenyon";
+$cfg[network] = $_network = "midd";
 
 /******************************************************************************
  * full_uri - Segue's full URL path (ie, http://segue.middlebury.edu)
@@ -32,8 +32,11 @@ $cfg[full_uri] = $_full_uri = "http://segue.middlebury.edu";
  *						requires ldap.so PHP module
  *				pam		(UNIX PAM - Pluggable Authentication Module)
  *						requires pam_auth.so PHP module
+ *
+ *	NOTE: for any you choose, be sure to set the correct configuration options
+ *		below.
  ******************************************************************************/
-$cfg[auth_mods] = $_auth_mods = array("pam","db");
+$cfg[auth_mods] = $_auth_mods = array("db");
 
 /******************************************************************************
  * DB AUTHENTICATION - REQUIRED
@@ -166,12 +169,4 @@ $cfg[templates] = $_templates = array(
 					"template2"=>"Standard Course Site",
 					"template3"=>"Brief Course Site");
 
-/******************************************************************************
- * SUPPLEMENTAL INFO
- *		this is only required if you are at Kenyon College
- ******************************************************************************/
-$cfg[supdbhost] = $supdbhost = "parabola.kenyon.edu";
-$cfg[supdbuser] = $supdbuser = "circleguest";
-$cfg[supdbpass] = $supdbpass = '';
-$cfg[supdbdb] = $supdbdb = "kcdir";
 ?>

@@ -1,0 +1,79 @@
+-------------------------------------------------------------------------------
+-- Segue v. 1.0.0
+--						INSTALLATION INSTRUCTIONS
+--
+-- All files, code, etc are copyright 2003 Middlebury College unless otherwise
+-- noted.
+-------------------------------------------------------------------------------
+
+Thank you for using Segue! The following steps should get you up and running:
+
+REQUIREMENTS
+-----------------------------------
+Segue will run on any *NIX type system. Windows has not been tested.
+The following services are required:
+
+1) A web server (preferrably Apache)
+2) PHP > 4.3.0
+3) a MySQL server
+
+PHP configuration:
+1) register_globals must be ON due to a session-related bug in PHP4 in how it handles
+variable references.
+2) gpc_magic_quotes should be ON
+
+
+STEP 1
+-----------------------------------
+Obtain the Segue source code from XXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
+STEP 2
+-----------------------------------
+Untar/gzip the source archive:
+
+	tar zxvf segue-1.0.0.tar.gz
+	
+Move the "segue" directory to your webspace: (ex.)
+
+	mv segue /var/www
+	
+	
+STEP 3
+-----------------------------------
+Change to the segue directory, then to "configs", create a copy of the sample config:
+
+	cd /var/www/segue
+	cd configs
+	cp config_sample.inc.php config_MYMACHINE.inc.php
+				(replace MYMACHINE with anything you want)
+	
+	then
+	
+	echo "MYMACHINE" > ../machine
+	
+				(this system allows you to have multiple config files and switch
+					between them by changing the value in the "machine" file)
+					
+Edit config_MYMACHINE.inc.php to match the requirements of your system/institution.
+
+
+STEP 4
+-----------------------------------
+In your MySQL server, create a database (we recommend calling it "segue") and a user
+with access to this database.
+
+Execute the SQL code contained in docs/DB_structure_mysql.sql on this database to
+set up the tables.
+
+
+STEP 5
+-----------------------------------
+Log into your new Segue system: Enter the Segue address into your browser. You should
+see the Segue welcome page. If an error appears, check your configuration, or, if the
+error persists, report a BUG!
+
+An admin account is created automatically with username: admin, password: changeme
+Take a hint and change the password when you log in.
+
+Enjoy using Segue! Let us know about your experience.

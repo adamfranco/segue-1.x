@@ -119,5 +119,28 @@ class user {
 		user_id=$id";
 		db_query($query);
 	}
+	
+	function numDBUsers() {
+		$query = "
+	SELECT
+		COUNT(*) as count
+	FROM
+		user
+	WHERE
+		user_ltype='db'";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		return $a['count'];
+	}
+	
+	function _genDefaultAdminUser() {
+		$this->uname = "admin";
+		$this->fname = "Administrator";
+		$this->pass = "changeme";
+		$this->email = $_SERVER['SERVER_ADMIN'];
+		$this->type = "admin";
+		$this->authtype = "db";
+		$this->randpassgen = true; // hack
+	}
 		
 }

@@ -323,6 +323,11 @@ if ($_loggedin) {
         printc("<div class=leftmargin>");
         printc($defaultmessage);
         
+        // if this is the first time they have run Segue, we need to do some first-time
+        // configuration
+		if (!user::numDBUsers()) {
+			require("_first_time_run.inc.php");
+		}
         
 }
 
