@@ -30,35 +30,60 @@ function mkfilesize($filename) {
 	return $file_size;
 }
 
-function copyuserfile($id,$file) {
+function copyuserfile($file,$replace,$replace_id) {
 	global $uploaddir, $auser, $site, $settings;
 	if (!$file[name]) {
 		print "No File";
-		return 0;
+		return "ERROR";
 	}
 	if ($site) $userdir = "$uploaddir/$site";
 	else $userdir = "$uploaddir/$settings[site]";
-	$fdir = "$userdir/$id";
-	print "$userdir - $fdir<br>";
-	if (!is_dir($userdir)) { mkdir($userdir,0777); chmod($userdir,0775); }
-	if (!is_dir($fdir)) { mkdir($fdir,0777); chmod($fdir,0775); }
-	$r=move_uploaded_file($file['tmp_name'],"$fdir/".$file['name']);
-	if ($r) print "Upload file error!";
-	return 1;
+	
+	print "$userdir/$file[name]<br>";
+	if (!is_dir($userdir)) {
+		mkdir($userdir,0777); 
+		chmod($userdir,0775); 
+	}
+	print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>";
+	$r=move_uploaded_file($file['tmp_name'],"$userdir/".$file['name']);
+	if (!$r) {
+		print "Upload file error!<br>";
+		return "ERROR";
+	} else if ($replace) {
+		$size = filesize($userdir."/".$file['name']);
+		$query = "update media set addedtimestamp=NOW(),addedby='$auser',size='$size' where id='$replace_id'";
+		print $query."<br>";
+		db_query($query);
+		print mysql_error()."<br>";
+		
+		$media_id = $replace_id;
+		return $media_id;
+	} else {
+		$size = filesize($userdir."/".$file['name']);
+		$query = "insert into media set name='$file[name]',site_id='$settings[site]',addedtimestamp=NOW(),addedby='$auser',type='$settings[type]',size='$size'";
+		print $query."<br>";
+		db_query($query);
+		print mysql_error()."<br>";
+		
+		$media_id = lastid();
+		return $media_id;
+	}
 }
 
 function deleteuserfile($id,$file) {
 	global $uploaddir, $auser, $site, $settings;
 	if (!$file[name]) return 0;
-	if ($site) $userdir = "$uploaddir/$site";
-	else $userdir = "$uploaddir/$settings[site]";
-	$fdir = "$userdir/$id";
-	$f = "$fdir/$file";
-//	print "$userdir - $fdir<br>";
-	if (file_exists($f)) unlink($f);
-	if (is_dir($fdir)) rmdir($fdir);
-	print "deleted file $f<br>";
-	return 1;
+	else {
+		if ($site) $userdir = "$uploaddir/$site";
+		else $userdir = "$uploaddir/$settings[site]";
+//		$fdir = "$userdir/$id";
+		$f = "$userdir/$file";
+//		print "$userdir - $fdir<br>";
+		if (file_exists($f)) unlink($f);
+//		if (is_dir($fdir)) rmdir($fdir);
+		print "deleted file $f<br>";
+		return 1;
+	}
 }
 
 function decode_array($string) {
