@@ -409,9 +409,18 @@ ORDER BY
 	function insertDB($down=0,$newsite=null,$newsection=0,$newpage=0,$removeOrigional=0,$keepaddedby=0) {
 		$origsite = $this->owning_site;
 		$origid = $this->id;
-		if ($newsite) $this->owning_site = $newsite;
-		if ($newsection) $this->owning_section = $newsection;
-		if ($newpage) $this->owning_page = $newpage;
+		if ($newsite) {
+			$this->owning_site = $newsite;
+			unset($this->owningSiteObj);
+		}
+		if ($newsection) {
+			$this->owning_section = $newsection;
+			unset($this->owningSectionObj);
+		}
+		if ($newpage) {
+			$this->owning_page = $newpage;
+			unset($this->owningPageObj);
+		}
 		
 		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
 		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section);
@@ -452,8 +461,12 @@ ORDER BY
 		
 		$this->fetchUp();
 /* 		$this->owningPageObj->addStory($this->id); */
-		if ($removeOrigional) $this->owningPageObj->delStory($origid,0);
-		$this->owningPageObj->updateDB();
+		if ($removeOrigional) {
+			$this->owningPageObj->delStory($origid,0);
+			print "<br>gggggggggggggggggggggggggggggg<br>";
+			$this->owningPageObj->updateDB();
+			print "<br>gggggggggggggggggggggggggggggg<br>";
+		}
 		
 		// add new permissions entry.. force update
 		$this->updatePermissionsDB(1);
@@ -476,8 +489,10 @@ ORDER BY
 /* 		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'"; */
 /* 		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section); */
 /* 		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->getField("id")."'"; */
-		if (!isset($this->owningPageObj)) $this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
-		if ($all) $a[] = $this->_datafields[page_id][1][0]."='".$this->owningPageObj->getField("id")."'";
+		if (!isset($this->owningPageObj)) 
+			$this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
+		if ($all) 
+			$a[] = $this->_datafields[page_id][1][0]."='".$this->owningPageObj->getField("id")."'";
 		
 //		if ($this->id && ($all || $this->changed[pages])) { //I belive we may always need to fix the order.
 		if ($this->id) {

@@ -312,20 +312,20 @@ ORDER BY
 				db_query($query);
 			}
 
-			// now update all the section ids in the children, if the latter have changed
-			if ($this->changed[sections]) {
-				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent
-				// we do this, because we might have removed a certain section from the array of sections of a site object
-				$query = "UPDATE section SET FK_site=0 WHERE FK_site=".$this->id;
-				db_query($query);
-				
-				// now, update all sections
-				foreach ($this->data['sections'] as $k=>$v) {
-					$query = "UPDATE section SET FK_site=".$this->id.", section_order=$k WHERE section_id=".$v;
-					db_query($query);
-				}
-				
-			}
+/* 			// now update all the section ids in the children, if the latter have changed */
+/* 			if ($this->changed[sections]) { */
+/* 				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent */
+/* 				// we do this, because we might have removed a certain section from the array of sections of a site object */
+/* 				$query = "UPDATE section SET FK_site=0 WHERE FK_site=".$this->id; */
+/* 				db_query($query); */
+/* 				 */
+/* 				// now, update all sections */
+/* 				foreach ($this->data['sections'] as $k=>$v) { */
+/* 					$query = "UPDATE section SET FK_site=".$this->id.", section_order=$k WHERE section_id=".$v; */
+/* 					db_query($query); */
+/* 				} */
+/* 				 */
+/* 			} */
 		}
 		
 

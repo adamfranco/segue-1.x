@@ -382,29 +382,29 @@ ORDER BY
 				 
 			}
 			
-			print "<pre>Stories: ";
-			print_r($this->data['stories']);
-			print "\n</pre>";
-			
-			// now update all the page ids in the children, if the latter have changed
-			if ($this->changed[stories]) {
-				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent
-				// we do this, because we might have removed a certain section from the array of sections of a site object
-				$query = "UPDATE story SET FK_page=0 WHERE FK_page=".$this->id;
-				db_query($query);
-				
-				// now, update all stories
-				foreach ($this->data['stories'] as $k => $v) {
-					$query = "UPDATE story SET FK_page=".$this->id.", story_order=$k WHERE story_id=".$v;
-					print "<br>query = $query";
-					db_query($query);
-					print mysql_error()."<br>";
-				}
-				
-			}
-			print "<pre>Stories: ";
-			print_r($this->data['stories']);
-			print "\n</pre>";			
+/* 			print "<pre>Stories: "; */
+/* 			print_r($this->data['stories']); */
+/* 			print "\n</pre>"; */
+/* 			 */
+/* 			// now update all the page ids in the children, if the latter have changed */
+/* 			if ($this->changed[stories]) { */
+/* 				// first, a precautionary step: reset the parent of every story that used to have this page object as the parent */
+/* 				// we do this, because we might have removed a certain story from the array of stories of a site object */
+/* 				$query = "UPDATE story SET FK_page=0 WHERE FK_page=".$this->id; */
+/* 				db_query($query); */
+/* 				 */
+/* 				// now, update all stories */
+/* 				foreach ($this->data['stories'] as $k => $v) { */
+/* 					$query = "UPDATE story SET FK_page=".$this->id.", story_order=$k WHERE story_id=".$v; */
+/* 					print "<br>query = $query"; */
+/* 					db_query($query); */
+/* 					print mysql_error()."<br>"; */
+/* 				} */
+/* 				 */
+/* 			} */
+/* 			print "<pre>Stories: "; */
+/* 			print_r($this->data['stories']); */
+/* 			print "\n</pre>";	 */		
 		}
 		
 // REVISE THIS =================================================================
@@ -431,8 +431,14 @@ ORDER BY
 	function insertDB($down=0,$newsite=null,$newsection=0,$removeOrigional=0,$keepaddedby=0) {
 		$origsite = $this->owning_site;
 		$origid = $this->id;
-		if ($newsite) $this->owning_site = $newsite;
-		if ($newsection) $this->owning_section = $newsection;
+		if ($newsite) {
+			$this->owning_site = $newsite;
+			unset($this->owningSiteObj);
+		}
+		if ($newsection) {
+			$this->owning_section = $newsection;
+			unset($this->owningSectionObj);
+		}
 		
 /* 		print "<pre>\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n"; */
 /* 		print "owning_site=".$this->owning_site."\nowning section=".$this->owning_section."\nOwningSiteObj: "; */

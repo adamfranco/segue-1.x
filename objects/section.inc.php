@@ -321,20 +321,20 @@ ORDER BY
 				 
 			}
 						
-			// now update all the page ids in the children, if the latter have changed
-			if ($this->changed[pages]) {
-				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent
-				// we do this, because we might have removed a certain section from the array of sections of a site object
-				$query = "UPDATE page SET FK_section=0 WHERE FK_section=".$this->id;
-				db_query($query);
-				
-				// now, update all pages
-				foreach ($this->data['pages'] as $k => $v) {
-					$query = "UPDATE page SET FK_section=".$this->id.", page_order=$k WHERE page_id=".$v;
-					db_query($query);
-				}
-				
-			}			
+/* 			// now update all the page ids in the children, if the latter have changed */
+/* 			if ($this->changed[pages]) { */
+/* 				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent */
+/* 				// we do this, because we might have removed a certain section from the array of sections of a site object */
+/* 				$query = "UPDATE page SET FK_section=0 WHERE FK_section=".$this->id; */
+/* 				db_query($query); */
+/* 				 */
+/* 				// now, update all pages */
+/* 				foreach ($this->data['pages'] as $k => $v) { */
+/* 					$query = "UPDATE page SET FK_section=".$this->id.", page_order=$k WHERE page_id=".$v; */
+/* 					db_query($query); */
+/* 				} */
+/* 				 */
+/* 			} */			
 		}
 		
 // REVISE THIS =================================================================
@@ -363,6 +363,7 @@ ORDER BY
 		$origid = $this->id;
 		if ($newsite) {
 			$this->owning_site = $newsite;
+			unset($this->owningSiteObj);
 		}
 		
 		if (!isset($this->owningSiteObj)) {
