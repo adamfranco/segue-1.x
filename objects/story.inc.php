@@ -407,7 +407,7 @@ class story extends segue {
 			// the hard step: update the fields in the JOIN tables
 			
 			// Urls are now stored in the media table
-			if ($this->changed[url]) {
+			if ($this->changed[url] && $this->getField("type") == 'link') {
 				// Urls are now stored in the media table
 				// get id of media item
 				$query = "
@@ -492,7 +492,7 @@ WHERE
 		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		// insert media (url)
-		if ($this->data[url]) {
+		if ($this->data[url] && $this->data['type'] == 'link') {
 			$query = "
 INSERT
 INTO media

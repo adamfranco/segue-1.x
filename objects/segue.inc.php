@@ -1156,7 +1156,7 @@ FROM
 			foreach ($n as $editor) {
 				$p2 = $this->permissions[$editor];
 				if (!is_array($p2)) {
-					echo "p2: ************************** BE CAREFULL!!!! ********************************<BR>";
+					echo "p2: ************************** BE CAREFUL!!!! ********************************<BR>";
 					$p2 = array();
 					$p2[ADD] = 0;
 					$p2[EDIT] = 0;
@@ -1180,7 +1180,7 @@ FROM
 					$p1 = $this->owningPageObj->permissions[$editor];
 					
 				if (!is_array($p1) && $scope != 'site') {
-					echo "p1: ************************** BE CAREFULL!!!! ********************************<BR>";
+					echo "p1: ************************** BE CAREFUL!!!! ********************************<BR>";
 					$p1 = array();
 					$p1[ADD] = 0;
 					$p1[EDIT] = 0;
