@@ -224,7 +224,8 @@ FROM
  ******************************************************************************/
 	function getField ($field) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
-		if (!$this->fetched[$field]) {	// we haven't allready gotten this data
+		if (!$this->fetched[$field] && $this->id) {	// we haven't allready gotten this data
+													// and this object is in the database.
 /* 			print "<pre>--$field---\n"; */
 /* 			print_r ($this->_datafields[$field][1]); */
 /* 			print "</pre>"; */
@@ -481,7 +482,7 @@ FROM
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>\n");
+		printc("</select>\n");
 		printc("<select name='activatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -491,7 +492,7 @@ FROM
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>");
+		printc("</select>");
 		
 		printc("</td></tr>");
 		
@@ -500,7 +501,7 @@ FROM
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>\n");
+		printc("</select>\n");
 		printc("<select name='deactivatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -509,7 +510,7 @@ FROM
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>");
+		printc("</select>");
 		
 		printc("</tr></td></table>");
 	}

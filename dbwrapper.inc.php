@@ -202,19 +202,17 @@ function db_query ($query, $cid=-1) {
 	global $_totalQueries;
 	$_totalQueries++;
 	
-  echo "<br><br>QUERY:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$query;
   global $db_type; global $debug;
   global $_connect_id;
   if ($debug) {
-    print "db_query: starting function with arguments:<BR>";
-    print "query = $query, cid = $cid<BR>";
-    print "db_query: db_type = $db_type <BR>";
+    echo "<br><br>QUERY:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$query;
   }
   if ($cid==-1) $cid = $_connect_id;
-  if ($debug) print "db_query: cid is now $cid<BR>";
   if ($db_type == "mysql") {
     $res = mysql_query($query, $cid);
-	echo "<br>RESULT:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$res;  
+	if ($debug) {
+		echo "<br>RESULT:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$res;
+	}
 	echo mysql_error();
     return $res;
   } else if ($db_type == "oracle") {

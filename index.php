@@ -206,12 +206,14 @@ if (!ini_get("register_globals")) {
 }
 
 // debug output -- handy :)
-/* print "<pre>"; */
-/* print "session:\n"; */
-/* print_r($_SESSION); */
-/* print "\n\n"; */
-/* print "request:\n"; */
-/* print_r($_REQUEST); */
+print "<pre>";
+print "request:\n";
+print_r($_REQUEST);
+print "\n\n";
+print "session:\n";
+print_r($_SESSION);
+print "\n\n";
+
 /* if (is_object($thisPage)) { */
 /* 	print "\n\n"; */
 /* 	print "thisPage:\n"; */
@@ -225,32 +227,32 @@ if (!ini_get("register_globals")) {
 /* 	print "thisSite:\n"; */
 /* 	print_r($thisSite); */
 /* } */
-/* print "</pre>"; */
+print "</pre>";
 
 
 // debug output -- handy :)
- print "<pre>"; 
- print "session:\n"; 
- print_r($_SESSION); 
- print "\n\n"; 
- print "request:\n"; 
- print_r($_REQUEST); 
- if (is_object($thisSite)) { 
- 	print "\n\n"; 
- 	print "****************************** ***************  thisSite:\n"; 
- 	print_r($thisSite); 
- } 
- if (is_object($thisPage)) { 
- 	print "\n\n"; 
- 	print "*************** *************** *************** thisPage:\n"; 
- 	print_r($thisPage); 
- } 
- if (is_object($thisSection)) { 
- 	print "\n\n"; 
- 	print "***************************** *************** * thisSection:\n"; 
- 	print_r($thisSection); 
- } 
- print "</pre>"; 
+/*  print "<pre>";  */
+/*  print "session:\n";  */
+/*  print_r($_SESSION);  */
+/*  print "\n\n";  */
+/*  print "request:\n";  */
+/*  print_r($_REQUEST);  */
+/*  if (is_object($thisSite)) {  */
+/*  	print "\n\n";  */
+/*  	print "****************************** ***************  thisSite:\n";  */
+/*  	print_r($thisSite);  */
+/*  }  */
+/*  if (is_object($thisPage)) {  */
+/*  	print "\n\n";  */
+/*  	print "*************** *************** *************** thisPage:\n";  */
+/*  	print_r($thisPage);  */
+/*  }  */
+/*  if (is_object($thisSection)) {  */
+/*  	print "\n\n";  */
+/*  	print "***************************** *************** * thisSection:\n";  */
+/*  	print_r($thisSection);  */
+/*  }  */
+/*  print "</pre>";  */
 print "<p>Total Queries: ".$_totalQueries."</p>";
 
 ?>
