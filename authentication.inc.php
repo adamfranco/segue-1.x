@@ -9,7 +9,7 @@
 foreach ($_auth_mods as $i) include("auth_mods/$i.inc.php");
 
 // this array contains a list of actions that don't *require* the user to be authenticated
-$actions_noauth = array("site","login","default","previewtheme","fullstory","list");
+$actions_noauth = array("site","login","default","previewtheme","fullstory","list","username_lookup");
 
 
 $loginerror=0;

@@ -1,8 +1,9 @@
 <? // username_lookup.php
 
 if ($name) {
-	include("config.inc.php");
-	include("functions.inc.php");
+/* 	include("config.inc.php"); */
+/* 	include("functions.inc.php"); */
+	include("includes.inc.php");
 	$usernames=ldaplookup($name,LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
 }
 
