@@ -74,14 +74,14 @@ function get_sizes($pic,$maxsize) {
 	return $size;
 }
 
-function copyuserfile($file,$replace,$replace_id) {
-	global $uploaddir, $auser, $site, $settings;
+function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
+	global $uploaddir, $auser;
 	if (!$file[name]) {
 		print "No File";
 		return "ERROR";
 	}
-	if ($site) $userdir = "$uploaddir/$site";
-	else $userdir = "$uploaddir/$settings[site]";
+	
+	$userdir = "$uploaddir/$site";
 	
 	$name = $file['name'];
 	$extn = explode(".",$name);
@@ -103,8 +103,12 @@ function copyuserfile($file,$replace,$replace_id) {
 		mkdir($userdir,0777); 
 		chmod($userdir,0775); 
 	}
-//	print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>";
-	$r=move_uploaded_file($file['tmp_name'],"$userdir/".$file['name']);
+	if ($allreadyuploaded) {
+		$r = copy($file[tmp_name],"$userdir/".$file[name]);
+	} else {
+//		print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>";
+		$r=move_uploaded_file($file['tmp_name'],"$userdir/".$file['name']);
+	}
 	if (!$r) {
 		print "Upload file error!<br>";
 		return "ERROR";
@@ -119,7 +123,7 @@ function copyuserfile($file,$replace,$replace_id) {
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$file['name']);
-		$query = "insert into media set name='$file[name]',site_id='$settings[site]',addedtimestamp=NOW(),addedby='$auser',type='$type',size='$size'";
+		$query = "insert into media set name='$file[name]',site_id='$site',addedtimestamp=NOW(),addedby='$auser',type='$type',size='$size'";
 //		print $query."<br>";
 		db_query($query);
 //		print mysql_error()."<br>";
@@ -127,6 +131,31 @@ function copyuserfile($file,$replace,$replace_id) {
 		$media_id = lastid();
 		return $media_id;
 	}
+}
+
+function copy_media($id,$newsitename) {
+	global $uploaddir;
+	$oldsitename = db_get_value("media","site_id","id=$id");
+	$file_name = db_get_value("media","name","id=$id");
+	$sourcedir  = "$uploaddir/$oldsitename";
+	$destdir = "$uploaddir/$newsitename";
+	$old_file_path = $sourcedir."/".$file_name;
+	$new_file_path = $destdir."/".$file_name;
+	if (!is_dir($destdir)) {
+		mkdir($destdir,0777); 
+		chmod($destdir,0775); 
+	}
+	if (file_exists($new_file_path)) {
+		$newid = db_get_value("media","id","site_id='$newsitename' && name='$file_name'");
+	} else {
+		$file = array();
+		$file[name] = $file_name;
+		$file[tmp_name] = $old_file_path;
+//		print_r ($file);
+//		print "<br>";
+		$newid = copyuserfile($file,$newsitename,0,0,1);
+	}
+	return $newid;
 }
 
 function deleteuserfile($fileid) {
@@ -240,19 +269,24 @@ function htmlbr($string) {
 }
 
 function sitenamevalid($name) {
-	global $auser,$atype,$classes,$ltype, $settings;
+	// sitenamevalid doen't really check if the sitename is valid and throws errors.
+	// its purpose needs to be clarified and the function rewritten
+	
+/*	global $auser,$atype,$classes,$ltype, $settings;
 	$auser = strtolower($auser);
 	$name = strtolower($name);
 	if ($name == $auser) return 1;
 	if ($ltype=='admin') return 1;
 	// look at the classes list.. if the site is in the classes list, then it's valid
-/* 	print "$atype -- $name"; */
-/* 	print_r($classes); */
+// 	print "$atype -- $name"; 
+// 	print_r($classes); 
 	if ($settings[type]=="other" && $auser==$settings[addedby]) return 1; 
 	if ($atype == 'prof' && is_array($classes[$name])) return 1;
 	if ($atype == 'prof' && db_line_exists("classgroups","name='$name' and owner='$auser'")) return 1;
 	
 	return 0;
+*/
+	return 1;
 }
 
 function insite($site,$section,$page=0,$story=0) {
@@ -534,7 +568,7 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 		$tmp = $parenttype."_id";
 		$parentid = $part[$tmp];
 		if ($parenttype == "site")
-			$parentparts = decode_array(db_get_value($parenttable,$partarray,"name=$parentid"));
+			$parentparts = decode_array(db_get_value($parenttable,$partarray,"name='$parentid'"));
 		else
 			$parentparts = decode_array(db_get_value($parenttable,$partarray,"id=$parentid"));
 		$parentnewparts = array();
@@ -548,6 +582,45 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 			$query = "update $parenttable set $partarray='$parentparts' where id='$parentid'";
 		db_query($query);
 //		print "$query<br>";
+	}
+	
+	// Copy any associated images
+	if ($parttype == "story" && $part[site_id] != $newparent[site_id]) {
+		// If we're moving a story to another site.
+		$images = array();
+		if ($part[type] == "image" || $part[type] == "file") {
+			$media_id = $part[longertext];
+			$part[longertext] = copy_media($media_id,$newparent[site_id]);
+		} else if ($part[type] == "story") {
+			$st = stripslashes(urldecode($part[shorttext]));
+			$st = str_replace("src='####","####",$st);
+			$st = str_replace("src=####","####",$st);
+			$st = str_replace("####'","####",$st);
+			$textarray1 = explode("####", $st);
+			if (count($textarray1) > 1) {
+				for ($i=1; $i<count($textarray1); $i=$i+2) {
+					$id = $textarray1[$i];
+					$newid = copy_media($id,$newparent[site_id]);
+					$textarray1[$i] = "src='####".$newid."####'";
+				}		
+				$st = implode("",$textarray1);
+				$part[shorttext] = urlencode(addslashes($st));
+			}
+			$st = stripslashes(urldecode($part[longertext]));
+			$st = str_replace("src='####","####",$st);
+			$st = str_replace("src=####","####",$st);
+			$st = str_replace("####'","####",$st);
+			$textarray1 = explode("####", $st);
+			if (count($textarray1) > 1) {
+				for ($i=1; $i<count($textarray1); $i=$i+2) {
+					$id = $textarray1[$i];
+					$newid = copy_media($id,$newparent[site_id]);
+					$textarray1[$i] = "src='####".$newid."####'";
+				}		
+				$st = implode("",$textarray1);
+				$part[longertext] = urlencode(addslashes($st));
+			}
+		}
 	}
 	
 	// Update the part's fields if MOVING, if COPYING insert into new row

@@ -171,8 +171,12 @@ function showError(type,action) {
 	alert(error);
 } 
 
-function finishUp() {
-	opener.history.go(0);
+function finishUp(action) {
+	if (action == "COPY") {
+		opener.history.go(0);
+	} else {
+		opener.window.location = "index.php?$sid&action=viewsite&site=<? echo $origionalsite; ?>";
+	}
 }
 
 function followLink(url) {
@@ -186,7 +190,7 @@ function followLink(url) {
 
 <?
 if ($domove)
-	print "<body onLoad=\"finishUp()\">";
+	print "<body onLoad=\"finishUp('$action')\">";
 else
 	print "<body>";
  
@@ -215,7 +219,7 @@ if (!$domove) {
 	print "</tr> ";
 }
 	print "<tr>";
-		print "<th style='text-align: left' colspan=2>";
+		print "<th style='text-align: left;' colspan=1>";
 		if (!$domove) {
 			print ucwords($actionlc)." ".ucwords($type);
 			print " to:";
@@ -223,10 +227,13 @@ if (!$domove) {
 			print ucwords($actionlc)." ".ucwords($type)." Successfull";
 		}
 		print "</th>";
+		print "<th style='text-align: right'>";
+			print helplink("copy_parts");
+		print "</th>";
 	print "</tr>";
 
 	print "<tr>";
-		print "<td style='text-align: left'>Site: </td>";
+		print "<td style='text-align: left;'>Site: </td>";
 		print "<td>";
 		if (!$domove) {
 			print "<select name='site' onClick=\"updateForm('site')\">";

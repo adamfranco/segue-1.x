@@ -53,7 +53,7 @@ if ($upload) {
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. Please change the filename before uploading.<br>Or click here to OVERWRITE"; 
 	} else { 
-		$newID = copyuserfile($_FILES['file'],0,0); 
+		$newID = copyuserfile($_FILES['file'],(($site)?"$site":"$settings[site]"),0,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
 	}	 
 } 
@@ -219,6 +219,7 @@ function changeOrder(order) {
  
 </script> 
  
+<? // print "\$editor = $editor"; ?>
 <!--  
 <table width='100%'> 
 <tr><td style='text-align: left'> 
@@ -247,6 +248,8 @@ function changeOrder(order) {
 					<form action="filebrowser.php" name='addform' method="POST" enctype="multipart/form-data"> 
 					<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'"> 
 					<input type=hidden name='upload' value='1'> 
+					<input type=hidden name='order' value='<? echo $order ?>'> 
+					<input type=hidden name='editor' value='<? echo $editor ?>'> 
 					<?
 					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
 						print "<input type=file name='file' class=textfield>";
