@@ -301,40 +301,42 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 		
 		$sr = ldap_search($c,$dn,$filter,$return);
 		$res = ldap_get_entries($c,$sr);
-		$res[0] = array_change_key_case($res[0], CASE_LOWER);
-		$num = ldap_count_entries($c,$sr);
-		ldap_close($c);
-/* 		print "<pre>"; */
-/* 		print_r($res); */
-/* 		print "</pre>"; */
-		if ($num) {
-			$usernames = array();
-			for ($i = 0; $i<$res['count'];$i++) {
-				$uid = $res[$i][strtolower($cfg[ldap_username_attribute])][0];
-				$fname = $res[$i][strtolower($cfg[ldap_fullname_attribute])][0];
-				if (!ereg(",",$fname) && !$n) {
-					$vars = split(" ",$fname);
-					if (count($vars) == 2)
-						$fname = $vars[1] . ", " . $vars[0];
-					if (count($vars) == 3)
-						$fname = $vars[2] . ", " . $vars[0] . " " . $vars[1]; // for Gabriel B. Schine names
-				}
-//				$res[$i]['cn'][0] = $fname;
-				if ($extra) {
-					// we must find out if they are a professor or a student.
-					$areprof = false;
-					if (is_array($res[0][strtolower($cfg[ldap_group_attribute])])) {
-						$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
-						foreach ($results[0][strtolower($cfg[ldap_group_attribute])] as $item) {
-							if (eregi($isProfSearchString,$item)) {
-								$areprof=1;
+		if ($res['count']) {
+			$res[0] = array_change_key_case($res[0], CASE_LOWER);
+			$num = ldap_count_entries($c,$sr);
+			ldap_close($c);
+	/* 		print "<pre>"; */
+	/* 		print_r($res); */
+	/* 		print "</pre>"; */
+			if ($num) {
+				$usernames = array();
+				for ($i = 0; $i<$res['count'];$i++) {
+					$uid = $res[$i][strtolower($cfg[ldap_username_attribute])][0];
+					$fname = $res[$i][strtolower($cfg[ldap_fullname_attribute])][0];
+					if (!ereg(",",$fname) && !$n) {
+						$vars = split(" ",$fname);
+						if (count($vars) == 2)
+							$fname = $vars[1] . ", " . $vars[0];
+						if (count($vars) == 3)
+							$fname = $vars[2] . ", " . $vars[0] . " " . $vars[1]; // for Gabriel B. Schine names
+					}
+	//				$res[$i]['cn'][0] = $fname;
+					if ($extra) {
+						// we must find out if they are a professor or a student.
+						$areprof = false;
+						if (is_array($res[0][strtolower($cfg[ldap_group_attribute])])) {
+							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
+							foreach ($results[0][strtolower($cfg[ldap_group_attribute])] as $item) {
+								if (eregi($isProfSearchString,$item)) {
+									$areprof=1;
+								}
 							}
 						}
+						$userType = ($areprof)?"prof":"stud";
+						$usernames[strtolower($uid)] = array($fname,$res[$i][strtolower($cfg[ldap_email_attribute])][0],$userType);
 					}
-					$userType = ($areprof)?"prof":"stud";
-					$usernames[strtolower($uid)] = array($fname,$res[$i][strtolower($cfg[ldap_email_attribute])][0],$userType);
+					else $usernames[strtolower($uid)] = $fname;
 				}
-				else $usernames[strtolower($uid)] = $fname;
 			}
 		}
 	}
