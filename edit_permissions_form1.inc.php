@@ -33,7 +33,7 @@ $buttons .= "<input type=button name='checkall' value='Check All' onClick='check
 $buttons .= "<input type=button name='uncheckall' value='Uncheck All' onClick='uncheckAll()'> ";
 $buttons .= "<input type=button name='add' value='Add Editor' onClick=\"sendWindow('addeditor',400,250,'add_editor.php?$sid')\">";
 $edlist = $_SESSION[obj]->getEditors();
-$buttons .= ((isclass($_SESSION[obj]->getField("name")) && !in_array($_SESSION[obj]->getField("name"),$edlist))?"<div><a href='#' onClick='addClassEditor();'>Add students in ".$_SESSION[obj]->getField("name")."</a></div>":"");
+$buttons .= (($className && !in_array($className,$edlist))?"<div><a href='#' onClick='addClassEditor();'>Add students in ".$className."</a></div>":"");
 $buttons .= "</th><th align=right>";
 $buttons .= "<input type=submit name='editpermissions' value='Edit Permissions of Checked -&gt;'>";
 $buttons .= "</th></tr>";

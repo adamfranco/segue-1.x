@@ -1159,7 +1159,7 @@ ORDER BY
 /* 		print "<pre>this: "; print_r($this); print "</pre>"; */
 		$this->updatePermissionsDB();
 		// remove all editors from db
-		echo $query = "DELETE FROM site_editors WHERE FK_site = ".$this->id;
+//		echo $query = "DELETE FROM site_editors WHERE FK_site = ".$this->id;
 		db_query($query);
 //		exit(0);
 	}

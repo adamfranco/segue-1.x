@@ -109,3 +109,61 @@ function synchronizeUserDB($user, $email, $fullname, $type, $loginMethod) {
 	$r = db_fetch_assoc($r);
 	return $r['user_id'];
 }
+
+/**
+ * Gets the name of the class that is for this site.
+ * 
+ * @param string $sitename
+ * @return string The name of the class that is for this site OR FALSE if there
+ *					is no class for this site.
+ * @access public
+ * @date 9/17/04
+ */
+function getNameOfClassForSite ($sitename) {
+	// Check if the sitename is a classgroup. If so, then the name of the group
+	// is the name of the class.
+	if (isgroup($sitename)) {
+		return $sitename;
+	}
+	
+	// Check if a class with the same name as the site is in the classes table.
+	$query = "
+		SELECT
+			class_external_id
+		FROM
+			class
+		WHERE
+			class_external_id='".$sitename."'";
+	$res = db_query($query);
+	if (db_num_rows($res)) {
+		return $sitename;
+	}
+	
+	// Check if a class with the same name as the assocsite is in the classes table.
+	$query = "
+		SELECT
+			class_external_id
+		FROM
+			slot
+				INNER JOIN
+			slot AS assoc_slot
+				ON
+					slot.FK_assocsite = assoc_slot.slot_id
+				INNER JOIN
+			class
+				ON
+					assoc_slot.slot_name = class_external_id
+		WHERE
+			slot.slot_name = '".$sitename."'";
+	$res = db_query($query);
+	if (db_num_rows($res)) {
+		$array = db_fetch_assoc($res);
+		if ($className = $array['class_external_id'])
+			return $className;
+	}
+	
+	// If we haven't found a class that matches, return false.
+	return FALSE;
+}
+
+

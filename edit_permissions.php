@@ -103,12 +103,12 @@ if ($isOwner && $_REQUEST[edaction] == 'del') {
 	$_SESSION[obj]->delEditor($_REQUEST[edname]);
 }
 
-if ($isOwner && isclass($_SESSION[obj]->name)) {
+if ($isOwner && $className = getNameOfClassForSite($_SESSION[obj]->name)) {
 	print "<script lang='javascript'>";
 	print "function addClassEditor() {";
 	print "	f = document.addform;";
 	print "	f.edaction.value='add';";
-	print "	f.edname.value='".$_SESSION[obj]->getField("name")."';";
+	print "	f.edname.value='".$className."';";
 	print "	f.submit();";
 	print "}";
 	print "</script>";

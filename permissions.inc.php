@@ -44,12 +44,12 @@ class permissions {
 		printc("\n<input type=hidden name=edaction value=''>");
 		printc("\n<input type=hidden name=edname value=''>");
 		
-		if (isclass($sitename)) {
+		if ($className = getNameOfClassForSite($sitename)) {
 			print "<script lang='javascript'>";
 			print "function addClassEditor() {";
 			print "	f = document.addform;";
 			print "	f.edaction.value='add';";
-			print "	f.edname.value='$sitename';";
+			print "	f.edname.value='$className';";
 			print "	f.submit();";
 			print "}";
 			print "</script>";
@@ -118,7 +118,7 @@ class permissions {
 		} else printc("\n<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=".($a[$d]+1).">no editors added</td></tr>");
 		
 		if ($canAddEditors) {
-			printc("\n<tr><th colspan=".($a[$d]+1).">".((isclass($sitename) && !in_array($sitename,$edlist))?"<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
+			printc("\n<tr><th colspan=".($a[$d]+1).">".(($className = getNameOfClassForSite($sitename) && !in_array($className,$edlist))?"<a href='#' onClick='addClassEditor();'>Add students in ".$className."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
 		}
 		
 		printc("\n</table>");

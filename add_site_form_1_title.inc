@@ -85,8 +85,8 @@ if ($_SESSION[settings][viewpermissions] == "custom") {
 	$whocanview = "1";
 } else if ($_SESSION[siteObj]->hasPermission("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")) {
 	 $whocanview = "2";
-} else if ($_SESSION[siteObj]->getField("type") == "class") {
-	if ($_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1") && !$_SESSION[siteObj]->hasPermissionDown("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")) $whocanview = "3";
+} else if ($_SESSION[settings][className]) {
+	if ($_SESSION[siteObj]->hasPermission("view",$_SESSION[settings][className],"1") && !$_SESSION[siteObj]->hasPermissionDown("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")) $whocanview = "3";
 	else  $whocanview = "4";
 } else {
 	 $whocanview = "4";
@@ -96,7 +96,7 @@ printc("Allow: <b><input type=radio name=viewpermissions value='everyone'".(($wh
 printc(" <input type=radio name=viewpermissions value='institute'".(($whocanview == "2")?" checked":"")."> $cfg[inst_name] users ");
 if ($_SESSION[siteObj]->getField("type") == "class") {
 	printc(" <input type=radio name=viewpermissions value='class'");
-	if ($_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name"))) {
+	if ($_SESSION[siteObj]->isEditor($_SESSION[settings][className])) {
 		if ($whocanview == "3")
 			printc(" checked");
 	}
