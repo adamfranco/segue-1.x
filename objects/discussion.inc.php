@@ -230,8 +230,9 @@ class discussion {
 			if ($cand) {
 				// just in case...
 				$this->_commithttpdata();
-				printerr();
-				if ($content) print "<tr><td>$content</td></tr>";
+				print "<tr><td>";
+				printerr2();
+				print "</td></tr>";
 				
 				if ($_REQUEST['action'] == 'newpost') {
 					$this->_outputform('newpost');
