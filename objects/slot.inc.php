@@ -130,15 +130,15 @@ class slot {
 			$a = db_fetch_assoc($r);
 			$owner_id = $a[user_id];
 			if ($this->site)
-				$site = $this->site;
+				$site = "'".$this->site."'";
 			else
 				$site = "NULL";
 			if ($this->assocsite)
-				$site = $this->assocsite;
+				$assocSite = "'".$this->assocsite."'";
 			else
-				$site = "NULL";
+				$assocSite = "NULL";
 			
-			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite='".$this->assocSite."'";
+			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite=".$assocSite;
 			print $query;
 			db_query($query);
 			echo mysql_error();
