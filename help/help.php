@@ -13,8 +13,10 @@ $content = ob_get_contents();
 ob_end_clean();
 
 ?>
-<HTML>
-<head><title>Segue Help: <?echo $title?></title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Segue Help: <?echo $title?></title>
 <?/*include("css.php");*/?>
 <style type='text/css'>
 .title {
@@ -49,10 +51,10 @@ body { background-color: white; }
 
 </style>
 </head>
-<BODY marginheight=0 marginwidth=0 leftmargin=0 rightmargin=0 topmargin=0 bottommargin=0>
-<div align=right class=content><a href='help.php?&helptopic=index'>Index</a></div>
+<body style='margin: 0px'>
+<div align='right' class=content><a href='help.php?&helptopic=index'>Index</a></div>
 <div class=title>Help Topic: <?echo $title?></div>
 <div class=content><?echo $content?></div>
-<div align=right><input type=button class=button value='close' onClick='window.close()'></div>
+<div align='right'><input type=button class=button value='close' onClick='window.close()'></div>
 </body>
 </html>

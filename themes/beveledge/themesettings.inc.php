@@ -1,8 +1,8 @@
 <style type='text/css'>
 div, p, td, span, input { 
 	color: #<? echo $textcolor; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
-	font-size: 12;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
 }
 </style>
 <?
@@ -46,11 +46,11 @@ if ($themesettings[theme] == 'beveledge') {
 }
 
 ?>
-<b>Bevel Edge</b><br>
+<b>Bevel Edge</b><br />
 This theme creates the illusion of a page that is cast out of a flat surface.  
 This illusion is created by surrounding boxes each of which is larger and less opaque.
 <hr noshade size=1>
-<table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align=left>
+<table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>
 Background Color:</td><td> 
 <select name='bgcolor' onChange="document.settings.submit()">
 <?
@@ -60,7 +60,7 @@ foreach ($bgcolors as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Foreground Color:</td><td> 
 <select name='colorscheme' onChange="document.settings.submit()">
 <?
@@ -70,7 +70,7 @@ foreach ($colorschemes as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Border Style:</td><td>
 <select name='borderstyle' onChange="document.settings.submit()">
 <?
@@ -80,7 +80,7 @@ foreach ($borderstyles as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Border Color:</td><td>
 <select name='bordercolor' onChange="document.settings.submit()">
 <?
@@ -90,7 +90,7 @@ foreach ($bordercolors as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Text Color:</td><td>
 <select name='textcolor' onChange="document.settings.submit()">
 <?
@@ -100,7 +100,7 @@ foreach ($textcolors as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Link Color:</td><td>
 <select name='linkcolor' onChange="document.settings.submit()">
 <?

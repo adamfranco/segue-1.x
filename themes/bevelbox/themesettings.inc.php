@@ -1,8 +1,8 @@
 <style type='text/css'>
 div, p, td, span, input { 
 	color: #<? echo $textcolor; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
-	font-size: 12;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
 }
 </style>
 <?
@@ -32,11 +32,11 @@ if ($themesettings[theme] == 'bevelbox') {
 }
 
 ?>
-<b>Bevel Box</b><br>
+<b>Bevel Box</b><br />
 This theme creates the illusion of a box overlaying the page.  
 This illusion is created by surrounding box with a bevelled edge.
 <hr noshade size=1>
-<table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align=left>
+<table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>
 Box Color:</td><td> 
 <select name='colorscheme' onChange="document.settings.submit()">
 <?

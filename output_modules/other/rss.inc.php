@@ -5,7 +5,7 @@ include("output_modules/common.inc.php");
 include_once (dirname(__FILE__)."/carprss/carp.php");
 /*  */
 /* if ($a[category]) { */
-/* 	printc("<div class=contentinfo align=right>"); */
+/* 	printc("<div class=contentinfo align='right'>"); */
 /* 	printc("Category: <b>".spchars($a[category])."</b>"); */
 /* 	printc("</div>"); */
 /* } */

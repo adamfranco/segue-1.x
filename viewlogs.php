@@ -5,8 +5,6 @@ $content = '';
 ob_start();
 session_start();
 
-//output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // include all necessary files
 include("includes.inc.php");
@@ -147,8 +145,10 @@ SELECT
 $r = db_query($query);
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>View Logs</title>
 <? include("themes/common/logs_css.inc.php"); ?>
 <script lang="JavaScript">
@@ -176,7 +176,7 @@ function changeOrder(order) {
 </script>
 
 <table width='100%' class='bg'>
-<td align=right class='bg'>
+<td align='right' class='bg'>
 <?
 /******************************************************************************
  * Get site id for links to participation section
@@ -190,7 +190,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
 	 | users
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
 	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
@@ -221,7 +221,7 @@ if ($site) {
 		<?
 		if ($ltype != 'admin') {
 			print "<input type=hidden name=site value='$site'>";
-			print "Logs of $site <br>";
+			print "Logs of $site <br />";
 		}
 		
 		$r1 = db_query("SELECT DISTINCT log_type FROM log ORDER BY log_type asc");
@@ -237,11 +237,11 @@ if ($site) {
 		<?
 		if ($ltype == 'admin') {
 		?>
-			user: <input type=text name=user size=15 value='<?echo $user?>'>
-			site: <input type=text name=site size=15 value='<?echo $site?>'>
-			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?><br>
-			start date (yyyymmdd): <input type=text name=startdate size=10 value='<?echo $startdate?>'> 
-			end date (yyyymmdd): <input type=text name=enddate size=10 value='<?echo $enddate?>'> 
+			user: <input type='text' name=user size=15 value='<?echo $user?>'>
+			site: <input type='text' name=site size=15 value='<?echo $site?>'>
+			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?><br />
+			start date (yyyymmdd): <input type='text' name=startdate size=10 value='<?echo $startdate?>'> 
+			end date (yyyymmdd): <input type='text' name=enddate size=10 value='<?echo $enddate?>'> 
 
 		<? } ?>	
 		<input type=submit value='go'>
@@ -249,10 +249,10 @@ if ($site) {
 		<input type=hidden name='order' value='<? echo $order ?>'>
 		<input type=hidden name='_auser' value='<? echo $_auser ?>'>
 		<input type=hidden name='_luser' value='<? echo $_luser ?>'>
-		<? print "<br>Total log entries:".$numlogs; ?>
+		<? print "<br />Total log entries:".$numlogs; ?>
 		</form>
 		</td>
-		<td align=right>
+		<td align='right'>
 		
 		<?
 		$tpages = ceil($numlogs/30);
@@ -392,5 +392,5 @@ if (db_num_rows($r)) {
 	print "<tr><td colspan=6>No log entries.</td></tr>";
 }
 ?>
-</table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+</table><br />
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

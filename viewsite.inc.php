@@ -122,7 +122,7 @@ do {
 	$thisSite->fetchDown();			// just in case we haven't already
 	
 	$topsections = !ereg("Side\+Sections",$thisSite->getField("themesettings"));
-	/* print "themsettings: \"".$thisSite->getField("themesettings")."\"<br>"; */
+	/* print "themsettings: \"".$thisSite->getField("themesettings")."\"<br />"; */
 	/* print $topsections; */
 	
 	// build the navbar
@@ -143,7 +143,7 @@ do {
 		
 		$_top_addlink_orders = array("addeddesc","editeddesc","author","editor","category","titleasc","titledesc");
 		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_top_addlink_orders)) 
-			printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br><hr class=block>");
+			printc("<br /><div align='right'><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br /><hr class=block>");
 		
 		$i=0;
 		
@@ -160,12 +160,12 @@ do {
 						printc("<hr class=block style='margin-top: 10px'>");
 						
 					if ($o->getField("category")) {
-						printc("<div class=contentinfo id=contentinfo2 align=right>");
+						printc("<div class=contentinfo id=contentinfo2 align='right'>");
 						printc("Category: <b>".spchars($o->getField("category"))."</b>");
 						printc("</div>");
 					}
 					$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
-	/* 				print "<br>".$incfile; */
+	/* 				print "<br />".$incfile; */
 					include($incfile);
 					
 					/******************************************************************************
@@ -173,7 +173,7 @@ do {
 					 ******************************************************************************/
 					
 					if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
-						printc("<div class=contentinfo align=right>");
+						printc("<div class=contentinfo align='right'>");
 						$added = timestamp2usdate($o->getField("addedtimestamp"));
 						printc("added");
 						if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedbyfull"));
@@ -184,10 +184,10 @@ do {
 							if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
 						}
 						printc("</div>");
-						//printc("<hr size='1' noshade><br>");
+						//printc("<hr size='1' noshade><br />");
 					}
 					
-					printc("<div align=right>");
+					printc("<div align='right'>");
 		//			$s1=$s2=NULL;
 		
 					/******************************************************************************
@@ -212,7 +212,7 @@ do {
 			}
 		}
 		$_b = array("","custom","addedasc","editedasc");
-		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) printc("<br><hr class=block><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) printc("<br /><hr class=block><div align='right'><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 	}
 } while (0);
 
@@ -235,8 +235,8 @@ if ($supplement) $u .="&supplement=$supplement";
 
 
 ob_start();
-print "\n\n<br>\n<div align=right>\n<table style='border-top: 2px solid #666; border-left: 2px solid #666; border-bottom: 2px solid #666; border-right: 2px solid #666; background-color: #ddd;'>\n\t<tr>";
-print "\n\t<td valign=top align=left>";
+print "\n\n<br />\n<div align='right'>\n<table style='border-top: 2px solid #666; border-left: 2px solid #666; border-bottom: 2px solid #666; border-right: 2px solid #666; background-color: #ddd;'>\n\t<tr>";
+print "\n\t<td valign=top align='left'>";
 
 $btnw = 125 . "px"; // button width
 $sty = "style='width: $btnw;"; // ignore this
@@ -247,34 +247,34 @@ if ($thisSite->hasPermission("edit")) {
 }
 
 print "\n\t</td>";
-print "\n\t<td valign=top align=left>";
+print "\n\t<td valign=top align='left'>";
 
 if (!ereg('preview_edit_as', $_REQUEST['action'])) {
 	print "\n\t<input type=button style='width: $btnw' class='button' name='sitemap' value=' Permissions ' onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=$site\")' target='permissions' style='text-decoration: none'>";
 }
 
 print "\n\t</td>";
-print "\n\t<td valign=top align=left>";
+print "\n\t<td valign=top align='left'>";
 
 print "\n\t<input type=button style='width: $btnw' class='button' value='View This Site'  onClick=\"window.location='$u&$sid'\">";
 
 print "\n\t</td>";
 
-print "\n\t<td valign=center align=center rowspan=2>";
+print "\n\t<td valign='center' align='center' rowspan=2>";
 print helplink("index");
 print "\n\t</td>";
 
-print "\n\t</tr><tr><td valign=top align=left>";
+print "\n\t</tr><tr><td valign=top align='left'>";
 
 print "\n\t<input type=button style='width: $btnw' class='button' name='browsefiles' value=' &nbsp; Media Library &nbsp; ' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none'>";
 
 print "\n\t</td>";
 
-print "\n\t<td valign=top align=left>";
+print "\n\t<td valign=top align='left'>";
 print "\n\t<input type=button style='width: $btnw' class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none'>";
 print "\n\t</td>";
 
-print "\n\t<td valign=top align=left>";
+print "\n\t<td valign=top align='left'>";
 if ($_SESSION[auser] == $site_owner) {
 	print "\n\t<input type=button style='width: $btnw' class='button' name='preview_as' value=' &nbsp; Preview Site As... &nbsp;' onClick='sendWindow(\"preview_as\",400,300,\"preview.php?$sid&site=$site&query=".urlencode($_SERVER[QUERY_STRING])."\")' target='preview_as' style='text-decoration: none'>";
 }
@@ -282,6 +282,6 @@ print "\n\t</td>";
 
 print "\n\t</tr>\n</table>\n</div>";
 
-print "\n\n<br><div align=right><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
+print "\n\n<br /><div align='right'><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
 $sitefooter = $sitefooter . ob_get_contents();
 ob_end_clean();

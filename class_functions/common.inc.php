@@ -166,4 +166,29 @@ function getNameOfClassForSite ($sitename) {
 	return FALSE;
 }
 
+/**
+ * Return the id of the ugroup for the specified class
+ * 
+ * @param classId
+ * @return integer
+ * @access public
+ * @date 10/7/04
+ */
+function getClassUGroupId ($class_id) {
+	global $debug;
+	
+	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_id'");
+	
+	// If we don't have a ugroup id, then maybe we were passed the segue version of
+	// the class Id instead of the external Id.
+	if (!$ugroup_id) {
+		$ugroup_id = db_get_value("class","FK_ugroup",generateTermsFromCode($class_id));
+	}
+	
+	if ($debug && !$ugroup_id)
+		printError("Could not find a ugroup id for class_id, '$class_id'"); 
+	
+	return $ugroup_id;
+}
+
 

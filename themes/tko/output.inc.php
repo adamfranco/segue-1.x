@@ -20,8 +20,11 @@ if (file_exists("$themesdir/$theme/colors.inc.php"))
 /* ------------------- END THEME SETTINGS---------------------	*/
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 <?
 /* ------------------------------------------- */
 /* ------------- COMMON HEADER --------------- */
@@ -35,19 +38,19 @@ include("themes/$theme/css.inc.php");
 <title><? echo $pagetitle; ?></title>
 </head>
 
-<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
-<table border=0 width=700 cellpadding=0 cellspacing=0>
+<body style='margin: 0px'>
+<table border=0 width=700 cellpadding='0' cellspacing='0'>
 <tr>
 <td width=700 height=150 background='<? echo "$themesdir/$theme/images/banner.gif"; ?>'>
-	<img src='<? echo "$themesdir/$theme/images/150spacer.gif"; ?>' border=0 height=120 width=1><BR>
+	<img src='<? echo "$themesdir/$theme/images/150spacer.gif"; ?>' border=0 height=120 width=1><br />
 	<!-- main header content -->
-	<table border=0 width=100% height=30 cellpadding=0 cellspacing=0>
+	<table border=0 width=100% height=30 cellpadding='0' cellspacing='0'>
 	<tr>
-	<td class=topbar width=180 align=center valign=middle>
+	<td class=topbar width=180 align='center' valign=middle>
 	&nbsp; <!-- search bar -->
 	</td>
 	<td class=topnav>
-	<table border=0 width=100% height=30 cellpadding=0 cellspacing=0>
+	<table border=0 width=100% height=30 cellpadding='0' cellspacing='0'>
 	<tr>
 	<?
 /******************************************************************************
@@ -59,12 +62,12 @@ include("themes/$theme/css.inc.php");
 	foreach ($topnav as $item) {
 		$samepage = (isset($navtype) && ($page == $item[id]))?1:0;
 		if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-		print "<td class=topbar width=180 align=center valign=middle><nobr><b>";
+		print "<td class=topbar width=180 align='center' valign=middle><nobr><b>";
 		print makelink($item,$samepage, " class='navlink' ");
 		print "</b></nobr></td>";
 		$next=$next+1;
 	}
-	if ($topnav_extra) print "<td class=topbar align=center valign=middle><nobr>$topnav_extra</nobr></td>";
+	if ($topnav_extra) print "<td class=topbar align='center' valign=middle><nobr>$topnav_extra</nobr></td>";
 //	print "</div>";
 
 	?>
@@ -80,11 +83,11 @@ include("themes/$theme/css.inc.php");
 <tr>
 <td width=100%>
 <!-- content and nav bar -->
-	<table border=0 cellpadding=0 cellspacing=0 width=100%>
+	<table border=0 cellpadding='0' cellspacing='0' width=100%>
 	<tr>
 	<td width=180 class=leftnav valign=top>
 	
-	<table border=0 cellpadding=0 cellspacing=0 width=100%>
+	<table border=0 cellpadding='0' cellspacing='0' width=100%>
 	<!-- left navbar -->
 	<?
 	foreach ($leftnav as $item) {
@@ -99,11 +102,11 @@ include("themes/$theme/css.inc.php");
 			print "</td>";
 		}
 		if ($item[type] == 'divider') {
-			print "<td colspan=2>$item[extra]<br></td>";
+			print "<td colspan=2>$item[extra]<br /></td>";
 		}
 		if ($item[type] == 'heading') {
 			print "<td colspan=2><div class='leftmargin bottommargin5'>$item[name]</div>";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
+			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			print "</td>";
 		}
 		print "</tr>";
@@ -121,11 +124,11 @@ include("themes/$theme/css.inc.php");
 			print "</td>";
 		}
 		if ($item[type] == 'divider') {
-			print "<td colspan=2>$item[extra]<br></td>";
+			print "<td colspan=2>$item[extra]<br /></td>";
 		}
 		if ($item[type] == 'heading') {
 			print "<td colspan=2><div class='leftmargin bottommargin5'>$item[name]</div>";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
+			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			print "</td>";
 		}
 		print "</tr>";
@@ -134,7 +137,7 @@ include("themes/$theme/css.inc.php");
 	?>
 	</table>
 	
-	<? 	if ($leftnav_extra) print "<br>$leftnav_extra"; ?>
+	<? 	if ($leftnav_extra) print "<br />$leftnav_extra"; ?>
 	
 	<!-- end left navbar -->
 	</td>
@@ -163,7 +166,7 @@ function tkoMakelink($i,$samepage=0,$e='',$newline=0) {
 	$s=(!$samepage&&$i[url])?"<a href='$i[url]' target='$i[target]'".(($e)?" $e":"").">":"";
 	$s.=$i[name];
 	$s.=(!$samepage&&$i[url])?"</a>":"";
-	$s.=($i[extra])?(($newline)?"</td></tr><tr><td></td><td class='nav'><div align=right>":" ").$i[extra].(($newline)?"</div>":""):"";
+	$s.=($i[extra])?(($newline)?"</td></tr><tr><td></td><td class='nav'><div align='right'>":" ").$i[extra].(($newline)?"</div>":""):"";
 	return $s;
 }
 

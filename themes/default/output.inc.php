@@ -13,13 +13,16 @@ $nav = array(
 		);
 */
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <? include("themes/common/header.inc.php"); ?>
 <? include("themes/default/css.inc.php"); ?>
 <title><? echo $pagetitle; ?></title>
 </head>
 
-<table width=700 align=center>
+<table width=700 align='center'>
 <tr>
 	<td>
 	
@@ -28,9 +31,9 @@ $nav = array(
 	<? print ($siteheader)?"$siteheader":""; ?>
 	<? print $sitecrumbs; ?>
 	
-	<table width=100% cellspacing=0>
+	<table width=100% cellspacing='0'>
 	<tr>
-		<td align=center class='toppadding'>
+		<td align='center' class='toppadding'>
 		&nbsp;
 		</td>
 		
@@ -40,14 +43,14 @@ $nav = array(
 		foreach ($topnav as $item) {
 			$samepage = (isset($section) && ($section == $item[id]))?1:0;
 			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-			print "<td class='toptab' style='".(($samepage)?"border-bottom: 0px;":"background-color: #eee") . "' align=center>";
+			print "<td class='toptab' style='".(($samepage)?"border-bottom: 0px;":"background-color: #eee") . "' align='center'>";
 			print "<nobr>";
 			print makelink($item,$samepage);
 			print "</nobr></td>";
 			print "<td class='toppadding'>&nbsp;</td>";
 		}
 		
-		print "<td class='toppadding' align=right width=100%>&nbsp; " . $topnav_extra . "</td>";
+		print "<td class='toppadding' align='right' width=100%>&nbsp; " . $topnav_extra . "</td>";
 		
 		?>
 
@@ -62,11 +65,11 @@ $nav = array(
 		?>
 		
 		<td class='contentarea' colspan=<?echo $colspan?>>
-		<table cellpadding=0 cellspacing=0 width=100%>
+		<table cellpadding='0' cellspacing='0' width=100%>
 		<tr>
 			<td valign=top>
 			
-			<table cellpadding=0 cellspacing=0 height=100%>
+			<table cellpadding='0' cellspacing='0' height=100%>
 			<?
 			
 			// ----------------------
@@ -76,15 +79,15 @@ $nav = array(
 				if ($item[type] == 'normal') {
 					$samepage = (isset($page) && ($page == $item[id]))?1:0;
 					if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-					print "<tr><td align=right valign=middle class=".(($samepage)?"leftnavsel":"leftnav")."><nobr>";
+					print "<tr><td align='right' valign=middle class=".(($samepage)?"leftnavsel":"leftnav")."><nobr>";
 					print makelink($item,$samepage,'',1);
 					print "</nobr></td></tr>";
 				}
 				if ($item[type] == 'divider') {
-					print "<tr><td class=leftpadding align=right>&nbsp;$item[extra]</td></tr>";
+					print "<tr><td class=leftpadding align='right'>&nbsp;$item[extra]</td></tr>";
 				}
 				if ($item[type] == 'heading') {
-					print "<tr><td class=leftpadding align=right><div style='font-size: 14px; font-weight: bold;' align=left>$item[name]</div>$item[extra]</td></tr>";
+					print "<tr><td class=leftpadding align='right'><div style='font-size: 14px; font-weight: bold;' align='left'>$item[name]</div>$item[extra]</td></tr>";
 				}
 			}
 			print "<tr><td class=leftpadding valign=top height=100%>".$leftnav_extra."&nbsp;</tr>";
@@ -113,7 +116,7 @@ $nav = array(
 	
 	</tr></table>
 	
-	<br>
+	<br />
 
 	<? print $sitefooter ?>
 	

@@ -11,7 +11,7 @@ class group {
 		// find if this classgroup exists in the db, if yes, get the id
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 		$q = "SELECT classgroup_id FROM classgroup WHERE classgroup_name = '$name'";
-/* 		echo $q."<br>"; */
+/* 		echo $q."<br />"; */
 		$r = db_query($q);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
@@ -29,7 +29,7 @@ class group {
 SELECT
 	classgroup_id AS id, classgroup_name AS name
 FROM classgroup WHERE classgroup_id=".$this->id;
-//		echo $query."<br>";
+//		echo $query."<br />";
 			
 		$r = db_query($query);
 		if (db_num_rows($r)) {
@@ -45,7 +45,7 @@ FROM
 	classgroup
 		INNER JOIN
 	user ON FK_owner = user_id AND classgroup_id = ".$this->id;
-//		echo $query."<br>";
+//		echo $query."<br />";
 
 		$r = db_query($query);
 		if (db_num_rows($r)) {
@@ -53,9 +53,9 @@ FROM
 			$this->owner=$a[user_uname];
 		} else return false;
 			
-		// get classes for that group<br>
+		// get classes for that group<br />
 		$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_id=".$this->id;
-//		echo $query."<br>";
+//		echo $query."<br />";
 
 		$r = db_query($query);
 		if (db_num_rows($r)) {
@@ -70,7 +70,7 @@ FROM
 	function updateDB() {
 		// get owner id
 		$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
-//		echo $query."<br>";
+//		echo $query."<br />";
 		$r = db_query($query);
 		if (db_num_rows($r)==0) return false;
 		else {
@@ -82,21 +82,21 @@ FROM
 		if (!$this->exists($this->name))
         {
 			$query = "INSERT INTO classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
-//			echo $query."<br>";
+//			echo $query."<br />";
 			$r = db_query($query);
     		$this->id = lastid();
 		}
 		// else just update it
 		else {
 			$query = "UPDATE classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
-//			echo $query."<br>";
+//			echo $query."<br />";
 		}
 
 		// now that the group is in the db, update the foreign key for the classes
 
 		// first, reset classes that used to be part of this classgroup
 		$query = "UPDATE class SET FK_classgroup = NULL WHERE FK_classgroup = ".$this->id;
-//		echo $query."<br>";
+//		echo $query."<br />";
 		$r = db_query($query);
 		
 		// then, set new forign key		
@@ -112,7 +112,7 @@ FROM
 					WHERE
 						".generateTermsFromCode($class_code)."
 				";		
-//				echo $query."<br>";
+//				echo $query."<br />";
 				$r = db_query($query);
 			}
 		}
@@ -120,7 +120,7 @@ FROM
 	
 	function exists($name) {
 		$query = "SELECT classgroup_id FROM classgroup WHERE classgroup_name='$name'";
-/* 		echo $query."<br>"; */
+/* 		echo $query."<br />"; */
 		if (db_num_rows(db_query($query))) return true;
 		return false;
 	}
@@ -128,7 +128,7 @@ FROM
 	function getClassesFromName($name) {
 		if (group::exists($name)) {
 			$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_name='$name'";
-//			echo $query."<br>";
+//			echo $query."<br />";
 			$r = db_query($query);
 			$classes = array();
 			while ($a = db_fetch_assoc($r))
@@ -140,7 +140,7 @@ FROM
 	
 	function getNameFromClass($class) {
 		$query = "SELECT classgroup_name FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND ".generateTermsFromCode($class);
-//		echo $query."<br>";
+//		echo $query."<br />";
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);

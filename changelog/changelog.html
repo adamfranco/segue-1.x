@@ -3,7 +3,105 @@
 	h1, h2 {color: #005;}
 	h1 {font-size: 18pt;}
 	li {padding-bottom: 3px;}
-	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.0</h2><h3>2004-09-30</h3><ul>
+	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.2</h2><h3>2004-10-07</h3><ul>
+		<li/> Bug Fix:
+	 
+			Replaced preview links in permissions window with a link to the new preview screen.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			'Build permissions array' now doesn't confuse delete and discuss permissions.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1042319&amp;group_id=82171&amp;atid=565234">
+        			#1042319</a> 
+			Classes with the external ID different from the internal code now are
+			pulled properly in the roster.
+		 (<i>Adam Franco</i>)
+		<li/> Change: 
+				#854782 
+			Headers have been reworked to print a doctype tag as well as html and
+			head tags in the right order. Some attributes, such as align='right',
+			have their attributes quoted, and br tags have trailing slashes added.
+			Much more cleaning up of the HTML needs to be done before Segue code
+			will validate, but it is now partially along the way.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Site-listing next/previous buttons now reflect search results.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Fixed midd network's LDAP search function to properly show members of
+			the class as students.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Modified HTMLarea to not capture CTRL+v, which was violating Mozilla's security policy for clipboard access.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Content blocks created in plain-text mode now have br tags replacing line breaks.
+		 (<i>Adam Franco</i>)
+	</ul><br/><h2>Version 1.3.1</h2><h3>2004-10-05</h3><ul>
+		<li/> Bug Fix:
+	 
+			Removed invalid template from sample config.
+		 (<i>Alex Chapin</i>)
+		<li/> Bug Fix:
+	 
+			Fixed links in user account maintenance UI (passwd.php).  Links to register
+			now appear in  user account maintenance UI if auth_register is turned on in config.
+		 (<i>Alex Chapin</i>)
+		<li/> Bug Fix:
+	 
+			'Visitor Registration' screen now asks for Name instead of username, what it was doing before,
+			but not saying.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			'Forgot password' screen now works properly.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			When moving or copying sections/pages/stories within a site, the 
+			'added' timestamps are now preserved.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Link to Segue site listing (sitelisting.php) changed from Public Sites to Site Listing to reflect
+			that sites actually listed are not necessarily public.  Clarification made in explanation
+			of site listing to indicate that the listing includes all class sites and all other sites
+			that have settings which specify public listing.
+		 (<i>Alex Chapin</i>)
+		<li/> Bug Fix:
+	 
+			If a section has a single page, that page link will not be displayed.
+			However, if that page is a &quot;link&quot; then it will be displayed to make
+			it accessable.
+		 (<i>Alex Chapin</i>)
+		<li/> Bug Fix:
+	 
+			The side-sections navigation was all screwed up and not printing editing links in viewsite mode.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Page titles are now displayed with the title CSS class instead of just bold letters.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			The sample_config was replicating the auth_help string.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			The sample_config now has an empty arry for the email excludes, instead of
+			an empty string as an element.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Misspelling in the Midd class functions was throwing a warning.
+		 (<i>Adam Franco</i>)
+	</ul><br/><h2>Version 1.3.0</h2><h3>2004-09-30</h3><ul>
 		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
 			Various changes in Segue necessitate that you upgrade to a new config
 			file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates'

@@ -33,18 +33,18 @@ if (count($_ids)) {
 	$filename = "$uploaddir/".$thisSite->name."/$pdfname";
 	$fileurl = "$uploadurl/".$thisSite->name."/$pdfname";
 	if (file_exists($filename)) {
-		$putonlast = "<br><div align=center class='topmargin5 smaller'>".pdflink($filename,$fileurl)."</div>";
+		$putonlast = "<br /><div align='center' class='topmargin5 smaller'>".pdflink($filename,$fileurl)."</div>";
 	}
 	
 	$i=0;$total = count($last->pages);
 	foreach ($last->pages as $p=>$o) {
 		$link = "$PHP_SELF?$sid&site=$site&section=$section&page=$p&action=$action";
 		$extra = $list = '';
-		if (($author = $o->getField("url")) && $author != "http://") $extra .= "<div class='leftmargin small' align=left>by $author</div>";
+		if (($author = $o->getField("url")) && $author != "http://") $extra .= "<div class='leftmargin small' align='left'>by $author</div>";
 		if ($isediting) {
 			$list .= ($last->hasPermission("edit"))?"<a href='$PHP_SELF?$sid&action=edit_page&site=$site&section=$section&page=$p&edit_page=$p&comingFrom=$action'>edit</a>\n":"";
 			$list .= ($last->hasPermission("delete"))?"<a href='$PHP_SELF?$sid&action=delete_page&site=$site&section=$section&page=$p&delete_page=$p&comingFrom=$action'>del</a>\n":"";
-			if ($list != '') $extra .= "<div class=small align=right>".$list."</div>";
+			if ($list != '') $extra .= "<div class=small align='right'>".$list."</div>";
 		}
 		if ($i == $total-1) $extra .= $putonlast;
 		add_link(leftnav,$o->getField("title"),$link,$extra,$p,$target);
@@ -70,7 +70,7 @@ if ($thisSite->sections) {
 				$filename = "$uploaddir/".$thisSite->name."/$pdfname";
 				$fileurl = "$uploadurl/".$thisSite->name."/$pdfname";
 				if (file_exists($filename)) {
-					$extra .= "<div align=center class='leftmargin smaller'>".pdflink($filename,$fileurl,2)."</div>";
+					$extra .= "<div align='center' class='leftmargin smaller'>".pdflink($filename,$fileurl,2)."</div>";
 				}
 				if ($isediting) {
 					$extra .= ($thisSite->hasPermission("edit"))?"\n<a href='$PHP_SELF?$sid&site=$site&section=$s&action=edit_section&edit_section=$s&comingFrom=viewsite' class='small' title='Edit the title and properties of this section'>edit</a>":"";
@@ -115,7 +115,7 @@ function filesizestr($filename) {
 
 function pdflink($filename,$fileurl,$sm=0) {
 	$size = filesizestr($filename);
-	return "<a href='$fileurl'>".(($sm!=2)?"<img src='images/pdficon".(($sm)?"_sm":"").".gif' align=absmiddle border=0 alt='Download PDF'>":"") . (($sm==1)?" ":(($sm==2)?"":"<BR>") . "Download PDF ")."</a>($size)";
+	return "<a href='$fileurl'>".(($sm!=2)?"<img src='images/pdficon".(($sm)?"_sm":"").".gif' align=absmiddle border=0 alt='Download PDF'>":"") . (($sm==1)?" ":(($sm==2)?"":"<br />") . "Download PDF ")."</a>($size)";
 }
 
 

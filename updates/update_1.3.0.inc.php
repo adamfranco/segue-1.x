@@ -50,7 +50,7 @@ class Update130
 		
 		if (!eregi("(enum\()(.*'rss'.*)(\))", $a['Type'], $parts)) {
 			$hasRun = FALSE;
-			print "\nNeeds type, 'rss' in ".$a['Type']."<br>";
+			print "\nNeeds type, 'rss' in ".$a['Type']."<br />";
 		}
 		
 		// check for rss cache dir
@@ -58,7 +58,7 @@ class Update130
 		$path = realpath($cfg[uploaddir]);
 		if (!file_exists($path."/RSScache/autocache/")) {
 			$hasRun = FALSE;
-			print "\nRSS cache path, ".$path."/RSScache/autocache/".", doesn't exist.<br>";
+			print "\nRSS cache path, ".$path."/RSScache/autocache/".", doesn't exist.<br />";
 		}
 		
 		// check for usertype visitor and guest enum option
@@ -71,7 +71,7 @@ class Update130
 		
 		if (!eregi("(enum\()(.*'visitor'.*)(\))", $a['Type'], $parts)) {
 			$hasRun = FALSE;
-			print "\nNeeds type, 'visitor' and 'guest' in ".$a['Type']."<br>";
+			print "\nNeeds type, 'visitor' and 'guest' in ".$a['Type']."<br />";
 		}
 		
 		// check for discusslabel field in story table
@@ -85,7 +85,7 @@ class Update130
 			$hasRun = TRUE;
 		} else {
 			$hasRun = FALSE;
-			print "\nNeeds discuss link label field in story table.<br>";
+			print "\nNeeds discuss link label field in story table.<br />";
 		}
 		
 		// check that the class_semester field in the class table is of type varchar
@@ -99,7 +99,7 @@ class Update130
 			$hasRun = TRUE;
 		} else {
 			$hasRun = FALSE;
-			print "\nThe class_semester field in the class table needs to be of type varchar.<br>";
+			print "\nThe class_semester field in the class table needs to be of type varchar.<br />";
 		}
 				
 		return $hasRun;	
@@ -213,12 +213,12 @@ class Update130
 			ini_set('max_execution_time', 300);
 		
 		$allSlots = slot::getAllSlots();
-		print "\n<br>Starting Link->Tag conversion.";
+		print "\n<br />Starting Link->Tag conversion.";
 		foreach($allSlots as $id => $sitename) {
-			print "\n<br>Converting links to tags in site '".$sitename."'...";
+			print "\n<br />Converting links to tags in site '".$sitename."'...";
 			convertAllInteralLinksToTags($sitename);
 		}
-		print "\n<br>Link->Tag conversion done.";
+		print "\n<br />Link->Tag conversion done.";
 		
 	}
 }

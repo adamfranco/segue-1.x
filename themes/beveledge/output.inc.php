@@ -68,7 +68,10 @@ $navsize = $_nav_size[$usenavsize];
 /* ------------------- END THEME SETTINGS---------------------	*/
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <?
 /* ------------------------------------------- */
 /* ------------- COMMON HEADER --------------- */
@@ -82,9 +85,9 @@ include("themes/$theme/css.inc.php");
 <title><? echo $pagetitle; ?></title>
 </head>
 
-<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
+<body style='margin: 0px'>
 
-<table width=95% cellpadding=0 cellspacing=0 align=center>
+<table width=95% cellpadding='0' cellspacing='0' align='center'>
 <tr>
 <td class=topleft></td>
 <td class=top></td>
@@ -105,7 +108,7 @@ print $sitecrumbs;
 ?>
 </div>
 
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* --------- TOP SECTION NAV ---------------- */
@@ -131,7 +134,7 @@ if ($nav_arrange==1) {
 ?>
 </td>
 <td class=contentarea>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
@@ -147,7 +150,7 @@ if ($nav_arrange==1) {
 print $content; 
 
 ?>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
@@ -168,7 +171,7 @@ if (count($rightnav)) {
 ?>
 </tr>
 </table>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM SECTION NAV ----------- */

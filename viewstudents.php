@@ -5,8 +5,6 @@ $content = '';
 ob_start();
 session_start();
 
-//output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // include all necessary files
 include("includes.inc.php");
@@ -18,7 +16,7 @@ $siteinfo = db_get_line("site INNER JOIN slot on site_id = FK_site","slot_name='
 $site_type = $siteinfo[type];
 
 if ($_REQUEST[site_type] =="class") {
-	//print "<div align=center>Students in $site</div>";
+	//print "<div align='center'>Students in $site</div>";
 }
 if ($_REQUEST[clear]) {
 	$type = "";
@@ -122,8 +120,10 @@ $query = "
 $r = db_query($query);
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>View Logs</title>
 <? include("themes/common/logs_css.inc.php"); ?>
 </head>
@@ -153,7 +153,7 @@ function changeOrder(order) {
 <?// print "test = $test"; ?>
 
 <table width='100%' class='bg'>
-<td align=right class='bg'>
+<td align='right' class='bg'>
     <a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
     | <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
     | Users
@@ -185,16 +185,16 @@ function changeOrder(order) {
         } else {
         ?>
             <!-- </select> -->
-            site: <input type=text name='site' size=15 value='<?echo $site?>'>
-            <!--title: <input type=text name=title size=15 value='<?echo $title?>'>-->
-            user: <input type=text name=user size=15 value='<?echo $user?>'>
+            site: <input type='text' name='site' size=15 value='<?echo $site?>'>
+            <!--title: <input type='text' name=title size=15 value='<?echo $title?>'>-->
+            user: <input type='text' name=user size=15 value='<?echo $user?>'>
             <input type=submit value='go'>
             <input type=submit name='clear' value='clear'>
             <input type=hidden name='order' value='<? echo $order ?>'>
         <? } ?>
         </form>
         </td>
-        <td align=right>
+        <td align='right'>
         <?
         $tpages = ceil($numlogs/30);
         $curr = ceil(($lowerlimit+30)/30);
@@ -295,5 +295,5 @@ if (db_num_rows($r)) {
     print "<tr><td colspan=4>No log entries.</td></tr>";
 }
 ?>
-</table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+</table><br />
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

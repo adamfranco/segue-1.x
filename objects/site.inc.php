@@ -343,7 +343,7 @@ FROM
 				$this->fetched[$field] = 1;
 			}
 			else
-				echo "ERROR: field $field not in _allfields!!!<br>";
+				echo "ERROR: field $field not in _allfields!!!<br />";
 		$this->fetcheddown = 1;
 		$this->fetched_forever_and_ever = 1;
 					
@@ -390,7 +390,7 @@ SELECT
 					$section->fetched[$field] = 1;
 				}
 				else
-					echo "ERROR: field $field not in _allfields!!!<br>";
+					echo "ERROR: field $field not in _allfields!!!<br />";
 			$section->fetcheddown = 1;
 			$section->fetched_forever_and_ever = 1;
 		}
@@ -442,7 +442,7 @@ SELECT
 					$page->fetched[$field] = 1;
 				}
 				else
-					echo "ERROR: field $field not in _allfields!!!<br>";
+					echo "ERROR: field $field not in _allfields!!!<br />";
 			$page->fetcheddown = 1;
 			$page->fetched_forever_and_ever = 1;
 		}
@@ -513,7 +513,7 @@ SELECT
 					$story->fetched[$field] = 1;
 				}
 				else
-					echo "ERROR: field $field not in _allfields!!!<br>";
+					echo "ERROR: field $field not in _allfields!!!<br />";
 			$story->fetcheddown = 1;
 			$story->fetched_forever_and_ever = 1;
 		}
@@ -569,7 +569,7 @@ FROM
 			else
 				$t_editor = $row[editor_type];
 			
-//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; On the Site";
+//			echo "<br /><br />Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; On the Site";
 				
 			// set the permissions for this editor
 			$this->permissions[$t_editor] = array(
@@ -650,7 +650,7 @@ FROM
 			else
 				$t_editor = $row[editor_type];
 			
-//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; on Section ".$row[section_id];
+//			echo "<br /><br />Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; on Section ".$row[section_id];
 
 			foreach ($a as $key => $value)
 				$this->sections[$row[section_id]]->permissions[$t_editor][$key] = 1;
@@ -717,7 +717,7 @@ FROM
 			else
 				$t_editor = $row[editor_type];
 			
-//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+//			echo "<br /><br />Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 
 			foreach ($a as $key => $value)
 				$this->sections[$row[section_id]]->pages[$row[page_id]]->permissions[$t_editor][$key] = 1;
@@ -792,7 +792,7 @@ FROM
 				 || (strpos($row[permissions],'e') !== false)
 				 ||(strpos($row[permissions],'d') !== false && (strpos($row[permissions],'d') !== strpos($row[permissions],'di')))
 				) {
-					printError ("Invalid add, edit, or delete permissions for $t_editor: permissionId - ".$row[permission_id]."; permission - ".$row[permissions]."\n<br>Cleaning up Database.");
+					printError ("Invalid add, edit, or delete permissions for $t_editor: permissionId - ".$row[permission_id]."; permission - ".$row[permissions]."\n<br />Cleaning up Database.");
 					
 					// Clean up the permissions
 					$this->owningSiteObj->setUserPermissionDown('add', $t_editor, 0);
@@ -818,7 +818,7 @@ FROM
 			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
 //			print_r($a); //debug
 			
-//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; On story id ".$row[story_id];
+//			echo "<br /><br />Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; On story id ".$row[story_id];
 			
 			foreach ($a as $key => $value)
 				$this->sections[$row[section_id]]->pages[$row[page_id]]->stories[$row[story_id]]->permissions[$t_editor][$key] = 1;
@@ -831,7 +831,7 @@ FROM
 	
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown || $full) {
-/* 			print "site fetchdown ".$this->name."<BR>"; */
+/* 			print "site fetchdown ".$this->name."<br />"; */
 			if (!$this->tobefetched) $this->fetchFromDB($full);
 			foreach ($this->getField("sections") as $s) {
 				$this->sections[$s] =& new section($this->name,$s,&$this);
@@ -894,9 +894,9 @@ WHERE site_id = ".$this->id;
 /* 			print "<pre>"; */
 /* 			print_r ($this); */
 /* 			print "</pre>"; */
-/* 			print "\$query=<br>$query<br>"; */
+/* 			print "\$query=<br />$query<br />"; */
 			$r = db_query($query);
-/* 			print "\$r=".$r."<br>"; */
+/* 			print "\$r=".$r."<br />"; */
 
 			// if the site does not exist in the database
 			if (!db_num_rows($r)) return false;
@@ -920,7 +920,7 @@ WHERE site_id = ".$this->id;
 					$this->fetched[$field] = 1;
 				}
 				else
-					echo "ERROR: field $field not in _allfields!!!<br>";
+					echo "ERROR: field $field not in _allfields!!!<br />";
 			
 
 			// now fetch the sections (they are part of a 1-to-many relationship and therefore
@@ -1041,9 +1041,9 @@ WHERE
 				$a[] = "FK_updatedby=".$_SESSION[aid];
 				
 			$query = "UPDATE site SET ".implode(",",$a)." WHERE site_id=".$this->id;
-/*  			print "site->updateDB: $query<BR>"; */
+/*  			print "site->updateDB: $query<br />"; */
 			db_query($query);
-/* 			print mysql_error()."<br>"; */
+/* 			print mysql_error()."<br />"; */
 
 		// the hard step: update the fields in the JOIN tables
 
@@ -1099,7 +1099,7 @@ WHERE
 
 		// insert into the site table
 		$query = "INSERT INTO site SET ".implode(",",$a).";";
-/*  		print "<BR>query = $query<BR>"; */
+/*  		print "<br />query = $query<br />"; */
 		db_query($query);
 		$this->id = lastid();
 		
@@ -1115,7 +1115,7 @@ WHERE
 			$where = "";
 		}
 		$query .= " SET slot_name = '".$this->data[name]."',FK_owner=".$_SESSION[aid].",slot_type='".$this->data[type]."', FK_site = ".$this->id.$where;
-/* 		echo $query."<br>"; */
+/* 		echo $query."<br />"; */
 		db_query($query);
 		
 		
@@ -1151,7 +1151,7 @@ WHERE
 	
 	function addSection($id) {
 		if (!is_array($this->getField("sections"))) $this->data[sections] = array();
-/* 		print "<br>adding section $id to ".$this->name."<br>"; //debug */
+/* 		print "<br />adding section $id to ".$this->name."<br />"; //debug */
 		array_push($this->data[sections],$id);
 		$this->changed[sections] = 1;
 /* 		print "<pre>this: "; print_r($this->data[sections]); print "</pre>"; */

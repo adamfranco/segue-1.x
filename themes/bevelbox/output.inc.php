@@ -46,7 +46,10 @@ $navsize = $_nav_size[$usenavsize];
 /* ------------------- END THEME SETTINGS---------------------	*/
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <?
 /* ------------------------------------------- */
 /* ------------- COMMON HEADER --------------- */
@@ -60,9 +63,9 @@ include("themes/$theme/css.inc.php");
 <title><? echo $pagetitle; ?></title>
 </head>
 
-<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
-<br>
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<body style='margin: 0px'>
+<br />
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?
 /* ------------------------------------------- */
@@ -70,14 +73,14 @@ include("themes/$theme/css.inc.php");
 /* ------------------------------------------- */
 print $siteheader; 
 ?>
-</tr></td>
+</td></tr>
 </table>
 
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
   <tr> 
     <td class="topleft" height=43></td>
     <td class="top" height=43> 
-	<table width=100% align=center cellpadding=0 cellspacing=0>
+	<table width=100% align='center' cellpadding='0' cellspacing='0'>
     <tr>
     <td class="sitetitle" height=43>
     <? echo $title ?>
@@ -93,7 +96,7 @@ print $siteheader;
   </tr>
   <tr> 
     <td class="topleft2">&nbsp;</td>    
-    <td bgcolor="<? echo $c[bgcolor] ?>">
+    <td style="background-color: #<? echo $c[bgcolor] ?>">
     <div class='nav'>
    <?
 	/* ------------------------------------------- */
@@ -105,7 +108,7 @@ print $siteheader;
 	
  	?>
 	</div>
-    <div class=topnav align=center>
+    <div class=topnav align='center'>
 	<div class='nav'>
 	<?
 	/* ------------------------------------------- */
@@ -118,7 +121,7 @@ print $siteheader;
 	</div>
     
     </td>
-    <td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;</td>
+   <td style="background-color: #<? echo $c[bgcolor] ?>">&nbsp;</td>
     <td class="right">&nbsp;</td>
   </tr>
   <tr> 
@@ -131,7 +134,7 @@ print $siteheader;
 
 <td class="left" valign=top>
 
-<table width=100% cellpadding=5 cellspacing=0 align=top>
+<table width=100% cellpadding=5 cellspacing='0' align=top>
 <td class=leftnav>
 <?
 
@@ -150,7 +153,7 @@ if ($nav_arrange==1) {
 </td>
 
 <td class=contentarea>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
@@ -165,7 +168,7 @@ if ($nav_arrange==1) {
 print $content; 
 
 ?>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
@@ -191,7 +194,7 @@ if (count($rightnav)) {
 <tr> 
     <td class="bottomleft">&nbsp;</td>
     <td class="bottom">
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <div class='nav'>
 <?
 /* ------------------------------------------- */
@@ -207,9 +210,9 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav2, $topnav2_extra);
 <td class="bottomright2">&nbsp;</td>
 </tr>
 </table>
-<br>
+<br />
 
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?
 /* ------------------------------------------- */
@@ -217,8 +220,8 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav2, $topnav2_extra);
 /* ------------------------------------------- */
 print $sitefooter 
 ?>
-</tr></td>
+</td></tr>
 </table>
-<br>
+<br />
 
 	

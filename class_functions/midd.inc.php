@@ -36,7 +36,8 @@ function getclassstudents($class_id) {
 	 * of the $class_id group
  	******************************************************************************/
 
-	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_id'");
+	$ugroup_id = getClassUGroupId($class_id);
+		
 	$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
 	$db_participants = array();
 	$external_memberlist_participants = array();
@@ -135,7 +136,7 @@ function getclassstudents($class_id) {
 			$res[0] = array_change_key_case($res[0], CASE_LOWER);
 	//		print "<pre>";print_r($res);print"</pre>";
 			$num = ldap_count_entries($c,$sr);
-	//		print "num: $num<br>";
+	//		print "num: $num<br />";
 			ldap_close($c);
 			
 			/******************************************************************************
@@ -195,7 +196,8 @@ function getclassstudents($class_id) {
 							$participant[uname] = $res2[0][strtolower($cfg[ldap_username_attribute])][0];
 							$participant[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
 							$participant[memberlist] = "external";
-							//printpre("uname: ".$participant[uname]);
+// 							printpre("uname: ".$participant[uname]);
+							$areprof = 0;
 							if (is_array($res2[0][strtolower($cfg[ldap_group_attribute])])) {
 							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
 								foreach ($res2[0][strtolower($cfg[ldap_group_attribute])] as $item) {
@@ -217,7 +219,7 @@ function getclassstudents($class_id) {
 		}// end result count
 						
 	} // ends if bind
-	
+
 	/******************************************************************************
 	 * Check to see if $external_memberlist_participant are already in database
 	 * if not add them to database
@@ -229,7 +231,7 @@ function getclassstudents($class_id) {
 		$valid = 0;
 		foreach ($cfg[auth_mods] as $_auth) {
 			$func = "_valid_".$_auth;
-			//printpre ("<BR>AUTH: trying ".$_auth ."..."); //debug
+			//printpre ("<br />AUTH: trying ".$_auth ."..."); //debug
 			if ($x = $func($student_uname,"",1)) {
 				$valid = 1;
 				break;
@@ -251,6 +253,7 @@ function getclassstudents($class_id) {
 	 
 	$participants = $external_memberlist_participants;
 	$participants_unames = $external_memberlist_participant_unames;
+	
 	 
 	foreach (array_keys($db_participants) as $key) {
 		if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
@@ -294,12 +297,12 @@ function getuserclasses($user,$time="all") {
 			$res[0] = array_change_key_case($res[0], CASE_LOWER);
 	//		print "<pre>";print_r($res);print"</pre>";
 			$num = ldap_count_entries($c,$sr);
-	//		print "num: $num<br>";
+	//		print "num: $num<br />";
 			ldap_close($c);
 			if ($num) {
 				for ($i = 0; $i<$res[0][strtolower($cfg[ldap_group_attribute])]['count']; $i++) {
 					$f = $res[0][strtolower($cfg[ldap_group_attribute])][$i];
-	//				print "$f<br>";
+	//				print "$f<br />";
 					$parts = explode(",",$f);
 					foreach ($parts as $p) {
 						if (eregi($cfg[ldap_groupname_attribute]."=([a-zA-Z]{0,4})([0-9]{1,4})([a-zA-Z]{0,1})-([a-zA-Z]{1,})([0-9]{2})",$p,$r)) {
@@ -581,7 +584,7 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 						$areprof = false;
 						if (is_array($res[0][strtolower($cfg[ldap_group_attribute])])) {
 							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
-							foreach ($results[0][strtolower($cfg[ldap_group_attribute])] as $item) {
+							foreach ($res[0][strtolower($cfg[ldap_group_attribute])] as $item) {
 								if (eregi($isProfSearchString,$item)) {
 									$areprof=1;
 								}

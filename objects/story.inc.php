@@ -272,7 +272,7 @@ class story extends segue {
 		if ($deleteFromParent) {
 			$parentObj =& new page($this->owning_site,$this->owning_section,$this->owning_page,$this->owningPageObj->owningSectionObj);
 			$parentObj->fetchDown();
-			/* print "<br>delStory - ".$this->id."<br>"; */
+			/* print "<br />delStory - ".$this->id."<br />"; */
 			$parentObj->delStory($this->id);
 			$parentObj->updateDB();
 		} else {
@@ -402,11 +402,11 @@ class story extends segue {
 	//				if (in_array($field,$this->_parse)) 
 	//					$value = $this->parseMediaTextForEdit($value);
 					$this->data[$field] = $value;
-//					print "$field] = $value<br>";
+//					print "$field] = $value<br />";
 					$this->fetched[$field] = 1;
 				}
 				else
-					echo "ERROR: field $field not in _allfields!!!<br>";
+					echo "ERROR: field $field not in _allfields!!!<br />";
 			
 
 			// now fetch the discussion entries for this story
@@ -448,9 +448,9 @@ class story extends segue {
 				$a[] = "FK_updatedby=".$_SESSION[aid];
 
 			$query = "UPDATE story SET ".implode(",",$a)." WHERE story_id=".$this->id;
-/* 			print "<pre>Story->UpdateDB: $query<br>"; */
+/* 			print "<pre>Story->UpdateDB: $query<br />"; */
 			db_query($query);
-/* 			print mysql_error()."<br>"; */
+/* 			print mysql_error()."<br />"; */
 /* 			print_r($this->data['stories']); */
 /* 			print "</pre>"; */
 			
@@ -700,7 +700,7 @@ WHERE
 //		if ($this->id && ($all || $this->changed[pages])) { //I belive we may always need to fix the order.
 		if ($this->id) {
 			$orderkeys = array_keys($this->owningPageObj->getField("stories"),$this->id);
-//			print "<br>".$this->id."<br>".$orderkeys[0]."<BR>";
+//			print "<br />".$this->id."<br />".$orderkeys[0]."<br />";
 			$a[] = "story_order=".$orderkeys[0];
 		} else {
 			$a[] = "story_order=".count($this->owningPageObj->getField("stories"));

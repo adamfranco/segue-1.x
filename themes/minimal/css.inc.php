@@ -5,7 +5,7 @@ body {
 }
 
 
-<? echo include("$themesdir/common/css.inc.php"); ?>;
+<? include("$themesdir/common/css.inc.php"); ?>
 
 /* ------------------------------------------ */
 /* THEME-SPECIFIC CLASSES */
@@ -22,9 +22,7 @@ body {
 
 .header {
 	margin-bottom: 0px;
-	background: #<? echo $bg['bg']; ?>;
-	border-bottom: 1px solid #<? echo $borders; ?>;
-	
+	background: #<? echo $bg['bg']; ?>;	
 }
 
 .topnav {

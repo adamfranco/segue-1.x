@@ -15,7 +15,7 @@ a:hover {
 
 div, p, td, span, input { 
 	color: #444;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 }
 

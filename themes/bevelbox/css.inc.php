@@ -15,7 +15,8 @@ body {
 	 background-color: #<? echo $bg['bg']; ?>; 
 }
 
-<? echo include("$themesdir/common/css.inc.php"); ?>;
+<? include("$themesdir/common/css.inc.php"); ?>
+
 
 
 
@@ -68,7 +69,7 @@ body {
 
 .sitetitle {
 	color: #<? echo $c['navtext']; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 16px;
 }
 

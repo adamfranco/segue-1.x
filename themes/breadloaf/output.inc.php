@@ -13,24 +13,27 @@ $nav = array(
 		);
 */
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <? include("themes/common/header.inc.php"); ?>
 <? include("themes/breadloaf/css.inc.php"); ?>
 <title><? echo $pagetitle; ?></title>
 </head>
 
-<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
+<body style='margin: 0px'>
 
-<table width=100% cellpadding=0 cellspacing=0>
+<table width=100% cellpadding='0' cellspacing='0'>
 <tr>
-<td class=header align=center>
+<td class=header align='center'>
 <? include("themes/common/status.inc.php"); ?>
 <? print $siteheader ?>
 
 </td>
 </tr>
 <tr>
-<td class=topnav align=center>
+<td class=topnav align='center'>
 
 	<?
 	// ---------------------------------------
@@ -49,7 +52,7 @@ $nav = array(
 <tr>
 <tr>
 <td class=contentarea>
-	<table width=750 align=center>
+	<table width=750 align='center'>
 	<tr><td class=leftnav width=175 valign=top>
 		<?
 		// ----------------------
@@ -64,14 +67,14 @@ $nav = array(
 				print "</div>";
 			}
 			if ($item[type] == 'divider') {
-				print "$item[extra]<br>";
+				print "$item[extra]<br />";
 			}
 			if ($item[type] == 'heading') {
 				print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
-				if ($item[extra]) print "<div align=right>$item[extra]</div>";
+				if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			}
 		}
-		print "<br>$leftnav_extra";
+		print "<br />$leftnav_extra";
 		?>
 	</td>
 	<td class=content valign=top>
@@ -80,9 +83,9 @@ $nav = array(
 	
 	<?
 	if (count($rightnav)) {
-		print "<td align=right class=rightnav>";
+		print "<td align='right' class=rightnav>";
 		foreach ($rightnav as $item) {
-			print "<a href='$item[url]'>$item[name]</a><BR>";
+			print "<a href='$item[url]'>$item[name]</a><br />";
 		}
 		print "</td>";
 	}
@@ -94,7 +97,7 @@ $nav = array(
 </tr>
 </table>
 
-<br>
+<br />
 
 <? print $sitefooter ?>
 	

@@ -17,7 +17,10 @@ $c = $_theme_colors[$use];
 /* ------------------- END ---------------------------	*/
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <?/* ------------------------------------------- */
 /* ------------- COMMON HEADER --------------- */
@@ -41,7 +44,7 @@ include("themes/$theme/css.inc.php");
 
 </head>
 
-<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0<? echo $_ol; ?>>
+<body<? echo $_ol; ?>>
 
 <? if ($_timefunctions) include("themes/common/timeoutput.inc.php"); ?>
 
@@ -49,9 +52,9 @@ include("themes/$theme/css.inc.php");
 /* -------------- STATUS BAR ----------------- */
 /* ------------------------------------------- */
 //include("themes/common/status.inc.php"); ?>
-<br>
+<br />
 
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
   <tr> 
     <td class="topleft">&nbsp;</td>
     <td class="top"> 
@@ -63,10 +66,10 @@ include("themes/$theme/css.inc.php");
    
    <tr>
     <td class="topleft2">&nbsp;</td>
-    <td bgcolor="<? echo $c[bgcolor] ?>">
+    <td style="background-color: #<? echo $c[bgcolor] ?>">
     <? include("themes/common/status.inc.php");?>
 
-       <div class=topnav align=center>
+       <div class=topnav align='center'>
 	<div class='nav'>
 	<?
 	/* ------------------------------------------- */
@@ -96,7 +99,7 @@ include("themes/$theme/css.inc.php");
 	</div>
 	
     </td>
-    <td bgcolor="<? echo $c[bgcolor] ?>">
+   <td style="background-color: #<? echo $c[bgcolor] ?>"> &nbsp;</td>
     <td class="right"></td>
    </tr>
    
@@ -112,7 +115,7 @@ include("themes/$theme/css.inc.php");
 <td class="left" width=160 height="100%">
 
 
-<table width=100% cellpadding=5 cellspacing=0>
+<table width=100% cellpadding=5 cellspacing='0'>
 <td class=leftnav height="100%">
 <div class='nav'>
 	<?
@@ -129,14 +132,14 @@ include("themes/$theme/css.inc.php");
 			print "</div>";
 		}
 		if ($item[type] == 'divider') {
-			print "$item[extra]<br>";
+			print "$item[extra]<br />";
 		}
 		if ($item[type] == 'heading') {
 			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
+			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 		}
 	}
-	print "<br>$leftnav_extra";
+	print "<br />$leftnav_extra";
 	?>
 </div>
 </td>
@@ -154,7 +157,7 @@ include("themes/$theme/css.inc.php");
 if (count($rightnav)) {
 	print "<td style='margin-left: 20px'>";
 	foreach ($rightnav as $item) {
-		print "<a href='$item[url]'>$item[name]</a><BR>";
+		print "<a href='$item[url]'>$item[name]</a><br />";
 	}
 	print "</td>";
 }
@@ -165,7 +168,7 @@ if (count($rightnav)) {
 <tr> 
     <td class="bottomleft">&nbsp;</td>
     <td class="bottom">
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <div class='nav'>
 </div>
 </div> 
@@ -175,16 +178,16 @@ if (count($rightnav)) {
 <td class="bottomright2">&nbsp;</td>
 </tr>
 </table>
-<br>
+<br />
 
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?/* ------------------------------------------- */
 /* -------------- FOOTER     ----------------- */
 /* ------------------------------------------- */
 print $sitefooter ?>
-</tr></td>
+</td></tr>
 </table>
-<br>
+<br />
 
 	

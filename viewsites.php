@@ -9,8 +9,6 @@ $content = '';
 ob_start();
 session_start();
 
-//output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // include all necessary files
 include("includes.inc.php");
@@ -97,8 +95,10 @@ $r = db_query($query);
 	$siteid = $siteObj->id;
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>View Logs</title>
 
 <? include("themes/common/logs_css.inc.php"); ?>
@@ -114,7 +114,7 @@ function changeOrder(order) {
 </script>
 
 <table width='100%' class='bg'>
-<tr><td  align=right class='bg'>
+<tr><td  align='right' class='bg'>
 
 <?
 /******************************************************************************
@@ -129,7 +129,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: sites
 	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
 	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
@@ -173,9 +173,9 @@ if ($site) {
 		} else {
 		?>
 			<!-- </select> -->
-			site: <input type=text name=site size=10 value='<?echo $site?>'>
-			title: <input type=text name=title size=10 value='<?echo $title?>'>
-			user: <input type=text name=user size=10 value='<?echo $user?>'>
+			site: <input type='text' name=site size=10 value='<?echo $site?>'>
+			title: <input type='text' name=title size=10 value='<?echo $title?>'>
+			user: <input type='text' name=user size=10 value='<?echo $user?>'>
 			<!--
 			type: <select name=type>
 				<option<?=($type=='%')?" selected":""?>>all
@@ -194,12 +194,12 @@ if ($site) {
 			<input type=submit name='clear' value='clear'>
 			<input type=hidden name='order' value='<? echo $order ?>'>
 		<? } 
-		print "<br>Total sites found:".$numlogs;
+		print "<br />Total sites found:".$numlogs;
 		?>
 		</form>
 		
 		</td>
-		<td align=right>
+		<td align='right'>
 		<?
 		$tpages = ceil($numlogs/30);
 		$curr = ceil(($lowerlimit+30)/30);
@@ -328,8 +328,8 @@ if (db_num_rows($r)) {
 	print "<tr><td colspan=7>No sites found based on above criteria.</td></tr>";
 }
 ?>
-</table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+</table><br />
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <?
 // debug output -- handy :)

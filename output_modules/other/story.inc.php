@@ -9,10 +9,11 @@ $st = $o->getField("shorttext");
  * replace general with specific
  ******************************************************************************/
 $st = convertTagsToInteralLinks($site, $st);
-
+if ($o->getField("texttype") == 'text')
+	$st = nl2br($st);
 
 if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
-printc("<table cellspacing=0 cellpadding=0 width=100%><tr><td>");
+printc("<table cellspacing='0' cellpadding='0' width=100%><tr><td>");
 printc(stripslashes($st));
 
 if ($o->getField("discuss") || $o->getField("longertext")) {
@@ -32,4 +33,4 @@ if ($o->getField("discuss") || $o->getField("longertext")) {
 	include (dirname(__FILE__)."/discussionLink.inc.php");
 	
 }
-printc("</td></tr></table><br>");
+printc("</td></tr></table><br />");
