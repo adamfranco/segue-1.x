@@ -148,7 +148,8 @@ if ($storyObj->getField("discuss")) {
 	$siteowner = $siteObj->getField("addedbyfull");	
 	$discusslabel = $storyObj->getField("discusslabel");	
 	
-	printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader><a name=discuss></a>".$discusslabel."\n");
+	printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader><a name=discuss></a>");
+	printc(($discusslabel)? $discusslabel:"Discuss");
 	
 /* 	if ($showposts == 1) { */
 /* 		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion\n"); */

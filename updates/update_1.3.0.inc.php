@@ -81,6 +81,7 @@ class Update130
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$this->field01Exists = TRUE;
+			$hasRun = TRUE;
 		} else {
 			$hasRun = FALSE;
 			print "\nNeeds discuss link label field in story table.<br>";
@@ -93,6 +94,7 @@ class Update130
      * Runs the update
 	 */
 	function run() {
+	
 	 	// modify the story_display_type option
 	 	$query = "
 		DESCRIBE
@@ -155,12 +157,17 @@ class Update130
 		}
 
 		//add the story_discusslabel field to the story table	
-		if (!$this->field01Exists) {
+		$query = "
+		DESCRIBE
+			story story_discusslabel
+		";
+		$r = db_query($query);
+		if (db_num_rows($r) < 1) {
 			$query = "
 			ALTER TABLE 
 				story
 			ADD 
-				story_discussdisplay varchar(128) NULL default '' AFTER story_discussauthor
+				story_discusslabel VARCHAR( 128 ) NULL AFTER story_discussauthor
 			";
 			$r = db_query($query);
 		}

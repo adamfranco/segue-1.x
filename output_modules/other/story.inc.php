@@ -19,9 +19,14 @@ if ($o->getField("discuss") || $o->getField("longertext")) {
 	//if ($o->getField("longertext")) $l[] = $link."Full Text</a>";
 	if ($o->getField("discuss")) {
 		$discusslabel = $o->getField("discusslabel");
-		printc("<a href=".$link."#discuss>".$discusslabel."</a> (".discussion::generateStatistics($o->id).")");
+		// check if discuss label exists for backward compatibility
+		if ($discusslabel) {
+			printc("<a href=".$link."#discuss>".$discusslabel."</a>");
+		} else {
+			printc("<a href=".$link."#discuss>Discuss</a>");
+		}
+		printc(" (".discussion::generateStatistics($o->id).")");	
 	}
-
 	printc(implode(" | ",$l));
 	printc("</div>");
 }

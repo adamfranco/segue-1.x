@@ -247,7 +247,8 @@ while ($a = db_fetch_assoc($r)) {
 				print "<input type=button name='use' value='remove' onClick=\"delStudent('".$a[user_id]."','".$a[user_fname]." (".$a[user_uname].")')\">";
 		print "</td>";
 		print "<td>";
-			print $a[user_fname]." (".$a[user_uname].") - ".$a[user_type]."";
+		print $a[user_fname]." (".$a[user_uname].")";
+		if ($a[user_type] == "prof") print " - ".$a[user_type]."";
 		print "</td>";
 	print "</tr>";
 }
@@ -269,7 +270,8 @@ foreach (array_keys($participants) as $key) {
 				//	print "<input type=button name='use' value='remove' onClick=\"delStudent('".$a[user_id]."','".$a[user_fname]." (".$a[user_uname].")')\">";
 			print "</td>";
 			print "<td>";
-				print $participants[$key][fname]." (".$participants[$key][uname].") - ".$participants[$key][type];
+			print $participants[$key][fname]." (".$participants[$key][uname].")";
+			if ($participants[$key][type] == "prof") print " - ".$participants[$key][type]."";
 			print "</td>";
 		print "</tr>";
 	}
