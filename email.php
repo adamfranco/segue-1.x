@@ -106,9 +106,9 @@ printerr();
 <!-- <body onLoad="document.addform.uname.focus()">  -->
 <body onLoad="document.searchform.name.focus()">
 <div align=right>
-<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
-| <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
-| Participants<br><br>
+<!-- <a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a> -->
+<!-- | <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a> -->
+Participants<br><br>
 
 
 <?
@@ -175,25 +175,25 @@ printerr();
 		print "<form action=$PHP_SELF method=post name=emailform>";
 		print "<table><tr><td><div style='font-size: 12px'>";
 		if ($curraction == "list") {
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=email>Email</a> | ";
 			print "List | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=review>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=review>Review</a> - ";
 			print $numparticipants." participants";
 		} else if ($curraction == 'review') {
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email>Email</a> | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=email>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=list>List</a> | ";
 			print "Review - ";
 			print $numparticipants." participants";
 			
 		} else if ($curraction == 'email') {
 			print "Email | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list>List</a> | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=review>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=list>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=review>Review</a> - ";
 			print $numparticipants." participants";
 		} else if ($curraction == 'send') {
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email>Email</a> | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list>List</a> | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=review>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=email>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=list>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=review>Review</a> - ";
 			print $numparticipants." participants";
 		}
 				

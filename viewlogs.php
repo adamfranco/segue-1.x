@@ -161,7 +161,7 @@ function changeOrder(order) {
 <td align=right class='bg'>
 	Logs
 	| <a href=viewsites.php?<? echo $sid ?>&site=<? echo $site ?>>Sites</a>
-	| <a href=viewstudents.php?<? echo $sid ?>&site=<? echo $site ?>>Users</a>
+<!-- 	| <<a href='email.php?<? echo $sid ?>&storyid=<? echo $storyid ?>&siteid=<? echo $siteid ?>&site=<? echo $site ?>&action=list'>Participants</a> -->
 
 </td></tr>
 <tr><td class='bg'>

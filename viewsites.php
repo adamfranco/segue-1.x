@@ -110,7 +110,8 @@ function changeOrder(order) {
 <tr><td  align=right class='bg'>
 	<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
 	| Sites
-	| <a href=viewstudents.php?$sid&site=<? echo $site ?>>Users</a>
+<!-- 	| <<a href='email.php?<? echo $sid ?>&storyid=<? echo $storyid ?>&siteid=<? echo $siteid ?>&site=<? echo $site ?>&action=list'>Participants</a> -->
+
 
 </td></tr>
 <tr><td class='bg'>
