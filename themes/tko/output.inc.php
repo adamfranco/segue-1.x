@@ -142,7 +142,7 @@ include("themes/$theme/css.inc.php");
 	<td width=520 class=content valign=top>
 	<!-- content goes here -->
 	<? include("themes/common/status.inc.php"); ?>
-	<? print $sitecrumbs; ?>
+	<? /* print $sitecrumbs; */ ?>
 	<? print $content; ?>
 
 	<!-- end content -->
