@@ -546,9 +546,10 @@ class segue {
 	}
 	
 	function clearPermissions() {
-		$this->editorsToDeleteInScope = array_unique(array_merge(array_keys($p),$this->editors));
+		$this->editorsToDelete = array_unique(array_merge(array_keys($this->permissions),$this->editors));
 		$this->editors = array();
 		$this->permissions = array();
+		$this->changedpermissions = 1;
 	}
 	
 	function setUserPermissions($user,$add=0,$edit=0,$del=0,$view=0,$discuss=0) {
@@ -728,6 +729,7 @@ class segue {
 				db_query("delete from permissions where user='$e' and site='$site'");
 			}
 			foreach ($this->editorsToDeleteInScope as $e) {
+/* 				print "delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id"; */
 				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");
 			}
 		}
