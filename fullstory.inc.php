@@ -223,6 +223,9 @@ if ($storyObj->getField("discuss")) {
 	
 	if ($_SESSION[auser]==$site_owner) {
 		printc("<br><table class=dinfo1 width=90% align=center>");
+		printc("<tr><td align=left><div style='font-size: 12px'>");
+		printc("<strong>Current Discussion Settings:</strong>");
+		printc("</div></td></tr>");
 		printc("<tr><td align=left><div style='font-size: 9px'>");
 		printc("<b>Mail Posts:</b>");
 		if ($mailposts == 1) {

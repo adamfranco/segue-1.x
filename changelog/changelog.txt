@@ -8,6 +8,11 @@ v. 1.3.0 (the future)
 		
 	**** IMPORTANT *** Change: Various changes in Segue necessitate that you upgrade to a new config file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make several changes to Segue's database and file-storage structure. (Adam Franco)
 		
+	* New feature: Added Your Posts link to home page (default.inc.php). Your posts displays all discussion/assessment posts the current user has made on all sites. Administrators will have the option to view all discussion/assessment posts across all sites for all users or find all the posts of a given user. (Alex Chapin)
+		
+	* Change: Changed the way internal links (i.e. links to other pages in same site) are saved when added via section and page link types and via story link types. Specifically, the full uri portion of internal link urls are replaced with a constant (similiar to Media Library path) when saved to database. This will allow for updating these links correctly when copying a site or moving a site from one instance of Segue to another. (Alex Chapin)		
+		
+	* Change: Changed Active-X editor so that it links to the Media Library for images. (Alex Chapin)		
 		
 	* Change: #865093 View and activate permission settings on template sites now affect who/when they appear for users creating sites. (Adam Franco)
 		
@@ -17,7 +22,7 @@ v. 1.3.0 (the future)
 		
 	* Change: When logging in and logging out, users are kept on the same page if possible instead of being redirected back to the default page. (Adam Franco)
 		
-	* Change: The 'Site not availible' error is now more informative and includes links to "Home" as well as a "create site" link if the active user is allowed to create a site in that place. The latter is useful when taking advantage of the vhost functionality. (Adam Franco)
+	* Change: The 'Site not availible' error is now more informative and includes links to &quot;Home&quot; as well as a &quot;create site&quot; link if the active user is allowed to create a site in that place. The latter is useful when taking advantage of the vhost functionality. (Adam Franco)
 		
 	* Change: When Changing to a differnt active user as admin, you are now kept on the same page. (Adam Franco)
 		
@@ -33,7 +38,7 @@ v. 1.3.0 (the future)
 		
 	* Bug Fix: sites.php now queries the new (as of a year ago) tables when checking for the type of a site. (Adam Franco)
 		
-	* Bug Fix: Rating can now be set to zero. The default, NULL, -- set by an empty field -- is "no rating". (Adam Franco)
+	* Bug Fix: Rating can now be set to zero. The default, NULL, -- set by an empty field -- is &quot;no rating&quot;. (Adam Franco)
 		
 	* Bug Fix: Public Site Listing now prints next/previous links to additional pages. (Adam Franco)
 		
@@ -47,7 +52,7 @@ v. 1.3.0 (the future)
 		
 	* Change: Link type content blocks no longer print out urls greater than 70 characters but instead truncate their display to avoid stretching their enclosing tables. (Alex Chapin)
 		
-	* Change: Have changed full text link (for content blocks with extended text) so that it is appended at the end of short text as "...more." Have put an anchor on title of discuss/assess UI and added reference to this anchor in the discuss/assess link. (Alex Chapin)
+	* Change: Have changed full text link (for content blocks with extended text) so that it is appended at the end of short text as &quot;...more.&quot; Have put an anchor on title of discuss/assess UI and added reference to this anchor in the discuss/assess link. (Alex Chapin)
 		
 	* New feature: Have added an option to chose a discuss/assess link label. Choses are: discuss, assess, comment, review and register. (Alex Chapin)
 		
@@ -59,7 +64,9 @@ v. 1.3.0 (the future)
 		
 	* New feature: Added visitor and guest usertypes. Visitors can participate in public discussions and can be assigned permissions. Visitors cannot view institute-only content and are not given a slot for a personal site. Guests can participate in all discussions/assessments accessible to institute users and can view institute-only content. In addition, guests are given a slot for a personal site. (Alex Chapin)
 		
-	* New feature: Added user registration UI that appears in public discussions when posts are made without authentication. User registration UI requires unauthenticated users to submit their name and email address when posting to public discussions. Email address in user registration UI is checked against email addresses in user table. Segue user accounts are created for users who register this way and these users are sent an email with their username (=email address) and a auto- generated password. These users are visitor usertypes. (Alex Chapin)
+	* Change: Changed passwd.php to handle 1. changing passwords of users authenticated via Segue's db 2. registering new visitor type users 3. Log in of existing users. (Alex Chapin)
+		
+	* New feature: Added user registration UI that appears in public discussions when posts are made without authentication. User registration UI requires unauthenticated users to submit their name and email address when posting to public discussions. Email address in user registration UI is checked against email addresses in user table. In addition, their is a new config option for specifying emails that cannot be registered as visitor (these would be emails address that are set up for an institution' users and part of their user account and authentication. Segue user accounts are created for users who register this way and these users are sent an email with their username (=email address) and a auto- generated password. These users are visitor usertypes. (Alex Chapin)
 		
 	* New feature: Added an RSS Feed content type that allows the inclusion of RSS feeds into a Segue site. (Adam Franco)
 		
@@ -83,7 +90,7 @@ v. 1.2.3 (2004-08-04)
 v. 1.2.2 (2004-07-06)
 ----------------------------------------------------
 		
-	* Bug Fix: Fixed a UI bug in which story timestamps/editors would display"edited by ..." when nobody had done any editing. (Gabe Schine)
+	* Bug Fix: Fixed a UI bug in which story timestamps/editors would display&quot;edited by ...&quot; when nobody had done any editing. (Gabe Schine)
 		
 	* Bug Fix: Fixed browser sniffer bug that prevented inclusion of html editorin add_site_form_5_header.inc and add_site_form_5_footer.inc (Alex Chapin)
 		
@@ -114,7 +121,7 @@ v. 1.1.1 (2004-04-23)
 		
 	* Bug Fix: Fixed a problem in the _first_time_run.inc.php SQL syntax that was preventing the discussion table from being created for new installs of Segue. (Adam Franco)
 		
-	* Bug Fix: Fixed some missing quotation marks, ", in "admin tools" --&gt; "edit users" page that were causing problems with spaces in names. Thanks go to Steve from Nottingham Trent University, England, for finding this problem. (Adam Franco)
+	* Bug Fix: Fixed some missing quotation marks, &quot;, in &quot;admin tools&quot; --&gt; &quot;edit users&quot; page that were causing problems with spaces in names. Thanks go to Steve from Nottingham Trent University, England, for finding this problem. (Adam Franco)
 	
 v. 1.1.0 (2004-04-22)
 ----------------------------------------------------
@@ -187,9 +194,9 @@ v. 1.0.3 (2003-11-12)
 		
 	**** IMPORTANT *** Change: Segue expects that usernames are all lower-case. Checks are in place to force the creation of lowercase usernames when adding users, but if you are using a custom authentication modules, these checks may be bypassed and you should check that usernames in your user table are lower-case if you see strange problems with permissions. (Adam Franco)
 		
-	* New feature: Addition of an update framework for applying database updates in Segue. When templates/database updates are in a release, they will appear in the "Segue Updates" section of the "admin tools". (Adam Franco)
+	* New feature: Addition of an update framework for applying database updates in Segue. When templates/database updates are in a release, they will appear in the &quot;Segue Updates&quot; section of the &quot;admin tools&quot;. (Adam Franco)
 		
-	* Change: Two new site templates: "Advanced: Single Section" and "Advanced: Blank". (Alex Chapin)
+	* Change: Two new site templates: &quot;Advanced: Single Section&quot; and &quot;Advanced: Blank&quot;. (Alex Chapin)
 		
 	**** IMPORTANT *** Change: New templates have been added. To create the new templates, log in as an administrator, then go to 'admin tools' --&gt; 'segue updates' and run the 1.0.3 update if needed. (Adam Franco)
 		
@@ -240,11 +247,11 @@ v. 1.0.0 rc1 (2003-07-14)
 		
 	* New feature: Discussion links now displayed with statistics info. (Gabe Schine)
 		
-	* Change: By-line for default page now has a link to a "credits" page with more info about the authors. (Gabe Schine)
+	* Change: By-line for default page now has a link to a &quot;credits&quot; page with more info about the authors. (Gabe Schine)
 		
 	* Change: ChangeLog is now held in XML format &amp; converted with XSL!
 		
-	* Change: "Powered by Segue" logo now takes you to the Segue page. (Gabe Schine)
+	* Change: &quot;Powered by Segue&quot; logo now takes you to the Segue page. (Gabe Schine)
 	
 v. 1.0.0 beta1 (2003-07-11)
 ----------------------------------------------------
@@ -253,13 +260,13 @@ v. 1.0.0 beta1 (2003-07-11)
 		
 	* Bug Fix: Headings and dividers are now properly displayed when not logged in.
 		
-	**** IMPORTANT *** Change: DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to "000". (Adam Franco)
+	**** IMPORTANT *** Change: DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to &quot;000&quot;. (Adam Franco)
 		
 	* Bug Fix: When integrated with an LDAP server, Segue now correctly synchronizes the user and class database tables when adding users/groups as editors who have not yet logged in/been added to the local tables. (Gabe Schine)
 		
 	* Change: Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.
 		
-	* Change: View/add slots interface: a used slot now displays a "-" under the delete column instead of non-linked "delete" text for clarity. (Gabe Schine)
+	* Change: View/add slots interface: a used slot now displays a &quot;-&quot; under the delete column instead of non-linked &quot;delete&quot; text for clarity. (Gabe Schine)
 	
 v. 1.0.0 alpha3 (2003-06-08)
 ----------------------------------------------------
@@ -270,7 +277,7 @@ v. 1.0.0 alpha3 (2003-06-08)
 		
 	* Change: When an admin is acting as another person, they can only see what that person would see. (Adam Franco)
 		
-	* Bug Fix: The "default" page now appropriately shows sites of which a group member is owner. (Gabe Schine)
+	* Bug Fix: The &quot;default&quot; page now appropriately shows sites of which a group member is owner. (Gabe Schine)
 		
 	* Bug Fix: Move/Copy now shows sites properly when opened on first page load. (Adam Franco)
 		

@@ -703,7 +703,10 @@ class discussion {
 			printc ($s);
 			printc ("</a><input type=hidden name=subject value='".spchars($s)."'>\n");
 			printc (" (<input type=text size= 3 class='textfield small' name='rating' value=".$this->rating.">\n");
-			printc("<input type=submit class='button small' value='rate'> numeric only)\n");
+			printc("<input type=submit class='button small' value='rate'>");
+			printc(" <a href='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."#".$this->id."'><input type=button class='button small' value='cancel'></a>\n");
+			printc(" numeric only");
+			printc(")\n");
 			printc ("</span></td>\n");
 			
 			printc ("<td align=right></td>\n");
@@ -749,8 +752,8 @@ class discussion {
 		
 		// if not rate, print edit, update or post
 		if ($t != 'rate') {
-			printc("<input type=submit class='button small' value=$b>\n");
-			//printc ("<a href='#' onClick='document.postform.submit()'>$b</a>");		
+			printc("<input type=submit class='button small' value='$b'>\n");
+			printc("<a href='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."#".$this->id."'><input type=button class='button small' value='cancel'></a>\n");
 		}
 		printc ("</td></tr></table>\n");
 		printc ("</td></tr>\n");
