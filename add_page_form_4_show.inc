@@ -60,7 +60,7 @@ if ($settings[type]=='page') {
 		printc("<option value='$n'".(($settings[archiveby]==$n)?" selected":"").">$v\n");
 	}
 	printc("</select><br>");
-	printc("<div class=desc>You can organize the content in this site by week added, month added, or year added. This useful for journal-like pages, where content is long and added often.</div>");
+	printc("<div class=desc>You can organize the content in this site by week added, month added, or year added. This is useful for journal-like pages, where content is long and added often.</div>");
 			
 	printc("</div>");
 }
