@@ -117,7 +117,7 @@ if ($nav_arrange==1) horizontal_nav($section,$topnav, $topnav_extra);
 if ($nav_arrange==1) {
 	vertical_nav($page,$leftnav, $leftnav_extra);		
 } else { 
-	vertical_nav($section,$topnav, $topnav_extra);
+	side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra);
 }
 ?>
 </td>
@@ -128,7 +128,7 @@ if ($nav_arrange==1) {
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav($page,$leftnav, $leftnav_extra);
+//if ($nav_arrange==2) horizontal_nav($page,$leftnav, $leftnav_extra);
 ?>
 </div>
 <?
@@ -144,7 +144,7 @@ print $content;
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav($page,$leftnav2, $leftnav2_extra);
+//if ($nav_arrange==2) horizontal_nav($page,$leftnav2, $leftnav2_extra);
 ?>
 </td>
 <?

@@ -141,7 +141,7 @@ print $siteheader;
 if ($nav_arrange==1) {
 	vertical_nav($page, $leftnav, $leftnav_extra);		
 } else { 
-	vertical_nav($section, $topnav, $topnav_extra);
+	side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra);
 }
 ?>
 </td>
@@ -155,7 +155,7 @@ if ($nav_arrange==1) {
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra,'navlink2','navlink2 a');
+//if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra,'navlink2','navlink2 a');
 ?>
 </div>
 <?
@@ -170,7 +170,7 @@ print $content;
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav($page, $leftnav2, $leftnav2_extra);
+//if ($nav_arrange==2) horizontal_nav($page, $leftnav2, $leftnav2_extra);
 ?>
 </div>
 </td>

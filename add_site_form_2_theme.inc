@@ -94,6 +94,7 @@ if ($_SESSION[settings][add]) printc("<div class=title>Add Site</div>");
 if ($_SESSION[settings][edit]) printc("<div class=title>Edit Site</div>");
 printc("<br>");
 
+printc("<div class=desc>Set your browser to allow pop ups from this page in order to properly edit Segue themes.".helplink("theme","help")."</div>");
 // --- title ---
 printc("<div class=title>4. Appearance: &nbsp;Select a Theme".helplink("theme","help")."</div>");
 

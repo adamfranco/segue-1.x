@@ -125,8 +125,8 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
 /* ------------------------------------------- */
 if ($nav_arrange==1) {
 	vertical_nav($page, $leftnav, $leftnav_extra);		
-} else { 
-	vertical_nav($section, $topnav, $topnav_extra);
+} else {
+	side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra);
 }
 ?>
 </td>
@@ -136,23 +136,23 @@ if ($nav_arrange==1) {
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
+//if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
 ?>
 </div>
 <?
 /* ------------------------------------------- */
 /* -------------- CONTENT AREA   ------------- */
 /* ------------------------------------------- */
-
-print $content; 
-
+//printpre ($nav_arrange);
+//printpre ($topsections);
+print $content;
 ?>
 <div class=topnav align=center>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav($page, $leftnav2, $leftnav2_extra);
+//if ($nav_arrange==2) horizontal_nav($page, $leftnav2, $leftnav2_extra);
 ?>
 </div>
 </td>
@@ -160,12 +160,17 @@ if ($nav_arrange==2) horizontal_nav($page, $leftnav2, $leftnav2_extra);
 /* ------------------------------------------- */
 /* -------------- RIGHT NAV (OPT)  ----------- */
 /* ------------------------------------------- */
-if (count($rightnav)) {
-	print "<td style='margin-left: 20px'>";
-	horizontal_nav('pages',$rightnav, $rightnav_extra);
-	print "</td>";
-}
+/* if ($nav_arrange==2) { */
+/* 	print "</td><td class=rightnav>"; */
+/* 	print "<table width=100% cellspacing=0 cellpadding=0 border=0>"; */
+/* 	print "<tr><td class=rightnavbox>";	 */
+/* 	vertical_nav($page, $leftnav, $leftnav_extra); */
+/* 	print "</td></tr>"; */
+/* 	print "</table>"; */
+/*  */
+/* } */
 ?>
+
 </tr>
 </table>
 
