@@ -28,19 +28,12 @@ class segue {
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 	var $_tables = array("site"=>"sites","section"=>"sections","page"=>"pages","story"=>"stories"); // used for getField
 
-	var $_encode = array("title","header","footer","shorttext","longertext");
-	var $_parse = array("header","footer","shorttext","longertext");
-
 /******************************************************************************
  * siteExists - checks if the site/slot already exists with a certain name $name
  ******************************************************************************/
 	
 	function siteExists($site) {
-		$query = "
-SELECT site_id
-	FROM slot INNER JOIN site
-		ON FK_site = site_id AND slot_name='$site'
-";
+		$query = "select * from sites where name='$site'";
 		if (db_num_rows(db_query($query))) return 1;
 		return 0;
 	}
@@ -73,26 +66,13 @@ SELECT site_id
 
 	function getAllSites($user) {
 		$sites = array();
-		$query = "
-SELECT
-	slot_name
-FROM
-	slot
-		INNER JOIN 
-	site
-		ON FK_site = site_id
-		INNER JOIN 
-	user
-		ON FK_createdby = user_id
-			AND
-		user_uname = '$user'
-";
-		if (db_num_rows($r = db_query($query)))
+		if (db_num_rows($r = db_query("select * from sites where addedby='$user'"))) {
 			while ($a = db_fetch_assoc($r)) {
-					$sites[] = $a[slot_name];
-				}
+				$sites[] = $a[name];
+			}
+		}
 		return $sites;
-}
+	}
 
 /******************************************************************************
  * getAllSitesWhereUserIsEditor - gets all sites where $user is an editor
@@ -100,57 +80,14 @@ FROM
 
 	function getAllSitesWhereUserIsEditor($user='') {
 		if ($user == '') $user = $_SESSION[auser];
-
-		// first, get all sites for which the user is an editor
-		$query = "
-			SELECT
-				slot_name
-			FROM
-				slot
-					INNER JOIN
-				site
-					ON slot.FK_site = site_id
-					INNER JOIN 
-				site_editors ON (
-					site_id = site_editors.FK_site 
-						AND 
-					site_editors_type = 'user'
-				)
-					INNER JOIN
-				user ON FK_editor = user_id AND user_uname='$user'";
+		$query = "select * from permissions where user='$user'";
 		$r = db_query($query);
 		$ar = array();
-		if (db_num_rows($r))
+		if (db_num_rows($r)) {
 			while ($a = db_fetch_assoc($r)) {
-				$ar[] = $a[slot_name];
+				$ar[] = $a[site];
 			}
-
-		// now, if a user is a member of any groups, get all sites for which those groups are editors
-		$query = "
-			SELECT
-				site_id
-			FROM
-				site
-					INNER JOIN 
-				site_editors ON (
-					site_id = FK_site 
-						AND 
-					site_editors_type = 'ugroup'
-				)
-					INNER JOIN
-				ugroup ON FK_editor = ugroup_id
-					INNER JOIN
-				ugroup_user ON ugroup_id = FK_ugroup
-					INNER JOIN
-				user ON FK_user = user_id";
-		$r = db_query($query);
-		if (db_num_rows($r))
-			while ($a = db_fetch_assoc($r)) {
-				$ar[] = $a[site_id];
-			}
-			
-		// the two queries will return unique values, but their union could have non-unique entries.
-		// therefore, uniquize it.
+		}
 		return array_unique($ar);
 	}
 
@@ -199,90 +136,36 @@ FROM
 	}
 
 /******************************************************************************
- * getField - Will return the value of a field in the data array.
- *			$field should be the name of the field in the object, not the database
- *			
- *			If the value of the field has not yet been fetched from the database,
- *			it is fetched from the database, otherwise it is simply returned from 
- *			the data array.
- *			
- * 			Each class that extends segue has the following properties:
- *			
- *			An associative array called _datafields that associates the object 
- *			field name to a database join syntax and a database field name or pair of names.
- *			
- *			An array called _encode that holds the names of fields that need to
- *			have slashes added and urlencoding to save them into the database
+ * getField - will fetch a field either from the DB or from array we have it
  ******************************************************************************/
-	function getField ($field) {
-		global $dbuser, $dbpass, $dbdb, $dbhost;
-		if (!$this->fetched[$field]) {	// we haven't allready gotten this data
-			$query = "
-				SELECT 
-					".implode(",",$this->_datafields[$field][1])."
-				FROM
-					".$this->_datafields[$field][0]."
-				WHERE
-					".$this->_table."_id=".$this->id."
-				ORDER BY
-					".$this->_datafields[$field][2]."
-			";
-			
-//			print "-----------beginning---------<br><pre>".$query; 
-	
-			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-			$r = db_query($query);
-			
-//			print mysql_error()."<br>Numrows = ".db_num_rows($r);
-//			print "\n\nresult arrays:\n";
-			
-			if (!db_num_rows($r)) return false; // if we get no results
-			
-			$valarray = array();
-			while($a = db_fetch_assoc($r)) {
-				print_r($a);
-				
-				if (count($this->_datafields[$field][1]) == 1) { 
-					// We just want a single value
-					$val = $a[$this->_datafields[$field][1][0]];
-					$key = 0;
-				} else {
-					// we want a pair of values
-					$val = $a[$this->_datafields[$field][1][0]];
-					$key = $a[$this->_datafields[$field][1][1]];
-				}
-				
-				// Decode this value if it is a member of _encode
-				if (in_array($field,$this->_encode)) 
-					$val = stripslashes(urldecode($val));
-				if (in_array($field,$this->_parse)) 
-					$val = parseMediaTextForEdit($val);
 
-				if (count($this->_datafields[$field][1]) == 1) { 
-					$valarray[] = $val;
-				} else {
-					$valarray[$key] = $val;
-				}
-//				print "<br>key = $key \nval = $val \nvalarray =\n";
-//				print_r($valarray);
+	function getField($field) {
+		global $dbuser, $dbpass, $dbdb, $dbhost;
+/* 		print "getting $field | tobefetched: ".$this->tobefetched."<br>"; */
+		if ($this->tobefetched && !ereg("^l-",$field)) {	// we're supposed to fetch this field
+			$_unencode = array("title","header","footer","shorttext","longertext");
+			$_parse = array("header","footer","shorttext","logertext");
+			$_ardecode = array("sections","pages","stories","discussions");
+			if (!$this->fetched[$field]) {
+				$class = get_class($this);
+				$table = $this->_tables[$class]; // the table to use
+				if ($class=='site') $where = "name='".$this->name."'";
+				else $where = "id=".$this->id;
+				$query = "select $field from $table where $where limit 1";
+				db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+				$r = db_query($query);
+				if (!db_num_rows($r)) return false;
+				$a = db_fetch_assoc($r);
+				$val = $a[$field];
+				if (in_array($field,$_unencode)) $val = stripslashes(urldecode($val));
+				if (in_array($field,$_ardecode)) $val = decode_array($val);
+				$this->data[$field] = $val;
+				$this->fetched[$field] = 1;
+				if (in_array($field,$_parse)) $this->parseMediaTextForEdit($field);
 			}
+		} // done fetching
 			
-			if (count($valarray) == 1)
-				$this->data[$field] = $valarray[0];
-			else
-				$this->data[$field] = $valarray;
-			$this->fetched[$field] = 1;
-		}
-		
-//		print_r($valarray);
-//		print "</pre>----------end------------<br>";
 		return $this->data[$field];
-	}
-	
-	function fetchAllFields() {
-		foreach ($this->_datafields as $key => $val) {
-			$this->getField($key);
-		}
 	}
 	
 	function setField($name,$value) {
@@ -452,7 +335,7 @@ FROM
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>\n");
+		printc("</select>\n");
 		printc("<select name='activatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -462,7 +345,7 @@ FROM
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>");
+		printc("</select>");
 		
 		printc("</td></tr>");
 		
@@ -471,7 +354,7 @@ FROM
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>\n");
+		printc("</select>\n");
 		printc("<select name='deactivatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -480,7 +363,7 @@ FROM
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>");
+		printc("</select>");
 		
 		printc("</tr></td></table>");
 	}
