@@ -1298,4 +1298,3 @@ function updateLinksToNewSite ($oldSitename, $patterns, $replacements, $text) {
 	
 	return $text;
 }
-

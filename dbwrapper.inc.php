@@ -158,7 +158,7 @@ function db_connect ($host_db, $username, $password, $db='', $port=0) {
   }
   if ($db_type == "mysql") {
     if ($port != 0) $host_db .= ":$port";
-    $cid = mysql_pconnect($host_db,$username,$password) OR die("db_connect: Could not connect to host $host_db: " . mysql_error());
+    $cid = mysql_pconnect($host_db,$username,$password) OR die(printError(" db_connect: Could not connect to host $host_db: " . mysql_error()));
     $_connect_id = $cid;		// save the cid var for later use
     // now that we have a good connection, let's set the database to use
     mysql_select_db($db) or die (printError(" db_connect: Could not select database $db: " . mysql_error()));

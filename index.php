@@ -8,8 +8,15 @@ include("objects/objects.inc.php");
 
 
 ob_start();		// start the output buffer so we can use headers if needed
+
 // we need to include the config before we start the session 
+if (!file_exists("config.inc.php"))
+	die ("<h4>ERROR! You must create a config file before <b>Segue</b> can run.</h4>
+		Copy the 'config_sample.inc.php' in your segue directory to 'config.inc.php' 
+		and edit the values there to point to your directories, url, and database.");
 require_once("config.inc.php");
+require_once("config_utils.inc.php");
+checkConfig();
 
 require_once("auth_not_req_actions.inc.php");
 

@@ -7,6 +7,11 @@
 			file as well as run the '1.3.0 update' under 'admin tools' --> 'updates'
 			to make several changes to Segue's database and file-storage structure.
 		</important>
+		
+		<new author='adam'>
+			Added a configuration checking function and some more helpful error
+			messages so that installing and configuring Segue is more straight forward.
+		</new>
 		<fix author='alex' ref='856465' reftype='bug'>
 			Have added notes and help to themes UI indicating the Popup Window blocker
 			software should be disabled for Segue.
