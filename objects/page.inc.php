@@ -58,55 +58,55 @@ class page extends segue {
 			array("page_order"),
 			"page_id"
 		),
-		"??????" => array(
+		"showcreator" => array(
 			"page",
 			array("page_show_creator"),
 			"page_id"
 		),
-		"??????" => array(
+		"showdate" => array(
 			"page",
 			array("page_show_date"),
 			"page_id"
 		),
-		"??????" => array(
+		"showhr" => array(
 			"page",
 			array("page_show_hr"),
 			"page_id"
 		),
-		"??????" => array(
+		"url" => array(
 			"page
 				INNER JOIN
 			media
 				FK_media = media_id",
-			array("media_id"),
+			array("media_tag"),
 			"page_id"
 		),
-		"??????" => array(
+		"archiveby" => array(
 			"page",
 			array("page_archiveby"),
 			"page_id"
 		),
-		"??????" => array(
+		"locked" => array(
 			"page",
 			array("page_locked"),
 			"page_id"
 		),
-		"??????" => array(
+		"editedby" => array(
 			"page",
 			array("FK_updatedby"),
 			"page_id"
 		),
-		"??????" => array(
+		"editedtimestamp" => array(
 			"page",
 			array("page_updated_tstamp"),
 			"page_id"
 		),
-		"??????" => array(
+		"addedby" => array(
 			"page",
 			array("FK_createdby"),
 			"page_id"
 		),
-		"??????" => array(
+		"editedtimestamp" => array(
 			"page",
 			array("page_created_tstamp"),
 			"page_id"

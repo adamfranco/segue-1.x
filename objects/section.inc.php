@@ -53,35 +53,35 @@ class section extends segue {
 			array("section_order"),
 			"section_id"
 		),
-		"??????" => array(
+		"url" => array(
 			"section
 				INNER JOIN
 			media
 				FK_media = media_id",
-			array("media_id"),
+			array("media_tag"),
 			"section_id"
 		),
-		"??????" => array(
+		"locked" => array(
 			"section",
 			array("section_locked"),
 			"section_id"
 		),
-		"??????" => array(
+		"editedby" => array(
 			"section",
 			array("FK_updatedby"),
 			"section_id"
 		),
-		"??????" => array(
+		"editedtimestamp" => array(
 			"section",
 			array("section_updated_tstamp"),
 			"section_id"
 		),
-		"??????" => array(
+		"addedby" => array(
 			"section",
 			array("FK_createdby"),
 			"section_id"
 		),
-		"??????" => array(
+		"addedtimestamp" => array(
 			"section",
 			array("section_created_tstamp"),
 			"section_id"

@@ -53,7 +53,7 @@ class story extends segue {
 			array("story_order"),
 			"story_id"
 		),
-		"??????" => array(
+		"url" => array(
 			"story
 				INNER JOIN
 			media
@@ -61,42 +61,42 @@ class story extends segue {
 			array("media_id"),
 			"story_id"
 		),
-		"??????" => array(
+		"locked" => array(
 			"story",
 			array("story_locked"),
 			"story_id"
 		),
-		"??????" => array(
+		"editedby" => array(
 			"story",
 			array("FK_updatedby"),
 			"story_id"
 		),
-		"??????" => array(
+		"editedtimestamp" => array(
 			"story",
 			array("story_updated_tstamp"),
 			"story_id"
 		),
-		"??????" => array(
+		"addedby" => array(
 			"story",
 			array("FK_createdby"),
 			"story_id"
 		),
-		"??????" => array(
+		"addedtimestamp" => array(
 			"story",
 			array("story_created_tstamp"),
 			"story_id"
 		),
-		"??????" => array(
+		"discuss" => array(
 			"story",
 			array("story_discussable"),
 			"story_id"
 		),
-		"??????" => array(
+		"category" => array(
 			"story",
 			array("story_category"),
 			"story_id"
 		),
-		"??????" => array(
+		"texttype" => array(
 			"story",
 			array("story_text_type"),
 			"story_id"

@@ -86,22 +86,22 @@ class site extends segue {
 			"site_id"
 		),
 
-		"??????" => array(
+		"editedby" => array(
 			"site",
 			array("FK_updatedby"),
 			"site_id"
 		),
-		"??????" => array(
+		"editedtimestamp" => array(
 			"site",
 			array("site_updated_tstamp"),
 			"site_id"
 		),
-		"??????" => array(
+		"addedby" => array(
 			"site",
 			array("FK_createdby"),
 			"site_id"
 		),
-		"??????" => array(
+		"addedtimestamp" => array(
 			"site",
 			array("site_created_tstamp"),
 			"site_id"
