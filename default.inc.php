@@ -11,9 +11,9 @@ $sitesprinted=array();
 if ($allowclasssites != $allowpersonalsites && ($personalsitesurl || $classsitesurl)) {
 	if ($allowclasssites) {
 		add_link(topnav,"Classes");
-		add_link(topnav,"Community","$personalsitesurl",'','','');
+		add_link(topnav,"Community","$personalsitesurl?name=$auser",'','','');
 	} else {
-		add_link(topnav,"Classes","$classsitesurl",'','','');
+		add_link(topnav,"Classes","$classsitesurl?name=$auser",'','','');
 		add_link(topnav,"Community");
 	}
 }

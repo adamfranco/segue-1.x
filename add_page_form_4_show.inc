@@ -29,6 +29,18 @@ printc("</td></tr></table>");
 if ($settings[type]=='page') {
 	printc("<div class=title style='font-size: 14px'>Display Options</div>");
 	printc("<div class=leftmargin>");
+	
+	printc("Order the Content Blocks on this page by:");
+	printc("<select name='storyorder'>");
+		printc("<option value=''".(($settings[storyorder]=='')?" selected":"").">Custom (Default)");
+		printc("<option value='addeddesc'".(($settings[storyorder]=='addeddesc')?" selected":"").">Recent First");
+		printc("<option value='addedasc'".(($settings[storyorder]=='addedasc')?" selected":"").">Recent Last");
+		printc("<option value='editeddesc'".(($settings[storyorder]=='editeddesc')?" selected":"").">Recently Edited First");
+		printc("<option value='editedasc'".(($settings[storyorder]=='editedasc')?" selected":"").">Recently Edited Last");
+		printc("<option value='author'".(($settings[storyorder]=='author')?" selected":"").">Author");
+		printc("<option value='editor'".(($settings[storyorder]=='editor')?" selected":"").">Editor");
+		printc("<option value='category'".(($settings[storyorder]=='category')?" selected":"").">Category");
+	printc("</select><br><br>");
 		
 	printc("Show added/edited by <i>username</i> for content: <input type=checkbox name='showcreator' value=1". (($settings[showcreator])?" checked":"") . "><BR>");
 	printc("<div class=desc>By checking the above box, the usernames of the people that added or edited the content on this page will be displayed along with the story text.</div>");

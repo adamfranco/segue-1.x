@@ -138,6 +138,14 @@ if ($page) {
 	if (db_get_value("pages","active","id=$page") || has_permissions($auser,PAGE,$site,$section,$page,"")) {
 		printc("<div class=title>$pageinfo[title]</div>");
 	}
+	
+	// handle ordering of stories
+	if ($pageinfo[storyorder] != 'custom' && $pageinfo[storyorder] != '')
+		$stories = handlestoryorder($stories,$pageinfo[storyorder]);
+		
+	if (permission($auser,PAGE,ADD,$page) && ($pageinfo[storyorder] == 'addeddesc' || $pageinfo[storyorder] == 'editeddesc' || $pageinfo[storyorder] == 'author' || $pageinfo[storyorder] == 'editor' || $pageinfo[storyorder] == 'category')) 
+	printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br><hr class=block>");
+	
 	$i=0;
 	foreach ($stories as $s) {
 		$a = db_get_line("stories","id=$s");
@@ -217,8 +225,8 @@ if ($page) {
 			$l = array();
 			if (($auser == $site_owner) || (($auser != $site_owner) && !$a[locked])) {
 				if (($pageinfo[archiveby] == '' || $pageinfo[archiveby] == 'none' || !$pageinfo[archiveby]) && permission($auser, PAGE,EDIT,$page)) {
-					if ($i!=0)$l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=up&id=$s' class=small title='Move this Content Bloc********k up'><b>&uarr;</b></a>";
-					if ($i!=count($stories)-1) $l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=down&id=$s' class=small title='Move this Content Block down'><b>&darr;</b></a>";
+					if ($i!=0 && ($pageinfo[storyorder] == 'custom' || $pageinfo[storyorder] == ''))$l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=up&id=$s' class=small title='Move this Content Block up'><b>&uarr;</b></a>";
+					if ($i!=count($stories)-1 && ($pageinfo[storyorder] == 'custom' || $pageinfo[storyorder] == '')) $l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=down&id=$s' class=small title='Move this Content Block down'><b>&darr;</b></a>";
 				}
 				$i++;
 				if (permission($auser,PAGE,EDIT,$page) || permission($auser,STORY,EDIT,$s)) $l[]="<a href='$PHP_SELF?$sid&$envvars&action=edit_story&edit_story=$s&commingFrom=viewsite' class='small' title='Edit this Content Block'>edit</a>";
@@ -228,7 +236,7 @@ if ($page) {
 			printc("</div>");
 		}
 	}
-	if (permission($auser,PAGE,ADD,$page)) printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+	if (permission($auser,PAGE,ADD,$page) && ($pageinfo[storyorder] == '' || $pageinfo[storyorder] == 'custom' || $pageinfo[storyorder] == 'addedasc' || $pageinfo[storyorder] == 'editedasc')) printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 }
 
 

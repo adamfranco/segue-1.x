@@ -319,6 +319,10 @@ function editor_action(button_id) {
       showModalDialog(_editor_url + "insert_date_time.php?"+objname, window, "resizable: yes; help: no; status: no; scroll: no; ");
     }
 
+    // Custom3
+    else if (cmdID.toLowerCase() == 'linebreak'){
+      editor_insertHTML(objname, "<br>");
+    }
 
     // insert link
     //if (cmdID.toLowerCase() == 'createlink'){

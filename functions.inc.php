@@ -365,7 +365,7 @@ function handlearchive($stories,$pa) {
 	for ($i=1;$i<=31;$i++) {
 		printc("<option" . (($startday == $i)?" selected":"") . ">$i\n");
 	}
-	printc("/select>\n");
+	printc("</select>\n");
 	printc("<select name='startmonth'>");
 	for ($i=0; $i<12; $i++)
 		printc("<option value=".($i+1). (($startmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -375,13 +375,13 @@ function handlearchive($stories,$pa) {
 	for ($i=$curryear-10; $i <= ($curryear); $i++) {
 		printc("<option" . (($startyear == $i)?" selected":"") . ">$i\n");
 	}
-	printc("/select>");
+	printc("</select>");
 //	printc("<br>");
 	printc(" to <select name='endday'>");
 	for ($i=1;$i<=31;$i++) {
 		printc("<option" . (($endday == $i)?" selected":"") . ">$i\n");
 	}
-	printc("/select>\n");
+	printc("</select>\n");
 	printc("<select name='endmonth'>");
 	for ($i=0; $i<12; $i++) {
 		printc("<option value=".($i+1) . (($endmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -390,10 +390,10 @@ function handlearchive($stories,$pa) {
 	for ($i=$curryear; $i <= ($curryear+5); $i++) {
 		printc("<option" . (($endyear == $i)?" selected":"") . ">$i\n");
 	}
-	printc("/select>");
+	printc("</select>");
 	printc(" <input type=submit class=button value='go'>");
 	printc("</form></div>");
-	
+
 	$start = mktime(1,1,1,$startmonth,$startday,$startyear);
 	$end = mktime(1,1,1,$endmonth,$endday,$endyear);
 	if ($pa == 'week') {
@@ -424,21 +424,57 @@ function handlearchive($stories,$pa) {
 		$month = (integer)$regs[2];
 		$day = (integer)$regs[3];
 		$t = mktime(0,0,0,$month,$day,$year);
-/* 			$week = date("W",$t-(date("w",$t)*86400)); */
-/* 			 */
-/* 			if ($startyear == $year && $startweek == $week) */
-/* 				$newstories[] = $s; */
-/* 		if ((!$usestart || $start < $t) && (!$useend || $t < $end)) { */
+// 			$week = date("W",$t-(date("w",$t)*86400)); 
+//
+// 			if ($startyear == $year && $startweek == $week) 
+// 				$newstories[] = $s; 
+// 		if ((!$usestart || $start < $t) && (!$useend || $t < $end)) { 
 		if (($start < $t) && ($t < $end) || false) {
 			$newstories[$s] = $t;
 		}
 	
 	}
-/* 	print_r($newstories); */
+// 	print_r($newstories); 
 	arsort($newstories,SORT_NUMERIC);
-/* 	print_r($newstories); */
+// 	print_r($newstories); 
 	$newstories = array_keys($newstories);
 	printc("<b>Content ranging from $txtstart to $txtend.</b><br><BR>");
+	return $newstories;
+}
+
+function handlestoryorder($stories,$order) {
+	$newstories = array();
+
+	foreach ($stories as $s) {
+		$a = db_get_line("stories","id=$s");
+		$added = str_replace(":","",$a[addedtimestamp]);
+		$added = str_replace("-","",$added);
+		$added = str_replace(" ","",$added);
+
+		if ($order == "addeddesc") 
+			$newstories[$s] = $added;
+		else if ($order == "addedasc") 
+			$newstories[$s] = $added;
+		else if ($order == "editeddesc") 
+			$newstories[$s] = $a[editedtimestamp];
+		else if ($order == "editedasc") 
+			$newstories[$s] = $a[editedtimestamp];
+		else if ($order == "author") 
+			$newstories[$s] = $a[addedby];
+		else if ($order == "editor") 
+			$newstories[$s] = $a[editedby];
+		else if ($order == "category") 
+			$newstories[$s] = $a[category];
+	}
+	
+	if ($order == "addeddesc" || $order == "editeddesc")
+		arsort($newstories,SORT_NUMERIC);
+	else if ($order == "addedasc" || $order == "editedasc")
+		asort($newstories,SORT_NUMERIC);
+	else
+		asort($newstories);
+		
+	$newstories = array_keys($newstories);
 	return $newstories;
 }
 
