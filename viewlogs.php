@@ -26,7 +26,8 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 $orderby = " order by timestamp asc";
 $w = array();
 if ($type) $w[]="type='$type'";
-if ($user) $w[]="content like '$user%'";
+if ($user) $w[]="content like '%$user%'";
+if ($site) $w[]="site like '%$site%'";
 if ($hideadmin) $w[]="type not like 'change_auser'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
@@ -95,9 +96,16 @@ input,select {
 
 </style>
 
-<? print $content; ?>
-<? print $numlogs . " | " . $query; 
-?>
+<table width='100%'>
+<tr><td width=50%>
+	<? print $content; ?>
+	<? print $numlogs . " | " . $query; 
+	?>
+</td><td align=right>
+	<a href=viewsites.php?$sid>Sites</a>
+</td></tr>
+</table>
+
 <table cellspacing=1 width='100%'>
 <tr>
 	<td colspan=6>
@@ -115,11 +123,13 @@ input,select {
 		?>
 		</select>
 		user: <input type=text name=user size=15 value='<?echo $user?>'>
+		site: <input type=text name=site size=15 value='<?echo $site?>'>
 		<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?>
 		<input type=submit value='go'>
 		</form>
 		</td>
 		<td align=right>
+		
 		<?
 		$tpages = ceil($numlogs/30);
 		$curr = ceil(($lowerlimit+30)/30);

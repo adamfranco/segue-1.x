@@ -26,9 +26,9 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 $orderby = " order by editedtimestamp desc";
 $w = array();
 if ($type) $w[]="type='$type'";
-if ($user) $w[]="addedby like '$user%'";
-if ($name) $w[]="name like '$name%'";
-if ($title) $w[]="title like '$title%'";
+if ($user) $w[]="addedby like '%$user%'";
+if ($name) $w[]="name like '%$name%'";
+if ($title) $w[]="title like '%$title%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
 $numlogs=db_num_rows(db_query("select * from sites$where"));
@@ -97,8 +97,16 @@ input,select {
 
 </style>
 
-<? print $content; ?>
-<? print $numlogs . " | " . $query; ?>
+<table width='100%'>
+<tr><td width=50%>
+	<? print $content; ?>
+	<? print $numlogs . " | " . $query; 
+	?>
+</td><td align=right>
+	<a href=viewlogs.php?$sid>Logs</a>
+</td></tr>
+</table>
+
 <table cellspacing=1 width='100%'>
 <tr>
 	<td colspan=8>
@@ -115,7 +123,7 @@ input,select {
 		//	print "<option".(($type==$a[type])?" selected":"").">$a[type]\n";
 		?>
 		<!-- </select> -->
-		site: <input type=text name=name size=15 value='<?echo $name?>'>
+		site: <input type=text name=site size=15 value='<?echo $name?>'>
 		title: <input type=text name=title size=15 value='<?echo $title?>'>
 		user: <input type=text name=user size=15 value='<?echo $user?>'>
 		<input type=submit value='go'>
@@ -161,11 +169,14 @@ if (db_num_rows($r)) {
 	while ($a=db_fetch_assoc($r)) {
 		print "<tr>";
 		print "<td class=td$color><nobr>";
-		//print "$yesterday";
-		if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "<b>";
-		print timestamp2usdate($a[editedtimestamp],1);
-		if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "</b>";
-		print "</nobr></td>";
+			print "<a href='viewlogs.php?$sid&site=$a[name]' style='color: #000;'>";
+			//print "$yesterday";
+			if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "<b>";
+			print timestamp2usdate($a[editedtimestamp],1);
+			if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "</b>";
+			print "</nobr>";
+			print "</a>";
+		print "</td>";
 		print "<td class=td$color>$a[name]</td>";
 		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
 		print "<td class=td$color>$a[type]</td>";
