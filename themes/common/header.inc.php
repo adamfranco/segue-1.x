@@ -8,6 +8,12 @@ function doWindow(name,width,height) {
 	win.focus();
 }
 
+function sendWindow(name,width,height,url) {
+	var win = window.open("",name,"toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,resizable=yes,copyhistory=no,width="+width+",height="+height);
+	win.document.location=url;
+	win.focus();
+}
+
 function typeChange() {
 	if (document.addform) f = document.addform;
 	else f = document.storyform;

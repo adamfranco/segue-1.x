@@ -206,6 +206,21 @@ if (!$settings && !$error) {
 		$settings[longertext] = urldecode($settings[longertext]);
 		$settings[libraryfileid] = $settings[longertext];
 		$settings[libraryfilename] = db_get_value("media","name","id=$settings[libraryfileid]");
+		
+		if ($settings[type] == 'story') {
+			$settings[shorttext] = str_replace("src='####","####",$settings[shorttext]);
+			$settings[shorttext] = str_replace("####'","####",$settings[shorttext]);
+			$textarray1 = explode("####", $settings[shorttext]);
+			if (count($textarray1) > 1) {
+				for ($i=1; $i<count($textarray1); $i=$i+2) {
+					$id = $textarray1[$i];
+					$filename = db_get_value("media","name","id=$id");
+					$filepath = $uploadurl."/".$filename;
+					$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
+				}		
+				$settings[shorttext] = implode("",$textarray1);
+			}
+		}
 	}
 	
 	$settings[categories]=array();
@@ -289,6 +304,29 @@ if ($save) {
 		$settings[showcreator] = ($settings[showcreator])?1:0;
 		$settings[showdate] = ($settings[showdate])?1:0;
 		$settings[ediscussion] = ($settings[ediscussion])?1:0;
+		
+		// Break up the short and long text and properly configure image urls
+		if ($settings[type]=='story') {
+			$textarray1 = explode("&&&&", $settings[shorttext]);
+			if (count($textarray1) > 1) {
+				for ($i=1; $i<count($textarray1); $i=$i+2) {
+					$textarray2 = explode("@@@@", $textarray1[$i]);
+					$id = $textarray2[1];
+					$textarray1[$i] = "src='####".$id."####'";
+				}		
+				$settings[shorttext] = implode("",$textarray1);
+			}
+			
+			$textarray1 = explode("&&&&", $settings[longertext]);
+			if (count($textarray1) > 1) {
+				for ($i=1; $i<count($textarray1); $i=$i+2) {
+					$textarray2 = explode("@@@@", $textarray1[$i]);
+					$id = $textarray2[1];
+					$textarray1[$i] = "src='####".$id."####'";
+				}		
+				$settings[longertext] = implode("",$textarray1);
+			}
+		}
 
 		$settings[shorttext]=urlencode($settings[shorttext]);
 		$settings[longertext]=urlencode($settings[longertext]);

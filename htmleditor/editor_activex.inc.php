@@ -159,6 +159,8 @@ function editor_generate(objname,w,h) {
   + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Horizontal Rule" id="_' +objname+ '_InsertHorizontalRule" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_hr.gif" unselectable="on"></button>'
   +    '<button title="Insert Web Link" id="_' +objname+ '_CreateLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_link.gif" unselectable="on"></button>'
+  +    '<button title="Insert File Browser" id="_' +objname+ '_InsertFileBrowser" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_link.gif" unselectable="on"></button>' 
+  
   + '</td></tr></table>\n'
 
   + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;" unselectable="on"><tr><td style="border: inset 1px;">\n'
@@ -240,11 +242,16 @@ function editor_action(button_id) {
     if (cmdID.toLowerCase() == 'createlink'){
       editdoc.execCommand(cmdID,1);
     }
+    
+    if (cmdID.toLowerCase() == 'insertfilebrowser'){
+      showModalDialog(_editor_url + "../filebrowser.php?",  "resizable: no; help: no; status: no; scroll: no; ");
+    }
 
     // insert image
     else if (cmdID.toLowerCase() == 'insertimage'){
       showModalDialog(_editor_url + "insert_image.html", editdoc, "resizable: no; help: no; status: no; scroll: no; ");
     }
+     
 
     // insert image
     else if (cmdID.toLowerCase() == 'about'){
