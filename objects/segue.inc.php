@@ -455,14 +455,14 @@ FROM
 		if ($_REQUEST[setformdates]) {
 			if (/* !$_REQUEST[link] &&  */$_REQUEST[activatedate]) { 
 				$_SESSION[settings][activatedate] = 1;
-				$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
+				$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth],$_REQUEST[activateday]);
 			} else {
 				$_SESSION[settings][activatedate] = 0;
 				$this->setActivateDate(-1);
 			}
 			if (/* !$_REQUEST[link] &&  */$_REQUEST[deactivatedate]) {
 				$_SESSION[settings][deactivatedate] = 1;
-				$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
+				$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth],$_REQUEST[deactivateday]);
 			} else {
 				$_SESSION[settings][deactivatedate] = 0;
 				$this->setDeactivateDate(-1);
@@ -475,43 +475,45 @@ FROM
  ******************************************************************************/
 
 	function outputDateForm() {
-		global $months;
+		global $months, $days, $months_values;
+		print_r($_SESSION[settings][activatedate]);
 		printc("<input type=hidden name='setformdates' value=1>");
 		printc("<table>");
 		printc("<tr><td align=right>");
 		printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>");
 		for ($i=1;$i<=31;$i++) {
-			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
+			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">".$days[$i-1]."\n");
 		}
-		printc("/select>\n");
+		
+		printc("</select>");
 		printc("<select name='activatemonth'>");
 		for ($i=0; $i<12; $i++) {
-			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+			printc("<option value='$months_values[$i]'" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">".$months[$i]."\n");
 		}
 		printc("</select>\n<select name='activateyear'>");
 		$curryear = date("Y");
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>");
+		printc("</select>");
 		
 		printc("</td></tr>");
 		
 		printc("<tr><td align=right>");
 		printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>");
 		for ($i=1;$i<=31;$i++) {
-			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
+			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">".$days[$i-1]."\n");
 		}
-		printc("/select>\n");
+		printc("</select>\n");
 		printc("<select name='deactivatemonth'>");
 		for ($i=0; $i<12; $i++) {
-			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+			printc("<option value='$months_values[$i]'" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
 		}
 		printc("</select>\n<select name='deactivateyear'>");
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>");
+		printc("</select>");
 		
 		printc("</tr></td></table>");
 	}
@@ -533,6 +535,7 @@ FROM
 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
 		$_SESSION[settings][activatemonth]-=1;
 		$_SESSION[settings][deactivatemonth]-=1;
+		echo $this->getField("activatedate")."<br>";
 		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
 		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
 	}

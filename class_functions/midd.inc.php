@@ -48,7 +48,9 @@ function getuserclasses($user,$time="all") {
 								$r = db_query($query);
 								$a = db_fetch_assoc($r);
 								$user_id = $a[user_id];
-								$query = "insert into class set class_code='$class', FK_owner=$user_id";
+								$sem = $classes[$class][sem];
+								$year = $classes[$class][year];
+								$query = "insert into class set class_code='$class', FK_owner=$user_id, class_semester = '$sem', class_year = $year";
 								db_query($query);
 							}	
 							

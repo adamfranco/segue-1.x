@@ -79,7 +79,7 @@ input,select {
 	print "<td colspan=5 class=pad>";
 	$addedby = $sitea[addedby];
 	$viewpermissions=$sitea[viewpermissions];
-	$added = datetime2usdate($sitea[addedtimestamp]);
+	$added = timestamp2usdate($sitea[addedtimestamp]);
 	$edited = $sitea[editedtimestamp];
 	$editedby = $sitea[editedby];
 	print "added by <i>$addedby</i> on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"");
@@ -127,7 +127,7 @@ if (count($sections)) {
 		print "<td colspan=5 class=pad>";
 		$addedby = $sa[addedby];
 		$viewpermissions=$sa[viewpermissions];
-		$added = datetime2usdate($sa[addedtimestamp]);
+		$added = timestamp2usdate($sa[addedtimestamp]);
 		$edited = $sa[editedtimestamp];
 		$editedby = $sa[editedby];
 		print "added by <i>$addedby</i> on $added".(($editedby)?", edited by <i>$editedby</i> on ".timestamp2usdate($edited):"");
@@ -164,7 +164,7 @@ if (count($sections)) {
 			print "<td colspan=5 class=pad2>";
 			$addedby = $pa[addedby];
 			$viewpermissions=$pa[viewpermissions];
-			$added = datetime2usdate($pa[addedtimestamp]);
+			$added = timestamp2usdate($pa[addedtimestamp]);
 			$edited = $pa[editedtimestamp];
 			$editedby = $pa[editedby];
 			print "added by <i>$addedby</i> on $added".(($editedby)?", edited by <i>$editedby</i> on ".timestamp2usdate($edited):"");

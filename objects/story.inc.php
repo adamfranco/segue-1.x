@@ -60,12 +60,12 @@ class story extends segue {
 		),
 		"activatedate" => array(
 			"story",
-			array("story_activate_tstamp"),
+			array("DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d')"),
 			"story_id"
 		),
 		"deactivatedate" => array(
 			"story",
-			array("story_deactivate_tstamp"),
+			array("DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d')"),
 			"story_id"
 		),
 		"active" => array(
@@ -297,7 +297,7 @@ class story extends segue {
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
 SELECT  
-	story_type AS type, story_title AS title, story_activate_tstamp AS activatedate, story_deactivate_tstamp AS deactivatedate,
+	story_type AS type, story_title AS title, DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	story_active AS active, story_locked AS locked, story_updated_tstamp AS editedtimestamp, story_created_tstamp AS addedtimestamp,
 	story_discussable AS discuss, story_category AS category, story_text_type AS texttype, story_text_short AS shorttext,
 	story_text_long AS longertext,
@@ -500,8 +500,8 @@ ORDER BY
 		}
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[activatedate]) "story_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) "story_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
 		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
 		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";

@@ -54,12 +54,12 @@ class page extends segue {
 		),
 		"activatedate" => array(
 			"page",
-			array("page_activate_tstamp"),
+			array("DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d')"),
 			"page_id"
 		),
 		"deactivatedate" => array(
 			"page",
-			array("page_deactivate_tstamp"),
+			array("DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d')"),
 			"page_id"
 		),
 		"active" => array(
@@ -69,7 +69,7 @@ class page extends segue {
 		),		
 		"storyorder" => array(
 			"page",
-			array("page_storyorder"),
+			array("page_story_order"),
 			"page_id"
 		),
 		"showcreator" => array(
@@ -183,7 +183,7 @@ class page extends segue {
 		$this->data[showhr] = 0;
 		$this->data[archiveby] = "none";
 		$this->data[stories] = array();
-		$this->data[storyorder] = "";
+		$this->data[storyorder] = "custom";
 		if ($this->id) $this->fetchFromDB();
 		if ($formdates) $this->initFormDates();
 	}
@@ -288,8 +288,8 @@ class page extends segue {
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
 SELECT  
-	page_type AS type, page_title AS title, page_activate_tstamp AS activatedate, page_deactivate_tstamp AS deactivatedate,
-	page_active AS active, page_storyorder AS storyorder, page_show_creator AS showcreator, 
+	page_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	page_active AS active, page_story_order AS storyorder, page_show_creator AS showcreator, 
 	page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
 	page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
 	page_ediscussion AS ediscussion,
@@ -511,8 +511,8 @@ ORDER BY
 /* 		print "\nXXXXXXX\n</pre>"; */
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[activatedate]) $a[] = "page_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = "page_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
 		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
 		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
@@ -523,7 +523,7 @@ ORDER BY
 		if ($all || $this->changed[showcreator]) $a[] = $this->_datafields[showcreator][1][0]."='".(($d[showcreator])?1:0)."'";
 		if ($all || $this->changed[showdate]) $a[] = $this->_datafields[showdate][1][0]."='".(($d[showdate])?1:0)."'";
 		if ($all || $this->changed[showhr]) $a[] = $this->_datafields[showhr][1][0]."='".(($d[showhr])?1:0)."'";
-//		if ($all || $this->changed[storyorder]) $a[] = $this->_datafields[storyorder][1][0]."='$d[storyorder]'";
+		if ($all || $this->changed[storyorder]) $a[] = $this->_datafields[storyorder][1][0]."='".$d[storyorder]."'";
 		
 		return $a;
 	}
@@ -560,7 +560,7 @@ ORDER BY
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($startday == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>\n");
+		printc("</select>\n");
 		printc("<select name='startmonth'>");
 		for ($i=0; $i<12; $i++)
 			printc("<option value=".($i+1). (($startmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -570,13 +570,13 @@ ORDER BY
 		for ($i=$curryear-10; $i <= ($curryear); $i++) {
 			printc("<option" . (($startyear == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>");
+		printc("</select>");
 	//	printc("<br>");
 		printc(" to <select name='endday'>");
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($endday == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>\n");
+		printc("</select>\n");
 		printc("<select name='endmonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=".($i+1) . (($endmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -585,7 +585,7 @@ ORDER BY
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($endyear == $i)?" selected":"") . ">$i\n");
 		}
-		printc("/select>");
+		printc("</select>");
 		printc(" <input type=submit class=button value='go'>");
 		printc("</form></div>");
 	

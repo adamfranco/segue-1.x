@@ -432,7 +432,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
         if ($exists) {
                 $addedby = $obj->getField("addedby");
 /*              $viewpermissions=$a[viewpermissions]; */
-                $added = datetime2usdate($obj->getField("addedtimestamp"));
+                $added = timestamp2usdate($obj->getField("addedtimestamp"));
                 $edited = $obj->getField("editedtimestamp");
                 $editedby = $obj->getField("editedby");
                 printc("<div style='padding-left: 20px; font-size: 10px;'>added by $addedby on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"")."<br></div>");

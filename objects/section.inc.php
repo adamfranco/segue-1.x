@@ -40,12 +40,12 @@ class section extends segue {
 		),
 		"activatedate" => array(
 			"section",
-			array("section_activate_tstamp"),
+			array("DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d')"),
 			"section_id"
 		),
 		"deactivatedate" => array(
 			"section",
-			array("section_deactivate_tstamp"),
+			array("DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d')"),
 			"section_id"
 		),
 		"active" => array(
@@ -232,7 +232,7 @@ class section extends segue {
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
 SELECT  
-	section_type AS type, section_title AS title, section_activate_tstamp AS activatedate, section_deactivate_tstamp AS deactivatedate,
+	section_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
 	section_created_tstamp AS addedtimestamp,
 	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
@@ -431,8 +431,8 @@ ORDER BY
 		}
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[activatedate]) $a[] = "section_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = "section_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
 		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
 //		if ($all || $this->changed[pages]) $a[] = "pages='".encode_array($this->getField("pages"))."'";

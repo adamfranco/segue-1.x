@@ -133,7 +133,7 @@ do {
 					
 					if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
 						printc("<div class=contentinfo align=right>");
-						$added = datetime2usdate($o->getField("addedtimestamp"));
+						$added = timestamp2usdate($o->getField("addedtimestamp"));
 						printc("added");
 						if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
 						if ($thisPage->getField("showdate")) printc(" on $added");

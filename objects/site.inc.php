@@ -42,12 +42,12 @@ class site extends segue {
 		),
 		"activatedate" => array(
 			"site",
-			array("site_activate_tstamp"),
+			array("DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d')"),
 			"site_id"
 		),
 		"deactivatedate" => array(
 			"site",
-			array("site_deactivate_tstamp"),
+			array("DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d')"),
 			"site_id"
 		),
 		"active" => array(
@@ -195,7 +195,7 @@ class site extends segue {
 
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
-SELECT  site_title AS title, site_activate_tstamp AS activatedate, site_deactivate_tstamp AS deactivatedate,
+SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 		site_active AS active, site_listed AS listed, site_theme AS theme, site_themesettings AS themesettings,
 		site_header AS header, site_footer AS footer, site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
 		user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
@@ -440,8 +440,8 @@ ORDER BY
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
 		if ($all || $this->changed[listed]) $a[] = $this->_datafields[listed][1][0]."='$d[listed]'";
-		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[activatedate]) $a[] = "site_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = "site_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='$d[active]'";
 //		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
 		if ($all || $this->changed[theme]) $a[] = $this->_datafields[theme][1][0]."='$d[theme]'";
