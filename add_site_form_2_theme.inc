@@ -100,7 +100,7 @@ printc("<div class=title>4. Appearance: &nbsp;Select a Theme".helplink("theme","
 
 
 // --- form contents ---
-printc("<table width=100% cellspacing='0'px>");
+printc("<table width=100% cellspacing='0px'>");
 printc("<tr><td> </td><td valign=bottom align='center' style='border-bottom: 0px solid #aaa; color: #aaa;'>Click on image to preview</td><td valign=bottom align='center' style='border-bottom: 0px solid #aaa; color: #aaa;'>Name</td><td valign=bottom align='center' style='border-bottom: 0px solid #aaa; color: #aaa;'>Select a theme to<br />edit its settings</td></tr>");
 
 $i=0;

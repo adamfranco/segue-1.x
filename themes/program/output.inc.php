@@ -66,7 +66,7 @@ include("themes/$theme/css.inc.php");
    
    <tr>
     <td class="topleft2">&nbsp;</td>
-    <td bgcolor="<? echo $c[bgcolor] ?>">
+    <td style="background-color: #<? echo $c[bgcolor] ?>">
     <? include("themes/common/status.inc.php");?>
 
        <div class=topnav align='center'>
@@ -99,7 +99,7 @@ include("themes/$theme/css.inc.php");
 	</div>
 	
     </td>
-    <td bgcolor="<? echo $c[bgcolor] ?>">
+   <td style="background-color: #<? echo $c[bgcolor] ?>"> &nbsp;</td>
     <td class="right"></td>
    </tr>
    

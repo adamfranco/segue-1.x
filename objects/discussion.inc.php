@@ -493,9 +493,9 @@ class discussion {
 			if (is_array($opt)) $p = 0;
 			else $p = 1;
 			if ($p) {
-				printc ("<tr><td style='padding: 0px'><table align='right' width=95% style='padding-left:".$p."px' cellspacing='0'px>\n");
+				printc ("<tr><td style='padding: 0px'><table align='right' width=95% style='padding-left:".$p."px' cellspacing='0px'>\n");
 			} else {
-				printc ("<tr><td style='padding: 0px'><table width=100% style='padding-left:".$p."px' cellspacing='0'px>\n");
+				printc ("<tr><td style='padding: 0px'><table width=100% style='padding-left:".$p."px' cellspacing='0px'>\n");
 			}
 			for ($i=0;$i<$this->numchildren;$i++) {
 				if (is_array($opt)) $this->children[$i]->opt($opt);
@@ -518,7 +518,7 @@ class discussion {
 	
 	function output($canreply=false,$owner=false) {
 		// print a small table that will house the discussion
-		printc ("<table width=100% style='padding:0' cellspacing='0'px>\n");
+		printc ("<table width=100% style='padding:0' cellspacing='0px'>\n");
 		$this->_output($canreply,$owner);
 		printc ("</table>\n");
 	}
@@ -698,13 +698,13 @@ class discussion {
 		printc ("\n<form action='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."#".$this->id."' method=post name=postform>\n");
 		printc ("<tr><td$p><b>$d</b></td></tr>\n");
 		printc ("<tr><td$p>\n");
-		printc ("<table width=100%  cellspacing='0'px>\n");
+		printc ("<table width=100%  cellspacing='0px'>\n");
 		
 		if ($t == 'rate') {	
 			//printc ("Subject: <input type='text' size=50 name=subject value='".spchars($s)."' readonly>");
 			printc ("<td class=dheader3>\n");
 							
-			printc ("<table width=100% cellspacing='0'px>\n");
+			printc ("<table width=100% cellspacing='0px'>\n");
 			printc ("<tr><td align='left'>\n");
 			printc ("<span class=subject><a name='".$this->id."'>\n");
 			printc ($s);
@@ -897,7 +897,7 @@ class discussion {
 				 
 				printc ("\n<tr><td class=dheader3>\n");
 				
-				printc ("<table width=100% cellspacing='0'px>\n");
+				printc ("<table width=100% cellspacing='0px'>\n");
 				printc ("<tr><td align='left'>\n");
 				printc ("<span class=subject>\n");
 				// subject

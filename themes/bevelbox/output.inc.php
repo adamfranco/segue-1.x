@@ -96,7 +96,7 @@ print $siteheader;
   </tr>
   <tr> 
     <td class="topleft2">&nbsp;</td>    
-    <td bgcolor="<? echo $c[bgcolor] ?>">
+    <td style="background-color: #<? echo $c[bgcolor] ?>">
     <div class='nav'>
    <?
 	/* ------------------------------------------- */
@@ -121,7 +121,7 @@ print $siteheader;
 	</div>
     
     </td>
-    <td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;</td>
+   <td style="background-color: #<? echo $c[bgcolor] ?>">&nbsp;</td>
     <td class="right">&nbsp;</td>
   </tr>
   <tr> 
