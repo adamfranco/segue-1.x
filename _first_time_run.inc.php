@@ -54,7 +54,7 @@ if (!$allTablesExist) {
 		  class_external_id varchar(255) default NULL,
 		  class_department varchar(255) default NULL,
 		  class_number varchar(15) NOT NULL default '000',
-		  class_section varchar(25) default NULL,
+		  class_section varchar(50) default NULL,
 		  class_name varchar(255) NOT NULL default '',
 		  FK_owner int(10) unsigned default NULL,
 		  FK_ugroup int(10) unsigned default NULL,
