@@ -502,7 +502,7 @@ class discussion {
 
 	
 	function _outputform($t) { // outputs a post form of type $t (newpost,edit,reply)
-		global $sid,$error,$site_owner;
+		global $sid,$error,$site_owner,$_full_uri;
 		$script = $_SERVER['SCRIPT_NAME'];
 		
 		
@@ -536,7 +536,7 @@ class discussion {
 				
 		$p = ($t=='reply')?" style='padding-left: 15px'":'';
 		//
-		printc ("\n<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
+		printc ("\n<form action='".$_full_uri."index.php?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
 		printc ("<tr><td$p><b>$d</b></td></tr>");
 		printc ("<tr><td$p>");
 		printc ("<table width=100%  cellspacing=0px>");
@@ -619,7 +619,7 @@ class discussion {
  ******************************************************************************/
 	
 	function _output($cr,$o) {
-		global $sid,$error,$showallauthors,$showposts,$uploadurl,$site_owner;
+		global $sid,$error,$showallauthors,$showposts,$uploadurl,$site_owner,$_full_uri;
 		
 		$siteOwnerId = db_get_value("user","user_id","user_uname='".$site_owner."'");
 		$parentAuthorId = db_get_value("discussion","FK_author","discussion_id='".$this->parentid."'");
@@ -668,7 +668,7 @@ class discussion {
 			// collect possible actions to current post (rely | del | edit | rate)
 			$b = array();
 			if ($cr) 
-				$b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>";
+				$b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply=".$script."</a>";
 				
 			if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) 
 				$b[] = "| <a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'>delete</a>";
