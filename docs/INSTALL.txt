@@ -4,6 +4,8 @@
 --
 -- All files, code, etc are copyright 2003 Middlebury College unless otherwise
 -- noted.
+-- 
+-- $Id$
 -------------------------------------------------------------------------------
 
 Thank you for using Segue! The following steps should get you up and running:
@@ -25,37 +27,30 @@ variable references.
 
 STEP 1
 -----------------------------------
-Obtain the Segue source code from XXXXXXXXXXXXXXXXXXXXXXXXXXX
+Obtain the Segue source code from:
+
+	http://sourceforge.net/project/showfiles.php?group_id=82171
 
 
 STEP 2
 -----------------------------------
 Untar/gzip the source archive:
 
-	tar zxvf segue-1.0.0.tar.gz
+	tar zxvf segue-X.X.X.tar.gz
 	
 Move the "segue" directory to your webspace: (ex.)
 
-	mv segue /var/www
+	mv segue /your/www/dir
 	
 	
 STEP 3
 -----------------------------------
-Change to the segue directory, then to "configs", create a copy of the sample config:
+Change to the segue directory, create a copy of the sample config:
 
-	cd /var/www/segue
-	cd configs
-	cp config_sample.inc.php config_MYMACHINE.inc.php
-				(replace MYMACHINE with anything you want)
-	
-	then
-	
-	echo "MYMACHINE" > ../machine
-	
-				(this system allows you to have multiple config files and switch
-					between them by changing the value in the "machine" file)
+	cd /your/www/dir/segue
+	cp config_sample.inc.php config.inc.php
 					
-Edit config_MYMACHINE.inc.php to match the requirements of your system/institution.
+Edit config.inc.php to match the requirements of your system/institution.
 
 
 STEP 4
@@ -63,11 +58,20 @@ STEP 4
 In your MySQL server, create a database (we recommend calling it "segue") and a user
 with access to this database.
 
-Execute the SQL code contained in docs/DB_structure_mysql.sql on this database to
+Execute the SQL code contained in docs/db_structure_mysql.sql on this database to
 set up the tables.
 
-
 STEP 5
+-----------------------------------
+Create the userfiles directory:
+
+	mkdir <userfiles>
+	chmod 777 <userfiles>
+	
+<userfiles> refers to the location of the userfiles directory set in config.inc.php (must be part of your webspace)
+
+
+STEP 6
 -----------------------------------
 Log into your new Segue system: Enter the Segue address into your browser. You should
 see the Segue welcome page. If an error appears, check your configuration, or, if the
