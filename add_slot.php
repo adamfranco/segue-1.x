@@ -22,6 +22,7 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 // what's the action?
 $curraction = $_REQUEST['action'];
+//$default_uploadlimit = $userdirlimit/1048576;
 
 // if they want to delete a slot
 if ($curraction == 'del') {
@@ -50,13 +51,29 @@ if ($curraction == 'add') {
 		$obj->assocSite = strtolower($_REQUEST['assocsite']);
 		$obj->type = $_REQUEST['type'];
 		if ($_REQUEST['units'] == 'GB') {
-			$obj->uploadlimit = $_REQUEST['uploadlimit']*1073741824;
+			if ($_REQUEST['uploadlimit']*1073741824 != $userdirlimit) {
+				$obj->uploadlimit = $_REQUEST['uploadlimit']*1073741824;
+			} else {
+				$obj->uploadlimit = 'NULL';
+			}
 		} else if ($_REQUEST['units'] == 'MB') {
-			$obj->uploadlimit = $_REQUEST['uploadlimit']*1048576;
+			if ($_REQUEST['uploadlimit']*1048576 != $userdirlimit) {
+				$obj->uploadlimit = $_REQUEST['uploadlimit']*1048576;
+			} else {
+				$obj->uploadlimit = 'NULL';
+			}
 		} else if ($_REQUEST['units'] == 'KB') {
-			$obj->uploadlimit = $_REQUEST['uploadlimit']*1024;
+			if ($_REQUEST['uploadlimit']*1024 != $userdirlimit) {
+				$obj->uploadlimit = $_REQUEST['uploadlimit']*1024;
+			} else {
+				$obj->uploadlimit = 'NULL';
+			}
 		} else {
-			$obj->uploadlimit = $_REQUEST['uploadlimit'];
+			if ($_REQUEST['uploadlimit'] != $userdirlimit) {
+				$obj->uploadlimit = $_REQUEST['uploadlimit'];
+			} else {
+				$obj->uploadlimit = 'NULL';
+			}
 		}
 		
 		$obj->insertDB();
@@ -81,13 +98,29 @@ if ($curraction == 'edit') {
 			$obj->assocSite = strtolower($_REQUEST['assocsite']);
 			$obj->type = $_REQUEST['type'];
 			if ($_REQUEST['units'] == 'GB') {
-				$obj->uploadlimit = $_REQUEST['uploadlimit']*1073741824;
+				if ($_REQUEST['uploadlimit']*1073741824 != $userdirlimit) {
+					$obj->uploadlimit = $_REQUEST['uploadlimit']*1073741824;
+				} else {
+					$obj->uploadlimit = 'NULL';
+				}
 			} else if ($_REQUEST['units'] == 'MB') {
-				$obj->uploadlimit = $_REQUEST['uploadlimit']*1048576;
+				if ($_REQUEST['uploadlimit']*1048576 != $userdirlimit) {
+					$obj->uploadlimit = $_REQUEST['uploadlimit']*1048576;
+				} else {
+					$obj->uploadlimit = 'NULL';
+				}
 			} else if ($_REQUEST['units'] == 'KB') {
-				$obj->uploadlimit = $_REQUEST['uploadlimit']*1024;
+				if ($_REQUEST['uploadlimit']*1024 != $userdirlimit) {
+					$obj->uploadlimit = $_REQUEST['uploadlimit']*1024;
+				} else {
+					$obj->uploadlimit = 'NULL';
+				}
 			} else {
-				$obj->uploadlimit = $_REQUEST['uploadlimit'];
+				if ($_REQUEST['uploadlimit'] != $userdirlimit) {
+					$obj->uploadlimit = $_REQUEST['uploadlimit'];
+				} else {
+					$obj->uploadlimit = 'NULL';
+				}
 			}
 			
 			$obj->updateDB();
