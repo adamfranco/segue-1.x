@@ -43,6 +43,8 @@ function MyCarpConfReset($set='default') {
 
 	$carpconf['poweredby'] = "";
 	
+	$carpconf['cacheinterval'] = 1,
+	
 	global $cfg;
 	$carpconf['cachepath'] = $cfg[uploaddir]."/RSScache/";
 	$carpconf['cacherelative'] = FALSE;	
