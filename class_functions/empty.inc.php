@@ -103,7 +103,11 @@ function coursefoldersite($cl) {
 }
 
 function ldapfname($uname) {
-	return "n/a";
+	$uname = strtolower($uname);
+	if (isgroup($uname)) return "Students in group";
+	if (isclass($uname)) return "Students in class";
+	if ($fname = db_get_value("user","user_fname","user_uname='$uname'")) return $fname;
+	else return "n/a";
 }
 
 function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0) {
