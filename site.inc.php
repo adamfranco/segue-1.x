@@ -47,6 +47,7 @@ do {
 		// If no section is specified, select the first one that we can view.
 		if (!$thisSection && count($thisSite->getField("sections"))) {
 			$thisSite->fetchDown();
+//			$thisSite->buildPermissionsArray();
 			foreach ($thisSite->sections as $s=>$o) {
 //				$o->buildPermissionsArray();
 //				print_r($o);
