@@ -2,10 +2,14 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.0.4" date="2003-11-13">
-		<change author='adam'>
+		<fix author='adam'>
 			Fixed a bug in the 1.0.3 permissions checking that prevented 
 			institution users from accessing sites.
-		</change>
+		</fix>
+		<fix author='adam'>
+			Fixed a bug in fetching of sites where a user is editor, so that a
+			database connection is guaranteed.
+		</fix>
 	</version>
 	<version number="1.0.3" date="2003-11-12">
 		<change author='dobo'>

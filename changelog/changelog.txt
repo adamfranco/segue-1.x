@@ -6,7 +6,9 @@ Name: Segue ChangeLog
 v. 1.0.4 (2003-11-13)
 ----------------------------------------------------
 		
-	* Change: Fixed a bug in the 1.0.3 permissions checking that prevented institution users from accessing sites. (Adam Franco)
+	* Bug Fix: Fixed a bug in the 1.0.3 permissions checking that prevented institution users from accessing sites. (Adam Franco)
+		
+	* Bug Fix: Fixed a bug in fetching of sites where a user is editor, so that a database connection is guaranteed. (Adam Franco)
 	
 v. 1.0.3 (2003-11-12)
 ----------------------------------------------------
