@@ -27,6 +27,7 @@ FROM user WHERE user_id=".$this->id;
 		$this->uname = $a['user_uname'];
 		$this->email = $a['user_email'];
 		$this->type = $a['user_type'];
+		$this->fname = $a['user_fname'];
 		$this->authtype = $a['user_authtype'];
 	}
 	
@@ -36,7 +37,7 @@ FROM user WHERE user_id=".$this->id;
 		$data .= ",user_fname='".$this->fname."'";
 		$data .= ",user_email='".$this->email."'";
 		$data .= ",user_type='".$this->type."'";
-		$data .= ",user_pass='".$this->pass."'";
+		if ($this->randpassgen) $data .= ",user_pass='".$this->pass."'";
 		$data .= ",user_authtype='db'";
 		
 		if ($this->id) { // are we updating?
@@ -50,13 +51,14 @@ INSERT
 	INTO user
 	SET $data";
 		
+//		print $query;
 		return db_query($query);
 	}
 	
 	function updateDB() { $this->_insert(); }
 	function insertDB() { $this->_insert(); }
 	
-	function randpass($chars,$nums) {
+	function randpass($chars=6,$nums=0) {
 		// generate a random password with $chars characters followed by $nums digits
 		$thepass = '';
 		for ($i = 0; $i < $chars; $i++) {
@@ -76,11 +78,46 @@ INSERT
 		return $thepass;
 	}
 	
-	function sendemail() {
+	function sendemail($u=0) {
+		global $_full_uri;
 		if (!$this->randpassgen || $this->authtype != 'db') return false;
 		
 		// send an email to the user with their new random password!!
+		$subject = "IMPORTANT: (Segue) ".(($u)?"Password Reset":"New User Account");
+		$to = $this->fname." <".$this->email.">";
+		$from = "segue@".$_SERVER['SERVER_NAME'];
+		$body = " -- ".(($u)?"YOUR PASSWORD HAS BEEN RESET":"A USER ACCOUNT HAS BEEN CREATED FOR YOU")." --\n\nIn order to log into Segue, click the link below (or enter the URL into your browser) and enter the username and randomly generated password given:\n\n";
+		$body .= "   username: ".$this->uname."\n";
+		$body .= "   password: ".$this->pass."\n\n";
+		$body .= "$_full_uri/index.php\n\n";
+		$body .= "IMPORTANT: Please change your password as soon as you log in. DO NOT continue using this random password as email is insecure.\n\n  Thanks and enjoy using Segue";
 		
+		// send it!
+		mail($to,$subject,$body,"From: $from");
+	}
+	
+	function userExists($u) {
+		if (!$u) return false;
+		$query = "
+	SELECT
+		COUNT(*) as count
+	FROM
+		user
+	WHERE
+		user_uname='$u'";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		if ($a['count'] != 0) return true;
+		return false;
+	}
+	
+	function delUser($id) {
+		$query = "
+	DELETE FROM
+		user
+	WHERE
+		user_id=$id";
+		db_query($query);
 	}
 		
 }

@@ -70,6 +70,7 @@ if ($curraction == 'resetpw') {
 		$obj = new user();
 		$obj->fetchUserID($id);
 		$obj->randpass(5,3);
+		$obj->updateDB();
 		$obj->sendemail(1);
 		$message = "A random password has been generated for '".$obj->uname."' and an email has been sent to them.";
 	}
