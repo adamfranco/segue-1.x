@@ -144,8 +144,8 @@ while ($a = db_fetch_assoc($r)) {
 					foreach ($permissions as $e=>$p) {
 						if (isclass($e)) {
 							$l = array();
-							if ($r = isgroup($e)) {
-								$l = $r;
+							if ($rr = isgroup($e)) {
+								$l = $rr;
 							} else $l[]=$e;
 							foreach ($l as $c) {
 								if ($classes[$c]) $user = $e;
@@ -230,88 +230,38 @@ while ($a = db_fetch_assoc($r)) {
 					print "</tr>";
 					$color = 1-$color;
 					$pages = decode_array($seca['pages']);
-					foreach ($pages as $p) {
-						$pa = db_get_line("pages","id=$p");
-						$page_id = $pa[id];
-						$pp = decode_array($pa[permissions]);
-						if ($pa[type]=='divider' || $pa[type]=='heading') next;
-						print "<tr>";
-						print "<td class=td$color style='padding-left: 20px'>";
-						print "-&gt; ";
-						if ($pa[type]=='page') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s&page=$p\"'>";
-						print "$pa[title]";
-						if ($pa[type]=='page') print "</a>";
-						
-						$add = 0; $edit = 0; $delete = 0;
-						if ($viewpermissions == "anyone") {
-							$user = "everyone";
-							update_permissions ($permissions,$site,$user,"page",$page_id,$add,$edit,$delete);
-							$user = "institute";
-							update_permissions ($permissions,$site,$user,"page",$page_id,$add,$edit,$delete);
-						}
-						if ($viewpermissions == "midd") {
-							$user = "institute";
-							update_permissions ($permissions,$site,$user,"page",$page_id,$add,$edit,$delete);
-						}	
-						
-						foreach($editors as $user) {
-							$add = 0; $edit = 0; $delete = 0;
-							for ($i=0;$i<3;$i++) {
-								print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
-								print ($pa[type]!='url' && $pp[$user][$i])?"X":"&nbsp;";
-								if ($pa[type]!='url' && $pp[$user][$i]) {
-									//print "1";
-									if ($i==0) {
-										$add = 1;
-										print "a";
-									} else if ($i==1) {
-										$edit = 1;
-										print "e";
-									} else {
-										$delete = 1;
-										print "d";
-									}
-								}
-								print "</td>";
-							}
-							update_permissions ($permissions,$site,$user,'page',$page_id,$add,$edit,$delete);
-						}
-						
-						print "</tr>";
-						$color = 1-$color;
-				
-						$stories = decode_array($pa['stories']);
-						$j=1;
-						foreach ($stories as $s) {
+					/* print "<br>---- pages: <pre>"; print_r($pages); print "</pre> --".count($pages)."--<br>"; */
+					if (count($pages) > 0) {
+						foreach ($pages as $p) {
+							$pa = db_get_line("pages","id=$p");
+							$page_id = $pa[id];
+							$pp = decode_array($pa[permissions]);
+							if ($pa[type]=='divider' || $pa[type]=='heading') next;
 							print "<tr>";
-							$sa = db_get_line("stories","id=$s");
-							$story_id = $sa[id];
-							$sp = decode_array($sa[permissions]);
-							print "<td class=td$color style='padding-left: 40px'>";
-							/*if ($sa[type]=='story')*/ print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec&page=$p\"'>";
-							print "$j. &nbsp; $sa[title]";
-							/*if ($sa[type]=='story')*/ print "</a>";
-			//				print "<br><pre>";print_r($sp);print "</pre>";
-							print "</td>";	
+							print "<td class=td$color style='padding-left: 20px'>";
+							print "-&gt; ";
+							if ($pa[type]=='page') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s&page=$p\"'>";
+							print "$pa[title]";
+							if ($pa[type]=='page') print "</a>";
+							
 							$add = 0; $edit = 0; $delete = 0;
 							if ($viewpermissions == "anyone") {
 								$user = "everyone";
-								update_permissions ($permissions,$site,$user,"story",$story_id,$add,$edit,$delete);
+								update_permissions ($permissions,$site,$user,"page",$page_id,$add,$edit,$delete);
 								$user = "institute";
-								update_permissions ($permissions,$site,$user,"story",$story_id,$add,$edit,$delete);
+								update_permissions ($permissions,$site,$user,"page",$page_id,$add,$edit,$delete);
 							}
 							if ($viewpermissions == "midd") {
 								$user = "institute";
-								update_permissions ($permissions,$site,$user,"story",$story_id,$add,$edit,$delete);
+								update_permissions ($permissions,$site,$user,"page",$page_id,$add,$edit,$delete);
 							}	
-												
+							
 							foreach($editors as $user) {
-								print "<td class=td$color align=center".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
 								$add = 0; $edit = 0; $delete = 0;
-								for ($i=1;$i<3;$i++) {
+								for ($i=0;$i<3;$i++) {
 									print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
-									print ($sa[type]!='url' && $sp[$user][$i])?"X":"&nbsp;";
-									if ($sa[type]!='url' && $sp[$user][$i]) {
+									print ($pa[type]!='url' && $pp[$user][$i])?"X":"&nbsp;";
+									if ($pa[type]!='url' && $pp[$user][$i]) {
 										//print "1";
 										if ($i==0) {
 											$add = 1;
@@ -326,11 +276,64 @@ while ($a = db_fetch_assoc($r)) {
 									}
 									print "</td>";
 								}
-								update_permissions ($permissions,$site,$user,'story',$story_id,$add,$edit,$delete);
+								update_permissions ($permissions,$site,$user,'page',$page_id,$add,$edit,$delete);
 							}
+							
 							print "</tr>";
 							$color = 1-$color;
-							$j++;
+					
+							$stories = decode_array($pa['stories']);
+							$j=1;
+							foreach ($stories as $s) {
+								print "<tr>";
+								$sa = db_get_line("stories","id=$s");
+								$story_id = $sa[id];
+								$sp = decode_array($sa[permissions]);
+								print "<td class=td$color style='padding-left: 40px'>";
+								/*if ($sa[type]=='story')*/ print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec&page=$p\"'>";
+								print "$j. &nbsp; $sa[title]";
+								/*if ($sa[type]=='story')*/ print "</a>";
+				//				print "<br><pre>";print_r($sp);print "</pre>";
+								print "</td>";	
+								$add = 0; $edit = 0; $delete = 0;
+								if ($viewpermissions == "anyone") {
+									$user = "everyone";
+									update_permissions ($permissions,$site,$user,"story",$story_id,$add,$edit,$delete);
+									$user = "institute";
+									update_permissions ($permissions,$site,$user,"story",$story_id,$add,$edit,$delete);
+								}
+								if ($viewpermissions == "midd") {
+									$user = "institute";
+									update_permissions ($permissions,$site,$user,"story",$story_id,$add,$edit,$delete);
+								}	
+													
+								foreach($editors as $user) {
+									print "<td class=td$color align=center".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
+									$add = 0; $edit = 0; $delete = 0;
+									for ($i=1;$i<3;$i++) {
+										print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+										print ($sa[type]!='url' && $sp[$user][$i])?"X":"&nbsp;";
+										if ($sa[type]!='url' && $sp[$user][$i]) {
+											//print "1";
+											if ($i==0) {
+												$add = 1;
+												print "a";
+											} else if ($i==1) {
+												$edit = 1;
+												print "e";
+											} else {
+												$delete = 1;
+												print "d";
+											}
+										}
+										print "</td>";
+									}
+									update_permissions ($permissions,$site,$user,'story',$story_id,$add,$edit,$delete);
+								}
+								print "</tr>";
+								$color = 1-$color;
+								$j++;
+							}
 						}
 					}
 				}
@@ -376,8 +379,8 @@ while ($a = db_fetch_assoc($r)) {
 					foreach ($permissions as $e=>$p) {
 						if (isclass($e)) {
 							$l = array();
-							if ($r = isgroup($e)) {
-								$l = $r;
+							if ($rr = isgroup($e)) {
+								$l = $rr;
 							} else $l[]=$e;
 							foreach ($l as $c) {
 								if ($classes[$c]) $user = $e;
