@@ -1,5 +1,6 @@
 <? /* $Id$ */
 
+
 printc("<form action='index.php?$sid&action=add_story' method=post name='addform'>");
 
 //printc("<input type=hidden name=site value='$_SESSION[settings][site]'>");

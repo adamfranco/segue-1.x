@@ -18,9 +18,9 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	if ($_REQUEST[theme] != "") $_SESSION[siteObj]->setField("themesettings",$_REQUEST[themesettings]);
 	if ($_SESSION[settings][step] == 3) $_SESSION[settings][template] = $_REQUEST[template];
 //	if ($settings[step] == 4 && !$_REQUEST[link]) $_SESSION[settings][editors] = strtolower($_REQUEST[editors]);
-	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[siteObj]->setPermissions($_REQUEST[permissions]);
+//	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[siteObj]->setPermissions($_REQUEST[permissions]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][recursiveenable] = $_REQUEST[recursiveenable];
-	if ($_REQUEST[copydownpermissions] != "") $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions];
+//	if ($_REQUEST[copydownpermissions] != "") $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions];
 	if ($_REQUEST[copyfooter]) $_SESSION[siteObj]->setField("header",$_SESSION[siteObj]->getField("footer"));
 	if ($_REQUEST[copyheader]) $_SESSION[siteObj]->setField("footer",$_SESSION[siteObj]->getField("header"));	
 	
@@ -91,7 +91,7 @@ if ($_SESSION[settings][add]) $pagetitle="Add Site";
 if ($_SESSION[settings][edit]) $pagetitle="Edit Site";
 
 if (!sitenamevalid($_SESSION[siteObj]->getField("name"))) {// check if the site name is valid
-	error("You are not allowed to edit this site. Nice try.");
+	error("You are not allowed to edit this site.");
 	return;
 }
 
@@ -122,67 +122,14 @@ if ($_REQUEST[save]) {
 			copySite("template0",$_SESSION[siteObj]->getField("name"));
 		}
 	
-		// --- do the copy down and recursive changes for sections & pages --- 
-		print "count for copy down: " . count($_SESSION[settings][copydownpermissions]) . "<BR>";
-		
-/* ----------------------------------------------------------- */
-/* uncomment following line and comment out everything below when permissions are done */
-//		$_SESSION[siteObj]->copyDownPermissions($_SESSION[settings][copydownpermissions]);
-		
-		$_SESSION[settings][permissions] = decode_array($_SESSION[settings][permissions]);
-		$site_owner = $auser;
-		if (/*$_SESSION[settings][edit] && */($_SESSION[settings][recursiveenable] || count($_SESSION[settings][copydownpermissions]))) {
-			// recursively change the $active or $permissions field for all parts of the site
-			$sections = decode_array(db_get_value("sites","sections","name='$_SESSION[settings][sitename]'"));
-			foreach ($sections as $sn) {
-				$sna = db_get_line("sections","id=$sn");
-				$chg = array();
-				if ($_SESSION[settings][recursiveenable] && permission($auser,SITE,EDIT,$_SESSION[settings][sitename])) $chg[] = "active=$_SESSION[settings][active]";
-				if (count($_SESSION[settings][copydownpermissions]) && $auser == $_SESSION[settings][site_owner]) {
-					$snp = decode_array($sna['permissions']);
-					foreach ($_SESSION[settings][copydownpermissions] as $e) $snp[$e] = $_SESSION[settings][permissions][$e];
-					print_r($snp);
-					$snp = encode_array($snp);
-					$chg[] = "permissions='$snp'";
-				}
-				$query = "update sections set " . implode(",",$chg) . " where id=$sn";
-				print $query . "<BR>";
-				if (count($chg)) db_query($query);
-				
-				$pages = decode_array($sna['pages']);
-				foreach ($pages as $p) {
-					$pa = db_get_line("pages","id=$p");
-					$chg = array();
-					if ($_SESSION[settings][recursiveenable] && permission($auser,SECTION,EDIT,$sn)) $chg[] = "active=$_SESSION[settings][active]";
-					if (count($_SESSION[settings][copydownpermissions]) && $auser == $_SESSION[settings][site_owner]) {
-						$pp = decode_array($pa['permissions']);
-						foreach ($_SESSION[settings][copydownpermissions] as $e) $pp[$e] = $_SESSION[settings][permissions][$e];
-						$pp = encode_array($pp);
-						$chg[] = "permissions='$pp'";
-					}
-					$query = "update pages set " . implode(",",$chg) . " where id=$p";
-					print "--> ".$query . "<BR>";
-					if (count($chg)) db_query($query);
-	
-					$stories = decode_array(db_get_value("pages","stories","id=$p"));
-					foreach ($stories as $s) {
-						$sa = db_get_line("stories","id=$s");
-						$chg = array();
-						if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active=$_SESSION[settings][active]";
-						if (count($_SESSION[settings][copydownpermissions]) && $auser == $_SESSION[settings][site_owner]) {
-							$sp = decode_array($sa['permissions']);
-							foreach ($_SESSION[settings][copydownpermissions] as $e) $sp[$e] = $_SESSION[settings][permissions][$e];
-							$sp = encode_array($sp);
-							$chg[] = "permissions='$sp'";
-						}
-						$query = "update stories set " . implode(",",$chg) . " where id=$s";
-						print "--> ".$query . "<BR>";
-						if (count($chg)) db_query($query);
-					}
-				}
-			}
+		// do recursive enable
+		if ($_SESSION[settings][recursiveenable]) {
+			$val = $_SESSION[siteObj]->getField("active");
+			$_SESSION[siteObj]->setFieldDown("active",$val);
+			$_SESSION[siteObj]->updateDB(1);
+			// done
 		}
-		
+				
 		$sitename = $_SESSION[siteObj]->getField("name");
 		$commingFrom = $_SESSION[settings][commingFrom];
 		$add = $_SESSION[settings][add];

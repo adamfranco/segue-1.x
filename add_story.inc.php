@@ -18,7 +18,7 @@
 /* 	return; */
 /* } */
 
-if ($_SESSION[settings]) {
+if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	// if we have already started editing...
 
 	// --- Load any new variables into the array ---
@@ -61,8 +61,6 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 //	print "Making a new settings array<br>";
 	// create the settings array with default values. $_SESSION[settings] must be passed along with each link.
 	// The array will be saved on clicking a save button.
-	$editors = db_get_value("sites","editors","name='$site'");
-	session_register("settings");
 	$_SESSION[settings] = array(
 		"site_owner" => $site_owner,
 		"add" => 0,
@@ -125,20 +123,6 @@ $section = "";
 $page = "";
 $siteheader = "";
 $sitefooter = "";
-
-// ---  variables for debugging ---
-/*$vars = $_SESSION[settings];
-ksort($vars);
-$variables .= "<br>----------------------<br>";
-foreach ($vars as $n => $v) {
-	$variables .= "$n = $v <br>";	
-}
-if ($_SESSION[settings][file]) foreach ($_SESSION[settings][file] as $n => $v) $variables .= "<br>$n - $v";
-//add_link(leftnav,'','',"$variables");
-//printc("$variables");
-*///------------------------------------
-
-/* print "coming from: ".$_SESSION[settings][commingFrom]."<BR>"; */
 
 if ($_REQUEST[cancel]) {
 	$commingFrom = $_SESSION[settings][commingFrom];
