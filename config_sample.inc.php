@@ -145,9 +145,31 @@
 		 * ldap_voadmin_user		an LDAP user that has at least view-only admin privileges
 		 * ldap_voadmin_pass		the above user's password
 		 ******************************************************************************/
-		$cfg[ldapserver] = $ldapserver = "";				// "ldap.myinsitute.edu"
-		$cfg[ldap_voadmin_user] = $ldap_voadmin_user = "";	// "jdoe"
-		$cfg[ldap_voadmin_pass] = $ldap_voadmin_pass = "";	// "secret"
+		$cfg[ldap_server] = "";				// "ldap.myinsitute.edu"
+		$cfg[ldap_voadmin_user] = "";		// "jdoe"
+		$cfg[ldap_voadmin_pass] = "";		// "secret"		
+		$cfg[ldap_base_dn] = "";   			// "o=institute"
+		$cfg[ldap_user_dn] = ""; 			// ou=people
+
+		$cfg[ldap_username_attribute] = ""; 	// "uid"
+		$cfg[ldap_fullname_attribute] = ""; 	// "cn"
+		$cfg[ldap_email_attribute] = "";		// "mail"
+		$cfg[ldap_group_attribute] = "";		// "memberOf"
+		
+		$cfg[ldap_prof_groups] = $ldap_prof_groups = array(
+			"All_Faculty",
+			"All_Staff"
+		);
+		
+			/******************************************************************************
+			 * LDAP COURSE MEMBER INFORMATION
+			 *
+			 * 
+			 ******************************************************************************/
+
+			$cfg[ldap_classgroup_dn] = "";			// ou=groups,ou=classes
+			$cfg[ldap_groupname_attribute] = "";	// "groupid"
+			$cfg[ldap_groupmember_attribute] = "";	// "member"
 		
 		/******************************************************************************
 		 * PAM AUTHENTICATION
