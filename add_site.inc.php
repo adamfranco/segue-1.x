@@ -13,32 +13,27 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	$_SESSION[siteObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[siteObj]->setField("active",$_REQUEST[active]);
 	if ($_REQUEST[viewpermissions] == "everyone") {
-/* 		print "viewpermissions: $viewpermissions <br>"; */
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone","1");
+		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","1");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
 	if ($_REQUEST[viewpermissions] == "institute") {
-/* 		print "viewpermissions: $viewpermissions <br>"; */
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone","0");
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","institute","1");
+		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","0");
+		$_SESSION[siteObj]->setUserPermissionDown("view","institute","1");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
 	if ($_REQUEST[viewpermissions] == "class") {
-		/* print "viewpermissions: $viewpermissions <br>"; */
 		if (!$_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name"))) {
-			print "not editor";
 			$_SESSION[siteObj]->addEditor($_SESSION[siteObj]->getField("name"));
 		}
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone","0");
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","institute","0");
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW",$_SESSION[siteObj]->getField("name"),"1");
+		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","0");
+		$_SESSION[siteObj]->setUserPermissionDown("view","institute","0");
+		$_SESSION[siteObj]->setUserPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
 	if ($_REQUEST[viewpermissions] == "custom") {
-/* 		print "viewpermissions: $viewpermissions <br>"; */
 		$_SESSION[settings][viewpermissions] = "custom";
 	}
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[siteObj]->setField("listed",$_REQUEST[listed]);
@@ -93,8 +88,8 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 			$_SESSION[settings][sitename] = $_REQUEST[edit_site];
 			$_SESSION[siteObj]->setSiteName($_REQUEST[edit_site]);
 		}
-		$_SESSION[siteObj]->fetchFromDB();
-		$_SESSION[siteObj]->buildPermissionsArray();
+		$_SESSION[siteObj]->fetchDown(1);
+		$_SESSION[siteObj]->buildPermissionsArray(0,1);
 /* ---------------------------------------------------- 
 	 uncomment this line when permissions are set and done */
 		$_SESSION[settings][copydownpermissions] = decode_array($_SESSION[settings][copydownpermissions]);
@@ -240,18 +235,6 @@ if ($_SESSION[settings][step] != 5 && $_SESSION[settings][edit]) $leftlinks .= "
 $leftlinks .= "</td></tr></table>________________<br><a href=$PHP_SELF?$sid&action=add_site&cancel=1>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
-
-print "Everyone:".$_SESSION[siteObj]->hasPermission("view","everyone","1")."<br>";
-print "EveryoneDirect:".$_SESSION[siteObj]->permissions[everyone][3]."<br>";
-print "EveryoneDown:".$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")."<br>";
-print "<br>";
-print "Institute:".$_SESSION[siteObj]->hasPermission("view","institute","1")."<br>";
-print "InstituteDirect:".$_SESSION[siteObj]->permissions[institute][3]."<br>";
-print "InstituteDown:".$_SESSION[siteObj]->hasPermissionDown("view","institute","1")."<br>";
-print "<br>";
-print "Class:".$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1")."<br>";
-print "ClassDirect:".$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3]."<br>";
-print "--------------------------------<br>";
 
 if ($_SESSION[settings][step] == 1) {
 	include("add_site_form_1_title.inc");

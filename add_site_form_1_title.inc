@@ -97,12 +97,12 @@ if ($_SESSION[siteObj]->getField("type") == "class") {
 	if ($_SESSION[settings][edit]) {
 		printc(" <input type=radio name=viewpermissions value='custom'");
 		
-		print (!$_SESSION[siteObj]->hasPermission("view","everyone","1") && $_SESSION[siteObj]->hasPermissionDown("view","everyone","1"))?"1":"0";
-		print (!$_SESSION[siteObj]->hasPermission("view","institute","1") && $_SESSION[siteObj]->hasPermissionDown("view","institue","1"))?"1":"0";
-		print (in_array($_SESSION[siteObj]->getField("name"), $_SESSION[siteObj]->permissions) && !$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1") && $_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1"))?"1":"0";
-		print (!$_SESSION[siteObj]->hasPermissionDown("view","everyone","1") && !$_SESSION[siteObj]->hasPermissionDown("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1"))?"1":"0";
-		print ($_SESSION[settings][viewpermissions] == "custom")?"1":"0";
-		print (count($_SESSION[siteObj]->editors) > 3) ?"1":"0";
+/* 		print (!$_SESSION[siteObj]->hasPermission("view","everyone","1") && $_SESSION[siteObj]->hasPermissionDown("view","everyone","1"))?"1":"0"; */
+/* 		print (!$_SESSION[siteObj]->hasPermission("view","institute","1") && $_SESSION[siteObj]->hasPermissionDown("view","institue","1"))?"1":"0"; */
+/* 		print (in_array($_SESSION[siteObj]->getField("name"), $_SESSION[siteObj]->permissions) && !$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1") && $_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1"))?"1":"0"; */
+/* 		print (!$_SESSION[siteObj]->hasPermissionDown("view","everyone","1") && !$_SESSION[siteObj]->hasPermissionDown("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1"))?"1":"0"; */
+/* 		print ($_SESSION[settings][viewpermissions] == "custom")?"1":"0"; */
+/* 		print (count($_SESSION[siteObj]->editors) > 3) ?"1":"0"; */
 		
 		if ($_SESSION[settings][viewpermissions] == "custom" || (!$_SESSION[siteObj]->hasPermission("view","everyone","1") && $_SESSION[siteObj]->hasPermissionDown("view","everyone","1")) || (!$_SESSION[siteObj]->hasPermission("view","institute","1") && $_SESSION[siteObj]->hasPermissionDown("view","institue","1")) || (in_array($_SESSION[siteObj]->getField("name"), $_SESSION[siteObj]->permissions) && !$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1") && $_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1")) || (!$_SESSION[siteObj]->hasPermissionDown("view","everyone","1") && !$_SESSION[siteObj]->hasPermissionDown("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1"))) {
 			printc(" checked");

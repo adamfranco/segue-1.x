@@ -589,16 +589,19 @@ class segue {
 		$c = permissions::$p();
 		$this->permissions[$user][$c] = $val;
 		
-/* 		if ($class =="site") $n = 0; */
-/* 		if ($class =="section")$n =2; */
-/* 		if ($class =="page")$n = 4; */
-/* 		else $n=6; */
+/* 		if ($class == "site") $n = 0; */
+/* 		else if ($class == "section")$n =4; */
+/* 		else if ($class == "page")$n = 8; */
+/* 		else $n=12; */
 /* 		$i = 0; */
 /* 		while($i <= $n) { */
 /* 			print " &nbsp; "; */
 /* 			$i++; */
 /* 		} */
-		print $class.": set ".$this->id." permissions[".$user."][".$c."] = ".$this->permissions[$user][$c]."<br>";
+/* 		print $this->permissions[$user][$c]; */
+/* 		print $class.": set -- has permission= -- should be: $val<br>"; */
+/* 		print $this->permissions[$user][$c]; */
+/* 		print "<pre>"; print_r($this->permissions[$user]); print "</pre>"; */
 		
 		$this->changedpermissions=1;
 		if ($ar) {
@@ -802,7 +805,7 @@ class segue {
 
 	function hasPermission($perms,$ruser='',$useronly=0) {
 		global $allclasses, $_logged_in, $cfg;
-		
+				
 		if (!$this->builtPermissions) $this->buildPermissionsArray();
 		
 		if ($ruser=='') $user=$_SESSION[auser];
@@ -882,8 +885,8 @@ class segue {
 	
 	function hasPermissionDown($perms,$user='',$useronly=0) {
 		if (!$this->fetcheddown) $this->fetchDown();
+				
 		if ($this->hasPermission($perms,$user,$useronly)) {
-			print "$user has perms $perms on ".get_class($this)." ".$this->id."<br>";
 			return true;
 		}
 		$class = get_class($this);
@@ -896,7 +899,7 @@ class segue {
 				}
 			}
 		}
-		return 0;
+		return false;
 	}
 	
 	function returnEditorOverlap($classes) {
