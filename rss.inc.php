@@ -49,56 +49,18 @@ print "<"."?xml version=\"1.0\"?".">\n";
 	
 	$errorString = ob_get_contents();
 	ob_end_clean();
-	// End validation
-
-//---------------------------
-// check view permissions
-//---------------------------
-if ($error || !$thisPage->canview()) {
+	
+if ($error) {
 	print "\t\t<title>Error</title>\n";
 	ob_start();
-	if ($error)
-		print $errorString;
-	else {
-		print "You may not view this site. This may be due to any of the following reasons:<br />";
-		print "<ul>";
-		if ($thisSite->site_does_not_exist) {
-			print "<li>This site does not exist. ";
-			if (
-				$_SESSION[auser] == slot::getOwner($thisSite->name)
-					|| (
-						$allowpersonalsites 
-						&& $_SESSION[atype] != 'visitor'
-						&& $thisSite->name == $_SESSION[auser]
-					)
-				) 
-			{
-				print "<br /><a href='$PHP_SELF?$sid&action=add_site&sitename=".$thisSite->name."'>Create Site</a>";
-			}
-			print "</li>";
-		} else {
-			if (!$_SESSION[auser]) {
-				print "<li>You are not logged in.</li>";
-				print "<li>You are not on a computer within $cfg[inst_name]</li>";
-			}
-			print "<li>The site has not been activated by the owner.</li>";
-			print "<li>You are not part of a set of specific users or groups allowed to view this site.</li>";
-		}
-		print "</ul>";
-	}
-	
-	$description = htmlentities(ob_get_contents());
+	print $errorString;
+	$description = htmlspecialchars(ob_get_contents());
 	ob_end_clean();
 	print "\t\t<description>";
 	print $description;
 	print "</description>\n";
-} else {
 
-	//---------------------------------------
-	//
-	// Generate the feed if we can view it.
-	//
-	//---------------------------------------
+} else {
 	
 	
 	// check for proper instance of scripts
@@ -113,14 +75,10 @@ if ($error || !$thisPage->canview()) {
 		}
 	}
 	
-	// if we produced an error, return (don't let them view the site)
-	if ($error) return;
-	
 	if ($thisSite) {
 		// If no section is specified, select the first one that we can view.
 		if (!$thisSection && count($thisSite->getField("sections"))) {
 			$thisSite->fetchDown();
-//			$thisSite->buildPermissionsArray();
 			foreach ($thisSite->sections as $s=>$o) {
 				if ($o->getField("type") == 'section' && $o->canview()) { 
 					$thisSection = &$thisSite->sections[$s]; 
@@ -138,17 +96,59 @@ if ($error || !$thisPage->canview()) {
 				if ($o->getField("type") == 'page' && $o->canview()) { $thisPage = &$thisSection->pages[$p]; break; }
 			}
 		}
-		$st = " > " . $thisSection->getField("title");
 	}
-	if ($thisPage) {		// we're viewing a page
-		$pt = " > " . $thisPage->getField("title");
-		// check page permissions
-	}
-	$pagetitle = $previewTitle.$thisSite->getField("title") . $st . $pt;
+
+	//---------------------------
+	// check view permissions
+	//---------------------------
+	if (!$thisPage || !$thisPage->canview()) {
+		print "\t\t<title>Error</title>\n";
+		ob_start();
+		if ($error)
+			print $errorString;
+		else {
+			print "You may not view this site. This may be due to any of the following reasons:<br />";
+			print "<ul>";
+			if ($thisSite->site_does_not_exist) {
+				print "<li>This site does not exist. ";
+				if (
+					$_SESSION[auser] == slot::getOwner($thisSite->name)
+						|| (
+							$allowpersonalsites 
+							&& $_SESSION[atype] != 'visitor'
+							&& $thisSite->name == $_SESSION[auser]
+						)
+					) 
+				{
+					print "<br /><a href='$PHP_SELF?$sid&action=add_site&sitename=".$thisSite->name."'>Create Site</a>";
+				}
+				print "</li>";
+			} else {
+				if (!$_SESSION[auser]) {
+					print "<li>You are not logged in.</li>";
+					print "<li>You are not on a computer within $cfg[inst_name]</li>";
+				}
+				print "<li>The site has not been activated by the owner.</li>";
+				print "<li>You are not part of a set of specific users or groups allowed to view this site.</li>";
+			}
+			print "</ul>";
+		}
+		
+		$description = htmlspecialchars(ob_get_contents());
+		ob_end_clean();
+		print "\t\t<description>";
+		print $description;
+		print "</description>\n";
+		
+	} else {
+		
+		//---------------------------------------
+		//
+		// Generate the feed if we can view it.
+		//
+		//---------------------------------------
 	
 	
-	
-	if ($thisPage) {
 		$thisPage->fetchDown();
 		if ($thisPage->hasPermissionDown("view"))
 			print "\t\t<title>".$thisPage->getField("title")."</title>\n";
@@ -161,7 +161,10 @@ if ($error || !$thisPage->canview()) {
 			
 			print "\t\t<link>".$pagelink."</link>\n";
 			
-//			<description>We have several running instances of Segue available for demostration. These instances are refreshed every two hours, so feel free to try them out without worry of breaking anything.</description>
+			print "\t\t<description>";
+			// 
+			print "</description>\n";
+			
 			print "\t\t<lastBuildDate>".date("D M j, Y G:i:s T")."</lastBuildDate>\n";
 			print "\t\t<generator>Segue RSS Generator</generator>\n";
 			
@@ -171,22 +174,12 @@ if ($error || !$thisPage->canview()) {
 	
 		// handle ordering of stories
 		$thisPage->handleStoryOrder();
-	/* 	if ($pageinfo[storyorder] != 'custom' && $pageinfo[storyorder] != '') */
-	/* 		$stories = handlestoryorder($stories,$pageinfo[storyorder]); */
 
 /******************************************************************************
  * If page has stories then print them
  ******************************************************************************/
 		
 		if ($thisPage->stories) {
-			//if detail then print only story detail ie full text/discussion
-			if ($detail) {
-// 				$o =& $thisPage->stories[$detail];
-// 				include("fullstory.inc.php");
-			
-			//if not detail, then print all stories
-			} else {
-			
 				foreach ($thisPage->data[stories] as $s) {
 					$o =& $thisPage->stories[$s];
 					
@@ -197,15 +190,26 @@ if ($error || !$thisPage->canview()) {
 						print "\t\t\t<title>".$o->getField("title")."</title>\n";
 						print "\t\t\t<link>".$pagelink."</link>\n";
 						print "\t\t\t<guid isPermaLink=\"true\">".$pagelink."</guid>\n";
-						print "\t\t\t<pubDate>".timestamp2usdate($o->getField("addedtimestamp"))."</pubDate>\n";
-						print "\t\t\t<author>".$o->getField("addedbyfull")." (".$o->getField("addedby").")</author>\n";
+						
+						print "\t\t\t<pubDate>";
+						print timestamp2usdate($o->getField("addedtimestamp"));
+						print "</pubDate>\n";
+						
+						print "\t\t\t<author>";
+						print $o->getField("addedbyfull");
+						print " (".$o->getField("addedby").")";
+						print "</author>\n";
 						
 						if ($o->getField("category")) {
-							print "\t\t\t<category>".$o->getField("category")."</category>\n";
+							print "\t\t\t<category>";
+							print $o->getField("category");
+							print "</category>\n";
 						}
 						
 						if ($o->getField("discuss")) {
-							print "\t\t\t<comments>".$pagelink.htmlspecialchars("&story=".$o->id."&detail=".$o->id)."</comments>\n";
+							print "\t\t\t<comments>";
+							print $pagelink.htmlspecialchars("&story=".$o->id."&detail=".$o->id);
+							print "</comments>\n";
 						}
 						
 						$incfile = "output_modules/rss/".$o->getField("type").".inc.php";
