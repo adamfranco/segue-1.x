@@ -20,12 +20,14 @@ if ($allowclasssites != $allowpersonalsites && ($personalsitesurl || $classsites
 
 
 if ($_loggedin) {
+	
 	// -------------------------------------------------------------------
 	//add_link(leftnav,"Home","index.php?$sid","","");
 	//add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
 	foreach ($defaultlinks as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
+
 	
      /* -------------------- list of sites -------------------- */	
 	if ($allowclasssites) {	
@@ -172,9 +174,6 @@ if ($_loggedin) {
 	printc("<form name=groupform action='$PHP_SELF?$sid&action=default' method=post>");
 	
 	printc("<table width=100%>");
-/* 	printc("<tr>"); */
-/* 		printc("<th>name</th><th>title</th><th>theme</th><th>status</th><th>active</th><th colspan=2>options</th>"); */
-/* 	printc("</tr>"); */
 	
 	if ($allowpersonalsites) {
 		// print out the personal site
@@ -184,7 +183,7 @@ if ($_loggedin) {
 	
 	if ($allowclasssites) {	
 		//class sites for professors (for student see above)
-		if ($atype == 'prof' && count($classes)) {
+		if ($atype == 'prof') {
 			//current classes
 			printc("<tr><td class='inlineth' colspan=7>Current Class Sites</td></tr>");
 			$gs = array();
@@ -329,7 +328,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 		printc("<span style ='font-size:14px;'><a href='$namelink'>".$a[title]."</a></span>");
 	} else {
 		if ($atype == 'prof') {
-			printc("<span style ='font-size:10px;'>Create: <a href='$namelink'>Site</a> | <a href='http://etdev.middlebury.edu/mots/prof_add_class?$sid&class=$name' target=new_window>Assessments</a> </span>");
+			printc("<span style ='font-size:10px;'>Create: <a href='$namelink'>Site</a> | <a href='http://et.middlebury.edu/mots/prof_add_class?$sid&class=$name' target=new_window>Assessments</a> </span>");
 		} else {
 			printc("<span style ='font-size:10px;'><a href='$namelink'>Create Site</a></span>");		
 		}

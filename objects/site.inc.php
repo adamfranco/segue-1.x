@@ -50,19 +50,41 @@ class site {
 	}
 	
 	function updateDB() {
-		
+		global $auser;
+		$a = $this->createSQLArray();
+		$a[] = "editedby='$auser'";
+		$a[] = "editedtimestamp=NOW()";		
+		$query = "update sites set ".implode(",",$a)." where id=".$this->id." and name='".$this->name."'";
+		db_query($query);
+	}
+	
+	function insertDB() {
+		global $auser;
+		$a = $this->createSQLArray();
+		$a[] = "addedby='$auser'";
+		$a[] = "addedtimestamp=NOW()";
+		$a[] = "name='".$this->name."'";
+		$query = "insert into sites set ".implode(",",$a);
+		db_query($query);
 	}
 	
 	function createSQLArray() {
 		$d = $this->data;
 		$a = array();
-		$a[] = "title='$settings[title]'";
-		$a[] = "viewpermissions='$settings[viewpermissions]'";
-		$a[] = "listed='$settings[listed]'";
-		$a[] = "activatedate='$settings[activatedate]'";
-		$a[] = "deactivatedate='$settings[deactivatedate]'";
-		$a[] = "active=$settings[active]";
-		$a[] = "type='$settings[type]'";
-		$a[] = "theme='$settings[theme]'";
-		$a[] = "themesettings='$settings[themesettings]'";
-		$a[] = "editors='$settings[editors]'";
+		$a[] = "title='$d[title]'";
+		$a[] = "viewpermissions='$d[viewpermissions]'";
+		$a[] = "listed='$d[listed]'";
+		$a[] = "activatedate='$d[activatedate]'";
+		$a[] = "deactivatedate='$d[deactivatedate]'";
+		$a[] = "active=$d[active]";
+		$a[] = "type='$d[type]'";
+		$a[] = "theme='$d[theme]'";
+		$a[] = "themesettings='$d[themesettings]'";
+		$a[] = "editors='$d[editors]'";
+		$a[] = "permissions='$d[permissions]'";
+		$a[] = "header='$d[header]'";
+		$a[] = "footer='$d[footer]'";
+		$a[] = "sections='$d[sections]'";
+		return $a;
+	}
+}
