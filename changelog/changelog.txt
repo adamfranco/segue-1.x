@@ -3,6 +3,13 @@
 Name: Segue ChangeLog
 
 
+v. 1.0.6 (2003-12-29)
+----------------------------------------------------
+		
+	* Bug Fix: #750109 Now doesn't attempt to perform operations on nonexistant LDAP results. (Adam Franco)
+		
+	* Bug Fix: #865065 Now checks that the destination name is not the same as the source name and is also not an empty string. (Gabe Schine)
+	
 v. 1.0.5 (2003-12-19)
 ----------------------------------------------------
 		
