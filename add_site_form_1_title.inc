@@ -69,15 +69,19 @@ printc("<br><br>");
  ******************************************************************************/
 print "Everyone:".$_SESSION[siteObj]->hasPermission("view","everyone")."<br>";
 print "EveryoneDirect:".$_SESSION[siteObj]->permissions[everyone][3]."<br>";
+print "EveryoneDown:".$_SESSION[siteObj]->hasPermissionDown("view","everyone")."<br>";
+print "<br>";
 print "Institute:".$_SESSION[siteObj]->hasPermission("view","institute")."<br>";
 print "InstituteDirect:".$_SESSION[siteObj]->permissions[institute][3]."<br>";
+print "InstituteDown:".$_SESSION[siteObj]->hasPermissionDown("view","institute")."<br>";
+print "<br>";
 print "Class:".$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"))."<br>";
 print "ClassDirect:".$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3]."<br>";
 
 printc("Allow: <b><input type=radio name=viewpermissions value='everyone'".(($_SESSION[siteObj]->hasPermission("view","everyone"))?" checked":"")."> anyone ");
 printc(" <input type=radio name=viewpermissions value='institute'".(($_SESSION[siteObj]->hasPermission("view","institute") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone"))?" checked":"")."> $cfg[inst_name] users ");
 if ($_SESSION[siteObj]->getField("type") == "class") {
-	printc(" <input type=radio name=viewpermissions value='".$_SESSION[siteObj]->getField("name")."'");
+	printc(" <input type=radio name=viewpermissions value='class'");
 	if (in_array($_SESSION[siteObj]->getField("name"), $_SESSION[siteObj]->permissions)) {
 		$name = $_SESSION[siteObj]->getField("name");
 		if($_SESSION[siteObj]->permissions[$name][3] && !$_SESSION[siteObj]->hasPermissionDown("view","institute") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone"))
