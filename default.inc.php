@@ -3,7 +3,7 @@
 
 if ($settings) session_unregister("settings");
 
-$pagetitle = "SitesDB";
+$pagetitle = "Segue";
 
 $color = 0;
 $sitesprinted=array();
