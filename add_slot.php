@@ -6,16 +6,22 @@ ob_start();
 
 require("includes.inc.php");
 
+$add = $_REQUEST[add];
+$name = $_REQUEST[name];
+$owner = $_REQUEST[owner];
+$assocsite = $_REQUEST[assocsite];
+$delete = $_REQUEST[delete];
+
 if ($add) {
 	// add the slot
 	if (!$name || $name == "") error("You must enter a Site Name");
 	if (!$owner || $owner == "") error("You must choose an owner");
 	
+	
 	if (!$error) {
 		$slotObj = new slot($owner,$name,$assocsite);
 		$successful = $slotObj->insertDB();
-		if (!$successful) error("Site name in use");
-		else {
+		if ($successful) {
 			$name = "";
 		}
 	}

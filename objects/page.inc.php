@@ -6,6 +6,10 @@
 
 class page extends segue {
 	var $stories;
+	var $_allfields = array("section_id","site_id","title","addedtimestamp","addedby",
+						"editedby","editedtimestamp","activatedate","deactivatedate",
+						"active","locked","showcreator","showdate","showhr","stories",
+						"storyorder","type","url","ediscussion","archiveby");
 	
 	function page($insite,$insection,$id=0) {
 		$this->owning_site = $insite;
@@ -65,33 +69,39 @@ class page extends segue {
 		}
 	}
 	
-	function fetchDown() {
+	function fetchDown($full=0) {
 		if (!$this->fetcheddown) {
-			print "---->page fetchdown".$this->id."<BR>";
-			if (!$this->fetched) $this->fetchFromDB();
+/* 			print "---->page fetchdown".$this->id."<BR>"; */
+			if (!$this->tobefetched) $this->fetchFromDB($full);
 			foreach ($this->getField("stories") as $s) {
 				$this->stories[$s] = new story($this->owning_site,$this->owning_section,$this->id,$s);
-				$this->stories[$s]->fetchDown();
+				$this->stories[$s]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;
 		}
 	}
 	
-	function fetchFromDB($id=0) {
+	function fetchFromDB($id=0,$force=0) {
 		if ($id) $this->id = $id;
 		if ($this->id) {
-			$query = "select * from pages where id=".$this->id." limit 1";
-			$this->data = db_fetch_assoc(db_query($query));
-			if (is_array($this->data)) {
-				$this->fetched = 1;
-				$this->buildPermissionsArray();
-				
-				$this->data[stories] = decode_array($this->data[stories]);
-				
-				return true;
+			$this->tobefetched=1;
+			$this->id = $this->getField("id");
+			
+			if ($force) {
+				foreach ($this->_allfields as $f) $this->getField($f);
 			}
+/* 			$query = "select * from pages where id=".$this->id." limit 1"; */
+/* 			$this->data = db_fetch_assoc(db_query($query)); */
+/* 			if (is_array($this->data)) { */
+/* 				$this->fetched = 1; */
+/* 				$this->buildPermissionsArray(); */
+/* 				 */
+/* 				$this->data[stories] = decode_array($this->data[stories]); */
+/* 				 */
+/* 				return true; */
+/* 			} */
 		}
-		return false;
+		return $this->id;
 	}
 	
 	function updateDB($down=0) {
@@ -121,7 +131,7 @@ class page extends segue {
 	function insertDB($down=0,$newsite=null,$newsection=0,$keepaddedby=0) {
 		if ($newsite) $this->owning_site = $newsite;
 		if ($newsection) $this->owning_section = $newsection;
-		$a = $this->createSQLArray();
+		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "addedby='$_SESSION[auser]'";
 			$a[] = "addedtimestamp = NOW()";
@@ -157,21 +167,21 @@ class page extends segue {
 		$d = $this->data;
 		$a = array();
 		
-		$a[] = "title='".addslashes($d[title])."'";
-		$a[] = "site_id='".$this->owning_site."'";
-		$a[] = "section_id=".$this->owning_section;
-		$a[] = "activatedate='$d[activatedate]'";
-		$a[] = "deactivatedate='$d[deactivatedate]'";
-		$a[] = "active=".(($d[active])?1:0);
-		$a[] = "type='$d[type]'";
-		$a[] = "stories='".encode_array($d[stories])."'";
-		$a[] = "url='$d[url]'";
-		$a[] = "ediscussion=".(($d[ediscussion])?1:0);
-		$a[] = "archiveby='$d[archiveby]'";
-		$a[] = "showcreator='$d[showcreator]'";
-		$a[] = "showdate='$d[showdate]'";
-		$a[] = "showhr='$d[showhr]'";
-		$a[] = "storyorder='$d[storyorder]'";
+		if ($all || $this->changed[title]) $a[] = "title='".addslashes($d[title])."'";
+		if ($all) $a[] = "site_id='".$this->owning_site."'";
+		if ($all) $a[] = "section_id=".$this->owning_section;
+		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
+		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
+		if ($all || $this->changed[active]) $a[] = "active=".(($d[active])?1:0);
+		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
+		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
+		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
+		if ($all || $this->changed[ediscussion]) $a[] = "ediscussion=".(($d[ediscussion])?1:0);
+		if ($all || $this->changed[archiveby]) $a[] = "archiveby='$d[archiveby]'";
+		if ($all || $this->changed[showcreator]) $a[] = "showcreator='$d[showcreator]'";
+		if ($all || $this->changed[showdate]) $a[] = "showdate='$d[showdate]'";
+		if ($all || $this->changed[showhr]) $a[] = "showhr='$d[showhr]'";
+		if ($all || $this->changed[storyorder]) $a[] = "storyorder='$d[storyorder]'";
 		
 		return $a;
 	}

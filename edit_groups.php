@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-
+include("objects/objects.inc.php");
 $content = '';
 
 ob_start();
@@ -9,9 +9,9 @@ session_start();
 // include all necessary files
 include("includes.inc.php");
 
-db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+/* db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
 
-if ($del) { // we're deleting something
+if ($del = $_REQUEST[del]) { // we're deleting something
 //	print $del;
 	if ($del=='group') {
 		$query = "delete from classgroups where id=$group";

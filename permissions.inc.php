@@ -30,6 +30,7 @@ class permissions {
 	function outputForm(&$o,$d=0) {
 		global $cfg;
 		$sitename = $o->owning_site;
+		if (!$o->builtPermissions) $o->buildPermissionsArray();
 	
 		// ---- Editor actions ----
 		if ($_REQUEST[edaction] == 'add') {

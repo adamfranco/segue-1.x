@@ -37,10 +37,10 @@ if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
 }
 
 // if they clicked a 'goback' button -- this is OBSOLETE
-if ($goback && $gobackurl) {
-	header("Location: $gobackurl");
-	exit;
-}
+/* if ($goback && $gobackurl) { */
+/* 	header("Location: $gobackurl"); */
+/* 	exit; */
+/* } */
 
 // initialize the content variables
 $leftnav = $rightnav = $topnav = array();
@@ -95,11 +95,14 @@ if ($_SESSION[settings][section]) $_REQUEST[section] = $_SESSION[settings][secti
 if ($_SESSION[settings][page]) $_REQUEST[page] = $_SESSION[settings][page];
 if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
 
+
+
 // set up theme, header,footer and navlinks
 if ($_REQUEST[site]) {						// we are in a site
+	
 	$thisSite = new site($_REQUEST[site]);
 	$thisSite->fetchFromDB();
-	$siteinfo = $thisSite->fetchData();
+	
 	$site_owner = $thisSite->getField("addedby");
 	if ($_REQUEST[theme]) $sid .= "&theme=$_REQUEST[theme]";
 	if ($_REQUEST[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&themesettings=$themesettings";}
@@ -115,6 +118,7 @@ if ($_REQUEST[site]) {						// we are in a site
 	$sitefooter = "<center>";
 	$sitefooter .= $thisSite->getField("footer");
 	$sitefooter .= "</center>";
+
 }
 if ($_REQUEST[section]) {
 	$thisSection = new section($thisSite->name,$_REQUEST[section]);
@@ -148,10 +152,10 @@ printerr();
 
 $t = $action;
 if ($t != 'site') $t = 'viewsite';
-if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]'>".$thisSection->getField("title")."</a>";
-if ($thisPage) $pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]'>".$thisPage->getField("title")."</a>";
+if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]' class='navlink'>".$thisSection->getField("title")."</a>";
+if ($thisPage) $pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]' class='navlink'>".$thisPage->getField("title")."</a>";
 if ($thisSite) {
-	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]'>".$thisSite->getField("title")."</a>";
+	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]' class='navlink'>".$thisSite->getField("title")."</a>";
 	$title = $thisSite->getField("title");
 }
 $nav .= $sn.$pn;
@@ -191,7 +195,7 @@ include("$themesdir/$theme/output.inc.php");
 // ------------------
 // if register_globals is off, we have to do some hacking to get things to work:
 if (!ini_get("register_globals")) {
-	foreach (array_keys($_SESSION) as $n) { if ($n != "settings" && $n != "siteObj" && $n != "sectionObj" && $n != "pageObj" && $n != "storyObj") $_SESSION[$n] = $$n; }
+	foreach (array_keys($_SESSION) as $n) { if ($n!='editors'&&$n!='obj' && $n != "settings" && $n != "siteObj" && $n != "sectionObj" && $n != "pageObj" && $n != "storyObj") $_SESSION[$n] = $$n; }
 }
 
 // debug output -- handy :)

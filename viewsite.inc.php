@@ -89,7 +89,7 @@ foreach ($thisSite->sections as $id=>$s) {
 	if ($s->getField("type") == 'section') $link = "$PHP_SELF?$sid&site=$site&section=$id&action=viewsite";
 	if ($s->getField("type") == 'url') { $link = $s->getField("url"); $target="_blank";}
 	$extra = '';
-	if (($section == $i) || ($s->getField("type") == 'url')) {
+	if (($section == $id) || ($s->getField("type") == 'url')) {
 		if ($thisSite->hasPermission("edit")) {
 			if ($i != 0) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=up&id=$id' class=btnlink title='Move this section to the left'>&larr;</a>";
 			if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$id' class=btnlink title='Move this section to the right'>&rarr;</a>";
@@ -210,9 +210,12 @@ if ($section) $u .= "&section=$section";
 if ($page) $u .= "&page=$page";
 $text .= "<div align=right><table><tr>";
 $text .= "<td><form method=post action='$u&$sid'><input type=submit value='Preview This Site'></form></td>";
-$text .= "<td><form action='$PHP_SELF?$sid&action=site&site=sample' target='_blank' method=post><input type=submit value='View Sample Site'></form></td>";
+$text .= "<td><form action='site_map.php?$sid&site=$site' onClick='doWindow(\"sitemap\",600,400)' target='sitemap' method=post><input type=submit value=' &nbsp; Site Map &nbsp;'></form></td>";
 if ($thisSite->hasPermission("edit")) $text .= "</tr><tr><td><form action='$PHP_SELF?$sid&action=edit_site&edit_site=$site&commingFrom=viewsite' method=post><input type=submit value='Edit Site Settings'></form></td>";
 else $text .= "</tr><tr><td> &nbsp; </td>";
-$text .= "<td><form action='editor_access.php?$sid&site=$site' onClick='doWindow(\"permissions\",600,400)' target='permissions' method=post><input type=submit value='View Permissions'></form></td>";
+if ($thisSite->getField("addedby") == $auser) $text .= "<td><form action='edit_permissions.php?$sid&site=$site' onClick='doWindow(\"permissions\",600,400)' target='permissions' method=post><input type=submit value='Permissions'></form></td>";
+else $text .= "<td> &nbsp; </td>";
+$text .= "</tr><tr>";
+$text .= "<td><form action='$PHP_SELF?$sid&action=site&site=sample' target='_blank' method=post><input type=submit value='View Sample Site'></form></td>";
 $text .= "</tr></table></div>";
 $sitefooter = $sitefooter . $text;

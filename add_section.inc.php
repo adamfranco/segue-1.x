@@ -79,6 +79,7 @@ if (!is_array($_SESSION[settings]) || !is_object($_SESSION[sectionObj])) {
 	
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[sectionObj]->fetchFromDB($_REQUEST[edit_section]);
+		$_SESSION[sectionObj]->buildPermissionsArray();
 		$_SESSION[settings][pagetitle]= $thisSite->getField("title") . " > " . $_SESSION[sectionObj]->getField("title") . " > Edit Item";
 	}
 	$_SESSION[sectionObj]->initFormDates(); // initialize form date variables

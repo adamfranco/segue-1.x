@@ -29,13 +29,13 @@ class site extends segue {
 		$this->data[sections] = array();
 	}
 	
-	function fetchDown() {
+	function fetchDown($full=0) {
 		if (!$this->fetcheddown) {
-			print "site fetchdown".$this->id."<BR>";
-			if (!$this->tobefetched) $this->fetchFromDB();
+/* 			print "site fetchdown".$this->id."<BR>"; */
+			if (!$this->tobefetched) $this->fetchFromDB($full);
 			foreach ($this->getField("sections") as $s) {
 				$this->sections[$s] = new section($this->name,$s);
-				$this->sections[$s]->fetchDown();
+				$this->sections[$s]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;
 		}

@@ -12,49 +12,58 @@ include("includes.inc.php");
 include("$themesdir/common/header.inc.php");
 $partialstatus = 1;
 
-db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+if ($_REQUEST[site])$site=$_REQUEST[site];
+if ($_REQUEST[section])$section=$_REQUEST[section];
+if ($_REQUEST[page])$page=$_REQUEST[page];
 
-if (!insite($site,$section,$page,$story)) {
-	print "Something screwed up. Seems this story isn't in the site you're viewing.";
-	exit;
-}
+$story = new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story]);
+$story->fetchFromDB();
+$story->fetchUp();
+$site_owner=$story->owningSiteObj->getField("addedby");
 
-$a=db_get_line("stories","id=$story");
+/* if (!insite($site,$section,$page,$story)) { */
+/* 	print "Something screwed up. Seems this story isn't in the site you're viewing."; */
+/* 	exit; */
+/* } */
 
-if ($add && candiscuss($a)) {
-	if ($authortype == 'anon' && (!$author || $author=='')) error("You must either log in above or enter your name in the field below.");
-	if (!$thetext || trim($thetext)=='') error("You must enter some text to post.");
+if ($_REQUEST[add] && $story->hasPermission("discuss")) {
+	if ($_REQUEST[authortype] == 'anon' && (!$_REQUEST[author] || $_REQUEST[author]=='')) error("You must either log in above or enter your name in the field below.");
+	if (!$_REQUEST[thetext] || trim($_REQUEST[thetext])=='') error("You must enter some text to post.");
 	if (!$error) {
-		$thetext = urlencode($thetext);
-		$query = "insert into discussions set author='$author', authortype='$authortype', content='$thetext'";
+		$thetext = urlencode($_REQUEST[thetext]);
+		$query = "insert into discussions set author='$_REQUEST[author]', authortype='$_REQUEST[authortype]', content='$thetext'";
 		db_query($query);
 		$newid = lastid();
-		$discussions = decode_array($a[discussions]);
-		$discussions[] = $newid;
-		$discussions = $a[discussions] = encode_array($discussions);
-		$query = "update stories set discussions='$discussions' where id=$story";
-		db_query($query);
+		$story->addDiscussion($newid);
+		$story->updateDB();
+/* 		$discussions = decode_array($a[discussions]); */
+/* 		$discussions[] = $newid; */
+/* 		$discussions = $a[discussions] = encode_array($discussions); */
+/* 		$query = "update stories set discussions='$discussions' where id=$story"; */
+/* 		db_query($query); */
 		$thetext = '';
 	}
 }
 
-if ($del && $auser == $site_owner) {
-	$discussions = decode_array($a[discussions]);
-	$newa = array();
-	foreach ($discussions as $d) {
-		if ($d != $id) $newa[] = $d;
-	}
-	$discussions = $a[discussions] = encode_array($newa);
-	$query = "update stories set discussions='$discussions' where id=$story";
-	db_query($query);
+if ($_REQUEST[del] && $_SESSION[auser] == $site_owner) {
+	$story->delDiscussion($_REQUEST[id]);
+	$story->updateDB();
+/* 	$discussions = decode_array($a[discussions]); */
+/* 	$newa = array(); */
+/* 	foreach ($discussions as $d) { */
+/* 		if ($d != $id) $newa[] = $d; */
+/* 	} */
+/* 	$discussions = $a[discussions] = encode_array($newa); */
+/* 	$query = "update stories set discussions='$discussions' where id=$story"; */
+/* 	db_query($query); */
 }
 
-$smalltext = urldecode($a[shorttext]);
-$fulltext = urldecode($a[longertext]);
+$smalltext = $story->getField("shorttext");
+$fulltext = $story->getField("longertext");
 //print "$smalltext - $fulltext";
 if (!$fulltext || $fulltext=='') $fulltext = $smalltext;
 $fulltext = stripslashes($fulltext);
-if ($a[texttype] == 'text') $fulltext = htmlbr($fulltext);
+if ($story->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);
 
 
 ?>
@@ -126,11 +135,11 @@ textarea { font-size: 11px; font-family: "Verdana"; }
 <? printerr(); print $content; ?>
 <table cellspacing=1 width='100%'>
 <?
-if ($fulltext) print "<tr><th align=left>".(($a[title])?spchars($a[title]):"Full Text")."</th></tr><tr><td style='padding-bottom: 15px'>$fulltext</td></tr>";
+if ($fulltext) print "<tr><th align=left>".(($story->getField("title"))?spchars($story->getField("title")):"Full Text")."</th></tr><tr><td style='padding-bottom: 15px'>$fulltext</td></tr>";
 
-$discussions = decode_array($a[discussions]);
+$discussions = $story->getField("discussions");
 
-if ($a[discuss]) {
+if ($story->getField("discuss")) {
 	print "<tr>";
 	print "<th align=left>Discussions</th>";
 	print "</tr>";
@@ -141,7 +150,7 @@ if ($a[discuss]) {
 			$addedby = ($d[authortype]=='user')?ldapfname($d[author]):$d[author];
 			print "<tr><td>";
 			print "<div style='color: #777' align=right>Posted: ".timestamp2usdate($d[timestamp])." by $addedby";
-			if ($auser== $site_owner) {
+			if ($_SESSION[auser]== $site_owner) {
 				print " <a href='fullstory.php?$sid&site=$site&section=$section&page=$page&story=$story&del=1&id=$id'>[delete]</a>";
 			}
 			print "</div>";
@@ -154,7 +163,7 @@ if ($a[discuss]) {
 	
 //	print "</td></tr>";
 	
-	if (candiscuss($a,1)) {
+	if ($story->hasPermission("discuss")) {
 		print "<tr><th align=left>Post to discussion</th></tr><tr><td>";
 		print "<form name='postform' action='fullstory.php?$sid&site=$site&section=$section&page=$page&story=$story&action=$action' method=post>";
 		print "<input type=hidden name='add' value=1>";
@@ -166,22 +175,23 @@ if ($a[discuss]) {
 		
 		print "<table border=0 cellspacing=10 style='border: 0px' width=75%>";
 		print "<tr><td align=right>";
-		if ($_loggedin) print "Name:</td><td>$afname<input type=hidden name=authortype value='user'><input type=hidden name=author value='$auser'>";
+		if ($_loggedin) print "Name:</td><td>$_SESSION[afname]<input type=hidden name=authortype value='user'><input type=hidden name=author value='$_SESSION[auser]'>";
 		else print "Name:</td><td><input type=text name=author size=20 class=textfield value='$author'> <input type=hidden name=authortype value='anon'>";
 		print "</td></tr>";
 		print "<tr><td align=right valign=top>Text:</td><td>";
-		print "<textarea name='thetext' rows=6 cols=80 class=textarea>".spchars($thetext)."</textarea></td></tr>";
+		print "<textarea name='thetext' rows=6 cols=80 class=textarea>".spchars(thetext)."</textarea></td></tr>";
 		print "<tr><td colspan=2 align=right><input type=submit class=button value='Post'></td></tr></table>";
 		print "</form>";
 		print "</td></tr>";
 	} else {
 		if (!$_loggedin) {
-			if ($a[discusspermissions] == 'midd') {
-				print "<tr><td>You must log in above to post to this discussion.</td></tr>";
-			} else if ($a[discusspermissions] == 'class') {
-				print "<tr><td>You must log in above and be a member of this class to post to this discussion.</td></tr>";
-			}
-		} else print "<tr><td>Sorry, you are not allowed to post to this discussion.</td></tr>";
+/* 			if ($a[discusspermissions] == 'midd') { */
+/* 				print "<tr><td>You must log in above to post to this discussion.</td></tr>"; */
+/* 			} else if ($a[discusspermissions] == 'class') { */
+/* 				print "<tr><td>You must log in above and be a member of this class to post to this discussion.</td></tr>"; */
+/* 			} */
+			print "<tr><td>Sorry, you are not allowed to post to this discussion.</td></tr>";
+		} else print "<tr><td>Sorry, you are not allowed to post to this discussion. Try logging in above.</td></tr>";
 	}
 }
 ?>

@@ -11,6 +11,7 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 // include all necessary files
 include("includes.inc.php");
 
+
 //if ($ltype != 'admin') exit;
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
@@ -57,56 +58,7 @@ $r = db_query($query);
 <html>
 <head>
 <title>View Logs</title>
-
-<style type='text/css'>
-a {
-	color: #a33;
-	text-decoration: none;
-}
-
-a:hover {text-decoration: underline;}
-
-table {
-	border: 1px solid #555;
-}
-
-th, td {
-	border: 0px;
-	background-color: #ddd;
-}
-
-.td1 { 
-	background-color: #ccc; 
-}
-
-.td0 { 
-	background-color: #ddd; 
-}
-
-th { 
-	background-color: #ccc; 
-	font-variant: small-caps;
-}
-
-body { 
-	background-color: white; 
-}
-
-body, table, td, th, input {
-	font-size: 10px;
-	font-family: "Verdana", "sans-serif";
-}
-
-/* td { font-size: 10px; } */
-
-input,select {
-	border: 1px solid black;
-	background-color: white;
-	font-size: 10px;
-}
-
-</style>
-
+<? include("themes/common/logs_css.inc.php"); ?>
 <script lang="JavaScript">
 
 function selectAUser(user) {
@@ -132,19 +84,19 @@ function changeOrder(order) {
 </script>
 
 <table width='100%'>
-<tr><td width=50%>
-	<? print $content; ?>
-	<? print $numlogs . " | " . $query; 
-	?>
-</td><td align=right>
+<td align=right>
 	Logs
 	| <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
 	| <a href=viewstudents.php?$sid&site=<? echo $site ?>>Users</a>
 
 </td></tr>
+<tr><td>
+	<? print $content; ?>
+	<? print $numlogs . " | " . $query; ?>
+</td></tr>
 </table>
 
-<table cellspacing=1 width='100%'>
+<table cellspacing=1 width='100%' style='border: 1px solid #555'>
 <tr>
 	<td colspan=6>
 		<table width='100%'>

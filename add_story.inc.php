@@ -95,6 +95,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 	
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[storyObj]->fetchFromDB($_REQUEST[edit_story]);
+		$_SESSION[storyObj]->buildPermissionsArray();
 	}
 	
 	$_SESSION[settings][categories]=array_unique($thisSite->getAllValues("story","category"));

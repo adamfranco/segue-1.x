@@ -57,57 +57,7 @@ $r = db_query($query);
 <html>
 <head>
 <title>View Logs</title>
-
-<style type='text/css'>
-a {
-	color: #a33;
-	text-decoration: none;
-}
-
-a:hover {text-decoration: underline;}
-
-table {
-	border: 1px solid #555;
-}
-
-th, td {
-	border: 0px;
-	background-color: #ddd;
-}
-
-th { 
-	background-color: #bbb; 
-	font-variant: small-caps;
-}
-
-.td1 { 
-	background-color: #ccc; 
-}
-
-.td0 { 
-	background-color: #ddd; 
-}
-
-body { 
-	background-color: white; 
-}
-
-body, table, td, th, input {
-	font-size: 10px;
-	font-family: "Verdana", "sans-serif";
-}
-
-/* td { font-size: 10px; } */
-
-input,select {
-	border: 1px solid black;
-	background-color: white;
-	font-size: 10px;
-}
-
-</style>
-
-
+<? include("themes/common/logs_css.inc.php"); ?>
 
 </head>
 
@@ -136,18 +86,19 @@ function changeOrder(order) {
 <?// print "test = $test"; ?>
 
 <table width='100%'>
-<tr><td width=50%>
-	<? print $content; ?>
-	<? print $numlogs . " | " . $query; 
-	?>
-</td><td align=right>
+<td align=right>
 	<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
 	| <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
 	| Users
 </td></tr>
+<tr><td>
+	<? print $content; ?>
+	<? print $numlogs . " | " . $query; 
+	?>
+</td></tr>
 </table>
 
-<table cellspacing=1 width='100%'>
+<table cellspacing=1 width='100%' style='border: 1px solid #555'>
 <tr>
 	<td colspan=8>
 		<table width='100%'>

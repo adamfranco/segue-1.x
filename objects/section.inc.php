@@ -2,6 +2,9 @@
 
 class section extends segue {
 	var $pages;
+	var $_allfields = array("site_id","title","editedtimestamp","addedby","editedby","addedtimestamp",
+						"activatedate","deactivatedate","active","pages","type",
+						"url","locked");
 	
 	function section($insite,$id=0) {
 		$this->owning_site = $insite;
@@ -49,8 +52,8 @@ class section extends segue {
 	
 	function addPage($id) {
 		if (!is_array($this->getField("pages"))) $this->data[pages] = array();
-		array_push($this->getField("pages"),$id);
-		$this->changed = 1;
+		array_push($this->data["pages"],$id);
+		$this->changed[pages] = 1;
 	}
 	
 	function delPage($id) {
@@ -60,40 +63,45 @@ class section extends segue {
 		$this->data[pages] = $d;
 		$page = new page($this->owning_site,$this->id,$id);
 		$page->delete();
-		$this->changed=1;
+		$this->changed[pages]=1;
 	}
 	
-	function fetchDown() {
+	function fetchDown($full=0) {
 		if (!$this->fetcheddown) {
-			print "-->section fetchdown".$this->id."<BR>";
-			if (!$this->fetched) $this->fetchFromDB();
+/* 			print "-->section fetchdown".$this->id."<BR>"; */
+			if (!$this->tobefetched) $this->fetchFromDB($full);
 			foreach ($this->getField("pages") as $p) {
 				$this->pages[$p] = new page($this->owning_site,$this->id,$p);
-				$this->pages[$p]->fetchDown();
+				$this->pages[$p]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;
 		}
 	}
 	
-	function fetchFromDB($id=0) {
+	function fetchFromDB($id=0,$force=0) {
 		if ($id) $this->id = $id;
-		if ($this->id) {
-			$query = "select * from sections where id=".$this->id." limit 1";
-			$this->data = db_fetch_assoc(db_query($query));
-			if (is_array($this->data)) {
-				$this->fetched = 1;
-				$this->buildPermissionsArray();
-				
-				$this->data[pages] = decode_array($this->data[pages]);
-				
-				return true;
-			}
-		}
-		return false;
+		$this->tobefetched=1;
+		$this->id = $this->getField("id");
+/* 		if ($this->id) { */
+/* 			$query = "select * from sections where id=".$this->id." limit 1"; */
+/* 			$this->data = db_fetch_assoc(db_query($query)); */
+/* 			if (is_array($this->data)) { */
+/* 				$this->fetched = 1; */
+/* 				$this->buildPermissionsArray(); */
+/* 				 */
+/* 				$this->data[pages] = decode_array($this->data[pages]); */
+/* 				 */
+/* 				return true; */
+/* 			} */
+/* 		} */
+		if ($force && $this->id) {
+			foreach ($_allfields as $f) $this->getField($f);
+		}	
+		return $this->id;
 	}
 	
 	function updateDB($down=0) {
-		if ($this->changed) {
+		if (count($this->changed)) {
 			$a = $this->createSQLArray();
 			$a[] = "editedby='$_SESSION[auser]'";
 			$a[] = "editedtimestamp = NOW()";
@@ -118,7 +126,7 @@ class section extends segue {
 	
 	function insertDB($down=0,$newsite=null,$keepaddedby=0) {
 		if ($newsite) $this->owning_site = $newsite;
-		$a = $this->createSQLArray();
+		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "addedby='$_SESSION[auser]'";
 			$a[] = "addedtimestamp = NOW()";
@@ -150,18 +158,18 @@ class section extends segue {
 		return true;
 	}
 	
-	function createSQLArray() {
+	function createSQLArray($all=0) {
 		$d = $this->data;
 		$a = array();
 		
-		$a[] = "title='".addslashes($d[title])."'";
-		$a[] = "site_id='".$this->owning_site."'";
-		$a[] = "activatedate='$d[activatedate]'";
-		$a[] = "deactivatedate='$d[deactivatedate]'";
-		$a[] = "active=".(($d[active])?1:0);
-		$a[] = "type='$d[type]'";
-		$a[] = "pages='".encode_array($this->getField("pages"))."'";
-		$a[] = "url='$d[url]'";
+		if ($all || $this->changed[title]) $a[] = "title='".addslashes($d[title])."'";
+		if ($all) $a[] = "site_id='".$this->owning_site."'";
+		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
+		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
+		if ($all || $this->changed[active]) $a[] = "active=".(($d[active])?1:0);
+		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
+		if ($all || $this->changed[pages]) $a[] = "pages='".encode_array($this->getField("pages"))."'";
+		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
 		
 		return $a;
 	}

@@ -61,27 +61,25 @@ include("themes/$theme/css.inc.php");
 </head>
 
 <body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
-
+<br>
 <table width=90% align=center cellpadding=0 cellspacing=0>
 <tr><td>
 <?
 /* ------------------------------------------- */
-/* ------SITE HEADER/STATUS BAR/CRUMBS ------- */
+/* ------SITE HEADER ------- */
 /* ------------------------------------------- */
 print $siteheader; 
-include("themes/common/status.inc.php");
-print $sitecrumbs; 
 ?>
 </tr></td>
 </table>
 
 <table width=90% align=center cellpadding=0 cellspacing=0>
   <tr> 
-    <td class="topleft"></td>
-    <td class="top"> 
+    <td class="topleft" height=43></td>
+    <td class="top" height=43> 
 	<table width=100% align=center cellpadding=0 cellspacing=0>
     <tr>
-    <td class="sitetitle">
+    <td class="sitetitle" height=43>
     <? echo $title ?>
 	</td>
 	<td>
@@ -95,7 +93,18 @@ print $sitecrumbs;
   </tr>
   <tr> 
     <td class="topleft2">&nbsp;</td>    
-    <td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;  
+    <td bgcolor="<? echo $c[bgcolor] ?>">
+    <div class='nav'>
+   <?
+	/* ------------------------------------------- */
+	/* -----------STATUS BAR/CRUMBS --------------- */
+	/* ------------------------------------------- */
+	
+	include("themes/common/status.inc.php");
+	print $sitecrumbs; 
+	
+ 	?>
+	</div>
     <div class=topnav align=center>
 	<div class='nav'>
 	<?
@@ -120,10 +129,9 @@ print $sitecrumbs;
   </tr>
 <tr>
 
-<td class="left">
+<td class="left" valign=top>
 
-
-<table width=100% cellpadding=5 cellspacing=0>
+<table width=100% cellpadding=5 cellspacing=0 align=top>
 <td class=leftnav>
 <?
 

@@ -1,6 +1,11 @@
 <? /* $Id$ */
 
 class story extends segue {
+	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp",
+							"editedby","editedtimestamp","shorttext","longertext",
+							"activatedate","deactivatedate","discuss",
+							"locked","category","discussions","texttype","type","url");
+	
 	
 	function story($insite,$insection,$inpage,$id=0) {
 		$this->owning_site = $insite;
@@ -30,6 +35,22 @@ class story extends segue {
 		if ($formdates) $this->initFormDates();
 	}
 	
+	function addDiscussion($id) {
+		if (!$this->getField("discussions")) $this->data[discussions] = array();
+		array_push($this->data[discussions],$id);
+		$this->changed[discussions] = 1;
+	}
+	
+	function delDiscussion($id) {
+		if (!$this->getField("discussions")) return;
+		$d = array();
+		foreach ($this->data[discussions] as $i) {
+			if ($i != $id) $d[] = $i;
+		}
+		$this->data[discussions] = $d;
+		$this->changed[discussiosn] = 1;
+	}
+	
 	function delete() {	// delete from db
 		if (!$this->id) return false;
 		$query = "delete from stories where id=".$this->id;
@@ -37,22 +58,6 @@ class story extends segue {
 		
 		$this->clearPermissions();
 		$this->updatePermissionsDB();
-	}
-	
-	function addStory($id) {
-		if (!is_array($this->getField("stories"))) $this->data[stories] = array();
-		array_push($this->getField("stories"),$id);
-		$this->changed = 1;
-	}
-	
-	function delStory($id) {
-		$d = array();
-		foreach ($this->getField("stories") as $s)
-			if ($s != $id) $d[]=$s;
-		$this->setField("stories",$d);
-		$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
-		$story->delete();
-		$this->changed=1;
 	}
 	
 	function fetchUp() {
@@ -67,30 +72,35 @@ class story extends segue {
 		}
 	}
 	
-	function fetchDown() {
+	function fetchDown($full=0) {
 		if (!$this->fetcheddown) {
-			if (!$this->fetched) $this->fetchFromDB();
+			if (!$this->tobefetched) $this->fetchFromDB($full);
 			$this->fetcheddown = 1;
 		}
 	}
 	
-	function fetchFromDB($id=0) {
+	function fetchFromDB($id=0,$force=0) {
 		if ($id) $this->id = $id;
 		if ($this->id) {
-			$query = "select * from stories where id=".$this->id." limit 1";
-			$this->data = db_fetch_assoc(db_query($query));
-			if (is_array($this->data)) {
-				$this->fetched = 1;
-				$this->buildPermissionsArray();
-				$this->data[shorttext] = urldecode($this->data[shorttext]);
-				$this->data[longertext] = urldecode($this->data[longertext]);
-				$this->parseMediaTextForEdit("shorttext");
-				$this->parseMediaTextForEdit("longertext");
-				
-				return true;
+			$this->tobefetched=1;
+			$this->id = $this->getField("id");
+			if ($force) {
+				foreach ($this->_allfields as $f) $this->getField($f);
 			}
+/* 			$query = "select * from stories where id=".$this->id." limit 1"; */
+/* 			$this->data = db_fetch_assoc(db_query($query)); */
+/* 			if (is_array($this->data)) { */
+/* 				$this->fetched = 1; */
+/* 				$this->buildPermissionsArray(); */
+/* 				$this->data[shorttext] = urldecode($this->data[shorttext]); */
+/* 				$this->data[longertext] = urldecode($this->data[longertext]); */
+/* 				$this->parseMediaTextForEdit("shorttext"); */
+/* 				$this->parseMediaTextForEdit("longertext"); */
+/* 				 */
+/* 				return true; */
+/* 			} */
 		}
-		return false;
+		return $this->id;
 	}
 	
 	function updateDB($down=0) {
@@ -135,7 +145,7 @@ class story extends segue {
 		
 		$this->parseMediaTextForDB("shorttext");
 		$this->parseMediaTextForDB("longertext");
-		$a = $this->createSQLArray();
+		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "addedby='$_SESSION[auser]'";
 			$a[] = "addedtimestamp = NOW()";
@@ -170,21 +180,22 @@ class story extends segue {
 		$d = $this->data;
 		$a = array();
 		
-		$a[] = "title='".addslashes($d[title])."'";
-		$a[] = "site_id='".$this->owning_site."'";
-		$a[] = "section_id=".$this->owning_section;
-		$a[] = "page_id=".$this->owning_page;
-		$a[] = "activatedate='$d[activatedate]'";
-		$a[] = "deactivatedate='$d[deactivatedate]'";
-		$a[] = "active=".(($d[active])?1:0);
-		$a[] = "type='$d[type]'";
-		$a[] = "url='$d[url]'";
-		$a[] = "discuss=$d[discuss]";
-		$a[] = "texttype='$d[texttype]'";
-		$a[] = "category='$d[category]'";
-		$a[] = "shorttext='".urlencode($d[shorttext])."'";
-		$a[] = "longertext='".urlencode($d[longertext])."'";
-		$a[] = "locked=$d[locked]";
+		if ($all || $this->changed[title]) $a[] = "title='".addslashes($d[title])."'";
+		if ($all) $a[] = "site_id='".$this->owning_site."'";
+		if ($all) $a[] = "section_id=".$this->owning_section;
+		if ($all) $a[] = "page_id=".$this->owning_page;
+		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
+		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
+		if ($all || $this->changed[active]) $a[] = "active=".(($d[active])?1:0);
+		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
+		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
+		if ($all || $this->changed[discuss]) $a[] = "discuss=$d[discuss]";
+		if ($all || $this->changed[texttype]) $a[] = "texttype='$d[texttype]'";
+		if ($all || $this->changed[category]) $a[] = "category='$d[category]'";
+		if ($all || $this->changed[shorttext]) $a[] = "shorttext='".urlencode($d[shorttext])."'";
+		if ($all || $this->changed[longertext]) $a[] = "longertext='".urlencode($d[longertext])."'";
+		if ($all || $this->changed[locked]) $a[] = "locked=$d[locked]";
+		if ($all || $this->changed[discussions]) $a[] = "locked='".encode_array($d[discussions])."'";
 		
 		return $a;
 	}

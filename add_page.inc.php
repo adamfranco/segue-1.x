@@ -98,6 +98,7 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 	
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[pageObj]->fetchFromDB($_REQUEST[edit_page]);
+		$_SESSION[pageObj]->buildPermissionsArray();
 /* 		$a = db_get_line("pages","id=$_SESSION[settings][page]"); */
 /* 		foreach ($a as $n=>$v) $_SESSION[settings][$n]=$v; */
 /* 		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$_SESSION[settings][activatedate]); */

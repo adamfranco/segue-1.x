@@ -10,6 +10,7 @@ class segue {
 	var $editorsToDeleteInScope = array();
 	var $changedpermissions = 0;
 	var $cachedPermissions = array();
+	var $builtPermissions=0;
 	
 	var $id = 0;
 	var $data = array();
@@ -33,8 +34,6 @@ class segue {
 	
 	function siteExists($site) {
 		$query = "select * from sites where name='$site'";
-		if (db_num_rows(db_query($query))) return 1;
-		$query = "select * from slots where name='$site'";
 		if (db_num_rows(db_query($query))) return 1;
 		return 0;
 	}
@@ -108,9 +107,10 @@ class segue {
 		}
 		if ($ar) {
 			$a = array();
-			foreach ($this->$ar as $i=>$o) {
+			$oa = &$this->$ar;
+			foreach ($oa as $i=>$o) {
 //				print "doing $i in $ar...<BR>";
-				$a = array_merge($a,$o->getAllValues($scope,$name));
+				$a = array_merge($a,$oa[$i]->getAllValues($scope,$name));
 			}
 		}
 		return $a;
@@ -122,6 +122,7 @@ class segue {
 	}
 	
 	function setData($data) {
+		error("::setData() -- this function should not be used!");
 		if (is_array($data)) {
 			$this->data = $data;
 			$this->changed = 1;
@@ -132,13 +133,17 @@ class segue {
 		}
 	}
 
+/******************************************************************************
+ * getField - will fetch a field either from the DB or from array we have it
+ ******************************************************************************/
+
 	function getField($field) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
-		if ($this->tobefetched) {	// we're supposed to fetch this field
+		if ($this->tobefetched && !ereg("^l-",$field)) {	// we're supposed to fetch this field
 			$_unencode = array("header","footer","shorttext","logertext");
 			$_parse = array("header","footer","shorttext","logertext");
-			$_ardecode = array("sections","pages","stories");
-			if (!$fetched[$field]) {
+			$_ardecode = array("sections","pages","stories","discussions");
+			if (!$this->fetched[$field]) {
 				$class = get_class($this);
 				$table = $this->_tables[$class]; // the table to use
 				if ($class=='site') $where = "name='".$this->name."'";
@@ -167,6 +172,20 @@ class segue {
 			$this->parseMediaTextForEdit($name);
 		}
 	}
+	
+	function setFieldDown($name,$value) {
+		if (!$this->fetcheddown) $this->fetchDown();
+		$class=get_class($this);
+		$ar = $this->_object_arrays[$class];
+		$this->setField($name,$value);
+		if ($ar) {
+			$a = &$this->$ar;
+			foreach ($a as $i=>$o) {
+				$a[$i]->setFieldDown($name,$value);
+			}
+		}
+	}
+		
 	
 /******************************************************************************
  * copyObj - Copies an object to a new parent
@@ -432,6 +451,7 @@ class segue {
  ******************************************************************************/
 
 	function isEditor($user='') {
+		if (!$this->builtPermissions) $this->buildPermissionsArray();
 		if ($user=='') $user=$_SESSION[auser];
 		$this->fetchUp();
 		$owner = $this->owningSiteObj->getField("addedby");
@@ -494,6 +514,19 @@ class segue {
 		$this->changedpermissions = 1;
 	}
 	
+	function setUserPermissionDown($perm,$user,$val=1) {
+		$class=get_class($this);
+		$ar = $this->_object_arrays[$class];
+		$p = strtoupper($perm);
+		$c = permissions::$p();
+		$this->permissions[$user][$c] = $val;
+		$this->changedpermissions=1;
+		if ($ar) {
+			$a = &$this->$ar;
+			foreach ($a as $i=>$o) $a[$i]->setUserPermissionDown($perm,$user,$val);
+		}
+	}
+	
 	function getPermissions() {
 		// returns an html-formable permissions array based on the permissions table
 		return $this->permissions;
@@ -503,8 +536,9 @@ class segue {
  * buildPermissionsArray - builds the permissions array for current obj from DB
  ******************************************************************************/
 
-	function buildPermissionsArray() {
-		// builds the permissions array from the database
+	function buildPermissionsArray($force=0) {
+		if (!$force && $this->builtPermissions) return;
+		
 		$scope = get_class($this);
 		$site = $this->owning_site;
 		$id = $this->id;
@@ -535,6 +569,7 @@ class segue {
 			$this->changedpermissions = 1;
 		}
 		$this->editors = array_unique($this->editors);
+		$this->builtPermissions=1;
 	}
 
 /******************************************************************************
@@ -613,6 +648,8 @@ class segue {
 	function hasPermission($perms,$ruser='') {
 		global $allclasses, $_logged_in, $cfg;
 		
+		if (!$this->builtPermissions) $this->buildPermissionsArray();
+		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
 		
@@ -688,8 +725,9 @@ class segue {
 		$class = get_class($this);
 		$ar = $this->_object_arrays[$class];
 		if ($ar) {
-			foreach ($this->$ar as $i=>$o) {
-				if($o->hasPermissionDown($perms,$user)) return true;
+			$a = &$this->$ar;
+			foreach ($a as $i=>$o) {
+				if($a[$i]->hasPermissionDown($perms,$user)) return true;
 			}
 		}
 		return false;

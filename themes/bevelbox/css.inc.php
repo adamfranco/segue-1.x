@@ -114,12 +114,12 @@ body {
 
 .top {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/top.gif"; ?>') repeat-x;
-	height: 17px;
+	height: 43px;
 }
 
 .topcenter {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topcenter.gif"; ?>') repeat-x;
-	height: 17px;
+	height: 15px;
 }
 
 .topright {
@@ -131,7 +131,7 @@ body {
 .topright1 {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topright1.gif"; ?>') no-repeat;
 	width: 11px;
-	height: 27px;
+	height: 15px;
 }
 
 .topleft {
@@ -143,19 +143,20 @@ body {
 .topleft1 {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft1.gif"; ?>') no-repeat;
 	width: 147px;
-	height: 26px;
+	height: 43px;
 }
 
 .topleft2 {
+	background color: "#003366";
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft2.gif"; ?>') no-repeat;
 	width: 147px;
-	height: 48px;
+	height: 64px;
 }
 
 .topleft3 {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft3.gif"; ?>') no-repeat;
 	width: 147px;
-	height: 27px;
+	height: 15px;
 }
 
 .left {
@@ -182,24 +183,24 @@ body {
 .bottomleft {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/bottomleft.gif"; ?>') no-repeat;
 	width: 147px;
-	height: 51px;
+	height: 76px;
 }
 
 .bottom {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/bottom.gif"; ?>') repeat-x;
-	height: 51px;
+	height: 76px;
 }
 
 .bottomright1 {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/bottomright1.gif"; ?>') no-repeat;
 	width: 11px;
-	height: 51px;
+	height: 76px;
 }
 
 .bottomright2 {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/bottomright2.gif"; ?>') no-repeat;
 	width: 9px;
-	height: 51px;
+	height: 76px;
 }
 
 </style>

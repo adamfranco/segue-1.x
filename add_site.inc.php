@@ -58,6 +58,7 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 			$_SESSION[siteObj]->setSiteName($_REQUEST[edit_site]);
 		}
 		$_SESSION[siteObj]->fetchFromDB();
+		$_SESSION[siteObj]->buildPermissionsArray();
 /* ---------------------------------------------------- 
 	 uncomment this line when permissions are set and done */
 		$_SESSION[settings][copydownpermissions] = decode_array($_SESSION[settings][copydownpermissions]);
