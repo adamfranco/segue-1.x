@@ -114,11 +114,15 @@ do {
 				foreach ($thisPage->data[stories] as $s) {
 					$o =& $thisPage->stories[$s];
 					
-	
-					if ($o->canview()) {		
-						if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
+					//printc("<table><tr><td>";
+					
+					if ($o->canview()) {
+						if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) {
 							printc("<hr size='1' noshade style='margin-top: 5px'>");
 							//printc($detail);
+						}
+							
+
 						if ($o->getField("category")) {
 							printc("<div class=contentinfo id=contentinfo2 align=right>");
 							printc("Category: <b>".spchars($o->getField("category"))."</b>");
@@ -126,11 +130,12 @@ do {
 						}
 								
 						printc("<div style='margin-bottom: 10px'>");
-	
+						
 						$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
 	//					print $incfile; // debug
 						include($incfile);
-				
+						
+						
 						if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
 							printc("<div class=contentinfo align=right>");
 							$added = timestamp2usdate($o->getField("addedtimestamp"));
@@ -142,15 +147,17 @@ do {
 								if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedbyfull"));
 								if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
 							}
-							printc("</div>");
 							
+							printc("</div>");
+							printc("</div>");
 							//printc("<hr size='1' noshade><br>");
 						}
-	
-			
-						printc("</div>");
+						
 					}
 					$i++;
+					//printc("</div>");
+					
+				//printc("</td></tr></table>");
 				} //end foreach stories
 			} //end detail conditional
 		}

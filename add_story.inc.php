@@ -159,6 +159,11 @@ if ($_REQUEST[cancel]) {
 }
 //printpre($_REQUEST[permissions]);
 //printpre($_REQUEST[discuss]);
+
+/******************************************************************************
+ * Save: error checking
+ ******************************************************************************/
+
 if ($_REQUEST[save]) {
 //	$error = 0;
 	// error checking
@@ -186,15 +191,38 @@ if ($_REQUEST[save]) {
 			error("You must specify who can discuss/assess this content block.");
 	}
 	
+	/******************************************************************************
+	 * Save: sets fields in story object (see: objects/story.inc.php)
+	 ******************************************************************************/
 		
 	if (!$error) { // save it to the database
-		
-		// put image id into the longer text field
+				
+		/******************************************************************************
+		 * put image id into the longer text field
+		 ******************************************************************************/
 		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
 			$_SESSION[storyObj]->setField("longertext",$_SESSION[settings][libraryfileid]);
 		}
 		
-		// if the longertext field = <br />,then set field to ''
+		/******************************************************************************
+		 * replace media library urls with $mediapath/$sitename/filename
+		 * replace specific url with general url
+		 ******************************************************************************/
+
+		if ($_SESSION[storyObj]->getField("type") == "story") {
+			
+			$text = $_SESSION[storyObj]->getField("shorttext");
+			//$specfic_mediapath = "http://segue.middlebury.edu";
+			$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
+			$general_mediapath = "mediapath";
+			$text = eregi_replace($specfic_mediapath, $general_mediapath, $text);
+			$_SESSION[storyObj]->setField("shorttext",$text);
+		}
+		
+		/******************************************************************************
+		 * if the longertext field = <br />,then set field to ''
+		 ******************************************************************************/
+ 
 		if (trim($_SESSION[storyObj]->getField("longertext")) == "<br />")
 			$_SESSION[storyObj]->setField("longertext",'');
 		
@@ -203,6 +231,10 @@ if ($_REQUEST[save]) {
 /* 			if ($_SESSION[settings][edit]) $_SESSION[storyObj]->buildPermissionsArray(); */
 /* 			else $_SESSION[storyObj]->setPermissions($thisPage->getPermissions()); */
 /* 		} */
+
+		/******************************************************************************
+		 * Save: calls insertDB and updateDB functions
+		 ******************************************************************************/
 
 		if ($_SESSION[settings][add]) {
 			$_SESSION[storyObj]->insertDB();
@@ -220,14 +252,20 @@ if ($_REQUEST[save]) {
 /* 			$newid=$_SESSION[settings][page]; */
 /* 		} */
 		
-	//	unset($_SESSION[storyObj]);
+		/******************************************************************************
+		 * Go Back: edit url or content block detail url
+		 ******************************************************************************/
+
 		if ($_SESSION[settings][goback]) {
 			header("Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id);
 		} else {
 			header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
 		}
 		
-	// if error take them to page where error occured	
+	/******************************************************************************
+	 * 	if error take them to page where error occured	
+	 ******************************************************************************/
+	 
 	} else {
 		if ($_REQUEST[discuss] == 1 && $permissionset != 1) {
 			$_SESSION[settings][step] = 4;

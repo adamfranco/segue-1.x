@@ -4,10 +4,17 @@ include("output_modules/common.inc.php");
 
 $st = $o->getField("shorttext");
 
-if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
-if ($o->getField("texttype") == 'text') $st = htmlbr($st);
+/******************************************************************************
+ * replace general media library urls (i.e. $mediapath/$sitename/filename)
+ ******************************************************************************/
+//printpre($site);
+//$specfic_mediapath = "http://segue.middlebury.edu";
+$specfic_mediapath = $cfg[uploadurl]."/".$site;
+$general_mediapath = "mediapath";
+$st = eregi_replace($general_mediapath, $specfic_mediapath, $st);
 
 printc("<div>" . stripslashes($st));
+
 if ($o->getField("discuss") || $o->getField("longertext")) {
 	$link = "index.php?$sid&action=site&site=$site&section=$section&page=$page&story=".$o->id."&detail=".$o->id;
 	//$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";

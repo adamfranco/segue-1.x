@@ -144,6 +144,11 @@ do {
 			printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br><hr class=block>");
 		
 		$i=0;
+		
+		/******************************************************************************
+		 * Stories: 
+		 ******************************************************************************/
+		
 		if ($thisPage->stories) {
 			foreach ($thisPage->data[stories] as $s) {
 				$o =& $thisPage->stories[$s];
@@ -160,6 +165,10 @@ do {
 					$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
 	/* 				print "<br>".$incfile; */
 					include($incfile);
+					
+					/******************************************************************************
+					 * author, editor, timestamp info
+					 ******************************************************************************/
 					
 					if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
 						printc("<div class=contentinfo align=right>");
@@ -178,6 +187,11 @@ do {
 					
 					printc("<div align=right>");
 		//			$s1=$s2=NULL;
+		
+					/******************************************************************************
+					 * edit, delete options 
+					 ******************************************************************************/
+
 					$l = array();
 					if (($_SESSION[auser] == $site_owner) || (($_SESSION[auser] != $site_owner) && !$o->getField("locked"))) {
 						if (($thisPage->getField("archiveby") == '' || $thisPage->getField("archiveby") == 'none' || !$thisPage->getField("archiveby")) && $thisPage->hasPermission("edit")) {
