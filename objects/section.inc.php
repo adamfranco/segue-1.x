@@ -126,7 +126,8 @@ class section extends segue {
 				}
 			}
 
-			$query = "delete from section where id=".$this->id;
+			$query = "DELETE FROM section WHERE id=".$this->id."; ";
+			$query .= "DELETE FROM permission WHERE FK_scop_id=".$this->id." AND permission_scope_type='section';";
 			db_query($query);
 			
 			$this->clearPermissions();
@@ -212,7 +213,7 @@ class section extends segue {
 			$a = $this->createSQLArray();
 			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
-			$query = "update section set ".implode(",",$a)." where section_id=".$this->id;
+			$query = "UPDATE section SET ".implode(",",$a)." WHERE section_id=".$this->id;
 			print "<pre>Section->UpdateDB: $query<br>";
 			db_query($query);
 			print mysql_error()."<br>";

@@ -187,7 +187,8 @@ class page extends segue {
 				}
 			}
 			
-			$query = "delete from pages where id=".$this->id;
+			$query = "DELETE FROM pages WHERE id=".$this->id."; ";
+			$query .= "DELETE FROM permission WHERE FK_scop_id=".$this->id." AND permission_scope_type='page';";
 			db_query($query);
 			
 			$this->clearPermissions();
@@ -267,7 +268,7 @@ class page extends segue {
 			$a = $this->createSQLArray();
 			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
-			$query = "update page set ".implode(",",$a)." where page_id=".$this->id;
+			$query = "UPDATE page SET ".implode(",",$a)." WHERE page_id=".$this->id;
 			print "<pre>Page->UpdateDB: $query<br>";
 			db_query($query);
 			print mysql_error()."<br>";
@@ -301,7 +302,7 @@ class page extends segue {
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
 		// update permissions
-		$this->updatePermissionsDB();
+//		$this->updatePermissionsDB();
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
@@ -324,31 +325,34 @@ class page extends segue {
 		if ($newsite) $this->owning_site = $newsite;
 		if ($newsection) {
 			$this->owning_section = $newsection;
-			$this->owningSectionObj = new section($newsite,$newsection);
 		}
+
+		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
+		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_section);
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
-			$a[] = "addedby='$_SESSION[auser]'";
-			$a[] = "addedtimestamp = NOW()";
+			$a[] = $this->_datafields[addedby][1][0]."=".$_SESSION[aid];
+			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
 		} else {
-			$a[] = "addedby='".$this->getField("addedby")."'";
-			$a[] = "addedtimestamp='".$this->getField("addedtimestamp")."'";
+			$a[] = $this->_datafields[addedby][1][0]."=".$this->getField('addeby');
+			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
 
-		$query = "insert into pages set ".implode(",",$a);
+		$query = "INSERT INTO pages SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
 		
 		$this->fetchUp();
-		$this->owningSectionObj->addPage($this->id);
+/* 		$this->owningSectionObj->addPage($this->id); */
 		if ($removeOrigional) $this->owningSectionObj->delPage($origid,0);
 		$this->owningSectionObj->updateDB();
 		
 		// add new permissions entry.. force update
-		$this->updatePermissionsDB(1);
+//		$this->updatePermissionsDB(1);	// We shouldn't need this because new sections will just
+										//inherit the permissions of their parent sites
 		
 		// add log entry
 /* 		log_entry("add_page",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added page id ".$this->id." to site ".$this->owning_site); */
