@@ -14,10 +14,15 @@ include_once (dirname(__FILE__)."/carprss/carp.php");
 //  print_r($o->data); 
 //  print "</pre>";
  
- ob_start();
- CarpCacheShow($o->getField("url"), $_SESSION['auser']);
- printc (ob_get_contents());
- ob_clean();
+ob_start();
+
+if ($_SESSION['auser'])
+	CarpCacheShow($o->getField("url"), $carpconf['cachepath'].".".$_SESSION['auser']);
+else
+	CarpCacheShow($o->getField("url"));
+
+printc (ob_get_contents());
+ob_clean();
 
 
 if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
