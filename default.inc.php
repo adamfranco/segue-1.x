@@ -84,7 +84,7 @@ if ($_loggedin) {
 	 ******************************************************************************/ 
 
 	if ($allowclasssites) {
-		$_class_list_titles = array("classes"=>"Your Current Classes","futureclasses"=>"Upcoming Classes","oldclasses"=>"Previous Semester");
+		$_class_list_titles = array("classes"=>"Your Current Classes","futureclasses"=>"Upcoming Classes","oldclasses"=>"Previous Semesters");
 		
 		// for students: print out list of classes
 		if ($_SESSION[atype]=='stud') {

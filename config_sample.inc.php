@@ -188,6 +188,20 @@
 /******************************************************************************
  * OTHER OPTIONS
  ******************************************************************************/
+
+	/******************************************************************************
+	 * email patterns to block for self registration
+	 * Use this option to prevent users already in your authentication system
+	 * from accidentically creating additional visitor accounts in publically
+	 * accessible discussions.
+	 *
+	 * Each entry in the array can be a regular expression string -- in the format
+	 * used by PHP's ereg() function.
+	 ******************************************************************************/
+
+ 		$cfg[visitor_email_excludes] = $visitor_email_excludes = array(
+			""  // "myinstitute.edu" 
+		);
 	
 	/******************************************************************************
 	 * Network - the name of the network you are on. specifies what class functions

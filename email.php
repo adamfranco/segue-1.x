@@ -41,6 +41,7 @@ if ($_REQUEST['storyid']) {
 
 }
 $siteid = $_REQUEST['siteid'];
+//$storyid = $_REQUEST['storyid'];
 $class_id = $_REQUEST['site'];
 
 /******************************************************************************
@@ -297,11 +298,18 @@ print "</div><br>";
 			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers&order=$order>Review</a> - ";
 			print $numparticipants." participants";
 		}
-				
 		?>
 		in this
 		<select name=scope>
-		<option<?=($scope=='discussion')?" value='discussion' selected":""?>>discussion/assessment
+		<?
+		
+		// if viewed from roster, then no storyid and no specific discussion/assessment is viewable
+		if (isset($storyid)) {
+			print "<option";
+			($scope=='discussion')? print " value='discussion' selected": print "";
+			print ">discussion/assessment";
+		}
+		?>
 		<option<?=($scope=='site')?" value='site' selected":""?>>site
 		</select>
 		<input type=submit name='update' value='Update'>
