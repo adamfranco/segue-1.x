@@ -70,7 +70,8 @@ if ($_REQUEST[savechanges]) {
 //		echo "<pre>";
 //		print_r($_SESSION[obj]);
 		unset($_SESSION[obj],$_SESSION[editors]);
-		Header("Location: close.php");
+//		Header("Location: close.php");
+		return;
 	}
 }
 

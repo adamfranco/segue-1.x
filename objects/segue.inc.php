@@ -842,6 +842,10 @@ WHERE
 
 		// the SQL queries for obtaining the permissions vary with the scope type. Thus, we have 4 cases, 1 for each scope type.
 		
+		// editors can be either institute, everyone, a username or a ugroup name
+		// we need two queries for any one scope
+		
+		
 		// CASE 1: scope is SITE
 		if ($scope == 'site') {
 		$query = "
@@ -1234,12 +1238,18 @@ FROM
 					$ed_type = $editor;
 					$ed_id = 'NULL';				
 				}
+				else if ($ugroup_id = ugroup::getGroupID($editor)) {
+					$ed_type = 'ugroup';
+					$ed_id = $ugroup_id;
+				}
 				else {
 					$ed_type = 'user';
 					// need to fetch the id from the user table
 					$query = "SELECT user_id FROM user WHERE user_uname = '$editor'";
 //					echo $query."<br>";
 					$r = db_query($query);
+					if (!db_num_rows($r)) fatalerror("updatePermissionsDB() :: could not find an ID to associate with editor: '$editor'!!!");
+					
 					$arr = db_fetch_assoc($r);
 					$ed_id = $arr['user_id'];
 				}
@@ -1260,7 +1270,7 @@ WHERE
 	site_editors_type = '$ed_type' AND
 	FK_site = $id
 ";
-//					echo $query."<br>";
+					echo $query."<br>";
 					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
 					// if the editor is not in the site_editors then insert him
 					if (!db_num_rows($r_editor)) {
@@ -1272,7 +1282,7 @@ VALUES
 	($id, $ed_id, '$ed_type')
 ";					
 
-//					echo $query."<br>";
+					echo $query."<br>";
 						db_query($query);
 					}
 					

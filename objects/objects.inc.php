@@ -9,3 +9,4 @@ require("objects/group.inc.php");
 require("objects/user.inc.php");
 require("objects/course.inc.php");
 require("objects/discussion.inc.php");
+require("objects/ugroup.inc.php");
