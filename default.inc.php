@@ -343,20 +343,9 @@ if ($_loggedin) {
 	if (count($sites)) {
 		printc("<tr><td class='inlineth' colspan=2>");
 		
-		/******************************************************************************
-		 * expand/collapse option for others sites listing
-		 ******************************************************************************/
-		
-/* 		if ($_REQUEST[expand_other] == 0) { */
-/* 			printc("<a href=$PHP_SELF?expand_other=1>+</a> "); */
-/* 		} else { */
-/* 			printc("<a href=$PHP_SELF?expand_other=0>-</a> "); */
-/* 		} */
-/* 		printc ("Other Sites".helplink("othersites","What are these?")."</td></tr>"); */
-/* 		if ($expand_other) { */
-/* 			foreach (array_keys($sites) as $i=>$n) */
-/* 				printSiteLine($sites[$n]); */
-/* 		} */
+		printc ("Other Sites".helplink("othersites","What are these?")."</td></tr>");
+			foreach (array_keys($sites) as $i=>$n)
+				printSiteLine($sites[$n]);
 	}
 	
 /******************************************************************************
@@ -610,7 +599,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>your permissions</a>");
 		}
 		if ($isclass) {
-			printc(" | <a href=\"Javascript:sendWindow('addstudents',400,250,'add_students.php?$sid&name=".$name."')\">students</a> \n");
+			printc(" | <a href=\"Javascript:sendWindow('addstudents',500,400,'add_students.php?$sid&name=".$name."')\">students</a> \n");
 		}
 
 		printc("</div>");

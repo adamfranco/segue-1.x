@@ -60,7 +60,7 @@ if (isclass($class_id)) {
 		
 if ($scope == "site") {
 	$where = "site_id = $siteid";
-} else {
+} else
 	$where = "story_id = $storyid";	
 }
 
@@ -82,7 +82,6 @@ if ($action == "review") {
  * query database 
  ******************************************************************************/
  
- if (!$query_custom || $query_custom) {	
 	$query = "
 	SELECT 
 		user_id
@@ -142,13 +141,6 @@ if ($action == "review") {
 	";		
 	$r = db_query($query);
 	
-} else {
-	//$query = $query_custom;
-	//$r = db_query($query);
-	//$a = db_fetch_assoc($r);
-	//$numparticipants = db_num_rows($r);
-}
-
 printerr();
 
 ?>
@@ -189,7 +181,6 @@ print "<div align=right>";
 print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 print " | Participation";
 print " | <a href='viewlogs.php?$sid&site=$site'>Logs</a>";
-if ($_SESSION[ltype]=='admin') print " | <a href='viewsites.php?$sid&site=$site'>Sites</a>";
 print "</div><br>";
 ?>
 <!-- <a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a> -->

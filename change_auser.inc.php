@@ -29,6 +29,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 /* 		 */
 /* 		log_entry("change_auser","","","","$luser as $auser"); */
 /* 	} */
+
 	$valid = 0;
 	foreach ($_auth_mods as $_auth) {
 		$func = "_valid_".$_auth;

@@ -208,7 +208,7 @@ if ($site) {
 	print "<div align=right>";
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
-	print " | Logs";
+	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
 	print "</div><br>";
 }
 

@@ -257,7 +257,7 @@ if ($site) {
 	print "<div align=right>";
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
-	print " | Logs";
+	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
 	print "</div><br>";
 }
 
@@ -319,7 +319,7 @@ if ($site) {
 		print "<table cellpadding=2 cellspacing=0>";
 		print "<tr><td><b>Slot naming conventions:</b></td></tr>";
 		print "<tr><td><i>future course slots</i></td><td>course_code-dev (e.g. al201a-f05-dev)</td></tr>";		
-		print "<tr><td><i>student class project slots</i></td><td>course_code-student_username (e.g. al201a-f03-msmith)<br>(be sure to include course_code in ASSOC SITE field)</td></tr>";
+		print "<tr><td><i>student class project slots</i></td><td>course_code-student_username (e.g. al201a-f03-msmith)<br>(These are best created from class rosters)</td></tr>";
 		print "<tr><td><i>faculty project slots</i></td><td>faculty_username-single_word_descriptor (e.g. jrprof-politics, saprof-poetry)</td></tr>";
 		print "<tr><td><i>topical slots</i></td><td>single_word_descriptor (e.g. digitization, segue)</td></tr>";
 		print "</table>";	

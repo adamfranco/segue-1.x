@@ -200,16 +200,34 @@ function getclassstudents($class_id) {
 							//$student[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
 							//printpre("found ".$studentname);
 						}	
-					}			
+					} // end if	
 					$external_memberlist_participant_unames[]= $participant[uname];
 					$external_memberlist_participants[]= $participant;				
-				}
-			//printpre($participants);	
-			}
+				} //end for loop
+			} // end num 				
+		}// end result count
+						
+	} // ends if bind
 	
+	/******************************************************************************
+	 * Check to see if $external_memberlist_participant are already in database
+	 * if not add them to database
+	 ******************************************************************************/
+	foreach (array_keys($external_memberlist_participants) as $key) {
+		$student_uname = $external_memberlist_participants[$key][uname];
+		//printpre ($cfg[auth_mods]);
+		//$cfg[auth_mods]
+		$valid = 0;
+		foreach ($cfg[auth_mods] as $_auth) {
+			$func = "_valid_".$_auth;
+			//printpre ("<BR>AUTH: trying ".$_auth ."..."); //debug
+			if ($x = $func($student_uname,"",1)) {
+				$valid = 1;
+				break;
+			}
 		}
-		
 	}
+
 	
 	/******************************************************************************
 	* Compile definitive participant list from:
