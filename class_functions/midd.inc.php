@@ -195,7 +195,8 @@ function getclassstudents($class_id) {
 							$participant[uname] = $res2[0][strtolower($cfg[ldap_username_attribute])][0];
 							$participant[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
 							$participant[memberlist] = "external";
-							//printpre("uname: ".$participant[uname]);
+// 							printpre("uname: ".$participant[uname]);
+							$areprof = 0;
 							if (is_array($res2[0][strtolower($cfg[ldap_group_attribute])])) {
 							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
 								foreach ($res2[0][strtolower($cfg[ldap_group_attribute])] as $item) {
@@ -217,7 +218,7 @@ function getclassstudents($class_id) {
 		}// end result count
 						
 	} // ends if bind
-	
+
 	/******************************************************************************
 	 * Check to see if $external_memberlist_participant are already in database
 	 * if not add them to database
@@ -251,6 +252,7 @@ function getclassstudents($class_id) {
 	 
 	$participants = $external_memberlist_participants;
 	$participants_unames = $external_memberlist_participant_unames;
+	
 	 
 	foreach (array_keys($db_participants) as $key) {
 		if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
