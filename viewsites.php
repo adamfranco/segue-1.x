@@ -99,7 +99,7 @@ input,select {
 <? print $numlogs . " | " . $query; ?>
 <table cellspacing=1 width='100%'>
 <tr>
-	<td colspan=4>
+	<td colspan=6>
 		<table width='100%'>
 		<tr><td>
 		<form action=<?echo "$PHP_SELF?$sid"?> method=get>
@@ -143,6 +143,8 @@ input,select {
 <tr>
 	<th>time</th>
 	<th>site</th>
+	<th>active</th>
+	<th>type</th>
 	<th>title</th>
 	<th>owner</th>
 </tr>
@@ -156,6 +158,8 @@ if (db_num_rows($r)) {
 		print timestamp2usdate($a[editedtimestamp],1);
 		print "</nobr></td>";
 		print "<td class=td$color>$a[name]</td>";
+		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
+		print "<td class=td$color>$a[type]</td>";
 		print "<td class=td$color>";
 		print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
 		print "$a[title]";
