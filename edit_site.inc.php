@@ -1,5 +1,4 @@
 <? // add_site.inc.php -- add a site (passed $name)
-add_link(leftnav,'','',"Hi");
 
 if ($settings) {
 	// if we have already started editing...
