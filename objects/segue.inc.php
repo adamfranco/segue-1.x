@@ -142,7 +142,7 @@ class segue {
 	function getField($field) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		if ($this->tobefetched && !ereg("^l-",$field)) {	// we're supposed to fetch this field
-			$_unencode = array("title","header","footer","shorttext","logertext");
+			$_unencode = array("title","header","footer","shorttext","longertext");
 			$_parse = array("header","footer","shorttext","logertext");
 			$_ardecode = array("sections","pages","stories","discussions");
 			if (!$this->fetched[$field]) {
