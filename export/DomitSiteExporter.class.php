@@ -39,11 +39,11 @@ class DomitSiteExporter {
 		$this->_document =& new DOMIT_Document();
 		$this->_document->xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" '.'?'.'>';
 		$doctype = "<!DOCTYPE site [";
-		$doctype .= "\n\t<!ELEMENT site (title,history,(activation?),(permissions?),(section|navlink)*)>";
-		$doctype .= "\n\t<!ATTLIST site id CDATA #REQUIRED owner CDATA #REQUIRED type (system|class|personal|other) #REQUIRED>";
- 		
+		$doctype .= "\n\t<!ELEMENT site (title,history,(activation?),(permissions?),header,footer,(media?),(section|navlink)*)>";
+		$doctype .= "\n\t<!ATTLIST site id CDATA #REQUIRED owner CDATA #REQUIRED type (system|class|personal|other) #REQUIRED>";		
  		$doctype .= "\n\t<!ELEMENT section (title,history,(activation?),(permissions?),(page|navlink|heading|divider)*)>";
 		$doctype .= "\n\t<!ELEMENT page (title,history,(activation?),(permissions?),(story|link|image|file)*)>";
+		$doctype .= "\n\t<!ATTLIST page story_order (custom|addeddesc|addedasc|editeddesc|editedasc|author|editor|category|titleasc|titledesc) #REQUIRED horizontal_rule (TRUE|FALSE) #REQUIRED show_creator (TRUE|FALSE) #REQUIRED show_date (TRUE|FALSE) #REQUIRED>";
 		$doctype .= "\n\t<!ELEMENT story (title,history,(activation?),(permissions?),shorttext,(longtext?),(category?),(discussion?))>";
 		$doctype .= "\n\t<!ELEMENT navlink (title,history,(activation?),(permissions?),url)>";
 		$doctype .= "\n\t<!ELEMENT heading (title,history,(activation?),(permissions?))>";
@@ -55,6 +55,10 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ELEMENT discussion (discussion_node*)>";
 		$doctype .= "\n\t<!ATTLIST discussion email_owner (TRUE|FALSE) #REQUIRED show_authors (TRUE|FALSE) #REQUIRED show_others_posts (TRUE|FALSE) #REQUIRED>";
 		$doctype .= "\n\t<!ELEMENT discussion_node (creator,created_time,title,text,(discussion_node*))>";
+		
+		$doctype .= "\n\t<!ELEMENT media (media_file*)>";
+		$doctype .= "\n\t<!ELEMENT media_file (creator,last_editor,last_edited_time,filename,type)>";
+		$doctype .= "\n\t<!ELEMENT type (#PCDATA)>";
 		
 		$doctype .= "\n\t<!ELEMENT history (creator,created_time,last_editor,last_edited_time)>";
 		$doctype .= "\n\t<!ELEMENT created_time (#PCDATA)>";
@@ -68,7 +72,7 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ELEMENT deactivate_date (#PCDATA)>";
 		
 		$doctype .= "\n\t<!ELEMENT permissions ((locked?),(view_permission?),(add_permission?),(edit_permission?),(delete_permission?),(discuss_permission?))>";
-		$doctype .= "\n\t<!ELEMENT locked (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT locked EMPTY>";
 		$doctype .= "\n\t<!ELEMENT view_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT add_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT edit_permission (agent*)>";
@@ -85,6 +89,8 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ELEMENT filename (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT url (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT description (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT header (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT footer (#PCDATA)>";
 		
 		$doctype .= "\n]>";
 		
@@ -118,6 +124,20 @@ class DomitSiteExporter {
 		
 		$this->addCommonProporties($site, $siteElement);
 		
+		// header
+		$header =& $this->_document->createElement('header');
+		$siteElement->appendChild($header);
+		$header->appendChild($this->_document->createTextNode(htmlspecialchars($site->getField('header'))));
+		
+		// footer
+		$footer =& $this->_document->createElement('footer');
+		$siteElement->appendChild($footer);
+		$footer->appendChild($this->_document->createTextNode(htmlspecialchars($site->getField('footer'))));
+		
+		// Media
+		$this->addMedia($site, $siteElement);
+		
+		// sections
  		foreach ($site->sections as $key => $val) {
   			if ($site->sections[$key]->getField('type') == 'link')
   				$this->addNavLink($site->sections[$key], $siteElement);
@@ -165,6 +185,14 @@ class DomitSiteExporter {
 		$sectionElement->appendChild($pageElement);
 		
 		$this->addCommonProporties($page, $pageElement);
+		
+		// Display options
+		if (!$order = $page->getField('storyorder'))
+			$order = "custom";
+		$pageElement->setAttribute('story_order', $order);
+		$pageElement->setAttribute('horizontal_rule', (($page->getField('showhr'))?"TRUE":"FALSE"));
+		$pageElement->setAttribute('show_creator', (($page->getField('showcreator'))?"TRUE":"FALSE"));
+		$pageElement->setAttribute('show_date', (($page->getField('showdate'))?"TRUE":"FALSE"));
 		
 		foreach ($page->stories as $key => $val) {
   			if ($page->stories[$key]->getField('type') == 'link')
@@ -376,7 +404,6 @@ class DomitSiteExporter {
 		if ($isLocked = $obj->getField('locked')) {
 			$locked =& $this->_document->createElement('locked');
 			$permissionsElement->appendChild($locked);
-			$locked->appendChild($this->_document->createTextNode("TRUE"));
 		}
 		
 		$hasView = $this->addPermissions($obj, $permissionsElement, 'view', $permissions);
@@ -489,19 +516,18 @@ class DomitSiteExporter {
 		$history =& $this->_document->createElement('history');
 		$element->appendChild($history);
 		$this->gethistory($partObj, $history);
+			
+		// activation
+		$activation =& $this->_document->createElement('activation');
+		$hasActivation = $this->getActivation($partObj, $activation);
+		if ($hasActivation)
+			$element->appendChild($activation);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
 		$hasPerms = $this->getPermissions($partObj, $permissions);
 		if ($hasPerms)
 			$element->appendChild($permissions);
-			
-		// permissions
-		$activation =& $this->_document->createElement('activation');
-		$hasActivation = $this->getActivation($partObj, $activation);
-		if ($hasActivation)
-			$element->appendChild($activation);
-	
 	}
 	
 	function addDiscussionNode(& $node, & $parentElement) {
@@ -533,6 +559,68 @@ class DomitSiteExporter {
 		$node->_fetchchildren();
 		foreach ($node->children as $key => $val) {
 			$this->addDiscussionNode($node->children[$key], $discussionNode);
+		}
+	}
+	
+	function addMedia(& $site, & $siteElement) {
+		$query = "
+			SELECT 
+				media_tag AS filename,
+				media_updated_tstamp AS last_edited_time,
+				media_type AS type,
+				creator.user_uname AS creator,
+				editor.user_uname AS last_editor
+			FROM 
+				media
+					INNER JOIN
+				slot
+					ON media.FK_site = slot.FK_site
+					INNER JOIN
+				user AS creator
+					ON media.FK_createdby = creator.user_id
+					INNER JOIN
+				user AS editor
+					ON media.FK_updatedby = editor.user_id
+			
+			WHERE
+				slot_name = '".$site->name."'
+				AND media_location = 'local'
+		"; 
+		$r = db_query($query); 
+		
+		if (db_num_rows($r)) {
+			$mediaElement =& $this->_document->createElement('media');
+			$siteElement->appendChild($mediaElement);
+			
+			while ($a = db_fetch_assoc($r)) {
+				$fileElement =& $this->_document->createElement('media_file');
+				$mediaElement->appendChild($fileElement);
+				
+				// Creator
+				$creatorElement =& $this->_document->createElement('creator');
+				$fileElement->appendChild($creatorElement);
+				$creatorElement->appendChild($this->_document->createTextNode(htmlspecialchars($a['creator'])));
+				
+				// last_editor
+				$last_editorElement =& $this->_document->createElement('last_editor');
+				$fileElement->appendChild($last_editorElement);
+				$last_editorElement->appendChild($this->_document->createTextNode(htmlspecialchars($a['last_editor'])));
+				
+				// last_edited_time
+				$last_edited_timeElement =& $this->_document->createElement('last_edited_time');
+				$fileElement->appendChild($last_edited_timeElement);
+				$last_edited_timeElement->appendChild($this->_document->createTextNode(htmlspecialchars($a['last_edited_time'])));
+				
+				// filename
+				$filenameElement =& $this->_document->createElement('filename');
+				$fileElement->appendChild($filenameElement);
+				$filenameElement->appendChild($this->_document->createTextNode(htmlspecialchars($a['filename'])));
+				
+				// type
+				$typeElement =& $this->_document->createElement('type');
+				$fileElement->appendChild($typeElement);
+				$typeElement->appendChild($this->_document->createTextNode(htmlspecialchars($a['type'])));
+			}
 		}
 	}
 }
