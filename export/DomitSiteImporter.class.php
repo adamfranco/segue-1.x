@@ -197,8 +197,7 @@ class DomitSiteImporter {
 	}
 	
 	function addSection(& $site, & $sectionElement) {
-		
-		print "\n====================1=====================\nSiteName = '".$site->name."'";
+	
 		// Create the section
 		$section =& new section($site->name, 0, $site);
 		$site->sections[] =& $section;
@@ -409,10 +408,10 @@ class DomitSiteImporter {
 			$email = (($discussionElement->getAttribute("email_owner") == "TRUE")?1:0);
 			$story->setField("discussemail", $email);
 			
-			$authors = (($discussionElement->getAttribute("show_authors") == "TRUE")?2:1);
+			$authors = (($discussionElement->getAttribute("show_authors") == "TRUE")?1:2);
 			$story->setField("discussauthor", $authors);
 			
-			$display = (($discussionElement->getAttribute("show_others_posts") == "TRUE")?2:1);
+			$display = (($discussionElement->getAttribute("show_others_posts") == "TRUE")?1:2);
 			$story->setField("discussdisplay", $display);
 		}
 	

@@ -39,7 +39,7 @@ class DomitSiteExporter {
 		$this->_document =& new DOMIT_Document();
 		$this->_document->xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" '.'?'.'>';
 		$doctype = "<!DOCTYPE site [";
-		$doctype .= "\n\t<!ELEMENT site (title,history,(activation?),(permissions?),header,footer,(media?),(section|navlink)*)>";
+		$doctype .= "\n\t<!ELEMENT site (title,history,(activation?),(permissions?),header,footer,(theme?),(media?),(section|navlink)*)>";
 		$doctype .= "\n\t<!ATTLIST site id CDATA #REQUIRED owner CDATA #REQUIRED type (system|class|personal|other) #REQUIRED>";		
  		$doctype .= "\n\t<!ELEMENT section (title,history,(activation?),(permissions?),(page|navlink|heading|divider)*)>";
 		$doctype .= "\n\t<!ELEMENT page (title,history,(activation?),(permissions?),(story|link|image|file)*)>";
@@ -59,6 +59,19 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ELEMENT media (media_file*)>";
 		$doctype .= "\n\t<!ELEMENT media_file (creator,last_editor,last_edited_time,filename,type)>";
 		$doctype .= "\n\t<!ELEMENT type (#PCDATA)>";
+		
+		$doctype .= "\n\t<!ELEMENT theme (name,color_scheme?,background_color?,border_style?,border_color?,text_color?,link_color?,navigation_arrangement?,navigation_width?,section_nav_size?,page_nav_size?)>";
+		$doctype .= "\n\t<!ELEMENT name (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT color_scheme (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT background_color (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT border_style (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT border_color (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT text_color (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT link_color (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT navigation_arrangement (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT navigation_width (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT section_nav_size (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT page_nav_size (#PCDATA)>";
 		
 		$doctype .= "\n\t<!ELEMENT history (creator,created_time,last_editor,last_edited_time)>";
 		$doctype .= "\n\t<!ELEMENT created_time (#PCDATA)>";
@@ -133,6 +146,9 @@ class DomitSiteExporter {
 		$footer =& $this->_document->createElement('footer');
 		$siteElement->appendChild($footer);
 		$footer->appendChild($this->_document->createTextNode(htmlspecialchars($site->getField('footer'))));
+		
+		// Theme
+		$this->addTheme($site, $siteElement);
 		
 		// Media
 		$this->addMedia($site, $siteElement);
@@ -620,6 +636,43 @@ class DomitSiteExporter {
 				$typeElement =& $this->_document->createElement('type');
 				$fileElement->appendChild($typeElement);
 				$typeElement->appendChild($this->_document->createTextNode(htmlspecialchars($a['type'])));
+			}
+		}
+	}
+	
+	function addTheme(& $site, & $siteElement) {
+		
+		// If we have a theme add it
+		if ($site->getField('themesettings')) {
+			$themeElement =& $this->_document->createElement('theme');
+			$siteElement->appendChild($themeElement);
+			
+			// if we have themesettings, add them
+			if ($themesettings = $site->getField('themesettings')) {
+				$settingsArray = unserialize(urldecode($themesettings));
+				
+				$settingsParts = array(
+						'name' => 'theme',
+						'color_scheme' => 'colorscheme',
+						'background_color' => 'bgcolor',
+						'border_style' => 'borderstyle',
+						'border_color' => 'bordercolor',
+						'text_color' => 'textcolor',
+						'link_color' => 'linkcolor',
+						'navigation_arrangement' => 'nav_arrange',
+						'navigation_width' => 'nav_width',
+						'section_nav_size' => 'sectionnav_size',
+						'page_nav_size' => 'nav_size'
+				);
+				
+				foreach ($settingsParts as $tag => $key) {
+					
+					if ($settingsArray[$key]) {
+						$element =& $this->_document->createElement($tag);
+						$themeElement->appendChild($element);
+						$element->appendChild($this->_document->createTextNode($settingsArray[$key]));
+					}
+				}
 			}
 		}
 	}
