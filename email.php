@@ -18,7 +18,7 @@ include("includes.inc.php");
 /* 	header("Location: username_lookup.php"); */
 /* 	exit; */
 /* } */
-
+//printpre($_REQUEST);
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 /******************************************************************************
@@ -58,7 +58,10 @@ $orderby = " ORDER BY $order";
  ******************************************************************************/
 if ($_REQUEST['findall']) {
 	$userid = "'%'";
-	$findall = "all";
+	$useruname = "";
+	$find = "";
+} else if ($_REQUEST['find']) {
+	$findall = "";
 } else if ($_REQUEST['useruname']) {
 	$useruname = $_REQUEST['useruname'];
 	$userid = db_get_value ("user", "user_id", "user_uname = '$useruname'");
@@ -105,8 +108,17 @@ if (isclass($class_id)) {
  * all users, all sites
  ******************************************************************************/
 
-if ($_REQUEST['findall']) {
-	$where = "user_id > 0";		
+if ($_REQUEST['findall'] && !$_REQUEST['find']) {
+	$where = "user_id > 0";
+} else if ($_REQUEST['find']) {
+	$useruname = $_REQUEST['useruname'];
+	$userid = db_get_value ("user", "user_id", "user_uname = '$useruname'");
+	if ($userid) {
+		$where = "user_id = $userid";
+	} else {
+		error("invalid username");
+		$where = "user_id > 0";
+	}
 } else if ($scope == "site") {
 	$where = "site_id = $siteid";
 } else if ($action != "user") {
@@ -119,12 +131,18 @@ if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action == "review" && $_REQ
 	$where .= " AND user_id = $userid";
 }
 
+if ($_REQUEST['findsite'] && $action == "review") {
+	$findsite = $_REQUEST['findsite'];
+	$where .= " AND slotname = '$findsite'";
+}
+
+
 /******************************************************************************
  * Query: select and order clauses
  ******************************************************************************/
 
 if ($action == "review" || $action == "user") {
-	$select = "user_id, user_fname, user_email, discussion_rate, discussion_tstamp, discussion_id, discussion_subject, story_id, page_id, page_title, story_text_short, section_id, site_id, slot_name";
+	$select = "user_id, user_fname, user_uname, user_email, discussion_rate, discussion_tstamp, discussion_id, discussion_subject, story_id, page_id, page_title, story_text_short, section_id, site_id, slot_name";
 	if (!isset($order)) $order = "discussion_tstamp ASC";
 // action = list, email
 } else {
@@ -317,6 +335,8 @@ print "</table><br>";
 		<input type=hidden name='userid' value='<? echo $userid ?>'>
 		<input type=hidden name='from' value='<? echo $from ?>'>
 		<input type=hidden name='findall' value='<? echo $findall ?>'>
+		<input type=hidden name='find' value='<? echo $find ?>'>
+		<input type=hidden name='findsite' value='<? echo $findsite ?>'>
 		<input type=hidden name='userfname' value='<? echo urlencode($userfname) ?>'>
 
 <!-- 		<input type=submit name='search' value='Find'> -->
@@ -403,9 +423,10 @@ print "</table><br>";
 			if ($_SESSION['ltype'] == "admin") {
 				//print "<form>";
 				print "username: <input type = text name=useruname value='".$useruname."' class=textfield>";
+				//print "site: <input type = text name=findsite value='".$findsite."' class=textfield>";
 				print " <input type=submit name='find' value='Find'>";
-				print " <input type=submit name='findall' value='Find All'>";
-				print " (".urldecode($userfname)." ) ";
+				print " <input type=submit name='findall' value='Find All'>  ";
+				//print " (".urldecode($userfname)." ) ";
 
 				//print "</form>";
 			}
@@ -579,7 +600,7 @@ print "</table><br>";
 			print "<th><a href=# onClick=\"changeOrder('";
 			if ($order =='discussion_rate asc') print "discussion_rate desc";
 			else print "discussion_rate asc";
-			print "')\">Rating/Grade";
+			print "')\">Rating<br>Grade";
 			if ($order =='discussion_rate asc') print " &or;";
 			if ($order =='discussion_rate desc') print " &and;";	
 			print "</a></th>";
@@ -671,7 +692,8 @@ print "</table><br>";
 				if ($curraction == 'review'  || $curraction == 'user') {
 					// user full name
 					if ($curraction == 'user') {
-						print "<td class=td$color>".$a['user_fname']."</td>";
+					//	print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
+						print "<td class=td$color>".$a['user_fname']." (".$a['user_uname'].")</td>";
 					} else {
 						print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
 					}
