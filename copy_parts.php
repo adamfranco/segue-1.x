@@ -541,7 +541,7 @@ print "</tr>";
 </table>
 </form>
  
-<div align=right><input type=button value='Cancel' onClick='window.close()' align=right></div><BR> 
+<div align='right'><input type=button value='Cancel' onClick='window.close()' align='right'></div><BR> 
 
 <?
 // debug output -- handy :)

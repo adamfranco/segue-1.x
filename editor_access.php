@@ -98,9 +98,9 @@ if ($auser == $site_owner) {
 	print "<tr>";
 		print "<th>Section</th>";
 		foreach($editors as $editor) {
-			print "<td align=center  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
-			print "<td align=center style='background-color: #bbb;'>Edit</td>";
-			print "<td align=center style='background-color: #bbb;'>Del</td>";
+			print "<td align='center'  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
+			print "<td align='center' style='background-color: #bbb;'>Edit</td>";
+			print "<td align='center' style='background-color: #bbb;'>Del</td>";
 		}
 	print "</tr>";
 	
@@ -126,7 +126,7 @@ if ($auser == $site_owner) {
 			}
 		}
 		for ($i=0;$i<3;$i++) {
-			print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+			print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 			print ($permissions[$user][$i])?"X":"&nbsp;";
 			print "</td>";
 		}
@@ -147,7 +147,7 @@ if ($auser == $site_owner) {
 			print "</td>";
 			foreach($editors as $user) {
 				for ($i=0;$i<3;$i++) {
-					print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+					print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 					print ($seca[type]!='url' && $secp[$user][$i])?"X":"&nbsp;";
 					print "</td>";
 				}
@@ -167,7 +167,7 @@ if ($auser == $site_owner) {
 				if ($pa[type]=='page') print "</a>";
 				foreach($editors as $user) {
 					for ($i=0;$i<3;$i++) {
-						print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+						print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 						print ($pa[type]!='url' && $pp[$user][$i])?"X":"&nbsp;";
 						print "</td>";
 					}
@@ -188,9 +188,9 @@ if ($auser == $site_owner) {
 	//				print "<br><pre>";print_r($sp);print "</pre>";
 					print "</td>";					
 					foreach($editors as $user) {
-						print "<td class=td$color align=center".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
+						print "<td class=td$color align='center'".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
 						for ($i=1;$i<3;$i++) {
-							print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+							print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 							print ($sa[type]!='url' && $sp[$user][$i])?"X":"&nbsp;";
 							print "</td>";
 						}
@@ -225,9 +225,9 @@ if ($auser == $site_owner) {
 	print "<tr>";
 		print "<th>Section</th>";
 //		foreach($editors as $editor) {
-			print "<td align=center  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
-			print "<td align=center style='background-color: #bbb;'>Edit</td>";
-			print "<td align=center style='background-color: #bbb;'>Del</td>";
+			print "<td align='center'  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
+			print "<td align='center' style='background-color: #bbb;'>Edit</td>";
+			print "<td align='center' style='background-color: #bbb;'>Del</td>";
 //		}
 	print "</tr>";
 	
@@ -253,7 +253,7 @@ if ($auser == $site_owner) {
 			}
 		}
 		for ($i=0;$i<3;$i++) {
-			print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+			print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 			print ($permissions[$user][$i])?"X":"&nbsp;";
 			print "</td>";
 		}
@@ -274,7 +274,7 @@ if ($auser == $site_owner) {
 			print "</td>";
 //			foreach($editors as $user) {
 				for ($i=0;$i<3;$i++) {
-					print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+					print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 					print ($seca[type]!='url' && $secp[$user][$i])?"X":"&nbsp;";
 					print "</td>";
 				}
@@ -294,7 +294,7 @@ if ($auser == $site_owner) {
 				if ($pa[type]=='page') print "</a>";
 //				foreach($editors as $user) {
 					for ($i=0;$i<3;$i++) {
-						print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+						print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 						print ($pa[type]!='url' && $pp[$user][$i])?"X":"&nbsp;";
 						print "</td>";
 					}
@@ -315,9 +315,9 @@ if ($auser == $site_owner) {
 	//				print "<br><pre>";print_r($sp);print "</pre>";
 					print "</td>";					
 //					foreach($editors as $user) {
-						print "<td class=td$color align=center".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
+						print "<td class=td$color align='center'".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
 						for ($i=1;$i<3;$i++) {
-							print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+							print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 							print ($sa[type]!='url' && $sp[$user][$i])?"X":"&nbsp;";
 							print "</td>";
 						}
@@ -335,4 +335,4 @@ if ($auser == $site_owner) {
 }
 ?>
 
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

@@ -195,7 +195,7 @@ if ($_REQUEST[site]) {						// we are in a site
 	if (!isset($theme)) $theme = $thisSite->getField("theme");
 	if (!isset($themesettings)) $themesettings = $thisSite->getField("themesettings");
 
-	$siteheader = "<div align=center style='margin-bottom: 3px'>";
+	$siteheader = "<div align='center' style='margin-bottom: 3px'>";
 	
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
@@ -266,7 +266,7 @@ if ($thisSite) {
 }
 $nav .= $sn.$pn;
 if ($nav) {
-	$sitecrumbs = "<div align=left style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
+	$sitecrumbs = "<div align='left' style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
 }
 
 // Load non-pervasive theme for "program" actions

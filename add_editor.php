@@ -94,7 +94,7 @@ input {
 	<th>Username</th>
 </tr>
 <tr>
-	<td align=center>
+	<td align='center'>
 	<? 
 		if ($_SESSION[ltype]=='admin') 
 			print "<input type=button name='use' value='add' onClick='addEditor(document.lookup.n.value)'>"; 
@@ -117,7 +117,7 @@ if (count($usernames)) {
 		if (!ereg("[a-z]",$u)) next;
 		$u = strtolower($u);
 		print "<tr>";
-		print "<td align=center><input type=button name='use' value='add' onClick='addEditor(\"$u\")'></td>";
+		print "<td align='center'><input type=button name='use' value='add' onClick='addEditor(\"$u\")'></td>";
 		print "<td>$f</td><td>$u</td>";
 		print "</tr>";
 		$c++;
@@ -130,7 +130,7 @@ if (count($usernames)) {
 
 <input type=hidden name="comingfrom" value="<? echo $_REQUEST[comingfrom] ?>">
 </form>
-<div align=right>
+<div align='right'>
 <!-- <input type=button value='Add Editor' onClick='addEditor()'> -->
 <input type=button value='Done' onClick='window.close()'></div>
 

@@ -26,14 +26,14 @@ $nav = array(
 
 <table width=100% cellpadding=0 cellspacing=0>
 <tr>
-<td class=header align=center>
+<td class=header align='center'>
 <? include("themes/common/status.inc.php"); ?>
 <? print $siteheader ?>
 
 </td>
 </tr>
 <tr>
-<td class=topnav align=center>
+<td class=topnav align='center'>
 
 	<?
 	// ---------------------------------------
@@ -52,7 +52,7 @@ $nav = array(
 <tr>
 <tr>
 <td class=contentarea>
-	<table width=750 align=center>
+	<table width=750 align='center'>
 	<tr><td class=leftnav width=175 valign=top>
 		<?
 		// ----------------------
@@ -71,7 +71,7 @@ $nav = array(
 			}
 			if ($item[type] == 'heading') {
 				print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
-				if ($item[extra]) print "<div align=right>$item[extra]</div>";
+				if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			}
 		}
 		print "<br>$leftnav_extra";
@@ -83,7 +83,7 @@ $nav = array(
 	
 	<?
 	if (count($rightnav)) {
-		print "<td align=right class=rightnav>";
+		print "<td align='right' class=rightnav>";
 		foreach ($rightnav as $item) {
 			print "<a href='$item[url]'>$item[name]</a><BR>";
 		}

@@ -25,11 +25,11 @@ printc("<input type=hidden name='step'>");
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	if ($_SESSION[settings][edit]) printc("<input type=submit name=save value='Save Changes'>\n");
 	if ($_SESSION[settings][add]) printc("<input type=submit name=save value='Finish Now'>\n"); 
 printc("</td></tr></table>");
@@ -118,11 +118,11 @@ if ($_SESSION[siteObj]->getField("footer") != "") {
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	if ($_SESSION[settings][edit]) printc("<input type=submit name=save value='Save Changes'>\n");
 	if ($_SESSION[settings][add]) printc("<input type=submit name=save value='Finish Now'>\n"); 
 printc("</td></tr></table>");

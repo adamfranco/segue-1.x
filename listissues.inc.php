@@ -28,7 +28,7 @@ if ($thisSite) {
 			}
 			printc("<b><a href='$PHP_SELF?$sid&site=$site&section=$s&action=$newaction&supplement=listarticles'>".$o->getField("title")."</a></b>");
 			if ($isediting) {
-				printc("<div align=right class=smaller>");
+				printc("<div align='right' class=smaller>");
 				if ($o->hasPermission("edit")) printc("<a href='$PHP_SELF?$sid&action=edit_section&site=$site&section=$s&edit_section=$s&comingFrom=viewsite%26supplement%3Dlistissues'>edit</a>\n");
 				if ($o->hasPermission("delete")) printc("<a href='$PHP_SELF?$sid&action=delete_section&site=$site&section=$s&delete_section=$s&comingFrom=viewsite%26supplement%3Dlistissues'>delete</a>\n");
 				printc("</div>");
@@ -42,6 +42,6 @@ if ($thisSite) {
 	printc("</table>");
 	
 	if ($isediting && $thisSite->hasPermission("add")) {
-		printc("<br><div align=right><a href='$PHP_SELF?$sid&site=$site&action=add_section&comingFrom=viewsite%26supplement%3Dlistissues'>+ add issue</a>");
+		printc("<br><div align='right'><a href='$PHP_SELF?$sid&site=$site&action=add_section&comingFrom=viewsite%26supplement%3Dlistissues'>+ add issue</a>");
 	}
 }

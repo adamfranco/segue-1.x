@@ -65,7 +65,7 @@ include("themes/$theme/css.inc.php");
 
 <body style='margin: 0px'>
 <br>
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding=0 cellspacing=0>
 <tr><td>
 <?
 /* ------------------------------------------- */
@@ -76,11 +76,11 @@ print $siteheader;
 </tr></td>
 </table>
 
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding=0 cellspacing=0>
   <tr> 
     <td class="topleft" height=43></td>
     <td class="top" height=43> 
-	<table width=100% align=center cellpadding=0 cellspacing=0>
+	<table width=100% align='center' cellpadding=0 cellspacing=0>
     <tr>
     <td class="sitetitle" height=43>
     <? echo $title ?>
@@ -108,7 +108,7 @@ print $siteheader;
 	
  	?>
 	</div>
-    <div class=topnav align=center>
+    <div class=topnav align='center'>
 	<div class='nav'>
 	<?
 	/* ------------------------------------------- */
@@ -153,7 +153,7 @@ if ($nav_arrange==1) {
 </td>
 
 <td class=contentarea>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
@@ -168,7 +168,7 @@ if ($nav_arrange==1) {
 print $content; 
 
 ?>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
@@ -194,7 +194,7 @@ if (count($rightnav)) {
 <tr> 
     <td class="bottomleft">&nbsp;</td>
     <td class="bottom">
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <div class='nav'>
 <?
 /* ------------------------------------------- */
@@ -212,7 +212,7 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav2, $topnav2_extra);
 </table>
 <br>
 
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding=0 cellspacing=0>
 <tr><td>
 <?
 /* ------------------------------------------- */

@@ -19,11 +19,11 @@ else  printc("<div class=title>Edit Content on Page \"".$thisPage->getField("tit
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 /* 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n"); */
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");

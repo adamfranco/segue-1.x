@@ -62,7 +62,7 @@ if ($storyObj->getField("type") == 'image') {
 	$dir = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=".$storyObj->getField("longertext"));
 	$imagepath = "$uploadurl/$dir/$filename";
 	$fulltext = "<div style='text-align: center'><br><img src='$imagepath' border=0></div>";
-/* 	if ($story->getField("title")) $fulltext .= "<tr><td align=center><b>".spchars($story->getField("title"))."</b></td></tr>"; */
+/* 	if ($story->getField("title")) $fulltext .= "<tr><td align='center'><b>".spchars($story->getField("title"))."</b></td></tr>"; */
 	if ($storyObj->getField("shorttext")) $fulltext .= "<br>".stripslashes($storyObj->getField("shorttext"));
 	$fulltext .= "";
 }
@@ -135,9 +135,9 @@ if ($storyObj->getField("discuss")) $titleExtra = " Discussion";
 printc("<table width=100% id='maintable' cellspacing=1>\n");
 printc("<tr><td>\n");
 printc("<table cellspacing=1 width=100%>\n");
-printc("<tr><td align=left class=title><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
-//printc("<tr><td align=left class=title>".(($pageObj->getField('title'))?spchars($pageObj->getField('title')):'&nbsp;')."</td></tr>");		 
-printc("<tr><td align=left><b>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</b></td></tr>\n");
+printc("<tr><td align='left' class=title><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
+//printc("<tr><td align='left' class=title>".(($pageObj->getField('title'))?spchars($pageObj->getField('title')):'&nbsp;')."</td></tr>");		 
+printc("<tr><td align='left'><b>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</b></td></tr>\n");
 printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>\n");
 printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>\n");
 
@@ -150,13 +150,13 @@ if ($storyObj->getField("discuss")) {
 	$siteowner = $siteObj->getField("addedbyfull");	
 	$discusslabel = $storyObj->getField("discusslabel");	
 	
-	printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader><a name=discuss></a>");
+	printc("<td align='left'><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align='left' class=dheader><a name=discuss></a>");
 	printc(($discusslabel)? $discusslabel:"Discuss");
 	
 /* 	if ($showposts == 1) { */
-/* 		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion\n"); */
+/* 		printc("<td align='left'><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align='left' class=dheader>Discussion\n"); */
 /* 	} else { */
-/* 		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment\n");	 */
+/* 		printc("<td align='left'><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align='left' class=dheader>Assessment\n");	 */
 /* 	} */
 	
 	//get number of discuss/assess participants
@@ -176,7 +176,7 @@ if ($storyObj->getField("discuss")) {
 	printc("</div>");
 	
 	printc("</td>\n");
-	printc("<td align=right class=dheader2>\n");
+	printc("<td align='right' class=dheader2>\n");
 	
 	printc("<table>\n");
 	printc("<tr><td>\n");
@@ -224,11 +224,11 @@ if ($storyObj->getField("discuss")) {
  ******************************************************************************/
 	
 	if ($_SESSION[auser]==$site_owner) {
-		printc("<br><table class=dinfo1 width=90% align=center>");
-		printc("<tr><td align=left><div style='font-size: 12px'>");
+		printc("<br><table class=dinfo1 width=90% align='center'>");
+		printc("<tr><td align='left'><div style='font-size: 12px'>");
 		printc("<strong>Current Discussion Settings:</strong>");
 		printc("</div></td></tr>");
-		printc("<tr><td align=left><div style='font-size: 9px'>");
+		printc("<tr><td align='left'><div style='font-size: 9px'>");
 		printc("<b>Mail Posts:</b>");
 		if ($mailposts == 1) {
 			printc(" All posts to this discussion/assessment will be mailed to you.");
@@ -236,7 +236,7 @@ if ($storyObj->getField("discuss")) {
 			printc(" Email notification of posts to this discussion/assessment has been disabled.");
 		}
 		printc("</div></td></tr>");		
-		printc("<tr><td align=left><div style='font-size: 9px'>");
+		printc("<tr><td align='left'><div style='font-size: 9px'>");
 		if ($showposts == 1) {
 			$type = "discussion";
 			printc("<b>Discussion:</b> Participants can read and respond to each other's posts.");
@@ -245,7 +245,7 @@ if ($storyObj->getField("discuss")) {
 			printc("<b>Assessment:</b> Participants will not be able to read each other's posts.");
 		}
 		printc("</div></td></tr>");		
-		printc("<tr><td align=left><div style='font-size: 9px'>");
+		printc("<tr><td align='left'><div style='font-size: 9px'>");
 		// if showposts == 2 (assessment), info about authors display is not necessary
 		if ($showallauthors == 2 && $showposts != 2) {
 			printc("<b>Hide Authors:</b> Authors of posts have been hidden from participants to allow for anonymous discussion (only you can see participant names).");
@@ -253,8 +253,8 @@ if ($storyObj->getField("discuss")) {
 			printc("<b>Show Authors:</b> Author of each and every post is identified to all participants.");
 		}		
 		printc("</div></td></tr>");		
-		printc("<tr><td align=left><div style='font-size: 9px'><i>To change these settings and determine who can participant in this ".$type.", click on edit link below.</i></div></td></tr>");
-		printc("<tr><td align=right><div style='font-size: 10px'><a href=index.php?".$editsettingsurl.">edit</a></div></td></tr>");
+		printc("<tr><td align='left'><div style='font-size: 9px'><i>To change these settings and determine who can participant in this ".$type.", click on edit link below.</i></div></td></tr>");
+		printc("<tr><td align='right'><div style='font-size: 10px'><a href=index.php?".$editsettingsurl.">edit</a></div></td></tr>");
 		printc("</table>");	
 	}
 
@@ -318,7 +318,7 @@ if ($storyObj->getField("discuss")) {
 	if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
 }
 		
-printc("<tr><td align=left><br><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
+printc("<tr><td align='left'><br><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
 printc("</table>\n");
 
 printc("</tr></td>\n");
@@ -352,4 +352,4 @@ function participants() {
 }
 
 ?>
-<!--<div align=right><input type=button value="Close Window" onClick="window.close()"></div>-->
+<!--<div align='right'><input type=button value="Close Window" onClick="window.close()"></div>-->

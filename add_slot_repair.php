@@ -142,12 +142,12 @@ while ($a = db_fetch_assoc($r)) {
 		
 		print "<tr>";
 		print "<td>Yes</td>";
-		print "<td align=center>".$a['id']."</td>";
+		print "<td align='center'>".$a['id']."</td>";
 		print "<td>".$a['name']."</td>";
 		print "<td>".$a['owner']."</td>";
 		print "<td>".$a['type']."</td>";
 		print "<td>".$a['assocsite_name']."</td>";
-		print "<td align=center>set to 'NULL'</td>";
+		print "<td align='center'>set to 'NULL'</td>";
 		print "<td></td>";
 		print "<tr>";		
 	}

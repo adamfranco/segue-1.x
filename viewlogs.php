@@ -176,7 +176,7 @@ function changeOrder(order) {
 </script>
 
 <table width='100%' class='bg'>
-<td align=right class='bg'>
+<td align='right' class='bg'>
 <?
 /******************************************************************************
  * Get site id for links to participation section
@@ -190,7 +190,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
 	 | users
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
 	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
@@ -252,7 +252,7 @@ if ($site) {
 		<? print "<br>Total log entries:".$numlogs; ?>
 		</form>
 		</td>
-		<td align=right>
+		<td align='right'>
 		
 		<?
 		$tpages = ceil($numlogs/30);
@@ -393,4 +393,4 @@ if (db_num_rows($r)) {
 }
 ?>
 </table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

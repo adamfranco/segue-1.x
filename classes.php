@@ -302,7 +302,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
 	 | <a href='viewusers.php?$sid&site=$site'>users</a>
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	  add/edit classes | 
 	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
@@ -311,7 +311,7 @@ if ($_SESSION['ltype']=='admin') {
 }
 
 if ($site) {
-	print "<div align=right>";
+	print "<div align='right'>";
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	print " | Logs";
@@ -347,7 +347,7 @@ if ($site) {
 			<input type=submit name='search' value='Find'>
 			<input type=submit name='findall' value='Find All'>
 			</td>
-			<td align=right>
+			<td align='right'>
 			<?
 			$tpages = ceil($numclasses/30);
 			$curr = ceil(($lowerlimit+30)/30);
@@ -404,7 +404,7 @@ if ($site) {
 			} else if ($r) {					
 				while ($a = db_fetch_assoc($r)) {					
 						print "<tr>";
-						print "<td align=center>".$a['class_id']."</td>";
+						print "<td align='center'>".$a['class_id']."</td>";
 						print "<td>".generateCourseCode($a['class_id'])."</td>";
 						print "<td>".$a['class_external_id']."</td>";
 						print "<td>".$a['class_name']."</td>";
@@ -415,7 +415,7 @@ if ($site) {
 						print "<td>".$a['class_year']."</td>";
 						print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
 						print "<td>".$a['classgroup_name']."</td>";
-						print "<td align=center><nobr>";
+						print "<td align='center'><nobr>";
 						print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>del</a> | \n";
 						print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>edit</a> | \n";
 						print "<a href=\"Javascript:sendWindow('addstudents',500,350,'add_students.php?$sid&ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
@@ -431,7 +431,7 @@ if ($site) {
 </table>
 
 <BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doClassForm($a,$p='',$e=0) {
 	global $cfg;
@@ -458,7 +458,7 @@ function doClassForm($a,$p='',$e=0) {
 		<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>
 		<td><input type=text name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
 		<td><?=$a[classgroup_name]?></td>
-		<td align=center>
+		<td align='center'>
 		<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
 		<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
 		<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add class"?></a>

@@ -443,11 +443,11 @@ class discussion {
 					$this->_outputform('newpost');
 				} else {
 					//$newpostbar='';
-					//$newpostbar.="<tr><td align=right>";
+					//$newpostbar.="<tr><td align='right'>";
 					if (!$_SESSION[auser] && $showposts != 1) {	
 						$newpostbar.="You must be logged in to do this assessment.\n";
 					} else {				
-						$newpostbar.="<div align=right><a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost#new'>new post</a></div>\n";
+						$newpostbar.="<div align='right'><a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost#new'>new post</a></div>\n";
 					}
 				//	$newpostbar.="</td></tr>";
 				}
@@ -493,7 +493,7 @@ class discussion {
 			if (is_array($opt)) $p = 0;
 			else $p = 1;
 			if ($p) {
-				printc ("<tr><td style='padding: 0px'><table align=right width=95% style='padding-left:".$p."px' cellspacing=0px>\n");
+				printc ("<tr><td style='padding: 0px'><table align='right' width=95% style='padding-left:".$p."px' cellspacing=0px>\n");
 			} else {
 				printc ("<tr><td style='padding: 0px'><table width=100% style='padding-left:".$p."px' cellspacing=0px>\n");
 			}
@@ -705,7 +705,7 @@ class discussion {
 			printc ("<td class=dheader3>\n");
 							
 			printc ("<table width=100% cellspacing=0px>\n");
-			printc ("<tr><td align=left>\n");
+			printc ("<tr><td align='left'>\n");
 			printc ("<span class=subject><a name='".$this->id."'>\n");
 			printc ($s);
 			printc ("</a><input type=hidden name=subject value='".spchars($s)."'>\n");
@@ -716,22 +716,22 @@ class discussion {
 			printc(")\n");
 			printc ("</span></td>\n");
 			
-			printc ("<td align=right></td>\n");
+			printc ("<td align='right'></td>\n");
 			printc ("</tr><tr>\n");
-			printc ("<td align=left>\n");
+			printc ("<td align='left'>\n");
 			printc ($a);
 			if ($this->media_tag) {
 				$media_link = "<a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target=media>".$this->media_tag."</a>\n";
 				printc ("<br>attached: $media_link\n");
 			}				
 			printc ("</td>\n");
-			printc ("<td align=right valign=bottom></td></tr>\n"); 
+			printc ("<td align='right' valign=bottom></td></tr>\n"); 
 			printc("</table>\n");
 			
 			printc ("</td>\n");
 						
 		} else {
-			printc ("<tr><td align=left>\n");
+			printc ("<tr><td align='left'>\n");
 			printc ("<table>");
 			
 			/******************************************************************************
@@ -759,7 +759,7 @@ class discussion {
 			}
 			printc ("</table>\n");
 		}
-		printc ("</td><td align=right>\n");
+		printc ("</td><td align='right'>\n");
 		
 		// if not rate, print edit, update or post
 		if ($t != 'rate' && $_SESSION[auser]) {
@@ -898,7 +898,7 @@ class discussion {
 				printc ("\n<tr><td class=dheader3>\n");
 				
 				printc ("<table width=100% cellspacing=0px>\n");
-				printc ("<tr><td align=left>\n");
+				printc ("<tr><td align='left'>\n");
 				printc ("<span class=subject>\n");
 				// subject
 				printc ($s);
@@ -907,9 +907,9 @@ class discussion {
 					printc (" (Rating: ".$this->rating.")");
 				printc ("</span></td>\n");
 				// link for rating
-				printc ("<td align=right>$ratelink</td>\n");
+				printc ("<td align='right'>$ratelink</td>\n");
 				printc ("</tr><tr>\n");
-				printc ("<td align=left>$a\n");
+				printc ("<td align='left'>$a\n");
 				// link to media
 				if ($this->media_tag) {
 					$media_link = "<a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target=media>".$this->media_tag."</a>\n";
@@ -917,7 +917,7 @@ class discussion {
 				}				
 				printc ("</td>\n");
 				
-				printc ("<td align=right valign=bottom>$c</td></tr>\n"); 
+				printc ("<td align='right' valign=bottom>$c</td></tr>\n"); 
 				printc("</table>\n");
 				
 			/******************************************************************************
@@ -936,7 +936,7 @@ class discussion {
 				printc ("<tr><td class=dtext>");
 				printc (convertTagsToInteralLinks ($_REQUEST[site], stripslashes($this->content)));
 				//printc ("- [ $c]</td></tr>\n");
-				//printc ("<tr><td align=right>$c</td></tr>\n"); 
+				//printc ("<tr><td align='right'>$c</td></tr>\n"); 
 			}
 			// done
 		

@@ -36,7 +36,7 @@ if ($themesettings[theme] == 'bevelbox') {
 This theme creates the illusion of a box overlaying the page.  
 This illusion is created by surrounding box with a bevelled edge.
 <hr noshade size=1>
-<table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align=left>
+<table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>
 Box Color:</td><td> 
 <select name='colorscheme' onChange="document.settings.submit()">
 <?

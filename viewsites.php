@@ -114,7 +114,7 @@ function changeOrder(order) {
 </script>
 
 <table width='100%' class='bg'>
-<tr><td  align=right class='bg'>
+<tr><td  align='right' class='bg'>
 
 <?
 /******************************************************************************
@@ -129,7 +129,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: sites
 	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
 	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
@@ -199,7 +199,7 @@ if ($site) {
 		</form>
 		
 		</td>
-		<td align=right>
+		<td align='right'>
 		<?
 		$tpages = ceil($numlogs/30);
 		$curr = ceil(($lowerlimit+30)/30);
@@ -329,7 +329,7 @@ if (db_num_rows($r)) {
 }
 ?>
 </table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <?
 // debug output -- handy :)

@@ -46,7 +46,7 @@ include("themes/$theme/css.inc.php");
 	<!-- main header content -->
 	<table border=0 width=100% height=30 cellpadding=0 cellspacing=0>
 	<tr>
-	<td class=topbar width=180 align=center valign=middle>
+	<td class=topbar width=180 align='center' valign=middle>
 	&nbsp; <!-- search bar -->
 	</td>
 	<td class=topnav>
@@ -62,12 +62,12 @@ include("themes/$theme/css.inc.php");
 	foreach ($topnav as $item) {
 		$samepage = (isset($navtype) && ($page == $item[id]))?1:0;
 		if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-		print "<td class=topbar width=180 align=center valign=middle><nobr><b>";
+		print "<td class=topbar width=180 align='center' valign=middle><nobr><b>";
 		print makelink($item,$samepage, " class='navlink' ");
 		print "</b></nobr></td>";
 		$next=$next+1;
 	}
-	if ($topnav_extra) print "<td class=topbar align=center valign=middle><nobr>$topnav_extra</nobr></td>";
+	if ($topnav_extra) print "<td class=topbar align='center' valign=middle><nobr>$topnav_extra</nobr></td>";
 //	print "</div>";
 
 	?>
@@ -106,7 +106,7 @@ include("themes/$theme/css.inc.php");
 		}
 		if ($item[type] == 'heading') {
 			print "<td colspan=2><div class='leftmargin bottommargin5'>$item[name]</div>";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
+			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			print "</td>";
 		}
 		print "</tr>";
@@ -128,7 +128,7 @@ include("themes/$theme/css.inc.php");
 		}
 		if ($item[type] == 'heading') {
 			print "<td colspan=2><div class='leftmargin bottommargin5'>$item[name]</div>";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
+			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			print "</td>";
 		}
 		print "</tr>";
@@ -166,7 +166,7 @@ function tkoMakelink($i,$samepage=0,$e='',$newline=0) {
 	$s=(!$samepage&&$i[url])?"<a href='$i[url]' target='$i[target]'".(($e)?" $e":"").">":"";
 	$s.=$i[name];
 	$s.=(!$samepage&&$i[url])?"</a>":"";
-	$s.=($i[extra])?(($newline)?"</td></tr><tr><td></td><td class='nav'><div align=right>":" ").$i[extra].(($newline)?"</div>":""):"";
+	$s.=($i[extra])?(($newline)?"</td></tr><tr><td></td><td class='nav'><div align='right'>":" ").$i[extra].(($newline)?"</div>":""):"";
 	return $s;
 }
 

@@ -245,7 +245,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
 	 | <a href='viewusers.php?$sid&site=$site'>users</a>
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	<a href='classes.php?$sid&site=$site'>add/edit classes</a> |  
 	 add/edit slots |
@@ -254,7 +254,7 @@ if ($_SESSION['ltype']=='admin') {
 }
 
 if ($site) {
-	print "<div align=right>";
+	print "<div align='right'>";
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
@@ -288,7 +288,7 @@ if ($site) {
 		<input type=submit name='search' value='Find'>
 		<input type=submit name='findall' value='Find All'>	
 		</td>	
-		<td align=right>
+		<td align='right'>
 		<?
 		$tpages = ceil($numslots/30);
 		$curr = ceil(($lowerlimit+30)/30);
@@ -346,32 +346,32 @@ if ($site) {
 						doSlotForm($a,'',1);
 					} else {
 						print "<tr>";
-						print "<td align=center>".$a['id']."</td>";
+						print "<td align='center'>".$a['id']."</td>";
 						print "<td>".$a['name']."</td>";
 						print "<td>".$a['owner']."</td>";
 						print "<td>".$a['type']."</td>";
 						print "<td>".$a['assocsite_name']."</td>";
 	
 						if ($a['uploadlimit'] >= 1073741824) {
-							print "<td align=right>".round($a['uploadlimit']/1073741824,2)."</td>";
+							print "<td align='right'>".round($a['uploadlimit']/1073741824,2)."</td>";
 							print "<td>GB</td>";
 						} else if ($a['uploadlimit'] >= 1048576) {
-							print "<td align=right>".round($a['uploadlimit']/1048576,2)."</td>";
+							print "<td align='right'>".round($a['uploadlimit']/1048576,2)."</td>";
 							print "<td>MB</td>";
 						} else if ($a[$p.'uploadlimit'] >= 1024) {
-							print "<td align=right>".round($a['uploadlimit']/1024,2)."</td>";
+							print "<td align='right'>".round($a['uploadlimit']/1024,2)."</td>";
 							print "<td>KB</td>";
 						} else if ($a['uploadlimit'] > 0) {
-							print "<td align=right>".round($a['uploadlimit'],2)."</td>";
+							print "<td align='right'>".round($a['uploadlimit'],2)."</td>";
 							print "<td>B</td>";
 						} else {
-							//print "<td align=right>Default</td>";
-							print "<td align=right>".round($default_uploadlimit,2)."</td>";
+							//print "<td align='right'>Default</td>";
+							print "<td align='right'>".round($default_uploadlimit,2)."</td>";
 							print "<td>MB</td>";
 						}
 			
-						print "<td align=center>".(($a['inuse'])?"<b>YES</b>":"NO")."</td>";
-						print "<td align=center><nobr>";
+						print "<td align='center'>".(($a['inuse'])?"<b>YES</b>":"NO")."</td>";
+						print "<td align='center'><nobr>";
 						if (!$a[FK_site])
 							print "<a href='add_slot.php?$sid&action=del&id=".$a['id']."'>del</a> | \n";
 						print "<a href='add_slot.php?$sid&slot_type=$slot_type&slot_name=$slot_name&slot_owner=$slot_owner&slot_use=".(($a['inuse'])?"YES":"NO")."&action=edit&id=".$a['id']."'>edit</a>\n";
@@ -387,14 +387,14 @@ if ($site) {
 </table>
 
 <BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doSlotForm($slot,$p='',$e=0) {
 	global $default_uploadlimit;
 	?>
 	<form method='post' name='addform'>
 	<tr>
-	<td align=center><?=($e)?$slot[$p.'id']:"&nbsp"?></td>
+	<td align='center'><?=($e)?$slot[$p.'id']:"&nbsp"?></td>
 	<input type=hidden name='id' value='<?=($e)?$slot[$p.'id']:"0"?>'>
 	<td>
 	<? if ($e) {
@@ -416,22 +416,22 @@ function doSlotForm($slot,$p='',$e=0) {
 		</select>
 	<? } ?>
 	</td>
-	<td align=left><input type=text name='assocsite' size=10 value="<?=$slot[$p.'assocsite']?>"></td>
-	<td align=right>
+	<td align='left'><input type=text name='assocsite' size=10 value="<?=$slot[$p.'assocsite']?>"></td>
+	<td align='right'>
 <?	if ($slot[$p.'uploadlimit'] >= 1073741824) {
-		print "<input type=text align=right name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1073741824,2)."'>";
+		print "<input type=text align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1073741824,2)."'>";
 		$units = "GB";
 	} else if ($slot[$p.'uploadlimit'] >= 1048576) {
-		print "<input type=text align=right name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1048576,2)."'>";
+		print "<input type=text align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1048576,2)."'>";
 		$units = "MB";
 	} else if ($slot[$p.'uploadlimit'] >= 1024) {
-		print "<input type=text align=right name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1024,2)."'>";
+		print "<input type=text align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1024,2)."'>";
 		$units = "KB";
 	} else if ($slot[$p.'uploadlimit'] > 0) {
-		print "<input type=text align=right name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit'],2)."'>";
+		print "<input type=text align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit'],2)."'>";
 		$units = "B";
 	} else {
-		print "<input type=text align=right name='uploadlimit' size=5 value='".$default_uploadlimit."'>";
+		print "<input type=text align='right' name='uploadlimit' size=5 value='".$default_uploadlimit."'>";
 		$units = "MB";
 	}
 ?>
@@ -444,13 +444,13 @@ function doSlotForm($slot,$p='',$e=0) {
 	</select>
 	</td>
 	<? if ($e) { ?>
-		<td align=center><?=(($slot[$p.'inuse'])?"<b>YES</b>":"NO")?></td>
+		<td align='center'><?=(($slot[$p.'inuse'])?"<b>YES</b>":"NO")?></td>
 	<? } else { ?>
 		<td>&nbsp;  </td>
 	<? } ?>
 	<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
 	<?=($e)?"<input type=hidden name='id' value='".$slot[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-	<td align=center>
+	<td align='center'>
 	<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add slot"?></a>
 	<!-- | <a href='add_slot.php'>cancel</a> -->
 	</td>

@@ -131,7 +131,7 @@ if ($numGroups) {
 		print "<td>";
 		print "$a[classgroup_name]";
 		print "</td>";
-		print "<td align=center>";
+		print "<td align='center'>";
 		print "<a href='$PHP_SELF?$sid&del=group&group=$a[classgroup_id]'>[del]</a>";
 		print "</td>";
 		
@@ -152,7 +152,7 @@ if ($numGroups) {
 			print "<td style='padding-left: 20px'>";
 			print "-&gt; ".generateCourseCode($b[class_id])."</a>";
 			print "</td>";
-			print "<td align=center>";
+			print "<td align='center'>";
 			print "<a href='$PHP_SELF?$sid&del=class&group=$a[classgroup_id]&class=$b[class_id]'>[remove]</a>";
 			print "</td>";
 			print "</tr>";
@@ -163,4 +163,4 @@ if ($numGroups) {
 }
 ?>
 </table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

@@ -182,7 +182,7 @@ do {
 							
 
 						if ($o->getField("category")) {
-							printc("<div class=contentinfo id=contentinfo2 align=right>");
+							printc("<div class=contentinfo id=contentinfo2 align='right'>");
 							printc("Category: <b>".spchars($o->getField("category"))."</b>");
 							printc("</div>");
 						}
@@ -195,7 +195,7 @@ do {
 						
 						
 						if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
-							printc("<div class=contentinfo align=right>");
+							printc("<div class=contentinfo align='right'>");
 							$added = timestamp2usdate($o->getField("addedtimestamp"));
 							printc("added");
 							if ($thisPage->getField("addedby")) printc(" by ".$o->getField("addedbyfull"));
@@ -228,7 +228,7 @@ if ($thisSite->isEditor()
 	&& $thisSite->hasPermissionDown("add || edit || delete")
 	&& !$_REQUEST[themepreview]) 
 {
-	$text .= "\n<br> \n\n<div align=right>";
+	$text .= "\n<br> \n\n<div align='right'>";
 	if (ereg('preview_as', $_REQUEST['action'])) {
 		$editAction = ereg_replace('preview_as', '&action=preview_edit_as', $_REQUEST['action']);
 	 } else {
@@ -246,5 +246,5 @@ if ($thisSite->isEditor()
 } else {
 	$text = "";
 }
-$text .= "\n<br>\n<div align=right>\n<div style='font-size: 0px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif>\n</a>\n</div>";
+$text .= "\n<br>\n<div align='right'>\n<div style='font-size: 0px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif>\n</a>\n</div>";
 $sitefooter = $sitefooter . $text;

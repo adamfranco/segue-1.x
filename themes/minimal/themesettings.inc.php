@@ -52,7 +52,7 @@ if ($themesettings[theme] == 'minimal') {
 <b>Minimal Color</b><br>
 This theme is our most minimal.
 <hr noshade size=1>
-<table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align=left>
+<table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>
 Header/Footer Color:</td><td> 
 <select name='bgcolor' onChange="document.settings.submit()">
 <?
@@ -63,7 +63,7 @@ foreach ($bgcolors as $s) {
 </select>
 </td></tr>
 
-<tr><td align=left>
+<tr><td align='left'>
 Foreground Color:</td><td> 
 <select name='colorscheme' onChange="document.settings.submit()">
 <?
@@ -73,7 +73,7 @@ foreach ($colorschemes as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Border Style:</td><td>
 <select name='borderstyle' onChange="document.settings.submit()">
 <?
@@ -83,7 +83,7 @@ foreach ($borderstyles as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Border Color:</td><td>
 <select name='bordercolor' onChange="document.settings.submit()">
 <?
@@ -93,7 +93,7 @@ foreach ($bordercolors as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Text Color:</td><td>
 <select name='textcolor' onChange="document.settings.submit()">
 <?
@@ -103,7 +103,7 @@ foreach ($textcolors as $s) {
 ?>
 </select>
 </td></tr>
-<tr><td align=left>
+<tr><td align='left'>
 Link Color:</td><td>
 <select name='linkcolor' onChange="document.settings.submit()">
 <?

@@ -54,7 +54,7 @@ include("themes/$theme/css.inc.php");
 //include("themes/common/status.inc.php"); ?>
 <br>
 
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding=0 cellspacing=0>
   <tr> 
     <td class="topleft">&nbsp;</td>
     <td class="top"> 
@@ -69,7 +69,7 @@ include("themes/$theme/css.inc.php");
     <td bgcolor="<? echo $c[bgcolor] ?>">
     <? include("themes/common/status.inc.php");?>
 
-       <div class=topnav align=center>
+       <div class=topnav align='center'>
 	<div class='nav'>
 	<?
 	/* ------------------------------------------- */
@@ -136,7 +136,7 @@ include("themes/$theme/css.inc.php");
 		}
 		if ($item[type] == 'heading') {
 			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
+			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 		}
 	}
 	print "<br>$leftnav_extra";
@@ -168,7 +168,7 @@ if (count($rightnav)) {
 <tr> 
     <td class="bottomleft">&nbsp;</td>
     <td class="bottom">
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <div class='nav'>
 </div>
 </div> 
@@ -180,7 +180,7 @@ if (count($rightnav)) {
 </table>
 <br>
 
-<table width=90% align=center cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding=0 cellspacing=0>
 <tr><td>
 <?/* ------------------------------------------- */
 /* -------------- FOOTER     ----------------- */

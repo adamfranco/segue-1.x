@@ -839,9 +839,9 @@ function ol_content_caption(text, title, close) {
 	if (o3_capicon != "") o3_capicon = "<IMG SRC=\""+o3_capicon+"\"> ";
 
 	if (close != "") {
-		if (o3_css == CSSCLASS) closing = "<TD ALIGN=RIGHT><A HREF=\"/\" "+closeevent+"=\"return cClick();\" class=\""+o3_closefontclass+"\">"+close+"</A></TD>";
-		if (o3_css == CSSSTYLE) closing = "<TD ALIGN=RIGHT><A HREF=\"/\" "+closeevent+"=\"return cClick();\" style=\"color: "+o3_closecolor+"; font-family: "+o3_closefont+"; font-size: "+o3_closesize+o3_closesizeunit+"; text-decoration: "+o3_closedecoration+"; font-weight: "+o3_closeweight+"; font-style:"+o3_closestyle+";\">"+close+"</A></TD>";
-		if (o3_css == CSSOFF) closing = "<TD ALIGN=RIGHT><A HREF=\"/\" "+closeevent+"=\"return cClick();\"><FONT COLOR=\""+o3_closecolor+"\" FACE=\""+o3_closefont+"\" SIZE=\""+o3_closesize+"\">"+close+"</FONT></A></TD>";
+		if (o3_css == CSSCLASS) closing = "<TD align='right'><A HREF=\"/\" "+closeevent+"=\"return cClick();\" class=\""+o3_closefontclass+"\">"+close+"</A></TD>";
+		if (o3_css == CSSSTYLE) closing = "<TD align='right'><A HREF=\"/\" "+closeevent+"=\"return cClick();\" style=\"color: "+o3_closecolor+"; font-family: "+o3_closefont+"; font-size: "+o3_closesize+o3_closesizeunit+"; text-decoration: "+o3_closedecoration+"; font-weight: "+o3_closeweight+"; font-style:"+o3_closestyle+";\">"+close+"</A></TD>";
+		if (o3_css == CSSOFF) closing = "<TD align='right'><A HREF=\"/\" "+closeevent+"=\"return cClick();\"><FONT COLOR=\""+o3_closecolor+"\" FACE=\""+o3_closefont+"\" SIZE=\""+o3_closesize+"\">"+close+"</FONT></A></TD>";
 	}
 
 	if (o3_css == CSSCLASS) txt = "<TABLE WIDTH="+o3_width+" BORDER=0 CELLPADDING="+o3_border+" CELLSPACING=0 class=\""+o3_bgclass+"\"><TR><TD><TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0><TR><TD><FONT class=\""+o3_captionfontclass+"\">"+o3_capicon+title+"</FONT></TD>"+closing+"</TR></TABLE><TABLE WIDTH=100% BORDER=0 CELLPADDING=5 CELLSPACING=0 class=\""+o3_fgclass+"\"><TR><TD VALIGN=TOP><FONT class=\""+o3_textfontclass+"\">"+text+"</FONT></TD></TR></TABLE></TD></TR></TABLE>";

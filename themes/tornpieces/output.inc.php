@@ -87,7 +87,7 @@ include("themes/$theme/css.inc.php");
 <body style='margin: 0px'>
 
 <!-- header table   -->
-<table width=95% cellpadding=0 cellspacing=0 align=center>
+<table width=95% cellpadding=0 cellspacing=0 align='center'>
 <tr>
 <td class=topleft></td>
 <td class=top></td>
@@ -107,7 +107,7 @@ include("themes/common/status.inc.php");
 print $sitecrumbs;
 ?>
 </div>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* --------- TOP SECTION NAV ---------------- */
@@ -132,7 +132,7 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
 <td class=leftnav>
 
 <!-- left nav table   -->
-<table width=90% cellpadding=0 cellspacing=0 align=center>
+<table width=90% cellpadding=0 cellspacing=0 align='center'>
 <tr>
 <td class=topleft></td>
 <td class=top></td>
@@ -166,7 +166,7 @@ if ($nav_arrange==1) {
 <td class=contentarea>
 
 <!-- content table   -->
-<table width=100% cellpadding=0 cellspacing=0 align=center>
+<table width=100% cellpadding=0 cellspacing=0 align='center'>
 <tr>
 <td class=topleft></td>
 <td class=top></td>
@@ -175,7 +175,7 @@ if ($nav_arrange==1) {
 <tr>
 <td class=left><img class=lefttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>'></td>
 <td class=content>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
@@ -191,7 +191,7 @@ if ($nav_arrange==1) {
 print $content; 
 
 ?>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
@@ -222,7 +222,7 @@ if (count($rightnav)) {
 </table>
 
 
-<table width=95% cellpadding=0 cellspacing=0 align=center>
+<table width=95% cellpadding=0 cellspacing=0 align='center'>
 <tr>
 <td class=topleft></td>
 <td class=top></td>
@@ -231,7 +231,7 @@ if (count($rightnav)) {
 <tr>
 <td class=left><img class=lefttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>'></td>
 <td class=content>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM SECTION NAV ----------- */

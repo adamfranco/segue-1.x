@@ -79,7 +79,7 @@ class permissions {
 					//if ($e == 'everyone') continue;
 					// :: /hack ::
 					
-					printc("\n<tr><td class=td$color align=left>");
+					printc("\n<tr><td class=td$color align='left'>");
 					if ($e == "everyone")
 						printc("Everyone (will override other entries)</td>");
 					else if ($e == "institute")
@@ -93,7 +93,7 @@ class permissions {
 						if (!$d && $i==4) $skip = 1;
 						if (!$d && (($e == 'everyone' || $e == 'institute') && $i!=3)) $nob=1;
 						if (!$skip) {
-							printc("\n<td class=td$color align=center>");
+							printc("\n<td class=td$color align='center'>");
 							if ($nob) printc("&nbsp;");
 							else printc("\n<input type=checkbox name='permissions[$e][$i]' value=1".(($permissions[$e][$i])?" checked":"").">");
 							printc("</td>");
@@ -105,7 +105,7 @@ class permissions {
 					
 					printc("</td>");
 					if ($canAddEditors) {
-						printc("\n<td class=td$color align=center>");
+						printc("\n<td class=td$color align='center'>");
 						if ($e == 'everyone' || $e == 'institute') printc("&nbsp;");
 						else printc("<a href='#' onClick='delEditor(\"$e\");'>remove</a>");
 						printc("</td>");

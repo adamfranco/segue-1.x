@@ -275,7 +275,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<tr><td class='bg'>";
 	print "Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>";
 	print " | <a href='viewlogs.php?$sid&site=$site'>users</a>";
-	print "</td><td align=right class='bg'>";
+	print "</td><td align='right' class='bg'>";
 	print "<a href='users.php?$sid&site=$site'>add/edit users</a> | ";
 	print "<a href='classes.php?$sid&site=$site'>add/edit classes</a> | ";
 	print "<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> | ";
@@ -299,7 +299,7 @@ if ($_SESSION['ltype']=='admin') {
 }
 print "</td>";
 
-print "<td class='bg' align=right>";
+print "<td class='bg' align='right'>";
 // roster
 if (isclass($_REQUEST[site])) print "<a href=add_students.php?$sid&name=$site>Roster</a> |";
 
@@ -349,7 +349,7 @@ print "</table><br>";
 <!-- 		<input type=submit name='search' value='Find'> -->
 <!-- 		<input type=submit name='findall' value='Find All'> -->
 		</td>
-		<td align=right>
+		<td align='right'>
 		<?
 		//$order = urlencode($order);
 		if ($curraction == 'user') {
@@ -520,16 +520,16 @@ print "</table><br>";
 			
 			<form action="<? echo $PHP_SELF ?>" method=post name=emailform>
 			<table width=100%>
-			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
+			<tr><td align='right'>To:</td><td><? echo $to ?></td><td align='right'></td></tr>
 			<? if ($_SESSION['ltype']=='admin' && $_SESSION['lfname'] != $_SESSION['afname']) {
-					print "<tr><td align=right>From:</td><td>".$_SESSION['lfname']." as ".$_SESSION['afname']."</td><td align=right></td></tr>";
+					print "<tr><td align='right'>From:</td><td>".$_SESSION['lfname']." as ".$_SESSION['afname']."</td><td align='right'></td></tr>";
 				} else {
-					print "<tr><td align=right>From:</td><td>".$_SESSION['afname']."</td><td align=right></td></tr>";
+					print "<tr><td align='right'>From:</td><td>".$_SESSION['afname']."</td><td align='right'></td></tr>";
 				}
 			?>
-			<tr><td align=right>Cc:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
-			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
-			<tr><td></td><td align=left>
+			<tr><td align='right'>Cc:</td><td><? echo $_SESSION['afname'] ?></td><td align='right'></td></tr>
+			<tr><td align='right'>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align='left'></td></tr>
+			<tr><td></td><td align='left'>
 			<?
 			require_once("htmleditor/editor.inc.php");
 			include("sniffer.inc.php");
@@ -537,7 +537,7 @@ print "</table><br>";
 			print $content;
 			?>
 <!-- 			<textarea name=body cols=60 rows=20></textarea> -->
-			</td><td><td align=right></td></tr>
+			</td><td><td align='right'></td></tr>
 			</table>
 			<input type=hidden name='action' value='send'>
 			<input type=hidden name='scope' value='<? echo $scope ?>'>
@@ -749,7 +749,7 @@ print "</table><br>";
 </table>
 
 <BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 
 ?>

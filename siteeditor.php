@@ -119,9 +119,9 @@ if (count($sections)) {
 		print "<tr>";
 		print "<td>$sa[title]</td>";
 		print "<td>$sa[type]</td>";
-		print "<td align=center>".(($sa[active])?"yes":"no")."</td>";
-		print "<td align=center>".(($sa[locked])?"yes":"no")."</td>";
-		print "<td align=center>";
+		print "<td align='center'>".(($sa[active])?"yes":"no")."</td>";
+		print "<td align='center'>".(($sa[locked])?"yes":"no")."</td>";
+		print "<td align='center'>";
 		if ($sa[type]=='section') print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s\"'>[view]</a>";
 		print "</td>";
 		print "</tr>";
@@ -156,9 +156,9 @@ if (count($sections)) {
 			print "<tr>";
 			print "<td class=pad><li>$pa[title]</td>";
 			print "<td>$pa[type]</td>";
-			print "<td align=center>".(($sa[active])?"yes":"no")."</td>";
-			print "<td align=center>".(($pa[locked])?"yes":"no")."</td>";
-			print "<td align=center>";
+			print "<td align='center'>".(($sa[active])?"yes":"no")."</td>";
+			print "<td align='center'>".(($pa[locked])?"yes":"no")."</td>";
+			print "<td align='center'>";
 			if ($pa[type]=='page') print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s&page=$p\"'>[view]</a>";
 			print "</td>";
 			print "</tr>";
@@ -185,4 +185,4 @@ if (count($sections)) {
 ?>
 </table><BR>
 A = active, L = locked
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

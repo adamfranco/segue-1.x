@@ -18,11 +18,11 @@ else  printc("<div class=title>Edit Content on Page \"".$thisPage->getField("tit
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -92,7 +92,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		if ($isWinIE) {
 			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
 			printc("We recommend you chose HTMLarea for the greatest cross-platform compatibility.</div>");
-			printc("<div align=right>Current Editor: <select name=editor onChange='document.addform.submit()'>");
+			printc("<div align='right'>Current Editor: <select name=editor onChange='document.addform.submit()'>");
 			printc("<option value=htmlarea".(($_SESSION[settings][editor]=='htmlarea')?" selected":"").">HTMLarea");
 			printc("<option value=activex".(($_SESSION[settings][editor]=='activex')?" selected":"").">Active-X");
 			printc("</select></div>");
@@ -153,7 +153,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	if ($supported == 1) {
 		printc("<input type=hidden name='texttype' value='html'>");
 	} else {
-		printc("<div align=right>");
+		printc("<div align='right'>");
 		printc("What type of text did you enter?");
 	//	printc (" <select name=texttype>");
 	//	printc("<option value=text".(($_SESSION[settings][texttype]=='text')?" selected":"").">Plain text");
@@ -161,7 +161,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//	printc("</select>");
 		printc("<input type=textarea disabled value='".(($_SESSION[storyObj]->getField("texttype")=='text')?" Plain text":" Preformatted HTML")."'>");
 		printc("</div>");
-		printc("<div class=desc align=right>Change this option on the previous screen.</div>");
+		printc("<div class=desc align='right'>Change this option on the previous screen.</div>");
 	}
 }
 

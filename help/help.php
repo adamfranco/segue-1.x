@@ -52,9 +52,9 @@ body { background-color: white; }
 </style>
 </head>
 <body style='margin: 0px'>
-<div align=right class=content><a href='help.php?&helptopic=index'>Index</a></div>
+<div align='right' class=content><a href='help.php?&helptopic=index'>Index</a></div>
 <div class=title>Help Topic: <?echo $title?></div>
 <div class=content><?echo $content?></div>
-<div align=right><input type=button class=button value='close' onClick='window.close()'></div>
+<div align='right'><input type=button class=button value='close' onClick='window.close()'></div>
 </body>
 </html>

@@ -236,7 +236,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
 	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
 	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
@@ -249,13 +249,13 @@ if ($_SESSION['ltype']=='admin') {
  * Roster | Participation | Logs
  ******************************************************************************/
 
-print "<div align=right>";
+print "<div align='right'>";
 print "Roster";
 print " | <a href='email.php?$sid&siteid=$siteid&site=$class_external_id&action=list&order=user_fname&scope=site'>Participation</a>";
 print " | <a href='viewlogs.php?$sid&site=$class_external_id'>Logs</a>";
 print "</div><br>";
 ?>
-<!-- <div align=right>Students | Participants</div><br> -->
+<!-- <div align='right'>Students | Participants</div><br> -->
 <table cellspacing=1 width='100%' id='maintable'>
 
 <tr>
@@ -264,7 +264,7 @@ print "</div><br>";
 	<th width=20%></th>
 </tr>
 <tr>
-	<td align=center>
+	<td align='center'>
 	<? 
 	if ($_SESSION[ltype]=='admin') 
 		print "<input type=button name='use' value='add' onClick='addStudent(document.lookup.n.value)'>"; 
@@ -288,7 +288,7 @@ if (count($usernames)) {
 		if (!ereg("[a-z]",$u)) next;
 		$u = strtolower($u);
 		print "<tr>";
-		print "<td class=td$color align=center><input type=button name='use' value='add' onClick='addStudent(\"$u\")'></td>";
+		print "<td class=td$color align='center'><input type=button name='use' value='add' onClick='addStudent(\"$u\")'></td>";
 		print "<td class=td$color>$f ($u)</td>";
 		print "<td class=td$color></td>";
 		print "</tr>";
@@ -304,7 +304,7 @@ if (count($usernames)) {
 </form>
 
 <p>
-<div align=center><b>Class Roster</b></div>
+<div align='center'><b>Class Roster</b></div>
 Below is a current list of all the students in your class. You have the option of creating a site
 for each of your students that is <i>associated</i> with your class site.  An associated site can be
 used for class projects that involve extensive web publication such as weblogs.<br><br>
@@ -341,7 +341,7 @@ foreach (array_keys($participants) as $key) {
 	 * If not site owner and participant not from LDAP
 	 * print out delete button
 	 ******************************************************************************/
-	print "<td align=center  class=td$color>";
+	print "<td align='center'  class=td$color>";
 	
 
 	if ($owner_uname != $participants[$key][uname] && $participants[$key][memberlist] != "external") {
@@ -362,7 +362,7 @@ foreach (array_keys($participants) as $key) {
 	 * Print out buttons for creating, deleting and viewing associated sites
 	 ******************************************************************************/
 
-	print "<td align=center class=td$color>";
+	print "<td align='center' class=td$color>";
 	if ($participants[$key][type] != "prof") {
 		$slotname = $class_external_id."-".$participants[$key][uname];
 		$query = "
@@ -441,7 +441,7 @@ foreach (array_keys($participants) as $key) {
 </form>
 
 
-<div align=right>
+<div align='right'>
 <!-- <input type=button value='Add Editor' onClick='addEditor()'> -->
 <input type=button value='Done' onClick='window.close()'></div>
 

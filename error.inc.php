@@ -12,7 +12,7 @@ function printerr() {
 	global $errors,$numerrs,$message;
 	$string = '';
 	if ($numerrs) {
-		$string .="<div class='error' align=left>The following errors occured:<ul>\n";
+		$string .="<div class='error' align='left'>The following errors occured:<ul>\n";
 		foreach ($errors as $id) {
 			$string .="<li class=smaller>" . $id . "\n";
 		}
@@ -29,7 +29,7 @@ function printerr2() {
 	global $errors,$numerrs,$message;
 	$string = '';
 	if ($numerrs) {
-		$string .="<div class='error' align=left>The following errors occured:<ul>\n";
+		$string .="<div class='error' align='left'>The following errors occured:<ul>\n";
 		foreach ($errors as $id) {
 			$string .="<li class=smaller>" . $id . "\n";
 		}

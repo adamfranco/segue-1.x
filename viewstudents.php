@@ -16,7 +16,7 @@ $siteinfo = db_get_line("site INNER JOIN slot on site_id = FK_site","slot_name='
 $site_type = $siteinfo[type];
 
 if ($_REQUEST[site_type] =="class") {
-	//print "<div align=center>Students in $site</div>";
+	//print "<div align='center'>Students in $site</div>";
 }
 if ($_REQUEST[clear]) {
 	$type = "";
@@ -153,7 +153,7 @@ function changeOrder(order) {
 <?// print "test = $test"; ?>
 
 <table width='100%' class='bg'>
-<td align=right class='bg'>
+<td align='right' class='bg'>
     <a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
     | <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
     | Users
@@ -194,7 +194,7 @@ function changeOrder(order) {
         <? } ?>
         </form>
         </td>
-        <td align=right>
+        <td align='right'>
         <?
         $tpages = ceil($numlogs/30);
         $curr = ceil(($lowerlimit+30)/30);
@@ -296,4 +296,4 @@ if (db_num_rows($r)) {
 }
 ?>
 </table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

@@ -29,11 +29,11 @@ printc("<form action='$PHP_SELF?$sid&action=".(($_SESSION[settings][add])?"add_s
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	if ($_SESSION[settings][edit]) printc("<input type=submit name=save value='Save Changes'>\n");
 	if ($_SESSION[settings][add]) printc("<input type=submit name=save value='Finish Now'>\n"); 
 printc("</td></tr></table>");
@@ -65,10 +65,10 @@ foreach ($_templates as $template=>$tname) {
 	$templateSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true);
 	if ($templateSite->canView()) {
 		printc("<tr>");
-		printc("<td align=center valign=top><a name='row$i'><input type=radio name=template value=$template".(($_SESSION[settings][template]==$template)?" checked":"")." onClick=\"selectRow('$i')\"></td>");
+		printc("<td align='center' valign=top><a name='row$i'><input type=radio name=template value=$template".(($_SESSION[settings][template]==$template)?" checked":"")." onClick=\"selectRow('$i')\"></td>");
 		printc("<td width=25% valign=top style='border-top: 1px solid #aaa;'><b>$tname</b></td>");
 	
-		printc("<td valign=top align=right style='border-top: 1px solid #aaa;'><input type=button class='small' value='Preview This Template' onClick='doTemplateWin(\"$template\")'></td>");
+		printc("<td valign=top align='right' style='border-top: 1px solid #aaa;'><input type=button class='small' value='Preview This Template' onClick='doTemplateWin(\"$template\")'></td>");
 		printc("</tr>\n");
 		printc("<tr>");
 		printc("<td> &nbsp; </td>");
@@ -92,11 +92,11 @@ printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");
 
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	if ($_SESSION[settings][edit]) printc("<input type=submit name=save value='Save Changes'>\n");
 	if ($_SESSION[settings][add]) printc("<input type=submit name=save value='Finish Now'>\n"); 
 printc("</td></tr></table>");

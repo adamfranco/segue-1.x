@@ -527,7 +527,7 @@ function changePage(lolim) {
 					$percentfree = 100-$percentused;
 					$space = $dirlimit_B - $totalsize;
 					$space = convertfilesize($space);
-					print "<table cellspacing=0 cellpadding=0 align=right>";
+					print "<table cellspacing=0 cellpadding=0 align='right'>";
 					print "<tr><td class='sizebox1'>Total media allowed: </td><td class='sizebox2'> $dirlimit</td></tr>";
 					print "<tr><td class='sizebox1'>Total size of your media: </td><td class='sizebox2'> $dirtotal</td></tr>";
 					print "<tr><td class='sizebox1'>Space available: </td><td class='sizebox2' style='border-top: 1px solid #000'> $space</td></tr>";
@@ -600,7 +600,7 @@ if (1) {
 		<input type=hidden name='lowerlimit' value=0>
 		</form> 
 		</td> 
-		<td align=right> 
+		<td align='right'> 
 		 
 		<? 
 		$tpages = ceil($numrows/$numperpage); 
@@ -835,7 +835,7 @@ if (db_num_rows($r)) {
 <input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
 </form> 
  
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div> 
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div> 
 
 <?
 

@@ -79,7 +79,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
 	 | <a href='viewusers.php?$sid&site=$site'>users</a>
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	<a href='classes.php?$sid&site=$site'>add/edit classes</a> |  
 	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> | 
@@ -88,7 +88,7 @@ if ($_SESSION['ltype']=='admin') {
 }
 
 if ($site) {
-	print "<div align=right>";
+	print "<div align='right'>";
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
@@ -102,7 +102,7 @@ if ($site) {
 <table cellspacing=1 width='100%' id='maintable'>
 <tr><td>
 
-<table width='90%' align=center>
+<table width='90%' align='center'>
 <?
 // print out the updates
 foreach ($updates as $key => $obj) {
@@ -110,7 +110,7 @@ foreach ($updates as $key => $obj) {
 	print "<tr>\n<td width='50%'>\n";
 	print "<b>".$obj->getName()."</b>\n";
 	print "<br>".$obj->getDescription();
-	print "\n</td>\n<td width='50%' align=center valign=center>\n";
+	print "\n</td>\n<td width='50%' align='center' valign='center'>\n";
 	
 	if ($obj->hasRun())
 		print "<b>This update is in place</b>\n";
@@ -127,7 +127,7 @@ foreach ($updates as $key => $obj) {
 </table>
 
 <BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <?
 /* // debug output -- handy :) */

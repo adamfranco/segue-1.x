@@ -488,7 +488,7 @@ FROM
 	//	print_r($_SESSION[settings][activatedate]);
 		printc("<input type=hidden name='setformdates' value=1>");
 		printc("<table>");
-		printc("<tr><td align=right>");
+		printc("<tr><td align='right'>");
 		printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>");
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">".$i."\n");
@@ -508,7 +508,7 @@ FROM
 		
 		printc("</td></tr>");
 		
-		printc("<tr><td align=right>");
+		printc("<tr><td align='right'>");
 		printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>");
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">".$i."\n");

@@ -99,7 +99,7 @@ print $sitecrumbs;
 ?>
 </td></tr>
 
-<tr><td class=topnav align=center>
+<tr><td class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* --------- TOP SECTION NAV ---------------- */
@@ -110,7 +110,7 @@ if ($nav_arrange==1) horizontal_nav($section,$topnav, $topnav_extra);
 
 <tr><td class=contentarea>
 
-<table width=600 class=contenttable align=center>
+<table width=600 class=contenttable align='center'>
 <tr><td class=leftnav valign=top> 
 <?
 
@@ -126,7 +126,7 @@ if ($nav_arrange==1) {
 </td>
 
 <td class=content valign=top>
-<div align=center>
+<div align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
@@ -142,7 +142,7 @@ if ($nav_arrange==1) {
 print $content; 
 
 ?>
-<div align=center>
+<div align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
@@ -163,7 +163,7 @@ if (count($rightnav)) {
 </div>
 </table>
 <tr><td>
-<div class=topnav align=center>
+<div class=topnav align='center'>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM SECTION NAV ----------- */

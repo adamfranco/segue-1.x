@@ -116,7 +116,7 @@ print "</table><BR>";
 
 ?>
 
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <? 
 /******************************************************************************

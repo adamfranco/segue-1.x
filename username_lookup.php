@@ -64,7 +64,7 @@ if (count($usernames)) {
 		if (!$u || $u=='') next;
 		if (!ereg("[a-z]",$u)) next;
 		print "<tr>";
-		print "<td align=center>$c</td><td>$f</td><td>$u</td>";
+		print "<td align='center'>$c</td><td>$f</td><td>$u</td>";
 		print "</tr>";
 		$c++;
 	}
@@ -75,4 +75,4 @@ if (count($usernames)) {
 </table>
 </td></tr></table>
 <BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
