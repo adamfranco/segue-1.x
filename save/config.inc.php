@@ -33,7 +33,7 @@ $uploadurl = "userfiles";
 
 /* // some other globals */
 /* $motsemail="MOTS <nobody@middlebury.edu>"; */
-/* $motsurl="http://sqlserver.middlebury.edu/mots"; */
+/* $motsurl="http://devo.middlebury.edu/mots"; */
 /* $motsadmincontact="Alex Chapin <achapin@middlebury.edu>"; */
 
 // ***************** you probably don't need to edit below this line ************* //
