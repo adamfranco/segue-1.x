@@ -260,8 +260,8 @@ function changeOrder(order) {
 					$space = $userdirlimit - $totalsize;
 					$space = convertfilesize($space);
 					print "<table cellspacing=0 cellpadding=0 align=center>";
-					print "<tr><td class='sizebox1'>Total size of your media: </td><td class='sizebox2'> $dirtotal</td></tr>";
 					print "<tr><td class='sizebox1'>Total media allowed: </td><td class='sizebox2'> $dirlimit</td></tr>";
+					print "<tr><td class='sizebox1'>Total size of your media: </td><td class='sizebox2'> $dirtotal</td></tr>";
 					print "<tr><td class='sizebox1'>Space availible: </td><td class='sizebox2' style='border-top: 1px solid #000'> $space</td></tr>";
 					print "</table><br>";
 					?>
