@@ -120,11 +120,11 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	}
 	
 	if (!is_writeable($userdir)) {
-		print "<strong>Can not write to '".$userdir."'. <br />Please contact your system administrator to fix this problem.</strong>";
+		print "<strong>Can not write to '".$userdir."'. <br />Please contact your system administrator with the message above to fix this problem.</strong> <br />";
 		return "ERROR";
 	}
 	if (file_exists($userdir."/".$name) && !is_writeable($userdir."/".$name)) {
-		print "<strong>Can not write to '".$userdir."/".$name."'. <br />Please contact your system administrator to fix this problem.</strong>";
+		print "<strong>Can not write to '".$userdir."/".$name."'. <br />Please contact your system administrator with the message above to fix this problem.</strong> <br />";
 		return "ERROR";
 	}
 	
