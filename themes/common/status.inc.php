@@ -43,7 +43,7 @@ if (!$_REQUEST[nostatus]) {
 				print "<input type=hidden name=action value='change_auser'>";
 			}
 			if ( $_SESSION[auser] == $site_owner || $_SESSION[ltype]=='admin') {
-				print " | <a href='viewsites.php?$sid&site=$site' target='sites' onClick='doWindow(\"sites\",600,600)' class='navlink'>logs</a>";
+				print " | <a href='viewsites.php?$sid".((is_object($site))?"":"&site=$site")."' target='sites' onClick='doWindow(\"sites\",600,600)' class='navlink'>logs</a>";
 			}
 			if ($_SESSION[ltype]=='admin') {
 //				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>user lookup</a>";
