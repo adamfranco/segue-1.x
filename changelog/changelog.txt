@@ -3,7 +3,7 @@
 Name: Segue ChangeLog
 
 
-v. 1.0.3 (2003-11-22)
+v. 1.0.3 (2003-11-12)
 ----------------------------------------------------
 		
 	* Change: Permissions window now has Save/Cancel buttons at the top of the window. (Adam Franco)
