@@ -37,6 +37,18 @@ if ($_REQUEST['userid']) $userid = $_REQUEST['userid'];
 
 $storyid = $_REQUEST['storyid'];
 $siteid = $_REQUEST['siteid'];
+$class_id = $_REQUEST['site'];
+
+/******************************************************************************
+ * if class get all members of class from ldap
+ * returns array with uname, fname and type
+ ******************************************************************************/
+
+if (isclass($class_id)) {
+	$students = getclassstudents($class_id);
+	//printpre($students);
+}
+
 
 /******************************************************************************
  * get search variables and create query
@@ -57,7 +69,7 @@ if ($action == "review") {
 	$select = "user_id, user_fname, user_email, discussion_rate, discussion_tstamp, discussion_id, discussion_subject, story_id, page_id, page_title, story_text_short, section_id, site_id";
 	if (!isset($order)) $order = "discussion_tstamp ASC";
 } else {
-	$select = "DISTINCT user_id, user_fname, user_email";
+	$select = "DISTINCT user_id, user_fname, user_uname, user_email";
 	$order = "user_fname ASC";	
 }
 
@@ -309,7 +321,7 @@ Participants<br><br>
 			while ($a2 = db_fetch_assoc($r)) {
 				array_push($emaillist, $a2['user_email']);	
 			}
-			
+						
 			$to = implode(", ", $emaillist);
 						
 			//compile from and cc into headers
@@ -452,6 +464,8 @@ Participants<br><br>
 
 				if ($curraction == 'list') {
 					$userid = $a[user_id];
+					$logged_participants[] = $a[user_uname];
+					
 					$query2 = "
 					SELECT 
 						user_id, user_email, discussion_rate, discussion_tstamp
@@ -509,6 +523,30 @@ Participants<br><br>
 								
 				print "</tr>";
 			}
+			
+			/******************************************************************************
+			 * Add to list of participants students in class who have not yet
+			 * participated 
+			 ******************************************************************************/
+			if ($curraction != 'review') {
+				if (count($students)) {
+					asort($students);
+					reset($students);
+				}
+	
+				foreach (array_keys($students) as $key) {
+	
+					if (!in_array($students[$key][uname], $logged_participants)) {
+						print "<tr>";
+						print "<td>".$students[$key][fname]."</td>";
+						print "<td>".$students[$key][email]."</td>";
+						print "<td>0</td>";
+						print "<td></td>";
+						print "</tr>";
+					}
+				}
+			}
+
 		?>
 	</table>	
 </td></tr>

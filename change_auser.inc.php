@@ -1,11 +1,13 @@
 <? /* $Id$ */
 // changes the active user
-
+//include("dbwrapper.inc.php");
 $changeauser = strtolower($_REQUEST[changeauser]);
 print "change_auser started with $changeauser...<BR>";
 $debug = 1;
 if ($ltype == 'admin') {	// must be admin to do this:
 	print "we are admin.";
+	//printpre($_auth_mods);
+
 // we'll check first the db, to see if they're there, then ldap if they're not there.
 /* 	if ($r=db_valid($changeauser,"",1)) { */
 /* 		$a = db_fetch_assoc($r); */
@@ -36,7 +38,9 @@ if ($ltype == 'admin') {	// must be admin to do this:
 			break;
 		}
 	}
+
 	if ($valid) {
+
 		$_SESSION[auser] = $changeauser;
 		$_SESSION[aemail] = $x[email];
 		$_SESSION[afname] = $x[fullname];
@@ -47,8 +51,8 @@ if ($ltype == 'admin') {	// must be admin to do this:
 	}
 }
 
-print "<p>$aid, $afname, $auser, $aemail, $atype<BR>";
-
+printpre("<p>$aid, $afname, $auser, $aemail, $atype<BR>");
+//exit();
 header("Location: index.php?$sid");
 
 ?>

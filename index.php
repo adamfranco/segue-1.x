@@ -6,8 +6,8 @@
 // objects will be broken.
 include("objects/objects.inc.php");
 
-ob_start();		// start the output buffer so we can use headers if needed
 
+ob_start();		// start the output buffer so we can use headers if needed
 // we need to include the config before we start the session 
 require_once("config.inc.php");
 if ($cfg[domain]) ini_set("session.cookie_domain",$cfg[domain]);
@@ -17,6 +17,7 @@ session_start();// start the session manager :) -- important, as we just learned
 header("Content-type: text/html; charset=utf-8");
 
 if (ereg("^login",getenv("QUERY_STRING"))) {
+
 	if (session_id()) {
 		// clear only our session variables as to not interfere with other apps
 		$vars = array("luser","auser",
@@ -86,10 +87,7 @@ $oldsites=array();
 /* --------------- eventually, this command will be gone... unneeded and handled by ADOdb */
 // connect to the database
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-
-
 if ($_loggedin) {
-
 	// below if statement should be changed to check a config variable that states
 	// if classes should be check, and what routine to use to get that
 	$classes=getuserclasses($auser,"now");
@@ -109,7 +107,6 @@ if ($_loggedin) {
 		}
 	}
 }
-
 
 //if (count($classes)) printc(implode(",",array_keys($classes)));
 
@@ -161,15 +158,21 @@ if ($_REQUEST[page]) {
 
 // compatibility:
 if (isset($_REQUEST[action])) $action = $_REQUEST[action];
+//print"ok"; exit();
 
 // if we don't already have content (probably login error messages), then output some shite
 if (!$loginerror) {
+	
 	$try = "$action.$_SESSION[ltype].inc.php";			// first try a ltype-specific action file
 	if (file_exists($try)) {					// yes, indeed
 		include($try);
 	} else {
 		$try = "$action.inc.php";				// try a general one
-		if (file_exists($try)) include($try);
+		if (file_exists($try)) {
+			//print $action; exit();
+			include($try);
+			//print $action; exit();
+		}
 		else include("no_action.inc.php");		// action not implemented yet or doesn't exist :(
 	}
 }
@@ -217,6 +220,7 @@ if (!$theme) {
 if ($themesettings) $themesettings = decode_array($themesettings);
 
 //output the HTML
+
 include("$themesdir/$theme/output.inc.php");
 
 // ------------------

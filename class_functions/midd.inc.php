@@ -127,7 +127,7 @@ function getclassstudents($class_id) {
 						
 						$userSearchFilter = "(".$nextmember.")";
 						$userSearchFilter = eregi_replace("(,)\s?".$userSearchDN,"", $userSearchFilter);
-						
+						//printpre($userSearchFilter);
 						// search ldap with filter set to full name...
 						//$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
 						//print "<hr>";
@@ -137,14 +137,16 @@ function getclassstudents($class_id) {
 						$res2 = ldap_get_entries($c,$sr2);
 						//printpre($res2);
 						$res2[0] = array_change_key_case($res2[0], CASE_LOWER);
-						//printpre($res2);
+						//printpre($cfg[ldap_fullname_attribute]);
 						$num = ldap_count_entries($c,$sr);
 						ldap_close($c);
 						$participant = array();
-						if ($num) {							
+						if ($num) {	
+							//printpre($cfg[ldap_username_attribute]);						
 							$participant[fname] = $res2[0][strtolower($cfg[ldap_fullname_attribute])][0];
 							$participant[uname] = $res2[0][strtolower($cfg[ldap_username_attribute])][0];
-							
+							$participant[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
+							//printpre("uname: ".$participant[uname]);
 							if (is_array($res2[0][strtolower($cfg[ldap_group_attribute])])) {
 							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
 								foreach ($res2[0][strtolower($cfg[ldap_group_attribute])] as $item) {
@@ -162,7 +164,7 @@ function getclassstudents($class_id) {
 					
 					$participants[]= $participant;					
 				}
-			//printpre($students);	
+			//printpre($participants);	
 			}
 	
 		}
