@@ -81,11 +81,12 @@ function generateCodeFromData($dept,$number,$section,$semester,$year,$ext_id="",
 }
 
 function generateTermsFromCode($code) {
-	$department = substr($code,0,2);
-	$number = substr($code,2,3);
-	$section = substr($code,5,1);
-	$semester = substr($code,7,1);
-	$year = "20".substr($code,8,2);
+	ereg("([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]{1})([0-9]{2})",$code,$r);
+	$department = $r[1];
+	$number = $r[2];
+	$section = $r[3];
+	$semester = $r[4];
+	$year = "20".$r[5];
 	
 	$terms = "
 		class_department='$department' AND
@@ -94,6 +95,7 @@ function generateTermsFromCode($code) {
 		class_semester='$semester' AND
 		class_year='$year'
 	";
+	return $terms;
 }
 
 function coursefoldersite($cl) {

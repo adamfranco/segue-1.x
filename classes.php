@@ -46,9 +46,10 @@ if ($curraction == 'del') {
 if ($curraction == 'add') {
 	// check for errors first
 	if (course::courseExists(generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year']))) error("A class with that code already exists.");
-	if (!$_REQUEST['department']) error("You must enter a department.");
-	if (!$_REQUEST['number']) error("You must enter a number.");
-	if (!$_REQUEST['semester']) error("You must enter a semester.");
+	if (!ereg("^[a-zA-Z]{1,}$",$_REQUEST['department'])) error("You must enter a department. Only charactors \"a-z\" and \"A-Z\" are allowed.");
+	if (!ereg("^[0-9]{1,}$",$_REQUEST['number'])) error("You must enter a numeric number.");
+	if (!ereg("^[a-zA-Z]{0,}$",$_REQUEST['section'])) error("Your course section must be letters \"a-z\" and \"A-Z\" only");
+	if (!ereg("^[fwsl]{1}$",$_REQUEST['semester'])) error("You must enter a semester.");
 	if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 	// all good
 	if (!$error) {
@@ -96,9 +97,10 @@ if ($curraction == 'add') {
 // if they're editing a course
 if ($curraction == 'edit') {
 	if ($_REQUEST['commit']==1) {
-		if (!$_REQUEST['department']) error("You must enter a department.");
-		if (!$_REQUEST['number']) error("You must enter a number.");
-		if (!$_REQUEST['semester']) error("You must enter a semester.");
+		if (!ereg("^[a-zA-Z]{1,}$",$_REQUEST['department'])) error("You must enter a department. Only charactors \"a-z\" and \"A-Z\" are allowed.");
+		if (!ereg("^[0-9]{1,}$",$_REQUEST['number'])) error("You must enter a numeric number.");
+		if (!ereg("^[a-zA-Z]{0,}$",$_REQUEST['section'])) error("Your course section must be letters \"a-z\" and \"A-Z\" only");
+		if (!ereg("^[fwsl]{1}$",$_REQUEST['semester'])) error("You must enter a semester.");
 		if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 		if (!$error) {
 			$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
