@@ -43,7 +43,10 @@ else if ($thisSite) {
 }
 if (get_class($thisSection) == 'section')
 	$section=$thisSection->id;
-else if ($thisSection) {
+else if ($thisSection 
+		|| ($_REQUEST['section'] 
+			&& !in_array($_REQUEST['section'], $thisSite->getField('sections')))) 
+{
 	unset($thisSection);
 	error("The requested section does not exist. Please update your link.");
 	return;
@@ -51,7 +54,10 @@ else if ($thisSection) {
 
 if (get_class($thisPage) == 'page')
 	$page=$thisPage->id;
-else if ($thisPage) {
+else if ($thisPage
+	|| ($_REQUEST['page'] 
+		&& !in_array($_REQUEST['page'], $thisSection->getField('pages'))) 
+{
 	unset($thisPage);
 	error("The requested page does not exist. Please update your link.");
 	return;
