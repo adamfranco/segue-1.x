@@ -11,7 +11,7 @@ function isclass ($class) {
 function getuserclasses($user,$time="all") {
 	$user = strtolower($user);
 	global $ldap_voadmin_user, $ldap_voadmin_pass,$ldapserver;
-	$ldap_user = "cn=$ldap_voadmin_user,cn=Recipients,ou=Midd,o=MC";
+	$ldap_user = "cn=$ldap_voadmin_user,cn=midd";
 	$ldap_pass = $ldap_voadmin_pass;
 	$classes = array();
 	
@@ -117,7 +117,7 @@ define("LDAP_FIRSTNAME",1);
 function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0) {
 	$name = strtolower($name);
 	global $ldap_voadmin_pass,$ldap_voadmin_user,$ldapserver;
-	$ldap_user = "cn=$ldap_voadmin_user,cn=Recipients,ou=Midd,o=MC";
+	$ldap_user = "cn=$ldap_voadmin_user,cn=midd";
 	$ldap_pass = $ldap_voadmin_pass;
 	
 	$wc = ($wild==LDAP_WILD)?"*":"";

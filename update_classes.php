@@ -17,7 +17,7 @@ $ru = db_query("select * from users");
 
 $a = db_fetch_assoc($ru);
 global $ldap_voadmin_user, $ldap_voadmin_pass,$ldapserver;
-$ldap_user = "cn=$ldap_voadmin_user,cn=Recipients,ou=Midd,o=MC";
+$ldap_user = "cn=$ldap_voadmin_user,cn=midd";
 $ldap_pass = $ldap_voadmin_pass;
 $classes = array();
 //print $user;

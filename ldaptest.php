@@ -28,7 +28,7 @@ if ($userid) {
 
 	if ($ds) { 
 	    echo "Binding ..."; 
-	    $r=ldap_bind($ds,"cn=fjones,cn=Recipients,ou=MIDD,o=MC","lk87df");
+	    $r=ldap_bind($ds,"cn=fjones,cn=midd","lk87df");
 	//    $r=ldap_bind($ds);
 	    echo "Bind result is ".$r."<br>";
 

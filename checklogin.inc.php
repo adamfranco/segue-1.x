@@ -119,12 +119,12 @@ function db_valid($name,$pass,$admin_auser=0) {
 function ldap_valid($name,$pass,$admin_auser=0) {
 	global $dbhost, $dbuser, $dbpass, $dbdb, $ldapserver, $ldap_voadmin_user, $ldap_voadmin_pass;
 	
-	$ldap_user = "cn=".(($admin_auser)?$ldap_voadmin_user:$name).",cn=Recipients,ou=MIDD,o=MC";
+	$ldap_user = "cn=".(($admin_auser)?$ldap_voadmin_user:$name).",cn=midd";
 	$ldap_pass = ($admin_auser)?$ldap_voadmin_pass:$pass;
 //	print "$ldap_user, $ldap_pass<BR>";//debug
 	$c = ldap_connect($ldapserver);
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
-	//$r=ldap_bind($c,"cn=gschine,cn=Recipients,ou=MIDD,o=MC","");  //debug
+	//$r=ldap_bind($c,"cn=gschine,cn=midd","");  //debug
 	
 	if ($r) { // they're good!
 		// pull down their info

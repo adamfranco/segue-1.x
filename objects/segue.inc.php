@@ -789,13 +789,15 @@ SELECT
 	user_uname as editor, site_editors_type as editor_type,
 	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
-	t_sites
+	site
 		INNER JOIN
 	site_editors ON
+		site_id = ".$this->id."
+			AND
 		site_id = FK_site
 			AND
-		site_editors_type = 'user'
-		INNER JOIN
+		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
 		LEFT JOIN
@@ -808,9 +810,176 @@ FROM
 			AND
 		permission_editor_type = site_editors_type
 ";
+		}
 
+		// CASE 2: scope is SECTION
+		else if ($scope == 'section') {
+		$query = "
+SELECT
+	user_uname as editor, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	site
+		INNER JOIN
+	section
+		ON site_id = section.FK_site
+			AND
+		section_id = ".$this->id."
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+			AND
+		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		LEFT JOIN
+	permission as p1 ON
+		site_id  = p1.FK_scope_id
+			AND
+		p1.permission_scope_type = 'site'
+			AND
+		p1.FK_editor <=> site_editors.FK_editor
+			AND
+		p1.permission_editor_type = site_editors_type
+		LEFT JOIN 
+	permission as p2 ON
+		section_id  = p2.FK_scope_id
+			AND
+		p2.permission_scope_type = 'section'
+			AND
+		p2.FK_editor <=> site_editors.FK_editor
+			AND
+		p2.permission_editor_type = site_editors_type
+";
+		}
+
+		// CASE 3: scope is PAGE
+		else if ($scope == 'page') {
+		$query = "
+SELECT
+	user_uname as editor, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	site
+		INNER JOIN
+	section
+		ON site_id = section.FK_site
+		INNER JOIN
+	page
+		ON section_id = page.FK_section
+			AND
+		page_id = ".$this->id."
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+			AND
+		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		LEFT JOIN
+	permission as p1 ON
+		site_id  = p1.FK_scope_id
+			AND
+		p1.permission_scope_type = 'site'
+			AND
+		p1.FK_editor <=> site_editors.FK_editor
+			AND
+		p1.permission_editor_type = site_editors_type
+		LEFT JOIN 
+	permission as p2 ON
+		section_id  = p2.FK_scope_id
+			AND
+		p2.permission_scope_type = 'section'
+			AND
+		p2.FK_editor <=> site_editors.FK_editor
+			AND
+		p2.permission_editor_type = site_editors_type
+		LEFT JOIN
+	permission as p3 ON
+		page_id  = p3.FK_scope_id
+			AND
+		p3.permission_scope_type = 'page'
+			AND
+		p3.FK_editor <=> site_editors.FK_editor
+			AND
+		p3.permission_editor_type = site_editors_type
+";
+		}
+
+		// CASE 3: scope is PAGE
+		else if ($scope == 'story') {
+		$query = "
+SELECT
+	user_uname as editor, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0) | IFNULL(p4.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	site
+		INNER JOIN
+	section
+		ON site_id = section.FK_site
+		INNER JOIN
+	page
+		ON section_id = page.FK_section
+		INNER JOIN
+	story
+		ON page_id = story.FK_page
+			AND
+		story_id = ".$this->id."
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+			AND
+		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		LEFT JOIN
+	permission as p1 ON
+		site_id  = p1.FK_scope_id
+			AND
+		p1.permission_scope_type = 'site'
+			AND
+		p1.FK_editor <=> site_editors.FK_editor
+			AND
+		p1.permission_editor_type = site_editors_type
+		LEFT JOIN 
+	permission as p2 ON
+		section_id  = p2.FK_scope_id
+			AND
+		p2.permission_scope_type = 'section'
+			AND
+		p2.FK_editor <=> site_editors.FK_editor
+			AND
+		p2.permission_editor_type = site_editors_type
+		LEFT JOIN
+	permission as p3 ON
+		page_id  = p3.FK_scope_id
+			AND
+		p3.permission_scope_type = 'page'
+			AND
+		p3.FK_editor <=> site_editors.FK_editor
+			AND
+		p3.permission_editor_type = site_editors_type
+		LEFT JOIN
+	permission as p4 ON
+		story_id = p4.FK_scope_id
+			AND
+		p4.permission_scope_type = 'story'
+			AND
+		p4.FK_editor <=> site_editors.FK_editor
+			AND
+		p4.permission_editor_type = site_editors_type
+";
+		}
+
+		// execute the query
 		echo $query;
 		$r = db_query($query);
+		
+		// reset the editor array		
+		if ($r) $this->editors = array();
 		
 		// for every permisson entry, add it to the permissions array
 		while ($row=db_fetch_assoc($r)) {
@@ -818,44 +987,33 @@ FROM
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
 			$a[a] = (strpos($row[permissions],'a') !== false) ? 1 : 0; // look for 'a' in 'final_permissions'
-			$a[e] = (strpos($row[permissions],'e') !== false) ? 1 : 0;
+			$a[e] = (strpos($row[permissions],'e') !== false) ? 1 : 0; // !== is very important here, because a position 0 is interpreted by != as FALSE
 			$a[d] = (strpos($row[permissions],'d') !== false) ? 1 : 0;
 			$a[v] = (strpos($row[permissions],'v') !== false) ? 1 : 0;
 			$a[di] = (strpos($row[permissions],'di') !== false) ? 1 : 0;
 			
-			echo "<br><br>Editor: $row[editor]; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+			// if the editor is a user then the editor's name is just the user name
+			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
+			if ($row[editor_type]=='user')
+				$t_editor = $row[editor];
+			else
+				$t_editor = $row[editor_type];
+			
+			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 
-			$this->permissions[strtolower($row[editor])] = array(
+			// set the permissions for this editor
+			$this->permissions[strtolower($t_editor)] = array(
 				permissions::ADD()=>$a[a], 
 				permissions::EDIT()=>$a[e], 
 				permissions::DELETE()=>$a[d], 
 				permissions::VIEW()=>$a[v], 
 				permissions::DISCUSS()=>$a[di]
 			);
+			
+			// now add the editor to the editor array
+			$this->editors[]=strtolower($t_editor);
 		}
-		
-		}
-		
-		
-		/*
-		// build editors array
-		$query = "select * from permissions where site='$site'";
-		$r = db_query($query);
-		$this->editors = array();
-		while ($a=db_fetch_assoc($r)) {
-			$this->editors[]=$a[user];
-		}
-		if (!in_array("everyone",$this->editors)) {
-			$this->editors[] = "everyone";
-			$this->setUserPermissions("everyone",0,0,0,1,0);
-			$this->changedpermissions = 1;
-		}
-		if (!in_array("institute",$this->editors)) {
-			$this->editors[] = "institute";
-			$this->setUserPermissions("institute",0,0,0,1,0);
-			$this->changedpermissions = 1;
-		}
-		$this->editors = array_unique($this->editors);
+
 		$this->builtPermissions=1;
 		
 		if ($down) {
@@ -870,7 +1028,6 @@ FROM
 			}
 		}
 		
-		*/
 	}
 	
 /******************************************************************************
@@ -924,16 +1081,55 @@ FROM
 			$id = $this->id;
 			$site = $this->owning_site;
 
-			// build a quickie array
-			$a = array();
-			$a[] = "site='$site'";
-			$a[] = "scope='$scope'";
-			$a[] = "scopeid=$id";
+			print_r($a);
 			
 			$n = array_unique(array_merge($this->editors,array_keys($this->permissions)));
 			
-			foreach ($n as $user) {
-				$p = $this->permissions[$user];
+			print_r($n);
+
+			foreach ($n as $editor) {
+				$p = $this->permissions[$editor];
+				print_r($p);
+				// convert this to a "'a','v',..." format
+				$p_str = "";
+				if ($p[ADD]) $p_str.="a,";
+				if ($p[EDIT]) $p_str.="e,";
+				if ($p[DELETE]) $p_str.="d,";
+				if ($p[VIEW]) $p_str.="v,";
+				if ($p[DISCUSS]) $p_str.="di,";
+				
+				$p_str[strlen($p_str)-1]='';
+				echo $p_str."<br>";
+				
+				
+				// find the id and type of this editor
+				if ($editor == 'everyone' || $editor == 'institute') {
+					$ed_type = $editor;
+					$ed_id = 'NULL';				
+				}
+				else {
+					$ed_type = 'user';
+					// need to fetch the id from the user table
+					$query = "SELECT user_id FROM user WHERE user_uname = '$editor'";
+//					echo $query."<br>";
+					$r = db_query($query);
+					$arr = db_fetch_assoc($r);
+					$ed_id = $arr['user_id'];
+				}
+
+//				echo "EID: $ed_id; ETYPE: $ed_type <br>";
+				
+				// now that we have all the information pertaining to this user, check if the permission entry is already present
+				// if yes, update it
+				// if not, insert it
+				
+				$query = "SELECT permission_id FROM permission WHERE permission_scope_type='$scope' AND FK_scope_id=$id AND FK_editor <=> $ed_id AND permission_editor_type = '$ed_type'";
+				echo $query."<br>";
+				$r = db_query($query);
+				// if permission entry exists and there are permissions to add
+//				if (db_num_rows($r) && )
+			
+				/*
 				$a2 = $a;
 				$a2[] = "user='$user'";
 				$a3 = array();
@@ -948,17 +1144,20 @@ FROM
 					$query = "insert into permissions set ".implode(",",$a2).",".implode(",",$a3);
 				}
 				db_query($query);
-/* 				print "$query<br>"; */
-/* 				print mysql_error()."<br><br>"; */
+ 				print "$query<br>";
+ 				print mysql_error()."<br><br>";
+				*/
 			}
+
+			/*
 			// delete the appropriate entries from the table
 			foreach ($this->editorsToDelete as $e) {
 				db_query("delete from permissions where user='$e' and site='$site'");
 			}
 			foreach ($this->editorsToDeleteInScope as $e) {
-/* 				print "<br>delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id"; */
 				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");
 			}
+			*/
 		}
 	}
 

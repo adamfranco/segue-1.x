@@ -5,12 +5,12 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 	$name = strtolower($name);
 	global $dbhost, $dbuser, $dbpass, $dbdb, $ldapserver, $ldap_voadmin_user, $ldap_voadmin_pass;
 	
-	$ldap_user = "cn=".(($admin_auser)?$ldap_voadmin_user:$name).",cn=Recipients,ou=MIDD,o=MC";
+	$ldap_user = "cn=".(($admin_auser)?$ldap_voadmin_user:$name).",cn=midd";
 	$ldap_pass = ($admin_auser)?$ldap_voadmin_pass:$pass;
 	// check if we already have an ldap connection... otherwise, open a new one
 	if (!($c = ldap_connect($ldapserver))) $c = ldap_connect($ldapserver);
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
-	//$r=ldap_bind($c,"cn=gschine,cn=Recipients,ou=MIDD,o=MC","");  //debug
+	//$r=ldap_bind($c,"cn=gschine,cn=midd","");  //debug
 		
 	if ($r) { // they're good!
 		// pull down their info
