@@ -243,8 +243,8 @@ function CarpFilter($url,$cachefile) { CarpShow($url,$cachefile,0); }
 
 function CarpCacheShow($url,$cachefile='',$showit=1) {
 	global $carpconf;
-	CarpCache($url,$autocache=md5($url),2);
-	CarpShow(call_user_func($carpconf['cachefunctions'][2]).$autocache,$cachefile,$showit);
+	CarpCache($url,$autocache=md5($url.$cachefile),2);
+	CarpShow(call_user_func($carpconf['cachefunctions'][2]).$autocache,'',$showit);
 }
 
 function CarpShow($url,$cachefile='',$showit=1) {
