@@ -8,6 +8,10 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		<change author='adam' ref='865093' reftype='bug'>
+			View and activate permission settings on template sites now affect
+			who/when they appear for users creating sites.
+		</change>
 		<change author='adam'>
 			Added the HTML Area editor to Image, Link, and File, story types.
 		</change>
