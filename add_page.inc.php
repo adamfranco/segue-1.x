@@ -93,7 +93,7 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 	}
 	
 	if ($_SESSION[settings][add]) {
-		print "setting permissions";
+/* 		print "setting permissions"; */
 		$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 	}
 	
@@ -136,6 +136,12 @@ if ($_REQUEST[cancel]) {
 //	session_unregister("settings"); // handled by index.php
 	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site");
 	else header("Location: index.php?$sid");
+}
+if ($_REQUEST[cancel]) {
+	$comingFrom = $_SESSION[settings][comingFrom];
+	print "cancelling...";
+	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$pageObj->id);
+	else header("Location: index.php?$sid&action=viewsite&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$pageObj->id);
 }
 
 if ($_REQUEST[save]) {

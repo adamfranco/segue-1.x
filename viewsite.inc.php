@@ -82,7 +82,9 @@ $section=$thisSection->id;
 $page=$thisPage->id;
 $thisSite->fetchDown();			// just in case we haven't already
 
-$topsections = ((ereg("Top\+Sections{1}",$thisSite->getField("themesettings")) || $thisSite->getField("themesettings") == "" || !$thisSite->getField("themesettings"))?1:0);
+$topsections = !ereg("Side\+Sections{1}",$thisSite->getField("themesettings"));
+/* print "themsettings: \"".$thisSite->getField("themesettings")."\"<br>"; */
+/* print $topsections; */
 
 // first build list of categories
 $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";

@@ -134,8 +134,8 @@ $sitefooter = "";
 if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
 	print "cancelling...";
-	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyobj->owning_section."&page=".$storyObj->owning_page);
-	else header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyobj->owning_section."&page=".$storyObj->owning_page);
+	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+	else header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
 }
 
 if ($_REQUEST[save]) {

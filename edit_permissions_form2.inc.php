@@ -117,13 +117,14 @@ function doEditorLine(&$o) {
 	$bgColorL = getBgColor($class,"locked");
 	$bgColorV = getBgColor($class,"view");
 	$indent = getIndent($class);
+	$textSize = getTextSize($class);
 	if ($class == "story") {
 		if ($o->getField("title") !="") $extra = $o->getField("title");
 		else $extra = $o->getFirst(25);		
 	} else $extra = "";
 
 	print "<tr>";
-	print "<td style='background-color: $bgColor; padding-left: ".$indent."px'>".$o->getField("title").$extra."</td>";
+	print "<td style='background-color: $bgColor; padding-left: ".$indent."px; font-size: $textSize'>".$o->getField("title").$extra."</td>";
 	// reference $args = "'scope',site,section,page,story";
 	if ($class == 'site') 
 		$args = "'$class','".$o->name."',0,0,0";
@@ -208,4 +209,21 @@ function getIndent($class) {
 
 	$indent = $level*$multiplier;
 	return $indent;
+}
+
+/******************************************************************************
+ * getTextSize - Returns the proper size percentage
+ ******************************************************************************/
+function getTextSize($class) {
+	$initialSize = 125;
+	$multiplier = 10;
+
+        if ($class == "site") $level = 0;
+        if ($class == "section") $level = 1;
+        if ($class == "page") $level = 2;
+        if ($class == "story") $level = 3;
+
+	$size = $initialSize - $level*$multiplier;
+	$size = $size."%";
+	return $size;
 }
