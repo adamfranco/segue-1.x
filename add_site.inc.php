@@ -14,23 +14,23 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	if ($_REQUEST[active] != "") $_SESSION[siteObj]->setField("active",$_REQUEST[active]);
 	if ($_REQUEST[viewpermissions] == "everyone") {
 		print "viewpermissions: $viewpermissions <br>";
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone",1);
+		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone","1");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
 	if ($_REQUEST[viewpermissions] == "institute") {
 		print "viewpermissions: $viewpermissions <br>";
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone",0);
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","institute",1);
+		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone","0");
+		$_SESSION[siteObj]->setUserPermissionDown("VIEW","institute","1");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
 	if ($_REQUEST[viewpermissions] == "class") {
 		print "viewpermissions: $viewpermissions <br>";
-		if (!$_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name")) $_SESSION[siteObj]->addEditor($_SESSION[siteObj]->getField("name");
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone",0);
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW","institute",0);
-		$_SESSION[siteObj]->setUserPermissionDown("VIEW",$_SESSION[siteObj]->getField("name"),1);
+		if (!$_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name"))) $_SESSION[siteObj]->addEditor($_SESSION[siteObj]->getField("name"));
+		$_SESSION[siteObj]->setUserPermissionDown("VIEW","everyone","0");
+		$_SESSION[siteObj]->setUserPermissionDown("VIEW","institute","0");
+		$_SESSION[siteObj]->setUserPermissionDown("VIEW",$_SESSION[siteObj]->getField("name"),"1");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
@@ -150,7 +150,7 @@ if ($_REQUEST[save]) {
 			log_entry("add_site","$_SESSION[auser] added ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name);
 		}
 		if ($_SESSION[settings][edit]) {
-			$_SESSION[siteObj]->updateDB();
+			$_SESSION[siteObj]->updateDB(1);
 			log_entry("edit_site","$_SESSION[auser] edited ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name);
 		}
 		

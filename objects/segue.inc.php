@@ -574,16 +574,16 @@ class segue {
 		$c = permissions::$p();
 		$this->permissions[$user][$c] = $val;
 		
-		if ($class =="site") $n = 0;
-		if ($class =="section")$n =2;
-		if ($class =="page")$n = 4;
-		else $n=6;
-		$i = 0;
-		while($i <= $n) {
-			print " &nbsp; ";
-			$i++;
-		}
-		print $class.": setting ".$this->id." permissions[".$user."][".$c."] = ".$val."<br>";
+/* 		if ($class =="site") $n = 0; */
+/* 		if ($class =="section")$n =2; */
+/* 		if ($class =="page")$n = 4; */
+/* 		else $n=6; */
+/* 		$i = 0; */
+/* 		while($i <= $n) { */
+/* 			print " &nbsp; "; */
+/* 			$i++; */
+/* 		} */
+/* 		print $class.": setting ".$this->id." permissions[".$user."][".$c."] = ".$val."<br>"; */
 		
 		$this->changedpermissions=1;
 		if ($ar) {
