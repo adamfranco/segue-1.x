@@ -9,7 +9,7 @@ class discussion {
 	
 	var $libraryfilename,$libraryfileid,$media_tag;
 	var $tstamp,$content,$subject,$order;
-	var $rating;
+	var $rating = NULL;
 	
 	var $children=array();
 	var $numchildren=0,$pointer=-1,$direction=1;
@@ -230,7 +230,7 @@ class discussion {
 	function _parseDBline($a) {
 		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","media_tag"=>"media_tag","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_rate"=>"rating","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname","user_email"=>"authoremail");
 		foreach ($_f as $f=>$v) {
-			if ($a[$f]) $this->$v = $a[$f];
+			if (isset($a[$f])) $this->$v = $a[$f];
 		}
 		if ($this->content) $this->content = urldecode($this->content);
 		if ($this->subject) $this->subject = urldecode($this->subject);
@@ -377,7 +377,7 @@ class discussion {
 		WHERE
 			discussion_id=".$this->id;
 		
-		//printc ($query);
+//		printc ($query);
 		db_query($query);
 		//$newid = lastid();
 		return true;
@@ -399,8 +399,10 @@ class discussion {
 		
 		$query .= ",discussion_content='".urlencode(stripslashes($this->content))."'";
 		$query .= ",discussion_subject='".urlencode(stripslashes($this->subject))."'";
-		if ($this->rating) {
+		if (is_numeric($this->rating)) {
 			$query .= ",discussion_rate=".$this->rating;
+		} else {
+			$query .= ",discussion_rate=NULL";
 		}
 		$query .= ",FK_story=".$this->storyid;
 		// If we've set a timestamp before saving, we probably want to keep it.
@@ -536,7 +538,7 @@ class discussion {
 			$a = $_REQUEST['discuss'];
 			if (!$_REQUEST['subject']) error("You must enter a subject.\n");
 			if (!$_REQUEST['content']) error("You must enter some text to post.\n");
-			if ($_REQUEST['rate'] && !is_numeric($_REQUEST['rate'])) $error = "Post rating must be numeric.\n";
+			if (isset($_REQUEST['rating']) && !is_numeric($_REQUEST['rating']) && $_REQUEST['rating'] != "") $error = "Post rating must be numeric.\n";
 			
 			if ($error) { unset($_REQUEST['commit']); return false; }
 			
@@ -865,7 +867,8 @@ class discussion {
 				// subject
 				printc ($s);
 				// rating
-				if ($this->rating) printc (" (Rating: ".$this->rating.")");
+				if ($this->rating !== NULL) 
+					printc (" (Rating: ".$this->rating.")");
 				printc ("</span></td>\n");
 				// link for rating
 				printc ("<td align=right>$ratelink</td>\n");
