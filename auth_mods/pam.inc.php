@@ -1,6 +1,5 @@
 <? /* $Id$ */
 
-
 function _valid_pam($name,$pass,$admin_auser=0) {
 	global $pam_email_suffix;
 

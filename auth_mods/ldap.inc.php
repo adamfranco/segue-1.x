@@ -1,6 +1,5 @@
 <? /* $Id$ */
 
-
 function _valid_ldap($name,$pass,$admin_auser=0) {
 //	print "hallooo!";
 	$name = strtolower($name);

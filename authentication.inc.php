@@ -1,4 +1,5 @@
 <? /* $Id$ */
+
 // handles the authentication of scripts executed and decides if the user needs to be
 // authenticated in the first place.
 // - this script essentially has the same structure as checklogin.inc.php

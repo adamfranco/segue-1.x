@@ -214,7 +214,7 @@ function db_query ($query, $cid=-1) {
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
 		echo "\n\n<br><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$res."</b>";
 	}
- 	if ($debug && mysql_error())
+ 	if (mysql_error() && $debug)
  		echo "\n<b>".mysql_error()."</b>";
     return $res;
   } else if ($db_type == "oracle") {

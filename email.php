@@ -309,19 +309,16 @@ Participants<br><br>
 			while ($a2 = db_fetch_assoc($r)) {
 				array_push($emaillist, $a2['user_email']);	
 			}
-			$to = "";
-			foreach ($emaillist as $address) {
-				$to .= $address.", ";
-			}
-			$to = rtrim($to, ",");
 			
+			$to = implode(", ", $emaillist);
+						
 			//compile from and cc into headers
 			if ($_SESSION['ltype']=='admin' && $_SESSION['lfname'] != $_SESSION['afname']) {
-				$from = $_SESSION['lfname']." as ".$_SESSION['afname']."<".$_SESSION['aemail'].">";
+				$from = $_SESSION['lfname']." as ".$_SESSION['afname']." <".$_SESSION['aemail'].">";
 			} else {
-				$from = $_SESSION['afname']."<".$_SESSION['aemail'].">";
+				$from = $_SESSION['afname']." <".$_SESSION['aemail'].">";
 			}
-			
+
 			$headers = "From: ".$from."\n";
 			$headers .= "Cc: ".$from."\n";
 			
@@ -386,9 +383,11 @@ Participants<br><br>
 			//print "<tr><td></td><td>".$headers."</td></tr>\n";  //debug
 			print "</table>\n";
 			print "</div>\n";
+			//print htmlspecialchars("emailing $to, $subject, $body, $headers");
 			//mail($to,$subject,$body,"From: $from");
-			mail($to, $subject, $body, $headers);
-			$r = db_query($query);
+			if (!mail($to, $subject, $body, $headers)) print "AN ERROR OCCURED SENDING MAIL!";
+//			print $query;
+//			$r = db_query($query);
 			exit();
 		}
 	// } 

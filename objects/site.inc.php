@@ -493,7 +493,6 @@ SELECT
 			$query = $query." WHERE section_id = $_section_id";
 			if ($_page_id) $query = $query." AND page_id = $_page_id";		
 		}
-
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r)) {
 			array_change_key_case($a); // make all keys lower case

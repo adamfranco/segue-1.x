@@ -70,6 +70,7 @@ function synchronizeClassDBFromCode($code) {
  * otherwise, checks the user db
  */
 function synchronizeLocalUserAndClassDB($systemName) {
+	global $cfg;
 	if ($systemName == 'everyone' || $systemName == 'institute') return;
 	if (isclass($systemName)) { // it's a class code
 		synchronizeClassDBFromCode($systemName);
@@ -81,7 +82,7 @@ function synchronizeLocalUserAndClassDB($systemName) {
 		$email = $info[1];
 		$type = $info[2];
 		// we're going to assume the loginMethod is LDAP -- THIS COULD BE A STUPID MOVE! (remember, this is a hack)
-		synchronizeUserDB($systemName,$email,$fullname,$type,"ldap");
+		synchronizeUserDB($systemName,$email,$fullname,$type,$cfg["network"]=="kenyon"?"pam":"ldap");
 		// done and done.
 	}
 	// that should do it...

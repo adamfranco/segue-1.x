@@ -707,7 +707,7 @@ WHERE
 		/* print "<br>Adding editor $e<br>"; */
 //		if ($e == 'institute' || $e == 'everyone') return false;	// With the new permissions structure, this may be unwanted.
 		if ($_SESSION[auser] == $e) { error("You do not need to add yourself as an editor."); return false; }
-		if (!in_array($e,$this->editors)) {
+		if ($e && !in_array($e,$this->editors)) {
 			$this->editors[]=$e;
 			$this->setUserPermissions($e);
 			$this->changedpermissions = 1;
@@ -717,6 +717,7 @@ WHERE
 	function delEditor($e) {
 		$class=get_class($this);
 		if ($e == 'institute' || $e == 'everyone') return false;
+		if (!$e) return false;
 		if (in_array($e,$this->editors)) {
 			$n = array();
 			foreach($this->editors as $v) {
@@ -1104,7 +1105,7 @@ FROM
 			
 			// now add the editor to the editor array
 //			$this->editors[]=strtolower($t_editor);
-			$this->editors[]=$t_editor;
+			if ($t_editor) $this->editors[]=$t_editor;
 		}
 		
 //		print_r($this->permissions);

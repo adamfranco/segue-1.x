@@ -10,6 +10,7 @@ $sitesprinted=array();
  * public site listing link
  ******************************************************************************/
 $leftnav_extra .= <<< END
+<br/><br/>
 <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
 	<tr>
 		<td height="100%" valign="bottom" style="font-weight: bolder">

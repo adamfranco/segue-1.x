@@ -159,7 +159,7 @@ if ($_REQUEST[cancel]) {
 if ($_REQUEST[save]) {
 //	$error = 0;
 	// error checking
-	if ($_SESSION[storyObj]->getField("type")=='story' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))==''))
+	if ($_SESSION[storyObj]->getField("type")=='story' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))=='' || trim($_SESSION[storyObj]->getField("shorttext"))=='<br />'))
 		error ("You must enter some story content.");
 	if ($_SESSION[storyObj]->getField("type")=='link' && (!$_SESSION[storyObj]->getField("url") || $_SESSION[storyObj]->getField("url")=='' || $_SESSION[storyObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
@@ -190,6 +190,10 @@ if ($_REQUEST[save]) {
 		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
 			$_SESSION[storyObj]->setField("longertext",$_SESSION[settings][libraryfileid]);
 		}
+		
+		// if the longertext field = <br />,then set field to ''
+		if (trim($_SESSION[storyObj]->getField("longertext")) == "<br />")
+			$_SESSION[storyObj]->setField("longertext",'');
 		
 		// check make sure the owner is the current user if they are changing permissions
 /* 		if ($site_owner != $_SESSION[auser]) { */

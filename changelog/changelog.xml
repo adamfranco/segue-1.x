@@ -7,7 +7,23 @@
 			a Segue site.
 		</new>
 	</version>
-	<version number="1.2.2" date="Unreleased">
+	<version number="1.2.3" date="2004-08-04">
+		<fix author='alex'>
+			HTMLArea editor automatically inserts a break tag causing stories which
+			user do not add content to have content.  Fixed this bug by deleting break
+			tag if it is the only content in the editor
+		</fix>
+		<fix author='alex'>
+			fixed bug that allowed users within institute ip range to post to discussions
+			for only institute users without logging in.
+		</fix>
+		<change author='gabe'>
+			Changed user-type output in status bar to display full
+			words (ie, student instead of stud, professor instead of prof, etc).
+		</change>
+		<fix author='gabe'>
+			Fixed discussion post output to strip slashes, avoided extra '\' characters.
+		</fix>
 		<new author='gabe'>
 			Added in public site listing feature.
 		</new>
@@ -15,6 +31,20 @@
 			Changed semester-list in add-course admin tools view so that it
 			corresponds to the list given in the config file instead of a static
 			Middlebury-based list.
+		</fix>
+	</version>
+	<version number="1.2.2" date="2004-07-06">
+		<fix author='gabe'>
+			Fixed a UI bug in which story timestamps/editors would display
+&quot;edited by ...&quot; when nobody had done any editing.
+		</fix>
+		<fix author='alex'>
+			Fixed browser sniffer bug that prevented inclusion of html editor
+in add_site_form_5_header.inc and add_site_form_5_footer.inc
+		</fix>
+		<fix author='alex'>
+			Fixed problem uploading files to Media Library that occured in
+Mac Safari. Removed browser specific code from filebrowser.php
 		</fix>
 	</version>
 	<version number="1.2.1" date="2004-06-17">

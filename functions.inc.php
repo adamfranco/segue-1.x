@@ -661,3 +661,13 @@ function printpre($array, $return=FALSE) {
 		print $string;
 }
 
+function _error_handler($num, $str, $file, $line, $context) {
+	if ($num & E_NOTICE) return;
+	print "ERROR! ($num) $str<br/>";
+	print "in $file:$line  --> ";
+	var_dump($context);
+	print "<p>";
+	printpre(print_r(debug_backtrace(),true));
+}
+
+//set_error_handler("_error_handler");

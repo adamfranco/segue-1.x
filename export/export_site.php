@@ -48,7 +48,7 @@ or -? options, you can get this help.
 	$site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
 	
 	// Fetch the location of the media files.
-	$imagepath = $uploaddir.$sitename.'/';
+	$imagepath = $uploaddir.'/'.$sitename.'/';
 	
 		
 	// Get the XML for the site
@@ -58,7 +58,7 @@ or -? options, you can get this help.
 	
 	
 	// make a directory for the site contents
-	$siteDir = $exportpath.$sitename.'/';
+	$siteDir = $exportpath.'/'.$sitename.'/';
 	if (file_exists($siteDir))
 		deletePath($siteDir);
 	mkdir ($siteDir);

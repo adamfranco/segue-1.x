@@ -62,7 +62,7 @@ or -? options, you can get this help.
 	// if we will be creating a tarball
 	if ($compress) {
 		$backupdir = $argv[$argc-1];
-		$exportpath = $backupdir."segue_backup/";
+		$exportpath = $backupdir."/segue_backup/";
 		
 		mkdir ($exportpath, 0700);
 	} else {
@@ -93,6 +93,9 @@ or -? options, you can get this help.
 		
 		$i++;
 		
+		$cmd="php";
+		if ($_ENV["_"]) $cmd=$_ENV["_"];
+//		print $php . "\n";
 		print shell_exec("php ".dirname(__FILE__)."/export_site.php ".$sitename." ".$exportpath);
 	}
 	
@@ -102,8 +105,8 @@ or -? options, you can get this help.
 			print "\ncd ".$backupdir;
 		print shell_exec("cd ".$backupdir);
 		if ($verbose)
-			print "\ntar -czf ".$backupdir."segue_backup.tar.gz segue_backup";
-		print shell_exec("tar -czf ".$backupdir."segue_backup.tar.gz segue_backup");
+			print "\ntar -czf ".$backupdir."/segue_backup.tar.gz segue_backup";
+		print shell_exec("tar -czf ".$backupdir."/segue_backup.tar.gz segue_backup");
 		deletePath($exportpath);
 	}
 	

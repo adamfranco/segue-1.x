@@ -34,7 +34,6 @@ if ($_REQUEST[site] && isset($_SESSION[obj])) {
 
 if (!is_object($_SESSION[obj])) {
 	$_SESSION[obj] =& new site($_REQUEST[site]);
-/* 	$_SESSION[obj] =& new site('gabe'); */
 	$_SESSION[obj]->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,1);
 	$_SESSION[obj]->spiderDownLockedFlag();
 }
@@ -71,6 +70,7 @@ if ($_REQUEST[savechanges]) {
 		// go through each editor and make sure that they are in the local DB.
 		print_r($_SESSION[obj]->getEditors());
 		foreach ($_SESSION[obj]->getEditors() as $_editor) {
+			if(!$_editor) continue;
 			print "synchronizing $_editor...<BR>";
 			synchronizeLocalUserAndClassDB($_editor);
 		}

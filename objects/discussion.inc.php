@@ -802,7 +802,7 @@ class discussion {
 				$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>\n";
 			
 			/******************************************************************************
-			 * if there are dicussion actions (rely | del | edit | rate) then print 
+			 * if there are dicussion actions (reply | del | edit | rate) then print 
 			 ******************************************************************************/
 	
 			if ($a != "" || count($b)) {
@@ -851,7 +851,7 @@ class discussion {
 			 ******************************************************************************/
 			if ($this->opt("showcontent")) {
 				printc ("<tr><td class=dtext>");
-				printc (htmlbr($this->content));
+				printc (htmlbr(stripslashes($this->content)));
 				printc ("</td></tr>\n");
 			}
 			// done

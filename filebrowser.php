@@ -1,5 +1,5 @@
 <? /* $Id$ */
- 
+
 $content = ''; 
  
 ob_start(); 

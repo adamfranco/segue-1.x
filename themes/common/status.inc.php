@@ -35,8 +35,15 @@ if (!$_REQUEST[nostatus]) {
 	print "<div class='headerbox small' align=center>";
 	
 	if ($_loggedin) {	//we're already logged in
+		$_userTypes = array(
+			"stud"=>"student",
+			"prof"=>"professor",
+			"staff"=>"staff",
+			"admin"=>"administrator");
 		if (!$_REQUEST[partialstatus]) {
-			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin' && $_SESSION[luser] != $_SESSION[auser])?" (acting as $_SESSION[afname])":"")." ($_SESSION[atype]) : " ;
+			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'
+&& $_SESSION[luser] != $_SESSION[auser])?" (acting as $_SESSION[afname])":"")."
+(".$_userTypes[$_SESSION[atype]].") : " ;
 			print "<a href='$PHP_SELF?login' class='navlink'>logout</a> | ";
 			print "<a href='$PHP_SELF?$sid' class='navlink'>home</a>";
 			if ($_SESSION[ltype]=='admin') {

@@ -1,4 +1,5 @@
 <? /* $Id$ */
+
 include("objects/objects.inc.php");
 $content = '';
 $message = '';
