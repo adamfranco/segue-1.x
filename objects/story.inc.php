@@ -40,16 +40,16 @@ class story extends segue {
 	}
 	
 	function addStory($id) {
-		if (!is_array($this->data[stories])) $this->data[stories] = array();
-		array_push($this->data[stories],$id);
+		if (!is_array($this->getField("stories"))) $this->data[stories] = array();
+		array_push($this->getField("stories"),$id);
 		$this->changed = 1;
 	}
 	
 	function delStory($id) {
 		$d = array();
-		foreach ($this->data[stories] as $s)
+		foreach ($this->getField("stories") as $s)
 			if ($s != $id) $d[]=$s;
-		$this->data[stories] = $d;
+		$this->setField("stories",$d);
 		$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
 		$story->delete();
 		$this->changed=1;
@@ -113,17 +113,38 @@ class story extends segue {
 		return true;
 	}
 	
-	function insertDB($down=0,$newsite=null,$newsection=0,$newpage=0) {
+	function insertDB($down=0,$newsite=null,$newsection=0,$newpage=0,$keepaddedby=0) {
+		$origsite = $this->owning_site;
 		if ($newsite) $this->owning_site = $newsite;
 		if ($newsection) $this->owning_section = $newsection;
 		if ($newpage) $this->owning_page = $newpage;
+		
+		// if moving to a new site, copy the media
+		if ($origsite != $newsite && $down) {
+			$images = array();
+			if ($this->getField("type") == "image" || $this->getField("type") == "file") {
+				$media_id = $this->getField("longertext");
+				$this->setField("longertext",copy_media($media_id,$newsite));
+			} else if ($this->getField("type") == "story") {
+				$ids = getMediaIDs("shorttext");
+				replaceMediaIDs($ids,"shorttext",$newsite);
+				$ids = getMediaIDs("longertext");
+				replaceMediaIDs($ids,"longertext",$newsite);
+			}
+		}
+		
 		$this->parseMediaTextForDB("shorttext");
 		$this->parseMediaTextForDB("longertext");
 		$a = $this->createSQLArray();
-		$a[] = "addedby='$_SESSION[auser]'";
-		$a[] = "addedtimestamp = NOW()";
+		if (!$keepaddedby) {
+			$a[] = "addedby='$_SESSION[auser]'";
+			$a[] = "addedtimestamp = NOW()";
+		} else {
+			$a[] = "addedby='".$this->getField("addedby")."'";
+			$a[] = "addedtimestamp=".$this->getField("addedtimestamp");
+		}
 		$query = "insert into stories set ".implode(",",$a);
-		print $query; //debug
+/* 		print $query; //debug */
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
@@ -139,9 +160,9 @@ class story extends segue {
 		log_entry("add_story",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added content id ".$this->id." to site ".$this->owning_site);
 		
 		// insert down
-		if ($down && $this->fetcheddown) {
-			foreach ($this->stories as $i=>$o) $o->insertDB(1,$this->owning_site,$this->owning_section,$this->id);
-		}
+/* 		if ($down && $this->fetcheddown) { */
+/* 			foreach ($this->stories as $i=>$o) $o->insertDB(1,$this->owning_site,$this->owning_section,$this->id,$keepaddedby); */
+/* 		} */
 		return true;
 	}
 	

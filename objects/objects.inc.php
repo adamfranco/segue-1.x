@@ -5,3 +5,4 @@ require("objects/section.inc.php");
 require("objects/page.inc.php");
 require("objects/story.inc.php");
 require("objects/slot.inc.php");
+require("objects/group.inc.php");

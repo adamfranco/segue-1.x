@@ -3,11 +3,15 @@
 /* print "hi"; */
 /* if ($thisSite) print "hello"; */
 
+if ($thisSite) $site=$thisSite->name;
+if ($thisSection) $section=$thisSection->id;
+if ($thisPage) $page = $thisPage->id;
+
 if ($thisSite) {
 	if (!$thisSection && count($thisSite->getField("sections"))) {
 		$thisSite->fetchDown();
 		foreach ($thisSite->sections as $s=>$o) {
-			if ($o->getField("type") == 'section') { $thisSection = &$thisSite->sections[$s]; break; }
+			if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisSection = &$thisSite->sections[$s]; break; }
 		}
 	}
 /* 	print count($thisSite->sections); */
@@ -17,7 +21,7 @@ if ($thisSection) {
 	if (!$thisPage && count($thisSection->getField("pages"))) {
 		$thisSection->fetchDown();
 		foreach ($thisSection->pages as $p=>$o) {
-			if ($o->getField("type") == 'page') { $thisPage = &$thisSection->pages[$p]; break; }
+			if ($o->getField("type") == 'page' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisPage = &$thisSection->pages[$p]; break; }
 		}
 	}
 	$st = " > " . $thisSection->getField("title");
@@ -171,7 +175,7 @@ if ($thisPage) {
 				if ($o->getField("editedby")) {
 					printc(", edited");
 					if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedby"));
-					if ($thisPage->getField("showcreator")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
+					if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
 				}
 				printc("</div>");
 				//printc("<hr size='1' noshade><br>");

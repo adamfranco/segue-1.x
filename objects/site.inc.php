@@ -3,6 +3,10 @@
 class site extends segue {
 	var $sections;
 	var $name;
+	var $_allfields = array("title","theme","themesettings","header","footer",
+						"addedby","editedby","editedtimestamp","addedtimestamp",
+						"activatedate","deactivatedate","active","sections",
+						"listed","type");
 	
 	function site($name) {
 		$this->name = $name;
@@ -27,8 +31,9 @@ class site extends segue {
 	
 	function fetchDown() {
 		if (!$this->fetcheddown) {
-			if (!$this->fetched) $this->fetchFromDB();
-			foreach ($this->data[sections] as $s) {
+			print "site fetchdown".$this->id."<BR>";
+			if (!$this->tobefetched) $this->fetchFromDB();
+			foreach ($this->getField("sections") as $s) {
 				$this->sections[$s] = new section($this->name,$s);
 				$this->sections[$s]->fetchDown();
 			}
@@ -44,46 +49,54 @@ class site extends segue {
 		}
 	}
 	
-	function fetchFromDB() {
+	function fetchFromDB($force=0) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		global $cfg;
 		// take this out when appropriate & replace occurences;
 		global $uploaddir;
 		
-		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-		$query = "select * from sites where name='".$this->name."' limit 1";
-		$r = db_query($query);
-		if (db_num_rows($r)) {
-			$this->data = db_fetch_assoc($r);
-			$this->fetched = 1;
-	//		$this->sections = unserialize(urldecode($this->data['sections']));
-			$this->id = $this->data['id'];
-			
-			// decode appropriate info
-			$this->data[sections] = decode_array($this->data[sections]);
-			$this->data[header] = stripslashes(urldecode($this->data[header]));
-			$this->data[footer] = stripslashes(urldecode($this->data[footer]));
-			$this->parseMediaTextForEdit("header");
-			$this->parseMediaTextForEdit("footer");
-			$this->buildPermissionsArray();
-			if (strlen($this->data[type])) $this->data[type] = 'personal';
-			return true;
+		$this->tobefetched=1;
+		
+		$this->id = $this->getField("id");
+		
+		if ($force) {
+/* 			db_connect($dbhost,$dbuser,$dbpass, $dbdb); */
+/* 			$query = "select * from sites where name='".$this->name."' limit 1"; */
+/* 			$r = db_query($query); */
+/* 			if (db_num_rows($r)) { */
+/* 				$this->data = db_fetch_assoc($r); */
+/* 				$this->fetched = 1; */
+/* 		//		$this->sections = unserialize(urldecode($this->getField("sections"))); */
+/* 				$this->id = $this->getField("id"); */
+/* 				 */
+/* 				// decode appropriate info */
+/* 				$this->data[sections] = decode_array($this->getField("sections")); */
+/* 				$this->data[header] = stripslashes(urldecode($this->data[header])); */
+/* 				$this->data[footer] = stripslashes(urldecode($this->data[footer])); */
+/* 				$this->parseMediaTextForEdit("header"); */
+/* 				$this->parseMediaTextForEdit("footer"); */
+/* 				$this->buildPermissionsArray(); */
+/* 				if (strlen($this->data[type])) $this->data[type] = 'personal'; */
+/* 				return true; */
+/* 			} */
+			foreach ($this->$_allfields as $f) {
+				$this->getField($f);
+			}
 		}
-		return false;
+		return $this->id;
 	}
 	
 	function setSiteName($name) {
-		if ($this->fetched) { // we are trying to change the name of an existing site!! bad.
+		if ($this->tobefetched) { // we are trying to change the name of an existing site!! bad.
 			return 0;
 		}
 		$this->name = $this->owning_site = $name;
-		$this->data[name] = $name;
-		$this->changed = 1;
+		$this->setField("name",$name);
 		return 1;
 	}
 	
 	function updateDB($down=0) {
-		if ($this->changed) {
+		if (count($this->changed)) {
 			$a = $this->createSQLArray();
 			$a[] = "editedby='$_SESSION[auser]'";
 			$a[] = "editedtimestamp=NOW()";
@@ -108,7 +121,7 @@ class site extends segue {
 	}
 	
 	function insertDB($down=0) {
-		$a = $this->createSQLArray();
+		$a = $this->createSQLArray(1);
 		$a[] = "addedby='$_SESSION[auser]'";
 		$a[] = "addedtimestamp=NOW()";
 		$a[] = "name='".$this->name."'";
@@ -130,20 +143,20 @@ class site extends segue {
 	}
 	
 	function addSection($id) {
-		if (!is_array($this->data[sections])) $this->data[sections] = array();
+		if (!is_array($this->getField("sections"))) $this->data[sections] = array();
 		print "<br>adding section $id to ".$this->name."<br>"; //debug
 		array_push($this->data[sections],$id);
-		$this->changed = 1;
+		$this->changed[sections] = 1;
 	}
 	
 	function delSection($id) {
 		$d = array();
-		foreach ($this->data[sections] as $n)
+		foreach ($this->getField("sections") as $n)
 			if ($n != $id) $d[] = $n;
 		$this->data[sections] = $d;
 		$section = new section($this->name,$id);
 		$section->delete();
-		$this->changed = 1;
+		$this->changed[sections] = 1;
 	}
 	
 	function delete() {	// delete from db
@@ -161,27 +174,27 @@ class site extends segue {
 		$this->updatePermissionsDB();
 	}
 	
-	function createSQLArray() {
+	function createSQLArray($all=0) {
 		$this->parseMediaTextForDB("header");
 		$this->parseMediaTextForDB("footer");	
 
 		$d = $this->data;
 		$a = array();
 		
-		$a[] = "title='".addslashes($d[title])."'";
+		if ($all || $this->changed[title]) $a[] = "title='".addslashes($d[title])."'";
 //		$a[] = "viewpermissions='$d[viewpermissions]'";
-		$a[] = "listed=".(($d[listed])?1:0);
-		$a[] = "activatedate='$d[activatedate]'";
-		$a[] = "deactivatedate='$d[deactivatedate]'";
-		$a[] = "active=".(($d[active])?1:0);
-		$a[] = "type='$d[type]'";
-		$a[] = "theme='$d[theme]'";
-		$a[] = "themesettings='$d[themesettings]'";
-		$a[] = "editors='$d[editors]'";
+		if ($all || $this->changed[listed]) $a[] = "listed=".(($d[listed])?1:0);
+		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
+		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
+		if ($all || $this->changed[active]) $a[] = "active=".(($d[active])?1:0);
+		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
+		if ($all || $this->changed[theme]) $a[] = "theme='$d[theme]'";
+		if ($all || $this->changed[themesettings]) $a[] = "themesettings='$d[themesettings]'";
+/* 		if ($this->changed[editors]) $a[] = "editors='$d[editors]'"; */
 //		$a[] = "permissions='$d[permissions]'";
-		$a[] = "header='".urlencode($d[header])."'";
-		$a[] = "footer='".urlencode($d[footer])."'";
-		$a[] = "sections='".encode_array($d[sections])."'";
+		if ($all || $this->changed[header]) $a[] = "header='".urlencode($d[header])."'";
+		if ($all || $this->changed[footer]) $a[] = "footer='".urlencode($d[footer])."'";
+		if ($all || $this->changed[sections]) $a[] = "sections='".encode_array($d[sections])."'";
 		return $a;
 	}
 }

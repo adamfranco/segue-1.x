@@ -12,18 +12,20 @@ class segue {
 	var $cachedPermissions = array();
 	
 	var $id = 0;
-	var $data;
-	var $changed = 0;
+	var $data = array();
+	var $changed = array();
 	
-	var $fetched = 0;
+	var $fetched = array();
 	var $fetcheddown = 0;
 	var $fetchedup = 0;
+	var $tobefetched = 0;
 	
 	var $owning_site; var $owningSiteObj;		// used by all types (including site for compatibility)
 	var $owning_section; var $owningSectionObj;	// only used for pages and stories
 	var $owning_page; var $owningPageObj;		// only used for stories
 	
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
+	var $_tables = array("site"=>"sites","section"=>"sections","page"=>"pages","story"=>"stories"); // used for getField
 
 /******************************************************************************
  * siteExists - checks if the site/slot already exists with a certain name $name
@@ -44,7 +46,21 @@ class segue {
 	function siteNameValid($user,$name) {
 		return 1;
 	}
-	
+
+/******************************************************************************
+ * buildObjArrayFromSites($sites) - builds an array of objects from site names
+ ******************************************************************************/
+
+	function buildObjArrayFromSites($sites) {
+		if (!is_array($sites)) return array();
+		$a = array();
+		foreach ($sites as $s) {
+			$a[$s] = new site($s);
+			$a[$s]->fetchFromDB();
+		}
+		return $a;
+	}
+
 /******************************************************************************
  * getAllSites - returns a list of all sites owned by $user
  ******************************************************************************/
@@ -57,6 +73,23 @@ class segue {
 			}
 		}
 		return $sites;
+	}
+
+/******************************************************************************
+ * getAllSitesWhereUserIsEditor - gets all sites where $user is an editor
+ ******************************************************************************/
+
+	function getAllSitesWhereUserIsEditor($user='') {
+		if ($user == '') $user = $_SESSION[auser];
+		$query = "select from permissions where user='$user'";
+		$r = db_query($query);
+		$ar = array();
+		if (db_num_rows($r)) {
+			while ($a = db_fetch_assoc($r)) {
+				$ar[] = $a[site];
+			}
+		}
+		return $ar;
 	}
 
 /******************************************************************************
@@ -99,16 +132,95 @@ class segue {
 		}
 	}
 
-	function getField($name) {
-		return $this->data[$name];
+	function getField($field) {
+		global $dbuser, $dbpass, $dbdb, $dbhost;
+		if ($this->tobefetched) {	// we're supposed to fetch this field
+			$_unencode = array("header","footer","shorttext","logertext");
+			$_parse = array("header","footer","shorttext","logertext");
+			$_ardecode = array("sections","pages","stories");
+			if (!$fetched[$field]) {
+				$class = get_class($this);
+				$table = $this->_tables[$class]; // the table to use
+				if ($class=='site') $where = "name='".$this->name."'";
+				else $where = "id=".$this->id;
+				$query = "select $field from $table where $where limit 1";
+				db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+				$r = db_query($query);
+				if (!db_num_rows($r)) return false;
+				$a = db_fetch_assoc($r);
+				$val = $a[$field];
+				if (in_array($field,$_unencode)) $val = stripslashes(urldecode($val));
+				if (in_array($field,$_ardecode)) $val = decode_array($val);
+				$this->data[$field] = $val;
+				$this->fetched[$field] = 1;
+				if (in_array($field,$_parse)) $this->parseMediaTextForEdit($field);
+			}
+		} // done fetching
+			
+		return $this->data[$field];
 	}
 	
 	function setField($name,$value) {
 		$this->data[$name] = $value;
-		$this->changed = 1;
+		$this->changed[$name] = 1;
 		if ($name == "footer" || $name == "header" || $name == "shorttext" || $name == "longertext") {
 			$this->parseMediaTextForEdit($name);
 		}
+	}
+	
+/******************************************************************************
+ * copyObj - Copies an object to a new parent
+ ******************************************************************************/
+	function copyObj($object,$newParent,$keepaddedby=0) {
+		$_a = array("site"=>3,"section"=>2,"page"=>1,"story"=>0);
+		// check that the newParent can be a parent
+		$objClass = get_class($object);
+		$parentClass = get_class($newParent);
+		if (!($_a[$parentClass] == ($_a[$objClass] - 1))) return 0;
+		
+		$object->fetchDown();
+		if ($objClass == 'section') {
+			$owning_site = $newParent->name;
+			$object->insertDB(1,$owning_site,$keepaddedby);
+		}
+		if ($objClass == 'page') {
+			$owning_site = $newParent->site_id;
+			$owning_section = $newParent->id;
+			$object->insertDB(1,$owning_site,$owning_section,$keepaddedby);
+		}
+		if ($objClass == 'story') {
+			$owning_site = $newParent->site_id;
+			$owning_section = $newParent->section_id;
+			$owning_page = $newParent->id;
+			$object->insertDB(1,$owning_site,$owning_section,$owning_page,$keepaddedby);
+		}
+		return 1;
+	}
+	
+/******************************************************************************
+ * getMediaIDs - returns an array of media ids found in a string
+ ******************************************************************************/
+
+	function getMediaIDs($field) {
+		$string = stripslashes($this->getField($field));
+		$ids = array();
+		$string =  explode("####",$string);
+		for ($i=1; $i<count($string); $i=$i+2) {
+			$ids[] = $string[$i];
+		}
+		return $ids;
+	}
+	
+/******************************************************************************
+ * replaceMediaIDs - searches for and replaces each id in the string
+ ******************************************************************************/
+	function replaceMediaIDs($ids,$field,$newsite) {
+		$string = $this->getField($field);
+		foreach ($ids as $origID) {
+			$newID = copy_media($origID,$newsite);
+			$string = str_replace("####$origID####","####$newID####",$string);
+		}
+		$this->setField($field,$string);
 	}
 	
 /******************************************************************************
@@ -258,9 +370,9 @@ class segue {
  ******************************************************************************/
 
 	function parseMediaTextForEdit($field) {
-		if (!$this->data[$field]) return false;
-		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->data[$field]);
-		$textarray1 = explode("####", $this->data[$field]);
+		if (!$this->getField("$field")) return false;
+		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->getField($field));
+		$textarray1 = explode("####", $this->getField($field));
 		if (count($textarray1) > 1) {
 			for ($i=1; $i<count($textarray1); $i+=2) {
 				$id = $textarray1[$i];
@@ -278,8 +390,8 @@ class segue {
  ******************************************************************************/
 
 	function parseMediaTextForDB($field) {
-		if (!$this->data[$field]) return false;
-		$textarray1 = explode("&&&&", $this->data[$field]);
+		if (!$this->getField($field)) return false;
+		$textarray1 = explode("&&&&", $this->getField($field));
 		if (count($textarray1) > 1) {
 			for ($i=1; $i<count($textarray1); $i=$i+2) {
 				$textarray2 = explode("@@@@", $textarray1[$i]);
@@ -478,6 +590,7 @@ class segue {
 
 	function canview($user="") {
 		if ($user == "") $user = $_SESSION[auser];
+		if ($user == 'anyuser') $noperms=1;
 		$_ignore_types = array("page"=>array("heading","divider"));
 		$scope = get_class($this);
 		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
@@ -487,7 +600,7 @@ class segue {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
-		return $this->hasPermission("view",$user);
+		if (!$noperms) return $this->hasPermission("view",$user);
 		return 1;
 	}
 

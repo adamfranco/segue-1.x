@@ -40,7 +40,7 @@ class slot {
 		
 		while ($a = db_fetch_assoc($r)) {
 			$id = $a[id];
-			$allslots[$id] = $a[name];
+			$allSlots[$id] = $a[name];
 		}
 		return $allSlots;
 	}

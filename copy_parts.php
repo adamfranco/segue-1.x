@@ -1,6 +1,8 @@
 <? /* $Id$ */
  
 $content = ''; 
+
+require("objects/objects.inc.php");
  
 ob_start(); 
 session_start(); 
@@ -9,26 +11,42 @@ session_start();
 print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'; 
  
 // include all necessary files 
-include("includes.inc.php"); 
-include("sniffer.inc.php");
+require("includes.inc.php"); 
+require("sniffer.inc.php");
  
 //if ($ltype != 'admin') exit; 
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 if ($domove) {
-	// move or copy the part
+	// set the origional objects to move/copy	
 	if ($type == "section") {
-		$newid = copyPart($action,$type,$section,$site);
+		$partObj = new section($origionalsite,$section);
+		$parentObj = new site($site);
 	}
 	else if ($type == "page") {
-		$newid = copyPart($action,$type,$page,$section);
+		$partObj = new page($origionalsite,$origionalsection,$page);
+		$parentObj = new section($site,$section);
 	}
 	else if ($type == "story") {
-		$newid = copyPart($action,$type,$story,$page);
+		$partObj = new story($origionalsite,$origionalsection,$origionalpage,story);
+		$parentObj = new page($site,$section,$page);
 	} else 
 		print "Major Error!!!!!!!!!!!!!!!!!!!!!!  AHHHHHhhhhhhhh!!!!!!!!!!!!!!!!!!!!";
-		
+	
+	// make a copy of the origional to delete later.
+	$origPartObj = $partObj;
+	
+	if ($action == "MOVE" && $site == $origionalsite) $keepaddedby = 1;
+	else $keepaddedby = 0;	
+	
+	// move the object.
+	$succesfull = copyObj($partObj,$parentObj,$keepaddedby);
+	
+	// delete the origional
+	if ($successfull && $action == "MOVE") {
+		$partObj->delete();
+	}
 }
 
 if (!isset($action)) $action = "MOVE";

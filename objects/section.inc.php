@@ -48,14 +48,14 @@ class section extends segue {
 	}
 	
 	function addPage($id) {
-		if (!is_array($this->data[pages])) $this->data[pages] = array();
-		array_push($this->data[pages],$id);
+		if (!is_array($this->getField("pages"))) $this->data[pages] = array();
+		array_push($this->getField("pages"),$id);
 		$this->changed = 1;
 	}
 	
 	function delPage($id) {
 		$d = array();
-		foreach ($this->data[pages] as $p)
+		foreach ($this->getField("pages") as $p)
 			if ($p != $id) $d[]=$p;
 		$this->data[pages] = $d;
 		$page = new page($this->owning_site,$this->id,$id);
@@ -65,8 +65,9 @@ class section extends segue {
 	
 	function fetchDown() {
 		if (!$this->fetcheddown) {
+			print "-->section fetchdown".$this->id."<BR>";
 			if (!$this->fetched) $this->fetchFromDB();
-			foreach ($this->data[pages] as $p) {
+			foreach ($this->getField("pages") as $p) {
 				$this->pages[$p] = new page($this->owning_site,$this->id,$p);
 				$this->pages[$p]->fetchDown();
 			}
@@ -115,11 +116,17 @@ class section extends segue {
 		return true;
 	}
 	
-	function insertDB($down=0,$newsite=null) {
+	function insertDB($down=0,$newsite=null,$keepaddedby=0) {
 		if ($newsite) $this->owning_site = $newsite;
 		$a = $this->createSQLArray();
-		$a[] = "addedby='$_SESSION[auser]'";
-		$a[] = "addedtimestamp = NOW()";
+		if (!$keepaddedby) {
+			$a[] = "addedby='$_SESSION[auser]'";
+			$a[] = "addedtimestamp = NOW()";
+		} else {
+			$a[] = "addedby='".$this->getField("addedby")."'";
+			$a[] = "addedtimestamp=".$this->getField("addedtimestamp");
+		}
+
 		$query = "insert into sections set ".implode(",",$a);
 		print $query; //debug
 		db_query($query);
@@ -138,7 +145,7 @@ class section extends segue {
 		
 		// insert down
 		if ($down && $this->fetcheddown) {
-			foreach ($this->pages as $i=>$o) $o->insertDB(1,$this->owning_site,$this->id);
+			foreach ($this->pages as $i=>$o) $o->insertDB(1,$this->owning_site,$this->id,$keepaddedby);
 		}
 		return true;
 	}
@@ -153,7 +160,7 @@ class section extends segue {
 		$a[] = "deactivatedate='$d[deactivatedate]'";
 		$a[] = "active=".(($d[active])?1:0);
 		$a[] = "type='$d[type]'";
-		$a[] = "pages='".encode_array($this->data[pages])."'";
+		$a[] = "pages='".encode_array($this->getField("pages"))."'";
 		$a[] = "url='$d[url]'";
 		
 		return $a;

@@ -2,7 +2,7 @@
 
 class group {
 	var $owner;
-	var $classes=array();;
+	var $classes=array();
 	var $name;
 	var $id=0;
 	
@@ -14,7 +14,7 @@ class group {
 	
 	function fetchFromDB() {
 		$query = "select * from classgroups where name='".$this->name."'";
-		if ($this->owner) $query .= " and owner='".$this->owner."'"
+		if ($this->owner) $query .= " and owner='".$this->owner."'";
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
@@ -23,6 +23,19 @@ class group {
 			if (!$this->owner) $this->owner = $a[owner];
 			return true;
 		} else return false;
+	}
+	
+	function updateDB() {
+		if ($this->exists($this->name)) {
+			$query = "update classgroups set name='".$this->name."',owner='".$this->owner."'";
+			$query .= ",classes='".implode(",",$this->classes)."' where id=".$this->id;
+			db_query($query);
+		} else {
+			// insert in the db
+			$query = "insert into classgroups set name='".$this->name."',owner='".$this->owner."'";
+			$query .= ",classes='".implode(",",$this->classes)."'";
+			db_query($query);
+		}
 	}
 	
 	function exists($name) {
@@ -41,10 +54,35 @@ class group {
 		return false;
 	}
 	
+	function getNameFromClass($class) {
+		$query = "select * from classgroups where classes LIKE '%$class%'";
+		$r = db_query($query);
+		if (db_num_rows($r)) {$a = db_fetch_assoc($r); return $a[name]; }
+		return false;
+	}
+	
+	function getGroupsOwnedBy($user) {
+		$query = "select * from classgroups where owner='$user'";
+		$a = array();
+		$r = db_query($query);
+		while ($x = db_fetch_assoc($r)) {
+			$a[] = $x[name];
+		}
+		return $a;
+	}
+	
 	function addClasses($classes) {
 		if (is_array($classes)) {
 			$this->classes = array_unique(array_merge($this->classes,$classes));
 		}
+	}
+	
+	function delClass($class) {
+		$c = array();
+		foreach ($this->classes as $cl) {
+			if ($cl != $class) $c[] = $cl;
+		}
+		$this->classes = $c;
 	}
 	
 	function delete() {

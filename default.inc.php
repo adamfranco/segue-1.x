@@ -26,6 +26,9 @@ if ($_loggedin) {
 	foreach ($defaultlinks as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
 
+/* 	print_r($classes); */
+/* 	print_r($futureclasses); */
+/* 	print_r($oldclasses); */
 	
      /* -------------------- list of sites -------------------- */	
 	if ($allowclasssites) {
@@ -147,22 +150,21 @@ if ($_loggedin) {
 	// handle group adding backend here
 	if (count($_REQUEST[group]) && ($_REQUEST[newgroup] || $_REQUEST[groupname])) { // they chose a group
 		if (!$_REQUEST[newgroup]) $_REQUEST[newgroup] = $_REQUEST[groupname];
-		if (ereg("^[a-zA-Z0-9_-]{1,20}$",$newgroup)) {
-			if (db_line_exists("classgroups","name='$newgroup'")) { // already exists
-				if (db_line_exists("classgroups","name='$newgroup' and owner='$auser'")) {
-					$list = db_get_value("classgroups","classes","name='$newgroup' and owner='$auser'");
-					$list = explode(",",$list);
-					$newlist = array_unique(array_merge($list,$group));
-					$list = implode(",",$newlist);
-					$query = "update classgroups set classes='$list' where name='$newgroup' and owner='$auser'";
-					log_entry("classgroups","$newgroup","","","$auser updated $newgroup to be $list");
+		if (ereg("^[a-zA-Z0-9_-]{1,20}$",$_REQUEST[newgroup])) {
+			$groupObj = new group($_REQUEST[newgroup],$_SESSION[auser]);
+			if (group::exists($_REQUEST[newgroup])) { // already exists
+				if ($groupObj->fetchFromDB()) {
+					$groupObj->addClasses($_REQUEST[group]);
+					$groupObj->updateDB();
+					$list = implode(",",$groupObj->classes);
+					log_entry("classgroups","$_REQUEST[newgroup]","","","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list");
 				} else error("Somebody has already created a class group with that name. Please try another name.");
 			} else {	// new group
-				$list = implode(",",$group);
-				$query = "insert into classgroups set name='$newgroup',classes='$list',owner='$auser'";
-				log_entry("classgroups","$newgroup","","","$auser added $newgroup with $list");
+				$groupObj->addClasses($_REQUEST[group]);
+				$groupObj->updateDB();
+/* 				$query = "insert into classgroups set name='$newgroup',classes='$list',owner='$auser'"; */
+				log_entry("classgroups","$_REQUEST[newgroup]","","","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes));
 			}
-			db_query($query);
 		} else
 			error("Your group name is invalid. It may only contain alphanumeric characters, '_', '-', and be under 21 characters. No spaces, punctuation, etc.");
 
@@ -182,23 +184,25 @@ if ($_loggedin) {
 	
 	if ($allowclasssites) {	
 		//class sites for professors (for student see above)
-		if ($atype == 'prof') {
+		if ($_SESSION[atype] == 'prof') {
 			//current classes
-			printc("<tr><td class='inlineth' colspan=7>Current Class Sites</td></tr>");
-			$gs = array();
-			foreach ($classes as $c=>$a) {
-				if ($g = inclassgroup($c)) {
-					if (!$gs[$g]) printSiteLine($g,$atype);
-					$gs[$g] = 1;
-				} else
-					printSiteLine($c,0,1,$atype);
+			if (count($classes)) {
+				printc("<tr><td class='inlineth' colspan=7>Current Class Sites</td></tr>");
+				$gs = array();
+				foreach ($classes as $c=>$a) {
+					if ($g = group::getNameFromClass($c)) {
+						if (!$gs[$g]) printSiteLine($g,$_SESSION[atype]);
+						$gs[$g] = 1;
+					} else
+						printSiteLine($c,0,1,$_SESSION[atype]);
+				}
 			}
 			//upcoming classes
 			if (count($futureclasses)) {		
 				printc("<tr><td class='inlineth' colspan=7>Upcoming Classes</td></tr>");
 				$gs = array();
 				foreach ($futureclasses as $c=>$a) {
-					if ($g = inclassgroup($c)) {
+					if ($g = group::getNameFromClass($c)) {
 						if (!$gs[$g]) printSiteLine($g);
 						$gs[$g] = 1;
 					} else
@@ -208,13 +212,12 @@ if ($_loggedin) {
 			
 			//info/interface for groups
 			printc("<tr><th colspan=7 align=right>add checked sites to group: <input type=text name=newgroup size=10 class=textfield>");
-			$r = db_query("select * from classgroups where owner='$auser'");
-			$havegroups = db_num_rows($r);
+			$havegroups = count(($grs = group::getGroupsOwnedBy($_SESSION[auser])));
 			if ($havegroups) {
 				printc(" <select name='groupname' onChange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
 				printc("<option value=''>-choose-");
-				while ($g = db_fetch_assoc($r)) {
-					printc("<option value='$g[name]'>$g[name]\n");
+				foreach ($grs as $g) {
+					printc("<option value='$g'>$g\n");
 				}
 				printc("</select>");
 			}
@@ -228,28 +231,26 @@ if ($_loggedin) {
 		}
 	}
 	
-	// get a list of sites for which the user is an editor
-/* 	$l = array(); */
-/* 	foreach ($classes as $c=>$i) { */
-/* 		if ($g = inclassgroup($c)) { */
-/* 			$l[]=$g; */
-/* 		} else $l[]=$c; */
-/* 	} */
-//	$query = "select * from sites where editors LIKE '%$auser%'";
+/******************************************************************************
+ * output a list of the user's other sites
+ ******************************************************************************/
 
-	if ($allowclasssites && !$allowpersonalsites)
-	  $query = "select * from sites where editors != '' and type!='personal' order by addedtimestamp asc";
-	else if (!$allowclasssites && $allowpersonalsites)
-	  $query = "select * from sites where editors != '' and type='personal' order by addedtimestamp asc";
-	else
-	  $query = "select * from sites where editors != '' order by addedtimestamp asc";
+/* 	if ($allowclasssites && !$allowpersonalsites) */
+/* 	  $query = "select * from sites where editors != '' and type!='personal' order by addedtimestamp asc"; */
+/* 	else if (!$allowclasssites && $allowpersonalsites) */
+/* 	  $query = "select * from sites where editors != '' and type='personal' order by addedtimestamp asc"; */
+/* 	else */
+/* 	  $query = "select * from sites where editors != '' order by addedtimestamp asc"; */
 	
 	$sites = array();
-	$r = db_query($query);
-	while ($a = db_fetch_assoc($r)) {
-		if (is_editor($auser,$a['name'],1)) {
-			array_push($sites,$a['name']);
-		}
+	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor());
+	foreach ($esites as $n=>$s) {
+		if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
+			array_push($sites,$n);
+		else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
+			array_push($sites,$n);
+		else
+			array_push($sites,$n);
 	}
 	
 	// if they are editors for any sites, they will be in the $sites[] array
@@ -262,25 +263,34 @@ if ($_loggedin) {
 	}
 	
 	$sites=array();
-	if ($allowclasssites && !$allowpersonalsites)
-	  $query = "select * from sites where addedby='$auser' and type!='personal' order by addedtimestamp asc";
-	else if (!$allowclasssites && $allowpersonalsites)
-	  $query = "select * from sites where addedby='$auser' and type='personal' order by addedtimestamp asc";
-	else
-	  $query = "select * from sites where addedby='$auser' order by addedtimestamp asc";
-	$r = db_query($query);
-	while ($a=db_fetch_assoc($r)) {
-		//printSiteLine($a[name]);
-		if (!in_array($a[name],$sitesprinted)) $sites[]=$a[name];
+	$esites=segue::buildObjArrayFromSites(segue::getAllSites($_SESSION[auser]));
+/* 	if ($allowclasssites && !$allowpersonalsites) */
+/* 	  $query = "select * from sites where addedby='$auser' and type!='personal' order by addedtimestamp asc"; */
+/* 	else if (!$allowclasssites && $allowpersonalsites) */
+/* 	  $query = "select * from sites where addedby='$auser' and type='personal' order by addedtimestamp asc"; */
+/* 	else */
+/* 	  $query = "select * from sites where addedby='$auser' order by addedtimestamp asc"; */
+/* 	$r = db_query($query); */
+	foreach ($esites as $n=>$s) {
+		if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
+			array_push($sites,$n);
+		else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
+			array_push($sites,$n);
+		else
+			array_push($sites,$n);
 	}
 	
+	$slots = slot::getAllSlots($_SESSION[auser]);
+/* 	print_r($slots); */
+	$sites = array_merge($slots,$sites);
+	$sites = removePrinted($sites);
 	if (count($sites)) {
-		printc("<tr><td class='inlineth' colspan=7>Other/Old Sites".helplink("othersites","What are these?")."</td></tr>");
+		printc("<tr><td class='inlineth' colspan=7>Other Sites".helplink("othersites","What are these?")."</td></tr>");
 		foreach ($sites as $s)
 			printSiteLine($s);
 	}
 	
-	if ($ltype=='admin') printc("<tr><td class='inlineth' colspan=7 align=right><a href='$PHP_SELF?$sid&action=add_site'>add new site</a></td></tr>");
+	if ($_SESSION[ltype]=='admin') printc("<tr><td class='inlineth' colspan=7 align=right><a href='$PHP_SELF?$sid&action=add_site'>add new site</a></td></tr>");
 	
 	
 	printc("</table>");
@@ -300,34 +310,47 @@ if ($_loggedin) {
 	
 }
 
+function removePrinted($sites) {
+	global $sitesprinted;
+	$s = array();
+	foreach ($sites as $site) {
+		if (!in_array($site,$sitesprinted)) $s[]=$site;
+	}
+	return $s;
+}
+
 function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
-	global $color,$possible_themes,$auser;
+	global $color,$possible_themes;
 	global $sitesprinted;
 	global $_full_uri;
 
 	if (in_array($name,$sitesprinted)) return;
 	$sitesprinted[]=$name;
 	
-	$isgroup = ($classlist = isgroup($name))?1:0;
-	$exists = db_num_rows(db_query("select * from sites where name='$name'"));
+	$obj = new site($name);
+	
+	$isgroup = ($classlist = group::getClassesFromName($name))?1:0;
+	$exists = $obj->fetchFromDB();
+/* 	print_r($obj); */
+
 	$namelink = ($exists)?"$PHP_SELF?$sid&action=site&site=$name":"$PHP_SELF?$sid&action=add_site&sitename=$name";
 	$namelink2 = ($exists)?"$PHP_SELF?$sid&action=viewsite&site=$name":"$PHP_SELF?$sid&action=add_site&sitename=$name";
-	if ($exists) $a = db_get_line("sites","name='$name'");
+/* 	if ($exists) $a = db_get_line("sites","name='$name'"); */
 	
 	printc("<tr>");
 	printc("<td class=td$color>");
 	$status = ($exists)?"Created":"Not Created";
 	if ($exists) {
-		if (canview($a)) $active = "<span class=green>active</span>";
+		if ($obj->canview("anyuser")) $active = "<span class=green>active</span>";
 		else $active = "<span class=red>(inactive)</span>";
 	}
 	printc("<table width=100% cellpadding=0 cellspacing=0><tr><td align=left>".(($isclass)?"<input type=checkbox name='group[]' value='$name'> ":"")."$name - ");
 	//printc("<td align=right style='font-size: 11px; color: #777;'>");
 	if ($exists) {
-		printc("<span style ='font-size:14px;'><a href='$namelink'>".$a[title]."</a></span>");
+		printc("<span style ='font-size:14px;'><a href='$namelink'>".$obj->getField("title")."</a></span>");
 	} else {
-		if ($atype == 'prof') {
-			printc("<span style ='font-size:10px;'>Create: <a href='$namelink'>Site</a> | <a href='http://et.middlebury.edu/mots/prof_add_class?$sid&class=$name' target=new_window>Assessments</a> </span>");
+		if ($_SESSION[atype] == 'prof' && $isclass) {
+			printc("<span style ='font-size:10px;'>Create: <a href='$namelink'>Site</a> | <a href='http://et.middlebury.edu/mots/prof_add_class?$sid&class=$name' target='mots'>Assessments</a> </span>");
 		} else {
 			printc("<span style ='font-size:10px;'><a href='$namelink'>Create Site</a></span>");		
 		}
@@ -343,22 +366,22 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
  		printc("<div style='padding-left: 20px; font-size: 10px;'>  this is a group and contains the following classes: <b>$list</b><br></div>");
 	}
 	if ($exists) {
-		$addedby = $a[addedby];
-		$viewpermissions=$a[viewpermissions];
-		$added = datetime2usdate($a[addedtimestamp]);
-		$edited = $a[editedtimestamp];
-		$editedby = $a[editedby];
+		$addedby = $obj->getField("addedby");
+/* 		$viewpermissions=$a[viewpermissions]; */
+		$added = datetime2usdate($obj->getField("addedtimestamp"));
+		$edited = $obj->getField("editedtimestamp");
+		$editedby = $obj->getField("editedby");
 		printc("<div style='padding-left: 20px; font-size: 10px;'>  added by $addedby on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"")."<br></div>");
 		
-		if ($a[activatedate] != '0000-00-00' || $a[deactivatedate] != '0000-00-00' || $viewpermissions != 'anyone') {
+		if ($obj->getField("activatedate") != '0000-00-00' || $obj->getField("deactivatedate") != '0000-00-00') {
 			printc("<div style='padding-left: 20px; font-size: 10px;'>available: ");
 			printc(txtdaterange($a[activatedate],$a[deactivatedate]));
-			if ($viewpermissions != 'anyone') {
-				printc(" to ");
-				if ($viewpermissions == 'midd') printc("$cfg[inst_name] users");
-				if ($viewpermissions == 'class') printc("students in this class");
-				
-			}
+/* 			if ($viewpermissions != 'anyone') { */
+/* 				printc(" to "); */
+/* 				if ($viewpermissions == 'midd') printc("$cfg[inst_name] users"); */
+/* 				if ($viewpermissions == 'class') printc("students in this class"); */
+/* 				 */
+/* 			} */
 			printc("</div>");
 		}
 
@@ -401,30 +424,30 @@ $sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>by <a sty
 
 //cannot get this function to work???
 //best place for this function is in class_functions.inc.php
-function printclasses($classes) {
-	printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
-	$c=0;
-	foreach (array_keys($classes) as $cl) {
-	
-		printc("<tr><td class=td$c width= 150>$cl</td>");
-		if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) {
-			if ($gr) $db=db_get_line("sites","name='$gr'");
-			if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>");
-			else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
-			
-		//check webcourses databases to see if course website was created in course folders (instead of Segue)
-		} else if ($course_site = coursefoldersite($cl)) {					
-			$course_url = urldecode($course_site['url']);
-			$title = urldecode($course_site['title']);
-			printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>");
-			db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-							
-		} else
-			printc("<td style='color: #999' class=td$c>not created</td>");
-			printc("</tr>");
-			$c = 1-$c;
-			db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-	}
-	printc("</tr></table>");
-
-}
+/* function printclasses($classes) { */
+/* 	printc("<table width=100%><tr><th>class</th><th>site</th></tr>"); */
+/* 	$c=0; */
+/* 	foreach (array_keys($classes) as $cl) { */
+/* 	 */
+/* 		printc("<tr><td class=td$c width= 150>$cl</td>"); */
+/* 		if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) { */
+/* 			if ($gr) $db=db_get_line("sites","name='$gr'"); */
+/* 			if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>"); */
+/* 			else printc("<td style='color: #999' class=td$c>created, not yet available</td>"); */
+/* 			 */
+/* 		//check webcourses databases to see if course website was created in course folders (instead of Segue) */
+/* 		} else if ($course_site = coursefoldersite($cl)) {					 */
+/* 			$course_url = urldecode($course_site['url']); */
+/* 			$title = urldecode($course_site['title']); */
+/* 			printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>"); */
+/* 			db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
+/* 							 */
+/* 		} else */
+/* 			printc("<td style='color: #999' class=td$c>not created</td>"); */
+/* 			printc("</tr>"); */
+/* 			$c = 1-$c; */
+/* 			db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
+/* 	} */
+/* 	printc("</tr></table>"); */
+/*  */
+/* } */

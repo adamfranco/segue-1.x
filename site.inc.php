@@ -1,151 +1,145 @@
 <? /* $Id$ */
 
-$siteinfo = db_get_line("sites","name='$site'");
-$site_owner = $siteinfo[addedby];
-
 // check view permissions
-siteviewpermissions($siteinfo);
+if (!$thisSite->canview()) {
+	error("You may not view this site. This may be due to any of the following reasons:<BR><ul><li>The site has not been activated by the owner.<li>You are not on a computer within $cfg[inst_name].<li>You are not logged in.<li>You are not part of a set of specific users or groups allowed to view this site.</ul>");
+}	
+
+if ($thisSite) $site=$thisSite->name;
+if ($thisSection) $section=$thisSection->id;
+if ($thisPage) $page = $thisPage->id;
+
 
 // check for proper instance of scripts
 if ($allowclasssites != $allowpersonalsites) {
-	$type = db_get_value("sites","type","name='$site'");
+	$type = $thisSite->getField("type");
 	if ($allowclasssites && !$allowpersonalsites) {
 		if ($type == 'personal')
-			header("Location: $personalsitesurl/index.php?action=site&site=$site&section=$section&page=&page");
+			header("Location: $personalsitesurl/index.php?action=site&site=$site&section=$section&page=$page");
 	} else if (!$allowclasssites && $allowpersonalsites) {
 		if ($type != 'personal' && $type != 'system')
-			header("Location: $classsitesurl/index.php?action=site&site=$site&section=$section&page=&page");
-	} else {
-		// Do nothing
+			header("Location: $classsitesurl/index.php?action=site&site=$site&section=$section&page=$page");
 	}
 }
 
 // if we're an admin, override all errors
-if ($ltype == 'admin') {
+if ($_SESSION[ltype] == 'admin') {
 	clearerror();
 }
 
 // if we produced an error, return (don't let them view the site)
 if ($error) return;
 
-if ($site) {
-//	$query = "select * from sites where id=$site";
-	$siteinfo = db_get_line("sites","name='$site'");
-	$sections = decode_array($siteinfo['sections']);
-	if (!$section && count($sections)) {
-		for ($i=0; $i<count($sections) && !$section; $i++) {
-			$a = db_get_line("sections","id=$sections[$i]");
-			if ($a[type]=='section' && canview($a,SECTION))$section=$sections[$i];
+if ($thisSite) {
+	if (!$thisSection && count($thisSite->getField("sections"))) {
+		$thisSite->fetchDown();
+		foreach ($thisSite->sections as $s=>$o) {
+			if ($o->getField("type") == 'section' && $o->canview()) { $thisSection = &$thisSite->sections[$s]; break; }
 		}
 	}
-	$sitetype = $siteinfo['type'];
-	// once sites are objects this will no longer be needed -- the check can be done within the object
-	if (!$sitetype || $sitetype=='') $sitetype = "personal";
+	$sitetype = $thisSite->getField("type");
 }
-if ($section) {
-//	$query = "select * from sections where id=$category";
-	$sectioninfo = db_get_line("sections","id=$section");
-	$st = " > " . $sectioninfo['title'];
-	$pages = decode_array($sectioninfo['pages']);
-	if (!$page && count($pages)) {
-		for ($i=0;$i<count($pages) && !$page;$i++) {
-			$a = db_get_line("pages","id=$pages[$i]");
-			if ($a[type] == 'page' && canview($a,PAGE)) $page = $pages[$i];
+if ($thisSection) {
+	if (!$thisPage && count($thisSection->getField("pages"))) {
+		$thisSection->fetchDown();
+		foreach ($thisSection->pages as $p=>$o) {
+			if ($o->getField("type") == 'page' && $o->canview()) { $thisPage = &$thisSection->pages[$p]; break; }
 		}
 	}
-	// check category permissions
+	$st = " > " . $thisSection->getField("title");
 }
-if ($page) {		// we're viewing a page
-//	$query = "select * from pages where id=$page";
-	$pageinfo = db_get_line("pages","id=$page");
-	$stories = decode_array($pageinfo[stories]);
-	$pt = " > " . $pageinfo['title'];
+if ($thisPage) {		// we're viewing a page
+	$pt = " > " . $thisPage->getField("title");
 	// check page permissions
 }
-$pagetitle = $siteinfo['title'] . $st . $pt;
+$pagetitle = $thisSite->getField("title") . $st . $pt;
 
 
 
-$envvars = "site=$site";
-if ($section) $envvars .= "&section=$section";
-if ($page) $envvars .= "&page=$page";
+$envvars = "site=".$thisSite->name;
+if ($thisSection) $envvars .= "&section=".$thisSection->id;
+if ($thisPage) $envvars .= "&page=".$thisPage->id;
 
-/* $sections = decode_array($siteinfo['sections']); */
+$site=$thisSite->name;
+$section=$thisSection->id;
+$page=$thisPage->id;
+$thisSite->fetchDown();			// just in case we haven't already
+
 $i=0;
-foreach ($sections as $s) {
-	$a = db_get_line("sections","id=$s");
-	if (canview($a,SECTION)) {
-		if ($a[type] == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=site";
-		if ($a[type] == 'url') { $link = $a[url]; $target="_self";}
+foreach ($thisSite->sections as $s=>$o) {
+	if ($o->canview()) {
+		if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=site";
+		if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
 		$extra = '';
 		$i++;
-		add_link(topnav,$a['title'],$link,$extra,$s,$target);
+		add_link(topnav,$o->getField("title"),$link,$extra,$s,$target);
 	}
 }
 
 // next, if we have a section, build a list of leftnav items
-if ($section) {
-/* 	$pages = decode_array(db_get_value("sections","pages","id=$section")); */
+if ($thisSection) {
+	$thisSection->fetchDown();	//just in case...
 	$i = 0;
-	foreach ($pages as $p) {
-		$a = db_get_line("pages","id=$p");
+	foreach ($thisSection->pages as $p=>$o) {
 		$extra = '';
-		if (canview($a,PAGE)) {
-			if ($a[type] == 'page')
-				add_link(leftnav,$a['title'],"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
-			if ($a[type] == 'url')
-				add_link(leftnav,$a['title'],$a['url'],$extra,$p,"_blank");
-			if ($a[type] == 'heading')
-				add_link(leftnav,$a['title'],'',$extra);
-			if ($a[type] == 'divider')
+		if ($o->canview()) {
+			if ($o->getField("type") == 'page')
+				add_link(leftnav,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
+			if ($o->getField("type") == 'url')
+				add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
+			if ($o->getField("type") == 'heading')
+				add_link(leftnav,$o->getField("title"),'',$extra);
+			if ($o->getField("type") == 'divider')
 				add_link(leftnav,'','',$extra);
 			$i++;
 		}
 	}
 }
 
-if ($page) {
-/* 	$stories = decode_array(db_get_value("pages","stories","id=$page")); */
-	printc("<div class=title>$pageinfo[title]</div>");
-	$i=0;	
+if ($thisPage) {
+	$thisPage->fetchDown();
+	printc("<div class=title>".$o->getField("title")."</div>");
+	$i=0;
 	// handle archiving -- monthly, weekly, etc
-	if ($pageinfo[archiveby] != 'none' && $pageinfo[archiveby] != '')
-		$stories = handlearchive($stories,$pageinfo[archiveby]);
+	$thisPage->handleStoryArchive();
+
 	// handle ordering of stories
-	if ($pageinfo[storyorder] != 'custom' && $pageinfo[storyorder] != '')
-		$stories = handlestoryorder($stories,$pageinfo[storyorder]);
+	$thisPage->handleStoryOrder();
+/* 	if ($pageinfo[storyorder] != 'custom' && $pageinfo[storyorder] != '') */
+/* 		$stories = handlestoryorder($stories,$pageinfo[storyorder]); */
 	
-	foreach ($stories as $s) {
+	foreach ($thisPage->stories as $s=>$o) {
 	
-		$a = db_get_line("stories","id=$s");
-		if (canview($a,STORY)) {		
-			if (($pageinfo[showcreator] || $pageinfo[showdate] || $pageinfo[showhr]) && $i!=0) 
-					printc("<hr size='1' noshade style='margin-top: 10px'>");
-			if ($a[category]) {
+		if ($o->canview()) {		
+			if (($thisPage->getField("showcreator") || $thisPage->getField("showdate") || $thisPage->getField("showhr")) && $i!=0) 
+				printc("<hr size='1' noshade style='margin-top: 10px'>");
+			if ($o->getField("category")) {
 				printc("<div class=contentinfo id=contentinfo2 align=right>");
-				printc("Category: <b>".spchars($a[category])."</b>");
+				printc("Category: <b>".spchars($o->getField("category"))."</b>");
 				printc("</div>");
 			}
 					
 			printc("<div style='margin-bottom: 10px'>");
 			
-			$incfile = "output_modules/$sitetype/$a[type].inc.php";
+			$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
 			//print $incfile; // debug
 			include($incfile);
 
-			if ($pageinfo[showcreator] || $pageinfo[showdate]) {				
+			if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
 				printc("<div class=contentinfo align=right>");
-				$added = datetime2usdate($a[addedtimestamp]);
+				$added = datetime2usdate($o->getField("addedtimestamp"));
 				printc("added");
-				if ($pageinfo[showcreator]) printc(" by $a[addedby]");
-				if ($pageinfo[showdate]) printc(" on $added");
-				if ($a[editedby]) {
+				if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
+				if ($thisPage->getField("showdate")) printc(" on $added");
+				if ($o->getField("editedby")) {
 					printc(", edited");
-					if ($pageinfo[showcreator]) printc(" by $a[editedby]");
-					if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
+					if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedby"));
+					if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
 				}
-				printc("</div>");		
+				printc("</div>");
+				//printc("<hr size='1' noshade><br>");
 			}
+
 			printc("</div>");
 		}
 		$i++;
@@ -153,7 +147,7 @@ if ($page) {
 }
 
 // add the key to the footer of the page
-if (is_editor($auser,$site) && !$themepreview) {
+if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
 	/*$u = "$_SERVER[SCRIPT_URI]?action=viewsite&site=$site";*/
 	$u = "$PHP_SELF?$sid&action=viewsite&site=$site";
 	if ($section) $u .= "&section=$section";
