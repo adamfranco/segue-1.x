@@ -81,7 +81,13 @@ if ($_loggedin) {
 
 	/******************************************************************************
 	 * List sites
-	 ******************************************************************************/ 
+	 ******************************************************************************/
+	 
+	 // Sort the classes
+	$classes = sortClasses($classes);
+	$oldclasses = sortClasses($oldclasses);
+	$futureclasses = sortClasses($futureclasses);
+	$allclasses = sortClasses($allclasses);
 
 	if ($allowclasssites) {
 		$_class_list_titles = array("classes"=>"Your Current Classes","futureclasses"=>"Upcoming Classes","oldclasses"=>"Previous Semesters");

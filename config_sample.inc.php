@@ -247,11 +247,41 @@
 	
 	/******************************************************************************
 	 * Semester definitions
-	 ******************************************************************************/
-	$_semesters = array("f"=>"Fall",
-						"w"=>"J-term",
-						"s"=>"Spring",
-						"l"=>"LS"
+	 *
+	 * As few or many semesters as desired can be entered below. The array keys
+	 * are the strings that will be stored in the database when a class is 
+	 * added to Segue.
+	 ******************************************************************************/	
+	$cfg['semesters'] = array (
+		"w" => array (
+			"name" => "Winter",
+			"start_month" => "01",
+			"start_day" => "01",
+			"end_month" => "02",
+			"end_day" => "10"
+		),
+		"s" => array (
+			"name" => "Spring",
+			"start_month" => "02",
+			"start_day" => "11",
+			"end_month" => "05",
+			"end_day" => "30"
+		),
+		"l" => array (
+			"name" => "Summer",
+			"start_month" => "05",
+			"start_day" => "30",
+			"end_month" => "08",
+			"end_day" => "15"
+		),
+		"f" => array (
+			"name" => "Fall",
+			"start_month" => "09",
+			"start_day" => "01",
+			"end_month" => "12",
+			"end_day" => "30"
+		)
+		
 	);
 	
 	//months

@@ -333,11 +333,14 @@ if ($site) {
 			Dept: <input type=text name='class_dept' size=3 value='<?echo $class_dept?>'>
 			Semester:
 			<select name=semester>
-				<option<?=($semester=='any')?" selected":""?> value='any'>Any
-				<option<?=($semester=='f')?" selected":""?> value='f'><?=$_semesters[f]?>
-				<option<?=($semester=='w')?" selected":""?> value='w'><?=$_semesters[w]?>
-				<option<?=($semester=='s')?" selected":""?> value='s'><?=$_semesters[s]?>
-				<option<?=($semester=='l')?" selected":""?> value='l'><?=$_semesters[l]?>
+				<option<?=($semester=='any')?" selected":""?> value='any'>Any</option>
+				<?
+					foreach (array_keys($cfg['semesters']) as $semesterKey) {
+						print "<option".(($semester == $semesterKey)?" selected":"")." value='".$semesterKey."'>";
+						print $cfg['semesters'][$semesterKey]['name'];
+						print "</option>";
+					}
+				?>
 			</select>
 			Year: <input type=text name='class_year' size=5 value='<?echo $class_year?>'>
 			Owner: <input type=text name='class_owner' size=7 value='<?echo $class_owner?>'>
@@ -408,7 +411,7 @@ if ($site) {
 						print "<td>".$a['class_department']."</td>";
 						print "<td>".$a['class_number']."</td>";
 						print "<td>".$a['class_section']."</td>";
-						print "<td>".$_semesters[$a['class_semester']]."</td>";
+						print "<td>".$cfg['semesters'][$a['class_semester']]['name']."</td>";
 						print "<td>".$a['class_year']."</td>";
 						print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
 						print "<td>".$a['classgroup_name']."</td>";
@@ -431,7 +434,7 @@ if ($site) {
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doClassForm($a,$p='',$e=0) {
-	global $_semesters;
+	global $cfg;
 	?>
 		<form method='post' name='addform'>
 		<tr>
@@ -444,8 +447,10 @@ function doClassForm($a,$p='',$e=0) {
 		<td><input type=text name='section' size=1 value="<?=$a[$p.'section']?>"></td>
 		<td><select name=semester>
 		<?
-		foreach ($_semesters as $k=>$v) {
-			print "<option".(($a[$p.'semester']==$k)?" selected":"")." value='$k'>$v\n";
+		foreach (array_keys($cfg['semesters']) as $semesterKey) {
+			print "<option".(($a[$p.'semester'] == $semesterKey)?" selected":"")." value='".$semesterKey."'>";
+			print $cfg['semesters'][$semesterKey]['name'];
+			print "</option>";
 		}
 		?>
 		</select>

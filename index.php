@@ -87,15 +87,20 @@ $oldsites=array();
 /* --------------- eventually, this command will be gone... unneeded and handled by ADOdb */
 // connect to the database
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+
+
+// ------ Build arrays of all classes and sites ----------
 if ($_loggedin) {
 	// below if statement should be changed to check a config variable that states
-	// if classes should be check, and what routine to use to get that
-	$classes=getuserclasses($auser,"now");
-	$oldclasses=getuserclasses($auser,"past");
-	$futureclasses=getuserclasses($auser,"future");
-
+	// if classes should be check, and what routine to use to get that	
+	$classes = getuserclasses($auser,"now");
+	$oldclasses = getuserclasses($auser,"past");
+	$futureclasses = getuserclasses($auser,"future");
+		
 	// one array containing all user's classes
 	$allclasses = array_merge($classes,$oldclasses,$futureclasses);
+	
+	// Sort the classes arrays only if that is needed, IE, on the default page.
 		
 	// get other sites they have added, but which aren't in the classes list
 	if ($all_sites = segue::getAllSites($_SESSION[auser])) {
@@ -108,7 +113,6 @@ if ($_loggedin) {
 	}
 }
 
-//if (count($classes)) printc(implode(",",array_keys($classes)));
 
 // if we have info stored in settings session var, get some of it
 if ($_SESSION[settings][site]) $_REQUEST[site] = $_SESSION[settings][site];

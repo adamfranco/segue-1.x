@@ -465,30 +465,72 @@ function isgroup ($group) {
 	return 0;
 }
 
+/**
+ * Return the current semester, 
+ * 
+ * @return string, the semester key of the current semester.
+ * @access public
+ * @date 9/7/04
+ */
 function currentsemester () {
-	$currentyear = date(y);
-	$year=2000+$currentyear;
-	$currmonth = date(m);
+	global $cfg;
 	
-	if ($currmonth<2){
-	$semester='w';
-	}elseif (($currmonth>1)&&($currmonth<6)){
-	$semester='s';
-	}elseif (($currmonth>5)&&($currmonth<9)){
-	$semester='l';
-	}else{
-	$semester='f';
+	$currDay = date("z");
+	
+	foreach (array_keys($cfg['semesters']) as $semesterKey) {
+		
+		$startDay = date("z", 
+						strtotime(				
+							$cfg['semesters'][$semesterKey]['start_month']
+							."/".$cfg['semesters'][$semesterKey]['start_day']
+						)
+					);
+		$endDay = date("z", 
+						strtotime(				
+							$cfg['semesters'][$semesterKey]['end_month']
+							."/".$cfg['semesters'][$semesterKey]['end_day']
+						)
+					);
+		
+		// Process if the semester doesn't go across the new year
+		if (($endDay - $startDay) >= 0) {
+			if ($currDay >= $startDay && $currDay <= $endDay)
+				return $semesterKey;
+		} 
+		// Process if the semester goes accross the new year
+		else {
+			if ($currDay >= $startDay || $currDay <= $endDay)
+				return $semesterKey;
+		}
+		
 	}
+		
 	return $semester;
 }
 
+
+/**
+ * The semorder function returns what order througout the calender year the 
+ * semesters occur, this information can then be used to determine if
+ * a semester has yet to occur 
+ * 
+ * @param string $semester
+ * @return integer, the order of the semester
+ * @access public
+ * @date 9/8/04
+ */
 function semorder($semester) {
-	if ($semester == "w") $order = 1;
-	else if ($semester == "s") $order = 2;
-	else if ($semester == "l")	$order = 3;
-	else if ($semester == "bl") $order = 3;
-	else if ($semester == "f") $order = 4;
-	return $order;
+	global $cfg;
+	$order = 1;
+	
+	foreach (array_keys($cfg['semesters']) as $semesterKey) {
+		if ($semester == $semesterKey) {
+			return $order;
+		} else
+			$order++;
+	}
+	
+	printerr("Semester, '$semester', is not specified in the config.");
 }
 
 function inclassgroup($class) {
@@ -507,6 +549,149 @@ FROM
 	}
 	return 0;
 }
+
+
+/**
+ * Determin if the semester and year specified are the current one
+ * 
+ * @param string $semester The semester in question.
+ * @param integer $year		The year of the semester in question.
+ * @return boolean
+ * @access public
+ * @date 9/9/04
+ */
+function isSemesterNow ($semester, $year) {
+	global $cfg;
+	
+	// If we aren't in the semester that is specified, don't bother
+	// checking the year.
+	if ($semester != currentSemester()) {
+		return FALSE;
+	}
+	
+	// Make sure we have a 4-digit year.
+	if (strlen($year) == 2) {
+		$year = $year + 2000;
+	}
+	
+	// We are good if we are in the same year as asked for.
+	if (date("Y") == $year) {
+		return TRUE;
+	}
+	
+	// If we aren't in the same year, then we need to check if we are in a
+	// year beyond the specified one if the semester in question spans the 
+	// NewYear.
+	
+	$startDay = date("z", 
+					strtotime(				
+						$cfg['semesters'][$semester]['start_month']
+						."/".$cfg['semesters'][$semester]['start_day']
+					)
+				);
+	$endDay = date("z", 
+					strtotime(				
+						$cfg['semesters'][$semester]['end_month']
+						."/".$cfg['semesters'][$semester]['end_day']
+					)
+				);
+	
+	// If the semester in question doesn't go across the new year,
+	// then we are definately not in it. since we checked before
+	// if our year was the same as the semester in question.
+	if (($endDay - $startDay) >= 0) {
+			return FALSE;
+	} 
+	
+	// If the semester in question goes accross the new year, 
+	// make sure that we are just a year beyond the specified
+	// semester and still before the end day of the semester.
+	else {
+		if (date("Y") == ($year+1) && date("z") <= $endDay)
+			return TRUE;
+		else
+			return FALSE;
+	}
+}
+
+/**
+ * Determin if the semester and year specified are in the past
+ * 
+ * @param string $semester The semester in question.
+ * @param integer $year		The year of the semester in question.
+ * @return boolean
+ * @access public
+ * @date 9/9/04
+ */
+function isSemesterPast ($semester, $year) {
+	global $cfg;
+	
+	// If we are in the semester that is specified, don't bother
+	// continuing. Since we aren't past yet.
+	if (isSemesterNow($semester, $year)) {
+		return FALSE;
+	}
+	
+	// Make sure we have a 4-digit year.
+	if (strlen($year) == 2) {
+		$year = $year + 2000;
+	}
+	
+	// If our year is greater than the current one, then we definately
+	// aren't past yet.
+	if ($year > date("Y"))
+		return FALSE;
+		
+	// If our year is less than the current one, then we definately
+	// are past.
+	if ($year < date("Y"))
+		return TRUE;
+	
+	
+	// If we are in the same year, then we need to check if we are before or
+	// after the semester in question.
+	$currDay = date("z");
+	
+	$startDay = date("z", 
+					strtotime(				
+						$cfg['semesters'][$semester]['start_month']
+						."/".$cfg['semesters'][$semester]['start_day']
+					)
+				);
+	
+	
+	// If our day of the year is after the start of the semester
+	// (and we've already checked that we are not in this semester),
+	// then the semester is past. Otherwise it is future.
+	if ($currDay > $startDay)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+/**
+ * Determin if the semester and year specified are in the future
+ * 
+ * @param string $semester The semester in question.
+ * @param integer $year		The year of the semester in question.
+ * @return boolean
+ * @access public
+ * @date 9/9/04
+ */
+function isSemesterFuture ($semester, $year) {
+	
+	// If we are in the semester that is specified or it is past, don't bother
+	// continuing.
+	if (isSemesterNow($semester, $year) || isSemesterPast($semester, $year)) {
+		return FALSE;
+	} 
+	// If the semester in question is not the current one or in the past,
+	// then it must be in the future.
+	else {
+		return TRUE;
+	}
+}
+
 
 /******************************************************************************
  * canview - to be phased out by $obj->canview($user)
@@ -671,3 +856,41 @@ function _error_handler($num, $str, $file, $line, $context) {
 }
 
 //set_error_handler("_error_handler");
+
+/**
+ * Order an array of classes. The input array should contain elements
+ * which are arrays containing the following fields: sem, year, code
+ * 
+ * @param array $classes The classes array to sort
+ * @param optional const $direction One of the directions to pass to array_multisort().
+ * @return array The sorted array of classes
+ * @access public
+ * @date 9/9/04
+ */
+function sortClasses ( $classes, $direction=SORT_DESC) {
+	global $cfg;
+	
+	// get the year-classkey relation.
+	$years = array();
+	foreach($classes as $key => $class) {
+		$years[$key] = $class['year'];
+	}
+	
+	// get the semesterorder-classkey relation
+	$semesterOrder = array_keys($cfg['semesters']);
+	$semesters = array();
+	foreach($classes as $key => $class) {
+		$semesters[$key] = array_search($class['sem'], $semesterOrder);
+	}
+	
+	// get the year-classkey relation.
+	$codes = array();
+	foreach($classes as $key => $class) {
+		$codes[$key] = $class['code'];
+	}
+	
+	array_multisort($years, $direction, SORT_NUMERIC, $semesters, $direction, SORT_NUMERIC, $codes, SORT_ASC, $classes);
+
+	return $classes;
+}
+
