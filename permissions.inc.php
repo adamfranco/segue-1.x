@@ -143,27 +143,31 @@ function has_permissions($user, $this_level,$site,$section,$page,$story) {
 function permission($user,$type,$function,$id) {
 	$user = strtolower($user);
 	global $classes;
+	
+	$debug = 0;
+	// debug
+	if ($debug) print("$user - $type - $function - $id<BR><BR>");
 
 	if ($type == SITE) { 
 		$a = db_get_line("sites","name='$id'");
 		$site_owner = db_get_value("sites","addedby","name='$id'");
 		$site = $id;
-		if ($site_owner == $user) return 1;
+		if ($site_owner == $user) {if ($debug) print "return 1"; return 1;}
 	}
 	if ($type == SECTION) {
 		$a = db_get_line("sections","id=$id");
 		$site_owner = db_get_value("sites","addedby","name='$a[site_id]'");
 		$site = $a[site_id];
-		if ($site_owner == $user) return 1;
+		if ($site_owner == $user) {if ($debug) print "return 1"; return 1;}
 	}
 	if ($type == PAGE) {
 		$a = db_get_line("pages","id=$id");
 		$site_owner = db_get_value("sites","addedby","name='$a[site_id]'");
 		$site = $a[site_id];
 		$section = $a[section_id];
-		if ($site_owner == $user) return 1;
+		if ($site_owner == $user) {if ($debug) print "return 1"; return 1;}
 		$sectiona = db_get_line("sections","id=$section");
-		if ($sectiona[locked]) return 0;
+		if ($sectiona[locked]) {if ($debug) print "return 0"; return 0;}
 	}
 	if ($type == STORY) {
 		$a = db_get_line("stories","id=$id");
@@ -171,15 +175,15 @@ function permission($user,$type,$function,$id) {
 		$site = $a[site_id];
 		$section = $a[section_id];
 		$page = $a[page_id];
-		if ($site_owner == $user) return 1;
+		if ($site_owner == $user) {if ($debug) print "return 1"; return 1;}
 		$sectiona = db_get_line("sections","id=$section");
-		if ($sectiona[locked]) return 0;
+		if ($sectiona[locked]) {if ($debug) print "return 0"; return 0;}
 		$pagea = db_get_line("pages","id=$page");
-		if ($pagea[locked]) return 0;
+		if ($pagea[locked]) {if ($debug) print "return 0"; return 0;}
 	}
 
 	
-	if ($a['locked'] && $user != $site_owner) return 0;
+	if ($a['locked'] && $user != $site_owner) {if ($debug) print "return 0"; return 0;}
 	
 	$permissions = decode_array($a['permissions']);
 
@@ -200,6 +204,7 @@ function permission($user,$type,$function,$id) {
 			}
 		}
 	}
+	if ($debug) print "return ".$permissions[$user][$function];
 	return $permissions[$user][$function];
 
 }

@@ -12,6 +12,9 @@ if ($site) {
 			if (db_get_value("sections","type","id=$sections[$i]")=='section')$section=$sections[$i];
 		}
 	}
+	$sitetype = $siteinfo['type'];
+	// once sites are objects this will no longer be needed -- the check can be done within the object
+	if (!$sitetype || $sitetype=='') $sitetype = "personal";
 }
 if ($section) {
 //	$query = "select * from sections where id=$category";
@@ -161,63 +164,9 @@ if ($page) {
 				printc("</div>");
 			}
 		
-			if ($a[type] == 'story' || $a[type]=='') {
-			
-				$st = stripslashes(urldecode($a['shorttext']));
-				$st = str_replace("src='####","####",$st);
-				$st = str_replace("src=####","####",$st);
-				$st = str_replace("####'","####",$st);
-				$textarray1 = explode("####", $st);
-				if (count($textarray1) > 1) {
-					for ($i=1; $i<count($textarray1); $i=$i+2) {
-						$id = $textarray1[$i];
-						$filename = urldecode(db_get_value("media","name","id=$id"));
-						$userdir = db_get_value("media","site_id","id=$id");
-						$filepath = $uploadurl."/".$userdir."/".$filename;
-						$textarray1[$i] = "src='".$filepath."'";
-					}		
-					$st = implode("",$textarray1);
-				}		
-
-				if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
-				if ($a[texttype] == 'text') $st = htmlbr($st);
-
-				printc("<div>" . stripslashes($st) . "</div>");
-				if ($a[discuss] || $a[longertext]) {
-					printc("<div class=contentinfo align=right>");
-					$link = "fullstory.php?$sid&action=fullstory&site=$site&section=$section&page=$page&story=$s";
-					$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
-					$l = array();
-					if ($a[discuss]) $l[] = $link."discussions</a>";
-					if ($a[longertext]) $l[] = $link."full text</a>";
-					printc(implode(" | ",$l));
-					printc("</div>");
-				}
-			}
-			if ($a[type]=='image') {
-				$filename = urldecode(db_get_value("media","name","id=$a[longertext]"));
-				$dir = db_get_value("media","site_id","id=$a[longertext]");
-				$imagepath = "$uploadurl/$dir/$filename";
-				printc("<table align=center><tr><td align=center><img src='$imagepath' border=0></td></td>");
-				if ($a[title]) printc("<tr><td align=center><b>".spchars($a[title])."</b></td></tr>");
-				if ($a[shorttext]) printc("<tr><td align=left>".stripslashes(urldecode($a[shorttext]))."</td></tr>");
-				printc("</table>");
-			}
-			if ($a[type]=='file') {
-				$t = makedownloadbar($a);
-				printc($t);
-			}
-			if ($a[type]=='link') {
-				if ($a[category]) {
-					printc("<div class=contentinfo align=right>");
-					printc("Category: <b>".spchars($a[category])."</b>");
-					printc("</div>");
-				}
-				
-				if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
-				printc("<div><a href='$a[url]' target='_blank'>$a[url]</a></div>");
-				if ($a[shorttext]) printc("<div class=desc>".stripslashes(urldecode($a[shorttext]))."</div>");
-			}
+			$incfile = "output_modules/$sitetype/$a[type].inc.php";
+			//print $incfile; // debug
+			include($incfile);
 			
 			if ($pageinfo[showcreator] || $pageinfo[showdate]) {
 				printc("<div class=contentinfo align=right>");
