@@ -24,7 +24,11 @@ function editor_activex($textarea,$cols,$rows,$text) {
 	printc("-->\n");
 	printc("</style>\n");
 	
-		   
+	//	Begin modification 4 - 11.11.02 - afranco
+	//	Add explanation of how to get <br>s
+	printc("<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter</div>");	
+	
+			   
 	//	Begin modification 2 - 10.26.02 - rlange
 	//	Added an id tag to the textarea definition	
 	printc("<textarea name=$textarea id=$textarea cols=$cols rows=$rows>");
