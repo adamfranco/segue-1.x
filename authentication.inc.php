@@ -13,6 +13,8 @@ $_loggedin=0;
 
 //$name = strtolower($name);
 
+require_once("auth_not_req_actions.inc.php");
+
 // first off, if el user is already logged in, lets make sure their info is good
 if ($_SESSION[luser]) {
 	if (!loginvalid($luser,$lpass,1)) $loginerror=1;

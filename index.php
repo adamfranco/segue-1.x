@@ -11,8 +11,7 @@ ob_start();		// start the output buffer so we can use headers if needed
 // we need to include the config before we start the session 
 require_once("config.inc.php");
 
-// this array contains a list of actions that don't *require* the user to be authenticated
-$actions_noauth = array("site","login","default","previewtheme","fullstory","fullstory.php","list","username_lookup","listarticles","listissues","sitelisting.php");
+require_once("auth_not_req_actions.inc.php");
 
 // check if we are only allowing access to one site based on virtual host
 if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
