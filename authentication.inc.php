@@ -127,6 +127,7 @@ function _auth_check_db($x,$add_to_db=0) {
 		return $x;
 	} else {					// they have no database entry
 		if ($add_to_db) {		// add them to the database and return new id
+			$x[fullname] = addslashes($x[fullname]);
 			$query = "INSERT INTO user SET user_uname='$x[user]', user_email='$x[email]', user_fname='$x[fullname]', user_type='$x[type]', user_pass='".strtoupper($x[method])." PASS', user_authtype='$x[method]'";
 			$r = db_query($query);
 			

@@ -95,6 +95,7 @@ function synchronizeUserDB($user, $email, $fullname, $type, $loginMethod) {
 	$query = "SELECT * FROM user WHERE user_uname='".$user."'";
 	$r = db_query($query);	
 	if (!db_num_rows($r)) {		// add the user to the DB with $loginMethod
+		$fullname = addslashes($fullname);
 		$query = "INSERT INTO user SET user_uname='$user', user_email='$email', user_fname='$fullname',
 				 user_type='$type', user_pass='".strtoupper($loginMethod)." PASS', user_authtype='$loginMethod'";
 		$r = db_query($query);
