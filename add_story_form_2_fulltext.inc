@@ -87,6 +87,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//printpre($_SESSION[storyObj]);
 	if ($_SESSION[settings][editorinitstate] == "text" && $supported == 1) {
 		$text = htmlbr($_SESSION[storyObj]->getField("longertext"));
+		$_SESSION[settings][editorinitstate] == "html";
 	} else {
 		$text = $_SESSION[storyObj]->getField("longertext");
 	}

@@ -38,7 +38,7 @@ $pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$secti
 $storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$pageObj);
 $getinfo = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&story=".$storyObj->id."&detail=".$storyObj->id;
 $getinfo2 = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id;
-$editsettingsurl = "&site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&action=edit_story&edit_story=".$storyObj->id."&detail=".$storyObj->id."&comingFrom=viewsite&step=4";
+$editsettingsurl = "&site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&action=edit_story&edit_story=".$storyObj->id."&detail=".$storyObj->id."&comingFrom=site&step=4";
 
 $storyObj->fetchFromDB();
 $storyObj->owningSiteObj->fetchFromDB();

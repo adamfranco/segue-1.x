@@ -146,7 +146,8 @@ if ($_REQUEST[cancel]) {
 	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
 	else header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
 }
-
+//printpre($_REQUEST[permissions]);
+//printpre($_REQUEST[discuss]);
 if ($_REQUEST[save]) {
 //	$error = 0;
 	// error checking
@@ -160,6 +161,17 @@ if ($_REQUEST[save]) {
 		error("You must enter a title.");
 	if ($_SESSION[storyObj]->getField("type")=='image' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
 		error("You must select an image to upload.");
+		
+	if ($_REQUEST[discuss]==1) {
+		foreach ($_REQUEST[permissions] as $permission) {
+			if ($permission[4] == 1) {
+				$permissionset = 1;
+				break;
+			}		
+		}
+		if ($permissionset != 1)
+			error("You must specify who can discuss/assess this content block.");
+	}
 		
 	if (!$error) { // save it to the database
 		
@@ -193,7 +205,11 @@ if ($_REQUEST[save]) {
 		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
 		
 	} else {
-		$_SESSION[settings][step] = 1;
+		if ($_REQUEST[discuss] == 1 && $permissionset != 1) {
+			$_SESSION[settings][step] = 4;
+		} else {
+			$_SESSION[settings][step] = 1;
+		}
 	}
 }
 

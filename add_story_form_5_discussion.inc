@@ -65,7 +65,7 @@ if ($_SESSION[auser] == $site_owner) {
 	$canAddEditors = false;
 }
 
-printc("Specify who can discuss/assess this story: <BR><BR>");
+printc("Specify who can discuss/assess this content: <BR><BR>");
 permissions::outputForm($_SESSION[storyObj],1,$canAddEditors);
 
 printc("</div>");
