@@ -97,7 +97,7 @@ class slot {
 					".$this->_datafields[$field][2]."
 			";
 
-			print "<br>".$query;
+/* 			print "<br>".$query; */
 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 			$r = db_query($query);
 			echo mysql_error();

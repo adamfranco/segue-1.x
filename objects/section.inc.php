@@ -139,7 +139,7 @@ class section extends segue {
 				}
 			}
 
-			$query = "DELETE FROM section WHERE section_id=".$this->id."; ";
+			$query = "DELETE FROM section WHERE section_id=".$this->id;
 			db_query($query);
 			$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='section';";
 			db_query($query);

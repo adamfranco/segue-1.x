@@ -214,11 +214,11 @@ WHERE site_id = ".$this->id;
 /* 			print "<pre>"; */
 /* 			print_r ($this); */
 /* 			print "</pre>"; */
-			print "\$query=<br>$query<br>";
+/* 			print "\$query=<br>$query<br>"; */
 			$r = db_query($query);
-			print "\$r=".$r."<br>";
+/* 			print "\$r=".$r."<br>"; */
 			$a = db_fetch_assoc($r);
-			print "\$a=$a";
+/* 			print "\$a=$a"; */
 			array_change_key_case($a); // make all keys lower case
 			// for each field returned by the query
 			foreach ($a as $field => $value)
@@ -299,7 +299,7 @@ ORDER BY
 			$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
 			$query = "UPDATE site SET ".implode(",",$a)." WHERE site_id=".$this->id;
- 			print "site->updateDB: $query<BR>";
+/*  			print "site->updateDB: $query<BR>"; */
 			db_query($query);
 			print mysql_error()."<br>";
 
@@ -359,11 +359,11 @@ ORDER BY
 
 		// insert into the site table
 		$query = "INSERT INTO site SET ".implode(",",$a).";";
- 		print "<BR>query = $query<BR>";
+/*  		print "<BR>query = $query<BR>"; */
 		db_query($query);
 		$this->id = mysql_insert_id();
 		
-		print "<H1>ID = ".$this->id."</H1>";
+/* 		print "<H1>ID = ".$this->id."</H1>"; */
 		
 		// in order to insert a site, the active user must own a slot
 		// update the name for that slot
@@ -426,6 +426,8 @@ ORDER BY
 		if (!$this->id) return false;
 		$this->fetchDown();
 		$query = "DELETE FROM site WHERE site_id=".$this->id;
+		db_query($query);
+		$query = " UPDATE slot SET FK_site=NULL WHERE FK_site=".$this->id;
 		db_query($query);
 		
 		// remove sections

@@ -1298,7 +1298,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_str')
 		}
 		if (!$useronly) $toCheck = array_merge($this->returnEditorOverlap($allclasses),$toCheck);
 		
-		print "<pre>"; print_r($toCheck); print "</pre><br>";
+/* 		print "<pre>"; print_r($toCheck); print "</pre><br>"; */
 		
 		foreach ($permissions as $u=>$p) $permissions[strtolower($u)] = $p;
 		
