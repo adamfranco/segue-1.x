@@ -11,6 +11,7 @@ if ($_loggedin) {	//we're already logged in
 			print "<input type=hidden name=action value='change_auser'>";
 			print "[ change active user: <input type='text' name='changeauser' size=15 class='textfield'> <input type='submit' class='button' value='GO'> ]";
 			print " <a href='viewlogs.php?$sid' target='logs' onClick='doWindow(\"logs\",600,600)'>[view logs]</a>";
+			print " <a href='viewsites.php?$sid' target='sites' onClick='doWindow(\"sites\",600,600)'>[view sites]</a>";
 			print " <a href='username_lookup.php' onClick='doWindow(\"lookup\",300,300)' target='lookup'>[user lookup]</a>";
 		}
 	} else print $afname;
