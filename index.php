@@ -214,19 +214,21 @@ print "session:\n";
 print_r($_SESSION);
 print "\n\n";
 
-/* if (is_object($thisPage)) { */
-/* 	print "\n\n"; */
-/* 	print "thisPage:\n"; */
-/* 	print_r($thisPage); */
-/* } else if (is_object($thisSection)) { */
-/* 	print "\n\n"; */
-/* 	print "thisSection:\n"; */
-/* 	print_r($thisSection); */
-/* } else if (is_object($thisSite)) { */
-/* 	print "\n\n"; */
-/* 	print "thisSite:\n"; */
-/* 	print_r($thisSite); */
-/* } */
+/*
+ if (is_object($thisPage)) { 
+ 	print "\n\n"; 
+ 	print "thisPage:\n"; 
+ 	print_r($thisPage); 
+ } /*else if (is_object($thisSection)) { 
+	print "\n\n"; 
+ 	print "thisSection:\n"; 
+ 	print_r($thisSection); 
+ } else if (is_object($thisSite)) { 
+ 	print "\n\n"; 
+ 	print "thisSite:\n"; 
+ 	print_r($thisSite); 
+ } */
+ 
 print "</pre>";
 
 

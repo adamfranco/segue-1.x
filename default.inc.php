@@ -294,7 +294,7 @@ if ($_loggedin) {
         }
         
         printc("</td><td align=right>");
-        if ($_SESSION[amethod] =='db' || $_SESSION[lmethod]=='db') printc("<a href='passwd.php?' target='password' onClick='doWindow(\"password\",300,300)'>change password</a> | ");	
+        if ($_SESSION[amethod] =='db' || $_SESSION[lmethod]=='db') printc("<a href='passwd.php?' target='password' onClick='doWindow(\"password\",400,300)'>change password</a> | ");	
         if ($_SESSION[ltype]=='admin') printc("<a href='add_slot.php' onClick='doWindow(\"slots\",375,300)' target='slots' class='navlink'>add new slot</a>");
         printc("</td></tr></table></td></tr>");
         
