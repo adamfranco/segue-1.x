@@ -315,7 +315,8 @@ FROM
 		LEFT JOIN
 	media
 		ON page.FK_media = media_id
-WHERE page_id = ".$this->id;
+WHERE 
+	page_id = ".$this->id;
 
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);
@@ -354,6 +355,7 @@ WHERE page_id = ".$this->id."
 ORDER BY
 	page_order
 ";
+
 
 			$r = db_query($query);
 			$this->data[stories] = array();

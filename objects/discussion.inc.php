@@ -13,6 +13,7 @@ class discussion {
 	var $numchildren=0,$pointer=-1,$direction=1;
 	
 	var $flat=false;
+	var $recent=false;
 	var $opt = array(
 			"showcontent"=>false,
 			"showsubject"=>true,
@@ -149,6 +150,9 @@ class discussion {
 	function flat() { $this->flat = true; }
 	function threaded() { $this->flat = false; }
 	
+	function recentfirst() { $this->recent = true; }
+	function recentlast() { $this->recent = false; }
+	
 	function count() { return $this->numchildren; }
 	function dbcount() {
 		if ($this->numchildren) return $this->numchildren;
@@ -208,12 +212,21 @@ class discussion {
 		$this->_parseDBline($a);
 		return true;
 	}
+
+/******************************************************************************
+ * 
+ ******************************************************************************/
 	
 	function _fetchchildren() {
 		if (!$this->storyid) return false;
 		if ($this->numchildren) return false; // they've already called _fetchchildren();
 		$this->_commithttpdata();
 		
+		if ($this->recent == "true") {
+			$order = "DESC";
+		} else {
+			$order = "ASC";
+		}
 		
 		$query = "
 	SELECT
@@ -230,7 +243,7 @@ class discussion {
 		(($this->flat)?"":" and FK_parent<=>".(($this->id)?$this->id:"NULL"))
 		."
 	ORDER BY
-		discussion_order ASC";
+		discussion_order $order";
 		//print $query;
 		
 		$r = db_query($query);
@@ -294,7 +307,7 @@ class discussion {
  ******************************************************************************/
 
 	
-	function outputAll($cr=false,$o=false,$top=false,$showposts=1,$showallauthors=1) {
+	function outputAll($cr=false,$o=false,$top=false,$showposts=1,$showallauthors=1,$mailposts=0) {
 		global $sid,$content;
 		// debug
 //		print "outputAll($canreply,$owner,$copt)<BR>";
@@ -365,7 +378,9 @@ class discussion {
  ******************************************************************************/
 	
 	function _commithttpdata() {
-		global $error;
+		global $sid,$error;
+		global $mailposts;
+		
 		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
 			$site = $_REQUEST['site'];
 			$a = $_REQUEST['discuss'];
@@ -393,12 +408,19 @@ class discussion {
 				} else {
 					//log_entry("discussion","$_SESSION[auser] posted to story ".$_REQUEST['story']." discussion in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");				
 				}
-				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
-				$d->insert();
-				if ($mailnotice == 0) {
-					//$this->sendemail($d->subject);
-				}
+				
 			}
+			/******************************************************************************
+ 			* gather data for sendmail function
+			 ******************************************************************************/
+
+			$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
+			$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:0;
+			$d->insert();
+			if ($mailposts == 1) {
+				$this->sendemail();
+			}
+
 			unset($_REQUEST['discuss'],$_REQUEST['commit']);
 		}
 	}
@@ -439,7 +461,7 @@ class discussion {
 		printc ("</td><td align=right><a href='#' onClick='document.postform.submit()'>[$b]</a></td></tr></table>");
 		printc ("</td></tr>");
 		printc ("<tr><td class=content$p>");
-		printc ("<textarea name=content rows=6 cols=50>".spchars($c)."</textarea>");
+		printc ("<textarea name=content rows=6 cols=60>".spchars($c)."</textarea>");
 		//changed from action to discuss
 		printc ("<input type=hidden name=discuss value='".$_REQUEST['discuss']."'>");
 		//added fullstory action for posting form
@@ -478,7 +500,10 @@ class discussion {
 			
 			$script = $_SERVER['SCRIPT_NAME'];
 			
-			// output the html and stuff
+/******************************************************************************
+ * 	Outputs html for displaying posts
+ ******************************************************************************/
+
 			if (!$this->id) return false;
 			printc ("<tr><td class=dheader3>");
 			$s = "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
@@ -525,22 +550,34 @@ class discussion {
 		}
 	}
 /******************************************************************************
- * Emails users information about discussion
+ * Emails site owner discussion posts
  ******************************************************************************/
 
-	function sendemail($subject="") {
+	function sendemail() {
+		global $sid,$error;
 		global $_full_uri;
 		
-		// send an email to the user with info about discussion!!
-		$subject = "Segue Discussion";
-		$to = $d->authoruname." <".$this->email.">";
-		$from = "segue@".$_SERVER['SERVER_NAME'];
-		//$body = " -- ".(($u)?"YOUR PASSWORD HAS BEEN RESET":"A USER ACCOUNT HAS BEEN CREATED FOR YOU")." --\n\nIn order to log into Segue, click the link below (or enter the URL into your browser) and enter the username and randomly generated password given:\n\n";
-		//$body .= "$_full_uri/index.php\n\n";
-		$body .= $subject." has posted to one of your discussions.  See:<br>";
-		$body .= "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>link</a>";
+		$site =& new site($_REQUEST[site]);
+		$siteowneremail = $site->owneremail;
+		$sitetitle = $site->title;
 		
-		print $body;
+		// send an email to the siteowner
+		
+		$to = $siteowneremail;
+		$from = $_SESSION['aemail'];
+		
+		$body = $_REQUEST['subject'];
+		$body .= "<br>by ".$_SESSION['afname'];
+		$body .= "<br>".$_REQUEST['content'];
+		$body .= "<br><br>See:<br>";
+		$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
+		$body .= "<a href='".$discussurl."'>".$sitetitle."</a><br><br>";
+		
+		//print "To:".$to."<br>";
+		//print "From:".$from."<br><br>";
+		//print $body."<br><br>";
+		//printpre($_SESSION);
+		//printpre($_REQUEST);
 		// send it!
 		mail($to,$subject,$body,"From: $from");
 	}

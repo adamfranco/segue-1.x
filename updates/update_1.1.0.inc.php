@@ -85,7 +85,7 @@ class Update110
 			ALTER TABLE 
 				story
 			ADD 
-				story_discussdisplay ENUM( '1', '2' ) DEFAULT '1' NOT NULL AFTER story_discussable
+				story_discussdisplay ENUM( '1', '2' ) DEFAULT '1' NOT NULL AFTER story_discussemail
 			";
 			$r = db_query($query);
 		}

@@ -20,6 +20,11 @@ if (($tmp = $_REQUEST['flat_discussion'])) {
 	$_SESSION['flat_discussion'] = ($tmp=='true')?true:false;
 }
 
+if (($tmp2 = $_REQUEST['recent'])) {
+	$_SESSION['recent'] = ($tmp2=='true')?true:false;
+}
+
+
 
 $partialstatus = 1;
 $siteObj =& new site($_REQUEST[site]);
@@ -27,6 +32,7 @@ $sectionObj =& new section($_REQUEST[site],$_REQUEST[section], &$siteObj);
 $pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$sectionObj);
 $storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$pageObj);
 $getinfo = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&story=".$storyObj->id."&detail=".$storyObj->id;
+$getinfo2 = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id;
 
 
 $storyObj->fetchFromDB();
@@ -113,14 +119,16 @@ if ($storyObj->getField("discuss")) $titleExtra = " Discussion";
 printc("<table width=100% id='maintable' cellspacing=1>");
 printc("<tr><td>");
 printc("<table cellspacing=1 width=100%>");
-printc("<tr><td align=left class=title>".(($pageObj->getField('title'))?spchars($pageObj->getField('title')):'&nbsp;')."</td></tr>");		 
+printc("<tr><td align=left class=title><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>");
+//printc("<tr><td align=left class=title>".(($pageObj->getField('title'))?spchars($pageObj->getField('title')):'&nbsp;')."</td></tr>");		 
 printc("<tr><td align=left><b>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</b></td></tr>");
 printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>");
 printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>");
 
 		
 // output discussions?
-if ($storyObj->getField("discuss")) {	
+if ($storyObj->getField("discuss")) {
+	$mailposts = $storyObj->getField("discussemail");	
 	$showposts = $storyObj->getField("discussdisplay");
 	$showallauthors = $storyObj->getField("discussauthor");		
 	
@@ -130,20 +138,26 @@ if ($storyObj->getField("discuss")) {
 		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment</td>");	
 	}
 	printc("<td align=right class=dheader2>");
+	
+	printc("<table>");
+	printc("<tr><td>");
 	$f = $_SESSION['flat_discussion'];
-	if (!$f) {
-		//need to change href to index??
-		printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=true'>flat</a>");
-	} else {
-		printc("flat");
-	}
-	printc(" | ");
-	if ($f) {
-		//need to change href to index
-		printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=false'>threaded</a>");
-	} else {
-		printc("threaded");
-	}
+	printc("<form action='index.php?$sid&&action=site&$getinfo' method=post name=viewform>");
+	printc("<select name='flat_discussion'>");
+	printc("<option value='true'".(($f)?" selected":"")." onClick='document.viewform.submit()'>Flat");
+	printc("<option value='false'".((!$f)?" selected":"")." onClick='document.viewform.submit()'>Threaded");
+	printc("</select>");
+	printc("</form>");
+	printc("</td><td>");
+	$r = $_SESSION['recent'];
+	printc("<form action='index.php?$sid&&action=site&$getinfo' method=post name=orderform>");
+	printc("<select name='recent'>");
+	printc("<option value='true'".(($r)?" selected":"")." onClick='document.orderform.submit()'>Recent First");
+	printc("<option value='false'".((!$r)?" selected":"")." onClick='document.orderform.submit()'>Recent Last");
+	printc("</select>");
+	printc("</form>");
+	printc("</td></tr></table>");
+	
 	printc("</th></tr>");
 	printc("</table>");
 	
@@ -151,17 +165,17 @@ if ($storyObj->getField("discuss")) {
 	//printc("showallauthors=$showallauthors<br><br>");
 	
 	if ($showposts == 2 && $showallauthors == 1) {
-		printc("Posts to this assessment are currently viewable only be the site owner or system administrators.  Shown here are only your posts.");
+		printc("Posts to this assessment are currently viewable only be the site owner.  Shown here are only your posts.");
 		if ($_SESSION[auser]==$site_owner) {
 			printc("<br><div style='font-size: 9px'> To make posts to this assessment available for discussion by all participants, edit the display options for this content block and select Show Posts.</div>");
 		}
 	} else if ($showposts == 1 && $showallauthors == 2) {
-		printc("Author of posts to this discussion or assessment are known only to the site owner and system administrators.  Other participants will not see your name associated with your posts.");
+		printc("Author of posts to this discussion or assessment are known only to the site owner.  Other participants will not see your name associated with your posts.");
 		if ($_SESSION[auser]==$site_owner) {
 			printc("<br><div style='font-size: 9px'> To make authors known to all participants, edit the display options for this content block and select Show Authors.</div>");
 		}
 	} else if ($showposts == 2 && $showallauthors == 2) {
-		printc("Posts to this assessment are currently viewable only be the site owner or system administrators.  Shown here are only your posts.");
+		printc("Posts to this assessment are currently viewable only be the site owner.  Shown here are only your posts.");
 		if ($_SESSION[auser]==$site_owner) {
 			printc("<br><div style='font-size: 9px'> To make posts and their authors viewable by all participants, edit the display options for this content block and select both Show Authors and Show Posts.</div>");
 		}
@@ -175,6 +189,11 @@ if ($storyObj->getField("discuss")) {
 
 	$ds = & new discussion(&$storyObj);
 	if ($f) $ds->flat(); // must be called before _fetchchildren();
+	if ($r) {
+		$ds->recentfirst();
+	} else {
+		$ds->recentlast();
+	}
 	$ds->_fetchchildren();
 	
 	$ds->opt("showcontent",true);
@@ -185,11 +204,11 @@ if ($storyObj->getField("discuss")) {
 	
 			
 	// outputAll is a function in objects/discussion.inc.php object
-	$ds->outputAll($storyObj->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true,$showposts,$showallauthors);
+	$ds->outputAll($storyObj->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true,$showposts,$showallauthors,$mailposts);
 	if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
 }
 		
-
+printc("<tr><td align=left><br><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>");
 printc("</table>");
 
 printc("</tr></td>");

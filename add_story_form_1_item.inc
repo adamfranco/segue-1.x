@@ -103,6 +103,10 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	// removed active-x editor code to editor_activex.php
 	// editor.inc.php determines browser/platform and choses appropriate editor
 	//print $shorttext;
+	printc("<div style='font-size:10px; color:#D00'>");
+	printc("<br>Note: Links to other pages in this site must use the address displayed in the preview site mode not the edit mode.<br>");
+	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
+	printc("</div>");
 	include("htmleditor/editor.inc.php");
 		
 	printc("<br>");
