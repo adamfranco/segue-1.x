@@ -105,15 +105,15 @@ $slot_owner = $_REQUEST['slot_owner'];
 $slot_name = $_REQUEST['slot_name'];
 $slot_id = $_REQUEST['id'];
 $slot_type = $_REQUEST['slot_type'];
-if ($findall) $slot_name = '%'; $slot_owner = "";
-if ($slot_name) $slot_type = "";
+//$use = $_REQUEST['use'];
 
-if ($slot_id) {
+if ($findall) {
+	$slot_name = '%'; 
 	$slot_owner = "";
-	$allSlots = slot::getAllSlotsInfo($slot_owner,$slot_name,$slot_id,$slot_type);
-} else {
-	$allSlots = slot::getAllSlotsInfo($slot_owner,$slot_name,$slot_id,$slot_type);
+	$slot_type = "all";
 }
+
+$allSlots = slot::getAllSlotsInfo($slot_owner,$slot_name,$slot_id,$slot_type);
 
 
 printerr();
@@ -141,15 +141,20 @@ include("themes/common/header.inc.php");
 	<table cellspacing=1 width='100%'>
 	<tr><td>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		<b>Slot:</b> Name: <input type=text name='slot_name' size=10 value='<?echo $slot_name?>'> 
+		Name: <input type=text name='slot_name' size=10 value='<?echo $slot_name?>'>
 		Owner: <input type=text name='slot_owner' size=10 value='<?echo $slot_owner?>'>
 		Type: <select name=slot_type>
-				<option<?=($slot_type=='')?" selected":""?>>all
+				<option<?=($slot_type=='all')?" selected":""?>>all
 				<option<?=($slot_type=='class')?" selected":""?>>class
 				<option<?=($slot_type=='other')?" selected":""?>>other
 				<option<?=($slot_type=='personal')?" selected":""?>>personal
 				<option<?=($slot_type=='system')?" selected":""?>>system
 		</select>
+		<!--In Use: <select name=use>
+				<option<?=($use=='')?" selected":""?>>all
+				<option<?=($use=='class')?" selected":""?>>yes
+				<option<?=($use=='other')?" selected":""?>>no
+		</select>-->
 		<input type=submit name='search' value='Find'>
 		<input type=submit name='findall' value='Find All'>
 		</form>
@@ -173,7 +178,7 @@ include("themes/common/header.inc.php");
 			
 			//  output found  slots			
 			foreach ($allSlots as $slot) {
-				if ($curraction == 'edit' && $_REQUEST['id'] == $slot['id'])
+				if ($curraction == 'edit')
 					doSlotForm($slot,'',1);
 				else {
 					print "<tr>";

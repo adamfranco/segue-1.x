@@ -220,12 +220,13 @@ class slot {
 	function getAllSlotsInfo($slot_owner="",$slot_name="",$slot_id="",$slot_type="") {
 		$allSlots = array();
 		
-		if ($slot_owner != "") {
-			$query = "SELECT * FROM user WHERE user_uname = '".$slot_owner."'";
-			$r = db_query($query);
-			if (db_num_rows($r)) {
-				$a = db_fetch_assoc($r);
-				$owner_id = $a[user_id];
+		
+			$where = "slot.slot_name LIKE '%'";
+			if ($slot_name) $where = "slot.slot_name LIKE '%$slot_name%'";
+			if ($slot_owner) $where .= " AND user.user_uname LIKE '%$slot_owner%'";
+			if ($slot_id) $where .= " AND slot.slot_id=$slot_id";
+			if ($slot_type != "all"  && !$slot_id) $where .= " AND slot.slot_type = '$slot_type'";
+
 				$query = "
 					SELECT 
 						slot.slot_id,
@@ -242,52 +243,16 @@ class slot {
 							ON
 								slot.FK_owner = user_id
 							LEFT JOIN
-						slot AS assocsite
+								slot AS assocsite
 							ON
 								slot.FK_assocsite = assocsite.slot_id
 					WHERE
-						slot.FK_owner=$owner_id
+						$where
 					ORDER BY
 						slot.slot_name
 				";
-			}
-				
-/* 			echo $query; */
-		} else {
-			if ($slot_id) {
-				$where = "slot.slot_id=$slot_id";
-			} else if ($slot_name) {
-				$where = "slot.slot_name LIKE '%$slot_name%'";
-			} else {
-				$where = "slot.slot_type='$slot_type'";
-			}
-			$query = "
-				SELECT 
-					slot.slot_id,
-					slot.slot_name,
-					user.user_uname,
-					slot.slot_type,
-					assocsite.slot_name AS assocsite_name,
-					slot.FK_site,
-					slot.slot_uploadlimit
-				FROM 
-					slot
-						LEFT JOIN
-					user
-						ON
-							slot.FK_owner = user_id
-						LEFT JOIN
-					slot AS assocsite
-						ON
-							slot.FK_assocsite = assocsite.slot_id
-					WHERE
-						$where
 
-				ORDER BY
-					slot.slot_name
-			";
-/* 			echo $query; */
-		}
+
 		$r = db_query($query);
 		
 		$i=0;
