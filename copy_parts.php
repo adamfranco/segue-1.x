@@ -64,9 +64,10 @@ if ($type != "section") {
 	$sections = decode_array(db_get_value("sites","sections","name='$site'"));
 	$newsections = array();
 	foreach ($sections as $s) {
-		if ($type == "page" && permission($auser,SECTION,ADD,$s))
+		$sectiontype = db_get_value("sections","type","id=$s");
+		if ($type == "page" && permission($auser,SECTION,ADD,$s) && $sectiontype == "section")
 			array_push($newsections,$s);
-		else if ($type == "story") 
+		else if ($type == "story" && $sectiontype == "section") 
 			array_push($newsections,$s);
 	}
 	$sections = $newsections;
@@ -78,7 +79,8 @@ if ($type == "story") {
 	$pages = decode_array(db_get_value("sections","pages","id=$section"));
 	$newpages = array();
 	foreach ($pages as $p) {
-		if (permission($auser,PAGE,ADD,$p))
+		$pagetype = db_get_value("pages","type","id=$p");
+		if (permission($auser,PAGE,ADD,$p) && $pagetype == "page")
 			array_push($newpages,$p);
 	}
 	$pages = $newpages;
@@ -236,7 +238,7 @@ if (!$domove) {
 		print "<td style='text-align: left;'>Site: </td>";
 		print "<td>";
 		if (!$domove) {
-			print "<select name='site' onClick=\"updateForm('site')\">";
+			print "<select name='site' onChange=\"updateForm('site')\">";
 			foreach ($sites as $s) {
 				$name = db_get_value("sites","title","name='$s'");
 				print "<option value='$s'".(($s==$site)?" selected":"").">$name\n";
@@ -256,7 +258,7 @@ if ($type != "section") {
 		print "<td>";
 		if (!$domove) {
 			if (count($sections)) {
-				print "<select name='section' onClick=\"updateForm('section')\">";
+				print "<select name='section' onChange=\"updateForm('section')\">";
 				foreach ($sections as $s) {
 					$name = db_get_value("sections","title","id=$s");
 					print "<option value='$s'".(($s==$section)?" selected":"").">$name\n";
@@ -280,7 +282,7 @@ if ($type == "story") {
 		print "<td>";
 		if (!$domove) {
 			if (count($pages)) {
-				print "<select name='page' onClick=\"updateForm('page')\">";
+				print "<select name='page' onChange=\"updateForm('page')\">";
 				foreach ($pages as $p) {
 					$name = db_get_value("pages","title","id=$p");
 					print "<option value='$p'".(($p==$page)?" selected":"").">$name\n";

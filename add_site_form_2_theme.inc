@@ -16,6 +16,13 @@ function selectTheme(row) {
 	document.addform.submit();
 }
 
+function closeAll() {
+	var preview = document.addform.previewhandle.value;
+	var themsettings = document.addform.themsettingshandle.value;
+	preview.window.close();
+	themesettings.window.close();
+}
+
 function doPreviewWin(theme, from) {
 	if (theme == "<? print $settings[theme]; ?>") {
 		var themesettings = document.addform.themesettings.value;
@@ -26,6 +33,7 @@ function doPreviewWin(theme, from) {
 		doThemeSettings();	
 	}
 	var preview = window.open("index.php?action=site&site=sample&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=500");
+//	document.addform.previewhandle.value = preview;
 	preview.focus();
 }
 
@@ -39,12 +47,19 @@ function doTemplateWin() {
 	temp.focus();
 }
 
+function openThemeSettings() {
+	theme = "<? print $settings[theme]; ?>";
+	doPreviewWin(theme,"");
+	doThemeSettings();
+}
+
 function doThemeSettings() {
 	var f = document.addform;
 	var theme = "<? print $settings[theme]; ?>";
 	var themesettings = document.addform.themesettings.value;
 	var site = "<? print $settings[sitename]; ?>";
-	var settings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=500");
+	var themesettings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=500");
+//	document.addform.themesettingshandle.value = themesettings;
 }
 
 </script>
@@ -82,7 +97,7 @@ foreach ($possible_themes as $themename=>$longname) {
 	printc("<td align=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
 	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'>$longname<br><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
 	if ($settings[theme]==$themename)
-		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='doThemeSettings()'></td>");
+		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'></td>");
 	else 
 		printc("<td align=center valign=top style='border-top: 1px solid #aaa;'> &nbsp; </td>");
 	printc("</tr>");
@@ -90,6 +105,8 @@ foreach ($possible_themes as $themename=>$longname) {
 }
 
 printc("<input type=hidden name=themesettings value='".$settings[themesettings]."'>");
+printc("<input type=hidden name=themesettingshandle value='".$themesettingshandle."'>");
+printc("<input type=hidden name=previewhandle value='".$previewhandle."'>");
 
 printc("</table>");
 printc("<br>");

@@ -233,18 +233,9 @@ function changeOrder(order) {
  
 	<tr> 
 		<td colspan=<? print (($ltype=='admin')?"10":"9"); ?>> 
-			<table width='100%'> 
+			<table width='100%' > 
 				<tr> 
-				<td style='text-align: left; padding-top:10px;' valign=top width=33%> 
-					<? 					
-					if ($upload) { 
-						print "Upload Results: <div style='margin-left: 25px'>"; 
-						print $upload_results; 
-						print "</div>"; 
-					} 
-					?> 
-				</td> 
-				<td style='text-align: left; padding-top:10px;' valign=top> 
+				<td style='text-align: center; padding-top: 5px; border: 0px solid #FFF' valign=top> 
 					<form action="filebrowser.php" name='addform' method="POST" enctype="multipart/form-data"> 
 					<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'"> 
 					<input type=hidden name='upload' value='1'> 
@@ -258,23 +249,61 @@ function changeOrder(order) {
 						print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";
 					}
 					?>
-					<div class=desc>Select the file or image you would like to upload<br>by clicking the 'Browse...' button above.</div> 
 					</form> 
 				</td> 
-				<td>
+				<td rowspan=2 valign=top style='text-align: right; border: 0px solid #FFF'>
 					<?
 					$dirtotal = convertfilesize($totalsize);
-					$dirlimit = convertfilesize($userdirlimit);
-					$space = $userdirlimit - $totalsize;
+					if ($all) {
+						$dirlimit_B = db_num_rows(db_query("select * from sites"))*$userdirlimit;
+					} else
+						$dirlimit_B = $userdirlimit;
+					$dirlimit = convertfilesize($dirlimit_B);
+					$percentused = round($totalsize/$dirlimit_B,"4")*100;
+					$percentfree = 100-$percentused;
+					$space = $dirlimit_B - $totalsize;
 					$space = convertfilesize($space);
-					print "<table cellspacing=0 cellpadding=0 align=center>";
+					print "<table cellspacing=0 cellpadding=0 align=right>";
 					print "<tr><td class='sizebox1'>Total media allowed: </td><td class='sizebox2'> $dirlimit</td></tr>";
 					print "<tr><td class='sizebox1'>Total size of your media: </td><td class='sizebox2'> $dirtotal</td></tr>";
-					print "<tr><td class='sizebox1'>Space availible: </td><td class='sizebox2' style='border-top: 1px solid #000'> $space</td></tr>";
+					print "<tr><td class='sizebox1'>Space available: </td><td class='sizebox2' style='border-top: 1px solid #000'> $space</td></tr>";
+					print "<tr><td colspan=2><table width=100%><tr>";
+					if ($percentused == 0)
+						print "<td style='background-color: #00C; height: 5px;' width=100%> </td>";
+					else if ($percentused == 100)
+						print "<td style='background-color: #F00; height: 5px;' width=100%> </td>";
+					else
+						print "<td style='background-color: #F00; height: 5px;' width=$percentused%> </td><td style='background-color: #00C;' width=$percentfree%> </td>";
+					print "</tr></table></td></tr>";
 					print "</table><br>";
 					?>
 				</td>
 				</tr> 
+				<tr>
+				<td style='text-align: left; border: 0px solid #FFF' valign=top>
+					<div class=desc>Select the file or image you would like to upload by clicking the 'Browse...' button above.</div> 
+				</td>
+				</tr>
+				<tr>
+				<td style='text-align: left; height: 40px; border: 0px solid #FFF' valign=top> 
+					<? 					
+					if ($upload) { 
+						print "Upload Results: <div style='margin-left: 25px'>"; 
+						print $upload_results; 
+						print "</div>"; 
+					} else {
+						print " &nbsp; ";
+					}
+					?> 
+				</td> 
+				<td>
+					<?
+					print "<div style='text-align: center;'>";
+					print helplink("filelibrary");
+					print "</div>";
+					?>
+				</td>
+				</tr>
 			</table> 
 		</td> 
 	</tr> 
