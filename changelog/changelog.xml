@@ -50,10 +50,15 @@
 			Have added an option to chose a discuss/assess link label.  Choses are: discuss,
 			assess, comment, review and register.
 		</new>
+		<change author='alex'>
+			Have moved code in add_student.php that gets lists of students in class groups 
+			to new getclassstudents function in class_functions/empty.inc.php.
+		</change>
 		<new author='alex'>
-			Have added a function in class functions that will get list of students
-			in a given class from LDAP groups.  This function appears in the midd.inc.php
-			and can be used as a reference for other ldap implementations.
+			Have added a function in class_functions for getting list of students from 
+			class groups in Segue tables. Have also added to this function code to get a list of 
+			students in a given class from LDAP groups.  This code appears in midd.inc.php
+			and can be used as a reference for other ldap implementations.  
 		</new>
 		<new author='alex'>
 			Added student roster listing UI for class type sites.  This UI allows site

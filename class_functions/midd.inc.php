@@ -21,6 +21,55 @@ function isclass ($class) {
 
 function getclassstudents($class_id) {
 	global $cfg;
+	
+	/******************************************************************************
+	 * DB Class info: queries ugroup_user table for all users who are part
+	 * of the $class_id group
+ 	******************************************************************************/
+
+	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_id'");
+	$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
+	$db_participants = array();
+	$external_memberlist_participants = array();
+	$participant = array();
+	$participants = array();
+	
+	$query = "
+	SELECT
+		user_id,
+		user_fname,
+		user_uname,
+		user_email,
+		user_type
+	FROM
+		ugroup_user
+			INNER JOIN
+		user
+			ON
+		FK_user = user_id
+	WHERE
+		FK_ugroup = $ugroup_id
+	ORDER BY
+		user_type DESC, user_uname
+	";
+	$r = db_query($query);
+		
+	while ($a = db_fetch_assoc($r)) {
+		$participant[id] = $a[user_id];
+		$participant[fname] = $a[user_fname];
+		$participant[uname] = $a[user_uname];
+		$participant[email] = $a[user_email];
+		$participant[type] = $a[user_type];
+		$participant[memberlist] = "db";
+		$db_participants[]= $participant;
+	}
+	
+	
+	/******************************************************************************
+	 *  External member list source (e.g. LDAP group member
+	 *  LDAP Class info: queries LDAP for users in class group
+	 ******************************************************************************/
+
 		
 	ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]|bl{1})([0-9]{2})",$class_id,$r);
 	$department = $r[1];
@@ -49,8 +98,6 @@ function getclassstudents($class_id) {
 	$ldap_user = $cfg[ldap_voadmin_user_dn];
 	$ldap_pass = $cfg[ldap_voadmin_pass];
 
-	$students = array();
-	
 	$c = ldap_connect($cfg[ldap_server]);
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
 	if ($r && true) {		// connected & logged in
@@ -133,10 +180,12 @@ function getclassstudents($class_id) {
 						ldap_close($c);
 						$participant = array();
 						if ($num) {	
-							//printpre($cfg[ldap_username_attribute]);						
+							//printpre($cfg[ldap_username_attribute]);	
+							$participant[id] = 0;					
 							$participant[fname] = $res2[0][strtolower($cfg[ldap_fullname_attribute])][0];
 							$participant[uname] = $res2[0][strtolower($cfg[ldap_username_attribute])][0];
 							$participant[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
+							$participant[memberlist] = "external";
 							//printpre("uname: ".$participant[uname]);
 							if (is_array($res2[0][strtolower($cfg[ldap_group_attribute])])) {
 							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
@@ -152,15 +201,36 @@ function getclassstudents($class_id) {
 							//printpre("found ".$studentname);
 						}	
 					}			
-					
-					$participants[]= $participant;					
+					$external_memberlist_participant_unames[]= $participant[uname];
+					$external_memberlist_participants[]= $participant;				
 				}
 			//printpre($participants);	
 			}
 	
 		}
-		return $participants;
+		
 	}
+	
+	/******************************************************************************
+	* Compile definitive participant list from:
+	* $db_participants = all group members whose membership is defined in ugroup_user
+	* $external_memberlist_participants = all group members whose membership is
+	* determined by an external membership list (e.g. ldap group)
+	* if participant is in ugroup_user only then memberl ist is db
+	* if participant is in external member list only then memberlist is external
+	* if participant is in both ugroup_user and external member list then
+	* member list is external
+	 ******************************************************************************/
+	 
+	$participants = $external_memberlist_participants;
+	 
+	foreach (array_keys($db_participants) as $key) {
+		if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
+			$participants[] = $db_participants[$key];
+		}			
+	}	
+	return $participants;
+
 }
 
 
