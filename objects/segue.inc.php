@@ -248,13 +248,16 @@ FROM
 			";
 /* 			print $query; */
 			
-/* 			print "-----------beginning---------$field<br><pre>".$query;  */
+			if ($debug) 
+				print "-----------beginning---------$field<br><pre>".$query; 
 	
 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 			$r = db_query($query);
 			
-/* 			print mysql_error()."<br>Numrows = ".db_num_rows($r); */
-/* 			print "\n\nresult arrays:\n"; */
+			if ($debug) {
+				print mysql_error()."<br>Numrows = ".db_num_rows($r);
+				print "\n\nresult arrays:\n";
+			}
 			
 			if (!db_num_rows($r)) {	// if we get no results
 				if (in_array($field,$this->_object_arrays)) {
@@ -305,12 +308,14 @@ FROM
 				$this->data[$field] = $valarray;
 			$this->fetched[$field] = 1;
 			
-/* 			print "Valarray: "; */
-/* 			print_r($valarray); */
-/* 			print "\nInArray: \n$field";  */
-/* 			print_r($_object_arrays); */
-/* 			print "<br>Is object?: ".((in_array($field,$this->_object_arrays))?"TRUE":"FALSE"); */
-/* 			print "</pre>----------end------------$field<br>"; */
+			if ($debug) {
+				print "Valarray: ";
+				print_r($valarray);
+				print "\nInArray: \n$field"; 
+				print_r($_object_arrays);
+				print "<br>Is object?: ".((in_array($field,$this->_object_arrays))?"TRUE":"FALSE");
+				print "</pre>----------end------------$field<br>";
+			}
 		}
 
 		return $this->data[$field];

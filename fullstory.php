@@ -12,9 +12,13 @@ include("includes.inc.php");
 include("$themesdir/common/header.inc.php");
 $partialstatus = 1;
 
-if ($_REQUEST[site])$site=$_REQUEST[site];
-if ($_REQUEST[section])$section=$_REQUEST[section];
-if ($_REQUEST[page])$page=$_REQUEST[page];
+/* if ($_REQUEST[site])$site=$_REQUEST[site]; */
+/* if ($_REQUEST[section])$section=$_REQUEST[section]; */
+/* if ($_REQUEST[page])$page=$_REQUEST[page]; */
+
+print "owningsiteObj<pre>";
+print_r ($story->owningSiteObj);
+print "</pre>";
 
 $site =& new site($_REQUEST[site]);
 $section =& new section($_REQUEST[site],$_REQUEST[section], &$site);
@@ -23,6 +27,10 @@ $story =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST
 
 $story->fetchFromDB();
 $site_owner=$story->owningSiteObj->getField("addedby");
+
+print "owningsiteObj<pre>";
+print_r ($story->owningSiteObj);
+print "</pre>";
 
 /* if (!insite($site,$section,$page,$story)) { */
 /* 	print "Something screwed up. Seems this story isn't in the site you're viewing."; */
@@ -34,7 +42,9 @@ if ($_REQUEST[add] && $story->hasPermission("discuss")) {
 	if (!$_REQUEST[thetext] || trim($_REQUEST[thetext])=='') error("You must enter some text to post.");
 	if (!$error) {
 		$thetext = urlencode($_REQUEST[thetext]);
-		$query = "insert into discussions set author='$_REQUEST[author]', authortype='$_REQUEST[authortype]', content='$thetext'";
+		$author_id = db_get_value("user","user_id","user_uname = '$_REQUEST[author]'");
+		$query = "INSERT INTO discussion SET FK_story='".$story->id."', FK_author='$author_id', discussion_content='$thetext'";
+		print $query;
 		db_query($query);
 		$newid = mysql_insert_id();
 		$story->addDiscussion($newid);
@@ -169,7 +179,7 @@ if ($story->getField("discuss")) {
 	print "<th align=left>Discussions</th>";
 	print "</tr>";
 	
-	if (count($discussions)) {
+	if ($discussions && count($discussions)) {
 		foreach ($discussions as $id) {
 			$d = db_get_line("discussions","id=$id");
 			$addedby = ($d[authortype]=='user')?ldapfname($d[author]):$d[author];
@@ -193,9 +203,9 @@ if ($story->getField("discuss")) {
 		print "<form name='postform' action='fullstory.php?$sid&site=$site&section=$section&page=$page&story=$story&action=$action' method=post>";
 		print "<input type=hidden name='add' value=1>";
 		print "<input type=hidden name='story' value=".$story->id.">";
-/* 		print "<input type=hidden name='site' value=$site>"; */
-/* 		print "<input type=hidden name='section' value=$section>"; */
-/* 		print "<input type=hidden name='page' value=$page>"; */
+		print "<input type=hidden name='site' value=".$site->getField("name").">";
+		print "<input type=hidden name='section' value=".$section->id.">";
+		print "<input type=hidden name='page' value=".$page->id.">";
 /* 		print "<input type=hidden name='action' value='$action'>"; */
 		
 		print "<table border=0 cellspacing=10 style='border: 0px' width=75%>";
@@ -225,3 +235,30 @@ if ($story->getField("discuss")) {
 
 <BR>
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+
+<?
+// debug output -- handy :)
+print "<pre>";
+print "request:\n";
+print_r($_REQUEST);
+print "\n\n";
+print "session:\n";
+print_r($_SESSION);
+print "\n\n";
+
+/*
+ if (is_object($thisPage)) { 
+ 	print "\n\n"; 
+ 	print "thisPage:\n"; 
+ 	print_r($thisPage); 
+ } /*else if (is_object($thisSection)) { 
+	print "\n\n"; 
+ 	print "thisSection:\n"; 
+ 	print_r($thisSection); 
+ } else if (is_object($thisSite)) { 
+ 	print "\n\n"; 
+ 	print "thisSite:\n"; 
+ 	print_r($thisSite); 
+ } */
+ 
+print "</pre>";
