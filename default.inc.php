@@ -573,6 +573,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	if ($isgroup) {
 		$list = implode(", ",$classlist);
 		printc("<div style='padding-left: 20px; font-size: 10px;'>this is a group and contains the following classes: <b>$list</b><br></div>");
+		$sitesprinted = array_merge($sitesprinted,$classlist);
 	}
 	if ($exists) {
 		$addedby = $obj->getField("addedby");
