@@ -86,8 +86,8 @@ function changeOrder(order) {
 <table width='100%' class='bg'>
 <td align=right class='bg'>
 	Logs
-	| <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
-	| <a href=viewstudents.php?$sid&site=<? echo $site ?>>Users</a>
+	| <a href=viewsites.php?<? echo $sid ?>&site=<? echo $site ?>>Sites</a>
+	| <a href=viewstudents.php?<? echo $sid ?>&site=<? echo $site ?>>Users</a>
 
 </td></tr>
 <tr><td class='bg'>
