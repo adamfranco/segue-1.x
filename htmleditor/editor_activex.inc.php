@@ -181,7 +181,7 @@ function editor_generate(objname,w,h) {
   +    '<button title="Insert Web Link" id="_' +objname+ '_InsertLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_link.gif" unselectable="on"></button>'
   +    '<button title="Remove Web Link" id="_' +objname+ '_UnLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_unlink.gif" unselectable="on"></button>'
   +    '<button title="Insert Email Link" id="_' +objname+ '_InsertEmail" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_email.gif" unselectable="on"></button>'
-//  +    '<button title="Insert Image" id="_' +objname+ '_InsertFileBrowser" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_image.gif" unselectable="on"></button>\n'
+  +    '<button title="Insert Image" id="_' +objname+ '_InsertFileBrowser" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_image.gif" unselectable="on"></button>\n'
   +    '<button title="Insert Table" id="_' +objname+ '_InsertTable" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_table.gif" unselectable="on"></button>\n'
   +    '<button title="Insert Special Characters" id="_' +objname+ '_InsertCharacters" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_insert_characters.gif" unselectable="on"></button>\n'
   +    '<button title="Insert Annotation" id="_' +objname+ '_InsertAnnotation" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_annotation.gif" unselectable="on"></button>\n'
