@@ -104,7 +104,7 @@ if ($error) {
 	//---------------------------
 	// check view permissions
 	//---------------------------
-	if (!$thisPage || !$thisPage->canview()) {
+	if (!$thisPage || !$thisPage->canview("everyone")) {
 		print "\t\t<title>Error</title>\n";
 		ob_start();
 		print "You may not view this RSS Feed. This may be due to any of the following reasons:<br />";
