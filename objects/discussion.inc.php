@@ -74,7 +74,7 @@ class discussion {
 	WHERE
 		discussion_id=$id";
 		db_query($query);
-		log_entry("discussion","$_SESSION[auser] deleted story ".$_REQUEST['story']." discussion post id ".$_REQUEST['id']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
+		//log_entry("discussion","$_SESSION[auser] deleted story ".$_REQUEST['story']." discussion post id ".$_REQUEST['id']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
 		// done;
 	}
 
