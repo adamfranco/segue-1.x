@@ -6,8 +6,8 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($settings[step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-	if ($_REQUEST[sitename] != ""  && $_SESSION[ltype] == "admin") { $_SESSION[siteObj]->setSiteName($_REQUEST[sitename]); $_SESSION[settings][sitename] = $_REQUEST[sitename]; }
-	if ($_REQUEST[type] && $_SESSION[ltype]=='admin') $_SESSION[siteObj]->setField("type",$_REQUEST[type]);
+/* 	if ($_REQUEST[sitename] != ""  && $_SESSION[ltype] == "admin") { $_SESSION[siteObj]->setSiteName($_REQUEST[sitename]); $_SESSION[settings][sitename] = $_REQUEST[sitename]; } */
+/* 	if ($_REQUEST[type] && $_SESSION[ltype]=='admin') $_SESSION[siteObj]->setField("type",$_REQUEST[type]); */
 	if ($_SESSION[settings][step] == 1 && $_REQUEST[title] != "") $_SESSION[siteObj]->setField("title",$_REQUEST[title]);
 	// handle de/activate dates
 	$_SESSION[siteObj]->handleFormDates();
@@ -94,6 +94,10 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 	 uncomment this line when permissions are set and done */
 		$_SESSION[settings][copydownpermissions] = decode_array($_SESSION[settings][copydownpermissions]);
 		$_SESSION[settings][site_owner] = $_SESSION[siteObj]->getField("addedby");	
+	} else {
+		print "tobefetched: ".$_SESSION[siteObj]->tobefetched."<br>";
+		$_SESSION[siteObj]->tobefetched = 0;
+		print "tobefetched: ".$_SESSION[siteObj]->tobefetched."<br>";
 	}
 	$_SESSION[siteObj]->initFormDates();
 	$dontCheckError = 1;

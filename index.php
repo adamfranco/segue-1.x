@@ -25,12 +25,13 @@ $permittedPermissionsActions = array("site","viewsite");
 
 // check if we have any stray session variables
 if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
-	if ($_SESSION[settings] || $_SESSION[obj] || $_SESSION[editors] || $_SESSION[siteObj] || $_SESSION[sectionObj] || $_SESSION[pageObj] || $_SESSION[storyObj]) {
+	if ($_SESSION[settings] || $_SESSION[obj] || $_SESSION[editors] || $_SESSION[siteObj] || $_SESSION[origSiteObj] || $_SESSION[sectionObj] || $_SESSION[pageObj] || $_SESSION[storyObj]) {
 		if (ini_get("register_globals")) {
 			session_unregister("settings");
 			session_unregister("obj");
 			session_unregister("editors");
 			session_unregister("siteObj");
+			session_unregister("origSiteObj");
 			session_unregister("sectionObj");
 			session_unregister("pageObj");
 			session_unregister("storyObj");
@@ -206,25 +207,25 @@ if (!ini_get("register_globals")) {
 }
 
 // debug output -- handy :)
-/* print "<pre>"; */
-/* print "session:\n"; */
-/* print_r($_SESSION); */
-/* print "\n\n"; */
-/* print "request:\n"; */
-/* print_r($_REQUEST); */
-/* if (is_object($thisPage)) { */
-/* 	print "\n\n"; */
-/* 	print "thisPage:\n"; */
-/* 	print_r($thisPage); */
-/* } else if (is_object($thisSection)) { */
-/* 	print "\n\n"; */
-/* 	print "thisSection:\n"; */
-/* 	print_r($thisSection); */
-/* } else if (is_object($thisSite)) { */
-/* 	print "\n\n"; */
-/* 	print "thisSite:\n"; */
-/* 	print_r($thisSite); */
-/* } */
-/* print "</pre>"; */
+print "<pre>";
+print "session:\n";
+print_r($_SESSION);
+print "\n\n";
+print "request:\n";
+print_r($_REQUEST);
+if (is_object($thisPage)) {
+	print "\n\n";
+	print "thisPage:\n";
+	print_r($thisPage);
+} else if (is_object($thisSection)) {
+	print "\n\n";
+	print "thisSection:\n";
+	print_r($thisSection);
+} else if (is_object($thisSite)) {
+	print "\n\n";
+	print "thisSite:\n";
+	print_r($thisSite);
+}
+print "</pre>";
 
 ?>
