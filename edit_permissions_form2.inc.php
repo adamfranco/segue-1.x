@@ -101,8 +101,17 @@ print "</table></form>";
  ******************************************************************************/
 function doEditorLine(&$o) {
 	$class = get_class($o);
+	$bgColor = getBgColor($class,"normal");
+	$bgColorL = getBgColor($class,"locked");
+	$bgColorV = getBgColor($class,"view");
+	$indent = getIndent($class);
+	if ($class == "story") {
+		if ($o->getField("title") !="") $extra = $o->getField("title");
+		else $extra = $o->getFirst(25);		
+	} else $extra = "";
+
 	print "<tr>";
-	print "<td>".$o->getField("title")."</td>";
+	print "<td style='background-color: $bgColor; padding-left: ".$indent."px'>".$o->getField("title").$extra."</td>";
 	// reference $args = "'scope',site,section,page,story";
 	if ($class == 'site') 
 		$args = "'$class','".$o->name."',0,0,0";
@@ -112,7 +121,7 @@ function doEditorLine(&$o) {
 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->id.",0";
 	if ($class == 'story')
 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->owning_page.",".$o->id;
-	print "<td align=center class='lockedcol'>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onChange=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\">":"-")."</td>";
+	print "<td align=center class='lockedcol' style='background-color: $bgColorL'>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onChange=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\">":"-")."</td>";
 	
 	$o->buildPermissionsArray();
 	$p = $o->getPermissions();
@@ -124,9 +133,64 @@ function doEditorLine(&$o) {
 			$skip = 0;
 			if (($e == 'everyone' || $e == 'institute') && $i<3) $skip = 1;
 			if ($class=='story' && $v == 'add') $skip = 1;
-			if ($skip) print "<td align=center".(($i==3)?" class='viewcol'":"").">-</td>";
-			else print "<td align=center".(($i==3)?" class='viewcol'":"")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onChange=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v"))?"disabled":"")."></td>";
+			if ($skip) print "<td align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">-</td>";
+			else print "<td align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onChange=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v"))?"disabled":"")."></td>";
 		}
 	}
 	print "</tr>";
+}
+
+
+/******************************************************************************
+ * set up colors for rows
+ ******************************************************************************/
+function getBgColor($class,$special=0) {
+	$baseR = 7;
+	$baseG = 7;
+	$baseB = 7;
+	$step = 2;
+	$lockedR = 1;  
+	$viewG = 1;
+	if ($class == "site") $level = 0;
+	if ($class == "section") $level = 1;
+	if ($class == "page") $level = 2;
+	if ($class == "story") $level = 3;
+	
+	$finalR = $baseR + $step*$level;
+	$finalG = $baseG + $step*$level;
+	$finalB = $baseB + $step*$level;
+
+	if ($special == "locked") {
+		$finalR = $finalR + $lockedR;
+		$finalG = $finalG - $lockedR;
+		$finalB = $finalB - $lockedR;
+	}
+
+	if ($special == "view") {
+                $finalR = $finalR - $viewG;
+                $finalG = $finalG + $viewG;
+                $finalB = $finalB - $viewG;
+        }
+
+	$finalR = dechex($finalR);
+        $finalG = dechex($finalG);
+        $finalB = dechex($finalB);
+
+	$color = "#".$finalR.$finalG.$finalB;
+	return $color;
+}
+
+/******************************************************************************
+ * getIndent - Returns proper indentation of levels
+ ******************************************************************************/
+function getIndent($class) {
+	$multiplier = 20;
+
+        if ($class == "site") $level = 0;
+        if ($class == "section") $level = 1;
+        if ($class == "page") $level = 2;
+        if ($class == "story") $level = 3;
+
+	$indent = $level*$multiplier;
+	return $indent;
 }

@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-printc("<form action='index.php?$sid&action=add_story' method=post name='addform'".(($_SESSION[storyObj]->getField("type") !='story' && $_SESSION[storyObj]->getField("type") != 'url')?" enctype='multipart/form-data'":"").">");
+printc("<form action='index.php?$sid&action=add_story' method=post name='addform'>");
 
 //printc("<input type=hidden name=site value='$_SESSION[settings][site]'>");
 //printc("<input type=hidden name=section value=$_SESSION[settings][section]>");

@@ -35,6 +35,20 @@ class story extends segue {
 		if ($formdates) $this->initFormDates();
 	}
 	
+	function getFirst($length) {
+		if ($this->getField("type") == "image" && $this->getField("shorttext") == "")
+			return "Image";
+		else {
+			$text = $this->getField("shorttext");
+			$text = strip_tags($text);
+			if (strlen($text) <= $length) return $text;
+		
+			$text = substr($text,0,$length)."...";
+			return $text;
+		}
+	}
+
+
 	function addDiscussion($id) {
 		if (!$this->getField("discussions")) $this->data[discussions] = array();
 		array_push($this->data[discussions],$id);

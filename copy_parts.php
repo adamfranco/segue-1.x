@@ -41,7 +41,7 @@ if ($domove) {
 	else $keepaddedby = 0;	
 	
 	// move the object.
-	$succesfull = copyObj($partObj,$parentObj,$keepaddedby);
+	$succesfull = segue::copyObj($partObj,$parentObj,$keepaddedby);
 	
 	// delete the origional
 	if ($successfull && $action == "MOVE") {
