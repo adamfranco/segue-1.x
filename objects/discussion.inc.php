@@ -227,8 +227,8 @@ class discussion {
 		// spider down and output every one
 		if ($top) {
 //			print_r($this->storyObj->permissions);
-			$cand = $this->storyObj->hasPermission("discuss");
-			if ($cand) {
+//			$cand = $this->storyObj->hasPermission("discuss");
+			if ($cr) {
 				// just in case...
 				$this->_commithttpdata();
 				print "<tr><td>";

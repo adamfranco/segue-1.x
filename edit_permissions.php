@@ -55,7 +55,9 @@ if (!$isOwner && !$_SESSION[obj]->isEditor()) {
 /* $_SESSION[obj]->buildPermissionsArray(0,1); */
 if (!isset($_SESSION[editors])) $_SESSION[editors] = array();
 
-if ($error) return;
+//print "here";exit;
+
+if ($error) { printerr2(); return; }
 
 /******************************************************************************
  * Save changes to the DB
@@ -104,7 +106,7 @@ if ($isOwner && isclass($_SESSION[obj]->name)) {
 if (!$isOwner && $isEditor) {
 	if (!count($_SESSION[editors])) {
 		if (in_array($_SESSION[auser],$_SESSION[obj]->getEditors())) $_SESSION[editors][] = $_SESSION[auser];
-		$_SESSION[editors] = array_merge($_SESSION[editors],$_SESSION[obj]->returnEditorOverlap(getuserclasses($_SESSION[auser])));
+		$_SESSION[editors] = array_merge($_SESSION[editors],$_SESSION[obj]->returnEditorOverlap(getuserclasses($_SESSION[auser],"all")));
 		// done... now send them to step 2
 		$step = 2;
 	}

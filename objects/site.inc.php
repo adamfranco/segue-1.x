@@ -549,7 +549,7 @@ FROM
 			);
 			
 			// now add the editor to the editor array
-			$this->editors[]=strtolower($t_editor);
+			$this->editors[]=$t_editor;
 			
 		}
 
@@ -612,7 +612,7 @@ FROM
 //			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 
 			foreach ($a as $key => $value)
-				$this->sections[$row[section_id]]->permissions[strtolower($t_editor)][$key] = 1;
+				$this->sections[$row[section_id]]->permissions[$t_editor][$key] = 1;
 		}
 
 		// now, inherit the permissions to the children
@@ -677,7 +677,7 @@ FROM
 //			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 
 			foreach ($a as $key => $value)
-				$this->sections[$row[section_id]]->pages[$row[page_id]]->permissions[strtolower($t_editor)][$key] = 1;
+				$this->sections[$row[section_id]]->pages[$row[page_id]]->permissions[$t_editor][$key] = 1;
 		}
 
 		// now, inherit the permissions to the children
@@ -743,7 +743,7 @@ FROM
 //			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 
 			foreach ($a as $key => $value)
-				$this->sections[$row[section_id]]->pages[$row[page_id]]->stories[$row[story_id]]->permissions[strtolower($t_editor)][$key] = 1;
+				$this->sections[$row[section_id]]->pages[$row[page_id]]->stories[$row[story_id]]->permissions[$t_editor][$key] = 1;
 		}
 
 

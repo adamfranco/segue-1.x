@@ -680,9 +680,11 @@ WHERE
 /* 		print "owner: $owner"; */
 		if (strtolower($user) == strtolower($owner)) return 1;
 		$toCheck = array(strtolower($user));
-		$toCheck = array_merge($toCheck,$this->returnEditorOverlap(getuserclasses($user)));
+		$toCheck = array_merge($toCheck,$this->returnEditorOverlap(getuserclasses($user,"all")));
+//		print_r($toCheck);
+//		print_r($this->editors);
 		foreach ($this->editors as $e) {
-			if (in_array(strtolower($e),$toCheck)) return 1;
+			if (in_array($e,$toCheck)) return 1;
 		}
 		return 0;
 	}
@@ -1529,7 +1531,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			foreach($c as $class) {
 				if (is_array($classes[$class])) $good=1;
 			}
-			if ($good) $toCheck[]=strtolower($u);
+			if ($good) $toCheck[]=$u;
 		}
 /* 		print_r($toCheck); */
 		return $toCheck; 
