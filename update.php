@@ -12,10 +12,13 @@ include("objects/objects.inc.php");
  ******************************************************************************/
 	$updates = array();
 	
-	require_once("updates/update_1.0.3.inc.php");
+	require_once("updates/update_1.3.0.inc.php");
 	require_once("updates/update_1.1.0.inc.php");
-	$updates[] =& new Update103;
+	require_once("updates/update_1.0.3.inc.php");
+	
+	$updates[] =& new Update130;
 	$updates[] =& new Update110;
+	$updates[] =& new Update103;
 	
 /******************************************************************************
  * End of update list

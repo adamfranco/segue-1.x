@@ -608,6 +608,9 @@ SET
 		
 		if ($pa == 'none' || $pa == '') return;
 		
+		// if we're looking at a discussion, don't do the archiving
+		if ($_REQUEST['detail']) return;
+		
 		$_a = array("startday","startmonth","startyear","endday","endmonth","endyear","usestart","useend","usesearch");
 		foreach ($_a as $a) $$a = $_REQUEST[$a];
 		

@@ -61,6 +61,11 @@ if ($_SESSION[settings][add] || $_SESSION[storyObj]->getField("type") == 'link')
 	printc(" Link/URL</b>".(($_SESSION[storyObj]->getField("type")=='link')?" - displays a link with optional title and description.":"")."</div>");
 }
 
+if ($_SESSION[settings][add] || $_SESSION[storyObj]->getField("type") == 'rss') {
+	printc("<div class=desc><b>");
+	printc("<input type=radio name=type ".(($_SESSION[settings][add])?"onClick='typeChange()'":"")." value='rss'".(($_SESSION[storyObj]->getField("type")=='rss')?" checked":"").">");
+	printc(" RSS</b>".(($_SESSION[storyObj]->getField("type")=='rss')?" - displays an RSS feed.":"")."</div>");
+}
 
    
 if ($_SESSION[storyObj]->getField("type")=='image') {
@@ -75,6 +80,10 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 	printc("<div class=title>Link</div>");
 	printc("<div class=desc>Enter the URL (internet address) to the page you would like to link to below, and enter optional title and description.</div>");
 }
+if ($_SESSION[storyObj]->getField("type")=='rss') {
+	printc("<div class=title>RSS Feed</div>");
+	printc("<div class=desc>Enter the URL (internet address) of the desired RSS feed.</div>");
+}
 if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<div class=title>Text Block</div>");
 	printc("<div class=desc>Enter the content for your story below. Title and full content are optional. If you enter full content on the next screen, the shorter content (or Abstract) will be displayed on your page with a link to the full content, in a new window.</div>");
@@ -82,12 +91,12 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 
 
 
-//if ($_SESSION[settings][type] !='divider') {
+if ($_SESSION[storyObj]->getField("type")!='rss') {
 	printc("<div class=leftmargin>");
 	printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
 	if ($_SESSION[storyObj]->getField("type") == 'file') printc(" <span style='color: #D00'> * required</span>");
 	printc("<br></div>");
-//}
+}
 
 
 if ($_SESSION[storyObj]->getField("type")=='link') {	
@@ -97,6 +106,12 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 	printc("Description (optional):");
 	printc("<br>");
 	printc("<textarea name=shorttext class=textarea rows=4 cols=80>".spchars($_SESSION[storyObj]->getField("shorttext"))."</textarea>");
+}
+
+if ($_SESSION[storyObj]->getField("type")=='rss') {	
+	printc("<div class=leftmargin>");
+	printc("URL: <input type=text name=url value='".$_SESSION[storyObj]->getField("url")."' size=50>");
+	printc("</div>");
 }
 
 if ($_SESSION[storyObj]->getField("type")=='story') {

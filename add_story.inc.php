@@ -19,6 +19,8 @@
 /* } */
 
 
+//printpre($_SESSION[settings]);
+//printpre($_SESSION[storyObj]->data);
 
 if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	// if we have already started editing...
@@ -26,6 +28,7 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
+
 	if ($_REQUEST[type]) $_SESSION[storyObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
 	$_SESSION[storyObj]->handleFormDates();
@@ -143,8 +146,13 @@ $sitefooter = "";
 if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
 	print "cancelling...";
-	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
-	else header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+	if ($comingFrom) {	
+		header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+	} else if ($_SESSION[settings][goback]) {
+		header("Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id);
+	} else {
+		header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+	}
 }
 //printpre($_REQUEST[permissions]);
 //printpre($_REQUEST[discuss]);
@@ -154,6 +162,8 @@ if ($_REQUEST[save]) {
 	if ($_SESSION[storyObj]->getField("type")=='story' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))==''))
 		error ("You must enter some story content.");
 	if ($_SESSION[storyObj]->getField("type")=='link' && (!$_SESSION[storyObj]->getField("url") || $_SESSION[storyObj]->getField("url")=='' || $_SESSION[storyObj]->getField("url")=='http://'))
+		error("You must enter a URL.");
+	if ($_SESSION[storyObj]->getField("type")=='rss' && (!$_SESSION[storyObj]->getField("url") || $_SESSION[storyObj]->getField("url")=='' || $_SESSION[storyObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 	if ($_SESSION[storyObj]->getField("type")=='file' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
 		error("You must select a file to upload.");
@@ -172,6 +182,7 @@ if ($_REQUEST[save]) {
 		if ($permissionset != 1)
 			error("You must specify who can discuss/assess this content block.");
 	}
+	
 		
 	if (!$error) { // save it to the database
 		
@@ -201,9 +212,14 @@ if ($_REQUEST[save]) {
 /* 			log_entry("edit_page",$_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page],"$auser edited content id $_SESSION[settings][story] in page $_SESSION[settings][page] of section $_SESSION[settings][section] of site $_SESSION[settings][site]"); */
 /* 			$newid=$_SESSION[settings][page]; */
 /* 		} */
-
-		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
-	
+		
+	//	unset($_SESSION[storyObj]);
+		if ($_SESSION[settings][goback]) {
+			header("Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id);
+		} else {
+			header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
+		}
+		
 	// if error take them to page where error occured	
 	} else {
 		if ($_REQUEST[discuss] == 1 && $permissionset != 1) {

@@ -83,7 +83,7 @@ if ($_REQUEST[comingFrom]) {
 }
 
 /******************************************************************************
- * Uploads files
+ * Uploads files: check if media limit is reached..
  ******************************************************************************/
  
 if ($upload) { 
@@ -163,6 +163,10 @@ if ($upload) {
 		$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
 	}	 
 } 
+
+/******************************************************************************
+ * clears filename search UI??
+ ******************************************************************************/
  
 if ($clear) {
 	if ($ltype == 'admin') {
@@ -175,6 +179,10 @@ if ($clear) {
 		$site = $_REQUEST[site];
 	}
 } 
+
+/******************************************************************************
+ * get media file
+ ******************************************************************************/
 
 $w = array(); 
 if ($ltype == 'admin') { 
@@ -341,7 +349,12 @@ input,select {
  
 <script lang="JavaScript"> 
 
-<? if ($source == 'discuss') { ?> 
+<? 
+/******************************************************************************
+ * Use button action: depends on source and editor?
+ ******************************************************************************/
+ 
+if ($source == 'discuss') { ?> 
 	function useFileDiscuss(fileID,fileName) { 
 		o = opener.document.postform; 
 		o.libraryfileid.value=fileID; 
@@ -429,7 +442,8 @@ function changePage(lolim) {
 					<input type=hidden name='owner' value='<? echo $owner ?>'> 
 					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
-					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
+					//if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
+					if ($isWinIE) {
 						print "<input type=file name='file' class=textfield style='color: #000'>";
 						print "<input type=submit value='Upload'>";
 					} else {

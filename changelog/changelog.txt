@@ -3,6 +3,13 @@
 Name: Segue ChangeLog
 
 
+v. 1.2.1 (2004-06-17)
+----------------------------------------------------
+		
+	* Bug Fix: Fixed a problem uploading files to Media Library that occured in Windows Internet Explorer. (Alex Chapin)
+		
+	* Change: Link to edit discussion/assessment options from discussion/assessment UI now returns users back to this location (instead of page) (Alex Chapin)	
+	
 v. 1.2.0 (2004-06-10)
 ----------------------------------------------------
 		

@@ -449,7 +449,7 @@ class story extends segue {
 			// the hard step: update the fields in the JOIN tables
 			
 			// Urls are now stored in the media table
-			if ($this->changed[url] && $this->getField("type") == 'link') {
+			if ($this->changed[url] && ($this->getField("type") == 'link' || $this->getField("type") == 'rss')) {
 				// Urls are now stored in the media table
 				// get id of media item
 				$query = "
@@ -509,7 +509,7 @@ WHERE
 		// if moving to a new site, copy the media
 		if ($origsite != $this->owning_site && $down) {
 			$images = array();
-			if ($this->getField("type") == "image" || $this->getField("type") == "file") {
+			if ($this->getField("type") == "image" || $this->getField("type") == "rss" || $this->getField("type") == "file") {
 				$media_id = $this->getField("longertext");
 				$this->setField("longertext",copy_media($media_id,$newsite));
 			} else if ($this->getField("type") == "story") {
@@ -536,7 +536,7 @@ WHERE
 		}
 
 		// insert media (url)
-		if ($this->data[url] && $this->data['type'] == 'link') {
+		if ($this->data[url] && ($this->data['type'] == 'link' || $this->data['type'] == 'rss')) {
 			// first see, if media item already exists in media table
 			$query = "
 SELECT

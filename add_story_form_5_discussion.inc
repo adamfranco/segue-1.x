@@ -1,4 +1,6 @@
 <? /* $Id$ */
+if ($_REQUEST[goback]) $_SESSION[settings][goback] = $_REQUEST[goback];
+//printpre($_SESSION[settings]);
 
 printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
 printc("<input type=hidden name='step'>");

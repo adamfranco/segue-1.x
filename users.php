@@ -234,8 +234,13 @@ printerr();
 		</td>
 		<td align=right>
 		<?
-		$tpages = ceil($numusers/$range);
-		$curr = ceil(($lowerlimit+$range)/$range);
+		if ($range) {
+			$tpages = ceil($numusers/$range);			
+			$curr = ceil(($lowerlimit+$range)/$range);
+		} else {
+			$tpages = 1;			
+			$curr = 1;
+		}
 		$prev = $lowerlimit-$range;
 		if ($prev < 0) $prev = 0;
 		$next = $lowerlimit+$range;
@@ -280,8 +285,7 @@ printerr();
 			doUserForm($a,'user_',1);
 		
 		// output found users				
-		} else {	
-				
+		} else if (db_num_rows($r)){
 			while ($a = db_fetch_assoc($r)) {
 				print "<tr>";
 				print "<td align=center>".$a['user_id']."</td>";

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
+	<version number="1.2.1" date="2004-06-17">
+		<fix author='alex'>
+			Fixed a problem uploading files to Media Library that occured in
+			Windows Internet Explorer.  
+		</fix>
+		<change author='alex'>
+			Link to edit discussion/assessment options from discussion/assessment 
+			UI now returns users back to this location (instead of page)
+		</change>	
+	</version>
 	<version number="1.2.0" date="2004-06-10">
 		<new author='alex' ref='957602' reftype='fr'>
 			Added HTMLarea version 3.0 to UI for adding content, editing site headers
