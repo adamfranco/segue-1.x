@@ -132,6 +132,8 @@ class site extends segue {
 
 		$this->name = $name;
 		$this->owning_site = $name;
+		$this->owningSiteObj = &$this;
+		$this->fetchedup = 1;		
 		$this->sections = array();
 		$this->data = array();
 		
@@ -155,7 +157,7 @@ class site extends segue {
 /* 			print "site fetchdown ".$this->name."<BR>"; */
 			if (!$this->tobefetched) $this->fetchFromDB($full);
 			foreach ($this->getField("sections") as $s) {
-				$this->sections[$s] = new section($this->name,$s);
+				$this->sections[$s] =& new section($this->name,$s,&$this);
 				$this->sections[$s]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;
@@ -267,7 +269,7 @@ ORDER BY
 
 
 	function applyTemplate ($template) {
-		$templateObj = new site($template);
+		$templateObj =& new site($template);
 		$templateObj->fetchDown(1);	
 		/* print "<pre>"; print_r($this); print_r($templateObj); print "</pre>"; */
 		foreach ($templateObj->sections as $i=>$o) 
@@ -417,7 +419,7 @@ ORDER BY
 		$this->data[sections] = $d;
 		$this->changed[sections] = 1;
 		if ($delete) {
-			$section = new section($this->name,$id);
+			$section =& new section($this->name,$id,&$this);
 			$section->delete();
 		}
 	}

@@ -126,12 +126,12 @@ if ($_REQUEST[site]) {						// we are in a site
 
 }
 if ($_REQUEST[section]) {
-	$thisSection =& new section($thisSite->name,$_REQUEST[section]);
+	$thisSection =& new section($thisSite->name,$_REQUEST[section],&$thisSite);
 //	$thisSection->fetchFromDB();
 //	$thisSection->buildPermissionsArray();
 }
 if ($_REQUEST[page]) {
-	$thisPage =& new page($thisSite->name,$thisSection->id,$_REQUEST[page]);
+	$thisPage =& new page($thisSite->name,$thisSection->id,$_REQUEST[page],&$thisSection);
 //	$thisPage->fetchFromDB();
 //	$thisPage->buildPermissionsArray();
 }

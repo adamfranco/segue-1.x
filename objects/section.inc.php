@@ -112,8 +112,11 @@ class section extends segue {
 						
 
 
-	function section($insite,$id=0) {
+	function section($insite,$id=0,&$siteObj) {
 		$this->owning_site = $insite;
+		$this->owningSiteObj = &$siteObj;
+		$this->fetchedup = 1;
+		
 		$this->id = $id;
 		
 		// initialize the data array
@@ -126,7 +129,7 @@ class section extends segue {
 	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
-			$parentObj = new site ($this->owning_site);
+			$parentObj =& new site ($this->owning_site);
 			$parentObj->fetchDown();
 			$parentObj->delSection($this->id);
 			$parentObj->updateDB();
@@ -164,7 +167,7 @@ class section extends segue {
 	function fetchUp($full=0) {
 		if (!$this->fetchedup || $full) {
 /* 			print "<br>Fetching Up<br>"; */
-			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj =& new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB(1);
 //			$this->owningSiteObj->buildPermissionsArray(1);
 			$this->fetchedup = 1;
@@ -184,7 +187,7 @@ class section extends segue {
 		$this->data[pages] = $d;
 		$this->changed[pages]=1;
 		if ($delete) {
-			$page = new page($this->owning_site,$this->id,$id);
+			$page =& new page($this->owning_site,$this->id,$id,&$this);
 			$page->delete();
 		}
 	}
@@ -194,7 +197,7 @@ class section extends segue {
 /* 			print "-->section fetchdown ".$this->id."<BR>"; */
 			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			foreach ($this->getField("pages") as $p) {
-				$this->pages[$p] = new page($this->owning_site,$this->id,$p);
+				$this->pages[$p] =& new page($this->owning_site,$this->id,$p,&$this);
 				$this->pages[$p]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;
@@ -366,11 +369,8 @@ ORDER BY
 			unset($this->owningSiteObj);
 		}
 		
-		if (!isset($this->owningSiteObj)) {
-			$this->owningSiteObj = new site($this->owning_site);
-			$this->owningSiteObj->fetchDown(1);
-		}
-		
+		$this->fetchUp();
+				
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "FK_createdby=".$_SESSION[aid];
@@ -386,7 +386,7 @@ ORDER BY
 		
 		$this->id = mysql_insert_id();
 		
-		$this->fetchUp(1);
+//		$this->fetchUp(1);
 
 /* 		print "<br>remove origionl: $removeOrigional<br>"; */
 		if ($removeOrigional) $this->owningSiteObj->delSection($origid,0);
@@ -415,10 +415,8 @@ ORDER BY
 		$d = $this->data;
 		$a = array();
 		
-		if (!isset($this->owningSiteObj)) {
-			$this->owningSiteObj = new site($this->owning_site);
-			$this->owningSiteObj->fetchDown();
-		}
+		$this->fetchUp();
+		
 		if ($all) $a[] = "FK_site='".$this->owningSiteObj->id."'";
 		
 /* 		print "<pre>\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n"; */

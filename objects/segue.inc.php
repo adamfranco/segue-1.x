@@ -65,7 +65,7 @@ SELECT site_id
 		if (!is_array($sites)) return array();
 		$a = array();
 		foreach ($sites as $s) {
-			$a[$s] = new site($s);
+			$a[$s] =& new site($s);
 			$a[$s]->fetchFromDB();
 		}
 		return $a;
@@ -1123,11 +1123,11 @@ FROM
 
 			$n = array_unique(array_merge($this->editors,array_keys($this->permissions)));
 			
-			print_r($n);
+//			print_r($n);
 
 			foreach ($n as $editor) {
 				$p = $this->permissions[$editor];
-				print_r($p);
+//				print_r($p);
 				// convert this to a "'a','v',..." format
 				$p_str = "";
 				if ($p[ADD]) $p_str.="a,";
@@ -1137,7 +1137,7 @@ FROM
 				if ($p[DISCUSS]) $p_str.="di,";
 				
 				if ($p_str) $p_str = substr($p_str, 0, strlen($p_str)-1); // strip last comma from the end of a string 
-				echo "'".$p_str."'<br>";
+//				echo "'".$p_str."'<br>";
 				
 				// find the id and type of this editor
 				if ($editor == 'everyone' || $editor == 'institute') {
@@ -1154,8 +1154,40 @@ FROM
 					$ed_id = $arr['user_id'];
 				}
 
-				echo "EID: $ed_id; ETYPE: $ed_type <br>";
+//				echo "EID: $ed_id; ETYPE: $ed_type <br>";
 				
+
+				// if this is a site object, see if the editor is in the site_editors table
+				if ($scope == "site") {
+					$query = "
+SELECT
+	FK_editor
+FROM
+	site_editors
+WHERE
+	FK_editor <=> $ed_id AND
+	site_editors_type = '$ed_type' AND
+	FK_site = $id
+";
+//					echo $query."<br>";
+					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
+					// if the editor is not in the site_editors then insert him
+					if (!db_num_rows($r_editor)) {
+						$query = "
+INSERT
+INTO site_editors
+	(FK_site, FK_editor, site_editors_type)
+VALUES
+	($id, $ed_id, '$ed_type')
+";					
+
+//					echo $query."<br>";
+						db_query($query);
+					}
+					
+				}
+
+
 				// now that we have all the information pertaining to this user, check if the permission entry is already present
 				// if yes, update it
 				// if not, insert it
@@ -1172,40 +1204,23 @@ WHERE
 ";
 				
 
-				echo $query."<br>";
+//				echo $query."<br>";
+				$r_perm = db_query($query); // this query checks to see if the entry exists in the permission table
 				
-				// if this is a site object, see if the editor is in the site_editors table
-				if ($scope == "site") {
-					$r_perm = db_query($query); // this query checks to see if the entry exists in the permission table
-					
-					$query = "
-SELECT
-	FK_editor
-FROM
-	site_editors
-WHERE
-	FK_editor <=> $ed_id AND
-	site_editors_type = '$ed_type' AND
-	FK_site = $id
-";
-					echo $query."<br>";
-					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
-				}
-
 				// if permission entry exists
 				if (db_num_rows($r_perm)) {
+					$a = db_fetch_assoc($r_perm);
 					// if we are changing the permissions, update the db
 					if ($p_str) {
-						// FIGURE OUT HOW TO DO THIS!!!						
-						// FIGURE OUT HOW TO DO THIS!!!						
-						// FIGURE OUT HOW TO DO THIS!!!						
-						// FIGURE OUT HOW TO DO THIS!!!						
-						// FIGURE OUT HOW TO DO THIS!!!						
-						// FIGURE OUT HOW TO DO THIS!!!						
+						// if the object is a site, then it's easy - just set the permissions for the site
+						if ($scope == "site") {
+							$query = "UPDATE permission SET permission_value='$p_str' WHERE permission_id = ".$a[permission_id];
+							echo $query."<br>";
+							db_query($query);					
+						}
 					}
 					// if we are clearing the permissions, delete the entry from the db
 					else {
-						$a = db_fetch_assoc($r);
 						$query = "DELETE FROM permission WHERE permission_id = ".$a[permission_id];
 						db_query($query);
 					}
@@ -1215,29 +1230,16 @@ WHERE
 					// need to insert permissions
 					if (!db_num_rows($r_perm)) {
 						// first insert in permission table
-							$query = "
+						$query = "
 INSERT
 INTO permission
 	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
 VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_str')
 ";
-					echo $query."<br>";
-					db_query($query);
+//						echo $query."<br>";
+						db_query($query);
 					}
 
-					// if this is a site object and the editor is not in the site_editors table or both
-					if ($scope == "site") if (!db_num_rows($r_editor)) {
-						$query = "
-INSERT
-INTO site_editors
-	(FK_site, FK_editor, site_editors_type)
-VALUES
-	($id, $ed_id, '$ed_type')
-";					
-
-					echo $query."<br>";
-					db_query($query);
-					}
 				}
 
 			}

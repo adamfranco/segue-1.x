@@ -2,7 +2,7 @@
 
 $pagetitle = "Delete Site";
 
-$s = new site($_REQUEST[name]);
+$s =& new site($_REQUEST[name]);
 $s->fetchDown(1);
 /* print "<pre>"; print_r($s); print "</pre>"; */
 

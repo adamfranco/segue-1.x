@@ -158,10 +158,10 @@ FROM
 			foreach ($classes as $n=>$class) {
 				if (segue::siteExists($class)) {
 					if (!segue::siteExists($this->name)) {
-						$siteObj = new site ($class);
+						$siteObj =& new site ($class);
 						$siteObj->fetchDown(1);
 						$siteObj->copySite($this->name);
-						$siteObj = new site ($class);
+						$siteObj =& new site ($class);
 						$siteObj->fetchDown(1);
 						$siteObj->delete();
 						$classes2[] = $class;

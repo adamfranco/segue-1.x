@@ -64,7 +64,7 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		"template" => "template0",
 		"comingFrom" => $_REQUEST[comingFrom]
 	);
-	$_SESSION[siteObj] = new site($_REQUEST[sitename]);
+	$_SESSION[siteObj] =& new site($_REQUEST[sitename]);
 	
 	if (slot::exists($_REQUEST[sitename])) {
 		$slotObj = new slot ($_REQUEST[sitename]);

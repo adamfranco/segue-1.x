@@ -159,10 +159,16 @@ class story extends segue {
 	var $_table = "story";
 	
 	
-	function story($insite,$insection,$inpage,$id=0) {
+	function story($insite,$insection,$inpage,$id=0,&$pageObj) {
 		$this->owning_site = $insite;
 		$this->owning_section = $insection;
 		$this->owning_page = $inpage;
+		$this->owningPageObj = &$pageObj;
+		$this->owningSectionObj = &$this->owningPageObj->owningSectionObj;
+		$this->owningSiteObj = &$this->owningPageObj->owningSectionObj->owningSiteObj;
+
+		$this->fetchedup = 1;
+		
 		$this->id = $id;
 		
 		// initialize the data array
@@ -223,7 +229,7 @@ class story extends segue {
 	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
-			$parentObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
+			$parentObj =& new page($this->owning_site,$this->owning_section,$this->owning_page,$this->owningPageObj->owningSectionObj);
 			$parentObj->fetchDown();
 			/* print "<br>delStory - ".$this->id."<br>"; */
 			$parentObj->delStory($this->id);
@@ -245,13 +251,13 @@ class story extends segue {
 	
 	function fetchUp() {
 		if (!$this->fetchedup) {
-			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj =& new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB();
 //			$this->owningSiteObj->buildPermissionsArray(1);
-			$this->owningSectionObj = new section($this->owning_site,$this->owning_section);
+			$this->owningSectionObj =& new section($this->owning_site,$this->owning_section,&$this->owningSiteObj);
 			$this->owningSectionObj->fetchFromDB();
 //			$this->owningSectionObj->buildPermissionsArray(1);
-			$this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
+			$this->owningPageObj =& new page($this->owning_site,$this->owning_section,$this->owning_page,&$this->owningSectionObj);
 			$this->owningPageObj->fetchFromDB();
 //			$this->owningPageObj->buildPermissionsArray(1);
 			$this->fetchedup = 1;
@@ -422,10 +428,8 @@ ORDER BY
 			unset($this->owningPageObj);
 		}
 		
-		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
-		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section);
-		if (!isset($this->owningPageObj)) $this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
-		
+		$this->fetchUp();
+				
 		// if moving to a new site, copy the media
 		if ($origsite != $this->owning_site && $down) {
 			$images = array();
@@ -483,12 +487,13 @@ ORDER BY
 		$d = $this->data;
 		$a = array();
 
-/* 		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site); */
+/* 		if (!isset($this->owningSiteObj)) $this->owningSiteObj =& new site($this->owning_site); */
 /* 		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'"; */
 /* 		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section); */
 /* 		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->getField("id")."'"; */
-		if (!isset($this->owningPageObj)) 
-			$this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
+
+		$this->fetchUp();
+
 		if ($all) 
 			$a[] = $this->_datafields[page_id][1][0]."='".$this->owningPageObj->getField("id")."'";
 		

@@ -72,7 +72,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 		"comingFrom" => $_REQUEST[comingFrom]
 	);
 	
-	$_SESSION[storyObj] = new story($thisSite->name,$thisSection->id,$thisPage->id);
+	$_SESSION[storyObj] =& new story($thisSite->name,$thisSection->id,$thisPage->id, 0,&$thisPage);
 	
 	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > " . $thisPage->getField("title") . " > ";
 	
@@ -99,7 +99,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 		
 		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
 			$_SESSION[settings][libraryfileid] = $_SESSION[storyObj]->getField("longertext");
-			$_SESSION[settings][libraryfilename] = db_get_value("media","name","id=".$_SESSION[settings][libraryfileid]);
+			$_SESSION[settings][libraryfilename] = db_get_value("media","media_tag","media_id=".$_SESSION[settings][libraryfileid]);
 		}
 	}
 	

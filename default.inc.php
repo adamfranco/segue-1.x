@@ -10,7 +10,7 @@ $sitesprinted=array();
  * handle site copy
  ******************************************************************************/
 if ($copysite && $newname && $origname) {
-        $origSite = new site($origname);
+        $origSite =& new site($origname);
         $origSite->fetchDown(1);
 /*      print "Move: $origname to $newname  <br> <pre>"; */
 /*      print_r($origSite); */
@@ -70,9 +70,9 @@ if ($_loggedin) {
                                         foreach (array_keys($$var) as $cl) {
                                         
                                                 printc("<tr><td class=td$c width= 150>$cl</td>");
-                                                $site = new site($cl);
+                                                $site =& new site($cl);
                                                 if (($gr = inclassgroup($cl)) || ($site->fetchFromDB())) {
-                                                        if ($gr) { $site = new site($gr); $site->fetchFromDB(); }
+                                                        if ($gr) { $site =& new site($gr); $site->fetchFromDB(); }
                                                         if ($site->canview()) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$site->name."'>".$site->getField("title")."</a></td>");
                                                         else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
                                                         
@@ -231,7 +231,7 @@ if ($_loggedin) {
 /* 		if (1) { */
 			$sites2 = array();
 	        foreach ($sites as  $s) {
-        		$siteObj = new site($s);
+        		$siteObj =& new site($s);
         		$siteObj->fetchDown();
 /*         		print "<br>$s: ".$siteObj->getField("type"); */
         		if (!$allowclasssites) {
@@ -318,7 +318,7 @@ if ($_loggedin) {
 
 function printOptions($siteArray) {
 	foreach ($siteArray as $n=>$site) {
-		$siteObj = new site($site);
+		$siteObj =& new site($site);
 		printc("<option value='$site'>$site\n");
 	}
 }
@@ -354,7 +354,7 @@ function allSitesSlots ($user,$existingSites) {
 	if ($existingSites) {
 		$sites = array();
 		foreach ($allsites as $n=>$site) {
-			$siteObj = new site($site);
+			$siteObj =& new site($site);
 			$exists = $siteObj->fetchFromDB();
 			if ($exists)
 				$sites[] = $site;
@@ -363,7 +363,7 @@ function allSitesSlots ($user,$existingSites) {
 	} else {
 		$slots = array();
 		foreach ($allsites as $n=>$site) {
-			$siteObj = new site($site);
+			$siteObj =& new site($site);
 			$exists = $siteObj->fetchFromDB();
 			if (!$exists)
 				$slots[] = $site;
@@ -389,7 +389,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
         if (in_array($name,$sitesprinted)) return;
         $sitesprinted[]=$name;
         
-        $obj = new site($name);
+        $obj =& new site($name);
         
         $isgroup = ($classlist = group::getClassesFromName($name))?1:0;
         $exists = $obj->fetchFromDB();

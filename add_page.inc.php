@@ -8,7 +8,7 @@
 //	$variables .= "$n = $v <br>";	
 //}
 //add_link(leftnav,'','',"$variables");
-//print $variables."<br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
+//print $variables."br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
 //print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
 //print "site = $site<br>section = $section<br>page=$page<br>";
 //------------------------------------
@@ -77,7 +77,7 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 		"comingFrom" => $comingFrom
 	);
 
-	$_SESSION[pageObj] = new page($thisSite->name,$thisSection->id);
+	$_SESSION[pageObj] =& new page($thisSite->name,$thisSection->id,0,&$thisSection);
 	
 	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > ";
 	

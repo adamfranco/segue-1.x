@@ -33,8 +33,8 @@ if ($_REQUEST[site] && isset($_SESSION[obj])) {
  ******************************************************************************/
 
 if (!is_object($_SESSION[obj])) {
-	$_SESSION[obj] = new site($_REQUEST[site]);
-/* 	$_SESSION[obj] = new site('gabe'); */
+	$_SESSION[obj] =& new site($_REQUEST[site]);
+/* 	$_SESSION[obj] =& new site('gabe'); */
 	$_SESSION[obj]->fetchDown();
 	$_SESSION[obj]->buildPermissionsArray(0,1);
 	$_SESSION[obj]->spiderDownLockedFlag();
@@ -296,7 +296,7 @@ else require("edit_permissions_form1.inc.php");
 
 print "<div align=right>";
 print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
-if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
+if ($isOwner) print "\ninput type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
 print "</div>";
 
 // debug output -- handy :)

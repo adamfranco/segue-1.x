@@ -28,7 +28,7 @@ if ($_REQUEST[type] && isset($_SESSION[origSiteObj])) {
 }
 
 if (!is_object($_SESSION[origSiteObj])) {
-	$_SESSION[origSiteObj] = new site($_REQUEST[site]);
+	$_SESSION[origSiteObj] =& new site($_REQUEST[site]);
 	$_SESSION[origSiteObj]->fetchDown();
 
 	$_SESSION[origSite] = $_REQUEST[site];
@@ -65,7 +65,7 @@ if (!is_object($_SESSION[origSiteObj])) {
 	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($auser));
 	foreach ($sitesArray as $s) {
 /* 		print $s."<br>"; */
-		$temp = new site($s);
+		$temp =& new site($s);
 		$temp->fetchDown();
 		if ($temp->hasPermissionDown("add",$auser) || $temp->name == $_REQUEST[site] || $temp->site_owner == $auser) {
 			$_SESSION[sites][$s] = $temp;
@@ -108,7 +108,7 @@ if (!isset($action)) $action = "COPY";
 /******************************************************************************
  * Initialize the current site.
  ******************************************************************************/
-$siteObj = new site($_REQUEST[site]);
+$siteObj =& new site($_REQUEST[site]);
 $siteObj->fetchDown();
 $site = $_REQUEST[site];
 $section = $_REQUEST[section];

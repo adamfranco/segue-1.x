@@ -16,9 +16,12 @@ if ($_REQUEST[site])$site=$_REQUEST[site];
 if ($_REQUEST[section])$section=$_REQUEST[section];
 if ($_REQUEST[page])$page=$_REQUEST[page];
 
-$story = new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story]);
+$site =& new site($_REQUEST[site]);
+$section =& new section($_REQUEST[site],$_REQUEST[section], &$site);
+$page =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$section);
+$story =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$page);
+
 $story->fetchFromDB();
-$story->fetchUp();
 $site_owner=$story->owningSiteObj->getField("addedby");
 
 /* if (!insite($site,$section,$page,$story)) { */

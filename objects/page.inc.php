@@ -150,9 +150,13 @@ class page extends segue {
 	
 						
 	
-	function page($insite,$insection,$id=0) {
+	function page($insite,$insection,$id=0,&$sectionObj) {
 		$this->owning_site = $insite;
 		$this->owning_section = $insection;
+		$this->owningSectionObj = &$sectionObj;
+		$this->owningSiteObj = &$this->owningSectionObj->owningSiteObj;
+		$this->fetchedup = 1;
+		
 		$this->id = $id;
 		
 		// initialize the data array
@@ -188,7 +192,7 @@ class page extends segue {
 		print "<br><BR> Deleting Page<bR><BR>";
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
-			$parentObj = new section($this->owning_site,$this->owning_section);
+			$parentObj =& new section($this->owning_site,$this->owning_section,&$this->owningSectionObj->owningSiteObj);
 			$parentObj->fetchDown();
 			$parentObj->delPage($this->id);
 			$parentObj->updateDB();
@@ -228,17 +232,17 @@ class page extends segue {
 		$this->changed[stories]=1;
 /* 		print "------------------------ <br><pre>"; print_r($this); print "</pre>"; */
 		if ($delete) {
-			$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
+			$story =& new story($this->owning_site,$this->owning_section,$this->owning_page,$id,&$this);
 			$story->delete();
 		}
 	}
 	
 	function fetchUp() {
 		if (!$this->fetchedup) {
-			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj =& new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB();
 //			$this->owningSiteObj->buildPermissionsArray(1);
-			$this->owningSectionObj = new section($this->owning_site,$this->owning_section);
+			$this->owningSectionObj =& new section($this->owning_site,$this->owning_section,&$this->owningSiteObj);
 			$this->owningSectionObj->fetchFromDB();
 //			$this->owningSectionObj->buildPermissionsArray(1);
 			$this->fetchedup = 1;
@@ -251,7 +255,7 @@ class page extends segue {
 			if (!$this->tobefetched || $full) 
 				$this->fetchFromDB(0,$full);
 			foreach ($this->getField("stories") as $s) {
-				$this->stories[$s] = new story($this->owning_site,$this->owning_section,$this->id,$s);
+				$this->stories[$s] =& new story($this->owning_site,$this->owning_section,$this->id,$s,&$this);
 				$this->stories[$s]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;
@@ -447,14 +451,8 @@ ORDER BY
 /* 		print_r ($this->owningSectionObj); */
 /* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
 		
-		if (!isset($this->owningSiteObj)) {
-			$this->owningSiteObj = new site($this->owning_site);
-			$this->owningSiteObj->fetchDown();
-		}
-		if (!isset($this->owningSectionObj)) {
-			$this->owningSectionObj = &$this->owningSiteObj->sections[$this->owning_section];
-		}
-		
+		$this->fetchUp();
+
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "FK_createdby=".$_SESSION[aid];
@@ -497,10 +495,8 @@ ORDER BY
 		$d = $this->data;
 		$a = array();
 		
-		if (!isset($this->owningSiteObj)) {
-			$this->owningSiteObj = new site($this->owning_site);
-			$this->owningSiteObj->fetchDown(1);
-		}
+		$this->fetchUp();
+
 /* 		print "<pre>OwningSite: ".$this->owning_site."\nOwning_section: ".$this->owning_section."\nOwningSiteObj for page".$this->id.":\n"; */
 /* 		print_r($this->owningSiteObj); */
 /* 		print "</pre>"; */

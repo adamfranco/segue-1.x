@@ -36,7 +36,12 @@ if (count($w)) $where = " WHERE ".implode(" and ",$w);
 
 $query = "
 	SELECT 
-		*
+		media_tag,
+		media_id,
+		media_size,
+		date_format(media_updated_tstamp, '%M %e, %Y') AS media_updated_tstamp,
+		media_type,
+		slot_name
 	FROM 
 		media
 			INNER JOIN
@@ -55,7 +60,14 @@ while ($a = db_fetch_assoc($r)) {
 if ($upload) { 
 	$query = "
 		SELECT 
-			*
+			media_tag,
+			media_id,
+			media_size,
+			date_format(media_updated_tstamp, '%M %e, %Y') AS media_updated_tstamp,
+			media_type,
+			slot_name,
+			user_fname,
+			user_uname
 		FROM 
 			media
 				INNER JOIN
@@ -113,7 +125,15 @@ if (count($w)) $where = " where ".implode(" and ",$w);
 
 $query = "
 	SELECT 
-		*
+		media_tag,
+		media_id,
+		media_size,
+		date_format(media_updated_tstamp, '%M %e, %Y') AS media_updated_tstamp,
+		media_type,
+		slot_name,
+		user_fname,
+		user_uname
+
 	FROM 
 		media
 			INNER JOIN
@@ -149,7 +169,7 @@ if (count($w)) $where = " WHERE ".implode(" AND ",$w);
  
 $r=db_query("
 	SELECT 
-		COUNT(*)
+		COUNT(*) AS media_count
 	FROM 
 		media
 			INNER JOIN
@@ -162,7 +182,7 @@ $r=db_query("
 		media.FK_createdby = user_id
 	$where"); 
 $a = db_fetch_assoc($r);
-$numrows = $a['COUNT(*)'];
+$numrows = $a[media_count];
 $numperpage = 20; 
  
  
@@ -173,7 +193,15 @@ $limit = " LIMIT $lowerlimit,$numperpage";
  
 $query = "
 	SELECT 
-		*
+		media_tag,
+		media_id,
+		media_size,
+		date_format(media_updated_tstamp, '%M %e, %Y') AS media_updated_tstamp,
+		media_type,
+		slot_name,
+		user_fname,
+		user_uname
+
 	FROM 
 		media
 			INNER JOIN
@@ -466,61 +494,61 @@ if (1) {
 	<th> </th> 
 <? 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='id asc') print "id desc"; 
-	else print "id asc"; 
+	if ($order =='media_id asc') print "media_id desc"; 
+	else print "media_id asc"; 
 	print "')\" style='color: #000'>ID"; 
-	if ($order =='id asc') print " &or;"; 
-	if ($order =='id desc') print " &and;";	 
+	if ($order =='media_id asc') print " &or;"; 
+	if ($order =='media_id desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='name asc') print "name desc"; 
-	else print "name asc"; 
+	if ($order =='media_tag asc') print "media_tag desc"; 
+	else print "media_tag asc"; 
 	print "')\" style='color: #000'>File Name"; 
-	if ($order =='name asc') print " &or;"; 
-	if ($order =='name desc') print " &and;";	 
+	if ($order =='media_tag asc') print " &or;"; 
+	if ($order =='media_tag desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='type asc') print "type desc"; 
-	else print "type asc"; 
+	if ($order =='media_type asc') print "media_type desc"; 
+	else print "media_type asc"; 
 	print "')\" style='color: #000'>Type"; 
-	if ($order =='type asc') print " &or;"; 
-	if ($order =='type desc') print " &and;";	 
+	if ($order =='media_type asc') print " &or;"; 
+	if ($order =='media_type desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='size asc') print "size desc"; 
-	else print "size asc"; 
+	if ($order =='media_size asc') print "media_size desc"; 
+	else print "media_size asc"; 
 	print "')\" style='color: #000'>Size"; 
-	if ($order =='size asc') print " &or;"; 
-	if ($order =='size desc') print " &and;";	 
+	if ($order =='media_size asc') print " &or;"; 
+	if ($order =='media_size desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	if ($ltype == 'admin') { 
 		print "<th><a href=# onClick=\"changeOrder('"; 
-		if ($order =='site_id asc') print "site_id desc"; 
-		else print "site_id asc"; 
+		if ($order =='slot_name asc') print "slot_name desc"; 
+		else print "slot_name asc"; 
 		print "')\" style='color: #000'>Site"; 
-		if ($order =='site_id asc') print " &or;"; 
-		if ($order =='site_id desc') print " &and;";	 
+		if ($order =='slot_name asc') print " &or;"; 
+		if ($order =='slot_name desc') print " &and;";	 
 		print "</a></th>"; 
 	} 
  
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='addedtimestamp asc') print "addedtimestamp desc"; 
-	else print "addedtimestamp asc"; 
+	if ($order =='media_updated_tstamp asc') print "media_updated_tstamp desc"; 
+	else print "media_updated_tstamp asc"; 
 	print "')\" style='color: #000'>Date Created"; 
-	if ($order =='addedtimestamp asc') print " &or;"; 
-	if ($order =='addedtimestamp desc') print " &and;";	 
+	if ($order =='media_updated_tstamp asc') print " &or;"; 
+	if ($order =='media_updated_tstamp desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='addedby asc') print "addedby desc"; 
-	else print "addedby asc"; 
+	if ($order =='user_uname asc') print "user_uname desc"; 
+	else print "user_uname asc"; 
 	print "')\" style='color: #000'>Added by User:"; 
-	if ($order =='addedby asc') print " &or;"; 
-	if ($order =='addedby desc') print " &and;";	 
+	if ($order =='user_uname asc') print " &or;"; 
+	if ($order =='user_uname desc') print " &and;";	 
 	print "</a></th>"; 
 ?>	 
 	<th> </th> 
