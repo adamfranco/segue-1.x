@@ -199,7 +199,7 @@ if ($_loggedin) {
 	$sites = array();
 	$r = db_query($query);
 	while ($a = db_fetch_assoc($r)) {
-		if (is_editor($auser,$a['name'])) {
+		if (is_editor($auser,$a['name'],1)) {
 			array_push($sites,$a['name']);
 		}
 	}
