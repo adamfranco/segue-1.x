@@ -6,6 +6,7 @@ function makedownloadbar($o) {
 	
 	$b = db_get_line("media","id=".$o->getField("longertext"));
 	$filename = urldecode($b[name]);
+	
 	$dir = $b[site_id];
 	$size = $b[size];
 	$fileurl = "$uploadurl/$dir/$filename";
@@ -14,7 +15,7 @@ function makedownloadbar($o) {
 	$t = '';
 	$t .= "<div class=downloadbar style='margin-bottom: 10px'>";
 	if ($o->getField("title")) $t.="<b>".spchars($o->getField("title"))."</b><br>";
-	$t .= "<table width=70% cellpadding=0 cellspacing=0 style='margin: 0px; border: 0px;'><tr><td class=leftmargin align=left><a href='$fileurl' target='new_window'><img src='downarrow.gif' border=0 width=15 height=15 align=absmiddle> $name</a></td><td align=right><b>$filesize</b></td></tr></table>";
+	$t .= "<table width=70% cellpadding=0 cellspacing=0 style='margin: 0px; border: 0px;'><tr><td class=leftmargin align=left><a href='$fileurl' target='new_window'><img src='downarrow.gif' border=0 width=15 height=15 align=absmiddle> $filename</a></td><td align=right><b>$filesize</b></td></tr></table>";
 	if ($o->getField("shorttext")) $t .= "".stripslashes($o->getField("shorttext"));
 	$t.="</div>";
 	return $t;
