@@ -975,8 +975,16 @@ function convertInteralLinksToTags ($sitename, $text) {
 	$replacements = array();
 	
 	// replace internal link urls with constant [[linkpath]]
-	$patterns[] = $cfg[full_uri];
+	$patterns[] = $cfg['full_uri'];
 	$replacements[] = "\[\[linkpath\]\]";
+	if ($cfg['personalsitesurl']) {
+		$patterns[] = $cfg['personalsitesurl'];
+		$replacements[] = "\[\[linkpath\]\]";
+	}
+	if ($cfg['classsitesurl']) {
+		$patterns[] = $cfg['classsitesurl'];
+		$replacements[] = "\[\[linkpath\]\]";
+	}
 	
 	// replace specific site reference with general
 	$patterns[] = "site=".$sitename;
