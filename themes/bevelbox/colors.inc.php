@@ -57,3 +57,11 @@ $_theme_colors = array(
 			"contentinfo"=>			"999"
 	)
 );
+
+$_linkcolor = array(
+	"gray"=>					"990000",
+	"blue"=>					"990000",
+);
+
+include("$themesdir/common/nav.inc.php");
+

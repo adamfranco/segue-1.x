@@ -3,8 +3,6 @@
 	
 $_theme_colors = array(
 	"white"=>array(
-			"a"=>					"966",
-			"a:hover"=>				"b55",
 			"font-size"=>			"12px",
 			"input-borders"=>		"555",
 			"input-size"=>			"12px",
@@ -24,12 +22,6 @@ $_theme_colors = array(
 			"contentarea"=>			"fff",
 			"contentinfo"=>			"999"
 	)
-);
-
-$_borderstyle = array(
-	"dashed"=>					"dashed",
-	"solid"=>					"solid",
-	"dotted"=>					"dotted"
 );
 
 $_bordercolor = array(
@@ -69,32 +61,5 @@ $_linkcolor = array(
 	"green"=>					"006633"
 );
 
-$_nav_arrange = array(
-	"Top Sections"=>			"1",
-	"Side Sections"=>			"2"
-);
-
-$_nav_width = array(
-	"150 pixels"=>				"150",
-	"100 pixels"=>				"100",
-	"175 pixels"=>				"175",
-	"200 pixels"=>				"200",
-	"250 pixels"=>				"250",
-	"275 pixels"=>				"275"
-);
-
-$_sectionnav_size = array(
-	"12 pixels"=>				"12",
-	"10 pixels"=>				"10",
-	"14 pixels"=>				"14",
-	"16 pixels"=>				"16"
-);
-
-$_nav_size = array(
-	"12 pixels"=>				"12",
-	"10 pixels"=>				"10",
-	"14 pixels"=>				"14",
-	"16 pixels"=>				"16"
-);
-
+include("$themesdir/common/nav.inc.php");
 

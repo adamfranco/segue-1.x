@@ -7,7 +7,7 @@ function horizontal_nav($navtype,$topnav,$extra) {
 	print "<div class='sectionnav'>";
 	foreach ($topnav as $item) {
 		$samepage = (isset($navtype) && ($navtype == $item[id]))?1:0;
-		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;		
+		if (!$navtype) $samepage = ($action && ($action == $item[id]))?1:0;		
 		print makelink($item,$samepage);
 		if ($next != $totalnav) print " | ";		
 		$next=$next+1;
@@ -17,11 +17,12 @@ function horizontal_nav($navtype,$topnav,$extra) {
 }
 
 function vertical_nav($navtype,$leftnav,$extra) {
+print "<table width=100% cellpadding=2 cellspacing=0>";
 	foreach ($leftnav as $item) {
 		print "<tr><td>";
 		if ($item[type] == 'normal') {
 			$samepage = (isset($navtype) && ($navtype == $item[id]))?1:0;
-			if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
+			if (!$navtype) $samepage = ($action && ($action == $item[id]))?1:0;
 			print "<div class='nav'>";
 			print makelink($item,$samepage,'',1);
 			print "</div>";

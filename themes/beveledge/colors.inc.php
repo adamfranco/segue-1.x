@@ -115,12 +115,6 @@ $_theme_colors = array(
 	)
 );
 
-$_borderstyle = array(
-	"dashed"=>					"dashed",
-	"solid"=>					"solid",
-	"dotted"=>					"dotted"
-);
-
 $_bordercolor = array(
 	"black"=>					"000000",
 	"red"=>						"990000",
@@ -159,17 +153,4 @@ $_linkcolor = array(
 	"green"=>					"006633"
 );
 
-$_nav_arrange = array(
-	"Top Sections"=>			"1",
-	"Side Sections"=>			"2"
-);
-
-$_nav_width = array(
-	"150 pixels"=>				"150",
-	"175 pixels"=>				"175",
-	"200 pixels"=>				"200",
-	"250 pixels"=>				"250",
-	"275 pixels"=>				"275"
-);
-
-
+include("$themesdir/common/nav.inc.php");

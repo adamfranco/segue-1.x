@@ -109,7 +109,7 @@ print $sitecrumbs;
 /* ------------------------------------------- */
 /* --------- TOP SECTION NAV ---------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==1) horizontal_nav('sections',$topnav, $topnav_extra);
+if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
 
 ?>
 </div>
@@ -117,16 +117,15 @@ if ($nav_arrange==1) horizontal_nav('sections',$topnav, $topnav_extra);
 <table width=100% class=contenttable>
 <tr>
 <td class=leftnav>
-<table width=100% cellpadding=2 cellspacing=0>	
 <?
 
 /* ------------------------------------------- */
 /* --------------- LEFT NAV ------------------ */
 /* ------------------------------------------- */
 if ($nav_arrange==1) {
-	vertical_nav('page',$leftnav, $leftnav_extra);		
+	vertical_nav($page, $leftnav, $leftnav_extra);		
 } else { 
-	vertical_nav('section',$topnav, $topnav_extra);
+	vertical_nav($section, $topnav, $topnav_extra);
 }
 ?>
 </td>
@@ -136,7 +135,7 @@ if ($nav_arrange==1) {
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav('pages',$leftnav, $leftnav_extra);
+if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
 ?>
 </div>
 <?
@@ -152,7 +151,7 @@ print $content;
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav('pages',$leftnav, $leftnav_extra);
+if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
 ?>
 </div>
 </td>
@@ -173,7 +172,7 @@ if (count($rightnav)) {
 /* ------------------------------------------- */
 /* ------------ BOTTOM SECTION NAV ----------- */
 /* ------------------------------------------- */
-if ($nav_arrange==1) horizontal_nav('sections',$topnav, $topnav_extra);
+if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
 ?>
 </div>
 <?

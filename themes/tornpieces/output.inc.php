@@ -1,9 +1,19 @@
-<? // output.inc.php
-	// this script outputs the HTML resulting from action files
+<? 
+/* output.inc.php
+ this script outputs the HTML resulting from action files
+ output script needs to include the following:
+ -common theme functions.inc, header.inc status.inc
+ -particular theme colors.inc, css.inc
+ -needs to define default theme settings to use
+ -needs to call horizontal and vertical navigation function
+ for both Top Sections and Side Sections navigation arrangements 
+ */
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
 //print "$themesdir/$theme";
+include("$themesdir/common/functions.inc.php");
+
 if (file_exists("$themesdir/$theme/colors.inc.php"))
 	include("$themesdir/$theme/colors.inc.php");
 	
@@ -19,6 +29,8 @@ if ($themesettings[theme] == 'tornpieces') {   // indeed these settings are for 
 	$uselinkcolor = $themesettings[linkcolor];
 	$usenav = $themesettings[nav_arrange];
 	$usenavwidth = $themesettings[nav_width];
+	$usesectionnavsize = $themesettings[sectionnav_size];	
+	$usenavsize = $themesettings[nav_size];	
 	
 }
 if (!$usebg) $usebg = 'blue';
@@ -45,6 +57,11 @@ $nav_arrange = $_nav_arrange[$usenav];
 if (!$usenavwidth) $usenavwidth = '150 pixels';
 $navwidth = $_nav_width[$usenavwidth];
 
+if (!$usesectionnavsize) $usesectionnavsize = '12 pixels';
+$sectionnav_size = $_sectionnav_size[$usesectionnavsize];
+
+if (!$usenavsize) $usenavsize = '12 pixels';
+$nav_size = $_nav_size[$usenavsize];
 
 
 /* ------------------- END ---------------------------	*/
@@ -55,33 +72,17 @@ $navwidth = $_nav_width[$usenavwidth];
 /* ------------------------------------------- */
 /* ------------- COMMON HEADER --------------- */
 /* ------------------------------------------- */
-include("themes/common/header.inc.php"); ?>
-
-
-<? include("themes/$theme/css.inc.php"); ?>
-
-<?
+include("themes/common/header.inc.php");
+include("themes/$theme/css.inc.php");
 /* ------------------------------------------- */
 /* -------------- PAGE TITLE ----------------- */
 /* ------------------------------------------- */
 ?>
 <title><? echo $pagetitle; ?></title>
-
 </head>
 
 <body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
 
-<!--<tr>
-<td class=header align=center> -->
-<?
-/* ------------------------------------------- */
-/* -------------- STATUS BAR ----------------- */
-/* ------------------------------------------- */
-//include("themes/common/status.inc.php"); 
-?>
-<!-- </td>
-</tr>
-</table>-->
 <!-- header table   -->
 <table width=95% cellpadding=0 cellspacing=0 align=center>
 <tr>
@@ -96,37 +97,20 @@ include("themes/common/header.inc.php"); ?>
 <div class=header>
 <?
 /* ------------------------------------------- */
-/* ------------- SITE HEADER ----------------- */
+/* ------SITE HEADER/STATUS BAR/CRUMBS ------- */
 /* ------------------------------------------- */
 print $siteheader; 
-/* ------------------------------------------- */
-/* -------------- STATUS BAR ----------------- */
-/* ------------------------------------------- */
-
 include("themes/common/status.inc.php"); 
 print $sitecrumbs;
-
 ?>
 </div>
 <div class=topnav align=center>
 <?
-//use this if Section navigation is in left nav
-if ($nav_arrange==1) {
-	/* ------------------------------------------- */
-	/* -------------- TOP NAV-sections ------------ */
-	/* ------------------------------------------- */
-	//print " | ";
-	$totalnav = count($topnav);
-	$next=1;
-	foreach ($topnav as $item) {
-		$samepage = (isset($section) && ($section == $item[id]))?1:0;
-		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-		print makelink($item,$samepage);
-		if ($next != $totalnav) print " | ";
-		$next=$next+1;
-	}	
-	print $topnav_extra;
-}
+/* ------------------------------------------- */
+/* --------- TOP SECTION NAV ---------------- */
+/* ------------------------------------------- */
+if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
+
 ?>
 </div>
 <td class=right><img class=lefttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>'></td>
@@ -154,64 +138,15 @@ if ($nav_arrange==1) {
 <tr>
 <td class=left><img class=lefttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>'></td>
 <td class=content>
-<table width=100% cellpadding=2 cellspacing=0>
 <?
-//use this if page navigation is in left nav
-if ($nav_arrange==1) {
-	/* ------------------------------------------- */
-	/* -------------- LEFT NAV   ----------------- */
-	/* ------------------------------------------- */
-			
-	foreach ($leftnav as $item) {
-		print "<tr><td>";
-		if ($item[type] == 'normal') {
-			$samepage = (isset($page) && ($page == $item[id]))?1:0;
-			if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-			print "<div>";
-			print makelink($item,$samepage,'',1);
-			print "</div>";
-		}
-		if ($item[type] == 'divider') {
-			print "$item[extra]<br>";
-		}
-		if ($item[type] == 'heading') {
-			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
-		}
-		print "</tr></td>";
-	}
-	print "</table>";
-	print "<br>$leftnav_extra";
-}
-//use this if Section navigation is in left nav
-if ($nav_arrange==2) {
 
 /* ------------------------------------------- */
-/* -------------- LEFT NAV-sections ---------- */
+/* --------------- LEFT NAV ------------------ */
 /* ------------------------------------------- */
-		
-	foreach ($topnav as $item) {
-		print "<tr><td>";
-		if ($item[type] == 'normal') {
-			$samepage = (isset($section) && ($section == $item[id]))?1:0;
-			//$samepage = (isset($page) && ($page == $item[id]))?1:0;
-			if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-			print "<div>";
-			print makelink($item,$samepage,'',1);
-			print "</div>";
-		}
-		if ($item[type] == 'divider') {
-			print "$item[extra]<br>";
-		}
-		if ($item[type] == 'heading') {
-			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
-		}
-		print "</tr></td>";
-	}
-	print "</table>";
-	print "<br>$topnav_extra";
-	//print "<br>$leftnav_extra";
+if ($nav_arrange==1) {
+	vertical_nav($page, $leftnav, $leftnav_extra);		
+} else { 
+	vertical_nav($section, $topnav, $topnav_extra);
 }
 ?>
 </td>
@@ -239,25 +174,10 @@ if ($nav_arrange==2) {
 <td class=content>
 <div class=topnav align=center>
 <?
-//use this if page navigation on top
-if ($nav_arrange==2) {
-	/* ------------------------------------------- */
-	/* -------------- TOP NAV-pages -------------- */
-	/* ------------------------------------------- */
-	//print " | ";
-	$totalnav = count($leftnav);
-	$next=1;
-	foreach ($leftnav as $item) {
-		$samepage = (isset($page) && ($page == $item[id]))?1:0;
-		//$samepage = (isset($section) && ($section == $item[id]))?1:0;
-		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-		print makelink($item,$samepage);
-		if ($next != $totalnav) print " | ";
-		$next=$next+1;
-	}
-	print $leftnav_extra;
-	//print $topnav_extra;
-}
+/* ------------------------------------------- */
+/* ------------ TOP PAGE NAV ---------------- */
+/* ------------------------------------------- */
+if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
 ?>
 </div>
 <?
@@ -270,26 +190,10 @@ print $content;
 ?>
 <div class=topnav align=center>
 <?
-//use this if page navigation on top and bottom
-if ($nav_arrange==2) {
-	/* ------------------------------------------- */
-	/* -------------- Bottom NAV-pages -------------- */
-	/* ------------------------------------------- */
-	//print " | ";
-	$totalnav = count($leftnav);
-	$next=1;
-	foreach ($leftnav as $item) {
-		$samepage = (isset($page) && ($page == $item[id]))?1:0;
-		//$samepage = (isset($section) && ($section == $item[id]))?1:0;
-		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-		print makelink($item,$samepage);
-		if ($next != $totalnav) print " | ";
-		$next=$next+1;
-	}
-	print $leftnav_extra;
-	//print $topnav_extra;
-}
- 
+/* ------------------------------------------- */
+/* ------------ BOTTOM PAGE NAV -------------- */
+/* ------------------------------------------- */
+if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
 ?>
 </div>
 </td>
@@ -301,22 +205,16 @@ if ($nav_arrange==2) {
 <td class=bottomright>&nbsp;</td>
 </tr>
 </table>
-
-
 <?
 /* ------------------------------------------- */
-/* -------------- RIGHT NAV      ------------- */
+/* -------------- RIGHT NAV (OPT)  ----------- */
 /* ------------------------------------------- */
-
 if (count($rightnav)) {
 	print "<td style='margin-left: 20px'>";
-	foreach ($rightnav as $item) {
-		print "<a href='$item[url]'>$item[name]</a><BR>";
-	}
+	horizontal_nav('pages',$rightnav, $rightnav_extra);
 	print "</td>";
 }
 ?>
-
 </tr>
 </table>
 
@@ -332,28 +230,12 @@ if (count($rightnav)) {
 <td class=content>
 <div class=topnav align=center>
 <?
-//use this if Section navigation is top an bottom
-
 /* ------------------------------------------- */
-/* --------- bottom NAV -sections --- */
+/* ------------ BOTTOM SECTION NAV ----------- */
 /* ------------------------------------------- */
-if ($nav_arrange==1) {
-	//print " | ";
-	$totalnav = count($topnav);
-	$next=1;
-	foreach ($topnav as $item) {
-		$samepage = (isset($section) && ($section == $item[id]))?1:0;
-		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-		$item[extra] = "";
-		print makelink($item,$samepage);
-		if ($next != $totalnav) print " | ";
-		$next=$next+1;
-	}
-}
-
+if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
 ?>
 </div>
-
 <?
 /* ------------------------------------------- */
 /* -------------- FOOTER     ----------------- */

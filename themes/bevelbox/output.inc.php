@@ -1,57 +1,77 @@
-<? // output.inc.php
-	// this script outputs the HTML resulting from action files
-	
+<? 
+/* output.inc.php
+ this script outputs the HTML resulting from action files
+ output script needs to include the following:
+ -common theme functions.inc, header.inc status.inc
+ -particular theme colors.inc, css.inc
+ -needs to define default theme settings to use
+ -needs to call horizontal and vertical navigation function
+ for both Top Sections and Side Sections navigation arrangements 
+ */
+
+//$nav_arrange = 2;	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
 //print "$themesdir/$theme";
-//exit();
+include("$themesdir/common/functions.inc.php");
+
 if (file_exists("$themesdir/$theme/colors.inc.php"))
 	include("$themesdir/$theme/colors.inc.php");
 
 if ($themesettings[theme] == 'bevelbox') {   // indeed these settings are for this theme
+
 	$use = $themesettings[colorscheme];
+	$uselinkcolor = $themesettings[linkcolor];
+	$usenav = $themesettings[nav_arrange];
+	$usesectionnavsize = $themesettings[sectionnav_size];	
+	$usenavsize = $themesettings[nav_size];	
+
 }
 if (!$use) $use = 'gray';
 $c = $_theme_colors[$use];
 
-/* ------------------- END ---------------------------	*/
+if (!$uselinkcolor) $uselinkcolor = 'red';
+$linkcolor = $_linkcolor[$uselinkcolor];
+
+if (!$usenav) $usenav = 'Top Sections';
+$nav_arrange = $_nav_arrange[$usenav];
+
+if (!$usesectionnavsize) $usesectionnavsize = '12 pixels';
+$sectionnavsize = $_sectionnav_size[$usesectionnavsize];
+
+if (!$usenavsize) $usenavsize = '12 pixels';
+$navsize = $_nav_size[$usenavsize];
+
+
+/* ------------------- END THEME SETTINGS---------------------	*/
 
 ?>
 <head>
-
-<?/* ------------------------------------------- */
+<?
+/* ------------------------------------------- */
 /* ------------- COMMON HEADER --------------- */
 /* ------------------------------------------- */
-include("themes/common/header.inc.php"); ?>
-
-<? 
+include("themes/common/header.inc.php");
 include("themes/$theme/css.inc.php");
-?>
 
-<?/* ------------------------------------------- */
+/* ------------------------------------------- */
 /* -------------- PAGE TITLE ----------------- */
 /* ------------------------------------------- */?>
 <title><? echo $pagetitle; ?></title>
-
 </head>
 
 <body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
 
-
-
 <table width=90% align=center cellpadding=0 cellspacing=0>
 <tr><td>
-    <?
-    /* ------------------------------------------- */
-	/* ------------- SITE HEADER ----------------- */
-	/* ------------------------------------------- */
-	print $siteheader; 
-	/* ------------------------------------------- */
-	/* -------------- STATUS BAR ----------------- */
-	/* ------------------------------------------- */
+<?
+/* ------------------------------------------- */
+/* ------SITE HEADER/STATUS BAR/CRUMBS ------- */
+/* ------------------------------------------- */
+print $siteheader; 
 include("themes/common/status.inc.php"); 
-	print $sitecrumbs; 
-	?>
+print $sitecrumbs; 
+?>
 </tr></td>
 </table>
 
@@ -82,21 +102,11 @@ include("themes/common/status.inc.php");
 	<div class='nav'>
 	<?
 	/* ------------------------------------------- */
-	/* -------------- TOP NAV    ----------------- */
+	/* --------- TOP SECTION NAV ---------------- */
 	/* ------------------------------------------- */
+	if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
 	
-		print " | ";
-		foreach ($topnav as $item) {
-		
-			$samepage = (isset($section) && ($section == $item[id]))?1:0;
-			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-			print makelink($item,$samepage);
-			print " | ";
-			
-		}
-		
-		print $topnav_extra;
-		?>
+	?>	
 	</div>
 	</div>
     
@@ -117,48 +127,55 @@ include("themes/common/status.inc.php");
 
 <table width=100% cellpadding=5 cellspacing=0>
 <td class=leftnav>
-<div class='nav'>
-	<?
+<?
+
 /* ------------------------------------------- */
-/* -------------- LEFT NAV   ----------------- */
+/* --------------- LEFT NAV ------------------ */
 /* ------------------------------------------- */
-		
-	foreach ($leftnav as $item) {
-		if ($item[type] == 'normal') {
-			$samepage = (isset($page) && ($page == $item[id]))?1:0;
-			if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-			print "<div class='nav'>";
-			print makelink($item,$samepage,'',1);
-			print "</div>";
-		}
-		if ($item[type] == 'divider') {
-			print "$item[extra]<br>";
-		}
-		if ($item[type] == 'heading') {
-			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
-			if ($item[extra]) print "<div align=right>$item[extra]</div>";
-		}
-	}
-	print "<br>$leftnav_extra";
-	?>
-</div>
+if ($nav_arrange==1) {
+	vertical_nav($page, $leftnav, $leftnav_extra);		
+} else { 
+	vertical_nav($section, $topnav, $topnav_extra);
+}
+?>
 </td>
 </table>
 
 </td>
 
 <td class=contentarea>
+<div class=topnav align=center>
+<?
+/* ------------------------------------------- */
+/* ------------ TOP PAGE NAV ---------------- */
+/* ------------------------------------------- */
+if ($nav_arrange==2) horizontal_nav($page,$leftnav, $leftnav_extra);
+?>
+</div>
+<?
+/* ------------------------------------------- */
+/* -------------- CONTENT AREA   ------------- */
+/* ------------------------------------------- */
+print $content; 
 
-<? print $content; ?>
-
+?>
+<div class=topnav align=center>
+<?
+/* ------------------------------------------- */
+/* ------------ BOTTOM PAGE NAV -------------- */
+/* ------------------------------------------- */
+if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
+?>
+</div>
 </td>
 
 <?
+/* ------------------------------------------- */
+/* -------------- RIGHT NAV (OPT)  ----------- */
+/* ------------------------------------------- */
 if (count($rightnav)) {
 	print "<td style='margin-left: 20px'>";
-	foreach ($rightnav as $item) {
-		print "<a href='$item[url]'>$item[name]</a><BR>";
-	}
+	horizontal_nav('pages',$rightnav, $rightnav_extra);
 	print "</td>";
 }
 ?>
@@ -170,21 +187,14 @@ if (count($rightnav)) {
     <td class="bottom">
 <div class=topnav align=center>
 <div class='nav'>
-	<?
+<?
 /* ------------------------------------------- */
-/* -------------- TOP (or bottom) NAV -------- */
+/* ------------ BOTTOM SECTION NAV ----------- */
 /* ------------------------------------------- */
-	print " | ";
-	foreach ($topnav as $item) {
-		$samepage = (isset($section) && ($section == $item[id]))?1:0;
-		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-		$item[extra] = "";
-		print makelink($item,$samepage);
-		print " | ";
-	}	
-	?>
+if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
+?>
 </div>
-</div> 
+</div>
        
 </td>
 <td class="bottomright1">&nbsp;</td>
@@ -195,10 +205,12 @@ if (count($rightnav)) {
 
 <table width=90% align=center cellpadding=0 cellspacing=0>
 <tr><td>
-<?/* ------------------------------------------- */
+<?
+/* ------------------------------------------- */
 /* -------------- FOOTER     ----------------- */
 /* ------------------------------------------- */
-print $sitefooter ?>
+print $sitefooter 
+?>
 </tr></td>
 </table>
 <br>
