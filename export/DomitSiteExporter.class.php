@@ -267,7 +267,7 @@ class DomitSiteExporter {
 		$storyElement =& $this->_document->createElement('file');
 		$pageElement->appendChild($storyElement);
 				
-		$this->addStoryProporties($story, $storyElement);
+		$this->addCommonProporties($story, $storyElement);
 		
  		// description
 		$shorttext =& $this->_document->createElement('description');
@@ -315,7 +315,7 @@ class DomitSiteExporter {
 	 * @param object story $story The link to add.
 	 * @param integer $indent The indent level of the object
 	 */
-	function addLink(& $story, & $pageElement) {
+	function addLink(& $story, & $pageElement) {		
 		$storyElement =& $this->_document->createElement('link');
 		$pageElement->appendChild($storyElement);
 		
@@ -329,8 +329,7 @@ class DomitSiteExporter {
  		// file
 		$longertext =& $this->_document->createElement('url');
 		$storyElement->appendChild($longertext);
-		$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext"))));
-		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($filename)));
+		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField("url"))));
 		
 		$this->addStoryProporties($story, $storyElement);
 	}
