@@ -46,7 +46,7 @@ printc("<br>");
 printc("<br>");
 
 // --- form contents ---
-printc ("<input type=button name=update value='Update Header' onClick=\"submitForm()\">");
+//printc ("<input type=button name=update value='Update Header' onClick=\"submitForm()\">");
 
 /******************************************************************************
 * Media Library: links to filebrowser.php and returns media urls
@@ -54,26 +54,37 @@ printc ("<input type=button name=update value='Update Header' onClick=\"submitFo
 * NOTE: this Media Library link is NOT the same as in the Image/File Block UI
 ******************************************************************************/
 
-/* printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>"); */
-/* printc("<tr><td colspan=2>"); */
-/* printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>"); */
-/* printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>"); */
-/* printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>"); */
-/* printc(" (media file URL)"); */
-/* printc("</div></td></tr>"); */
-/* printc("<tr><td>"); */
-/* printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>"); */
-/* printc("</td></tr>"); */
-/* printc("</table></div>"); */
+printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+printc("<tr><td colspan=2>");
+printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
+printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
+printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
+printc(" (media file URL)");
+printc("</div></td></tr>");
+printc("<tr><td>");
+printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
+printc("</td></tr>");
+printc("</table></div><br><br>");
 
-if ($_SESSION[siteObj]->getField("footer")) printc("<input type=submit name=copyfooter value='Copy From Footer'>");
-printc("<br>");
+//if ($_SESSION[siteObj]->getField("footer")) printc("<input type=submit name=copyfooter value='Copy From Footer'>");
+//printc("<br><br>");
 
 //	print out text areas with editor (determined by addeditor function)
 //  addeditor function (defined in editor.inc.php)
 //  addeditor function variables (textarea, cols, rows, text)
 include("htmleditor/editor.inc.php");
-printc(addeditor("header",60,8,$_SESSION[siteObj]->getField("header")));
+
+/******************************************************************************
+ * replace general media library urls (i.e. $mediapath/$sitename/filename)
+ ******************************************************************************/
+$mod_header = $_SESSION[siteObj]->getField("header");
+$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][sitename];
+$general_mediapath = "mediapath";
+$mod_header = eregi_replace($general_mediapath, $specfic_mediapath, $mod_header);
+
+printc(addeditor("header",60,8,$mod_header));
+
+//printc(addeditor("header",60,8,$_SESSION[siteObj]->getField("header")));
 
 //printc("<textarea name=header cols=70 rows=8>");
 //$temp = spchars($_SESSION[settings][header]);

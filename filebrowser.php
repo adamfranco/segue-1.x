@@ -39,6 +39,8 @@ $site = $_SESSION[settings][site];
 
 if ($_REQUEST[site]) {
 	$site = $_REQUEST[site];
+} else if ($_SESSION[settings][sitename]) {
+	$site = $_SESSION[settings][sitename];
 } else {
 	$site = $_SESSION[settings][site];
 }

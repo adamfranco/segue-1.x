@@ -165,6 +165,20 @@ if ($_REQUEST[save]) {
 	if (!$error) { // save it to the database
 		
 		print "<BR><BR>".$_SESSION[settings][sitename]."<BR><BR>";
+		
+		/******************************************************************************
+		 * replace media library urls with $mediapath/$sitename/filename
+		 * replace specific url with general url
+		 ******************************************************************************/
+		 $mod_header = $_SESSION[siteObj]->getField("header",$_REQUEST[header]);
+		 $mod_footer = $_SESSION[siteObj]->getField("footer",$_REQUEST[footer]);
+		 $specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][sitename];
+		 $general_mediapath = "mediapath";
+		 $mod_header = eregi_replace($specfic_mediapath, $general_mediapath, $mod_header);
+		 $mod_footer = eregi_replace($specfic_mediapath, $general_mediapath, $mod_footer);
+		 $_SESSION[siteObj]->setField("header",$mod_header);
+		 $_SESSION[siteObj]->setField("footer",$mod_footer);
+
 		if ($_SESSION[settings][add]) {
 			$_SESSION[siteObj]->insertDB();
 			log_entry("add_site","$_SESSION[auser] added ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name,$_SESSION[siteObj]->id,"site");

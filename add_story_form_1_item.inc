@@ -251,8 +251,6 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
 	 ******************************************************************************/
-	//printpre($_SESSION);
-	//$specfic_mediapath = "http://segue.middlebury.edu";
 	$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
 	$general_mediapath = "mediapath";
 	$text = eregi_replace($general_mediapath, $specfic_mediapath, $text);

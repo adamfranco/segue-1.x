@@ -135,11 +135,24 @@ if ($_REQUEST[site]) {						// we are in a site
 	if (!isset($themesettings)) $themesettings = $thisSite->getField("themesettings");
 
 	$siteheader = "<div align=center style='margin-bottom: 3px'>";
-	$siteheader .= $thisSite->getField("header");
+	
+	/******************************************************************************
+	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
+	 ******************************************************************************/
+	$mod_header = $thisSite->getField("header");
+	$mod_footer = $thisSite->getField("footer");
+	$specfic_mediapath = $cfg[uploadurl]."/".$_REQUEST[site];
+	$general_mediapath = "mediapath";
+	$mod_header = eregi_replace($general_mediapath, $specfic_mediapath, $mod_header);
+	$mod_footer = eregi_replace($general_mediapath, $specfic_mediapath, $mod_footer);
+	
+	$siteheader .= $mod_header;	
+	//$siteheader .= $thisSite->getField("header");
 	$siteheader .= "</div>";
 
 	$sitefooter = "<center>";
-	$sitefooter .= $thisSite->getField("footer");
+	$sitefooter .= $mod_footer;
+	//$sitefooter .= $thisSite->getField("footer");
 	$sitefooter .= "</center>";
 
 }
