@@ -49,7 +49,7 @@ if ($_SESSION[pageObj]->getField("type")=='page') {
 	printc("</select><br><br>");
 	
 	printc("Show horizontal rule: <input type=checkbox name='showhr' value=1". (($_SESSION[pageObj]->getField("showhr"))?" checked":"") . "><br>");
-	printc("<div class=desc>By checking the above box, a horizontal rule will be placed between content blocks. A horizontal rule will also be displayed if either of the following two checkboxes are checked.</div>");
+	printc("<div class=desc>By checking the above box, a horizontal rule will be placed between content blocks.</div>");
 		
 	printc("Show added/edited by <i>username</i> for content: <input type=checkbox name='showcreator' value=1". (($_SESSION[pageObj]->getField("showcreator"))?" checked":"") . "><BR>");
 	printc("<div class=desc>By checking the above box, the usernames of the people that added or edited the content on this page will be displayed along with the story text.</div>");

@@ -1,7 +1,5 @@
 <? /* $Id$ */
 
-//if ($_SESSION[ltype] == 'admin' && $action=='viewsite') { include("output_modules/other/navbars.inc.php"); return; }
-
 //if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 
 $isediting = 0;
@@ -17,7 +15,7 @@ add_link(topnav2,"ISSUES",$link,$extra,'',$target);
 if (count($_ids)) {
 	$s = $_ids[0];$int = &$thisSite->sections;
 	$l = $_ids[count($_ids)-1];
-	if ($section && $thisSection->getField("title")!="TOP") $last=&$int[$section];
+	if ($section && ($thisSection->getField("title")!="TOP" || ($action=='viewsite' && $_SESSION[atype] == 'admin'))) $last=&$int[$section];
 	else $last = &$int[$l];
 	$first = &$int[$s];
 	
@@ -63,7 +61,7 @@ if ($thisSite->sections) {
 	add_link(leftnav2,"<span class=smaller>ISSUES</span>");
 	foreach (array_reverse($thisSite->sections,TRUE) as $s=>$o) {
 		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
-			if ($i!=$total-1) {
+			if ($i!=$total-1 || ($action=='viewsite' && $_SESSION[atype]=='admin')) {
 				if ($o->getField("type") == 'section') $link = "$PHP_SELF?$sid&site=$site&section=$s&action=$action&supplement=listarticles";
 				if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
 				$extra = '';

@@ -93,8 +93,8 @@ do {
 			foreach ($thisPage->stories as $s=>$o) {
 			
 				if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {		
-					if (($thisPage->getField("showcreator") || $thisPage->getField("showdate") || $thisPage->getField("showhr")) && $i!=0) 
-						printc("<hr size='1' noshade style='margin-top: 10px'>");
+					if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
+						printc("<hr size='1' noshade style='margin-top: 5px'>");
 					if ($o->getField("category")) {
 						printc("<div class=contentinfo id=contentinfo2 align=right>");
 						printc("Category: <b>".spchars($o->getField("category"))."</b>");
