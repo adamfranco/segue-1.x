@@ -1,41 +1,427 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
-	<version number="1.0.0 rc1">
-		<new author='gabe'>
-			Added new config option: $cfg[domain] -- the cookie domain for session info. Allows session info to cross sites if they are running the same instance of segue.
+	<version number="1.3.0" date="the future">
+		<new author='adam'>
+			Added an RSS Feed content type that allows the inclusion of RSS feeds into
+			a Segue site.
 		</new>
-		<new author='gabe'>Discussion links now displayed with statistics info.</new>
-		<change author='gabe'>By-line for default page now has a link to a "credits" page with more info about the authors.</change>
-		<change>ChangeLog is now held in XML format &amp; converted with XSL!</change>
-		<change author='gabe'>"Powered by Segue" logo now takes you to the Segue page.</change>
+	</version>
+	<version number="1.2.3" date="2004-08-04">
+		<fix author='alex'>
+			HTMLArea editor automatically inserts a break tag causing stories which
+			user do not add content to have content.  Fixed this bug by deleting break
+			tag if it is the only content in the editor
+		</fix>
+		<fix author='alex'>
+			fixed bug that allowed users within institute ip range to post to discussions
+			for only institute users without logging in.
+		</fix>
+		<change author='gabe'>
+			Changed user-type output in status bar to display full
+			words (ie, student instead of stud, professor instead of prof, etc).
+		</change>
+		<fix author='gabe'>
+			Fixed discussion post output to strip slashes, avoided extra '\' characters.
+		</fix>
+		<new author='gabe'>
+			Added in public site listing feature.
+		</new>
+		<fix author='gabe'>
+			Changed semester-list in add-course admin tools view so that it
+			corresponds to the list given in the config file instead of a static
+			Middlebury-based list.
+		</fix>
+	</version>
+	<version number="1.2.2" date="2004-07-06">
+		<fix author='gabe'>
+			Fixed a UI bug in which story timestamps/editors would display
+&quot;edited by ...&quot; when nobody had done any editing.
+		</fix>
+		<fix author='alex'>
+			Fixed browser sniffer bug that prevented inclusion of html editor
+in add_site_form_5_header.inc and add_site_form_5_footer.inc
+		</fix>
+		<fix author='alex'>
+			Fixed problem uploading files to Media Library that occured in
+Mac Safari. Removed browser specific code from filebrowser.php
+		</fix>
+	</version>
+	<version number="1.2.1" date="2004-06-17">
+		<fix author='alex'>
+			Fixed a problem uploading files to Media Library that occured in
+			Windows Internet Explorer.  
+		</fix>
+		<change author='alex'>
+			Link to edit discussion/assessment options from discussion/assessment 
+			UI now returns users back to this location (instead of page)
+		</change>	
+	</version>
+	<version number="1.2.0" date="2004-06-10">
+		<new author='alex' ref='957602' reftype='fr'>
+			Added HTMLarea version 3.0 to UI for adding content, editing site headers
+			and footers and discussion posts.  2 implementations of the editor are
+			used, one for content blocks, site headers and footers and another for 
+			discussion posts. 
+		</new>	
+		<important author='alex'>
+			The HTMLarea editor works with Mozilla 1.3 beta or higher or Windows
+			Internet Explorer 5.5. or higher.  This editor doesn't work in Safari
+			or Mac Internet Explorer.  For these browsers, a standard textarea is
+			available.			
+		</important>
+		<new author='alex' ref='957602' reftype='fr'>
+			Added UI for discussion/assessment participation summary and moderation.  
+			This UI gives site owners a list of all the participants in a given 
+			discussion/assessment or in all the discussions/assessments in the given 
+			site.  This UI also allows site owners to email all the participants in 
+			given discussion/assessment or all the participants of all 
+			discussions/assessments in the given site.  finally this UI allows site
+			 owners to sort all discussion posts by rating, post time or user name.
+		</new>
+		<new author='alex'>
+			Added summary of discussion/assessment settings that is displayed for
+			 site owners when they view discussions/assessments on their sites.
+		</new>
+		<fix author='alex'>
+			Fixed bug that allowed discussions to be enabled without granting
+			permissions to discuss to any group/users 
+		</fix>
+	</version>
+		<version number="1.1.1" date="2004-04-23">
+		<fix author='adam'>
+			Fixed a problem in the _first_time_run.inc.php SQL syntax that 
+			was preventing the discussion table from being created for new
+			installs of Segue.
+		</fix>
+		<fix author='adam'>
+			Fixed some missing quotation marks, ", in "admin tools" --> "edit
+			users" page that were causing problems with spaces in names. Thanks
+			go to Steve from Nottingham Trent University, England, for finding
+			this problem.
+		</fix>
+	</version>
+	<version number="1.1.0" date="2004-04-22">
+		<new author='adam'>
+			Command-line XML import/export scripts now allow for backup of Segue
+			sites to flat XML files. For more information please reference the 
+			README in the segue/export/ directory.
+		</new>
+		<fix author='alex'>
+			Fixed bug in admin tools search users UI (users.php) so search
+			pagination working properly.
+		</fix>
+		<fix author='alex'>
+			Posting to discussions now works reliably on all browsers (PC
+			Internet Explorer sometimes would not post because did not 
+			interpret postform action path correctly).
+		</fix>
+		<fix author='adam'>
+			Adding of editors now works in the 'discussions settings' step of
+			the add/edit story interface.
+		</fix>
+		<important author='alex'>
+			New database fields have been added to the story and discussion
+			tables. To add new fields, log in as an administrator, then go to 
+			'admin tools' > 'segue updates' and run the 1.1.0 update if needed.
+		</important>
+		<new author='alex'>
+			Added information about discussion/assessment access such as
+			authentication requirements, information about what will be 
+			displayed to other users (e.g. author name, post content)
+			and what post information is available to the site owner. 
+		</new>	
+		<new author='alex' ref='888585' reftype='fr'>
+			Added file upload UI to discussion/assessment post form.  This
+			feature will allow those who post to a discussion to attach a file.
+			Upload UI uses the site Media Library (accessible from 
+			filebrowser.php).  When the Media Library is accessed from 
+			discussion/assessment, only files uploaded by the currently 
+			authenticated user will appear (unless that user is the site owner).
+			This new functionality will	allow the discussion/assessment UI to
+			function as an assignment/assessment dropbox.
+		</new>
+		<new author='alex' ref='888588' reftype='fr'>
+			Added option to rate discussion/assessment posts.  This feature 
+			will allow site owners rate the quality of posts.  In assessment
+			mode this rating can be used as a grade.
+		</new>
+		<new author='alex' ref='888588' reftype='fr'>
+			Added option to show or hide authors of discussion/assessment posts.
+ 			This feature will allow site owners to create publicly anonymous 
+ 			discussions while retaining their own access to the identity of 
+ 			discussion post authors.  All users (other then the site owner) 
+ 			will see only then own posts identified.  This feature will also
+			allow site owners to let all users see then results of an assessment
+			without revealing identity of assessment post authors.
+		</new>
+		<new author='alex' ref='888588' reftype='fr'>
+			Added option to show or hide discussion/assessment posts.  This
+			feature will allow site owners to use discussions as assessments.
+			Thus if hide posts is set then posts referred to collectively as 
+			an Assessment.  All users (other then the site owner) will see 
+			their own posts only.
+		</new>
+		<new author='alex'>
+			Added option to email site owner all discussion/assessment posts. 
+			This feature will allow site owners to get email updates of posts to
+			their discussions. 
+		</new>
+		<new author='alex'>
+			Added option to sort discussion/assessment posts by recent first or
+			recent last, rating	and author. 
+		</new>	
+		<change author='alex'>
+			Information on who posted last to a given discussion/assessment has
+			been removed. This has been done to preserve integrity of assessment
+			mode described above.
+		</change>
+		<change author='alex'>
+			Link to discussions have been changed from Discussion to
+			Discuss/Assess.
+		</change>
+		<change author='alex'>
+			Full name (instead of username) now displayed in story author and
+			editor attribution.
+		</change>
+		<change author='adam'>
+			The user full name, email, and type in the db are now updated from
+			LDAP or other auth method if the db version doesn't match.
+		<fix author='alex'>
+			Fixed bug that prevented indentation of replies to thread in Windows
+			Internet Explorer.
+		</fix>
+		</change>
+	</version>
+	<version number="1.0.6" date="2003-12-29">
+		<fix author='adam' ref='750109' reftype='bug'>
+			Now doesn't attempt to perform operations on nonexistant LDAP
+			results.
+		</fix>
+		<fix author='gabe' ref='865065' reftype='bug'>
+			Now checks that the destination name is not the same as the source
+			name and is also not an empty string.
+		</fix>
+	</version>
+	<version number="1.0.5" date="2003-12-19">
+		<change author='adam'>
+			LDAP authentication has been generalized and should now work with 
+			most LDAP servers.
+		</change>
+		<change author='alex'>
+			Refined admin tools UI.  Added all Segue users
+			to add/edit user UI and allowed for searching by auth and user type.
+			Added pagination to add/edit slots UI and refined layout of search 
+			results.
+		</change>
+		<fix author='alex' ref='853466' reftype='bug'>
+			Classes now show up if the user is an admin.
+		</fix>
+		<fix author='alex' ref='853497' reftype='bug'>
+			Removed link to assessments on default.inc.php
+		</fix>
+		<fix author='alex' ref='853501' reftype='bug'>
+			Fixed a bug in add/edit classes UI so that classes existing classes 
+			can now be edit.
+		</fix>
+	</version>
+	<version number="1.0.4" date="2003-11-13">
+		<fix author='adam'>
+			Fixed a bug in the 1.0.3 permissions checking that prevented 
+			institution users from accessing sites.
+		</fix>
+		<fix author='adam'>
+			Fixed a bug in fetching of sites where a user is editor, so that a
+			database connection is guaranteed.
+		</fix>
+	</version>
+	<version number="1.0.3" date="2003-11-12">
+		<change author='dobo'>
+			Default page and permissions checking re-written to be faster.
+		</change>
+		<change author='adam'>
+			Permissions window now has Save/Cancel buttons at the top of the 
+			window.
+		</change>
+		<important author='adam'>
+			Segue expects that usernames are all lower-case. Checks are in place
+			to force the creation of lowercase usernames when adding users, but 
+			if you are using a custom authentication modules, these checks may 
+			be bypassed and you should check that usernames in your user table 
+			are lower-case if you see strange problems with permissions. 
+		</important>
+		<new author='adam'>
+			Addition of an update framework for applying database updates in
+			Segue. When templates/database updates are in a release, they
+			will appear in the "Segue Updates" section of the "admin tools".
+		</new>
+		<change author='alex'>
+			Two new site templates: "Advanced: Single Section" and 
+			"Advanced: Blank".
+		</change>
+		<important author='adam'>
+			New templates have been added. To create the new templates, log in 
+			as an administrator, then go to 'admin tools' --> 'segue updates'
+			and run the 1.0.3 update if needed.
+		</important>
+		<change author='alex'>
+			Discussions now appear in-line instead of in a popup window.
+		</change>
+		<change author='alex'>
+			Admin screens for users, classes, slots, and logs now have improved
+			searching and pagination.
+		</change>
+		<fix author='gabe' ref='776452' reftype='bug'>
+			Anonymous/Unauthenticated discussions are now working.
+		</fix>
+		<fix author='adam' ref='809335' reftype='bug'>
+			Class groups not listed from members
+		</fix>
+		<change author='adam' ref='804005' reftype='fr'>
+			Editors of sections can now enable discussions for that section and
+			select which (of the already availible editors) can post to it.
+		</change>
+		<fix author='adam' ref='803899' reftype='bug'>
+			Co-Teaching profs now don't see site creation, grouping, or editing
+			links if they are not the owner for a site. They see editing links
+			as apropriate if they are editors.
+		</fix>
+		<fix author='adam' ref='803894' reftype='bug'>
+			User's Full Names containing apostrophes now don't throw errors when
+			adding to the user table.
+		</fix>
+	</version>
+	<version number="1.0.2" date="2003-09-08">
+		<change author='adam' ref='777065' reftype='fr'>
+			The admin interface has been changed so that slot and their
+			properties can be changed along side the classes and users. Custom 
+			upload limits can be set in this slot interface now instead of
+			editing the DB directly.
+		</change>
+		<fix author='adam' ref='802499' reftype='bug'>
+			Story problems with the [De]Activate dates have been fixed
+		</fix>
+		<fix author='adam' ref='795587' reftype='bug'>
+			Problems with the [De]Activate dates have been fixed
+		</fix>
+		<fix author='adam' ref='791954' reftype='bug'>
+			The Move/Copy UI now shows the sitename to differentiate between
+			similarly titled sites.
+		</fix>
+	</version>
+	<version number="1.0.1" date="2003-08-08">
+		<fix>
+			Fixed the numerous bugs that were generated by the change below.
+			(ouch)
+		</fix>
+		<change>
+			Slots interface: administrators can now edit owner &amp; media
+			library size for existing slots.
+		</change>
+		<fix author='adam' ref='784526' reftype='bug'>
+			Fixed upload of PHP files bug.
+		</fix>
+		<important>
+			DB CHANGE: The 'slot' table has a new column: 'slot_uploadlimit',
+			which is an INT(10), corresponding to the number of bytes of the
+			quota.
+		</important>
+		<new author='adam' ref='777065' reftype="fr">
+			Media Library quota can be adjusted on a per-site basis through the
+			slot database table. Add Slot interface upgraded too.
+		</new>
+		<fix author='gabe' ref='771969' reftype="bug">
+			Upon logout, the session, instead of being completely destroyed,
+			only unsets Segue-specific variables. The previous functionality was
+
+			also killing other apps running under the same session.
+		</fix>
+	</version>
+	<version number="1.0.0 rc1" date="2003-07-14">
+		<new author='gabe'>
+			Added new config option: $cfg[domain] -- the cookie domain for
+			session info. Allows session info to cross sites if they are running
+
+			the same instance of segue.
+		</new>
+		<new author='gabe'>
+			Discussion links now displayed with statistics info.
+		</new>
+		<change author='gabe'>
+			By-line for default page now has a link to a "credits" page with
+			more info about the authors.
+		</change>
+		<change>
+			ChangeLog is now held in XML format &amp; converted with XSL!
+		</change>
+		<change author='gabe'>
+			"Powered by Segue" logo now takes you to the Segue page.
+		</change>
 	</version>
 	<version number="1.0.0 beta1" date="2003-07-11">
-		<change>Permissions can now be assigned to link type sections and pages and image and file type stories.</change>
-		<fix>Headings and dividers are now properly displayed when not logged in.</fix>
+		<change>
+			Permissions can now be assigned to link type sections and pages and
+			image and file type stories.
+		</change>
+		<fix>
+			Headings and dividers are now properly displayed when not logged in.
+		</fix>
 		<important author="adam">
-			DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to "000".
+			DATABASE CHANGE! The class_number field in the class table should be
+			changed in type from an int(11) to a varchar(15) and the default set
+
+			to "000".
 		</important>
 		<fix author="gabe">
-			When integrated with an LDAP server, Segue now correctly synchronizes the user and class database tables when adding users/groups as editors who have not yet logged in/been added to the local tables.
+			When integrated with an LDAP server, Segue now correctly
+			synchronizes the user and class database tables when adding 
+			users/groups as editors who have not yet logged in/been added to the
+
+			local tables.
 		</fix>
-		<change>Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.</change>
-		<change author="gabe">View/add slots interface: a used slot now displays a "-" under the delete column instead of non-linked "delete" text for clarity.</change>
+		<change>
+			Added Dobo Radichkov's name as a main editor on Segue websites &amp;
+			program.
+		</change>
+		<change author="gabe">
+			View/add slots interface: a used slot now displays a "-" under the
+			delete column instead of non-linked "delete" text for clarity.
+		</change>
 	</version>
 	<version number="1.0.0 alpha3" date="2003-06-08">
-		<new author="adam">Owners of class sites can now easily add members of their class as an editor.</new>
-		<change author="adam">Activation/Deactivation Date form now has valid day options.</change>
-		<change author="adam">When an admin is acting as another person, they can only see what that person would see.</change>
-		<fix author="gabe">The "default" page now appropriately shows sites of which a group member is owner.</fix>
-		<fix author="adam">Move/Copy now shows sites properly when opened on first page load.</fix>
-		<change>More debug output has been removed.</change>
+		<new author="adam">
+			Owners of class sites can now easily add members of their class as
+			an editor.
+		</new>
+		<change author="adam">
+			Activation/Deactivation Date form now has valid day options.
+		</change>
+		<change author="adam">
+			When an admin is acting as another person, they can only see what
+			that person would see.
+		</change>
+		<fix author="gabe">
+			The "default" page now appropriately shows sites of which a group
+			member is owner.
+		</fix>
+		<fix author="adam">
+			Move/Copy now shows sites properly when opened on first page load.
+		</fix>
+		<change>
+			More debug output has been removed.
+		</change>
 	</version>
 	<version number="1.0.0 alpha2" date="2003-06-07">
-		<change author="gabe">Removed debug output.</change>
+		<change author="gabe">
+			Removed debug output.
+		</change>
 	</version>
 	<version number="1.0.0 alpha" date="2003-06-06">
-		<new>First official release.</new>
+		<new>
+			First official release.
+		</new>
 	</version>
+	
 	<authors>
 		<name short="gabe">Gabe Schine</name>
 		<name short="adam">Adam Franco</name>
@@ -43,4 +429,9 @@
 		<name short="max">Max Ovsjanikov</name>
 		<name short="alex">Alex Chapin</name>
 	</authors>
+	<reftypes>
+		<reftype name="bug">565234</reftype>
+		<reftype name="fr">565237</reftype>
+	</reftypes>
+	<groupid>82171</groupid>
 </changelog>

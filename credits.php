@@ -51,10 +51,24 @@ li { margin-bottom: 3px; }
 	Part-time Programmer, DBA. Educational Technology Assistant and student, Middlebury College.
 </ul>
 
-<h2>Contributors</h2>
+<h2>Included/Referenced Projects</h2>
+
 <ul>
-	<li /><b>Reinhold Lange</b> - Web Programmer.
+	<li /><a href='http://sourceforge.net/projects/itools-htmlarea/'>HTMLArea</a> by 
+	<a href='http://www.interactivetools.com'>Interactive Tools</a> -
+	The WYSIWYG editor in Segue is HTMLArea with some minor modifications.
+	<li /><a href='http://www.engageinteractive.com/flashSite/domit.html'>DOMIT!</a> by 
+	<a href='http://www.engageinteractive.com/'>Engage Interactive</a> - DOMIT! XML parsing
+	libraries are used to export and import Segue sites to and from XML files.
+	<li /><a href='http://www.geckotribe.com/rss/carp/'>CaRP: Caching RSS Parser</a> -
+	The GPL version 3.5.2 (3/10/2004), with minor modifications by Adam Franco, is used to
+	display RSS Feeds.
+</ul>
+
+<h2>Thanks to:</h2>
+<ul>
 	<li /><b>Shel Sax</b> - Director of Educational Technology, Middlebury College.
+	<li /><b>Reinhold Lange</b> - Web Programmer, ActiveX editor-help.
 </ul>
 </body>
 </html>

@@ -166,60 +166,6 @@ class discussion {
 		return null;
 	}
 	
-	function generateStatistics($story) {
-		if (is_object($story)) $storyid = $story->id;
-		if (is_numeric($story)) $storyid = $story;
-		
-		// get the count:
-		$count = discussion::getCount($storyid);
-		if ($count) $lastPostData = discussion::getLastPostData($storyid);
-		else {return "No posts yet.";}
-		$posts = ($count==1)?"post":"posts";
-		$str = '';
-		$str .= "$count $posts, last post on ";
-		$str .= timestamp2usdate($lastPostData['timestamp']);
-		$str .= ' by ';
-		$str .= $lastPostData['fullname'];
-		return $str;
-	}
-	
-	function getCount($storyid) {
-		$query = "
-			SELECT
-				COUNT(*) as count
-			FROM
-				discussion
-			WHERE
-				FK_story=$storyid
-		";
-		
-		$r = db_query($query);
-		$a = db_fetch_assoc($r);
-		return $a['count'];		
-	}
-	
-	function getLastPostData($storyid) {
-		$query = "
-			SELECT
-				user_fname AS fullname,discussion_tstamp AS timestamp
-			FROM
-				discussion
-				INNER JOIN
-					user
-				ON
-					FK_author=user_id
-			WHERE
-				FK_story = $storyid
-			ORDER BY
-				discussion_tstamp DESC
-			LIMIT 1";
-		$r = db_query($query);
-		if (db_num_rows($r)) {
-			return db_fetch_assoc($r);
-		}
-		return null;
-	}
-	
 	function rewind() { $this->pointer = -1; }
 	function reverse() { $this->direction*=-1; }
 	function setstep($s) { $this->direction=$s; }
