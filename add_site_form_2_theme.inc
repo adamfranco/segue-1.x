@@ -53,8 +53,9 @@ function doTemplateWin() {
 
 function openThemeSettings() {
 	theme = "<? print $_SESSION[siteObj]->getField("theme"); ?>";
-	doPreviewWin(theme,"");
-	doThemeSettings();
+	var prev = doPreviewWin(theme,"");
+	// timeout is in place to prevent the themesettings window from getting hidden.
+	var them = setTimeout("doThemeSettings();",2000);
 }
 
 function doThemeSettings() {

@@ -156,7 +156,7 @@ $_bgcolor = array(
 $_textcolor = array(
 	"black"=>					"444",
 	"red"=>						"990000",
-	"blue"=>					"000033",
+	"blue"=>					"000044",
 	"white"=>					"FFFFFF"
 );
 
