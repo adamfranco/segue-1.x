@@ -30,7 +30,7 @@ if ($settings[type]=='page') {
 	printc("<div class=title style='font-size: 14px'>Display Options</div>");
 	printc("<div class=leftmargin>");
 	
-	printc("Order the Content Blocks on this page by:");
+	printc("Order the Content Blocks on this page by: ");
 	printc("<select name='storyorder'>");
 		printc("<option value=''".(($settings[storyorder]=='')?" selected":"").">Custom (Default)");
 		printc("<option value='addeddesc'".(($settings[storyorder]=='addeddesc')?" selected":"").">Recent First");
