@@ -27,7 +27,7 @@ if (in_array($delete_section,$sections) && permission($auser,SITE,DELETE,$site))
 		}
 	}
 	// done;
-	log_entry("delete_section","$auser deleted section id $delete_section");
-} else log_entry("failed: delete_section","$auser deleting section id $delete_section");
+	log_entry("delete_section",$site,"","","$auser deleted section id $delete_section");
+} else log_entry("failed: delete_section",$site,$delete_section,"","$auser deleting section id $delete_section");
 
 header("Location: $PHP_SELF?$sid&site=$site&action=viewsite");

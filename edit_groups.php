@@ -23,7 +23,7 @@ if ($del) { // we're deleting something
 //	print $del;
 	if ($del=='group') {
 		$query = "delete from classgroups where id=$group";
-		log_entry("classgroups","$auser removed group ".db_get_value("classgroups","name","id=$group"));
+		log_entry("classgroups",db_get_value("classgroups","name","id=$group"),"","","$auser removed group ".db_get_value("classgroups","name","id=$group"));
 	}
 	if ($del=='class') {
 		$list = explode(",",db_get_value("classgroups","classes","id=$group"));
@@ -34,7 +34,7 @@ if ($del) { // we're deleting something
 		}
 		$list = implode(",",$nlist);
 		$query = "update classgroups set classes='$list' where id=$group";
-		log_entry("classgroups","$auser removed $class from group ".db_get_value("classgroups","name","id=$group"));
+		log_entry("classgroups",db_get_value("classgroups","name","id=$group"),"","","$auser removed $class from group ".db_get_value("classgroups","name","id=$group"));
 	}
 //	print $query;
 	db_query($query);

@@ -258,10 +258,10 @@ if ($save) {
 			$pages = encode_array($pages);
 			$query = "update sections set pages='$pages' where id=$settings[section]";
 			db_query($query);
-			log_entry("add_page","$auser added page id $newid to site $settings[site]");
+			log_entry("add_page",$settings[site],$settings[section],$newid,"$auser added page id $newid to site $settings[site]");
 		}
 		if ($settings[edit]) {
-			log_entry("edit_page","$auser edited page id $settings[page] in site $settings[site]");
+			log_entry("edit_page",$settings[site],$settings[section],$settings[page],"$auser edited page id $settings[page] in site $settings[site]");
 			$newid=$settings[page];
 		}
 		

@@ -1,10 +1,12 @@
-<? // viewsites.php
-
+<? // viewsites.php ;
 
 $content = '';
 
 ob_start();
 session_start();
+
+//output a meta tag
+print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 include("functions.inc.php");
 include("dbwrapper.inc.php");
@@ -168,8 +170,8 @@ if (db_num_rows($r)) {
 		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
 		print "<td class=td$color>$a[type]</td>";
 		print "<td class=td$color><span style='color: #";
-			if ($a[viewpermissions] == 'anyone') print "090";
-			if ($a[viewpermissions] == 'midd') print "FF0";
+			if ($a[viewpermissions] == 'anyone') print "000";
+			if ($a[viewpermissions] == 'midd') print "00c";
 			if ($a[viewpermissions] == 'class') print "900";
 		print "'>$a[viewpermissions]</span></td>";
 		print "<td class=td$color>$a[theme]</td>";

@@ -27,7 +27,7 @@ if (sitenamevalid($name)) {
 		}
 		db_query("delete from sites where name='$name'");
 		// done;
-		log_entry("delete_site","$auser deleted site $name");
+		log_entry("delete_site","$name","","","$auser deleted site $name");
 	} else {
 		printc("Are you <b>SURE</b> you want to delete the site <i>$a[title]</i>?? This operation is <b>irreversable</b>. You will <b>never</b> see any of the content of this site again, including all sections, pages, content, and discussions. You better be <b>ABSOLUTELY SURE</b> you want to do this! If so, hit 'Delete'.<br><br>");
 		printc("<form action='$PHP_SELF?$sid&action=delete_site&name=$name'><input type=hidden name=confirm value=1>");
@@ -37,6 +37,6 @@ if (sitenamevalid($name)) {
 		printc("</form>");
 		return;
 	}
-} else log_entry("failed: delete_site","$auser deleting site $name");
+} else log_entry("failed: delete_site","$name","","","$auser deleting site $name");
 
 header("Location: $PHP_SELF?$sid");

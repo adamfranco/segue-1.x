@@ -112,12 +112,12 @@ if ($_loggedin) {
 					$newlist = array_unique(array_merge($list,$group));
 					$list = implode(",",$newlist);
 					$query = "update classgroups set classes='$list' where name='$newgroup' and owner='$auser'";
-					log_entry("classgroups","$auser updated $newgroup to be $list");
+					log_entry("classgroups","$newgroup","","","$auser updated $newgroup to be $list");
 				} else error("Somebody has already created a class group with that name. Please try another name.");
 			} else {	// new group
 				$list = implode(",",$group);
 				$query = "insert into classgroups set name='$newgroup',classes='$list',owner='$auser'";
-				log_entry("classgroups","$auser added $newgroup with $list");
+				log_entry("classgroups","$newgroup","","","$auser added $newgroup with $list");
 			}
 			db_query($query);
 		} else

@@ -26,6 +26,7 @@ $nav = array(
 	<? include("themes/common/status.inc.php"); ?>
 	
 	<? print ($siteheader)?"$siteheader":""; ?>
+	<? print $sitecrumbs; ?>
 	
 	<table width=100% cellspacing=0>
 	<tr>

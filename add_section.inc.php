@@ -260,10 +260,10 @@ if ($save) {
 			$query = "update sites set sections='$sections' where name='$settings[site]'";
 			db_query($query);
 			print "$query <br>";
-			log_entry("add_section","$auser added section id $newid to site $settings[site]");
+			log_entry("add_section",$settings[site],$newid,"","$auser added section id $newid to site $settings[site]");
 		}
 		if ($settings[edit]) {
-			log_entry("edit_section","$auser edited section id $settings[section] in site $settings[site]");
+			log_entry("edit_section",$settings[site],$settings[section],"","$auser edited section id $settings[section] in site $settings[site]");
 			$newid=$settings[section];
 		}
 

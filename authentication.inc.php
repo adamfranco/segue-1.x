@@ -123,7 +123,7 @@ function loginvalid($user,$pass,$useldap,$alreadyloggedin=0) {
 			$atype = $ltype;
 			$aid = $lid;
 			$amethod = $lmethod;
-			log_entry("login","$luser");
+			log_entry("login","","","",$luser);
 			session_register("luser");
 			session_register("lpass");
 			session_register("lemail");

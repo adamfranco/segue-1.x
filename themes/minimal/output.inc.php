@@ -45,10 +45,13 @@ include("themes/common/header.inc.php"); ?>
 include("themes/common/status.inc.php"); ?>
 
 
-<?/* ------------------------------------------- */
+<?
+/* ------------------------------------------- */
 /* ------------- SITE HEADER ----------------- */
 /* ------------------------------------------- */
-print $siteheader ?>
+print $siteheader; 
+print $sitecrumbs; 
+?>
 
 </td>
 </tr>

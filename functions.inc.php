@@ -107,10 +107,10 @@ function spchars($string) {
 	return htmlspecialchars(stripslashes($string),ENT_QUOTES);
 }
 
-function log_entry($type,$content) {
-	global $dbhost, $dbuser,$dbpass, $dbdb;
+function log_entry($type,$site,$section,$page,$content) {
+	global $dbhost, $dbuser,$dbpass, $dbdb, $auser, $luser;
 	db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-	db_query("insert into logs set type='$type',content='$content'");
+	db_query("insert into logs set type='$type',content='$content',luser='$luser',auser='$auser',site='$site',section='$section',page='$page'");
 }
 
 function htmlbr($string) {

@@ -1,10 +1,12 @@
 <? // editor_access.php
 
-
 $content = '';
 
 ob_start();
 session_start();
+
+//output a meta tag
+print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 include("functions.inc.php");
 include("dbwrapper.inc.php");
@@ -25,6 +27,7 @@ $orderby = " order by timestamp asc";
 $w = array();
 if ($type) $w[]="type='$type'";
 if ($user) $w[]="content like '$user%'";
+if ($hideadmin) $w[]="type not like 'change_auser'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
 $numlogs=db_num_rows(db_query("select * from logs$where"));
@@ -60,6 +63,14 @@ th, td {
 	background-color: #ddd;
 }
 
+.td1 { 
+	background-color: #ccc; 
+}
+
+.td0 { 
+	background-color: #ddd; 
+}
+
 th { 
 	background-color: #ccc; 
 	font-variant: small-caps;
@@ -85,10 +96,11 @@ input,select {
 </style>
 
 <? print $content; ?>
-<? print $numlogs . " | " . $query; ?>
+<? print $numlogs . " | " . $query; 
+?>
 <table cellspacing=1 width='100%'>
 <tr>
-	<td colspan=3>
+	<td colspan=6>
 		<table width='100%'>
 		<tr><td>
 		<form action=<?echo "$PHP_SELF?$sid"?> method=get>
@@ -103,6 +115,7 @@ input,select {
 		?>
 		</select>
 		user: <input type=text name=user size=15 value='<?echo $user?>'>
+		<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?>
 		<input type=submit value='go'>
 		</form>
 		</td>
@@ -118,9 +131,9 @@ input,select {
 		print "$curr of $tpages ";
 //		print "$prev $lowerlimit $next ";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&hideadmin=$hideadmin\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&hideadmin=$hideadmin\"'>\n";
 		?>
 		</td>
 		</tr>
@@ -130,20 +143,71 @@ input,select {
 <tr>
 	<th>time</th>
 	<th>type</th>
+	<th>luser</th>
+	<th>auser</th>
+	<th>site</th>
 	<th>text</th>
 </tr>
 <?
+$color = 0;
+$today = date(Ymd);
+$yesterday = date(Ymd)-1;
+
 if (db_num_rows($r)) {
 	while ($a=db_fetch_assoc($r)) {
 		print "<tr>";
-		print "<td><nobr>";
+		print "<td class=td$color><span style='color: #";
+			if (strstr("add_site, delete_site, classgroups",$a[type])) 
+				print "F90";
+			else if (strstr("login, change_auser",$a[type])) 
+				print "000";
+			else
+				print "00C";
+		print "'><nobr>";
+//		print "<td class=td$color><nobr>";
+		if (strncmp($today, $a[timestamp], 8) == 0 || strncmp($yesterday, $a[timestamp], 8) == 0) print "<b>";
 		print timestamp2usdate($a[timestamp],1);
-		print "</nobr></td>";
-		print "<td>$a[type]</td>";
-		print "<td>";
-		print "$a[content]";
+		if (strncmp($today, $a[timestamp], 8) == 0 || strncmp($yesterday, $a[timestamp], 8) == 0) print "</b>";
+		print "</nobr></span></td>";
+//		print "</nobr></td>";
+		print "<td class=td$color><span style='color: #";
+			if (strstr("add_site, delete_site, classgroups",$a[type])) 
+				print "F90";
+			else if (strstr("login, change_auser",$a[type])) 
+				print "000";
+			else
+				print "00C";
+		print "'>$a[type]</span></td>";
+/*		print "<td class=td$color><span style='color: #";
+			if (strstr("add_site, delete_site, classgroups",$a[type])) 
+				print "F90";
+			else if (strstr("login, change_auser",$a[type])) 
+				print "000";
+			else
+				print "00C";
+		print "'>$a[luser]</span></td>";
+*/		print "<td class=td$color>$a[luser]</td>";
+/*		print "<td class=td$color><span style='color: #";
+			if (strstr("add_site, delete_site, classgroups",$a[type])) 
+				print "F90";
+			else if (strstr("login, change_auser",$a[type])) 
+				print "000";
+			else
+				print "00C";
+		print "'>$a[auser]</span></td>";
+*/		print "<td class=td$color>$a[auser]</td>";
+		print "<td class=td$color>";
+			if ($a[site]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[site]\"'>";
+			print "$a[site]";
+			if ($a[site]) print "</a>";
+		print "</td>";
+		print "<td class=td$color>";
+			if ($a[section]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[site]&section=$a[section]&page=$a[page]\"'>";
+			print "$a[content]";
+			if ($a[section]) print "</a>";
 		print "</td>";
 		print "</tr>";
+		$color = 1-$color;
 	}
 } else {
 	print "<tr><td colspan=3>No log entries.</td></tr>";

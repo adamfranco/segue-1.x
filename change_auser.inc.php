@@ -17,7 +17,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 		$aid = $a['id'];
 		$amethod = 'db';
 		
-		log_entry("change_auser","$luser as $auser");
+		log_entry("change_auser","","","","$luser as $auser");
 	} else if ($res = ldap_valid($changeauser,"",1)) {
 		$aid = db_get_value("users","id","uname='$changeauser'");
 		$afname = db_get_value("users","fname","uname='$changeauser'");
@@ -26,7 +26,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 		$auser = $changeauser;
 		$amethod = 'ldap';
 		
-		log_entry("change_auser","$luser as $auser");
+		log_entry("change_auser","","","","$luser as $auser");
 	}
 }
 

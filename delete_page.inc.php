@@ -22,7 +22,7 @@ if (in_array($delete_page,$pages) && permission($auser,SECTION,DELETE,$section))
 			deleteuserfile($s,urldecode(db_get_value("stories","longertext","id=$s")));
 		db_query("delete from stories where id=$s");
 	}
-	log_entry("delete_page","$auser deleted page id $delete_page");
-} else log_entry("failed: delete_page","$auser deleting page id $delete_page");
+	log_entry("delete_page",$site,$section,"","$auser deleted page id $delete_page");
+} else log_entry("failed: delete_page",$site,$section,$delete_page,"$auser deleting page id $delete_page");
 
 header("Location: $PHP_SELF?$sid&site=$site&section=$section&action=viewsite");

@@ -204,7 +204,7 @@ if ($save) {
 		$query .= ", footer='$settings[footer]'";
 		
 		db_query($query.$where);
-		log_entry($action,"$auser ".(($settings[edit])?"edited":"added")." $settings[sitename]");
+		log_entry($action,"$settings[sitename]","","","$auser ".(($settings[edit])?"edited":"added")." $settings[sitename]");
 		printc("<br>query = $query$where");
 		
 		// --- Copy the Template on add ---

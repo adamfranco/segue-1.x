@@ -44,10 +44,13 @@ include("themes/common/status.inc.php"); ?>
 
 <table width=90% align=center cellpadding=0 cellspacing=0>
 <tr><td>
-    <?/* ------------------------------------------- */
+    <?
+    /* ------------------------------------------- */
 	/* ------------- SITE HEADER ----------------- */
 	/* ------------------------------------------- */
-	print $siteheader ?>
+	print $siteheader; 
+	print $sitecrumbs; 
+	?>
 </tr></td>
 </table>
 

@@ -35,6 +35,8 @@ include("themes/themeslist.inc.php");
 include("dates.inc.php");
 include("help/include.inc.php");
 
+//output a meta tag
+print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // now, we need to check if the site people are trying to view needs authentication or not
 // if so, we have to display a page that tells people they need to log in
@@ -126,11 +128,12 @@ if ($page) {		// we're viewing a page
 	$pn = " > <a href='$PHP_SELF?$sid&action=$t&site=$site&section=$section&page=$page'>$pageinfo[title]</a>";
 }
 if ($site)
-	$nav = "<a href='$PHP_SEafrancoLF?$sid&action=$t&site=$site'>$siteinfo[title]</a>";
+	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$site'>$siteinfo[title]</a>";
 	$title = "$siteinfo[title]";
 $nav .= $sn.$pn;
 if ($nav)
-	$siteheader = $siteheader . "<div align=left style='margin-bottom: 5px; margin-left: 10px'>$nav</div>";
+	//$siteheader = $siteheader . "<div align=left style='margin-bottom: 5px; margin-left: 10px'>$nav</div>";
+	$sitecrumbs = "<div align=left style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
 
 // Load non-pervasive theme for "program" actions
 // the theme and settings are defined in the config.inc.php
@@ -160,7 +163,7 @@ $rightnav = decode_array($rightnav);
 
 
 //output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+//print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // decode themesettings
 if ($themesettings) $themesettings = decode_array($themesettings);
