@@ -26,16 +26,17 @@ $siteinfo = db_get_line("sites","name='$site'");
 $site_type = $siteinfo[type];
 
 if ($site_type =="class") {
-	print "<div align=center>Students in $site</div>";
+	//print "<div align=center>Students in $site</div>";
 }
 
 //$orderby = " order by editedtimestamp desc";
 //$w = array();
 //if ($type) $w[]="type='$type'";
-//if ($user) $w[]="addedby like '%$user%'";
-//if ($name) $w[]="name like '%$name%'";
+//if ($site) $w[]="site='$name'";
+if ($user) $w[]="uname like '%$user%'";
+if ($site) $w[]="name like '%$site%'";
 //if ($title) $w[]="title like '%$title%'";
-//if (count($w)) $where = " where ".implode(" and ",$w);
+if (count($w)) $where = " where ".implode(" and ",$w);
 
 $numlogs=db_num_rows(db_query("select * from sites$where"));
 
@@ -46,7 +47,8 @@ if ($lowerlimit < 0) $lowerlimit = 0;
 $limit = " limit $lowerlimit,30";
 
 //$query = "select * from sites$where$orderby$limit";
-$query = "select * from classes where name='$site' $limit";
+
+$query = "select * from classes$where$limit";
 //print $query;
 
 $r = db_query($query);
@@ -111,7 +113,9 @@ input,select {
 	<? print $numlogs . " | " . $query; 
 	?>
 </td><td align=right>
-	<a href=viewlogs.php?$sid>Logs</a>
+	<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
+	| <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
+	| Users
 </td></tr>
 </table>
 
@@ -129,12 +133,16 @@ input,select {
 		<?
 		//while ($a=db_fetch_assoc($r1))
 		//	print "<option".(($type==$a[type])?" selected":"").">$a[type]\n";
+		if ($ltype != 'admin') {
+			print "Users for $site";
+		} else {
 		?>
-		<!-- </select> 
-		site: <input type=text name=site size=15 value='<?echo $name?>'>
-		title: <input type=text name=title size=15 value='<?echo $title?>'>
-		user: <input type=text name=user size=15 value='<?echo $user?>'>
-		<input type=submit value='go'>-->
+			<!-- </select> -->
+			site: <input type=text name=site size=15 value='<?echo $site?>'>
+			<!--title: <input type=text name=title size=15 value='<?echo $title?>'>-->
+			user: <input type=text name=user size=15 value='<?echo $user?>'>
+			<input type=submit value='go'>
+		<? } ?>
 		</form>
 		</td>
 		<td align=right>
@@ -159,11 +167,11 @@ input,select {
 	</td>
 </tr>
 <tr>
-	<th>Students</th> 
-	<!--<th>site</th>
-	<th>active</th>
-	<th>type</th>
-	<th>view</th>
+	<th>Name</th> 
+	<th>User Name</th>
+	<th>Site</th>
+	<th>Type</th>
+	<!--<th>view</th>
 	<th>theme</th>
 	<th>title</th>
 	<th>owner</th>-->
@@ -185,7 +193,11 @@ if (db_num_rows($r)) {
 			//print "</nobr>";
 			//print "</a>";
 		//print "</td>";
+		print "<td class=td$color>$a[fname]</td>";
 		print "<td class=td$color>$a[uname]</td>";
+		print "<td class=td$color>$a[name]</td>";
+		print "<td class=td$color>$a[type]</td>";
+		
 		/*print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
 		print "<td class=td$color>$a[type]</td>";
 		print "<td class=td$color><span style='color: #";

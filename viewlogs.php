@@ -19,7 +19,7 @@ include("authentication.inc.php");
 
 include("permissions.inc.php");
 
-if ($ltype != 'admin') exit;
+//if ($ltype != 'admin') exit;
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
@@ -27,8 +27,14 @@ $orderby = " order by timestamp asc";
 $w = array();
 if ($type) $w[]="type='$type'";
 if ($user) $w[]="content like '%$user%'";
-if ($site) $w[]="site like '%$site%'";
+if ($ltype != 'admin') {
+	$w[]="site like '%$site%'";
+} else {
+	if ($site) $w[]="site like '%$site%'";
+}
 if ($hideadmin) $w[]="type not like 'change_auser'";
+	
+
 if (count($w)) $where = " where ".implode(" and ",$w);
 
 $numlogs=db_num_rows(db_query("select * from logs$where"));
@@ -102,7 +108,10 @@ input,select {
 	<? print $numlogs . " | " . $query; 
 	?>
 </td><td align=right>
-	<a href=viewsites.php?$sid>Sites</a>
+	Logs
+	| <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
+	| <a href=viewstudents.php?$sid&site=<? echo $site ?>>Users</a>
+
 </td></tr>
 </table>
 
@@ -113,6 +122,11 @@ input,select {
 		<tr><td>
 		<form action=<?echo "$PHP_SELF?$sid"?> method=get>
 		<?
+		if ($ltype != 'admin') {
+			print "<input type=hidden name=site value='$site'>";
+			print "Logs of $site <br>";
+		}
+		
 		$r1 = db_query("select distinct type from logs order by type asc");
 		?>
 		type: <select name=type>
@@ -122,9 +136,13 @@ input,select {
 			print "<option".(($type==$a[type])?" selected":"").">$a[type]\n";
 		?>
 		</select>
-		user: <input type=text name=user size=15 value='<?echo $user?>'>
-		site: <input type=text name=site size=15 value='<?echo $site?>'>
-		<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?>
+		<?
+		if ($ltype == 'admin') {
+		?>
+			user: <input type=text name=user size=15 value='<?echo $user?>'>
+			site: <input type=text name=site size=15 value='<?echo $site?>'>
+			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?>
+		<? } ?>	
 		<input type=submit value='go'>
 		</form>
 		</td>

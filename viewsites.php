@@ -19,7 +19,7 @@ include("authentication.inc.php");
 
 include("permissions.inc.php");
 
-if ($ltype != 'admin') exit;
+//if ($ltype != 'admin') exit;
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
@@ -27,7 +27,8 @@ $orderby = " order by editedtimestamp desc";
 $w = array();
 if ($type) $w[]="type='$type'";
 if ($user) $w[]="addedby like '%$user%'";
-if ($name) $w[]="name like '%$name%'";
+//if ($site) $w[]="site like '%$name%'";
+if ($site) $w[]="name like '%$site%'";
 if ($title) $w[]="title like '%$title%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
@@ -103,7 +104,10 @@ input,select {
 	<? print $numlogs . " | " . $query; 
 	?>
 </td><td align=right>
-	<a href=viewlogs.php?$sid>Logs</a>
+	<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
+	| Sites
+	| <a href=viewstudents.php?$sid&site=<? echo $site ?>>Users</a>
+
 </td></tr>
 </table>
 
@@ -121,12 +125,17 @@ input,select {
 		<?
 		//while ($a=db_fetch_assoc($r1))
 		//	print "<option".(($type==$a[type])?" selected":"").">$a[type]\n";
+		
+		if ($ltype != 'admin') {
+			print "Activity on $site";
+		} else {
 		?>
-		<!-- </select> -->
-		site: <input type=text name=site size=15 value='<?echo $name?>'>
-		title: <input type=text name=title size=15 value='<?echo $title?>'>
-		user: <input type=text name=user size=15 value='<?echo $user?>'>
-		<input type=submit value='go'>
+			<!-- </select> -->
+			site: <input type=text name=site size=15 value='<?echo $site?>'>
+			title: <input type=text name=title size=15 value='<?echo $title?>'>
+			user: <input type=text name=user size=15 value='<?echo $user?>'>
+			<input type=submit value='go'>
+		<? } ?>
 		</form>
 		</td>
 		<td align=right>
