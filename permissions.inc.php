@@ -59,8 +59,16 @@ class permissions {
 		
 		printc("<style type='text/css'>th, .td0, .td1 {font-size: 10px;}</style>");
 		printc("<table width=100% style='border: 1px solid gray'>");
-		printc("<tr><th width=50%>name</th>	<th colspan=".($a[$d])." width=30%>permissions</th><th>del</th></tr>");
-		printc("<tr><th>&nbsp;</th>".(($d)?"<th>discuss</th>":"<th>add</th><th>edit</th><th>delete</th><th>view</th>")."<th>&nbsp;</th></tr>");
+		printc("<tr><th width=50%>name</th>	<th colspan=".($a[$d])." width=30%>permissions</th>");
+		if ($canAddEditors) {
+			printc("<th>del</th>");
+		}
+		printc("</tr>");
+		printc("<tr><th>&nbsp;</th>".(($d)?"<th>discuss</th>":"<th>add</th><th>edit</th><th>delete</th><th>view</th>"));
+		if ($canAddEditors) {
+			printc("<th>&nbsp;</th>");
+		}
+		printc("</tr>");
 		if (($edlist = $o->getEditors())) {
 			$permissions = $o->getPermissions();
 			if (count($edlist)) {
@@ -96,10 +104,13 @@ class permissions {
 					}
 					
 					printc("</td>");
-					printc("<td class=td$color align=center>");
-					if ($e == 'everyone' || $e == 'institute') printc("&nbsp;");
-					else printc("<a href='#' onClick='delEditor(\"$e\");'>remove</a>");
-					printc("</td></tr>");
+					if ($canAddEditors) {
+						printc("<td class=td$color align=center>");
+						if ($e == 'everyone' || $e == 'institute') printc("&nbsp;");
+						else printc("<a href='#' onClick='delEditor(\"$e\");'>remove</a>");
+						printc("</td>");
+					}
+					printc("</tr>");
 					$color = 1-$color;
 				}
 				

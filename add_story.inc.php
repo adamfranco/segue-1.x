@@ -118,10 +118,10 @@ if ($_SESSION[settings][step] ==2 && $_SESSION[storyObj]->getField("type") != 's
 	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 1;
 	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 3;
 }
-if ($_SESSION[settings][step] ==4 && $_SESSION[auser] != $site_owner) {
-	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 3;
-	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 5;
-}
+/* if ($_SESSION[settings][step] ==4 && $_SESSION[auser] != $site_owner) { */
+/* 	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 3; */
+/* 	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 5; */
+/* } */
 
 $pagetitle=$_SESSION[settings][pagetitle];
 
@@ -220,7 +220,7 @@ if (1) {
 	$leftlinks .= "</td></tr>";
 }
 
-if ($thisPage->getField("ediscussion") || $_SESSION[auser] == $site_owner) {
+if (true) {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
