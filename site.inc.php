@@ -105,8 +105,8 @@ do {
 	/* 		$stories = handlestoryorder($stories,$pageinfo[storyorder]); */
 		
 		if ($thisPage->stories) {
-			foreach ($thisPage->stories as $s=>$o) {
-			
+			foreach (array_keys($thisPage->stories) as $k=>$s) {
+				$o =& $thisPage->stories[$s];
 				if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {		
 					if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
 						printc("<hr size='1' noshade style='margin-top: 5px'>");
@@ -119,7 +119,7 @@ do {
 					printc("<div style='margin-bottom: 10px'>");
 					
 					$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
-					//print $incfile; // debug
+//					print $incfile; // debug
 					include($incfile);
 		
 					if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
