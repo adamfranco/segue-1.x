@@ -310,7 +310,7 @@ class discussion {
 				} else {
 					$newpostbar='';
 					$newpostbar.="<tr><td align=right>";
-					$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>[new post]</a>";
+					$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>new post</a>";
 					$newpostbar.="</td></tr>";
 					printc ($newpostbar);
 				}
@@ -463,17 +463,17 @@ class discussion {
 		// output the html and stuff
 		if (!$this->id) return false;
 		printc ("<tr><td>");
-		$s = "<a href='$script?$sid&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
+		$s = "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
 //		$s = $this->subject;
 
 		$a = array();
 		if ($this->opt("showauthor")) $a[] = $this->authorfname;
 		if ($this->opt("showtstamp")) $a[] = timestamp2usdate($this->tstamp);
 		$b = array();
-		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."' class=info>[reply]</a>";
-		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=fullstory&discuss=del&id=".$this->id."' class=info>[del]</a>";
+		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."' class=info>reply</a>";
+		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."' class=info> | del</a>";
 		if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."' class=info>[edit]</a>";
+			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."' class=info> | edit</a>";
 		if (count($a) || count($b)) {
 			$c = '';
 			if (count($a)) $c .= "(".implode(" - ",$a).") ";

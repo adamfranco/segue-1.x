@@ -56,20 +56,23 @@ if ($story->getField("type") == 'file') {
 ?>
 <!--<html>
 <head>
-<title>Full Content/Discussion</title>
-<? include("themes/common/logs_css.inc.php"); ?>-->
+<title>Full Content/Discussion</title>-->
+<? //include("themes/common/logs_css.inc.php"); ?>
 <style type="text/css">
-
-th { font-size: 12px; }
 
 .subject { font-weight: bolder; }
 
 .info { color: #888; }
 a.info { color: #a77; }
-th.info { color: #888; }
+th.info { color: #FFFFFF; }
 
 .content {
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #000;
+}
+
+.header {
+	font-size: 14px;
+	border-bottom: 1px solid #000;
 }
 
 </style>
@@ -92,8 +95,8 @@ printc("<tr><td>");
 		
 		// output discussions?
 		if ($story->getField("discuss")) {			
- 			printc("<th align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><th align=left>Discussion</th>");
-			printc("<th align=right class=info>");
+ 			printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=header>Discussion</td>");
+			printc("<td align=right class=content>");
 			$f = $_SESSION['flat_discussion'];
 			if (!$f) {
 				//need to change href to index??
@@ -104,7 +107,7 @@ printc("<tr><td>");
 			printc(" | ");
 			if ($f) {
 				//need to change href to index
-				printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=false'>threaded</a>)");
+				printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=false'>threaded</a>");
 			} else {
 				printc("threaded");
 			}
