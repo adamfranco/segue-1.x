@@ -48,10 +48,40 @@ if ($settings) {
 	if ($settings[step] == 4 && !$link) $settings[permissions] = $permissions;
 	if ($settings[step] == 1 && !$link) $settings[recursiveenable] = $recursiveenable;
 	if ($copydownpermissions != "") $settings[copydownpermissions] = $copydownpermissions;
-	if ($header != "") $settings[header] = $header;
-	if ($footer != "") $settings[footer] = $footer;
 	if ($copyfooter) $settings[header] = $settings[footer];
-	if ($copyheader) $settings[footer] = $settings[header];
+	if ($copyheader) $settings[footer] = $settings[header];	
+	
+	if ($settings[step] == 5) {
+		$settings[header] = str_replace("src='####","####",$header);
+		$settings[header] = str_replace("src=####","####",$settings[header]);
+		$settings[header] = str_replace("####'","####",$settings[header]);
+		$textarray1 = explode("####", $settings[header]);
+		if (count($textarray1) > 1) {
+			for ($i=1; $i<count($textarray1); $i=$i+2) {
+				$id = $textarray1[$i];
+				$filename = db_get_value("media","name","id=$id");
+				$dir = db_get_value("media","site_id","id=$id");
+				$filepath = $uploadurl."/".$dir."/".$filename;
+				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
+			}		
+			$settings[header] = implode("",$textarray1);
+		}
+	}
+	if ($settings[step] == 6) {
+		$settings[footer] = str_replace("src='####","####",$footer);
+		$settings[footer] = str_replace("src=####","####",$settings[footer]);
+		$settings[footer] = str_replace("####'","####",$settings[footer]);
+		$textarray1 = explode("####", $settings[footer]);
+		if (count($textarray1) > 1) {
+			for ($i=1; $i<count($textarray1); $i=$i+2) {
+				$id = $textarray1[$i];
+				$dir = db_get_value("media","site_id","id=$id");
+				$filepath = $uploadurl."/".$dir."/".$filename;
+				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
+			}		
+			$settings[footer] = implode("",$textarray1);
+		}
+	}
 }
 
 if (!session_is_registered("settings")) {
@@ -111,9 +141,37 @@ if (!session_is_registered("settings")) {
 		$settings[deactivatedate]=($settings[deactivatedate]=='0000-00-00')?0:1;
 		$settings[permissions] = decode_array($settings[permissions]);
 		$settings[copydownpermissions] = decode_array($settings[copydownpermissions]);
-		$settings[header] = urldecode($settings[header]);
-		$settings[footer] = urldecode($settings[footer]);
-		$settings[site_owner] = $settings[addedby];
+		$settings[header] = stripslashes(urldecode($settings[header]));
+		$settings[footer] = stripslashes(urldecode($settings[footer]));
+		$settings[site_owner] = $settings[addedby];	
+
+		$settings[header] = str_replace("src='####","####",$settings[header]);
+		$settings[header] = str_replace("src=####","####",$settings[header]);
+		$settings[header] = str_replace("####'","####",$settings[header]);
+		$textarray1 = explode("####", $settings[header]);
+		if (count($textarray1) > 1) {
+			for ($i=1; $i<count($textarray1); $i=$i+2) {
+				$id = $textarray1[$i];
+				$filename = db_get_value("media","name","id=$id");
+				$dir = db_get_value("media","site_id","id=$id");
+				$filepath = $uploadurl."/".$dir."/".$filename;
+				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
+			}		
+			$settings[header] = implode("",$textarray1);
+		}
+		$settings[footer] = str_replace("src='####","####",$settings[footer]);
+		$settings[footer] = str_replace("src=####","####",$settings[footer]);
+		$settings[footer] = str_replace("####'","####",$settings[footer]);
+		$textarray1 = explode("####", $settings[footer]);
+		if (count($textarray1) > 1) {
+			for ($i=1; $i<count($textarray1); $i=$i+2) {
+				$id = $textarray1[$i];
+				$dir = db_get_value("media","site_id","id=$id");
+				$filepath = $uploadurl."/".$dir."/".$filename;
+				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
+			}		
+			$settings[footer] = implode("",$textarray1);
+		}
 	}
 }
 
@@ -197,6 +255,27 @@ if ($save) {
 		$settings[permissions]=encode_array($settings[permissions]);
 	
 		$query .= ", permissions='$settings[permissions]'";
+
+		// Break up the short and long text and properly configure image urls
+		$textarray1 = explode("&&&&", $settings[header]);
+		if (count($textarray1) > 1) {
+			for ($i=1; $i<count($textarray1); $i=$i+2) {
+				$textarray2 = explode("@@@@", $textarray1[$i]);
+				$id = $textarray2[1];
+				$textarray1[$i] = "src='####".$id."####'";
+			}		
+			$settings[header] = implode("",$textarray1);
+		}
+		
+		$textarray1 = explode("&&&&", $settings[footer]);
+		if (count($textarray1) > 1) {
+			for ($i=1; $i<count($textarray1); $i=$i+2) {
+				$textarray2 = explode("@@@@", $textarray1[$i]);
+				$id = $textarray2[1];
+				$textarray1[$i] = "src='####".$id."####'";
+			}		
+			$settings[footer] = implode("",$textarray1);
+		}
 
 		$settings[header] = urlencode($settings[header]);
 		$query .= ", header='$settings[header]'";
@@ -303,42 +382,42 @@ else if ($settings[edit] && $settings[step] == 3) $settings[step] = 4;
 // --- The Navigation Links for the sidebar ---
 $leftlinks = "________________<br><table>";
 $leftlinks .= "<tr><td>";
-if ($settings[step] == 1) $leftlinks .= "&rArr; ";
+if ($settings[step] == 1) $leftlinks .= "<span class=editnote>&rArr;</span>";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=1&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Title & Availability";
 if ($settings[step] != 1 && $settings[edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 2) $leftlinks .= "&rArr; ";
+if ($settings[step] == 2) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=2&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Appearance";
 if ($settings[step] != 2 && $settings[edit]) $leftlinks .= "</a>";
 
 if ($settings[add]) $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 3 && $settings[add]) $leftlinks .= "&rArr; ";
+if ($settings[step] == 3 && $settings[add]) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=3&link=1 onClick=\"submitForm()\">";
 if ($settings[add]) $leftlinks .= "Template";
 if ($settings[step] != 3 && $settings[edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 4) $leftlinks .= "&rArr; ";
+if ($settings[step] == 4) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=4&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Editing Permissions";
 if ($settings[step] != 4 && $settings[edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 5) $leftlinks .= "&rArr; ";
+if ($settings[step] == 5) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=5&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Custom Header";
 if ($settings[step] != 5 && $settings[edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
-if ($settings[step] == 6) $leftlinks .= "&rArr; ";
+if ($settings[step] == 6) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
 if ($settings[edit] && $settings[step] != 6) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$settings[sitename]&step=6&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Custom Footer";

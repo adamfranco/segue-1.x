@@ -54,13 +54,15 @@ printc("<br>");
 
 if ($settings[header] != "") {
 	printc("<div class=title>Current Header:</div>");
-	printc("$settings[header]");
+	$header = stripslashes($settings[header]);
+	printc("$header");
 	printc("<br>");
 	printc("<br>");
 }
 
 printc("<div class=title>Current Footer:</div>");
-printc("$settings[footer]");
+$footer = stripslashes($settings[footer]);
+printc("$footer");
 printc("<br>");
 printc("<br>");
 

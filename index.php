@@ -95,8 +95,44 @@ if ($site) {						// we are in a site
 	if ($HTTP_GET_VARS[themesettings]) {$themesettings=urlencode(stripslashes($themesettings)); $sid.="&themesettings=$themesettings";}
 	if (!isset($theme)) $theme = $siteinfo[theme];
 	if (!isset($themesettings)) $themesettings = $siteinfo[themesettings];
-	$sitefooter = "<center>".stripslashes(urldecode($siteinfo[footer]))."</center>";
-	$siteheader = "<div align=center style='margin-bottom: 3px'>".stripslashes(urldecode($siteinfo[header]))."</div>";
+
+	$siteheader = "<div align=center style='margin-bottom: 3px'>";
+	$st = stripslashes(urldecode($siteinfo[header]));
+	$st = str_replace("src='####","####",$st);
+	$st = str_replace("src=####","####",$st);
+	$st = str_replace("####'","####",$st);
+	$textarray1 = explode("####", $st);
+	if (count($textarray1) > 1) {
+		for ($i=1; $i<count($textarray1); $i=$i+2) {
+			$id = $textarray1[$i];
+			$filename = urldecode(db_get_value("media","name","id=$id"));
+			$userdir = db_get_value("media","site_id","id=$id");
+			$filepath = $uploadurl."/".$userdir."/".$filename;
+			$textarray1[$i] = "src='".$filepath."'";
+		}		
+		$st = implode("",$textarray1);
+	}
+	$siteheader .= $st;
+	$siteheader .= "</div>";
+
+	$sitefooter = "<center>";
+	$st = stripslashes(urldecode($siteinfo[footer]));
+	$st = str_replace("src='####","####",$st);
+	$st = str_replace("src=####","####",$st);
+	$st = str_replace("####'","####",$st);
+	$textarray1 = explode("####", $st);
+	if (count($textarray1) > 1) {
+		for ($i=1; $i<count($textarray1); $i=$i+2) {
+			$id = $textarray1[$i];
+			$filename = urldecode(db_get_value("media","name","id=$id"));
+			$userdir = db_get_value("media","site_id","id=$id");
+			$filepath = $uploadurl."/".$userdir."/".$filename;
+			$textarray1[$i] = "src='".$filepath."'";
+		}		
+		$st = implode("",$textarray1);
+	}
+	$sitefooter .= $st;
+	$sitefooter .= "</center>";
 }
 
 

@@ -70,13 +70,15 @@ printc("<br>");
 printc("<div class=title>Current Header:");
 //printc(" <input type=button class='small' value='Preview The Site' onClick='doHeaderFooterWin()'>"); //see notes in script above
 printc("</div>");
-printc("$settings[header]");
+$header = stripslashes($settings[header]);
+printc("$header");
 printc("<br>");
 printc("<br>");
 
 if ($settings[footer] != "") {
 	printc("<div class=title>Current Footer:</div>");
-	printc("$settings[footer]");
+	$footer = stripslashes($settings[footer]);
+	printc("$footer");
 	printc("<br>");
 	printc("<br>");
 }

@@ -212,16 +212,32 @@ if (!$settings && !$error) {
 
 		if ($settings[type] == 'story') {
 			$settings[shorttext] = str_replace("src='####","####",$settings[shorttext]);
+			$settings[shorttext] = str_replace("src=####","####",$settings[shorttext]);
 			$settings[shorttext] = str_replace("####'","####",$settings[shorttext]);
 			$textarray1 = explode("####", $settings[shorttext]);
 			if (count($textarray1) > 1) {
 				for ($i=1; $i<count($textarray1); $i=$i+2) {
 					$id = $textarray1[$i];
 					$filename = db_get_value("media","name","id=$id");
-					$filepath = $uploadurl."/".$filename;
+					$dir = db_get_value("media","site_id","id=$id");
+					$filepath = $uploadurl."/".$dir."/".$filename;
 					$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
 				}		
 				$settings[shorttext] = implode("",$textarray1);
+			}
+			$settings[longertext] = str_replace("src='####","####",$settings[longertext]);
+			$settings[longertext] = str_replace("src=####","####",$settings[longertext]);
+			$settings[longertext] = str_replace("####'","####",$settings[longertext]);
+			$textarray1 = explode("####", $settings[longertext]);
+			if (count($textarray1) > 1) {
+				for ($i=1; $i<count($textarray1); $i=$i+2) {
+					$id = $textarray1[$i];
+					$filename = db_get_value("media","name","id=$id");
+					$dir = db_get_value("media","site_id","id=$id");
+					$filepath = $uploadurl."/".$dir."/".$filename;
+					$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
+				}		
+				$settings[longertext] = implode("",$textarray1);
 			}
 		}
 	}
@@ -330,7 +346,9 @@ if ($save) {
 				$settings[longertext] = implode("",$textarray1);
 			}
 		}
-
+		
+		print "$settings[shorttext]<br>";
+		print "$settings[longertext]<br>";		
 		$settings[shorttext]=urlencode($settings[shorttext]);
 		$settings[longertext]=urlencode($settings[longertext]);
 		
@@ -346,7 +364,7 @@ if ($save) {
 			$edlist = explode(",",$settings[editors]);
 			foreach ($edlist as $e) {
 				for ($i=0;$i<3;$i++) {
-					$settings[permissions][$e][$i] = ($settings[permissions][$e][$i])?1:0;
+					$settings[permissionsdf+e][$i] = ($settings[permissions][$e][$i])?1:0;
 				}
 			}
 		}

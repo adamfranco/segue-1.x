@@ -342,8 +342,9 @@ if (db_num_rows($r)) {
 			$img_path = "images/file.gif"; 
 		} 
 		$url = $uploadurl."/".$a[site_id]."/".rawurlencode($a[name]); 
-		$thumb_size = get_sizes($img_path,'50'); 
-		$img_size = get_size($img_path); 
+		$thumb_size = get_sizes($url,'50'); 
+//		$img_size = get_size($img_path); 
+		$img_size = get_size($url); 
 		 
 		print "<tr>"; 
  

@@ -132,8 +132,9 @@ if ($page) {
 		
 			if ($a[type] == 'story' || $a[type]=='') {
 			
-				$st = urldecode($a['shorttext']);
+				$st = stripslashes(urldecode($a['shorttext']));
 				$st = str_replace("src='####","####",$st);
+				$st = str_replace("src=####","####",$st);
 				$st = str_replace("####'","####",$st);
 				$textarray1 = explode("####", $st);
 				if (count($textarray1) > 1) {
@@ -181,7 +182,7 @@ if ($page) {
 				}
 			}
 			if ($a[type]=='image') {
-				$filename = db_get_value("media","name","id=$a[longertext]");
+				$filename = urldecode(db_get_value("media","name","id=$a[longertext]"));
 				$dir = db_get_value("media","site_id","id=$a[longertext]");
 				$imagepath = "$uploadurl/$dir/$filename";
 				printc("<table align=center><tr><td align=center><img src='$imagepath' border=0></td></td>");

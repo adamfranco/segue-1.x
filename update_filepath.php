@@ -11,7 +11,7 @@ include("config.inc.php");
 //uploaddir is defined in config.inc.php
 
 //$mediadir = opendir($uploaddir);
-$mediapath = "/web/sitesdb_userfiles";
+$mediapath = $uploaddir;
 $dirName = opendir($mediapath);
 print $mediapath."<br>";
 print $mediadir."<br>";
@@ -80,7 +80,7 @@ while ($entry = readdir($dirName)) {
 
 print "<br><br>NUMBER OF FILES MOVED: $count";
 
-$mediapath = "/web/sitesdb_userfiles";
+//$mediapath = "/www/sitesdb_userfiles";
 $dirName = opendir($mediapath);
 
 while ($entry = readdir($dirName)) {
