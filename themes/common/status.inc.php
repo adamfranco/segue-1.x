@@ -16,16 +16,14 @@ if ($_loggedin) {	//we're already logged in
 			
 		}
 	} else print $afname;
-} else	{// print out the login thingy
-	print "Login";
-	print " name: <input type=text class='textfield small' name='name' size=10 value='$name'> password: <input type=password class='textfield small' name='password' size=10> ";
+} else {// print out the login thingy
+	//print "Login";
+	print " Login: <input type=text class='textfield small' name='name' size=9 value='$name'> password: <input type=password class='textfield small' name='password' size=9> ";
 	print "<input type=hidden name='loginform' value=1>";
 	print "<input type=hidden name='getquery' value='".urlencode($QUERY_STRING)."'>";
 	print "<input type=hidden name='gotourl' value='".urlencode($REQUEST_URI)."'>";
 	print "<input type=submit class='button small' name='button' value='GO'>";
 }
-
-
 
 print "</div>";
 print "</form>";
