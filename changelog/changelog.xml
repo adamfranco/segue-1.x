@@ -226,10 +226,9 @@
 		<new author='alex' ref='956123' reftype='fr'>
 			Added visitor and guest usertypes.  Visitors can participate in public
 			discussions and can be assigned permissions.  Visitors cannot view 
-			institute-only content and are not given a slot for a personal site.
-			Guests can participate in all discussions/assessments accessible to 
-			institute users and can view institute-only content.  In addition, guests
-			are given a slot for a personal site.
+			institute-only content. Guests can participate in all discussions/assessments 
+			accessible to institute users and can view institute-only content.  Neither
+			visitors nor guests are given a slot for a personal site.
 		</new>
 		<change author='alex'>
 			Changed passwd.php to handle 1. changing passwords of users authenticated via

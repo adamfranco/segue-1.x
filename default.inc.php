@@ -205,7 +205,13 @@ if ($_loggedin) {
 			// visitor are users who post to public discussions w/o logging in
 			// visitors are not allowed to create sites
 			if ($_SESSION[atype] == 'visitor') {
-				printc("Welcome to Segue.  This user account will allow you to post to all public discussions.");
+				printc("Welcome to Segue.  You have a visitor account that was created when you registered with Segue.  ");
+				printc("This account will allow you to post to any public discussions ");
+				printc("and view all publically accessible sites.<br><br>");
+			} else if ($_SESSION[atype] == 'guest') {
+				printc("Welcome to Segue.  You have been given a guest account.  ");
+				printc("This account will allow you to view sites and post to discussions/assessments");
+				printc("that are limited to users in the ".$cfg[inst_name]." community.<br><br>");
 			} else {
 				printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
 				printSiteLine(new site($_SESSION[auser]));
