@@ -69,7 +69,8 @@ include("themes/$theme/css.inc.php");
 /* ------SITE HEADER/STATUS BAR/CRUMBS ------- */
 /* ------------------------------------------- */
 print $siteheader; 
-include("themes/common/status.inc.php"); 
+include("themes/common/status.inc.php");
+print $sitecrumbs; 
 ?>
 </tr></td>
 </table>
@@ -93,10 +94,8 @@ include("themes/common/status.inc.php");
     <td class="topright"></td>
   </tr>
   <tr> 
-    <td class="topleft2">&nbsp;</td>
-    <td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;
-  	<? print $sitecrumbs; ?>
-    
+    <td class="topleft2">&nbsp;</td>    
+    <td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;  
     <div class=topnav align=center>
 	<div class='nav'>
 	<?
