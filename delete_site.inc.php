@@ -3,8 +3,8 @@
 $pagetitle = "Delete Site";
 
 $s = new site($_REQUEST[name]);
-$s->fetchDown();
-//print_r($s);
+$s->fetchDown(1);
+/* print "<pre>"; print_r($s); print "</pre>"; */
 
 if (sitenamevalid($_REQUEST[name])) {
 	if ($_REQUEST[confirm]) {

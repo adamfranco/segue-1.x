@@ -23,7 +23,7 @@ if ($copysite && $newname && $origname) {
 /******************************************************************************
  * Links to other segue instances
  ******************************************************************************/
-if ($allowclasssites != $allowpersonalsites && ($personalsitesurl || $classsitesurl)) {
+if ($allowclasssites != $allowpersonalsites && ($personalsitesurl != "" || $classsitesurl != "")) {
         if ($allowclasssites) {
                 add_link(topnav,"Classes");
                 add_link(topnav,"Community","$personalsitesurl/?name=$luser",'','','');

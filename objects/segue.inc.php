@@ -537,6 +537,7 @@ class segue {
 	}
 	
 	function getEditors() {
+		$this->buildPermissionsArray(0,0);
 		return $this->editors;
 	}
 	
@@ -549,7 +550,9 @@ class segue {
 	}
 	
 	function clearPermissions() {
-		$this->editorsToDeleteInScope = array_unique(array_merge(array_keys($this->permissions),$this->editors));
+/* 		print "Editors: <pre>"; print_r($this->getEditors()); print "</pre>"; */
+		$this->editorsToDeleteInScope = array_unique(array_merge(array_keys($this->permissions),$this->getEditors()));
+/* 		print "To Delete: <pre>"; print_r($this->editorsToDeleteInScope); print "</pre>"; */
 		$this->editors = array();
 		$this->permissions = array();
 		$this->changedpermissions = 1;

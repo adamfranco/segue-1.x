@@ -64,7 +64,37 @@ include("themes/$theme/css.inc.php");
    <tr>
     <td class="topleft2">&nbsp;</td>
     <td bgcolor="<? echo $c[bgcolor] ?>">
-    <? include("themes/common/status.inc.php");?>          
+    <? include("themes/common/status.inc.php");?>
+
+       <div class=topnav align=center>
+	<div class='nav'>
+	<?
+	/* ------------------------------------------- */
+	/* -------------- TOP NAV    ----------------- */
+	/* ------------------------------------------- */
+
+	if (count($topnav) > 0) {
+		$i=0;
+		foreach ($topnav as $item) {
+			if ($i > 0) print " | ";
+			print "<span style='color: #000;";
+			if (!$item[url])
+				print " font-weight: bold;";
+			print "'>";
+		
+			$samepage = (isset($section) && ($section == $item[id]))?1:0;
+			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
+			print makelink($item,$samepage);
+			print "</span>";
+			$i++;
+		}
+		
+		print $topnav_extra;
+	}
+	?>
+	</div>
+	</div>
+	
     </td>
     <td bgcolor="<? echo $c[bgcolor] ?>">
     <td class="right"></td>
