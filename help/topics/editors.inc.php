@@ -6,6 +6,11 @@
 
 <p>To add an editor to your site, click the "add editor" link. You will be presented with a dialog that allows you to search for <? echo $cfg[inst_name]; ?> users and add them as editors.
 
-<p>Once they are editors you can specify what they can do to your site. Permissions are organized into "add", "edit", and "delete", and can be set on the site, section or page level. By checking boxes on this page you give the editors permissions over your entire site.
+<p>Once they are editors you can specify what they can do to your site. Permissions are organized into the following categories:
 
-<p><b>Add</b> permissions allow people to add content, <b>Edit</b> permissions allow them to edit existing content and <b>Delete</b> permissions allow them to delete existing content.
+<ul>
+<li> <b>add</b> - add permissions allow editors to add content to your site under the part you assign them permission. For example, if you assign an editor add permission to a section, they can add pages and content to those pages below the section.
+<li> <b>edit</b> - edit permissions allow editors to edit any part below the one you specify as well as edit the settings for the part you specify.
+<li> <b>delete</b> - delete permissions allow editors to delete parts below the one you specify.
+<li> <b>view</b> - view permissions allow the specified editor (or special editors: everyone and institution) to view the selected part of your site when browsing.
+</ul>

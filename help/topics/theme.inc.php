@@ -3,4 +3,4 @@
 
 <p> Some themes have "Theme Settings".  After you select the theme, you are given the option of changing theme settings such as color, for that theme.
 
-<p>Themes can be changed at any time, so if you try one out and want to change to another at any point, you can do so by editing your site settings. The entire content of your site and all settings will be preserved.
+<p>Themes can be changed at any time, so if you try one out and want to change to another at any point, you can do so by editing your site settings. The entire content of your site and all other settings will be preserved.
