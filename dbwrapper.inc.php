@@ -172,14 +172,16 @@ function db_connect ($host_db, $username, $password, $db='', $port=0) {
 }
 
 function db_error() {
-  global $db_type;
-  if ($db_type == "mysql") {
-    printError(mysql_error());
-  }
-  if ($db_type == "oracle") {
-    $a = OCIError();
-    printError($a['message']);
-  }
+  global $db_type; global $debug;
+  if ($debug) {
+	  if ($db_type == "mysql") {
+		printError(mysql_error());
+	  }
+	  if ($db_type == "oracle") {
+		$a = OCIError();
+		printError($a['message']);
+	  }
+	}
 }
 
 function ocidie ($t) {
@@ -231,9 +233,14 @@ function db_fetch_assoc($res) {
   global $db_type; global $debug;
   
   if (!is_resource($res)) {
-  		printError("db_fetch_assoc(): Resource, '$res', is not a valid resource.");
-  		return FALSE;
-  	}
+  		if ($debug) {
+	  		printError("db_fetch_assoc(): Resource, '$res', is not a valid resource.");
+  			return FALSE;
+  		} else {
+  			print "db_fetch_assoc(): Resource, '$res', is not a valid resource. Enable debug mode for backtrace.";
+			return FALSE;
+  		}
+  }
   		
   if ($db_type=="mysql") {
     $ar = mysql_fetch_assoc($res);

@@ -209,6 +209,8 @@ class Update130
 		
 		// Go through all the sites and make sure that all of their parts have
 		// the media links updated
+		if (ini_get('max_execution_time') < 300)
+			ini_set('max_execution_time', 300);
 		
 		$allSlots = slot::getAllSlots();
 		print "\n<br>Starting Link->Tag conversion.";
