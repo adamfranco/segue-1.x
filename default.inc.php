@@ -16,8 +16,19 @@ if ($copysite && $newname && $origname) {
 /*      print_r($origSite); */
 /*      print "</pre>"; */
         /* $origSite->copySite($newname,$clearpermissions); */
-        $origSite->copySite($newname);
-        log_entry("copy_site","$_SESSION[auser] copied site ".$origname." to ".$newname,$newname,$origSite->id,"site"); // Should maybe be the newsite's id.
+
+	/******************************************************************************
+	 * Check to make sure that the slot is not already in use.
+	 * Hitting refresh after copying a site, will insert a second copy of the site
+	 * if we don't check for this.
+	 ******************************************************************************/
+		$query = "SELECT FK_site FROM slot WHERE slot_name = '$newname'";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		if (!$a[FK_site]) {
+			$origSite->copySite($newname);
+       		log_entry("copy_site","$_SESSION[auser] copied site ".$origname." to ".$newname,$newname,$origSite->id,"site"); // Should maybe be the newsite's id.
+       	}
 }
 
 /******************************************************************************
