@@ -43,7 +43,7 @@ do {
 		$pt = " > " . $thisPage->getField("title");
 		// check page permissions
 	}
-	$pagetitle = $thisSite->getField("title") . $st . $pt;
+	$pagetitle = $previewTitle . $thisSite->getField("title") . $st . $pt;
 	
 	if (!$thisSite->isEditor()) {
 		error("You are not an editor for this site.");
@@ -215,49 +215,64 @@ do {
 } while (0);
 
 
+/******************************************************************************
+ * bottom button box
+ ******************************************************************************/
 
+if (ereg('preview_edit_as', $_REQUEST['action'])) {
+	$previewAction = ereg_replace('preview_edit_as', '&action=preview_as', $_REQUEST['action']);
+ } else {
+	$previewAction = '&action=viewsite';
+}
 // add the key to the footer of the page
 /*$u = "$_SERVER[SCRIPT_URI]?action=site&site=$site";*/
-$u = "$PHP_SELF?$sid&action=site&site=$site";
+$u = "$PHP_SELF?$sid".$previewAction."&site=$site";
 if ($section) $u .= "&section=$section";
 if ($page) $u .= "&page=$page";
 if ($supplement) $u .="&supplement=$supplement";
 
-$text .= "<br><div align=right><table style='border-top: 2px solid #666; border-left: 2px solid #666; border-bottom: 2px solid #666; border-right: 2px solid #666; background-color: #ddd;'><tr>";
-$text .= "<td valign=top align=left>";
+
+ob_start();
+print "\n\n<br>\n<div align=right>\n<table style='border-top: 2px solid #666; border-left: 2px solid #666; border-bottom: 2px solid #666; border-right: 2px solid #666; background-color: #ddd;'>\n\t<tr>";
+print "\n\t<td valign=top align=left>";
 
 $btnw = 125 . "px"; // button width
 $sty = "style='width: $btnw;"; // ignore this
-if ($thisSite->hasPermission("edit")) 
-$text .= "<input type=button style='width: $btnw' class='button' value='Edit Site Settings' onClick=\"window.location='index.php?$sid&action=edit_site&sitename=$site&comingFrom=viewsite'\">";
-else $text .= "&nbsp; ";
+if ($thisSite->hasPermission("edit")) {
+	print "\n\t<input type=button style='width: $btnw' class='button' value='Edit Site Settings' onClick=\"window.location='index.php?$sid&action=edit_site&sitename=$site&comingFrom=viewsite'\">";
+} else {
+	print "\n\t&nbsp; ";
+}
 
-$text .= "</td>";
-$text .= "<td valign=top align=left>";
+print "\n\t</td>";
+print "\n\t<td valign=top align=left>";
 
-$text .= "<input type=button style='width: $btnw' class='button' name='sitemap' value=' Permissions ' onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=$site\")' target='permissions' style='text-decoration: none'>";
+if (!ereg('preview_edit_as', $_REQUEST['action'])) {
+	print "\n\t<input type=button style='width: $btnw' class='button' name='sitemap' value=' Permissions ' onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=$site\")' target='permissions' style='text-decoration: none'>";
+}
 
-$text .= "</td>";
-$text .= "<td valign=top align=left>";
+print "\n\t</td>";
+print "\n\t<td valign=top align=left>";
 
-$text .= "<input type=button style='width: $btnw' class='button' value='Preview This Site'  onClick=\"window.location='$u&$sid'\">";
+print "\n\t<input type=button style='width: $btnw' class='button' value='Preview This Site'  onClick=\"window.location='$u&$sid'\">";
 
-$text .= "</td>";
-$text .= "</tr><tr><td valign=top align=left>";
+print "\n\t</td>";
+print "\n\t</tr><tr><td valign=top align=left>";
 
-$text .= "<input type=button style='width: $btnw' class='button' name='browsefiles' value=' &nbsp; Media Library &nbsp; ' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none'>";
+print "\n\t<input type=button style='width: $btnw' class='button' name='browsefiles' value=' &nbsp; Media Library &nbsp; ' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none'>";
 
-$text .= "</td>";
-$text .= "<td valign=top align=left>";
+print "\n\t</td>";
+print "\n\t<td valign=top align=left>";
 
-$text .= "<input type=button style='width: $btnw' class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none'>";
+print "\n\t<input type=button style='width: $btnw' class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none'>";
 
-$text .= "</td>";
-$text .= "<td valign=top align=center>";
+print "\n\t</td>";
+print "\n\t<td valign=top align=center>";
 
-$text .= helplink("index");
+print helplink("index");
 
-$text .= "</tr></table></div>";
+print "\n\t</tr>\n</table>\n</div>";
 
-$text .= "<br><div align=right><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
-$sitefooter = $sitefooter . $text;
+print "\n\n<br><div align=right><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
+$sitefooter = $sitefooter . ob_get_contents();
+ob_end_clean();

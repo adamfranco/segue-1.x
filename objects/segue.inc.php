@@ -688,16 +688,21 @@ WHERE
  ******************************************************************************/
 
 	function isEditor($user='') {
+		if ($user=='') 
+			$user=$_SESSION[auser];
+			
+		if ($user == 'everyone' || $user == 'institute')
+			return FALSE;
+		
 		if (!$this->builtPermissions && $this->id) $this->buildPermissionsArray();
-		if ($user=='') $user=$_SESSION[auser];
 		$this->fetchUp();
 		$owner = $this->owningSiteObj->owner;
 /* 		print "owner: $owner"; */
 		if (strtolower($user) == strtolower($owner)) return 1;
 		$toCheck = array(strtolower($user));
 		$toCheck = array_merge($toCheck,$this->returnEditorOverlap(getuserclasses($user,"all")));
-//		print_r($toCheck);
-//		print_r($this->editors);
+// 		printpre($toCheck);
+// 		printpre($this->editors);
 		foreach ($this->editors as $e) {
 			if (in_array($e,$toCheck)) return 1;
 		}
@@ -1429,6 +1434,8 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			return TRUE;
 		}
 		
+//		print "\n<br>Checking canview for '$user' ".get_class($this)." ".$this->name." / ".$this->id." - ".$this->getField("title");
+		
 		
 		// ------ Activation ------
 		// First lets check if this part is active so that we don't have to bother
@@ -1507,8 +1514,8 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		
 		// If we haven't built the classes array and we need it,
 		// build the classes array.
-		if (!is_array($allclasses) && !$useronly) 
-			$allclasses = getuserclasses($user,"all");
+		if (!is_array($allclasses[$_SESSION['auser']]) && !$useronly) 
+			$allclasses[$_SESSION['auser']] = getuserclasses($user,"all");
 		
 		
 		//****************************************
@@ -1603,7 +1610,10 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			// ----- institute ------
 			// If we are logged-in, but not of type 'visitor', the user
 			// is a member of institute.
-			if ($_loggedin && $_SESSION['atype'] != 'visitor')
+			// Also, if we are previewing the permissions of another user,
+			// and that other user is 'everyone', we don't want to include
+			// institute checks.
+			if ($_loggedin && $_SESSION['atype'] != 'visitor' && $_SESSION['auser'] != 'everyone')
 				$entitiesToCheck[] = "institute";
 		
 			// If the user has a valid campus ip-address, then they are a
@@ -1617,13 +1627,20 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 						$ipIsInInstitute = TRUE;
 				}
 			}
-			if ($ipIsInInstitute) 
+			
+			// One other case to check is if we are trying to preview a site as it would
+			// be seen by another user. In this case, we don't want to check the IPs
+			// as that would give a false indication of what they could see.
+			if ($ipIsInInstitute && !$_SESSION['__no_inst_ips']) {
 				$entitiesToCheck[] = "institute";
+			}
 			
 			// ----- classes ------
-			$classesUserIsIn = $this->returnEditorOverlap($allclasses);
+			$classesUserIsIn = $this->returnEditorOverlap($allclasses[$_SESSION['auser']]);
 			$entitiesToCheck = array_merge($classesUserIsIn, $entitiesToCheck);
 		}
+		
+		$entitiesToCheck = array_unique($entitiesToCheck);
 		
 		// ------ Evaluation Strings--------
 		// Create an array of permission checking strings to be evaluated, one per entity.
@@ -1635,6 +1652,9 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			}
 			$evalStrings[] = "(".$evalString.")";
 		}
+		
+		// Debugging line
+//		print "\n<br>Checking hasPermission for '$user' ".get_class($this)." ".$this->name." / ".$this->id." - ".$this->getField("title");
 		
 		// ------- Check the permissions ----------
 		$hasPermission = FALSE;

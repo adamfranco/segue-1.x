@@ -96,7 +96,7 @@ do {
 		$pt = " > " . $thisPage->getField("title");
 		// check page permissions
 	}
-	$pagetitle = $thisSite->getField("title") . $st . $pt;
+	$pagetitle = $previewTitle.$thisSite->getField("title") . $st . $pt;
 	
 	
 	
@@ -192,15 +192,22 @@ do {
 	}
 } while(0);
 
+
 // add the key to the footer of the page
 if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
-	/*$u = "$_SERVER[SCRIPT_URI]?action=viewsite&site=$site";*/
-	$u = "$PHP_SELF?$sid&action=viewsite&site=$site".(($supplement)?"&supplement=$supplement":"");
+
+	if (ereg('preview_as', $_REQUEST['action'])) {
+		$editAction = ereg_replace('preview_as', '&action=preview_edit_as', $_REQUEST['action']);
+	 } else {
+		$editAction = '&action=viewsite';
+	}
+
+	$u = "$PHP_SELF?$sid".$editAction."&site=$site".(($supplement)?"&supplement=$supplement":"");
 	if ($section) $u .= "&section=$section";
 	if ($page) $u .= "&page=$page";
-	$text .= "<br> <div align=right><input type=submit class='button' value='edit this site' onClick=\"window.location='$u&$sid'\"></div>";
+	$text .= "\n<br> \n\n<div align=right>\n<input type=submit class='button' value='edit this site' onClick=\"window.location='$u&$sid'\">\n</div>";
 } else {
 	$text = "";
 }
-$text .= "<br><div align=right><div style='font-size: 0px;'>powered by segue</div><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
+$text .= "\n<br>\n<div align=right>\n<div style='font-size: 0px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif>\n</a>\n</div>";
 $sitefooter = $sitefooter . $text;

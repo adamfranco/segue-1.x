@@ -7,6 +7,7 @@ $totalcolumns = count($_SESSION[editors])*4 + 2;
 
 print "<form action='$PHP_SELF?$sid' medthod=post name=addform>";
 print "<input type=hidden name='step' value=$step>";
+print "<input type=hidden name=site value='".$_SESSION[obj]->getField("name")."'>";
 
 ?>
 <input type=hidden name=fieldchange value=0>

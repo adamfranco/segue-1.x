@@ -144,7 +144,7 @@ if ($_loggedin) {
 	$futureclasses = getuserclasses($auser,"future");
 		
 	// one array containing all user's classes
-	$allclasses = array_merge($classes,$oldclasses,$futureclasses);
+	$allclasses[$_SESSION['auser']] = array_merge($classes,$oldclasses,$futureclasses);
 	
 	// Sort the classes arrays only if that is needed, IE, on the default page.
 		
@@ -152,7 +152,7 @@ if ($_loggedin) {
 	if ($all_sites = segue::getAllSites($_SESSION[auser])) {
 		foreach ($all_sites as $n) {
 /* 			$n = $a['name']; */
-			if (!is_array($allclasses[$n]) && isclass($n)) {
+			if (!is_array($allclasses[$_SESSION['auser']][$n]) && isclass($n)) {
 				$oldsites[]=$n;
 			}
 		}

@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
+if ($action == 'viewsite' || ereg('preview_edit_as', $action)) $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 
 $i=0;
 if ($thisSite->sections) {
@@ -27,7 +27,7 @@ if ($thisSite->sections) {
 				$link = $url; $target="_self";
 			}
 			$extra = '';
-			if ($action == 'viewsite' && (($section == $s) || ($o->getField("type") == 'link'))) {
+			if (($action == 'viewsite' || ereg('preview_edit_as', $action)) && (($section == $s) || ($o->getField("type") == 'link'))) {
 				if ($thisSite->hasPermission("edit")) {
 					if ($i != 0) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=up&id=$s' class='".(($topsections)?"btnlink":"small")."' title='Move this section to the left'>".(($topsections)?"&larr;":"&uarr;")."</a>";
 					if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$s' class=".(($topsections)?"btnlink":"small")." title='Move this section to the right'>".(($topsections)?"&rarr;":"&darr;")."</a>";
@@ -52,7 +52,7 @@ if ($thisSection) {
 			$o = &$thisSection->pages[$p];
 			$extra = '';
 			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
-				if ($action == 'viewsite' && ($p == $page || $o->getField("type") != 'page')) {
+				if (($action == 'viewsite' || ereg('preview_edit_as', $action)) && ($p == $page || $o->getField("type") != 'page')) {
 					if ($thisSection->hasPermission("edit")) {
 						if ($i != 0) $extra .= "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=page&direction=up&id=$p' class='".(($topsections)?"small":"btnlink")."' title='Move this page/link/heading/divider up'><b>".(($topsections)?"&uarr;":"&larr;")."</b></a>";
 						if (($i != 0) && ($i != count($thisSection->pages)-1)) $extra .= " ".(($topsections)?"| ":"");
@@ -92,12 +92,12 @@ if ($thisSection) {
 					add_link(leftnav2,$o->getField("title"),'',$extra);
 				}
 				if ($o->getField("type") == 'divider') {
-					add_link(leftnav,'','',(($action=='viewsite')?"-divider-<br>":"").$extra);
-					add_link(leftnav2,'','',(($action=='viewsite')?"-divider-<br>":$extra));
+					add_link(leftnav,'','',(($action=='viewsite' || ereg('preview_edit_as', $action))?"-divider-<br>":"").$extra);
+					add_link(leftnav2,'','',(($action=='viewsite' || ereg('preview_edit_as', $action))?"-divider-<br>":$extra));
 				}
 				$i++;
 			}
 		}
 	}
-	if ($action == 'viewsite') $leftnav_extra = ($thisSection->hasPermission("add"))?"<div align=right><nobr><a href='$PHP_SELF?$sid&site=$site&section=$section&action=add_page&comingFrom=viewsite' class='".(($topsections)?"small":"btnlink")."' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></nobr></div>":"";
+	if ($action == 'viewsite' || ereg('preview_edit_as', $action)) $leftnav_extra = ($thisSection->hasPermission("add"))?"<div align=right><nobr><a href='$PHP_SELF?$sid&site=$site&section=$section&action=add_page&comingFrom=viewsite' class='".(($topsections)?"small":"btnlink")."' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></nobr></div>":"";
 }

@@ -87,7 +87,7 @@ if ($_loggedin) {
 	$classes = sortClasses($classes);
 	$oldclasses = sortClasses($oldclasses);
 	$futureclasses = sortClasses($futureclasses);
-	$allclasses = sortClasses($allclasses);
+	$allclasses[$_SESSION['auser']] = sortClasses($allclasses[$_SESSION['auser']]);
 
 	if ($allowclasssites) {
 		$_class_list_titles = array("classes"=>"Your Current Classes","futureclasses"=>"Upcoming Classes","oldclasses"=>"Previous Semesters");
@@ -435,13 +435,13 @@ function allSitesSlots ($user) {
 	foreach ($esites as $o) {
 			if ($o->hasPermission("add and edit and delete",$user)) $sitesEditorOf[] = $o->name;
 	}
-	$allclasses = array();
+	$allclasses[$_SESSION['auser']] = array();
 	if ($_SESSION[atype] == 'prof') {
-		foreach ($classes as $n => $v) $allclasses[] = $n;
-		foreach ($futureclasses as $n => $v) $allclasses[] = $n;
+		foreach ($classes as $n => $v) $allclasses[$_SESSION['auser']][] = $n;
+		foreach ($futureclasses as $n => $v) $allclasses[$_SESSION['auser']][] = $n;
 	}
 
-	$allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf,$slots));
+	$allsites = array_unique(array_merge($allsites,$allclasses[$_SESSION['auser']],$sitesOwnerOf,$sitesEditorOf,$slots));
 	
 	$allGroups = group::getGroupsOwnedBy($user);
 
@@ -456,7 +456,7 @@ function allSitesSlots ($user) {
 	$allsites = array_merge($allsites2,$allGroups);
 	asort($allsites);
 
-/*	print "<pre>"; print_r($allclasses); print "</pre>"; */
+/*	print "<pre>"; print_r($allclasses[$_SESSION['auser']]); print "</pre>"; */
 	$sites = array();
 	$slots = array();
 	foreach ($allsites as $n=>$site) {
