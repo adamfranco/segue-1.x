@@ -32,7 +32,7 @@ if (ereg("^login",getenv("QUERY_STRING"))) {
 //		session_unset();
 //		session_destroy();
 	}
-	header("Location: index.php");
+	header("Location: index1.php");
 }
 
 // actions for which we use pervasive themes (if enabled)
@@ -99,8 +99,8 @@ if ($_loggedin) {
 	$allclasses = array_merge($classes,$oldclasses,$futureclasses);
 	
 	// get other sites they have added, but which aren't in the classes list
-	if ($s = segue::getAllSites($_SESSION[auser])) {
-		foreach ($s as $n) {
+	if ($all_sites = segue::getAllSites($_SESSION[auser])) {
+		foreach ($all_sites as $n) {
 /* 			$n = $a['name']; */
 			if (!is_array($allclasses[$n]) && isclass($n)) {
 				$oldsites[]=$n;
