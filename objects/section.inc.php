@@ -119,7 +119,7 @@ class section extends segue {
 			$a[] = "editedby='$_SESSION[auser]'";
 			$a[] = "editedtimestamp = NOW()";
 			$query = "update sections set ".implode(",",$a)." where id=".$this->id;
-			print $query."<p>";
+/* 			print $query."<p>"; */
 			db_query($query);
 		}
 		

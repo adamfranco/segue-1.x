@@ -763,8 +763,8 @@ class segue {
 					$query = "insert into permissions set ".implode(",",$a2).",".implode(",",$a3);
 				}
 				db_query($query);
-				print "$query<br>";
-				print mysql_error()."<br><br>";
+/* 				print "$query<br>"; */
+/* 				print mysql_error()."<br><br>"; */
 			}
 			// delete the appropriate entries from the table
 			foreach ($this->editorsToDelete as $e) {
