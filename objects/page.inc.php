@@ -369,11 +369,15 @@ ORDER BY
 
 	}
 	
-	function updateDB($down=0, $force=0) {
+	function updateDB($down=0, $force=0, $keepEditHistory = FALSE) {
 		if (count($this->changed)) {
 			$a = $this->createSQLArray();
-			$a[] = "FK_updatedby=".$_SESSION[aid];
-//			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
+			
+			if ($keepEditHistory) {
+				$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+			} else
+				$a[] = "FK_updatedby=".$_SESSION[aid];
+			
 			$query = "UPDATE page SET ".implode(",",$a)." WHERE page_id=".$this->id;
 /* 			print "<pre>Page->UpdateDB: $query<br>"; */
 			db_query($query);
@@ -423,7 +427,7 @@ WHERE
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->stories) {
-				foreach (array_keys($this->stories) as $i) $this->stories[$i]->updateDB($down, $force);
+				foreach (array_keys($this->stories) as $i) $this->stories[$i]->updateDB($down, $force, $keepEditHistory);
 			}
 		}
 		return true;

@@ -952,7 +952,7 @@ function convertAllInteralLinksToTags ($sitename) {
 		}
 	}
 	
-	$site->updatedb(1,1);
+	$site->updatedb(1,1,1);
 }
 
 /**
