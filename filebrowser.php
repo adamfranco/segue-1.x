@@ -44,6 +44,25 @@ if ($delete) {
 	printerr2();
 }
 
+if ($upload) {
+	$query = "select * from media where site_id='".(($site)?"$site":"$settings[site]")."'";
+//	print "$query <br>";
+	$r = db_query($query);
+	$filename = $_FILES['file']['name'];
+	$nameUsed = 0;
+	while ($a = db_fetch_assoc($r)) {
+		if ($a[name] == $_FILES['file']['name']) $nameUsed = 1;
+	}
+	if ($_FILES['file']['tmp_name'] == 'none') {
+		$upload_results = "<li>No file selected";
+	} else if ($nameUsed) {
+		$upload_results = "<li>Filename, $filename, is already in use. Please change the filename before uploading.";
+	} else {
+		$newID = copyuserfile($_FILES['file'],0,0);
+		$upload_results = "<li>$filename successfully uploaded to ID $newID";
+	}	
+}
+
 if ($clear) {
 	$user = "";
 	$site = "";
@@ -357,9 +376,34 @@ if (db_num_rows($r)) {
 		$color = 1-$color;
 	}
 } else {
-	print "<tr><td colspan=".(($ltype=='admin')?"10":"9").">No media.</td></tr>";
+	print "<tr><td colspan=".(($ltype=='admin')?"10":"9")." style='text-align: left'>No media.</td></tr>";
 }
 ?>
+	<tr>
+		<td colspan=<? print (($ltype=='admin')?"10":"9"); ?>>
+			<table width='100%'>
+				<tr>
+				<td style='text-align: left; padding-top:10px;' valign=top>
+					<?
+					if ($upload) {
+						print "Upload Results: <div style='margin-left: 25px'>";
+						print $upload_results;
+						print "</div>";
+					}
+					?>
+				</td>
+				<td style='text-align: left; padding-top:10px;' width=50% valign=top>
+					<form action="filebrowser.php" name='addform' method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">
+					<input type=file name='file' class=textfield onClick="document.addform.submit()">  
+					<input type=hidden name='upload' value='1'>
+					<div class=desc>Select the file or image you would like to upload<br>by clicking the 'Browse...' button above.</div>
+					</form>
+				</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 </table><BR>
 
 <form action='filebrowser.php' name='deleteform' method=post>

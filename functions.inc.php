@@ -82,12 +82,27 @@ function copyuserfile($file,$replace,$replace_id) {
 	if ($site) $userdir = "$uploaddir/$site";
 	else $userdir = "$uploaddir/$settings[site]";
 	
-	print "$userdir/$file[name]<br>";
+	$name = $file['name'];
+	$extn = explode(".",$name);
+	$last = count($extn)-1;
+	$extn = strtolower($extn[$last]);
+//	print "$extn <br>";
+	$image_extns = array(
+		"jpg",
+		"gif",
+		"bmp",
+		"png",
+		"tiff"
+	);
+	if (in_array($extn, $image_extns)) $type = "image";
+	else $type = "file";
+	
+//	print "$userdir/$file[name]<br>";
 	if (!is_dir($userdir)) {
 		mkdir($userdir,0777); 
 		chmod($userdir,0775); 
 	}
-	print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>";
+//	print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>";
 	$r=move_uploaded_file($file['tmp_name'],"$userdir/".$file['name']);
 	if (!$r) {
 		print "Upload file error!<br>";
@@ -103,10 +118,10 @@ function copyuserfile($file,$replace,$replace_id) {
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$file['name']);
-		$query = "insert into media set name='$file[name]',site_id='$settings[site]',addedtimestamp=NOW(),addedby='$auser',type='$settings[type]',size='$size'";
-		print $query."<br>";
+		$query = "insert into media set name='$file[name]',site_id='$settings[site]',addedtimestamp=NOW(),addedby='$auser',type='$type',size='$size'";
+//		print $query."<br>";
 		db_query($query);
-		print mysql_error()."<br>";
+//		print mysql_error()."<br>";
 		
 		$media_id = lastid();
 		return $media_id;

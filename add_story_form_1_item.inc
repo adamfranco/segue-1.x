@@ -124,16 +124,9 @@ if ($settings[type]=='story') {
 if ($settings[type] == 'image' || $settings[type] == 'file') {
 	printc("<br><br>");
 	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
-	printc ("<input type=radio name='filefrom' value='medialibrary' ".(($settings[filefrom]=='medialibrary')?" selected":"")."> ");
 	printc("<input type=hidden name='libraryfileid' value='$settings[libraryfileid]'>");
 	printc((($settings[type]=='image')?"Image":"File")." from Media Library: <input type=text name='libraryfilename' value='$settings[libraryfilename]' size=25 readonly> <a href=filebrowser.php? onClick='doWindow(\"filebrowser\",500,600)' target='filebrowser' style='text-decoration: none'><input type=button name='browsefiles' value='Media Library...'></a> <br><br>");
 	printc ("<input type=radio name='filefrom' value='medialibrary' ".(($settings[filefrom]=='local')?" selected":"")."> ");
-	if ($settings[edit]) printc("New ");
-	if ($settings[type] == 'image') printc("Image: ");
-	else printc("File: ");
-	$filename = $settings[file][name];
-	if ($settings[file][name]) printc ("<b>\"$filename\" is currently uploaded</b> <div class='desc'>Only select ".(($settings[type] == 'file')?"a file":"an image")." below if you wish to upload a different file.</div> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ");
-	printc("<input type=file name=file class=textfield>");
 	if ($settings[type]=='image') printc("<div class=desc>Select the image you would like to use by clicking the 'Browse...' button above. Accepted image types are GIF, JPEG and PNG.</div>");
 	else printc("<div class=desc>Select the file you would like to make available by clicking the 'Browse...' button above.</div>");
 	printc("<br>");

@@ -82,7 +82,7 @@ if ($settings) {
 //	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
 //	if ($archiveby) $settings[archiveby] = $archiveby;
 	if ($url) $settings[url] = $url;	
-	if ($file && $_FILES['file']['tmp_name'] != 'none' && $settings[step] == 1 && !$link) $settings[file] = $_FILES['file'];	
+//	if ($file && $_FILES['file']['tmp_name'] != 'none' && $settings[step] == 1 && !$link) $settings[file] = $_FILES['file'];	
 	if ($texttype) $settings[texttype] = $texttype;
 	if ($settings[step] == 5 && !$link) $settings[discuss] = $discuss;
 	if ($settings[step] == 5 && !$link) $settings[discusspermissions] = $discusspermissions;
