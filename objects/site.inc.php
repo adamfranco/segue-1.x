@@ -996,7 +996,7 @@ ORDER BY
 		
 		// Parse through all the text for links refering to parts of the
 		// old site and update them with the new ids.
-		updateSiteLinksFromHash($newSiteObj);
+		updateSiteLinksFromHash($newSiteObj, $newSiteObj);
 		$newSiteObj->updateDB(1,1);
 	}
 	
