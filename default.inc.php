@@ -276,10 +276,12 @@ if ($_loggedin) {
         if (count($allExistingSites) && count($allExistingSlots)) {
 			printc("Copy Site: ");
 			printc("<select name='origname'>");
+			printc("<option value=''>-choose-\n");
 			printOptions($allExistingSites);
 			printc("</select>");
 			printc(" to ");
 			printc("<select name='newname'>");
+			printc("<option value=''>-choose-\n");
 			printOptions($allExistingSlots);
 			printc("</select>");
 /* 			printc(" Clear Permissions: <input type=checkbox name='clearpermissions' value='1' checked>"); */
