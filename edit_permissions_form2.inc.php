@@ -42,7 +42,12 @@ print $buttons;
 /******************************************************************************
  * print out names of editors in top row
  ******************************************************************************/
-print "<tr><td id='collabel'> &nbsp; </td><td id='collabel'> &nbsp; </td>";
+print "<tr><td id='collabel'>";
+if (!$_SESSION[obj]->getField("active"))
+	print "<span style='color: #D00; font-size: 90%;'>This site is hidden. Hiding overides all View permissions.</span>";
+else
+	print " &nbsp; ";
+print "</td><td id='collabel'> &nbsp; </td>";
 foreach ($_SESSION[editors] as $e) {
 	print "<td colspan=4 class='edname' id='collabel'>$e</td>";
 }

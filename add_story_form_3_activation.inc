@@ -29,7 +29,7 @@ printc("<input type=hidden value='0' name='cancel'>");
 printc("<input type=hidden value='0' name='prevbutton'>");
 printc("<input type=hidden value='0' name='nextbutton'>");
 
-	printc("<div class=title style='font-size: 14px'>Activation & Availability</div>");
+	printc("<div class=title style='font-size: 14px'>Activation & Availability ".helplink("daterange")."</div>");
 
 	$_SESSION[storyObj]->outputDateForm();
 /* 	printc("<table>"); */

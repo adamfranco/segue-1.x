@@ -28,14 +28,14 @@ printc("<input type=hidden value='0' name='prevbutton'>");
 printc("<input type=hidden value='0' name='nextbutton'>");
 
 if ($_SESSION[pageObj]->getField("type")=='url' || $_SESSION[pageObj]->getField("type")=='page') {
-	printc("<div class=title style='font-size: 14px'>Activation & Availability</div>");
+	printc("<div class=title style='font-size: 14px'>Activation & Availability ".helplink("daterange")."</div>");
 
 	$_SESSION[pageObj]->outputDateForm();
 	
-	printc("<br><div class=desc>To prevent the page from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
-
-	printc("<input type=radio name=active value=1 " . (($_SESSION[pageObj]->getField("active"))?" checked":"") . "> Enabled | ");
-	printc("<input type=radio name=active value=0 " . (($_SESSION[pageObj]->getField("active"))?"":" checked") . "> Disabled <br>");
+	printc("<br>");
+	printc("<input type=radio name=active value=0 " . (($_SESSION[pageObj]->getField("active"))?"":" checked") . "> Hide ");
+	printc("<input type=radio name=active value=1 " . (($_SESSION[pageObj]->getField("active"))?" checked":"") . "> Don't Hide</b> ");
+	printc(" ".helplink("available")." (this overrides availability option above.)<br>");
 }
 
 printc("<br><br>");

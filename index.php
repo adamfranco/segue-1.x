@@ -25,9 +25,11 @@ $permittedPermissionsActions = array("site","viewsite");
 
 // check if we have any stray session variables
 if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
-	if ($_SESSION[settings] || $_SESSION[siteObj] || $_SESSION[sectionObj] || $_SESSION[pageObj] || $_SESSION[storyObj]) {
+	if ($_SESSION[settings] || $_SESSION[obj] || $_SESSION[editors] || $_SESSION[siteObj] || $_SESSION[sectionObj] || $_SESSION[pageObj] || $_SESSION[storyObj]) {
 		if (ini_get("register_globals")) {
 			session_unregister("settings");
+			session_unregister("obj");
+			session_unregister("editors");
 			session_unregister("siteObj");
 			session_unregister("sectionObj");
 			session_unregister("pageObj");

@@ -290,7 +290,6 @@ print $content;
 /******************************************************************************
  * include the appropriate page:
  ******************************************************************************/
-
 if ($step == 2) require("edit_permissions_form2.inc.php");
 else require("edit_permissions_form1.inc.php");
 
