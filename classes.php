@@ -40,6 +40,8 @@ if ($curraction == 'add') {
 	if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 	// all good
 	if (!$error) {
+		$owner_id = db_get_value("user","user_id","user_uname='$_REQUEST['owner']'");
+		
 		$query = "
 			INSERT INTO
 				ugroup
@@ -55,7 +57,7 @@ if ($curraction == 'add') {
 		$obj->name = $_REQUEST['name'];
 		$obj->semester = $_REQUEST['semester'];
 		$obj->year = $_REQUEST['year'];
-		$obj->owner = $_REQUEST['owner'];
+		$obj->owner = $owner_id;
 		$obj->ugroup = $ugroup_id;
 //		$obj->classgroup = $_REQUEST['classgroup'];
 		$obj->insertDB();
@@ -71,13 +73,15 @@ if ($curraction == 'edit') {
 		if (!$_REQUEST['code']) error("You must enter a code.");
 		if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 		if (!$error) {
+			$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
+			
 			$obj = &new course();
 			$obj->fetchCourseID($_REQUEST['id']);
 			$obj->code = $_REQUEST['code'];
 			$obj->name = $_REQUEST['name'];
 			$obj->semester = $_REQUEST['semester'];
 			$obj->year = $_REQUEST['year'];
-			$obj->owner = $_REQUEST['owner'];
+			$obj->owner = $owner_id;
 	//		$obj->ugroup = $ugroup_id;
 	//		$obj->classgroup = $_REQUEST['classgroup'];
 			$obj->updateDB();
@@ -145,7 +149,10 @@ printerr();
 <html>
 <head>
 <title>Classes</title>
-<? include("themes/common/logs_css.inc.php"); ?>
+<? 
+include("themes/common/logs_css.inc.php"); 
+include("themes/common/header.inc.php");
+?>
 </head>
 
 <?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | <a href='users.php?$sid'>add/edit users</a> | add/edit classes</div>":""?>
@@ -181,9 +188,9 @@ printerr();
 					print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
 					print "<td>".$a['classgroup_name']."</td>";
 					print "<td align=center><nobr>";
-					print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>[del]</a>\n";
-					print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>[edit]</a>\n";
-					print "<a href='classes.php?$sid&action=students&id=".$a['class_id']."'>[students]</a>\n";
+					print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>del</a> | \n";
+					print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>edit</a> | \n";
+					print "<a href='classes.php?$sid&action=students&id=".$a['class_id']."'>students</a>\n";
 					print "</nobr></td>";
 					print "</tr>";
 				}
@@ -216,12 +223,12 @@ function doUserForm($a,$p='',$e=0) {
 			</select>
 			</td>
 			<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>
-			<td><?=$a['$classowner_uname']?><a href=''>[choose]</a></td>
+			<td><input type=text name='owner' size=8 value="<?=$a['classowner_uname']?>" readonly> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
 			<td><?=$a[classgroup_name]?></td>
 			<td align=center>
 			<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
 			<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-			<a href='#' onClick='document.addform.submit()'>[<?=($e)?"update":"add class"?>]</a>
+			<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add class"?></a>
 			</td>
 			</tr>
 			</form>

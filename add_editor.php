@@ -37,6 +37,9 @@ function addEditor(na) {
 	<? if ($comingfrom == "add_slot") { ?>
 		o.owner.value = na;
 		window.close();
+	<? } else if ($comingfrom == "classes") { ?>
+		o.owner.value = na;
+		window.close();
 	<? } else { ?>
 		o.edaction.value = 'add';
 		o.edname.value = na;
