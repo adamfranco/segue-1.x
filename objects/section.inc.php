@@ -93,18 +93,18 @@ class section extends segue {
 		if ($id) $this->id = $id;
 		$this->tobefetched=1;
 		$this->id = $this->getField("id");
-/* 		if ($this->id) { */
-/* 			$query = "select * from sections where id=".$this->id." limit 1"; */
-/* 			$this->data = db_fetch_assoc(db_query($query)); */
-/* 			if (is_array($this->data)) { */
-/* 				$this->fetched = 1; */
-/* 				$this->buildPermissionsArray(); */
-/* 				 */
-/* 				$this->data[pages] = decode_array($this->data[pages]); */
-/* 				 */
-/* 				return true; */
-/* 			} */
-/* 		} */
+		if ($this->id) {
+			$query = "select * from sections where id=".$this->id." limit 1";
+			$this->data = db_fetch_assoc(db_query($query));
+			if (is_array($this->data)) {
+				$this->fetched = 1;
+				$this->buildPermissionsArray();
+				
+				$this->data[pages] = decode_array($this->data[pages]);
+				
+				return true;
+			}
+		}
 		if ($force && $this->id) {
 			foreach ($this->_allfields as $f) $this->getField($f);
 		}	
@@ -128,7 +128,7 @@ class section extends segue {
 		
 		// update down
 		if ($down) {
-			if ($this->fetcheddown) {
+			if ($this->fetcheddown && $this->pages) {
 				foreach ($this->pages as $i=>$o) $o->updateDB(1);
 			}
 		}
@@ -173,7 +173,7 @@ class section extends segue {
 		log_entry("add_section",$this->owning_site,$this->id,"","$_SESSION[auser] added section id ".$this->id." to site ".$this->owning_site);
 		
 		// insert down
-		if ($down && $this->fetcheddown) {
+		if ($down && $this->fetcheddown && $this->pages) {
 			foreach ($this->pages as $i=>$o) $o->insertDB(1,$this->owning_site,$this->id,1,$keepaddedby);
 		}
 		return true;

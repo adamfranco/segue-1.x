@@ -180,8 +180,10 @@ class segue {
 		$this->setField($name,$value);
 		if ($ar) {
 			$a = &$this->$ar;
-			foreach ($a as $i=>$o) {
-				$a[$i]->setFieldDown($name,$value);
+			if ($a) {
+				foreach ($a as $i=>$o) {
+					$a[$i]->setFieldDown($name,$value);
+				}
 			}
 		}
 	}
@@ -677,8 +679,10 @@ class segue {
 			$ar = $this->_object_arrays[get_class($this)];
 			if ($ar) {
 				$a = &$this->$ar;
-				foreach ($a as $i=>$o)
-					$a[$i]->checkLockedFlag($e,$perm);
+				if ($a) {
+					foreach ($a as $i=>$o)
+						$a[$i]->checkLockedFlag($e,$perm);
+				}
 			}
 		}
 	}

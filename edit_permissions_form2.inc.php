@@ -68,20 +68,26 @@ $_SESSION[obj]->fetchDown();
 doEditorLine($_SESSION[obj]);
 
 $sections = &$_SESSION[obj]->sections;
-foreach ($sections as $i=>$o) {
-	$sections[$i]->buildPermissionsArray();
-	if ($isOwner || ($sections[$i]->canview() || $sections[$i]->hasPermissionDown("add or edit or delete"))) {
-		doEditorLine($sections[$i]);
-		$pages = &$sections[$i]->pages;
-		foreach ($pages as $pi=>$po) {
-			$pages[$pi]->buildPermissionsArray();
-			if ($isOwner || ($pages[$pi]->canview() || $pages[$pi]->hasPermissionDown("add or edit or delete"))) {
-				doEditorLine($pages[$pi]);
-				$stories = &$pages[$pi]->stories;
-				foreach ($stories as $si=>$so) {
-					$stories[$si]->buildPermissionsArray();
-					if ($isOwner || ($stories[$si]->canview() || $stories[$si]->hasPermissionDown("add or edit or delete")))
-						doEditorLine($stories[$si]);
+if ($sections) {
+	foreach ($sections as $i=>$o) {
+		$sections[$i]->buildPermissionsArray();
+		if ($isOwner || ($sections[$i]->canview() || $sections[$i]->hasPermissionDown("add or edit or delete"))) {
+			doEditorLine($sections[$i]);
+			$pages = &$sections[$i]->pages;
+			if ($pages) {
+				foreach ($pages as $pi=>$po) {
+					$pages[$pi]->buildPermissionsArray();
+					if ($isOwner || ($pages[$pi]->canview() || $pages[$pi]->hasPermissionDown("add or edit or delete"))) {
+						doEditorLine($pages[$pi]);
+						$stories = &$pages[$pi]->stories;
+						if ($stories) {
+							foreach ($stories as $si=>$so) {
+								$stories[$si]->buildPermissionsArray();
+								if ($isOwner || ($stories[$si]->canview() || $stories[$si]->hasPermissionDown("add or edit or delete")))
+									doEditorLine($stories[$si]);
+							}
+						}
+					}
 				}
 			}
 		}

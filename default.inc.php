@@ -12,6 +12,9 @@ $sitesprinted=array();
 if ($copysite) {
 	$origSite = new site($origname);
 	$origSite->fetchDown(1);
+/* 	print "Move: $origname to $newname  <br> <pre>"; */
+/* 	print_r($origSite); */
+/* 	print "</pre>"; */
 	$origSite->copySite($newname);
 }
 
@@ -260,6 +263,7 @@ function printSiteMenu($user,$existingSites) {
 	$allsites = array();
 	$allsites[] = $user;
 	$sitesOwnerOf = segue::getAllSites($user);
+	$slots = slot::getAllSlots($user);
 	$sitesEditorOf = array();
 	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor($user));
 	foreach ($esites as $o) {
@@ -268,7 +272,7 @@ function printSiteMenu($user,$existingSites) {
 	$allclasses = array();
 	foreach ($classes as $n => $v) $allclasses[] = $n;
 	foreach ($futureclasses as $n => $v) $allclasses[] = $n;
-	$allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf));
+	$allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf,$slots));
 /* 	print "<pre>"; print_r($allclasses); print "</pre>"; */
 	if ($existingSites) {
 		printc("<select name='origname'>");
@@ -280,7 +284,7 @@ function printSiteMenu($user,$existingSites) {
 		}
 		printc("</select>");
 	} else {
-		printc("<select name='origname'>");
+		printc("<select name='newname'>");
 		foreach ($allsites as $n=>$site) {
 			$siteObj = new site($site);
 			$exists = $siteObj->fetchFromDB();

@@ -105,6 +105,9 @@ if ($_REQUEST[cancel]) {
 }
 
 
+/******************************************************************************
+ * Save
+ ******************************************************************************/
 if ($_REQUEST[save]) {
 	if (!$error) { // save it to the database
 		
@@ -135,13 +138,13 @@ if ($_REQUEST[save]) {
 		$sitename = $_SESSION[siteObj]->getField("name");
 		$commingFrom = $_SESSION[settings][commingFrom];
 		$add = $_SESSION[settings][add];
-
-		if ($add) {
-			header("Location: index.php?$sid&action=viewsite&site=$sitename");
-		} else {
-			if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename");
-			else header("Location: index.php?$sid");
-		}
+/*  */
+/* 		if ($add) { */
+/* 			header("Location: index.php?$sid&action=viewsite&site=$sitename"); */
+/* 		} else { */
+/* 			if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename"); */
+/* 			else header("Location: index.php?$sid"); */
+/* 		} */
 		
 	} else {
 		printc ("<br>There was an error");
@@ -149,6 +152,9 @@ if ($_REQUEST[save]) {
 	
 }
 
+/******************************************************************************
+ * Form Stuff
+ ******************************************************************************/
 if ($_SESSION[settings][edit] && $_SESSION[settings][step] == 3 && $prevbutton) $_SESSION[settings][step] = 2;
 else if ($_SESSION[settings][edit] && $_SESSION[settings][step] == 3) $_SESSION[settings][step] = 4;
 

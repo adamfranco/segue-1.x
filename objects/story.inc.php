@@ -162,10 +162,10 @@ class story extends segue {
 				$media_id = $this->getField("longertext");
 				$this->setField("longertext",copy_media($media_id,$newsite));
 			} else if ($this->getField("type") == "story") {
-				$ids = getMediaIDs("shorttext");
-				replaceMediaIDs($ids,"shorttext",$newsite);
-				$ids = getMediaIDs("longertext");
-				replaceMediaIDs($ids,"longertext",$newsite);
+				$ids = segue::getMediaIDs("shorttext");
+				segue::replaceMediaIDs($ids,"shorttext",$newsite);
+				$ids = segue::getMediaIDs("longertext");
+				segue::replaceMediaIDs($ids,"longertext",$newsite);
 			}
 		}
 		

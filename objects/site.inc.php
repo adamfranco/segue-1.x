@@ -79,8 +79,8 @@ class site extends segue {
 /* 				if (strlen($this->data[type])) $this->data[type] = 'personal'; */
 /* 				return true; */
 /* 			} */
-			print "<pre>allFields: "; print_r($_allfields); print "</pre>";
-			foreach ($this->$_allfields as $f) {
+/* 			print "<pre>allFields: "; print_r($this->_allfields); print "</pre>"; */
+			foreach ($this->_allfields as $f) {
 				$this->getField($f);
 			}
 		}
@@ -99,7 +99,8 @@ class site extends segue {
 	function applyTemplate ($template) {
 		$templateObj = new site($template);
 		$templateObj->fetchDown(1);
-		foreach ($templateObj->sections as $i=>$o) segue::copyObj($o,$this);
+		print "<pre>templateObj: "; print_r($templateObj); print "</pre>";
+		foreach ($templateObj->sections as $i=>$o) $o->copyObj($this);
 	}
 	
 	function setSiteName($name, $copySite=0) {
@@ -123,7 +124,7 @@ class site extends segue {
 			$a[] = "editedby='$_SESSION[auser]'";
 			$a[] = "editedtimestamp=NOW()";
 			$query = "update sites set ".implode(",",$a)." where id=".$this->id." and name='".$this->name."'";
-			print "site->updateDB: $query<BR>";
+/* 			print "site->updateDB: $query<BR>"; */
 			db_query($query);
 		}
 		
@@ -135,7 +136,7 @@ class site extends segue {
 		
 		// update down
 		if ($down) {
-			if ($this->fetcheddown) {
+			if ($this->fetcheddown && $this->sections) {
 				foreach ($this->sections as $i=>$o) $o->updateDB(1);
 			}
 		}
@@ -158,7 +159,7 @@ class site extends segue {
 		log_entry("add_site",$this->name,"","","$_SESSION[auser] added ".$this->name);
 		
 		// insert down
-		if ($down && $this->fetcheddown) {
+		if ($down && $this->fetcheddown && $this->sections) {
 			foreach ($this->sections as $i=>$o) $o->insertDB(1,$this->name,$copysite);
 		}
 		return 1;

@@ -150,7 +150,7 @@ class page extends segue {
 
 		// update down
 		if ($down) {
-			if ($this->fetcheddown) {
+			if ($this->fetcheddown && $this->stories) {
 				foreach ($this->stories as $i=>$o) $o->updateDB(1);
 			}
 		}
@@ -193,7 +193,7 @@ class page extends segue {
 		log_entry("add_page",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added page id ".$this->id." to site ".$this->owning_site);
 		
 		// insert down
-		if ($down && $this->fetcheddown) {
+		if ($down && $this->fetcheddown && $this->stories) {
 			foreach ($this->stories as $i=>$o) $o->insertDB(1,$this->owning_site,$this->owning_section,$this->id,1,$keepaddedby);
 		}
 		return true;
