@@ -188,33 +188,30 @@
 
 /******************************************************************************
  * OTHER OPTIONS
- *
- * NOTE: THERE IS A 1/1000 CHANCE THAT YOU WILL NEED TO CHANGE THESE
  ******************************************************************************/
-
-
-
-
-
-	
-	
-	
-	
-	/******************************************************************************
-	 * $debug: set this to 1 if you would like all debug output from dbwrapper to be printed to the browser.
-	 *		possible values: 1, 0
-	 *
-	 *    NOTE: You PROBABLY (definitely) don't want this unless you're crazy.
-	 ******************************************************************************/
-	$debug = 0;
 	
 	/******************************************************************************
 	 * Network - the name of the network you are on. specifies what class functions
 	 *				are to be used. will be phased out eventually
 	 *
-	 * DON'T USE THIS OPTION, for now
 	 ******************************************************************************/
 	$cfg[network] = $_network = "none";
+	
+		/******************************************************************************
+		 * Options if using the "midd" network.
+		 *
+		 * 
+		 ******************************************************************************/
+		$cfg[coursefolders_host] = "";	// myhost.myinstitute.edu
+		$cfg[coursefolders_username] = "";	// jsmith
+		$cfg[coursefolders_password] = "";	// secret
+		$cfg[coursefolders_db] = "";	// coursefolders
+		$cfg[coursefolders_table] = "";	// courses
+		$cfg[coursefolders_coursecode_column] = "";	// code
+		$cfg[coursefolders_semester_column] = "";	// semester
+		$cfg[coursefolders_year_column] = "";	// year
+		$cfg[coursefolders_title_column] = "";	// title
+		$cfg[coursefolders_url_column] = "";	// url
 	
 	/******************************************************************************
 	 * pervasivethemes - 1 to use site's theme for add/edit pages
@@ -225,6 +222,15 @@
 	$cfg[pervasivethemes] = $pervasivethemes = 0;
 	$cfg[programtheme] = $programtheme = "program";
 	$cfg[programthemesettings] = $programthemesettings = "";
+	
+	/******************************************************************************
+	 * $debug: set this to 1 if you would like all debug output from dbwrapper to be 
+	 * printed to the browser.
+	 *		possible values: 1, 0
+	 *
+	 *    NOTE: You PROBABLY (definitely) don't want this unless you're crazy.
+	 ******************************************************************************/
+	$debug = 0;
 	
 	/******************************************************************************
 	 * Semester definitions

@@ -4,12 +4,26 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 //	print "hallooo!";
 	$name = strtolower($name);
 	global $cfg;
-	$ldap_user = $cfg[ldap_user_bind_dn]."=".(($admin_auser)?$cfg[ldap_voadmin_user]:$name);
-	$ldap_pass = ($admin_auser)?$cfg[ldap_voadmin_pass]:$pass;
-
 	
 	// check if we already have an ldap connection... otherwise, open a new one
 	if (!($c = ldap_connect($cfg[ldap_server]))) $c = ldap_connect($cfg[ldap_server]);
+	
+	// bind as the admin and search for the proper name to bind as
+	$admin_ldap_user = $cfg[ldap_user_bind_dn]."=".$cfg[ldap_voadmin_user];
+	$admin_ldap_pass = $cfg[ldap_voadmin_pass];
+
+	$r = @ldap_bind($c,$admin_ldap_user,$admin_ldap_pass);
+	
+	$userSearchDN = $cfg[ldap_base_dn].(($cfg[ldap_user_dn])?",".$cfg[ldap_user_dn]:"");
+	
+	$searchResource = ldap_search($r, $userSearchDN, $cfg[ldap_username_attribute]."=".$name);
+	$userFullBindDN = ldap_get_dn($r, $searchResource);
+	
+	// bind as the proper user
+	$ldap_user = (($admin_auser)?$admin_ldap_user:$userFullBindDN);
+	$ldap_pass = ($admin_auser)?$cfg[ldap_voadmin_pass]:$pass;
+	
+	// No need to unbind, as unbind kills the link, just bind again.
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
 	
 //	print "@ldap_bind($c,$ldap_user,$ldap_pass);";
