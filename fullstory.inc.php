@@ -147,7 +147,7 @@ if ($storyObj->getField("discuss")) {
 	$mailposts = $storyObj->getField("discussemail");	
 	$showposts = $storyObj->getField("discussdisplay");
 	$showallauthors = $storyObj->getField("discussauthor");	
-	$siteowner = $siteObj->getField("addedbyfull");	
+	$siteowner = $siteObj->ownerfname;
 	$discusslabel = $storyObj->getField("discusslabel");	
 	
 	printc("<td align='left'><table width=100% border=0 cellspacing='0' cellpadding='0'><tr><td align='left' class=dheader><a name=discuss></a>");
