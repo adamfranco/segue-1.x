@@ -25,9 +25,9 @@ if (count($usernames)) {
 }
 
 
-print "<pre>";
-print_r($usernames);
-print "</pre>";
+/* print "<pre>"; */
+/* print_r($usernames); */
+/* print "</pre>"; */
 
 ?>
 <html>

@@ -209,12 +209,12 @@ if (!ini_get("register_globals")) {
 
 // debug output -- handy :)
 print "<pre>";
-print "request:\n";
-print_r($_REQUEST);
-print "\n\n";
-print "session:\n";
-print_r($_SESSION);
-print "\n\n";
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
 
 /*
  if (is_object($thisPage)) { 
