@@ -7,7 +7,19 @@
 			file as well as run the '1.3.0 update' under 'admin tools' --> 'updates'
 			to make several changes to Segue's database and file-storage structure.
 		</important>
-		
+		<fix author='alex' ref='856465' reftype='bug'>
+			Have added notes and help to themes UI indicating the Popup Window blocker
+			software should be disabled for Segue.
+		</fix>
+		<fix author='alex'>
+			Improved navigation header display.  Fixed style of navigation header 
+			in bevelbox theme.
+		</fix>
+		<change author='alex'>
+			Changed side sections navigational arrangement (see: theme settings) such
+			that links to pages of the current section appear in an indented list
+			below section name in left navigation.
+		</change>				
 		<fix author='adam'>
 			Segue now checks that it can write to a site directory before attempting 
 			to copy media to it and prints out an informative message if it can't
@@ -167,10 +179,10 @@
 			Fixed bug in media library (filebrowser.php) that prevented getting custom
 			upload limits when called from add content block UI (add_story_form_1_item.inc)
 		</fix>
-		<change author='alex'>
+		<change author='alex' ref='982246' reftype='fr'>
 			Link type pages no longer open in new window.
 		</change>
-		<change author='alex'>
+		<change author='alex' ref='982246' reftype='fr'>
 			Link type content blocks no longer print out urls greater than 70 characters
 			but instead truncate their display to avoid stretching their enclosing tables.
 		</change>
@@ -201,7 +213,7 @@
 			regardless of whether or not they have posted to discussions/assessments on the 
 			class site.
 		</new>
-		<new author='alex'>
+		<new author='alex' ref='956123' reftype='fr'>
 			Added visitor and guest usertypes.  Visitors can participate in public
 			discussions and can be assigned permissions.  Visitors cannot view 
 			institute-only content and are not given a slot for a personal site.
@@ -213,7 +225,7 @@
 			Changed passwd.php to handle 1. changing passwords of users authenticated via
 			Segue's db 2. registering new visitor type users 3. Log in of existing users.
 		</change>
-		<new author='alex'>
+		<new author='alex' ref='957605' reftype='fr'>
 			Added user registration UI that appears in public discussions when posts
 			are made without authentication.  User registration UI requires unauthenticated
 			users to submit their name and email address when posting to public discussions.
