@@ -366,11 +366,11 @@ FROM
 		// check that the newParent can be a parent
 		$thisClass = get_class($this);
 		$parentClass = get_class($newParent);
-		print $this->id."$thisClass - $parentClass<br>";
+/* 		print $this->id."$thisClass - $parentClass<br>"; */
 		if (!($_a[$parentClass]-1 == $_a[$thisClass])) return 0;
 		$this->fetchDown(1);
 
-		print "<br><br>Copying $thisClass ".$this->getField("title")." <br>";
+/* 		print "<br><br>Copying $thisClass ".$this->getField("title")." <br>"; */
 
 		if ($thisClass == 'section') {
 			$owning_site = $newParent->name;

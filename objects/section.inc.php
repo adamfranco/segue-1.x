@@ -366,7 +366,6 @@ ORDER BY
 		}
 		
 		if (!isset($this->owningSiteObj)) {
-			print "<h1>creating a new owning site</h1>";
 			$this->owningSiteObj = new site($this->owning_site);
 			$this->owningSiteObj->fetchDown(1);
 		}
@@ -382,7 +381,6 @@ ORDER BY
 		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		$query = "INSERT INTO section SET ".implode(",",$a);
-		print "<BR>query = $query<BR>";
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
@@ -422,13 +420,13 @@ ORDER BY
 		}
 		if ($all) $a[] = "FK_site='".$this->owningSiteObj->id."'";
 		
-		print "<pre>\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
-		print "owning_site=".$this->owning_site."\nOwningSiteObj: ";
-		print_r ($this->owningSiteObj);
-		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>";
-		print "<br>Sections = <pre>";
-		print_r($this->owningSiteObj->getField("sections"));
-		print "</pre>";
+/* 		print "<pre>\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n"; */
+/* 		print "owning_site=".$this->owning_site."\nOwningSiteObj: "; */
+/* 		print_r ($this->owningSiteObj); */
+/* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
+/* 		print "<br>Sections = <pre>"; */
+/* 		print_r($this->owningSiteObj->getField("sections")); */
+/* 		print "</pre>"; */
 		
 //		if ($this->id && ($all || $this->changed[sections])) { //I belive we may always need to fix the order.
 		if ($this->id) {
