@@ -1,4 +1,5 @@
 <? /* $Id$ */
+
 /******************************************************************************
  * Segue object - basis for all other section, page, and story objects
  ******************************************************************************/
@@ -66,7 +67,7 @@ SELECT site_id
 		$a = array();
 		foreach ($sites as $s) {
 			$a[$s] =& new site($s);
-			$a[$s]->fetchFromDB();
+			$a[$s]->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true);
 		}
 		return $a;
 	}
@@ -83,11 +84,8 @@ SELECT
 FROM
 	slot
 		INNER JOIN 
-	site
-		ON FK_site = site_id
-		INNER JOIN 
 	user
-		ON FK_createdby = user_id
+		ON FK_owner = user_id
 			AND
 		user_uname = '$user'
 ";
@@ -104,6 +102,7 @@ FROM
  ******************************************************************************/
 
 	function getAllSitesWhereUserIsEditor($user='') {
+		global $dbhost, $dbuser, $dbpass, $dbdb;
 		if ($user == '') $user = $_SESSION[auser];
 
 		// first, get all sites for which the user is an editor
@@ -126,6 +125,7 @@ FROM
 			WHERE
 				slot.FK_owner != user_id
 		";
+		db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 		$r = db_query($query);
 		$ar = array();
 		if (db_num_rows($r))
@@ -496,8 +496,8 @@ FROM
 		
 		printc("</select>");
 		printc("<select name='activatemonth'>");
-		for ($i=0; $i<12; $i++) {
-			printc("<option value='$months_values[$i]'" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">".$months[$i]."\n");
+		for ($i=1; $i<13; $i++) {
+			printc("<option value='$i'" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">".$months[$i-1]."\n");
 		}
 		printc("</select>\n<select name='activateyear'>");
 		$curryear = date("Y");
@@ -515,8 +515,8 @@ FROM
 		}
 		printc("</select>\n");
 		printc("<select name='deactivatemonth'>");
-		for ($i=0; $i<12; $i++) {
-			printc("<option value='$months_values[$i]'" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+		for ($i=1; $i<13; $i++) {
+			printc("<option value='$i'" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">".$months[$i-1]."\n");
 		}
 		printc("</select>\n<select name='deactivateyear'>");
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
@@ -542,8 +542,8 @@ FROM
 		$_SESSION[settings][deactivatedate] = 0;
 		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$this->getField("activatedate"));
 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
-		$_SESSION[settings][activatemonth]-=1;
-		$_SESSION[settings][deactivatemonth]-=1;
+//		$_SESSION[settings][activatemonth]-=1;
+//		$_SESSION[settings][deactivatemonth]-=1;
 /* 		echo $this->getField("activatedate")."<br>"; */
 		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
 		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
@@ -551,22 +551,29 @@ FROM
 
 	function setActivateDate($year,$month=0,$day=0) {
 		// test to see if it's a valid date
-//		print "activate: $year-$month-$day<br>";
 		if ($year == -1) { // unset field
 			$this->setField("activatedate","0000-00-00");
 			return true;
 		}
+
 		if (!checkdate($month,$day,$year)) {
 			error("The activate date you entered is invalid. It has not been set.");
 			return false;
 		}
+		
+		if ($month < 10) {
+			$month = "0".$month;
+		}
+		if ($day < 10) {
+			$day = "0".$day;
+		}
+		
 		$this->setField("activatedate",$year."-".$month."-".$day);
 		return true;
 	}
 	
 	function setDeactivateDate($year,$month=0,$day=0) {
 		// test to see if it's a valid date
-//		print "deactivate: $year-$month-$day<br>";
 		if ($year == -1) { // unset field
 			$this->setField("deactivatedate","0000-00-00");
 			return true;
@@ -575,6 +582,14 @@ FROM
 			error("The deactivate date you entered is invalid. It has not been set.");
 			return false;
 		}
+
+		if ($month < 10) {
+			$month = "0".$month;
+		}
+		if ($day < 10) {
+			$day = "0".$day;
+		}		
+		
 		$this->setField("deactivatedate",$year."-".$month."-".$day);
 		return true;
 	}
@@ -676,7 +691,7 @@ WHERE
 		if (!$this->builtPermissions && $this->id) $this->buildPermissionsArray();
 		if ($user=='') $user=$_SESSION[auser];
 		$this->fetchUp();
-		$owner = $this->owningSiteObj->getField("addedby");
+		$owner = $this->owningSiteObj->owner;
 /* 		print "owner: $owner"; */
 		if (strtolower($user) == strtolower($owner)) return 1;
 		$toCheck = array(strtolower($user));
@@ -693,7 +708,7 @@ WHERE
 		/* print "<br>Adding editor $e<br>"; */
 //		if ($e == 'institute' || $e == 'everyone') return false;	// With the new permissions structure, this may be unwanted.
 		if ($_SESSION[auser] == $e) { error("You do not need to add yourself as an editor."); return false; }
-		if (!in_array($e,$this->editors)) {
+		if ($e && !in_array($e,$this->editors)) {
 			$this->editors[]=$e;
 			$this->setUserPermissions($e);
 			$this->changedpermissions = 1;
@@ -703,6 +718,7 @@ WHERE
 	function delEditor($e) {
 		$class=get_class($this);
 		if ($e == 'institute' || $e == 'everyone') return false;
+		if (!$e) return false;
 		if (in_array($e,$this->editors)) {
 			$n = array();
 			foreach($this->editors as $v) {
@@ -1090,7 +1106,7 @@ FROM
 			
 			// now add the editor to the editor array
 //			$this->editors[]=strtolower($t_editor);
-			$this->editors[]=$t_editor;
+			if ($t_editor) $this->editors[]=$t_editor;
 		}
 		
 //		print_r($this->permissions);
@@ -1166,7 +1182,7 @@ FROM
 
 			$n = array_unique(array_merge($this->editors,$this->editorsToDelete,array_keys($this->permissions)));
 			
-//			print_r($n);
+//			printpre($n);
 
 			foreach ($n as $editor) {
 				$p2 = $this->permissions[$editor];
@@ -1271,8 +1287,13 @@ FROM
 //				echo "EID: $ed_id; ETYPE: $ed_type <br>";
 				
 
-				// if this is a site object, see if the editor is in the site_editors table
-				if ($scope == "site") {
+				// see if the editor is in the site_editors table
+				if ($scope == "site")
+					$site_id = $id;
+				else
+					$site_id = $this->owningSiteObj->id;
+					
+					
 					$query = "
 SELECT
 	FK_editor
@@ -1281,7 +1302,7 @@ FROM
 WHERE
 	FK_editor <=> $ed_id AND
 	site_editors_type = '$ed_type' AND
-	FK_site = $id
+	FK_site = $site_id
 ";
 //					echo $query."<br>";
 					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
@@ -1292,14 +1313,14 @@ INSERT
 INTO site_editors
 	(FK_site, FK_editor, site_editors_type)
 VALUES
-	($id, $ed_id, '$ed_type')
+	($site_id, $ed_id, '$ed_type')
 ";					
 
 //					echo $query."<br>";
 						db_query($query);
 					}
 					
-				}
+
 
 
 				// now that we have all the information pertaining to this user, check if the permission entry is already present
@@ -1327,7 +1348,7 @@ WHERE
 					// if we are changing the permissions, update the db
 					if ($p_new_str) {
 						$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
-						echo $query."<br>";
+//						echo $query."<br>";
 						db_query($query);
 					}
 					// if we are clearing the permissions, delete the entry from the db
@@ -1393,12 +1414,49 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 //		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
 //		print "<br>$scope - ".$this->getField("type");
 		$this->fetchUp();
-		if ($this->owningSiteObj->getField("addedby") == $user) return 1;
+//		if (slot::getOwner($this->owningSiteObj->name) == $user) { return 1;}
+		if ($this->owningSiteObj->owner == $user) { return 1;}
 		if ($scope != 'story' && $this->getField("type") != 'heading') {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
-		if (!$noperms) return $this->hasPermissionDown("view",$user,0,1);
+		
+//		echo "<pre>\nCANVIEW\n";
+//		echo "USER: $user\n";
+//		echo "CLASS: ".get_class($this)."\n";
+//		print_r($this->canview);
+//		echo "\nCANVIEW </pre>";
+		
+		if (!$noperms) {
+			if ($this->fetched_forever_and_ever && get_class($this)=="site") {
+				// check if our IP is in inst_ips
+				global $cfg;
+				$ipgood=0;
+				$ip = $_SERVER[REMOTE_ADDR];
+				if (is_array($cfg[inst_ips]))
+					foreach ($cfg[inst_ips] as $i)
+						if (ereg("^$i",$ip)) $ipgood=1;
+
+				if ($ipgood || $_SESSION[auser]) $institute = true;
+				else $institute = false;
+
+				$canview = ($this->canview[everyone] || $this->canview[$user] || (($institute) ? $this->canview[institute] : false));
+				if ($canview)
+					return $canview;
+				
+				// now check for class permissions
+				$allclasses = getuserclasses($user,"all");
+				foreach (array_keys($allclasses) as $class)
+					if ($this->canview[$class]) 
+					    return true;
+				
+				
+				return FALSE;
+			}
+			else
+				//exit;
+				return $this->hasPermissionDown("view",$user,0,1); 
+		}
 		return 1;
 	}
 
@@ -1412,23 +1470,27 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		global $allclasses, $_loggedin, $cfg;
 		
 			
-		if (!$this->builtPermissions && $this->id) 
+//		if (!$this->builtPermissions && $this->id) 
 			$this->buildPermissionsArray();
 
 		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
-		
-		if (!is_array($allclasses)) $allclasses = getuserclasses($user,"all");
+
+		if (!$useronly && !is_array($allclasses)) $allclasses = getuserclasses($user,"all");
 		
 		/* Debuging stuff */
 /* 		$class = get_class($this); */
 /* 		print "checking $perms for $user on  $class ".$this->id."<br>"; */
 		
+//		echo "Cached Permissions: <pre>";
+//		print_r($this->cachedPermissions);
+		
 		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) 
 			return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
-		$owner = $this->owningSiteObj->getField('addedby');
+		$owner = $this->owningSiteObj->owner;
+		
 		if (strtolower($user) == strtolower($owner)) 
 			return true;
 			

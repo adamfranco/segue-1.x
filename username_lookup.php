@@ -38,7 +38,15 @@ if (count($usernames)) {
 
 <? include("themes/common/logs_css.inc.php"); ?>
 
-<?=($_SESSION['ltype']=='admin')?"<div align=right>user lookup | <a href='users.php?$sid'>add/edit users</a> | <a href='classes.php?$sid'>add/edit classes</a></div>":""?>
+<?=($_SESSION['ltype']=='admin')?
+	"<div align=right>
+		user lookup | 
+		<a href='users.php?$sid'>add/edit users</a> | 
+		<a href='classes.php?$sid'>add/edit classes</a> | 
+		<a href='add_slot.php?$sid'>add/edit slots</a> |
+		<a href='update.php?$sid'>segue updates</a>
+	</div>"
+:""?>
 
 <table cellspacing=1 width='100%' id='maintable'>
 <tr><td>
@@ -46,8 +54,9 @@ if (count($usernames)) {
 <tr>
 	<td colspan=3>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		Name: <input type=text name='name' size=20 value='<?echo $name?>'> <input type=submit value='GO'>
+		Name: <input type=text name='name' size=20 value='<?echo $name?>'> <input type=submit value='Find'>
 		</form>
+		<? if (!$usernames) print "No matching names found. Enter a name or part of a name above."; ?>
 	</td>
 </tr>
 <tr>
@@ -67,7 +76,7 @@ if (count($usernames)) {
 		$c++;
 	}
 } else {
-	print "<tr><td colspan=3>No usernames. Enter a name or part of a name above.</td></tr>";
+	//print "<tr><td colspan=3>No usernames. Enter a name or part of a name above.</td></tr>";
 }
 ?>
 </table>

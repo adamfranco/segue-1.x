@@ -145,9 +145,31 @@
 		 * ldap_voadmin_user		an LDAP user that has at least view-only admin privileges
 		 * ldap_voadmin_pass		the above user's password
 		 ******************************************************************************/
-		$cfg[ldapserver] = $ldapserver = "";				// "ldap.myinsitute.edu"
-		$cfg[ldap_voadmin_user] = $ldap_voadmin_user = "";	// "jdoe"
-		$cfg[ldap_voadmin_pass] = $ldap_voadmin_pass = "";	// "secret"
+		$cfg[ldap_server] = "";				// "ldap.myinsitute.edu"
+		$cfg[ldap_voadmin_user_dn] = "";	// "cn=jdoe" (include base dn if needed)
+		$cfg[ldap_voadmin_pass] = "";		// "secret"		
+		$cfg[ldap_base_dn] = "";   			// "o=institute,c=country"
+		$cfg[ldap_user_dn] = ""; 			// ou=people
+
+		$cfg[ldap_username_attribute] = ""; 	// "uid"
+		$cfg[ldap_fullname_attribute] = ""; 	// "cn"
+		$cfg[ldap_email_attribute] = "";		// "mail"
+		$cfg[ldap_group_attribute] = "";		// "memberOf"
+		
+		$cfg[ldap_prof_groups] = $ldap_prof_groups = array(
+			"All_Faculty",
+			"All_Staff"
+		);
+		
+			/******************************************************************************
+			 * LDAP COURSE MEMBER INFORMATION
+			 *
+			 * 
+			 ******************************************************************************/
+
+			$cfg[ldap_classgroup_dn] = "";			// ou=groups,ou=classes
+			$cfg[ldap_groupname_attribute] = "";	// "groupid"
+			$cfg[ldap_groupmember_attribute] = "";	// "member"
 		
 		/******************************************************************************
 		 * PAM AUTHENTICATION
@@ -165,33 +187,30 @@
 
 /******************************************************************************
  * OTHER OPTIONS
- *
- * NOTE: THERE IS A 1/1000 CHANCE THAT YOU WILL NEED TO CHANGE THESE
  ******************************************************************************/
-
-
-
-
-
-	
-	
-	
-	
-	/******************************************************************************
-	 * $debug: set this to 1 if you would like all debug output from dbwrapper to be printed to the browser.
-	 *		possible values: 1, 0
-	 *
-	 *    NOTE: You PROBABLY (definitely) don't want this unless you're crazy.
-	 ******************************************************************************/
-	$debug = 0;
 	
 	/******************************************************************************
 	 * Network - the name of the network you are on. specifies what class functions
 	 *				are to be used. will be phased out eventually
 	 *
-	 * DON'T USE THIS OPTION, for now
 	 ******************************************************************************/
 	$cfg[network] = $_network = "none";
+	
+		/******************************************************************************
+		 * Options if using the "midd" network.
+		 *
+		 * 
+		 ******************************************************************************/
+		$cfg[coursefolders_host] = "";	// myhost.myinstitute.edu
+		$cfg[coursefolders_username] = "";	// jsmith
+		$cfg[coursefolders_password] = "";	// secret
+		$cfg[coursefolders_db] = "";	// coursefolders
+		$cfg[coursefolders_table] = "";	// courses
+		$cfg[coursefolders_coursecode_column] = "";	// code
+		$cfg[coursefolders_semester_column] = "";	// semester
+		$cfg[coursefolders_year_column] = "";	// year
+		$cfg[coursefolders_title_column] = "";	// title
+		$cfg[coursefolders_url_column] = "";	// url
 	
 	/******************************************************************************
 	 * pervasivethemes - 1 to use site's theme for add/edit pages
@@ -202,6 +221,15 @@
 	$cfg[pervasivethemes] = $pervasivethemes = 0;
 	$cfg[programtheme] = $programtheme = "program";
 	$cfg[programthemesettings] = $programthemesettings = "";
+	
+	/******************************************************************************
+	 * $debug: set this to 1 if you would like all debug output from dbwrapper to be 
+	 * printed to the browser.
+	 *		possible values: 1, 0
+	 *
+	 *    NOTE: You PROBABLY (definitely) don't want this unless you're crazy.
+	 ******************************************************************************/
+	$debug = 0;
 	
 	/******************************************************************************
 	 * Semester definitions
@@ -222,7 +250,10 @@
 						"template0"=>"Default",
 						"template1"=>"Extensive Course Site",
 						"template2"=>"Standard Course Site",
-						"template3"=>"Brief Course Site");
+						"template3"=>"Brief Course Site",
+						"template4"=>"Advanced: Single Section",
+						"template5"=>"Advanced: Blank"
+						);
 						
 	/******************************************************************************
 	 * themesdir - the folder where all the themes are kept. shouldn't need changing

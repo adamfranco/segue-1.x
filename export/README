@@ -1,0 +1,91 @@
+==========
+  README
+==========
+ - Instructions for backing up Segue via the export/import scripts.
+
+Problem:
+A problem arrises when the restoration of the database from backup
+after a server failure results in a corrupt or missing site. This corruption
+may go unnoticed for some time while other sites are edited/added to the
+database. Restoring this site from a database dump (and ensuring valid keys)
+would be a time-consuming job.
+
+Solution:
+It is recommended that database backups be done in conjunction with these XML 
+backups.  Exporting sites to XML files which preserve the relationships between
+elements without the use of keys allows restoration of individual sites with
+new, valid, key linkages and much automation.
+
+===========================
+ Exporting one site to XML
+===========================
+Individual sites can be exported as an XML file and subdirectory of media files
+using the export_site.php script. This script takes the name of the site that is
+desired to be exported as well as an existing output directory. Ex:
+
+	[root@localhost export]# php export_site.php template01 /backups/segue/
+
+Be sure to run this script as a user who has permission to access the Segue 
+media directory or media files will not be copied. For more help, run:
+
+	[root@localhost export]# php export_site.php -h
+
+
+============================
+ Exporting all sites to XML
+============================
+More often than one site, you will probably want to export all Segue sites on a
+regular basis. To accomplish this, use the export_all_sites.php script. This
+script takes an existing output directory as a parameter. Ex:
+
+	[root@localhost export]# php export_all_sites.php /backups/segue/
+
+Be sure to run this script as a user who has permission to access the Segue 
+media directory or media files will not be copied. If you would rather have a 
+compressed archive put in the output directory, use the "-z", compress, option.
+
+	[root@localhost export]# php export_all_sites.php -z /backups/segue/
+
+The "-z" option will export sites to /tmp/segue_tmp/, then create a allsites.tar.gz 
+file in <output directory>. This option requires the ability to execute a command 
+of the form "tar -czf /backups/segue/allsites.tar.gz /tmp/segue_tmp/". 
+For more help, run:
+
+	[root@localhost export]# php export_site.php -h
+
+
+===========================
+ Importing a site from XML
+===========================
+Individual sites can be imported into Segue from an XML file and directory of 
+media files. This can be used to restore a corrupted or deleted site from an 
+XML backup. There are several expectations that the import script has of the 
+XML file:
+
+ - All users refered to in the XML file exist in the destination Segue instance.
+ - All [media] files refered to in the XML exist in the specified source
+   directory.
+ - The site does not exist in the destination Segue instance.
+ 
+The goal for the initial implementation of these scripts was to support backups
+and restoration of sites upon user request. The storage of user, group and
+class information necessary for accurate user restoration is beyond the scope
+of this goal. If users don't/can't exist in the destination Segue, remove
+references to them in the XML file if you still wish to import the site.
+
+If media files do not exist in the source directory, the script with fail with
+notices. Either put the files in the directory or remove references to them in
+the XML file. The script will not guess which is appropriate.
+
+This script will not overwrite existing sites. Please delete the existing site
+first before importing.
+
+Assuming the above conditions are met, import the site with a command such as the
+following:
+
+	[root@localhost export]# php import_site.php apache apache \
+	/backups/segue/template01/template01.xml /backups/segue/template01/media/
+
+For more help, run:
+	
+	[root@localhost export]# php import_site.php -h

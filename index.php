@@ -1,4 +1,5 @@
 <? /* $Id$ */
+
 	// this file controls pretty much the entire program, taking input and executing the correct scripts accordingly
 
 // we need to include object files before session_start() or registered
@@ -17,8 +18,20 @@ header("Content-type: text/html; charset=utf-8");
 
 if (ereg("^login",getenv("QUERY_STRING"))) {
 	if (session_id()) {
-		session_unset();
-		session_destroy();
+		// clear only our session variables as to not interfere with other apps
+		$vars = array("luser","auser",
+					  "lemail","aemail",
+					  "lid","aid",
+					  "lfname","afname",
+					  "ltype","atype",
+					  "lmethod","amethod",
+					  "settings","obj","editors","siteObj","origSiteObj","sectionObj","pageObj","storyObj");
+		foreach ($vars as $var) {
+			if (ini_get("register_globals")) session_unregister($var);
+			unset($_SESSION[$var]);
+		}
+//		session_unset();
+//		session_destroy();
 	}
 	header("Location: index.php");
 }
@@ -87,8 +100,8 @@ if ($_loggedin) {
 	$allclasses = array_merge($classes,$oldclasses,$futureclasses);
 	
 	// get other sites they have added, but which aren't in the classes list
-	if ($s = segue::getAllSites($_SESSION[auser])) {
-		foreach ($s as $n) {
+	if ($all_sites = segue::getAllSites($_SESSION[auser])) {
+		foreach ($all_sites as $n) {
 /* 			$n = $a['name']; */
 			if (!is_array($allclasses[$n]) && isclass($n)) {
 				$oldsites[]=$n;
@@ -112,10 +125,11 @@ if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
 if ($_REQUEST[site]) {						// we are in a site
 	
 	$thisSite =& new site($_REQUEST[site]);
+	$thisSlot =& new slot($thisSite->name);
 	$thisSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_REQUEST[section],$_REQUEST[page]);
 //	$thisSite->buildPermissionsArray(1,1);
 	
-	$site_owner = $thisSite->getField("addedby");
+	$site_owner = $thisSlot->getField("owner");
 	if ($_REQUEST[theme]) $sid .= "&theme=$_REQUEST[theme]";
 	if ($_REQUEST[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&themesettings=$themesettings";}
 	if ($_REQUEST[nostatus]) $sid .= "&nostatus=1";
@@ -254,7 +268,12 @@ if (!ini_get("register_globals")) {
 /*  if (is_object($thisSite)) {  */
 /*  	print "\n\n";  */
 /*  	print "****************************** ***************  thisSite:\n";  */
-/*  	print_r($thisSite);  */
+/*  	$serializedSite = rawurlencode(serialize($thisSite)); */
+/*  	print $serializedSite."\n"; */
+/*  	 */
+// 	$newSite = unserialize($serializedSite);
+// 	print_r($newSite);
+// 	print_r($thisSite); 
 /*  }  */
 /*  if (is_object($thisPage)) {  */
 /*  	print "\n\n";  */

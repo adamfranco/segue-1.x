@@ -35,22 +35,72 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	// removed active-x editor code to editor_activex.php
 	// editor.inc.php determines browser/platform and choses appropriate editor
 	//print $shorttext;
+	
+	printc("<div style='font-size:10px; color:#D00'>");
+	printc("<br>Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode.  ");
+	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
+	printc("</div>");
+
+	//sniffer determines browser and os
+	//sniffer included in editor.inc.php
+	include("sniffer.inc.php");
+	//$uagent = $_SERVER["HTTP_USER_AGENT"];
+	//printc("<div style='font-size:10px; color:#999'>($uagent)</div>");
+
+	if ($supported == 0) {
+		printc("<br><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
+		if ($isWin) {
+			printc("We recommend you use either <a href=http://www.microsoft.com/windows/ie/ target=new_window>Internet Explorer or greater</a> 
+			or <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a>.");
+		} else {
+			printc("We recommend you use <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a>.");
+		}		
+		//printc("<div style='font-size:10px; color:#999'>browser information: $uagent</div>");		
+		printc("  In the meantime, if you are editing existing content that is in HTML format, you will need to work
+		around the html tags.</div>");
+	}
+
+	if ($supported == 1) {
+		if (!$_SESSION[settings][editor]) $_SESSION[settings][editor] = 'htmlarea';
+		//printpre($_SESSION[settings][editor]);
+		if ($isWinIE) {
+			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
+			printc("We recommend you chose HTMLarea for the greatest cross-platform compatibility.</div>");
+			printc("<div align=right>Current Editor: <select name=editor onChange='document.addform.submit()'>");
+			printc("<option value=htmlarea".(($_SESSION[settings][editor]=='htmlarea')?" selected":"").">HTMLarea");
+			printc("<option value=activex".(($_SESSION[settings][editor]=='activex')?" selected":"").">Active-X");
+			printc("</select></div>");
+			//printc("<input type=button value='Update' onClick='document.addform.submit()'>\n");						
+		}	
+	}
+
 	include("htmleditor/editor.inc.php");
 		
 	printc("<br>");
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	printc("Extended Content (Optional):");
 	printc("<br>");
+	
+		//	print out text areas with editor (determined by addeditor function)
+	//  addeditor function (defined in editor.inc.php)
+	//  addeditor function variables (textarea, cols, rows, text)
+	
+	if ($_SESSION[settings][editorinitstate] == "text" && $supported == 1) {
+		$text = htmlbr($_SESSION[storyObj]->getField("longertext"));
+		$_SESSION[settings][editorinitstate] = "html";
+	} else {
+		$text = $_SESSION[storyObj]->getField("longertext");
+	}
+	//printpre($_SESSION[settings]);
 		
 	//	print out text areas with editor (determined by addeditor function)
 	//  addeditor function (defined in editor.inc.php)
 	//  addeditor function variables (textarea, cols, rows, text)
-	printc(addeditor ("longertext",80,16,$_SESSION[storyObj]->getField("longertext")));
+	printc(addeditor ("longertext",60,26,$text));
 	printc("</td></tr></table>");
 
 	//sniffer determines browser and os
-	include("sniffer.inc.php");
-	if ($browser_os == "pcie5+") {
+	if ($supported == 1) {
 		printc("<input type=hidden name='texttype' value='html'>");
 	} else {
 		printc("<div align=right>");

@@ -35,8 +35,15 @@ if (!$_REQUEST[nostatus]) {
 	print "<div class='headerbox small' align=center>";
 	
 	if ($_loggedin) {	//we're already logged in
+		$_userTypes = array(
+			"stud"=>"student",
+			"prof"=>"professor",
+			"staff"=>"staff",
+			"admin"=>"administrator");
 		if (!$_REQUEST[partialstatus]) {
-			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin' && $_SESSION[luser] != $_SESSION[auser])?" (acting as $_SESSION[afname])":"")." ($_SESSION[atype]) : " ;
+			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'
+&& $_SESSION[luser] != $_SESSION[auser])?" (acting as $_SESSION[afname])":"")."
+(".$_userTypes[$_SESSION[atype]].") : " ;
 			print "<a href='$PHP_SELF?login' class='navlink'>logout</a> | ";
 			print "<a href='$PHP_SELF?$sid' class='navlink'>home</a>";
 			if ($_SESSION[ltype]=='admin') {
@@ -47,7 +54,7 @@ if (!$_REQUEST[nostatus]) {
 			}
 			if ($_SESSION[ltype]=='admin') {
 //				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>user lookup</a>";
-				print " | <a href='users.php?$sid' onClick='doWindow(\"users\",700,500)' target='users' class='navlink'>users</a>";
+				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"users\",700,500)' target='users' class='navlink'>admin tools</a>";
 				print " | change active user: <input type='text' name='changeauser' size=10 class='textfield small'> <input type='submit' class='button small' value='GO'>";
 			}	
 			

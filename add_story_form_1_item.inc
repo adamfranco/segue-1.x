@@ -29,7 +29,8 @@ printc("<input type=hidden value='0' name='cancel'>");
 printc("<input type=hidden value='0' name='prevbutton'>");
 printc("<input type=hidden value='0' name='nextbutton'>");
 
-
+//printc($_REQUEST[shorttext]);
+//printc($_REQUEST[title]);
 printc("Type:".helplink("storytypes"));
 
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
@@ -60,6 +61,11 @@ if ($_SESSION[settings][add] || $_SESSION[storyObj]->getField("type") == 'link')
 	printc(" Link/URL</b>".(($_SESSION[storyObj]->getField("type")=='link')?" - displays a link with optional title and description.":"")."</div>");
 }
 
+if ($_SESSION[settings][add] || $_SESSION[storyObj]->getField("type") == 'rss') {
+	printc("<div class=desc><b>");
+	printc("<input type=radio name=type ".(($_SESSION[settings][add])?"onClick='typeChange()'":"")." value='rss'".(($_SESSION[storyObj]->getField("type")=='rss')?" checked":"").">");
+	printc(" RSS</b>".(($_SESSION[storyObj]->getField("type")=='rss')?" - displays an RSS feed.":"")."</div>");
+}
 
    
 if ($_SESSION[storyObj]->getField("type")=='image') {
@@ -74,6 +80,10 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 	printc("<div class=title>Link</div>");
 	printc("<div class=desc>Enter the URL (internet address) to the page you would like to link to below, and enter optional title and description.</div>");
 }
+if ($_SESSION[storyObj]->getField("type")=='rss') {
+	printc("<div class=title>RSS Feed</div>");
+	printc("<div class=desc>Enter the URL (internet address) of the desired RSS feed.</div>");
+}
 if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<div class=title>Text Block</div>");
 	printc("<div class=desc>Enter the content for your story below. Title and full content are optional. If you enter full content on the next screen, the shorter content (or Abstract) will be displayed on your page with a link to the full content, in a new window.</div>");
@@ -81,12 +91,12 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 
 
 
-//if ($_SESSION[settings][type] !='divider') {
+if ($_SESSION[storyObj]->getField("type")!='rss') {
 	printc("<div class=leftmargin>");
 	printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
 	if ($_SESSION[storyObj]->getField("type") == 'file') printc(" <span style='color: #D00'> * required</span>");
 	printc("<br></div>");
-//}
+}
 
 
 if ($_SESSION[storyObj]->getField("type")=='link') {	
@@ -98,14 +108,59 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 	printc("<textarea name=shorttext class=textarea rows=4 cols=80>".spchars($_SESSION[storyObj]->getField("shorttext"))."</textarea>");
 }
 
+if ($_SESSION[storyObj]->getField("type")=='rss') {	
+	printc("<div class=leftmargin>");
+	printc("URL: <input type=text name=url value='".$_SESSION[storyObj]->getField("url")."' size=50>");
+	printc("</div>");
+}
+
 if ($_SESSION[storyObj]->getField("type")=='story') {
 	//	Begin modification 1 - 11.1.02 - achapin
 	// removed active-x editor code to editor_activex.php
 	// editor.inc.php determines browser/platform and choses appropriate editor
 	//print $shorttext;
+	
+	printc("<div style='font-size:10px; color:#D00'>");
+	printc("<br>Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. ");
+	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
+	printc("</div>");
+
+	//sniffer determines browser and os
+	//sniffer included in editor.inc.php
+	include("sniffer.inc.php");
+	//$uagent = $_SERVER["HTTP_USER_AGENT"];
+	//printc("<div style='font-size:10px; color:#999'>($uagent)</div>");
+
+	if ($supported == 0) {
+		printc("<br><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
+		if ($isWin) {
+			printc("We recommend you use either <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a> or
+			<a href=http://www.microsoft.com/windows/ie/ target=new_window>Internet Explorer or greater</a>.");
+		} else {
+			printc("We recommend you use <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a>.");
+		}		
+		//printc("<div style='font-size:10px; color:#999'>browser information: $uagent</div>");		
+		printc("  In the meantime, if you are editing existing content that is in HTML format, you will need to work
+		around the html tags.</div>");
+	}
+	
+	if ($supported == 1) {
+		if (!$_SESSION[settings][editor]) $_SESSION[settings][editor] = 'htmlarea';
+		//printpre($_SESSION[settings][editor]);
+		if ($isWinIE) {
+			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
+			printc("We recommend you chose HTMLarea for the greatest cross-platform compatibility.</div>");
+			printc("<div align=right>Current Editor: <select name=editor onChange='document.addform.submit()'>");
+			printc("<option value=htmlarea".(($_SESSION[settings][editor]=='htmlarea')?" selected":"").">HTMLarea");
+			printc("<option value=activex".(($_SESSION[settings][editor]=='activex')?" selected":"").">Active-X");
+			printc("</select></div>");
+			//printc("<input type=button value='Update' onClick='document.addform.submit()'>\n");						
+		}	
+	}
+	
 	include("htmleditor/editor.inc.php");
 		
-	printc("<br>");
+	//printc("<br>");
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	printc("Content (or Abstract):");
 	printc("<br>");
@@ -113,12 +168,19 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//	print out text areas with editor (determined by addeditor function)
 	//  addeditor function (defined in editor.inc.php)
 	//  addeditor function variables (textarea, cols, rows, text)
-	printc(addeditor ("shorttext",80,16,$_SESSION[storyObj]->getField("shorttext")));
+	
+	if ($_SESSION[storyObj]->getField("texttype")=='text' && $supported == 1) {
+		$text = htmlbr($_SESSION[storyObj]->getField("shorttext"));
+		$_SESSION[settings][editorinitstate] = "text";
+		//$_SESSION[storyObj]->getField("texttype") = "html";
+	} else {
+		$text = $_SESSION[storyObj]->getField("shorttext");
+	}
+	//printpre($_SESSION[settings]);
+	printc(addeditor ("shorttext",60,20,$text));
 	printc("</td></tr></table>");
-
-	//sniffer determines browser and os
-	include("sniffer.inc.php");
-	if ($browser_os == "pcie5+") {
+	
+	if ($supported == 1) {
 		printc("<input type=hidden name='texttype' value='html'>");
 	} else {
 		printc("<div align=right>");

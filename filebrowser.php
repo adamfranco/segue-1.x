@@ -1,5 +1,5 @@
 <? /* $Id$ */
- 
+
 $content = ''; 
  
 ob_start(); 
@@ -17,13 +17,17 @@ include("objects/objects.inc.php");
 //if ($ltype != 'admin') exit; 
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb); 
- 
+
 if ($delete) { 
 	deleteuserfile($filetodelete); 
 	printerr2(); 
 } 
 
 $sitelist = array();
+$owner = $_REQUEST[owner];
+//print $owner;
+//printpre($_SESSION);
+//printpre($_REQUEST);
 
 $w = array(); 
 if ($ltype == 'admin') { 
@@ -40,7 +44,8 @@ $query = "
 		media_tag,
 		media_type,
 		media_size,
-		slot_name
+		slot_name,
+		slot_uploadlimit
 	FROM 
 		media
 			INNER JOIN
@@ -54,8 +59,35 @@ $totalsize = 0;
 while ($a = db_fetch_assoc($r)) {
 	$totalsize = $totalsize + $a[media_size];
 }
+
+/******************************************************************************
+ * if source = discuss then show only files uploaded by currently authed user
+ ******************************************************************************/
+if ($_REQUEST[source]) {		
+	$user_id = $_SESSION[aid];
+	$username = $_SESSION[auser];
+	if ($username == $owner) {
+		$userfilter = "";
+	} else if (!$user_id) {		
+		$userfilter = "AND user_id = 'anonymous'";
+	} else {
+		$userfilter = "AND user_id = $user_id";
+	}
+	//print "useruname=".$username;
+} else {
+	$userfilter = "";
+}
+
+if ($_REQUEST[comingFrom]) {		
+	//print $_REQUEST[comingFrom];
+}
+
+/******************************************************************************
+ * Uploads files: check if media limit is reached..
+ ******************************************************************************/
  
 if ($upload) { 
+	
 	$query = "
 		SELECT 
 			media_tag,
@@ -63,8 +95,10 @@ if ($upload) {
 			media_size,
 			media_type,
 			slot_name,
+			user_id,
 			user_fname,
-			user_uname
+			user_uname,
+			slot_uploadlimit
 		FROM 
 			media
 				INNER JOIN
@@ -74,31 +108,65 @@ if ($upload) {
 			user
 				ON media.FK_createdby = user_id
 		WHERE
-			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."' AND media_location = 'local'"; 
-//	print "$query <br>"; 
+			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."' 
+		AND 
+			media_location = 'local' 
+		$userfilter
+	"; 
+			
+			
+	//print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
+	
+	// Check for *.php *.php3 etc. files and prevent upload
+	$isPHP = FALSE;
+	if (ereg("\.php[0-9]?$",$filename)) 
+		$isPHP = TRUE;
+	
+	// Check to see if the name is used.
 	$nameUsed = 0; 
 	while ($a = db_fetch_assoc($r)) { 
 		if ($a[media_tag] == $filename) {
 			$nameUsed = 1;
 			$usedId = $a[media_id];
 		}
-	} 
+	}
+	
+	$q = "
+		SELECT 
+			slot_uploadlimit 
+		FROM 
+			slot 
+		WHERE 
+			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'";
+	$res = db_query($q);
+	$b = db_fetch_assoc($res);
+	if ($b[slot_uploadlimit])
+		$dirlimit = $b[slot_uploadlimit];
+	else
+		$dirlimit = $userdirlimit;
+	
 	if ($_FILES['file']['tmp_name'] == 'none') { 
 		$upload_results = "<li>No file selected"; 
-	} else if (($_FILES[file][size] + $totalsize) > $userdirlimit) {
+	} else if (($_FILES[file][size] + $totalsize) > $dirlimit) {
 		$upload_results = "<li>There is not enough room in your directory for $filename."; 
 	} else if ($overwrite && $nameUsed) {
 		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
+	} else if ($isPHP) { 
+		$upload_results = "<li>PHP scripts are not allowed. File, $filename, was not uploaded."; 
 	} else { 
 		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
 	}	 
 } 
+
+/******************************************************************************
+ * clears filename search UI??
+ ******************************************************************************/
  
 if ($clear) {
 	if ($ltype == 'admin') {
@@ -111,6 +179,10 @@ if ($clear) {
 		$site = $_REQUEST[site];
 	}
 } 
+
+/******************************************************************************
+ * get media file
+ ******************************************************************************/
 
 $w = array(); 
 if ($ltype == 'admin') { 
@@ -193,7 +265,8 @@ $query = "
 		media_type,
 		slot_name,
 		user_fname,
-		user_uname
+		user_uname,
+		slot_uploadlimit
 	FROM 
 		media
 			INNER JOIN
@@ -203,6 +276,7 @@ $query = "
 		user
 			ON media.FK_createdby = user_id
 	$where AND media_location = 'local'
+	$userfilter
 	$orderby
 	$limit
 "; 
@@ -274,15 +348,38 @@ input,select {
 </style> 
  
 <script lang="JavaScript"> 
+
+<? 
+/******************************************************************************
+ * Use button action: depends on source and editor?
+ ******************************************************************************/
  
-<? if ($editor == 'none') { ?> 
+if ($source == 'discuss') { ?> 
+	function useFileDiscuss(fileID,fileName) { 
+		o = opener.document.postform; 
+		o.libraryfileid.value=fileID; 
+		o.libraryfilename.value=fileName;  
+		window.close(); 
+	}  
+<? } ?> 
+ 
+<? 
+/******************************************************************************
+ * if coming from discuss or add story then editor = none
+ * $editor variable is passed for future versions of editor which
+ * may include an upload UI
+ ******************************************************************************/
+
+if ($editor == 'none') { 
+
+?> 
 	function useFile(fileID,fileName) { 
 		o = opener.document.addform; 
 		o.libraryfileid.value=fileID; 
 		o.libraryfilename.value=fileName; 
 		o.submit(); 
 		window.close(); 
-	} 
+	}  
 
 <? } else if ($editor == 'text') { 
 	// if using the non-IE text editor 
@@ -350,14 +447,19 @@ function changePage(lolim) {
 					<input type=hidden name='upload' value='1'> 
 					<input type=hidden name='order' value='<? echo $order ?>'> 
 					<input type=hidden name='editor' value='<? echo $editor ?>'> 
+					<input type=hidden name='source' value='<? echo $source ?>'> 
+					<input type=hidden name='owner' value='<? echo $owner ?>'> 
 					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
-					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
+					// For all browsers, include upload button
+					// (support for onClick form submission varies across browsers....)
+					//if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
+					//if ($isWinIE || $isSafari) {
 						print "<input type=file name='file' class=textfield style='color: #000'>";
 						print "<input type=submit value='Upload'>";
-					} else {
-						print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";
-					}
+					//} else {
+					//	print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";
+					//}
 					?>
 					</form> 
 				</td> 
@@ -368,8 +470,18 @@ function changePage(lolim) {
 						$res = db_query("SELECT COUNT(site_id) AS num_sites FROM site");
 						$b = db_fetch_assoc($res);
 						$dirlimit_B = $b['num_sites']*$userdirlimit;
-					} else
-						$dirlimit_B = $userdirlimit;
+					} else {
+						if ($site) {
+							$q = "SELECT slot_uploadlimit FROM slot WHERE slot_name='$site'";
+							$res = db_query($q);
+							$b = db_fetch_assoc($res);
+							if ($b[slot_uploadlimit])
+								$dirlimit_B = $b[slot_uploadlimit];
+							else
+								$dirlimit_B = $userdirlimit;
+						}else
+							$dirlimit_B = $userdirlimit;
+					}
 					$dirlimit = convertfilesize($dirlimit_B);
 					$percentused = round($totalsize/$dirlimit_B,"4")*100;
 					$percentfree = 100-$percentused;
@@ -443,6 +555,7 @@ if (1) {
 		<? if ($ltype == 'admin') print "Search all sites: <input type=checkbox name='all' value='all sites'".(($all)?" checked":"").">"; ?> 
 		<input type=hidden name='order' value='<? echo $order ?>'> 
 		<input type=hidden name='editor' value='<? echo $editor ?>'> 
+		<input type=hidden name='source' value='<? echo $source ?>'> 
 		<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
 		<input type=hidden name='lowerlimit' value=0>
 		</form> 
@@ -473,6 +586,7 @@ if (1) {
 	<form action=<?echo "$PHP_SELF?$sid"?> method=post name='searchform'> 
 	<input type=hidden name='order' value='<? echo $order ?>'> 
 	<input type=hidden name='editor' value='<? echo $editor ?>'> 
+	<input type=hidden name='source' value='<? echo $source ?>'> 
 	<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'>
 	<input type=hidden name='site' value='<? echo $site ?>'>
 	</form>
@@ -576,7 +690,9 @@ if (db_num_rows($r)) {
  
 		print "<td class=td$color>";
 			if ($comingfrom != "viewsite") {
-                if ($editor == 'none') {
+				if ($source == 'discuss') {
+					print "<input type=button name='use' value='use' onClick=\"useFileDiscuss('".$a[media_id]."','".$a[media_tag]."')\">";				
+				} else if ($editor == 'none') {
 					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
                 }
                 else if ($editor == 'text') {
@@ -654,6 +770,7 @@ if (db_num_rows($r)) {
 <input type=hidden name='order' value='<? echo $order ?>'> 
 <input type=hidden name='all' value='<? echo $all ?>'> 
 <input type=hidden name='editor' value='<? echo $editor ?>'>
+<input type=hidden name='source' value='<? echo $source ?>'>
 <input type=hidden name='site' value='<? echo $site ?>'>
 <input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
 </form> 

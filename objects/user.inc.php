@@ -32,13 +32,21 @@ class user {
 	}
 	
 	function _insert() {
-		if ($this->authtype != 'db') return false; // we only edit db-type users
+		// have added option to edit user type info (e.g. prof, stud) for all authtypes
+		// update UI (users.php) must NOT allow options to update user info
+		// that is integral to authtype (e.g. LDAP username and password)
+		
+		//if ($this->authtype != 'db') return false; 
+		// Segue expects unames to be lowercase, so lets force that.
+		$this->uname = strtolower($this->uname);
+		
 		$data = "user_uname='".$this->uname."'";
 		$data .= ",user_fname='".addslashes($this->fname)."'";
 		$data .= ",user_email='".$this->email."'";
 		$data .= ",user_type='".$this->type."'";
+		$data .= ",user_authtype='".$this->authtype."'";
 		if ($this->randpassgen) $data .= ",user_pass='".$this->pass."'";
-		$data .= ",user_authtype='db'";
+		//$data .= ",user_authtype='db'";
 		
 		if ($this->id) { // are we updating?
 			$query = "

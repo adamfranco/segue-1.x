@@ -33,12 +33,11 @@ if ($_REQUEST[site] && isset($_SESSION[obj])) {
 
 if (!is_object($_SESSION[obj])) {
 	$_SESSION[obj] =& new site($_REQUEST[site]);
-/* 	$_SESSION[obj] =& new site('gabe'); */
 	$_SESSION[obj]->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,1);
 	$_SESSION[obj]->spiderDownLockedFlag();
 }
 
-$site_owner = $_SESSION[obj]->getField("addedby");
+$site_owner = $_SESSION[obj]->owner;
 
 $isOwner = $isEditor = 1;
 
@@ -70,6 +69,7 @@ if ($_REQUEST[savechanges]) {
 		// go through each editor and make sure that they are in the local DB.
 		print_r($_SESSION[obj]->getEditors());
 		foreach ($_SESSION[obj]->getEditors() as $_editor) {
+			if(!$_editor) continue;
 			print "synchronizing $_editor...<BR>";
 			synchronizeLocalUserAndClassDB($_editor);
 		}
@@ -315,10 +315,6 @@ print $content;
 if ($step == 2) require("edit_permissions_form2.inc.php");
 else require("edit_permissions_form1.inc.php");
 
-print "<div align=right>";
-print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
-if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
-print "</div>";
 
 // debug output -- handy :)
 /* print "<pre>"; */

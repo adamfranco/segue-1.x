@@ -1,9 +1,14 @@
 <? /* $Id$ */
 
 class story extends segue {
-	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp",
+/* 	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp", */
+/* 							"editedby","editedtimestamp","shorttext","longertext", */
+/* 							"activatedate","deactivatedate","discuss", */
+/* 							"locked","category","discussions","texttype","type","url","active"); */
+
+	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp", "addedbyfull", "editedbyfull",
 							"editedby","editedtimestamp","shorttext","longertext",
-							"activatedate","deactivatedate","discuss",
+							"activatedate","deactivatedate","discuss","discussdisplay","discussauthor","discussemail",
 							"locked","category","discussions","texttype","type","url","active");
 	
 	// fields listed in $_datafields are stored in the database.
@@ -94,6 +99,14 @@ class story extends segue {
 			array("user_uname"),
 			"story_id"
 		),
+		"editedbyfull" => array(
+			"story
+				INNER JOIN
+			user
+				ON FK_updatedby = user_id",
+			array("user_fname"),
+			"story_id"
+		),
 		"editedtimestamp" => array(
 			"story",
 			array("story_updated_tstamp"),
@@ -107,6 +120,14 @@ class story extends segue {
 			array("user_uname"),
 			"story_id"
 		),
+		"addedbyfull" => array(
+			"story
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_fname"),
+			"story_id"
+		),
 		"addedtimestamp" => array(
 			"story",
 			array("story_created_tstamp"),
@@ -115,6 +136,21 @@ class story extends segue {
 		"discuss" => array(
 			"story",
 			array("story_discussable"),
+			"story_id"
+		),
+		"discussdisplay" => array(
+			"story",
+			array("story_discussdisplay"),
+			"story_id"
+		),
+		"discussauthor" => array(
+			"story",
+			array("story_discussauthor"),
+			"story_id"
+		),
+		"discussemail" => array(
+			"story",
+			array("story_discussemail"),
 			"story_id"
 		),
 		"category" => array(
@@ -306,6 +342,9 @@ class story extends segue {
 					story_updated_tstamp AS editedtimestamp, 
 					story_created_tstamp AS addedtimestamp,
 					story_discussable AS discuss, 
+					story_discussdisplay AS discussdisplay, 
+					story_discussauthor AS discussauthor, 
+					story_discussemail AS discussemail,
 					story_category AS category, 
 					story_text_type AS texttype, 
 					story_text_short AS shorttext,
@@ -390,12 +429,15 @@ class story extends segue {
 		return $this->id;
 	}
 	
-	function updateDB($down=0, $force=0) {
+	function updateDB($down=0, $force=0, $keeptimestamp=0) {
 		if ($this->changed) {
 			$this->parseMediaTextForDB("shorttext");
 			$this->parseMediaTextForDB("longertext");
 			$a = $this->createSQLArray();
-			$a[] = "FK_updatedby=".$_SESSION[aid];
+			if ($keeptimestamp)
+				$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+			else
+				$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
 			$query = "UPDATE story SET ".implode(",",$a)." WHERE story_id=".$this->id;
 /* 			print "<pre>Story->UpdateDB: $query<br>"; */
@@ -407,7 +449,7 @@ class story extends segue {
 			// the hard step: update the fields in the JOIN tables
 			
 			// Urls are now stored in the media table
-			if ($this->changed[url] && $this->getField("type") == 'link') {
+			if ($this->changed[url] && ($this->getField("type") == 'link' || $this->getField("type") == 'rss')) {
 				// Urls are now stored in the media table
 				// get id of media item
 				$query = "
@@ -467,7 +509,7 @@ WHERE
 		// if moving to a new site, copy the media
 		if ($origsite != $this->owning_site && $down) {
 			$images = array();
-			if ($this->getField("type") == "image" || $this->getField("type") == "file") {
+			if ($this->getField("type") == "image" || $this->getField("type") == "rss" || $this->getField("type") == "file") {
 				$media_id = $this->getField("longertext");
 				$this->setField("longertext",copy_media($media_id,$newsite));
 			} else if ($this->getField("type") == "story") {
@@ -485,14 +527,16 @@ WHERE
 		if (!$keepaddedby) {
 			$a[] = "FK_createdby=".$_SESSION[aid];
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
+			$a[] = "FK_updatedby=".$_SESSION[aid];
 		} else {
-			$a[] = "FK_createdby=".$this->getField('addeby');	// We need to save an id, this might be a string. might need to Fix!
+			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".$this->getField("addedby")."'");
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
+			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".$this->getField("editedby")."'");
+			$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
 		}
-		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		// insert media (url)
-		if ($this->data[url] && $this->data['type'] == 'link') {
+		if ($this->data[url] && ($this->data['type'] == 'link' || $this->data['type'] == 'rss')) {
 			// first see, if media item already exists in media table
 			$query = "
 SELECT
@@ -578,14 +622,19 @@ SET
 		}
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-		if ($all || $this->changed[activatedate]) "story_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[deactivatedate]) "story_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[activatedate]) $a[] = "story_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = "story_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
 		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
 		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
 //		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
 //		if (($all && $this->data[url]) || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
+
 		if ($all || $this->changed[discuss]) $a[] = $this->_datafields[discuss][1][0]."='".(($d[discuss])?1:0)."'";
+		if ($all || $this->changed[discussemail]) $a[] = $this->_datafields[discussemail][1][0]."='".(($d[discussemail])?1:0)."'";
+		if ($all || $this->changed[discussdisplay]) $a[] = $this->_datafields[discussdisplay][1][0]."='".($d[discussdisplay])."'";
+		if ($all || $this->changed[discussauthor]) $a[] = $this->_datafields[discussauthor][1][0]."='".($d[discussauthor])."'";
+		
 		if ($all || $this->changed[texttype]) $a[] = $this->_datafields[texttype][1][0]."='$d[texttype]'";
 		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='$d[category]'";
 		if ($all || $this->changed[shorttext]) $a[] = $this->_datafields[shorttext][1][0]."='".urlencode($d[shorttext])."'";

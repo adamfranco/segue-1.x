@@ -1,0 +1,279 @@
+<html>
+<head></head>
+<link rel="stylesheet" href="docstyles.css" />
+<body bgcolor="#FFE394">
+<br /><br />
+<center>
+<div class="classDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Class DOMIT_Utilities</td>
+					</tr>
+					<tr>
+						<td class="regular">A collection of utilities for use with the DOMIT! parser. This class is meant to be called statically.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>isPublic? </b>yes<br /><b>isAbstract? </b>no</p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Inheritance tree: </b></p><p><center><a href="DOMIT_Utilities.html">DOMIT_Utilities</a> (top level class)</center></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Known subclasses: </b></p><p>None</p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Source file: </b>xml_domit_utilities.php</p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="constructorDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Constructor</td>
+					</tr>
+					<tr>
+						<td class="regular"></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code"></span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>isPublic? </b></p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicConstantsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Constants</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateConstantsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Constants</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicFieldsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Fields</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateFieldsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Fields</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicMethodsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Methods</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">toNormalizedString</td>
+					</tr>
+					<tr>
+						<td class="regular">Returns a readable representation of the current xml document or node. Called by the DOMIT! method by the same name.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">toNormalizedString()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - A readable representation of the current xml document or node.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>A normalized representation of the xml document is returned:</p><p><span class="code">echo (htmlentities(&quot;&lt;pre&gt;&quot; . $myDoc-&gt;toNormalizedString(). &quot;&lt;/pre&gt;&quot;));</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">printNode</td>
+					</tr>
+					<tr>
+						<td class="regular">Prints out the id, nodeName, nodeType, and nodeValue of the specified node.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">printNode(&amp;$node)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p><a href="DOMIT_Node.html">DOMIT_Node</a> <span class="parameter">node</span> - The node whose properties are to be printed.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - A formatted string displaying the id, nodeName, nodeType, and nodeValue of the specified node.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>A formatted string displaying the properties of $someNode is displayed:</p><p><span class="code">echo (htmlentities(&quot;&lt;pre&gt;&quot; . $DOMIT_Utilities::printNode($someNode) . &quot;&lt;/pre&gt;&quot;));</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">printNodeAndSiblings</td>
+					</tr>
+					<tr>
+						<td class="regular">Prints out the id, nodeName, nodeType, and nodeValue of the specified node and all of its siblings.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">printNodeAndSiblings(&amp;$node)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p><a href="DOMIT_Node.html">DOMIT_Node</a> <span class="parameter">node</span> - The node whose properties, and those of its children, are to be printed.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - A formatted string displaying the id, nodeName, nodeType, and nodeValue of the specified node and its siblings.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>A formatted string displaying the properties of $someNode and its siblings is displayed:</p><p><span class="code">echo (htmlentities(&quot;&lt;pre&gt;&quot; . $DOMIT_Utilities::printNode($someNode) . &quot;&lt;/pre&gt;&quot;));</span></p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateMethodsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Methods</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getNormalizedString</td>
+					</tr>
+					<tr>
+						<td class="regular">Returns a readable representation of the current xml node. Called by the toNormalizedString() method.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">getNormalizedString(&amp;$node, $node_level)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p><a href="DOMIT_Node.html">DOMIT_Node</a> <span class="parameter">node</span> - The current node to be normalized.</p>
+<p>int <span class="parameter">node_level</span> - The level in the xml tree of the current node.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - A readable representation of the current node.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getIndentation</td>
+					</tr>
+					<tr>
+						<td class="regular">Sets the indentation for the normalization of the current node.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">getIndentation($node_level)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>int <span class="parameter">node_level</span> - The level in the xml tree of the current node.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - A sequence of spaces corresponding to the indentation width.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">validateXML</td>
+					</tr>
+					<tr>
+						<td class="regular">Performs some minor validation of the xml string about to be parsed. Note that this does not validate against a DTD or XML Schema Definition.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">validateXML($xmlText)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">xmlText</span> - The xml string to be validated.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>boolean - True is valid, false if invalid.</p>
+</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+<br />
+<p class="docblurb">Documentation generated by <b>ClassyDoc</b>, using the <b>DOMIT!</b> and <b>SAXY</b> parsers.<br />
+Please visit <a href="http://www.engageinteractive.com" target="_child">Engage Interactive</a> to download free copies.</p>
+<br />
+</center>
+</body>
+</html>

@@ -24,6 +24,8 @@ if ($clear) {
 	$user = "";
 	$site = "";
 	$title = "";
+	//$type = "%";
+	//$active = "%";
 }
 
 if ($_REQUEST[order]) $order = $_REQUEST[order];
@@ -31,11 +33,12 @@ if (!isset($order)) $order = "editedtimestamp DESC";
 $orderby = " ORDER BY $order";
 
 $w = array();
-if ($_REQUEST[type]) $w[]="slot_type='$type'";
+//if ($_REQUEST[type]) $w[]="slot_type like '%$type%'";
 if ($_REQUEST[user]) $w[]="user_uname like '%$user%'";
 //if ($site) $w[]="site like '%$name%'";
 if ($_REQUEST[site]) $w[]="slot_name like '%$site%'";
 if ($_REQUEST[title]) $w[]="site_title like '%$title%'";
+//if ($_REQUEST[active]) $w[]="site_active like '%$active%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
 $query = "
@@ -107,12 +110,14 @@ function changeOrder(order) {
 <tr><td  align=right class='bg'>
 	<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
 	| Sites
-	| <a href=viewstudents.php?$sid&site=<? echo $site ?>>Users</a>
+<!-- 	| <<a href='email.php?<? echo $sid ?>&storyid=<? echo $storyid ?>&siteid=<? echo $siteid ?>&site=<? echo $site ?>&action=list'>Participants</a> -->
+
 
 </td></tr>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<? print $numlogs . " | " . $query; ?>
+	<? //print $numlogs . " | " . $query; ?>
+	<? print "Total Segue Sites:".$numlogs ?>
 
 
 </td></tr>
@@ -138,9 +143,23 @@ function changeOrder(order) {
 		} else {
 		?>
 			<!-- </select> -->
-			site: <input type=text name=site size=15 value='<?echo $site?>'>
-			title: <input type=text name=title size=15 value='<?echo $title?>'>
-			user: <input type=text name=user size=15 value='<?echo $user?>'>
+			site: <input type=text name=site size=10 value='<?echo $site?>'>
+			title: <input type=text name=title size=10 value='<?echo $title?>'>
+			user: <input type=text name=user size=10 value='<?echo $user?>'>
+			<!--
+			type: <select name=type>
+				<option<?=($type=='%')?" selected":""?>>all
+				<option<?=($type=='class')?" selected":""?>>class
+				<option<?=($type=='other')?" selected":""?>>other
+				<option<?=($type=='personal')?" selected":""?>>personal
+				<option<?=($type=='system')?" selected":""?>>system
+				</select>
+			active: <select name=active>
+				<option<?=($active=='%')?" selected":""?>>Choose
+				<option<?=($active=='active')?" selected":""?>>active
+				<option<?=($active=='inactive')?" selected":""?>>inactive
+				</select>
+			-->
 			<input type=submit value='go'>
 			<input type=submit name='clear' value='clear'>
 			<input type=hidden name='order' value='<? echo $order ?>'>
@@ -263,7 +282,7 @@ if (db_num_rows($r)) {
 		print "<td class=td$color>$a[theme]</td>";
 		print "<td class=td$color>";
 		print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
-		print "$a[title]";
+		print stripslashes($a[title]);
 		print "</a>";
 		print "</td>";
 		print "<td class=td$color>";
@@ -273,7 +292,7 @@ if (db_num_rows($r)) {
 		$color = 1-$color;
 	}
 } else {
-	print "<tr><td colspan=3>No log entries.</td></tr>";
+	print "<tr><td colspan=7>No sites found based on above criteria.</td></tr>";
 }
 ?>
 </table><BR>

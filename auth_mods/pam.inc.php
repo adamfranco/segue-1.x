@@ -1,18 +1,11 @@
 <? /* $Id$ */
 
 function _valid_pam($name,$pass,$admin_auser=0) {
-	global $pam_email_suffix,$_network;
-	if ($_network == 'kenyon')
-		global $supdbhost, $supdbuser, $supdbpass, $supdbdb, $dbhost, $dbuser, $dbpass, $dbdb;
-	
+	global $pam_email_suffix;
+
 	$exists = 0;
 	if ($admin_auser) {
-		if ($_network == 'kenyon') {
-			db_connect($supdbhost, $supdbuser, $supdbpass, $supdbdb);
-			if (db_num_rows(db_query("select * from people where email like '$name%' limit 1")))
-				$exists = 1;
-			db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-		} else $exists = 1;
+		$exists = 1;
 	}
 		
 	
@@ -23,18 +16,7 @@ function _valid_pam($name,$pass,$admin_auser=0) {
 		$x[type] = "stud";
 		$x[email] = $name . '@' . $pam_email_suffix;
 		$x[method] = 'pam';
-		if ($_network == 'kenyon') {	
-			db_connect($supdbhost, $supdbuser, $supdbpass, $supdbdb);
-			$query = "select * from people where email like '$name%' limit 1";
-			$r = db_query($query);
-//			print (db_num_rows($r));
-			$a = db_fetch_assoc($r);
-//			print_r($a);
-			$x[fullname] = $a[first_name] . " " . $a[last_name];
-			db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-		} else {
-			$x[fullname] = $name;
-		}
+		$x[fullname] = $name;
 		
 		$x = _auth_check_db($x,1);
 		

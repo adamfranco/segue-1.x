@@ -1,4 +1,5 @@
 <? /* $Id$ */
+
 // handles the authentication of scripts executed and decides if the user needs to be
 // authenticated in the first place.
 // - this script essentially has the same structure as checklogin.inc.php
@@ -8,7 +9,7 @@
 foreach ($_auth_mods as $i) include("auth_mods/$i.inc.php");
 
 // this array contains a list of actions that don't *require* the user to be authenticated
-$actions_noauth = array("index.php","site","login","default","previewtheme","fullstory","list","username_lookup","listarticles","listissues");
+$actions_noauth = array("site","login","default","previewtheme","fullstory","fullstory.php","list","username_lookup","listarticles","listissues","sitelisting.php");
 
 $loginerror=0;
 $_loggedin=0;
@@ -24,6 +25,7 @@ if ($_SESSION[luser]) {
 // if we're not yet logged in
 if (!$_loggedin) {
 	if ($_REQUEST[loginform]) {	// they just entered their name & pass
+	
 		// now, assuming they were successful
 		if (loginvalid($_REQUEST[name],$_REQUEST[password])) {
 			$newquerystring = ereg_replace("PHPSESSID","OLDID",urldecode($_REQUEST[getquery]));
@@ -43,7 +45,10 @@ if (!$_loggedin) {
 		if ($loginerror) error("The username and password pair you entered is not valid. Please try again.<BR>");
 		if ($_REQUEST[action]) $try = $_REQUEST[action];
 		if ($action) $try = $action;
-		else $try = trim($SCRIPT_NAME,"/");
+		else $try = trim($_SERVER['SCRIPT_NAME'],"/");
+		// :: hack for fullstory w/out auth
+		if (trim($_SERVER['SCRIPT_NAME'],"/") == "fullstory.php") $try = "fullstory.php";
+
 		if (!in_array($try,$actions_noauth)) {
 			$loginerror=1;
 			error("You must be authenticated to view this page. Please log in above.");
@@ -119,14 +124,45 @@ function _auth_check_db($x,$add_to_db=0) {
 	$r = db_query($query);	
 	if (db_num_rows($r)) {		// they have an entry already -- pull down their info
 		$a = db_fetch_assoc($r);
-		$x[fullname] = $a[user_fname];
-		$x[email] = $a[user_email];
-		$x[type] = $a[user_type];
+		
+		// if their authentication method is not db, then sync the db to the other method
+		if (strtolower($a[user_authtype]) != "db" 
+			&& (
+				$x[fullname] != $a[user_fname]
+				|| $x[email] != $a[user_email] 
+			 	|| 	($x[type] != $a[user_type] 
+					&& $a[user_type] != "admin")
+			)
+		) {
+			$x[fullname] = addslashes($x[fullname]);
+			$query = "
+				UPDATE
+					user 
+				SET  
+					user_email='$x[email]', 
+					user_fname='$x[fullname]'
+			";
+			if ($a[user_type] != "admin") {
+				$query .= ", user_type='$x[type]'";
+			}
+			
+			$query .="
+				WHERE
+					user_uname='$x[user]'
+			";
+			$r = db_query($query);
+		}
+		
+		if ($a[user_type] == 'admin') {
+			$x[type] = $a[user_type];
+		}
+				
 		$x[id] = $a[user_id];
 		// return the new array with info
 		return $x;
 	} else {					// they have no database entry
 		if ($add_to_db) {		// add them to the database and return new id
+			$x[fullname] = addslashes($x[fullname]);
 			$query = "INSERT INTO user SET user_uname='$x[user]', user_email='$x[email]', user_fname='$x[fullname]', user_type='$x[type]', user_pass='".strtoupper($x[method])." PASS', user_authtype='$x[method]'";
 			$r = db_query($query);
 			

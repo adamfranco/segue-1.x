@@ -189,7 +189,7 @@ class page extends segue {
 	}
 	
 	function delete($deleteFromParent=0) {	// delete from db
-		print "<br><BR> Deleting Page<bR><BR>";
+//		print "<br><BR> Deleting Page<bR><BR>";
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
 			$parentObj =& new section($this->owning_site,$this->owning_section,&$this->owningSectionObj->owningSiteObj);
@@ -315,7 +315,8 @@ FROM
 		LEFT JOIN
 	media
 		ON page.FK_media = media_id
-WHERE page_id = ".$this->id;
+WHERE 
+	page_id = ".$this->id;
 
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);
@@ -354,6 +355,7 @@ WHERE page_id = ".$this->id."
 ORDER BY
 	page_order
 ";
+
 
 			$r = db_query($query);
 			$this->data[stories] = array();
@@ -476,11 +478,13 @@ WHERE
 		if (!$keepaddedby) {
 			$a[] = "FK_createdby=".$_SESSION[aid];
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
+			$a[] = "FK_updatedby=".$_SESSION[aid];
 		} else {
-			$a[] = "FK_createdby=".$this->getField('addeby');
+			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".$this->getField("addedby")."'");
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
+			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".$this->getField("editedby")."'");
+			$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
 		}
-		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		// insert media (url)
 		if ($this->data[url]) {
@@ -603,6 +607,9 @@ SET
 		$pa = $this->getField("archiveby");
 		
 		if ($pa == 'none' || $pa == '') return;
+		
+		// if we're looking at a discussion, don't do the archiving
+		if ($_REQUEST['detail']) return;
 		
 		$_a = array("startday","startmonth","startyear","endday","endmonth","endyear","usestart","useend","usesearch");
 		foreach ($_a as $a) $$a = $_REQUEST[$a];

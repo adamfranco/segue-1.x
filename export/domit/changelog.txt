@@ -1,0 +1,46 @@
+DOMIT! ChangeLog
+
+Version 0.11 (2003/12/22)
+- updated to SAXY version 0.1
+
+Version 0.2 (2004/01/15)
+- added methods: saveXML, saveTextToFile, loadXML, loadTextFromFile, parsedBy, getElementsByPath
+- fixed Expat misbehavior with whitespace handling, where in some versions of PHP and Expat, setting XML_OPTION_SKIP_WHITE has no effect
+
+Version 0.3 (2004/01/21)
+- added methods: getNodesByNodeName, getNodesByNodeValue, getText
+- updated getTextFromFile and saveTextToFile, which now use file_get_contents and file_put_contents when available
+- fixed error in documentation for replaceChild method
+
+Version 0.4 (2004/01/26)
+- added methods to class DOMIT_Element: getAttribute, setAttribute, removeAttribute, hasAttribute
+- updated documentation and DOMIT! Tutorial
+- fixed bug in SAXY where attributes demarcated by single quotes were ignored.
+
+Version 0.41 (2004/01/27)
+- fixed bug in parseAttributes method of SAXY. It is now permissible to have equal signs and tabs within attributes.
+
+Version 0.5 (2004/01/28)
+- DOMIT_Parser (and SAXY) now preserve CDATASection Nodes when parsing an xml string.
+- getNamedElement method of DOMIT_Node was renamed to getNamedElements
+- getElementsByTagName now a method of DOMIT_Element in addition to DOMIT_Document
+- can pass "*" to getElementsByTagName to return all elements
+- getElementsByPath has been completely rewritten to be recursive, and optimized significantly
+- added a NodeList class and a NamedNodeMap class
+- getElementsByTagName, getNodesByNodeName, and getNodesByNodeValue now return DOMIT_NodeLists instead of arrays
+
+Version 0.51 (2004/01/30)
+- updated SAXY parser to correct version, which handles new CDATA parsing functionality
+
+Version 0.52 (2004/02/03)
+- fixed a bug in the DOMIT_NodeList class, in which appendNode and removeNode were returning a shallow copy of DOMIT_Node
+- added tutorial: "OOP Techniques for Modifying an XML Document: Part 1"
+- minor revisions to the DOMIT! Tutorial
+
+Version 0.6 (2004/02/06)
+- DOMIT! is far better optimized for speed
+- rewrote UIDGenerator class so that uniqid() was no longer being called. This function was causing performance degradation on all systems, and causing Celeron processors to choke badly.
+- in class DOMIT_GetElementsByPath, replaced a number of substr calls which returned a single character with $text{integer} syntax, for reduced access time.
+- in class DOMIT_GetElementsByPath, replaced several if-else conditionals with case statements to increase performance
+- updated to SAXY 0.6, which replaced a number of substr calls with $text{integer} syntax, for reduced access time. 
+

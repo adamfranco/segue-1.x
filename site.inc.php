@@ -1,9 +1,9 @@
 <? /* $Id$ */
 
-
 // check view permissions
 if (!$thisSite->canview()) {
 	error("You may not view this site. This may be due to any of the following reasons:<BR><ul><li>The site has not been activated by the owner.<li>You are not on a computer within $cfg[inst_name].<li>You are not logged in.<li>You are not part of a set of specific users or groups allowed to view this site.</ul>");
+	return;
 }	
 
 if ($thisSite) $site=$thisSite->name;
@@ -97,44 +97,62 @@ do {
 		$thisPage->handleStoryOrder();
 	/* 	if ($pageinfo[storyorder] != 'custom' && $pageinfo[storyorder] != '') */
 	/* 		$stories = handlestoryorder($stories,$pageinfo[storyorder]); */
+
+/******************************************************************************
+ * If page has stories then print them
+ ******************************************************************************/
 		
 		if ($thisPage->stories) {
-			foreach ($thisPage->data[stories] as $s) {
-				$o =& $thisPage->stories[$s];
-				if ($o->canview()) {		
-					if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
-						printc("<hr size='1' noshade style='margin-top: 5px'>");
-					if ($o->getField("category")) {
-						printc("<div class=contentinfo id=contentinfo2 align=right>");
-						printc("Category: <b>".spchars($o->getField("category"))."</b>");
-						printc("</div>");
-					}
-							
-					printc("<div style='margin-bottom: 10px'>");
+			//if detail then print only story detail ie full text/discussion
+			if ($detail) {
+				$o =& $thisPage->stories[$detail];
+				include("fullstory.inc.php");
+			
+			//if not detail, then print all stories
+			} else {
+			
+				foreach ($thisPage->data[stories] as $s) {
+					$o =& $thisPage->stories[$s];
 					
-					$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
-//					print $incfile; // debug
-					include($incfile);
-		
-					if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
-						printc("<div class=contentinfo align=right>");
-						$added = timestamp2usdate($o->getField("addedtimestamp"));
-						printc("added");
-						if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
-						if ($thisPage->getField("showdate")) printc(" on $added");
-						if ($o->getField("editedby")) {
-							printc(", edited");
-							if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedby"));
-							if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
+	
+					if ($o->canview()) {		
+						if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
+							printc("<hr size='1' noshade style='margin-top: 5px'>");
+							//printc($detail);
+						if ($o->getField("category")) {
+							printc("<div class=contentinfo id=contentinfo2 align=right>");
+							printc("Category: <b>".spchars($o->getField("category"))."</b>");
+							printc("</div>");
 						}
+								
+						printc("<div style='margin-bottom: 10px'>");
+	
+						$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
+	//					print $incfile; // debug
+						include($incfile);
+				
+						if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
+							printc("<div class=contentinfo align=right>");
+							$added = timestamp2usdate($o->getField("addedtimestamp"));
+							printc("added");
+							if ($thisPage->getField("addedby")) printc(" by ".$o->getField("addedbyfull"));
+							if ($thisPage->getField("showdate")) printc(" on $added");
+							if ($o->getField("editedby") && !($o->getField("editedby") == $o->getField("addedby") && $o->getField("addedtimestamp") == $o->getField("editedtimestamp"))) {
+								printc(", edited");
+								if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedbyfull"));
+								if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
+							}
+							printc("</div>");
+							
+							//printc("<hr size='1' noshade><br>");
+						}
+	
+			
 						printc("</div>");
-						//printc("<hr size='1' noshade><br>");
 					}
-		
-					printc("</div>");
-				}
-				$i++;
-			}
+					$i++;
+				} //end foreach stories
+			} //end detail conditional
 		}
 	}
 } while(0);
@@ -149,5 +167,5 @@ if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
 } else {
 	$text = "";
 }
-$text .= "<br><div align=right><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
+$text .= "<br><div align=right><div style='font-size: 0px;'>powered by segue</div><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
 $sitefooter = $sitefooter . $text;

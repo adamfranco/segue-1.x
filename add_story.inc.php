@@ -18,12 +18,17 @@
 /* 	return; */
 /* } */
 
+
+//printpre($_SESSION[settings]);
+//printpre($_SESSION[storyObj]->data);
+
 if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	// if we have already started editing...
 
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
+
 	if ($_REQUEST[type]) $_SESSION[storyObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
 	$_SESSION[storyObj]->handleFormDates();
@@ -33,6 +38,9 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	if ($_REQUEST[url]) $_SESSION[storyObj]->setField("url",$_REQUEST[url]);
 	if ($_REQUEST[texttype]) $_SESSION[storyObj]->setField("texttype",$_REQUEST[texttype]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discuss",$_REQUEST[discuss]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discussemail",$_REQUEST[discussemail]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discussdisplay",$_REQUEST[discussdisplay]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discussauthor",$_REQUEST[discussauthor]);
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("category",$_REQUEST[category]);
 	if ($_REQUEST[newcategory]) {
 		$_SESSION[storyObj]->setField("category",$_REQUEST[newcategory]);
@@ -54,6 +62,9 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 		if ($_SESSION[settings][add]) {
 			$_SESSION[storyObj]->setPermissions($thisPage->getPermissions());
 		}
+	}
+	if ($_REQUEST[editor]) {
+		$_SESSION[settings][editor] = $_REQUEST[editor];
 	}
 }
 
@@ -118,10 +129,10 @@ if ($_SESSION[settings][step] ==2 && $_SESSION[storyObj]->getField("type") != 's
 	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 1;
 	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 3;
 }
-if ($_SESSION[settings][step] ==4 && $_SESSION[auser] != $site_owner) {
-	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 3;
-	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 5;
-}
+/* if ($_SESSION[settings][step] ==4 && $_SESSION[auser] != $site_owner) { */
+/* 	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 3; */
+/* 	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 5; */
+/* } */
 
 $pagetitle=$_SESSION[settings][pagetitle];
 
@@ -135,16 +146,24 @@ $sitefooter = "";
 if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
 	print "cancelling...";
-	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
-	else header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+	if ($comingFrom) {	
+		header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+	} else if ($_SESSION[settings][goback]) {
+		header("Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id);
+	} else {
+		header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+	}
 }
-
+//printpre($_REQUEST[permissions]);
+//printpre($_REQUEST[discuss]);
 if ($_REQUEST[save]) {
 //	$error = 0;
 	// error checking
-	if ($_SESSION[storyObj]->getField("type")=='story' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))==''))
+	if ($_SESSION[storyObj]->getField("type")=='story' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))=='' || trim($_SESSION[storyObj]->getField("shorttext"))=='<br />'))
 		error ("You must enter some story content.");
 	if ($_SESSION[storyObj]->getField("type")=='link' && (!$_SESSION[storyObj]->getField("url") || $_SESSION[storyObj]->getField("url")=='' || $_SESSION[storyObj]->getField("url")=='http://'))
+		error("You must enter a URL.");
+	if ($_SESSION[storyObj]->getField("type")=='rss' && (!$_SESSION[storyObj]->getField("url") || $_SESSION[storyObj]->getField("url")=='' || $_SESSION[storyObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 	if ($_SESSION[storyObj]->getField("type")=='file' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
 		error("You must select a file to upload.");
@@ -153,12 +172,28 @@ if ($_REQUEST[save]) {
 	if ($_SESSION[storyObj]->getField("type")=='image' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
 		error("You must select an image to upload.");
 		
+	if ($_REQUEST[discuss]==1) {
+		foreach ($_REQUEST[permissions] as $permission) {
+			if ($permission[4] == 1) {
+				$permissionset = 1;
+				break;
+			}		
+		}
+		if ($permissionset != 1)
+			error("You must specify who can discuss/assess this content block.");
+	}
+	
+		
 	if (!$error) { // save it to the database
 		
 		// put image id into the longer text field
 		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
 			$_SESSION[storyObj]->setField("longertext",$_SESSION[settings][libraryfileid]);
 		}
+		
+		// if the longertext field = <br />,then set field to ''
+		if (trim($_SESSION[storyObj]->getField("longertext")) == "<br />")
+			$_SESSION[storyObj]->setField("longertext",'');
 		
 		// check make sure the owner is the current user if they are changing permissions
 /* 		if ($site_owner != $_SESSION[auser]) { */
@@ -181,11 +216,21 @@ if ($_REQUEST[save]) {
 /* 			log_entry("edit_page",$_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page],"$auser edited content id $_SESSION[settings][story] in page $_SESSION[settings][page] of section $_SESSION[settings][section] of site $_SESSION[settings][site]"); */
 /* 			$newid=$_SESSION[settings][page]; */
 /* 		} */
-
-		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
 		
+	//	unset($_SESSION[storyObj]);
+		if ($_SESSION[settings][goback]) {
+			header("Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id);
+		} else {
+			header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
+		}
+		
+	// if error take them to page where error occured	
 	} else {
-		$_SESSION[settings][step] = 1;
+		if ($_REQUEST[discuss] == 1 && $permissionset != 1) {
+			$_SESSION[settings][step] = 4;
+		} else {
+			$_SESSION[settings][step] = 1;
+		}
 	}
 }
 
@@ -220,12 +265,12 @@ if (1) {
 	$leftlinks .= "</td></tr>";
 }
 
-if ($thisPage->getField("ediscussion") || $_SESSION[auser] == $site_owner) {
+if (true) {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
 	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href='#' onClick=\"submitFormLink(4)\">";
-	$leftlinks .= "Discussion";
+	$leftlinks .= "Discuss/Assess";
 	if ($_SESSION[settings][step] != 4) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }

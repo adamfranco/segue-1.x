@@ -1,0 +1,13 @@
+Release notes for 1.0.1:
+
+This release provides a number of important bug-fixes and requested features:
+
+* Security changes: login & logout procedures have been changed to be more secure and 
+more compatible with other PHP programs running on a given system.
+
+* Slot & Media Library: The maximum Media Library size (upload limit) can now be 
+adjusted on a per-site basis and slot owners can be changed after being added. This 
+is all available through the add/edit slots interface.
+
+IMPORTANT: This release includes a small database change! See the changelog for 
+detailed information.

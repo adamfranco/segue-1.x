@@ -24,7 +24,9 @@ $getinfo = "site=".$site->name."&section=".$section->id."&page=".$page->id."&sto
 
 $story->fetchFromDB();
 $story->owningSiteObj->fetchFromDB();
-$site_owner=$story->owningSiteObj->getField("addedby");
+//$site_owner=$story->owningSiteObj->owner);
+$site_owner=$story->owningSiteObj->owner;
+//$site_owner=slot::getOwner($story->owningSiteObj->name);
 //print_r($story->owningSiteObj);
 //print $site_owner;
 
@@ -50,20 +52,6 @@ if ($story->getField("type") == 'file') {
 	$fulltext = "<br>";
 	$fulltext .= makedownloadbar($story);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ?>
 <html>
@@ -96,16 +84,16 @@ th.info { color: #888; }
 		
 		// output discussions?
 		if ($story->getField("discuss")) {
-			print "<tr>";
-			print "<th align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><th align=left>Discussion</th>";
-			print "<th align=right class=info>";
+			print "<tr>\n";
+			print "<th align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><th align=left>Discussion</th>\n";
+			print "<th align=right class=info>\n";
 			$f = $_SESSION['flat_discussion'];
-			print ((!$f)?"<a class=info href='fullstory.php?$sid&$getinfo&flat_discussion=true'>":"")."flat".((!$f)?"</a>":"");
+			print ((!$f)?"<a class=info href='fullstory.php?$sid&$getinfo&flat_discussion=true'>":"")."flat".((!$f)?"</a>\n":"");
 			print " | ";
-			print (($f)?"<a class=info href='fullstory.php?$sid&$getinfo&flat_discussion=false'>":"")."threaded".(($f)?"</a>":"");
-			print "</th></tr></table>";
-			print "</th>";
-			print "</tr>";
+			print (($f)?"<a class=info href='fullstory.php?$sid&$getinfo&flat_discussion=false'>":"")."threaded".(($f)?"</a>\n":"");
+			print "</th></tr></table>\n";
+			print "</th>\n";
+			print "</tr>\n";
 			
 			
 			$ds = & new discussion(&$story);
@@ -119,7 +107,7 @@ th.info { color: #888; }
 			$ds->getinfo = $getinfo;
 			
 			$ds->outputAll($story->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true);
-			if (!$ds->count()) print "<tr><td>There have been no posts to this discussion.</td></tr>";
+			if (!$ds->count()) print "<tr><td>There have been no posts to this discussion.</td></tr>\n";
 		}
 		
 		?>

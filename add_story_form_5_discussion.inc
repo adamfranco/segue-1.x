@@ -1,4 +1,6 @@
 <? /* $Id$ */
+if ($_REQUEST[goback]) $_SESSION[settings][goback] = $_REQUEST[goback];
+//printpre($_SESSION[settings]);
 
 printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
 printc("<input type=hidden name='step'>");
@@ -29,18 +31,47 @@ printc("<input type=hidden value='0' name='prevbutton'>");
 printc("<input type=hidden value='0' name='nextbutton'>");
 
 
-	if ($_SESSION[auser] == $site_owner || $thisPage->getField("ediscussion")==1) {
-		printc("<div class=title>Discussion</div>");
-		printc("<div class=desc>You have the option of allowing visitors to your site discuss certain content contained in it. You can restrict discussion access to students in the class (if this is a class website), only $cfg[inst_name] users, or anyone (allowing for anonymous discussion).</div>");
-		printc("<div class=leftmargin>");
-		printc("Enable discussion for this story: <input type=checkbox value='1' name=discuss".(($_SESSION[storyObj]->getField("discuss"))?" checked":"")."><br>");
-		printc("Who should be able to discuss this story? <BR>");
-		permissions::outputForm($_SESSION[storyObj],1);
-		printc("</div>");
-		printc("<br>");
-	} else {
-		printc("<input type=hidden name=discuss value=".$_SESSION[storyObj]->getField("discuss").">");
-	}
+printc("<div class=title>Discussion/Assessment</div>");
+printc("<div class=desc>You have the option of allowing visitors to your site discuss or assess certain content contained in it. You can restrict discussion access to students in the class (if this is a class website), only $cfg[inst_name] users, or anyone (allowing for anonymous discussion).</div>");
+printc("<div class=leftmargin>");
+$discuss = $_SESSION[storyObj]->getField("discuss");
+$discussemail = $_SESSION[storyObj]->getField("discussemail");
+$discussdisplay = $_SESSION[storyObj]->getField("discussdisplay");
+$discussauthor = $_SESSION[storyObj]->getField("discussauthor");
+printc("<table cellpadding=3 cellspacing=0>");
+printc("<tr>");
+printc("<td valign=top><input type=checkbox value='1' name=discuss".(($discuss == 1)?" checked":"")."></td>");
+printc ("<td valign=top><b>Enable</b> discussion/assessment: Check this to allow this content to be the subject of discussion or assessment</td>");
+printc("<td valign=top><input type=checkbox value='1' name=discussemail".(($discussemail == 1)?" checked":"")."></td>");
+printc ("<td valign=top><b>Email</b> all posts: Check this to receive an email of every post.</td>");
+printc("</tr><tr>");
+printc("<td valign=top><input type=radio value='1' name=discussauthor".(($discussauthor == 1 || !$discussauthor)?" checked":"")."></td>");
+printc("<td valign=top><b>Show Authors:</b> Select this to allow for normal discussion whereby the author of each post is identified.</td>");
+//printc("</tr><tr>");
+printc("<td valign=top><input type=radio value='2' name=discussauthor".(($discussauthor == 2)?" checked":"")."></td>");
+printc("<td valign=top><b>Hide Authors:</b> Select this to allow for anonymous discussion.  Only the site owner will know the author of each post (this is also useful for the display and/or discussion of assessment results).</td>");
+printc("</tr><tr>");
+printc("<td valign=top><input type=radio value='1' name=discussdisplay".(($discussdisplay == 1 || !$discussdisplay)?" checked":"")."></td>");
+printc("<td valign=top><b>Discussion:</b> Participants can read and respond to each other's posts.</td>");
+//printc("</tr><tr>");
+printc("<td valign=top><input type=radio value='2' name=discussdisplay".(($discussdisplay == 2)?" checked":"")."></td>");
+printc("<td valign=top><b>Assessment:</b> Participants will <b>not</b> be able to read each other's posts (assessment posts can be made available for discussion after assessment is completed). </td>");
+printc("</tr><tr>");
+printc("</table><br>");
+
+
+
+if ($_SESSION[auser] == $site_owner) {
+	$canAddEditors = true;
+} else {
+	$canAddEditors = false;
+}
+
+printc("Specify who can discuss/assess this content: <BR><BR>");
+permissions::outputForm($_SESSION[storyObj],1,$canAddEditors);
+
+printc("</div>");
+printc("<br>");
 
 printc("<br><br>");
 

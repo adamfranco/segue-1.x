@@ -1,0 +1,308 @@
+<html>
+<head></head>
+<link rel="stylesheet" href="docstyles.css" />
+<body bgcolor="#FFE394">
+<br /><br />
+<center>
+<div class="classDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Class DOMIT_Element</td>
+					</tr>
+					<tr>
+						<td class="regular">A class representing the DOM Element.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>isPublic? </b>yes<br /><b>isAbstract? </b>no</p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Inheritance tree: </b></p><p><center><a href="DOMIT_Node.html">DOMIT_Node</a><br /><span class="branch">|</span><br /><a href="DOMIT_Element.html">DOMIT_Element</a></center></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Known subclasses: </b></p><p>None</p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Source file: </b>xml_domit_parser.php</p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="constructorDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Constructor</td>
+					</tr>
+					<tr>
+						<td class="regular">Initializes DOMIT_Element variables and those of the superclass.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">DOMIT_Element()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>isPublic? </b>no</p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicConstantsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Constants</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateConstantsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Constants</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicFieldsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Fields</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateFieldsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Fields</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicMethodsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Methods</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">appendChild</td>
+					</tr>
+					<tr>
+						<td class="regular">Adds the specified node as a child of the current DOMIT_Element.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">appendChild(&amp;$child)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p><a href="DOMIT_Element.html">DOMIT_Element</a> <span class="parameter">child</span> - The node that is to be appended.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_Element.html">DOMIT_Element</a> - The appended DOMIT_Elementnode.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>A child node is appended to the $myElement node:</p><p><span class="code">$myElement-&gt;appendChild($elementNode);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getText</td>
+					</tr>
+					<tr>
+						<td class="regular">Returns the text contained in all DOMIT_TextNodes and DOMIT_CDataSections that are children of the specified starting node</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">getText()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>All text and cdata nodes in the document will be concatenated and returned.</p><p><span class="code">$allDocmentText = $xmldoc-&gt;getText();</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getAttribute</td>
+					</tr>
+					<tr>
+						<td class="regular">Returns the value of attribute with the specified name.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">getAttribute($name)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">name</span> - The name of the attribute whose value is to be retrieved.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - The value of the name attribute, or an empty string if the attribute is not found.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The value of the attribute name &quot;myatt&quot; is returned.</p><p><span class="code">$attValue = $anElement-&gt;getAttribute(&quot;myatt&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">setAttribute</td>
+					</tr>
+					<tr>
+						<td class="regular">Sets the value of the named attribute.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">setAttribute($name, $value)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">name</span> - The name of the attribute whose value is to be set.</p>
+<p>String <span class="parameter">value</span> - The value to which the named attribute should be set.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The value of the attribute named &quot;myatt&quot; is set to &quot;10&quot;.</p><p><span class="code">$anElement-&gt;setAttribute(&quot;myatt&quot;, &quot;10&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">removeAttribute</td>
+					</tr>
+					<tr>
+						<td class="regular">Removes the named attribute if it exists.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">removeAttribute($name)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">name</span> - The name of the attribute to be removed.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The attribute named &quot;myatt&quot; is removed.</p><p><span class="code">$anElement-&gt;removeAttribute(&quot;myatt&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">hasAttribute</td>
+					</tr>
+					<tr>
+						<td class="regular">Tests whether an attribute with the specified name exists.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">hastAttribute($name)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">name</span> - The name of the attribute to test for.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>boolean - True if the attribute exists, false if it does not.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>True is returned if the element has an attribute named &quot;myatt&quot;.</p><p><span class="code">$exists = $anElement-&gt;hasAttribute(&quot;myatt&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">toString</td>
+					</tr>
+					<tr>
+						<td class="regular">Generates an unformatted (single line, no whitespace) string representation of the element and all children.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">toString()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - An unformatted (single line, no whitespace) string representation of the element and all children.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>An unformatted string representation of the element will be printed here:</p><p><span class="code">echo (htmlentities($myElement-&gt;toString());</span></p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateMethodsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Methods</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">createClone</td>
+					</tr>
+					<tr>
+						<td class="regular">Used by cloneNode() to generate a new instance of a DOMIT_Element containing the same data as the original.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">&amp;createClone()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_Element.html">DOMIT_Element</a> - A new DOMIT_Element</p>
+</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+<br />
+<p class="docblurb">Documentation generated by <b>ClassyDoc</b>, using the <b>DOMIT!</b> and <b>SAXY</b> parsers.<br />
+Please visit <a href="http://www.engageinteractive.com" target="_child">Engage Interactive</a> to download free copies.</p>
+<br />
+</center>
+</body>
+</html>

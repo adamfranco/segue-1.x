@@ -390,11 +390,13 @@ WHERE
 		if (!$keepaddedby) {
 			$a[] = "FK_createdby=".$_SESSION[aid];
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
+			$a[] = "FK_updatedby=".$_SESSION[aid];
 		} else {
-			$a[] = "FK_createdby=".$this->getField('addedby');
+			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".$this->getField("addedby")."'");
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
+			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".$this->getField("editedby")."'");
+			$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
 		}
-		$a[] = "FK_updatedby=".$_SESSION[aid];
 
 		// insert media (url)
 		if ($this->data[url]) {
