@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
+	<version number="1.0.5" date="2003-12-19">
+		<change author='adam'>
+			LDAP authentication has been generalized and should now work with 
+			most LDAP servers.
+		</change>
+		<change author='alex'>
+			Refined admin tools UI.  Added all Segue users
+			to add/edit user UI and allowed for searching by auth and user type.  Added
+			pagination to add/edit slots UI and refined layout of search results
+		</change>
+		<fix author='alex' ref='853466' reftype='bug'>
+			Classes now show up if the user is an admin.
+		</fix>
+		<fix author='alex' ref='853497' reftype='bug'>
+			Removed link to assessments on default.inc.php
+		</fix>
+		<fix author='alex' ref='853501' reftype='bug'>
+			Fixed a bug in add/edit classes UI so that classes existing classes 
+			can now be edit.
+		</fix>
+	</version>
 	<version number="1.0.4" date="2003-11-13">
 		<fix author='adam'>
 			Fixed a bug in the 1.0.3 permissions checking that prevented 
