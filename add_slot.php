@@ -166,11 +166,14 @@ include("themes/common/header.inc.php");
 		} else {
 			$numslots = count($allSlots);
 			print "Total slots found: ".$numslots;
-			print "<br>Slot naming conventions:";
-			print "<br>student class project slots = course_code-student_username  e.g. al201a-f03-msmith";
-			print "<br>student class project slots = course_code-student_username  e.g. al201a-f03-msmith";		
 		} 
-			
+		print "<table cellpadding=2 cellspacing=0>";
+		print "<tr><td><b>Slot naming conventions:</b></td></tr>";
+		print "<tr><td><i>future course slots</i></td><td>course_code-dev (e.g. al201a-f05-dev)</td></tr>";		
+		print "<tr><td><i>student class project slots *</i></td><td>course_code-student_username (e.g. al201a-f03-msmith) *be sure to include course_code in ASSOC SITE field</td></tr>";
+		print "<tr><td><i>faculty project slots</i></td><td>faculty_username-single_word_descriptor (e.g. jrprof-politics, saprof-poetry)</td></tr>";
+		print "<tr><td><i>topical slots</i></td><td>single_word_descriptor (e.g. digitization, segue)</td></tr>";
+		print "</table>";	
 		?>
 
 		<table width='100%'>
