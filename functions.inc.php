@@ -156,7 +156,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 function copy_media($id,$newsitename) {
 	global $uploaddir;
 	$oldsitename = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=$id");
-	$file_name = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=$id");
+	$file_name = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_tag","media_id=$id");
 	$sourcedir  = "$uploaddir/$oldsitename";
 	$destdir = "$uploaddir/$newsitename";
 	$old_file_path = $sourcedir."/".$file_name;

@@ -985,7 +985,7 @@ ORDER BY
 		
 		// insert down (insert sections)
 		if ($down && $this->fetcheddown && $this->sections) {
-			foreach (array_keys($this->sections) as $k=>$i) {
+			foreach (array_keys($this->sections) as $id) {
 				$this->sections[$id]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 				$this->sections[$id]->insertDB(1,$this->name,$copysite);
 			}

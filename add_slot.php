@@ -120,7 +120,7 @@ input,select {
 <br><input type=radio name="stype" value="personal"<? print (($stype == 'personal')?" checked":""); ?>> Personal
 <br><input type=radio name="stype" value="other"<? print (($stype == 'other')?" checked":""); ?>> Other
 <br><input type=radio name="stype" value="system"<? print (($stype == 'system')?" checked":""); ?>> System
-<br><input type=radio name="stype" value="publication"<? print (($stype == 'publication')?" checked":""); ?>> Publication
+<!--<br><input type=radio name="stype" value="publication"<? print (($stype == 'publication')?" checked":""); ?>> Publication-->
 </td>
 </tr>
 <tr>

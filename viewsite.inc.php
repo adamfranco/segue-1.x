@@ -1,8 +1,5 @@
 <? /* $Id$ */
 
-/* print "hi"; */
-/* if ($thisSite) print "hello"; */
-
 if ($thisSite) $site=$thisSite->name;
 if ($thisSection) $section=$thisSection->id;
 if ($thisPage) $page = $thisPage->id;
