@@ -42,7 +42,7 @@ $discussauthor = $_SESSION[storyObj]->getField("discussauthor");
 printc("<table cellpadding=3 cellspacing=0>");
 printc("<tr>");
 printc("<td valign=top><input type=checkbox value='1' name=discuss".(($discuss == 1)?" checked":"")."></td>");
-printc ("<td valign=top><b>Enable</b> discussion/assessment: Check this to allow this content to be the subject of discussion or assessment</td>");
+printc ("<td valign=top><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'><tr><td><b>Enable</b> discussion/assessment: Check this to allow this content to be the subject of discussion or assessment</td></tr></table></td>");
 printc("<td valign=top><input type=checkbox value='1' name=discussemail".(($discussemail == 1)?" checked":"")."></td>");
 printc ("<td valign=top><b>Email</b> all posts: Check this to receive an email of every post.</td>");
 printc("</tr><tr>");
