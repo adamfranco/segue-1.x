@@ -315,7 +315,7 @@ if ($site) {
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	print " | Logs";
-	print "</div><br>";
+	print "</div><br />";
 }
 
 
@@ -430,7 +430,7 @@ if ($site) {
 </tr>
 </table>
 
-<BR>
+<br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doClassForm($a,$p='',$e=0) {

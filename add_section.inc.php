@@ -170,7 +170,7 @@ if ($_REQUEST[save]) {
 /* 					$chg[] = "permissions='$pp'"; */
 /* 				} */
 /* 				$query = "update pages set " . implode(",",$chg) . " where id=$p"; */
-/* 				print "--> ".$query . "<BR>"; */
+/* 				print "--> ".$query . "<br />"; */
 /* 				if (count($chg)) db_query($query); */
 /* 				 */
 /* 				$stories = decode_array(db_get_value("pages","stories","id=$p")); */
@@ -185,7 +185,7 @@ if ($_REQUEST[save]) {
 /* 						$chg[] = "permissions='$sp'"; */
 /* 					} */
 /* 					$query = "update stories set " . implode(",",$chg) . " where id=$s"; */
-/* 					print "--> ".$query . "<BR>"; */
+/* 					print "--> ".$query . "<br />"; */
 /* 					if (count($chg)) db_query($query); */
 /* 				} */
 /* 			} */
@@ -201,7 +201,7 @@ if ($_REQUEST[save]) {
 
 // ------- print out the add form -------
 // --- The Navigation Links for the sidebar ---
-$leftlinks = "_________________<br><table>";
+$leftlinks = "_________________<br /><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
@@ -220,7 +220,7 @@ if ($_SESSION[sectionObj]->getField("type") == "section" || $_SESSION[sectionObj
 	$leftlinks .= "</td></tr>";
 }
 
-$leftlinks .= "</table>_________________<br><a href=$PHP_SELF?$sid&action=add_section&cancel=1>Cancel</a>";
+$leftlinks .= "</table>_________________<br /><a href=$PHP_SELF?$sid&action=add_section&cancel=1>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
 

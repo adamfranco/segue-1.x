@@ -31,7 +31,7 @@ $nav = array(
 	<? print ($siteheader)?"$siteheader":""; ?>
 	<? print $sitecrumbs; ?>
 	
-	<table width=100% cellspacing=0>
+	<table width=100% cellspacing='0'>
 	<tr>
 		<td align='center' class='toppadding'>
 		&nbsp;
@@ -65,11 +65,11 @@ $nav = array(
 		?>
 		
 		<td class='contentarea' colspan=<?echo $colspan?>>
-		<table cellpadding=0 cellspacing=0 width=100%>
+		<table cellpadding='0' cellspacing='0' width=100%>
 		<tr>
 			<td valign=top>
 			
-			<table cellpadding=0 cellspacing=0 height=100%>
+			<table cellpadding='0' cellspacing='0' height=100%>
 			<?
 			
 			// ----------------------
@@ -116,7 +116,7 @@ $nav = array(
 	
 	</tr></table>
 	
-	<br>
+	<br />
 
 	<? print $sitefooter ?>
 	

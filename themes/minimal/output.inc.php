@@ -87,7 +87,7 @@ include("themes/$theme/css.inc.php");
 
 <body style='margin: 0px'>
 
-<table width=100% cellpadding=0 cellspacing=0>
+<table width=100% cellpadding='0' cellspacing='0'>
 <tr><td class=header>
 <?
 /* ------------------------------------------- */

@@ -42,6 +42,6 @@ if ($thisSite) {
 	printc("</table>");
 	
 	if ($isediting && $thisSite->hasPermission("add")) {
-		printc("<br><div align='right'><a href='$PHP_SELF?$sid&site=$site&action=add_section&comingFrom=viewsite%26supplement%3Dlistissues'>+ add issue</a>");
+		printc("<br /><div align='right'><a href='$PHP_SELF?$sid&site=$site&action=add_section&comingFrom=viewsite%26supplement%3Dlistissues'>+ add issue</a>");
 	}
 }

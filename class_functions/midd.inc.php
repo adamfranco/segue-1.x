@@ -135,7 +135,7 @@ function getclassstudents($class_id) {
 			$res[0] = array_change_key_case($res[0], CASE_LOWER);
 	//		print "<pre>";print_r($res);print"</pre>";
 			$num = ldap_count_entries($c,$sr);
-	//		print "num: $num<br>";
+	//		print "num: $num<br />";
 			ldap_close($c);
 			
 			/******************************************************************************
@@ -230,7 +230,7 @@ function getclassstudents($class_id) {
 		$valid = 0;
 		foreach ($cfg[auth_mods] as $_auth) {
 			$func = "_valid_".$_auth;
-			//printpre ("<BR>AUTH: trying ".$_auth ."..."); //debug
+			//printpre ("<br />AUTH: trying ".$_auth ."..."); //debug
 			if ($x = $func($student_uname,"",1)) {
 				$valid = 1;
 				break;
@@ -296,12 +296,12 @@ function getuserclasses($user,$time="all") {
 			$res[0] = array_change_key_case($res[0], CASE_LOWER);
 	//		print "<pre>";print_r($res);print"</pre>";
 			$num = ldap_count_entries($c,$sr);
-	//		print "num: $num<br>";
+	//		print "num: $num<br />";
 			ldap_close($c);
 			if ($num) {
 				for ($i = 0; $i<$res[0][strtolower($cfg[ldap_group_attribute])]['count']; $i++) {
 					$f = $res[0][strtolower($cfg[ldap_group_attribute])][$i];
-	//				print "$f<br>";
+	//				print "$f<br />";
 					$parts = explode(",",$f);
 					foreach ($parts as $p) {
 						if (eregi($cfg[ldap_groupname_attribute]."=([a-zA-Z]{0,4})([0-9]{1,4})([a-zA-Z]{0,1})-([a-zA-Z]{1,})([0-9]{2})",$p,$r)) {

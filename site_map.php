@@ -112,7 +112,7 @@ if ($sections) {
 	print "<tr><td class=td$color colspan=4>No sections in this site.</td></tr>";
 }
 
-print "</table><BR>";
+print "</table><br />";
 
 ?>
 

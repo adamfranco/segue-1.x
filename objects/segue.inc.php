@@ -45,7 +45,7 @@ SELECT site_id
 		ON FK_site = site_id AND slot_name='$site'
 ";
 
-//		echo $query."<br>";
+//		echo $query."<br />";
 		if (db_num_rows(db_query($query))) return 1;
 		return 0;
 	}
@@ -173,7 +173,7 @@ FROM
 		if (!$this->fetcheddown) $this->fetchDown();
 		$class = get_class($this);
 		$ar = $this->_object_arrays[$class];
-//		print "getting all values for $name in $class ".$this->getField("title")." with scope $scope<BR>";
+//		print "getting all values for $name in $class ".$this->getField("title")." with scope $scope<br />";
 		if ($class==$scope) {
 			if (($n = $this->getField($name)) != "")
 				return array($n);
@@ -184,7 +184,7 @@ FROM
 			$oa = &$this->$ar;
 			if ($oa) {
 				foreach ($oa as $i=>$o) {
-	//				print "doing $i in $ar...<BR>";
+	//				print "doing $i in $ar...<br />";
 					$a = array_merge($a,$oa[$i]->getAllValues($scope,$name));
 				}
 			}
@@ -235,7 +235,7 @@ FROM
 // 			print_r ($this->_datafields[$field][1]); 
 //			print_r($this);
 // 			print "</pre>"; 
-//			echo "<br>HERE: ".$field."<br>";
+//			echo "<br />HERE: ".$field."<br />";
 
 			$query = "
 				SELECT 
@@ -250,13 +250,13 @@ FROM
 /* 			print $query; */
 			
 			if ($debug) 
-				print "-----------beginning---------$field<br><pre>".$query; 
+				print "-----------beginning---------$field<br /><pre>".$query; 
 	
 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 			$r = db_query($query);
 			
 			if ($debug) {
-				print mysql_error()."<br>Numrows = ".db_num_rows($r);
+				print mysql_error()."<br />Numrows = ".db_num_rows($r);
 				print "\n\nresult arrays:\n";
 			}
 			
@@ -298,7 +298,7 @@ FROM
 				} else {
 					$valarray[$key] = $val;
 				}
-/* 				print "<br>key = $key \nval = $val \nvalarray =\n"; */
+/* 				print "<br />key = $key \nval = $val \nvalarray =\n"; */
 //				print_r($valarray);
 			}
 			
@@ -314,8 +314,8 @@ FROM
 				print_r($valarray);
 				print "\nInArray: \n$field"; 
 				print_r($_object_arrays);
-				print "<br>Is object?: ".((in_array($field,$this->_object_arrays))?"TRUE":"FALSE");
-				print "</pre>----------end------------$field<br>";
+				print "<br />Is object?: ".((in_array($field,$this->_object_arrays))?"TRUE":"FALSE");
+				print "</pre>----------end------------$field<br />";
 			}
 		}
 
@@ -379,11 +379,11 @@ FROM
 		// check that the newParent can be a parent
 		$thisClass = get_class($this);
 		$parentClass = get_class($newParent);
-/* 		print $this->id."$thisClass - $parentClass<br>"; */
+/* 		print $this->id."$thisClass - $parentClass<br />"; */
 		if (!($_a[$parentClass]-1 == $_a[$thisClass])) return 0;
 		$this->fetchDown(1);
 
-/* 		print "<br><br>Copying $thisClass ".$this->getField("title")." <br>"; */
+/* 		print "<br /><br />Copying $thisClass ".$this->getField("title")." <br />"; */
 
 		if ($thisClass == 'section') {
 			$owning_site = $newParent->name;
@@ -401,7 +401,7 @@ FROM
 			$owning_section = $newParent->owning_section;
 			$owning_page = $newParent->id;
 			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
-/* 			print "insertDB: 1,$owning_site,$owning_section,$owning_page,$keepaddedby<br>"; */
+/* 			print "insertDB: 1,$owning_site,$owning_section,$owning_page,$keepaddedby<br />"; */
 			$this->insertDB(1, $owning_site, $owning_section, $owning_page, $removeOrigional, $keepaddedby, $copyDiscussions);
 		}
 
@@ -544,7 +544,7 @@ FROM
 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
 //		$_SESSION[settings][activatemonth]-=1;
 //		$_SESSION[settings][deactivatemonth]-=1;
-/* 		echo $this->getField("activatedate")."<br>"; */
+/* 		echo $this->getField("activatedate")."<br />"; */
 		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
 		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
 	}
@@ -710,7 +710,7 @@ WHERE
 	}
 
 	function addEditor($e) { 
-		/* print "<br>Adding editor $e<br>"; */
+		/* print "<br />Adding editor $e<br />"; */
 //		if ($e == 'institute' || $e == 'everyone') return false;	// With the new permissions structure, this may be unwanted.
 		if ($_SESSION[auser] == $e) { error("You do not need to add yourself as an editor."); return false; }
 		if ($e && !in_array($e,$this->editors)) {
@@ -815,7 +815,7 @@ WHERE
 /* 			$i++; */
 /* 		} */
 /* 		print $this->permissions[$user][$c]; */
-/* 		print $class.": set -- has permission= -- should be: $val<br>"; */
+/* 		print $class.": set -- has permission= -- should be: $val<br />"; */
 /* 		print $this->permissions[$user][$c]; */
 /* 		print "<pre>"; print_r($this->permissions[$user]); print "</pre>"; */
 		
@@ -1072,7 +1072,7 @@ FROM
 		// execute the query
 //		echo $query;
 		$r = db_query($query);
-		//echo "Query result: ".$r."<br>";
+		//echo "Query result: ".$r."<br />";
 		
 		
 		// reset the editor array		
@@ -1121,7 +1121,7 @@ FROM
 					$this->owningSiteObj->updatePermissionsDB(TRUE);
 				}
 			}
-//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+//			echo "<br /><br />Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 			
 			// set the permissions for this editor
 //			$this->permissions[strtolower($t_editor)] = array(
@@ -1165,11 +1165,11 @@ FROM
 	function spiderDownLockedFlag() {
 		$editors = $this->getEditors();
 		$p = $this->getPermissions();
-//		print_r($editors);print "<br>";print_r($p);
+//		print_r($editors);print "<br />";print_r($p);
 		$_a = array("add","edit","delete","view");
 		
 		foreach ($editors as $e) {
-//			print "doing flags for $e<br>";
+//			print "doing flags for $e<br />";
 			for ($i=0;$i<4;$i++) {
 				$this->checkLockedFlag($e,$_a[$i]);
 			}
@@ -1215,7 +1215,7 @@ FROM
 			foreach ($n as $editor) {
 				$p2 = $this->permissions[$editor];
 				if (!is_array($p2)) {
-//					echo "p2: ************************** BE CAREFUL!!!! ********************************<BR>";
+//					echo "p2: ************************** BE CAREFUL!!!! ********************************<br />";
 					$p2 = array();
 					$p2[ADD] = 0;
 					$p2[EDIT] = 0;
@@ -1239,7 +1239,7 @@ FROM
 					$p1 = $this->owningPageObj->permissions[$editor];
 					
 				if (!is_array($p1) && $scope != 'site') {
-//					echo "p1: ************************** BE CAREFUL!!!! ********************************<BR>";
+//					echo "p1: ************************** BE CAREFUL!!!! ********************************<br />";
 					$p1 = array();
 					$p1[ADD] = 0;
 					$p1[EDIT] = 0;
@@ -1320,7 +1320,7 @@ FROM
 					$query = "SELECT user_id FROM user WHERE user_uname = '$editor'";
 					$r = db_query($query);
 					if (!db_num_rows($r)) {
-						echo $query."<br>";
+						echo $query."<br />";
 						die("updatePermissionsDB() :: could not find an ID to associate with editor: '$editor'!!!");
 					}
 					
@@ -1328,8 +1328,8 @@ FROM
 					$ed_id = $arr['user_id'];
 				}
 
-//				echo "<br><br><b>***** New permissions in $scope #$id with editor $editor: '".$p_new_str."'</b><br>";
-//				echo "EID: $ed_id; ETYPE: $ed_type <br>";
+//				echo "<br /><br /><b>***** New permissions in $scope #$id with editor $editor: '".$p_new_str."'</b><br />";
+//				echo "EID: $ed_id; ETYPE: $ed_type <br />";
 				
 
 				// see if the editor is in the site_editors table
@@ -1349,7 +1349,7 @@ WHERE
 	site_editors_type = '$ed_type' AND
 	FK_site = $site_id
 ";
-//					echo $query."<br>";
+//					echo $query."<br />";
 					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
 					// if the editor is not in the site_editors then insert him
 					if (!db_num_rows($r_editor)) {
@@ -1361,7 +1361,7 @@ VALUES
 	($site_id, $ed_id, '$ed_type')
 ";					
 
-//					echo $query."<br>";
+//					echo $query."<br />";
 						db_query($query);
 					}
 					
@@ -1384,7 +1384,7 @@ WHERE
 ";
 				
 
-//				echo $query."<br>";
+//				echo $query."<br />";
 				$r_perm = db_query($query); // this query checks to see if the entry exists in the permission table
 				
 				// if permission entry exists
@@ -1393,7 +1393,7 @@ WHERE
 					// if we are changing the permissions, update the db
 					if ($p_new_str) {
 						$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
-//						echo $query."<br>";
+//						echo $query."<br />";
 						db_query($query);
 					}
 					// if we are clearing the permissions, delete the entry from the db
@@ -1411,7 +1411,7 @@ INTO permission
 	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
 VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 ";
-//						echo $query."<br>";
+//						echo $query."<br />";
 					db_query($query);
 				}
 			}
@@ -1470,7 +1470,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			return TRUE;
 		}
 		
-//		print "\n<br>Checking canview for '$user' ".get_class($this)." ".$this->name." / ".$this->id." - ".$this->getField("title");
+//		print "\n<br />Checking canview for '$user' ".get_class($this)." ".$this->name." / ".$this->id." - ".$this->getField("title");
 		
 		
 		// ------ Activation ------
@@ -1610,7 +1610,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			
 			// If we don't have a valid permissions string, return FALSE.
 			if (!$stringValid) {
-				print "ERROR! loop: $i: Malformed permissions string: $perms<BR><BR>";
+				print "ERROR! loop: $i: Malformed permissions string: $perms<br /><br />";
 				return FALSE;
 			}
 			$i++;
@@ -1690,9 +1690,9 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		}
 		
 		// Debugging line
-//		print "\n<br>Checking hasPermission '$perms' for '$user' ".get_class($this)." ".$this->name." / ".$this->id." - ".$this->getField("title");
-//		print "\n<br>Permissions = ".printpre($permissions,TRUE);
-//		print "\n<br>entitiesToCheck = ".printpre($entitiesToCheck,TRUE);
+//		print "\n<br />Checking hasPermission '$perms' for '$user' ".get_class($this)." ".$this->name." / ".$this->id." - ".$this->getField("title");
+//		print "\n<br />Permissions = ".printpre($permissions,TRUE);
+//		print "\n<br />entitiesToCheck = ".printpre($entitiesToCheck,TRUE);
 		
 		// ------- Check the permissions ----------
 		$hasPermission = FALSE;

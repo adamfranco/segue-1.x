@@ -46,7 +46,7 @@ if ($themesettings[theme] == 'shadowbox') {
 }
 
 ?>
-<b>Shadow Box</b><br>
+<b>Shadow Box</b><br />
 This theme creates the illusion of a page that is cast out of a flat surface.  
 This illusion is created by surrounding boxes each of which is larger and less opaque.
 <hr noshade size=1>

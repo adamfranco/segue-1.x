@@ -64,13 +64,13 @@ if (!is_object($_SESSION[origSiteObj])) {
 	$sitesArray = segue::getAllSites($auser);
 	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($auser));
 	foreach ($sitesArray as $s) {
-/* 		print $s."<br>"; */
+/* 		print $s."<br />"; */
 		$temp =& new site($s);
 		$temp->fetchDown();
 		if ($temp->hasPermissionDown("add",$auser) || $temp->name == $_REQUEST[site] || $temp->site_owner == $auser) {
 			$_SESSION[sites][$s] = $temp;
 /* 			$title = $sites[$s]->getField("title"); */
-/* 			print "title = $title <br>"; */
+/* 			print "title = $title <br />"; */
 		}
 	}
 
@@ -120,8 +120,8 @@ if (($_SESSION[type] != "section" && !isset($section)) || $selecttype == "site")
 }
 
 /* print "<pre>"; print_r($siteObj); print "</pre>"; */
-/* print "section = ".$section."<br>"; */
-/* print "section = ".$site."<br>"; */
+/* print "section = ".$section."<br />"; */
+/* print "section = ".$site."<br />"; */
 
 if (($_SESSION[type] == "story" && !isset($page)) || ($selecttype == "site" || $selecttype == "section")) {
 	$pagesArray = $siteObj->sections[$section]->getField("pages");
@@ -541,7 +541,7 @@ print "</tr>";
 </table>
 </form>
  
-<div align='right'><input type=button value='Cancel' onClick='window.close()' align='right'></div><BR> 
+<div align='right'><input type=button value='Cancel' onClick='window.close()' align='right'></div><br /> 
 
 <?
 // debug output -- handy :)

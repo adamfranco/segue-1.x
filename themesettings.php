@@ -21,9 +21,9 @@ $themesettings -- existing theme settings
  
 /* ------ debug ------- */ 
 // $themesettings = $HTTP_GET_VARS['themesettings'];  
-// print "$themesettings<br>";  
-// print_r(unserialize(stripslashes($themesettings)))."<br>";  
-// print "$theme - $updatemethod - $site"."<br>";  
+// print "$themesettings<br />";  
+// print_r(unserialize(stripslashes($themesettings)))."<br />";  
+// print "$theme - $updatemethod - $site"."<br />";  
  
 $themesettings = unserialize(stripslashes(($themesettings))); 
 $filename = "$themesdir/$theme/themesettings.inc.php";

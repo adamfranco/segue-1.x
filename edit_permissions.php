@@ -70,7 +70,7 @@ if ($_REQUEST[savechanges]) {
 		print_r($_SESSION[obj]->getEditors());
 		foreach ($_SESSION[obj]->getEditors() as $_editor) {
 			if(!$_editor) continue;
-			print "synchronizing $_editor...<BR>";
+			print "synchronizing $_editor...<br />";
 			synchronizeLocalUserAndClassDB($_editor);
 		}
 		/* end bug-fix. Again, thank you, Adam. */

@@ -13,7 +13,7 @@ function checkConfig () {
 	if (!is_array($cfg))
 		die ("<h4>ERROR! Non-existant or Mal-formed config file</h4>
 			You must create a config file before <b>Segue</b> can run.
-			<br><br>
+			<br /><br />
 			Copy the 'config_sample.inc.php' in your segue directory to 'config.inc.php' 
 			and edit the values there to point to your directories, url, and database.");
 	

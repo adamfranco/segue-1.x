@@ -25,7 +25,7 @@ function editor_activex($textarea,$cols,$rows,$text) {
 	printc("</style>\n");
 	
 	//	Begin modification 4 - 11.11.02 - afranco
-	//	Add explanation of how to get <br>s
+	//	Add explanation of how to get <br />s
 	printc("<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter.");	
 	
 			   
@@ -95,10 +95,10 @@ function editor_generate(objname,w,h) {
   if (!MSIE || Opera || Ver < 5.5 || !Win32) { return; }
 
   var editor = ''
-  + '<table border=0 cellspacing=0 cellpadding=0 bgcolor="buttonface" style="padding: 1 0 0 0" width=' + width + ' unselectable="on">\n'
+  + '<table border=0 cellspacing='0' cellpadding='0' bgcolor="buttonface" style="padding: 1 0 0 0" width=' + width + ' unselectable="on">\n'
   + '<tr><td>\n'
   
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: left;" unselectable="on">\n' 
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: left;" unselectable="on">\n' 
   + ' <tr>\n' 
   + ' <td style="border-width: 0; padding: 2 1 0 1;">\n' 
   + ' <select id="_' +objname+ '_formatBlock" onChange="editor_action(this.id)" unselectable="on">\n' 
@@ -115,7 +115,7 @@ function editor_generate(objname,w,h) {
   + '</table>\n' 
 
 
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: left;"  unselectable="on">\n'
   + ' <tr>\n'
   + '  <td style="border-width: 0; padding: 2 1 0 1;">\n'
   + '   <select id="_' +objname+ '_FontName" onChange="editor_action(this.id)" unselectable="on">\n'
@@ -132,7 +132,7 @@ function editor_generate(objname,w,h) {
   + ' </tr>\n'
   + '</table>\n'
 
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: left;"  unselectable="on">\n'
   + ' <tr>\n'
   + '  <td style="border-width: 0; padding: 2 1 0 1;">\n'
   +    '<select id="_' +objname+ '_FontSize" onChange="editor_action(this.id)" style="width:38px"  unselectable="on">\n'
@@ -142,20 +142,20 @@ function editor_generate(objname,w,h) {
   + ' </tr>\n'
   + '</table>\n'
 
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Bold" id="_' +objname+ '_Bold" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_bold.gif" unselectable="on"></button>'
   +    '<button title="Italic" id="_' +objname+ '_Italic" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_italic.gif" unselectable="on"></button>'
   +    '<button title="Underline" id="_' +objname+ '_Underline" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_underline.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
 
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Strikethrough" id="_' +objname+ '_StrikeThrough" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_strike.gif" unselectable="on"></button>'
   +    '<button title="Subscript" id="_' +objname+ '_SubScript" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_sub.gif" unselectable="on"></button>'
   +    '<button title="Superscript" id="_' +objname+ '_SuperScript" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_sup.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Justify Left" id="_' +objname+ '_JustifyLeft" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_align_left.gif" unselectable="on"></button>'
   +    '<button title="Justify Center" id="_' +objname+ '_JustifyCenter" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_align_center.gif" unselectable="on"></button>'
   +    '<button title="Justify Right" id="_' +objname+ '_JustifyRight" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_align_right.gif" unselectable="on">\n'
@@ -164,19 +164,19 @@ function editor_generate(objname,w,h) {
   + '</td></tr>\n'
   + '<tr><td>\n'
 
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: right;"  unselectable="on" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Ordered List" id="_' +objname+ '_InsertOrderedList" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_list_num.gif" unselectable="on"></button>'
   +    '<button title="Bulleted List" id="_' +objname+ '_InsertUnorderedList" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_list_bullet.gif" unselectable="on">\n'
   +    '<button title="Decrease Indent" id="_' +objname+ '_Outdent" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_indent_less.gif" unselectable="on"></button>'
   +    '<button title="Increase Indent" id="_' +objname+ '_Indent" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_indent_more.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: right;"  unselectable="on" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Font Color" id="_' +objname+ '_ForeColor" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_color_fg.gif" unselectable="on"></button>'
   +    '<button title="Background Color" id="_' +objname+ '_BackColor" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_color_bg.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: right;" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Horizontal Rule" id="_' +objname+ '_InsertHorizontalRule" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_hr.gif" unselectable="on"></button>'
   +    '<button title="Insert Web Link" id="_' +objname+ '_InsertLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_link.gif" unselectable="on"></button>'
   +    '<button title="Remove Web Link" id="_' +objname+ '_UnLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_unlink.gif" unselectable="on"></button>'
@@ -189,7 +189,7 @@ function editor_generate(objname,w,h) {
   +    '<button title="Insert Linebreak" id="_' +objname+ '_LineBreak" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_linebreak.gif" unselectable="on"></button>'  
   + '</td></tr></table>\n'
   
-  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding='0' bgcolor="buttonface" style="float: right;" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Print" id="_' +objname+ '_Print" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_print.gif" unselectable="on"></button>' 
   +    '<button title="View HTML Source" id="_' +objname+ '_HtmlMode" class="btn" onClick="editor_setmode(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_html.gif" unselectable="on"></button>'
   + '</td></tr></table>\n'  
@@ -321,7 +321,7 @@ function editor_action(button_id) {
 
     // insert linebreaks
     else if (cmdID.toLowerCase() == 'linebreak'){
-      editor_insertHTML(objname, "<br>");
+      editor_insertHTML(objname, "<br />");
     }
 
     // insert link

@@ -25,9 +25,9 @@ if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
 //      print "checking vhosts...";
         // we are getting the following information: host, site, full_uri, show_statusbar
         $currentHost = $_SERVER["SERVER_NAME"];
-//      print " current host is '$currentHost'<br>";
+//      print " current host is '$currentHost'<br />";
         foreach ($cfg["vhosts"] as $vhost) {
-//              print "checking config host ".$vhost["host"]."<br>";
+//              print "checking config host ".$vhost["host"]."<br />";
                 if ($vhost["host"] == $currentHost) {
                         if ($vhost["show_status"] == false) 
                         	$_REQUEST["nostatus"] = "1";

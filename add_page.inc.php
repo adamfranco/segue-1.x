@@ -5,12 +5,12 @@
 
 // ---  variables for debugging ---
 //foreach ($_SESSION[settings] as $n => $v) {
-//	$variables .= "$n = $v <br>";	
+//	$variables .= "$n = $v <br />";	
 //}
 //add_link(leftnav,'','',"$variables");
-//print $variables."br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
-//print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
-//print "site = $site<br>section = $section<br>page=$page<br>";
+//print $variables."br>site owner = $site_owner <br />typeswitch = $typeswitch <br />";
+//print "siteheader = '$siteheader' <br />sitefooter = '$sitefooter' <br />";
+//print "site = $site<br />section = $section<br />page=$page<br />";
 //------------------------------------
 
 // first check if we are allowed to edit this site at all
@@ -193,7 +193,7 @@ if ($_REQUEST[save]) {
 					$chg[] = "permissions='$sp'";
 				}
 				$query = "update stories set " . implode(",",$chg) . " where id=$s";
-				print "--> ".$query . "<BR>";
+				print "--> ".$query . "<br />";
 				if (count($chg)) db_query($query);
 			}			
 		}
@@ -207,7 +207,7 @@ if ($_REQUEST[save]) {
 
 // ------- print out the add form -------
 // --- The Navigation Links for the sidebar ---
-$leftlinks = "_________________<br><table>";
+$leftlinks = "_________________<br /><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
@@ -236,7 +236,7 @@ if ($_SESSION[pageObj]->getField("type") == "page") {
 	$leftlinks .= "</td></tr>";
 }
 
-$leftlinks .= "</table>_________________<br><a href=$PHP_SELF?$sid&action=add_page&cancel=1>Cancel</a>";
+$leftlinks .= "</table>_________________<br /><a href=$PHP_SELF?$sid&action=add_page&cancel=1>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
 

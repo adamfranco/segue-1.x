@@ -37,7 +37,7 @@ printc("Type:".helplink("pagetypes"));
  ******************************************************************************/
 
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
-else printc("<br><br>");
+else printc("<br /><br />");
 
 
 if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'page') {
@@ -141,7 +141,7 @@ if ($_SESSION[pageObj]->getField("type")=='link') {
 }
 
 
-printc("<br><br>");
+printc("<br /><br />");
 
 printc("</form>");
 

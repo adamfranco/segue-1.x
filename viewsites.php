@@ -194,7 +194,7 @@ if ($site) {
 			<input type=submit name='clear' value='clear'>
 			<input type=hidden name='order' value='<? echo $order ?>'>
 		<? } 
-		print "<br>Total sites found:".$numlogs;
+		print "<br />Total sites found:".$numlogs;
 		?>
 		</form>
 		
@@ -328,7 +328,7 @@ if (db_num_rows($r)) {
 	print "<tr><td colspan=7>No sites found based on above criteria.</td></tr>";
 }
 ?>
-</table><BR>
+</table><br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <?

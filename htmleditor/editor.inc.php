@@ -46,7 +46,7 @@ function cleanEditorText ($text, $texttype = NULL) {
 		
 	include ("sniffer.inc.php");
 	
-	// If we just have a text box, replace new lines with <br> tags
+	// If we just have a text box, replace new lines with <br /> tags
 	// If the user didn't specify "html" as the texttype.
 	if (!$supported && $texttype != 'html') {
 		$text = htmlbr($text);
@@ -87,7 +87,7 @@ function editor_htmlarea($textarea,$text,$context="story") {
 
 function editor_txt($textarea,$cols,$rows,$text,$replaceBRs=TRUE) {		   
 	printc("<textarea name=$textarea id=$textarea cols=$cols rows=$rows>");
-	// Replace the <br> and <br /> tags with \n's for the textarea.
+	// Replace the <br /> and <br /> tags with \n's for the textarea.
 	if ($replaceBRs)
 		printc(preg_replace("/<br(\s\/)?>/", "\n", $text));
 	else

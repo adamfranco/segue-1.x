@@ -86,7 +86,7 @@ include("themes/$theme/css.inc.php");
 
 <body style='margin: 0px'>
 
-<table width=95% cellpadding=0 cellspacing=0 align='center'>
+<table width=95% cellpadding='0' cellspacing='0' align='center'>
 <tr>
 <td class=topleft></td>
 <td class=top></td>
@@ -120,7 +120,7 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
 <table width=100% class=contenttable>
 <tr>
 <td class=leftnav>
-<table width=100% cellpadding=2 cellspacing=0>	
+<table width=100% cellpadding=2 cellspacing='0'>	
 <?
 
 /* ------------------------------------------- */
@@ -165,7 +165,7 @@ print $content;
 /* ------------------------------------------- */
 /* if ($nav_arrange==2) { */
 /* 	print "</td><td class=rightnav>"; */
-/* 	print "<table width=100% cellspacing=0 cellpadding=0 border=0>"; */
+/* 	print "<table width=100% cellspacing='0' cellpadding='0' border=0>"; */
 /* 	print "<tr><td class=rightnavbox>";	 */
 /* 	vertical_nav($page, $leftnav, $leftnav_extra); */
 /* 	print "</td></tr>"; */

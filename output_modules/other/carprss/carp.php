@@ -51,28 +51,28 @@ function CarpConfReset() {
 	
 	'cborder'=>'image,link,desc',
 	'bcb'=>'',
-	'acb'=>'<br>',
+	'acb'=>'<br />',
 	'caorder'=>'',
 	'bca'=>'',
-	'aca'=>'<br>',
+	'aca'=>'<br />',
 	'bcurl'=>'',
-	'acurl'=>'<br>',
+	'acurl'=>'<br />',
 	'bctitle'=>'',
-	'actitle'=>'<br>',
+	'actitle'=>'<br />',
 	'clinkclass'=>'',
 	'clinkstyle'=>'',
 	'clinktitles'=>1,
 	'maxctitle'=>80,
 	'atruncctitle'=>'...',
 	'bcdate'=>'<i>',
-	'acdate'=>'</i><br>',
+	'acdate'=>'</i><br />',
 	'cdateformat'=>'j M Y \a\t g:ia',
 	'bcdesc'=>'',
-	'acdesc'=>'<br>',
+	'acdesc'=>'<br />',
 	'maxcdesc'=>0,
 	'atrunccdesc'=>'...',
 	'bcimage'=>'',
-	'acimage'=>'<br>',
+	'acimage'=>'<br />',
 	'maxcimagew'=>144,
 	'maxcimageh'=>400,
 	'defcimagew'=>0,
@@ -89,9 +89,9 @@ function CarpConfReset() {
 	'bi'=>'',
 	'ai'=>'',
 	'biurl'=>'',
-	'aiurl'=>'<br>',
+	'aiurl'=>'<br />',
 	'bilink'=>'',
-	'ailink'=>'<br>',
+	'ailink'=>'<br />',
 	'ilinkclass'=>'',
 	'ilinkstyle'=>'',
 	'ilinktitles'=>1,
@@ -99,16 +99,16 @@ function CarpConfReset() {
 	'maxititle'=>80,
 	'atruncititle'=>'...',
 	'biauthor'=>'<i>by ',
-	'aiauthor'=>'</i><br>',
+	'aiauthor'=>'</i><br />',
 	'bidate'=>'<i>',
-	'aidate'=>'</i><br>',
+	'aidate'=>'</i><br />',
 	'idateformat'=>'j M Y \a\t g:ia',
 	'bidesc'=>'',
-	'aidesc'=>'<br>',
+	'aidesc'=>'<br />',
 	'maxidesc'=>0,
 	'atruncidesc'=>'<i>... continues</i>',
 	'biimage'=>'',
-	'aiimage'=>'<br>',
+	'aiimage'=>'<br />',
 	'maxiimagew'=>144,
 	'maxiimageh'=>400,
 	'defiimagew'=>0,
@@ -134,7 +134,7 @@ function CarpConfReset() {
 	site. If you incorporate CaRP into another product and change it, please
 	ensure that a link is shown by default somewhere. Thanks! */
 
-	'poweredby'=>'<br><i><a href="http://www.mouken.com/rss/" target="_blank">Newsfeed display by CaRP</a></i>'
+	'poweredby'=>'<br /><i><a href="http://www.mouken.com/rss/" target="_blank">Newsfeed display by CaRP</a></i>'
 	);
 	
 }
@@ -195,7 +195,7 @@ function CarpOutput($t) {
 
 function CarpError($s,$c=1) {
 	global $carpconf;
-	if ($carpconf['carperrors']) CarpOutput("<br>\n[CaRP] $s<br>\n");
+	if ($carpconf['carperrors']) CarpOutput("<br />\n[CaRP] $s<br />\n");
 	if ($c&&$carpconf['cacheerrorwait']&&strlen($carpconf['cachefile']))
 		touch($carpconf['cachefile'],time()+60*($carpconf['cacheerrorwait']-$carpconf['cacheinterval']));
 }

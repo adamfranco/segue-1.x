@@ -61,13 +61,13 @@ if ($storyObj->getField("type") == 'image') {
 	$filename = urldecode(db_get_value("media","media_tag","media_id=".$storyObj->getField("longertext")));
 	$dir = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=".$storyObj->getField("longertext"));
 	$imagepath = "$uploadurl/$dir/$filename";
-	$fulltext = "<div style='text-align: center'><br><img src='$imagepath' border=0></div>";
+	$fulltext = "<div style='text-align: center'><br /><img src='$imagepath' border=0></div>";
 /* 	if ($story->getField("title")) $fulltext .= "<tr><td align='center'><b>".spchars($story->getField("title"))."</b></td></tr>"; */
-	if ($storyObj->getField("shorttext")) $fulltext .= "<br>".stripslashes($storyObj->getField("shorttext"));
+	if ($storyObj->getField("shorttext")) $fulltext .= "<br />".stripslashes($storyObj->getField("shorttext"));
 	$fulltext .= "";
 }
 if ($storyObj->getField("type") == 'file') {
-	$fulltext = "<br>";
+	$fulltext = "<br />";
 	$fulltext .= makedownloadbar($storyObj);
 }
 
@@ -150,13 +150,13 @@ if ($storyObj->getField("discuss")) {
 	$siteowner = $siteObj->getField("addedbyfull");	
 	$discusslabel = $storyObj->getField("discusslabel");	
 	
-	printc("<td align='left'><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align='left' class=dheader><a name=discuss></a>");
+	printc("<td align='left'><table width=100% border=0 cellspacing='0' cellpadding='0'><tr><td align='left' class=dheader><a name=discuss></a>");
 	printc(($discusslabel)? $discusslabel:"Discuss");
 	
 /* 	if ($showposts == 1) { */
-/* 		printc("<td align='left'><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align='left' class=dheader>Discussion\n"); */
+/* 		printc("<td align='left'><table width=100% border=0 cellspacing='0' cellpadding='0'><tr><td align='left' class=dheader>Discussion\n"); */
 /* 	} else { */
-/* 		printc("<td align='left'><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align='left' class=dheader>Assessment\n");	 */
+/* 		printc("<td align='left'><table width=100% border=0 cellspacing='0' cellpadding='0'><tr><td align='left' class=dheader>Assessment\n");	 */
 /* 	} */
 	
 	//get number of discuss/assess participants
@@ -224,7 +224,7 @@ if ($storyObj->getField("discuss")) {
  ******************************************************************************/
 	
 	if ($_SESSION[auser]==$site_owner) {
-		printc("<br><table class=dinfo1 width=90% align='center'>");
+		printc("<br /><table class=dinfo1 width=90% align='center'>");
 		printc("<tr><td align='left'><div style='font-size: 12px'>");
 		printc("<strong>Current Discussion Settings:</strong>");
 		printc("</div></td></tr>");
@@ -318,12 +318,12 @@ if ($storyObj->getField("discuss")) {
 	if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
 }
 		
-printc("<tr><td align='left'><br><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
+printc("<tr><td align='left'><br /><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
 printc("</table>\n");
 
 printc("</tr></td>\n");
 printc("</table>\n");
-printc("<BR><BR>\n");
+printc("<br /><br />\n");
 
 
 function participants() {

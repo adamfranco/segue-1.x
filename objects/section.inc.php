@@ -162,7 +162,7 @@ class section extends segue {
 	
 	function fetchUp($full=0) {
 		if (!$this->fetchedup || $full) {
-/* 			print "<br>Fetching Up<br>"; */
+/* 			print "<br />Fetching Up<br />"; */
 			$this->owningSiteObj =& new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB(1);
 //			$this->owningSiteObj->buildPermissionsArray(1);
@@ -190,7 +190,7 @@ class section extends segue {
 	
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown || $full) {
-/* 			print "-->section fetchdown ".$this->id."<BR>"; */
+/* 			print "-->section fetchdown ".$this->id."<br />"; */
 			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			foreach ($this->getField("pages") as $p) {
 				$this->pages[$p] =& new page($this->owning_site,$this->id,$p,&$this);
@@ -271,7 +271,7 @@ WHERE section_id = ".$this->id;
 					$this->fetched[$field] = 1;
 				}
 				else
-					echo "ERROR: field $field not in _allfields!!!<br>";
+					echo "ERROR: field $field not in _allfields!!!<br />";
 			
 
 			// now fetch the sections (they are part of a 1-to-many relationship and therefore
@@ -311,10 +311,10 @@ ORDER BY
 				$a[] = "FK_updatedby=".$_SESSION[aid];
 			
 			$query = "UPDATE section SET ".implode(",",$a)." WHERE section_id=".$this->id;
-/* 			print "<pre>Section->UpdateDB: $query<br>"; */
+/* 			print "<pre>Section->UpdateDB: $query<br />"; */
 			db_query($query);
 			
-/* 			print mysql_error()."<br>"; */
+/* 			print mysql_error()."<br />"; */
 /* 			print_r($this->data['pages']); */
 /* 			print "</pre>"; */
 			
@@ -454,7 +454,7 @@ SET
 		
 //		$this->fetchUp(1);
 
-/* 		print "<br>remove origionl: $removeOrigional<br>"; */
+/* 		print "<br />remove origionl: $removeOrigional<br />"; */
 		if ($removeOrigional) $this->owningSiteObj->delSection($origid,0);
 /* 		print "<pre>this->owningsiteobject: "; print_r($this->owningSiteObj); print "</pre>"; */
 		
@@ -493,7 +493,7 @@ SET
 /* 		print "owning_site=".$this->owning_site."\nOwningSiteObj: "; */
 /* 		print_r ($this->owningSiteObj); */
 /* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
-/* 		print "<br>Sections = <pre>"; */
+/* 		print "<br />Sections = <pre>"; */
 /* 		print_r($this->owningSiteObj->getField("sections")); */
 /* 		print "</pre>"; */
 		
@@ -504,7 +504,7 @@ SET
 			$orderkeys = array_keys($this->owningSiteObj->getField("sections"),$this->id);
 			$a[] = "section_order=".$orderkeys[0];
 		} else {
-/* 			print "<br>No id, inserting at end of other sections. Count=".count($this->owningSiteObj->getField("sections")); */
+/* 			print "<br />No id, inserting at end of other sections. Count=".count($this->owningSiteObj->getField("sections")); */
 			$a[] = "section_order=".count($this->owningSiteObj->getField("sections"));
 		}
 		

@@ -131,7 +131,7 @@ if ($upload) {
 	"; 
 			
 			
-//	print "$query <br>"; 
+//	print "$query <br />"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	
@@ -527,7 +527,7 @@ function changePage(lolim) {
 					$percentfree = 100-$percentused;
 					$space = $dirlimit_B - $totalsize;
 					$space = convertfilesize($space);
-					print "<table cellspacing=0 cellpadding=0 align='right'>";
+					print "<table cellspacing='0' cellpadding='0' align='right'>";
 					print "<tr><td class='sizebox1'>Total media allowed: </td><td class='sizebox2'> $dirlimit</td></tr>";
 					print "<tr><td class='sizebox1'>Total size of your media: </td><td class='sizebox2'> $dirtotal</td></tr>";
 					print "<tr><td class='sizebox1'>Space available: </td><td class='sizebox2' style='border-top: 1px solid #000'> $space</td></tr>";
@@ -539,7 +539,7 @@ function changePage(lolim) {
 					else
 						print "<td style='background-color: #F00; height: 5px;' width=$percentused%> </td><td style='background-color: #00C;' width=$percentfree%> </td>";
 					print "</tr></table></td></tr>";
-					print "</table><br>";
+					print "</table><br />";
 					?>
 				</td>
 				</tr> 
@@ -822,7 +822,7 @@ if (db_num_rows($r)) {
 } 
 ?> 
  
-</table><BR> 
+</table><br /> 
  
 <form action='filebrowser.php' name='deleteform' method=post> 
 <input type=hidden name='filetodelete'> 

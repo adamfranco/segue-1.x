@@ -39,7 +39,7 @@ function serverCopySite($orig,$dest) {
 				$stquery = "insert into stories set addedby='$auser', addedtimestamp=NOW()";
 				$stquery.=",type='$sta[type]',texttype='$sta[texttype]',category='$sta[category]',title='$sta[title]', discuss=$sta[discuss], discusspermissions='$sta[discusspermissions]', shorttext='$sta[shorttext]', longertext='$sta[longertext]', locked=$sta[locked], url='$sa[url]'";
 				db_query($stquery);
-//				print "$stquery<BR>";
+//				print "$stquery<br />";
 				$nstories[] = lastid();
 			}
 			
@@ -47,17 +47,17 @@ function serverCopySite($orig,$dest) {
 			$pquery.=",stories='$stories'";
 			db_query($pquery);
 			$npages[]=lastid();
-//			print "$pquery<BR>";
+//			print "$pquery<br />";
 		}
 		
 		$pages = encode_array($npages);
 		$squery.=",pages='$pages'";
 		db_query($squery);
 		$nsections[] = lastid();
-//		print "$squery<BR>";
+//		print "$squery<br />";
 	}
 	$sections = encode_array($nsections);
 	$query = "update sites set sections='$sections' where name='$dest'";
 	db_query($query);
-//	print "$query<BR>";
+//	print "$query<br />";
 }

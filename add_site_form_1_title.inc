@@ -22,37 +22,37 @@ if ($_SESSION[settings][edit]) printc("<div class=title>Edit Site</div>");
 
 if ($ltype=='admin') {
 	printc("name: ".$_SESSION[siteObj]->getField("name"));
-	printc("<br>type: ".$_SESSION[siteObj]->getField("type"));
-	printc("<BR><BR>");
+	printc("<br />type: ".$_SESSION[siteObj]->getField("type"));
+	printc("<br /><br />");
 
 /* 	printc("name: <input type=text size=20 name=sitename value='".$_SESSION[siteObj]->getField("name")."'>"); */
-/* 	printc("<br>type:"); */
-/* 	printc("<br><input type=radio name=type value='class'".(($_SESSION[siteObj]->getField("type")=='class')?" checked":"")."> class"); */
-/* 	printc("<br><input type=radio name=type value='personal'".(($_SESSION[siteObj]->getField("type")=='personal')?" checked":"")."> personal"); */
-/* 	printc("<br><input type=radio name=type value='system'".(($_SESSION[siteObj]->getField("type")=='system')?" checked":"")."> system"); */
-/* 	printc("<br><input type=radio name=type value='other'".(($_SESSION[siteObj]->getField("type")=='other')?" checked":"")."> other"); */
-/* 	printc("<BR><BR>"); */
+/* 	printc("<br />type:"); */
+/* 	printc("<br /><input type=radio name=type value='class'".(($_SESSION[siteObj]->getField("type")=='class')?" checked":"")."> class"); */
+/* 	printc("<br /><input type=radio name=type value='personal'".(($_SESSION[siteObj]->getField("type")=='personal')?" checked":"")."> personal"); */
+/* 	printc("<br /><input type=radio name=type value='system'".(($_SESSION[siteObj]->getField("type")=='system')?" checked":"")."> system"); */
+/* 	printc("<br /><input type=radio name=type value='other'".(($_SESSION[siteObj]->getField("type")=='other')?" checked":"")."> other"); */
+/* 	printc("<br /><br />"); */
 } else
 	printc("<input type=hidden name=sitename value='".$_SESSION[siteObj]->getField("name")."'>");
 
 printc ("<div class='desc'>");
 if ($_SESSION[settings][add]) printc ("On this and the following pages, you can specify the settings for your new site. Except for the template, you can come back and change every one of these settings after you have created your site.");
-if ($_SESSION[settings][edit]) printc ("Click the Next/Previous Buttons or the links to the left to navigate through the site settings widows. <br>Clicking \"Cancel\" will drop all changes without saving.");
+if ($_SESSION[settings][edit]) printc ("Click the Next/Previous Buttons or the links to the left to navigate through the site settings widows. <br />Clicking \"Cancel\" will drop all changes without saving.");
 printc("</div>");
 
-printc("<br>");
-printc("<br>");
+printc("<br />");
+printc("<br />");
 
-printc("<div class=title>1. Title</div><br>");
+printc("<div class=title>1. Title</div><br />");
 //printc("<div class=desc>Enter the site <b>title</b>. This is required.</div>");
 
 printc("Title: <input type=text size=35 name='title' value='".spchars($_SESSION[siteObj]->getField("title"))."'>");
 printc("<span class=editnote> *required</span>");
-printc("<br>");
+printc("<br />");
 
-if (!isclass($_SESSION[siteObj]->getField("name"))) printc("<br><br><input type=checkbox name='listed' value=1".(($_SESSION[siteObj]->getField("listed"))?" checked":"")."> Include site in public listing.".helplink("listing"));
+if (!isclass($_SESSION[siteObj]->getField("name"))) printc("<br /><br /><input type=checkbox name='listed' value=1".(($_SESSION[siteObj]->getField("listed"))?" checked":"")."> Include site in public listing.".helplink("listing"));
 else printc("<input type=hidden name='listed' value=1>");
-printc("<br><br>");
+printc("<br /><br />");
 
 /* ------------------------------------------------------------ */
 /* this will be replace by our new permissions system -- hence the comments */
@@ -66,17 +66,17 @@ printc("<br><br>");
  *				class, has full view permissions.
  * Custom:		Checked if the others fail and in edit mode.
  ******************************************************************************/
-/* print "Everyone:".$_SESSION[siteObj]->hasPermission("view","everyone","1")."<br>"; */
-/* print "EveryoneDirect:".$_SESSION[siteObj]->permissions[everyone][3]."<br>"; */
-/* print "EveryoneDown:".$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")."<br>"; */
-/* print "<br>"; */
-/* print "Institute:".$_SESSION[siteObj]->hasPermission("view","institute","1")."<br>"; */
-/* print "InstituteDirect:".$_SESSION[siteObj]->permissions[institute][3]."<br>"; */
-/* print "InstituteDown:".$_SESSION[siteObj]->hasPermissionDown("view","institute","1")."<br>"; */
-/* print "<br>"; */
-/* print "Class:".$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1")."<br>"; */
-/* print "ClassDirect:".$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3]."<br>"; */
-/* print "--------------------------------<br>"; */
+/* print "Everyone:".$_SESSION[siteObj]->hasPermission("view","everyone","1")."<br />"; */
+/* print "EveryoneDirect:".$_SESSION[siteObj]->permissions[everyone][3]."<br />"; */
+/* print "EveryoneDown:".$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")."<br />"; */
+/* print "<br />"; */
+/* print "Institute:".$_SESSION[siteObj]->hasPermission("view","institute","1")."<br />"; */
+/* print "InstituteDirect:".$_SESSION[siteObj]->permissions[institute][3]."<br />"; */
+/* print "InstituteDown:".$_SESSION[siteObj]->hasPermissionDown("view","institute","1")."<br />"; */
+/* print "<br />"; */
+/* print "Class:".$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1")."<br />"; */
+/* print "ClassDirect:".$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3]."<br />"; */
+/* print "--------------------------------<br />"; */
 
 
 if ($_SESSION[settings][viewpermissions] == "custom") {
@@ -121,22 +121,22 @@ if ($_SESSION[siteObj]->getField("type") == "class") {
 	}
 }
 
-printc("</b> to view this site.<br><br>");
+printc("</b> to view this site.<br /><br />");
 
 printc("<div class=title>2. When is this site available?".helplink("daterange")." &nbsp; - &nbsp; <i>Optional</i></div>");
 //printc("<div class=desc>If you would like this site to be available only during a certain range of dates, enter them below and select the checkbox to the left of that date.</div>");
 
 $_SESSION[siteObj]->outputDateForm();
 
-printc("<br>");
+printc("<br />");
 
 printc("<div class=title>3. Hide my site".helplink("available")."</div>");
 //printc("<div class=desc>To prevent the site from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</b></div>");
-printc("<br>");
+printc("<br />");
 
 printc("<input type=radio name=active value=0 " . (($_SESSION[siteObj]->getField("active"))?"":" checked") . "> Hide ");
-printc("<input type=radio name=active value=1 " . (($_SESSION[siteObj]->getField("active"))?" checked":"") . "> Don't Hide  <br></b>");
-printc("<br>(this overrides availability option above)<br>");
+printc("<input type=radio name=active value=1 " . (($_SESSION[siteObj]->getField("active"))?" checked":"") . "> Don't Hide  <br /></b>");
+printc("<br />(this overrides availability option above)<br />");
 
 if ($_SESSION[settings][edit]) {
 	printc("<p><div class=desc>");
@@ -146,7 +146,7 @@ if ($_SESSION[settings][edit]) {
 	printc("</div>");
 }
 
-printc("<br>");
+printc("<br />");
 
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");

@@ -189,7 +189,7 @@ class page extends segue {
 	}
 	
 	function delete($deleteFromParent=0) {	// delete from db
-//		print "<br><BR> Deleting Page<bR><BR>";
+//		print "<br /><br /> Deleting Page<br /><br />";
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
 			$parentObj =& new section($this->owning_site,$this->owning_section,&$this->owningSectionObj->owningSiteObj);
@@ -222,7 +222,7 @@ class page extends segue {
 	}
 	
 	function delStory($id,$delete=1) {
-/* 		print "<br> deleting - $id - $delete<br>"; */
+/* 		print "<br /> deleting - $id - $delete<br />"; */
 /* 		print "<pre>"; print_r($this); print "</pre>"; */
 		$d = array();
 		foreach ($this->getField("stories") as $s) {
@@ -230,7 +230,7 @@ class page extends segue {
 		}
 		$this->data[stories] = $d;
 		$this->changed[stories]=1;
-/* 		print "------------------------ <br><pre>"; print_r($this); print "</pre>"; */
+/* 		print "------------------------ <br /><pre>"; print_r($this); print "</pre>"; */
 		if ($delete) {
 			$story =& new story($this->owning_site,$this->owning_section,$this->owning_page,$id,&$this);
 			$story->delete();
@@ -251,7 +251,7 @@ class page extends segue {
 	
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown || $full) {
-/* 			print "---->page fetchdown".$this->id." full = $full<BR>"; */
+/* 			print "---->page fetchdown".$this->id." full = $full<br />"; */
 			if (!$this->tobefetched || $full) 
 				$this->fetchFromDB(0,$full);
 			foreach ($this->getField("stories") as $s) {
@@ -338,7 +338,7 @@ WHERE
 					$this->fetched[$field] = 1;
 				}
 				else
-					echo "ERROR: field $field not in _allfields!!!<br>";
+					echo "ERROR: field $field not in _allfields!!!<br />";
 			
 
 			// now fetch the sections (they are part of a 1-to-many relationship and therefore
@@ -379,9 +379,9 @@ ORDER BY
 				$a[] = "FK_updatedby=".$_SESSION[aid];
 			
 			$query = "UPDATE page SET ".implode(",",$a)." WHERE page_id=".$this->id;
-/* 			print "<pre>Page->UpdateDB: $query<br>"; */
+/* 			print "<pre>Page->UpdateDB: $query<br />"; */
 			db_query($query);
-/* 			print mysql_error()."<br>"; */
+/* 			print mysql_error()."<br />"; */
 /* 			print_r($this->data['stories']); */
 /* 			print "</pre>"; */
 			
@@ -504,7 +504,7 @@ SET
 		}
 
 		$query = "INSERT INTO page SET ".implode(",",$a);
-/* 		print $query."<br>"; //debug */
+/* 		print $query."<br />"; //debug */
 		db_query($query);
 		
 		$this->id = lastid();
@@ -632,7 +632,7 @@ SET
 			printc("<option" . (($startyear == $i)?" selected":"") . ">$i\n");
 		}
 		printc("</select>");
-	//	printc("<br>");
+	//	printc("<br />");
 		printc(" to <select name='endday'>");
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($endday == $i)?" selected":"") . ">$i\n");
@@ -673,12 +673,12 @@ SET
 		$txtstart = date("n/j/y",$start);
 		$txtend = date("n/j/y",$end);
 		
-//		print "start $start, end: $end<BR>";
+//		print "start $start, end: $end<br />";
 		
 		$this->fetchDown();
 		foreach ($this->stories as $s=>$o) {
 			$added = $o->getField("addedtimestamp");
-//			print $added."<br>";
+//			print $added."<br />";
 			
 			ereg ("([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})",$added,$regs);
 //			print_r($regs);
@@ -686,7 +686,7 @@ SET
 			$month = (integer)$regs[2];
 			$day = (integer)$regs[3];
 			$t = mktime(0,0,0,$month,$day,$year);
-//			print $t."<br>";
+//			print $t."<br />";
 	// 			$week = date("W",$t-(date("w",$t)*86400)); 
 	//
 	// 			if ($startyear == $year && $startweek == $week) 
@@ -707,7 +707,7 @@ SET
 
 		$this->stories = &$a;
 /* 		$this->fetcheddown=0;$this->fetchDown(); */
-		printc("<b>Content ranging from $txtstart to $txtend.</b><br><BR>");
+		printc("<b>Content ranging from $txtstart to $txtend.</b><br /><br />");
 	}
 
 	function handleStoryOrder() {

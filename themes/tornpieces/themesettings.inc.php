@@ -46,7 +46,7 @@ if ($themesettings[theme] == 'tornpieces') {
 }
 
 ?>
-<b>Torn Pieces</b><br>
+<b>Torn Pieces</b><br />
 This theme is meant to look like a pieces of torn paper.  Edges are a random pattern.
 Also see Torn Paper theme.
 <hr noshade size=1>

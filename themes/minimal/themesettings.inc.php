@@ -49,7 +49,7 @@ if ($themesettings[theme] == 'minimal') {
 }
 
 ?>
-<b>Minimal Color</b><br>
+<b>Minimal Color</b><br />
 This theme is our most minimal.
 <hr noshade size=1>
 <table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>

@@ -43,7 +43,7 @@ var txtLow, txtHigh, tblStart, tblEnd;
 var str;
 txtLow  = '<font color="' + fgColor + '" face="' + fontFace + '" size=' + fontSize + '>' + text + '</font>';
 txtHigh = '<font color="' + bgColor  + '" face="' + fontFace + '" size=' + fontSize + '>' + text + '</font>';
-tblStart = '<table border=0 cellpadding=0 cellspacing=0 height=100% width=100%><tr valign="center"><td align="center">';
+tblStart = '<table border=0 cellpadding='0' cellspacing='0' height=100% width=100%><tr valign="center"><td align="center">';
 tblEnd = '</td></tr></table>';
 if (isMinNS4)
 str = '<layer name="' + _LBbase + '" bgcolor="' + bdColor + '" width=' + width + ' height=' + height + ' visibility="hide">\n'

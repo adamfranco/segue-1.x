@@ -37,7 +37,7 @@ printc("Type:".helplink("pagetypes"));
 
 
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
-else printc("<br><br>");
+else printc("<br /><br />");
 
 
 if ($_SESSION[settings][add] || $_SESSION[sectionObj]->getField("type") == 'section') {
@@ -67,7 +67,7 @@ if ($_SESSION[sectionObj]->getField("type")=='section') {
 
 printc("<div class=leftmargin>");
 printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[sectionObj]->getField("title"))."'>");
-printc("</div><br>");
+printc("</div><br />");
 
 if ($_SESSION[sectionObj]->getField("type")=='link') {	
 
@@ -84,7 +84,7 @@ if ($_SESSION[sectionObj]->getField("type")=='link') {
 	printc("</div>");
 }
 
-printc("<br><br>");
+printc("<br /><br />");
 
 printc("</form>");
 

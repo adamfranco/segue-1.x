@@ -32,7 +32,7 @@ if ($themesettings[theme] == 'bevelbox') {
 }
 
 ?>
-<b>Bevel Box</b><br>
+<b>Bevel Box</b><br />
 This theme creates the illusion of a box overlaying the page.  
 This illusion is created by surrounding box with a bevelled edge.
 <hr noshade size=1>

@@ -15,7 +15,7 @@ $urls = array(
 
 // -------------------------------------------------------------------
 add_link(leftnav,"Home","index.php?$sid","","");
-add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
+add_link(leftnav,"Personal Site List<br />","index.php?$sid&action=list","","");
 add_link(leftnav,"Links");
 foreach ($urls as $t=>$u)
 	add_link(leftnav,$t,"http://".$u,'','',"_blank");
@@ -113,7 +113,7 @@ if (db_num_rows($r)) {
 	printc("<tr><td colspan=3>No sites listed</td></tr>");
 }
 
-printc("</table><BR>");
+printc("</table><br />");
 
 
 

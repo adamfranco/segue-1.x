@@ -19,7 +19,7 @@ if (isset($_REQUEST[expand_pastclasses])) {
  ******************************************************************************/
 $leftnav_extra .= <<< END
 
-<table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
+<table width="100%" height="100%" border=0 cellpadding='0' cellspacing='0'>
 	<tr>
 		<td height="100%" valign="bottom" style="font-weight: bolder">
 		<a href='sitelisting.php?$sid' onClick='doWindow("listing",600,500)' target='listing'>Site Listing</a>
@@ -34,7 +34,7 @@ END;
 if ($copysite && $newname && $origname) {
 	$origSite =& new site($origname);
 	$origSite->fetchDown(1);
-/*	print "Move: $origname to $newname  <br> <pre>"; */
+/*	print "Move: $origname to $newname  <br /> <pre>"; */
 /*	print_r($origSite); */
 /*	print "</pre>"; */
 /* $origSite->copySite($newname,$clearpermissions); */
@@ -207,11 +207,11 @@ if ($_loggedin) {
 			if ($_SESSION[atype] == 'visitor') {
 				printc("Welcome to Segue.  You have a visitor account that was created when you registered with Segue.  ");
 				printc("This account will allow you to post to any public discussions ");
-				printc("and view all publically accessible sites.<br><br>");
+				printc("and view all publically accessible sites.<br /><br />");
 			} else if ($_SESSION[atype] == 'guest') {
 				printc("Welcome to Segue.  You have been given a guest account.  ");
 				printc("This account will allow you to view sites and post to discussions/assessments");
-				printc("that are limited to users in the ".$cfg[inst_name]." community.<br><br>");
+				printc("that are limited to users in the ".$cfg[inst_name]." community.<br /><br />");
 			} else {
 				printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
 				printSiteLine(new site($_SESSION[auser]));
@@ -403,7 +403,7 @@ if ($_loggedin) {
 	printc("</table>");
 } else {
 	//add_link(leftnav,"Home","index.php?$sid","","");
-	//add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
+	//add_link(leftnav,"Personal Site List<br />","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
 	foreach ($defaultlinks as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
@@ -534,7 +534,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 		if ($obj->canview("anyuser")) $active = "<span class=green>active</span>";
 		else $active = "<span class=red>(inactive)</span>";
 	}
-	printc("<table width=100% cellpadding=0 cellspacing=0><tr><td align='left'>");
+	printc("<table width=100% cellpadding='0' cellspacing='0'><tr><td align='left'>");
 	
 	if ($isclass && ((!$exists && (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name))) || ($exists && $_SESSION[auser] == slot::getOwner($obj->name)))) {
 		// if:
@@ -572,7 +572,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	
 	if ($isgroup) {
 		$list = implode(", ",$classlist);
-		printc("<div style='padding-left: 20px; font-size: 10px;'>this is a group and contains the following classes: <b>$list</b><br></div>");
+		printc("<div style='padding-left: 20px; font-size: 10px;'>this is a group and contains the following classes: <b>$list</b><br /></div>");
 		$sitesprinted = array_merge($sitesprinted,$classlist);
 	}
 	if ($exists) {
@@ -581,7 +581,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 		$added = timestamp2usdate($obj->getField("addedtimestamp"));
 		$edited = $obj->getField("editedtimestamp");
 		$editedby = $obj->getField("editedby");
-		printc("<div style='padding-left: 20px; font-size: 10px;'>added by $addedby on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"")."<br></div>");
+		printc("<div style='padding-left: 20px; font-size: 10px;'>added by $addedby on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"")."<br /></div>");
 		
 		if ($obj->getField("activatedate") != '0000-00-00' || $obj->getField("deactivatedate") != '0000-00-00') {
 			printc("<div style='padding-left: 20px; font-size: 10px;'>available: ");
@@ -598,7 +598,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 		printc("<div align='left'>");
 	
 		$addr = "$_full_uri/sites/$name";
-		printc("<div style='padding-left: 20px; font-size: 12px;'>URL: <a href='$addr' target='_blank'>$addr</a><br></div></div>");
+		printc("<div style='padding-left: 20px; font-size: 12px;'>URL: <a href='$addr' target='_blank'>$addr</a><br /></div></div>");
 		
 		printc("<div align='right'>");
 		

@@ -13,26 +13,26 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 	$admin_ldap_pass = $cfg[ldap_voadmin_pass];
 
 	$r = @ldap_bind($c,$admin_ldap_user,$admin_ldap_pass);
-//	print "<br>@ldap_bind($c,$admin_ldap_user,$admin_ldap_pass); <br> \"$r\"";
-//	if (!$r) print "<br>Could not bind as admin.";
+//	print "<br />@ldap_bind($c,$admin_ldap_user,$admin_ldap_pass); <br /> \"$r\"";
+//	if (!$r) print "<br />Could not bind as admin.";
 	
 	$userSearchDN = (($cfg[ldap_user_dn])?$cfg[ldap_user_dn].",":"").$cfg[ldap_base_dn];
 	$searchFilter = "(".$cfg[ldap_username_attribute]."=".$name.")";
 	
-//	print "<br>$userSearchDN <br>$searchFilter <br>";
+//	print "<br />$userSearchDN <br />$searchFilter <br />";
 	
 	$searchResource = ldap_search($c, $userSearchDN, $searchFilter);
 	$searchResult = ldap_first_entry($c, $searchResource);
 	
-//	print "<br>ldap_search($c, $userSearchDN, $searchFilter);";
-//	print "<br>ldap_first_entry($c, $searchResource);";
-//	print "<br>$searchResult";
+//	print "<br />ldap_search($c, $userSearchDN, $searchFilter);";
+//	print "<br />ldap_first_entry($c, $searchResource);";
+//	print "<br />$searchResult";
 	
 	if ($searchResult) {
 		$userFullBindDN = ldap_get_dn($c, $searchResult);
 //		print $userFullBindDN;
 	} else {
-//		print "<br>no search result";
+//		print "<br />no search result";
 		return 0;
 	}
 	
@@ -43,7 +43,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 	// No need to unbind, as unbind kills the link, just bind again.
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
 	
-//	print "<br>@ldap_bind($c,$ldap_user,$ldap_pass);";
+//	print "<br />@ldap_bind($c,$ldap_user,$ldap_pass);";
 		
 	if ($r) { // they're good!
 	
@@ -58,7 +58,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		$userSearchDN = (($cfg[ldap_user_dn])?$cfg[ldap_user_dn].",":"").$cfg[ldap_base_dn];
 		$searchFilter = "(".$cfg[ldap_username_attribute]."=".$name.")";
 		
-//		print "$name with $pass was in the LDAP database!<BR>";//debug
+//		print "$name with $pass was in the LDAP database!<br />";//debug
 		
 		$sr = ldap_search($c,$userSearchDN,$searchFilter,$return);
 		$results = ldap_get_entries($c,$sr);

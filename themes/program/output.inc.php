@@ -52,9 +52,9 @@ include("themes/$theme/css.inc.php");
 /* -------------- STATUS BAR ----------------- */
 /* ------------------------------------------- */
 //include("themes/common/status.inc.php"); ?>
-<br>
+<br />
 
-<table width=90% align='center' cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
   <tr> 
     <td class="topleft">&nbsp;</td>
     <td class="top"> 
@@ -115,7 +115,7 @@ include("themes/$theme/css.inc.php");
 <td class="left" width=160 height="100%">
 
 
-<table width=100% cellpadding=5 cellspacing=0>
+<table width=100% cellpadding=5 cellspacing='0'>
 <td class=leftnav height="100%">
 <div class='nav'>
 	<?
@@ -132,14 +132,14 @@ include("themes/$theme/css.inc.php");
 			print "</div>";
 		}
 		if ($item[type] == 'divider') {
-			print "$item[extra]<br>";
+			print "$item[extra]<br />";
 		}
 		if ($item[type] == 'heading') {
 			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
 			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 		}
 	}
-	print "<br>$leftnav_extra";
+	print "<br />$leftnav_extra";
 	?>
 </div>
 </td>
@@ -157,7 +157,7 @@ include("themes/$theme/css.inc.php");
 if (count($rightnav)) {
 	print "<td style='margin-left: 20px'>";
 	foreach ($rightnav as $item) {
-		print "<a href='$item[url]'>$item[name]</a><BR>";
+		print "<a href='$item[url]'>$item[name]</a><br />";
 	}
 	print "</td>";
 }
@@ -178,9 +178,9 @@ if (count($rightnav)) {
 <td class="bottomright2">&nbsp;</td>
 </tr>
 </table>
-<br>
+<br />
 
-<table width=90% align='center' cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?/* ------------------------------------------- */
 /* -------------- FOOTER     ----------------- */
@@ -188,6 +188,6 @@ if (count($rightnav)) {
 print $sitefooter ?>
 </tr></td>
 </table>
-<br>
+<br />
 
 	

@@ -24,7 +24,7 @@ $nav = array(
 
 <body style='margin: 0px'>
 
-<table width=100% cellpadding=0 cellspacing=0>
+<table width=100% cellpadding='0' cellspacing='0'>
 <tr>
 <td class=header align='center'>
 <? include("themes/common/status.inc.php"); ?>
@@ -67,14 +67,14 @@ $nav = array(
 				print "</div>";
 			}
 			if ($item[type] == 'divider') {
-				print "$item[extra]<br>";
+				print "$item[extra]<br />";
 			}
 			if ($item[type] == 'heading') {
 				print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
 				if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			}
 		}
-		print "<br>$leftnav_extra";
+		print "<br />$leftnav_extra";
 		?>
 	</td>
 	<td class=content valign=top>
@@ -85,7 +85,7 @@ $nav = array(
 	if (count($rightnav)) {
 		print "<td align='right' class=rightnav>";
 		foreach ($rightnav as $item) {
-			print "<a href='$item[url]'>$item[name]</a><BR>";
+			print "<a href='$item[url]'>$item[name]</a><br />";
 		}
 		print "</td>";
 	}
@@ -97,7 +97,7 @@ $nav = array(
 </tr>
 </table>
 
-<br>
+<br />
 
 <? print $sitefooter ?>
 	

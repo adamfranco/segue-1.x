@@ -196,10 +196,10 @@ if ($action == "review" || $action == "user") {
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
 	$numparticipants = db_num_rows($r);
-	//print $numparticipants."<br>";
+	//print $numparticipants."<br />";
 	
 	if ($action == "list") $numrows = $numparticipants;
-	//print $numrows."<br>";
+	//print $numrows."<br />";
 
 /******************************************************************************
  * Query: all discussion post information based on select
@@ -323,7 +323,7 @@ if ($_REQUEST[from] != "home") {
 }
 
 print "</td></tr>";
-print "</table><br>";
+print "</table><br />";
 ?>
 
 <?=$content?>
@@ -561,7 +561,7 @@ print "</table><br>";
 				$subject = $subject." (sent by Segue Admin: ".$_SESSION['lfname'].")";
 			}
 			print "<table>";
-			print "<tr><td>To:</td><td>".$to."</td></tr><br><hr>\n";
+			print "<tr><td>To:</td><td>".$to."</td></tr><br /><hr>\n";
 			print "<tr><td>From:</td><td>".$_SESSION['afname']."</td></tr>\n";
 			print "<tr><td>Cc:</td><td>".$_SESSION['afname']."</td></tr>\n";
 			print "<tr><td>Subject:</td><td>".$subject."</td></tr>\n";
@@ -607,7 +607,7 @@ print "</table><br>";
 			print "<th><a href=# onClick=\"changeOrder('";
 			if ($order =='discussion_rate asc') print "discussion_rate desc";
 			else print "discussion_rate asc";
-			print "')\">Rating<br>Grade";
+			print "')\">Rating<br />Grade";
 			if ($order =='discussion_rate asc') print " &or;";
 			if ($order =='discussion_rate desc') print " &and;";	
 			print "</a></th>";
@@ -748,7 +748,7 @@ print "</table><br>";
 </td></tr>
 </table>
 
-<BR>
+<br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 

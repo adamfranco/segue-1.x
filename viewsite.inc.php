@@ -122,7 +122,7 @@ do {
 	$thisSite->fetchDown();			// just in case we haven't already
 	
 	$topsections = !ereg("Side\+Sections",$thisSite->getField("themesettings"));
-	/* print "themsettings: \"".$thisSite->getField("themesettings")."\"<br>"; */
+	/* print "themsettings: \"".$thisSite->getField("themesettings")."\"<br />"; */
 	/* print $topsections; */
 	
 	// build the navbar
@@ -143,7 +143,7 @@ do {
 		
 		$_top_addlink_orders = array("addeddesc","editeddesc","author","editor","category","titleasc","titledesc");
 		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_top_addlink_orders)) 
-			printc("<br><div align='right'><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br><hr class=block>");
+			printc("<br /><div align='right'><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br /><hr class=block>");
 		
 		$i=0;
 		
@@ -165,7 +165,7 @@ do {
 						printc("</div>");
 					}
 					$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
-	/* 				print "<br>".$incfile; */
+	/* 				print "<br />".$incfile; */
 					include($incfile);
 					
 					/******************************************************************************
@@ -184,7 +184,7 @@ do {
 							if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
 						}
 						printc("</div>");
-						//printc("<hr size='1' noshade><br>");
+						//printc("<hr size='1' noshade><br />");
 					}
 					
 					printc("<div align='right'>");
@@ -212,7 +212,7 @@ do {
 			}
 		}
 		$_b = array("","custom","addedasc","editedasc");
-		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) printc("<br><hr class=block><div align='right'><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) printc("<br /><hr class=block><div align='right'><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 	}
 } while (0);
 
@@ -235,7 +235,7 @@ if ($supplement) $u .="&supplement=$supplement";
 
 
 ob_start();
-print "\n\n<br>\n<div align='right'>\n<table style='border-top: 2px solid #666; border-left: 2px solid #666; border-bottom: 2px solid #666; border-right: 2px solid #666; background-color: #ddd;'>\n\t<tr>";
+print "\n\n<br />\n<div align='right'>\n<table style='border-top: 2px solid #666; border-left: 2px solid #666; border-bottom: 2px solid #666; border-right: 2px solid #666; background-color: #ddd;'>\n\t<tr>";
 print "\n\t<td valign=top align='left'>";
 
 $btnw = 125 . "px"; // button width
@@ -282,6 +282,6 @@ print "\n\t</td>";
 
 print "\n\t</tr>\n</table>\n</div>";
 
-print "\n\n<br><div align='right'><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
+print "\n\n<br /><div align='right'><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
 $sitefooter = $sitefooter . ob_get_contents();
 ob_end_clean();

@@ -221,7 +221,7 @@ if ($site) {
 		<?
 		if ($ltype != 'admin') {
 			print "<input type=hidden name=site value='$site'>";
-			print "Logs of $site <br>";
+			print "Logs of $site <br />";
 		}
 		
 		$r1 = db_query("SELECT DISTINCT log_type FROM log ORDER BY log_type asc");
@@ -239,7 +239,7 @@ if ($site) {
 		?>
 			user: <input type=text name=user size=15 value='<?echo $user?>'>
 			site: <input type=text name=site size=15 value='<?echo $site?>'>
-			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?><br>
+			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?><br />
 			start date (yyyymmdd): <input type=text name=startdate size=10 value='<?echo $startdate?>'> 
 			end date (yyyymmdd): <input type=text name=enddate size=10 value='<?echo $enddate?>'> 
 
@@ -249,7 +249,7 @@ if ($site) {
 		<input type=hidden name='order' value='<? echo $order ?>'>
 		<input type=hidden name='_auser' value='<? echo $_auser ?>'>
 		<input type=hidden name='_luser' value='<? echo $_luser ?>'>
-		<? print "<br>Total log entries:".$numlogs; ?>
+		<? print "<br />Total log entries:".$numlogs; ?>
 		</form>
 		</td>
 		<td align='right'>
@@ -392,5 +392,5 @@ if (db_num_rows($r)) {
 	print "<tr><td colspan=6>No log entries.</td></tr>";
 }
 ?>
-</table><BR>
+</table><br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

@@ -39,7 +39,7 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 printc("Type:".helplink("storytypes"));
 
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
-else printc("<br><br>");
+else printc("<br /><br />");
 
 
 if ($_SESSION[settings][add] || $_SESSION[storyObj]->getField("type") == 'story') {
@@ -104,7 +104,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
  ******************************************************************************/
 
 //printc("<div class=leftmargin>");
-printc("<br><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+printc("<br /><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 
 
 if ($_SESSION[storyObj]->getField("type")!='rss') {
@@ -158,7 +158,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
  	* NOTE: this Media Library link is NOT the same as in the Image/File Block UI
  	******************************************************************************/
 	
-	printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+	printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 	printc("<tr><td colspan=2>");
 	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
 	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
@@ -166,7 +166,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc(" (media file URL)");
 	printc("</div></td></tr>");
 	printc("<tr><td>");
-	printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
+	printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br />2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
 	printc("</td></tr>");
 	printc("</table></div>");
 }
@@ -177,7 +177,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 
 if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->getField("type") == 'file') {
 
-	printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+	printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 	printc("<tr><td colspan=2>");
 	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
 	printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
@@ -187,10 +187,10 @@ if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->get
 	printc("</td></tr>");
 	printc("<tr><td>");
 	if ($_SESSION[storyObj]->getField("type")=='image') {	
-		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for image files. <br>");
+		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for image files. <br />");
  		printc("2. Accepted types here GIF, JPEG (JPG), and PNG. (chose <b>File for Download</b> to create links to other types of files)</div>");
  	} else {
-		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>");
+		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br />");
  		printc("(2. All File types accepted. (chose <b>Image</b> to display images inline)</div>"); 	
  	}
 	printc("</td></tr>");
@@ -207,7 +207,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	 * Internal linking: note to users...
 	 ******************************************************************************/
 	printc ("\n<br />");
-	printc("<table width= 80% cellpadding=3 cellspacing=0 style='border: 1px solid grey'>");
+	printc("<table width= 80% cellpadding=3 cellspacing='0' style='border: 1px solid grey'>");
 	printc("<tr><td>");
 	if ($_SESSION[storyObj]->getField("type")=='story') {
 		printc("Content (or Abstract):".helplink('msword'));
@@ -234,7 +234,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	 ******************************************************************************/
 
 	if ($supported == 0) {
-		printc("<br><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
+		printc("<br /><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
 		if ($isWin) {
 			printc("We recommend you use either <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a> or
 			<a href=http://www.microsoft.com/windows/ie/ target=new_window>Internet Explorer or greater</a>.");
@@ -274,7 +274,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 		
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	
-	//printc("<br>");
+	//printc("<br />");
 			
 	$text = $_SESSION[storyObj]->getField("shorttext");
 	
@@ -285,7 +285,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	$text = convertTagsToInteralLinks($_SESSION[settings][site], $text);
 	
 	// If they had been editing as plain-text, but are now using the editor,
-	// convert the line-breaks to <br> tags.
+	// convert the line-breaks to <br /> tags.
 	if ($_SESSION[storyObj]->getField("texttype")=='text' && $supported)
 		$text = htmlbr($text);
 		
@@ -318,7 +318,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	printc("</table>");
 }
 
- printc("<br>");
+ printc("<br />");
 
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");

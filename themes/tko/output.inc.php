@@ -39,18 +39,18 @@ include("themes/$theme/css.inc.php");
 </head>
 
 <body style='margin: 0px'>
-<table border=0 width=700 cellpadding=0 cellspacing=0>
+<table border=0 width=700 cellpadding='0' cellspacing='0'>
 <tr>
 <td width=700 height=150 background='<? echo "$themesdir/$theme/images/banner.gif"; ?>'>
-	<img src='<? echo "$themesdir/$theme/images/150spacer.gif"; ?>' border=0 height=120 width=1><BR>
+	<img src='<? echo "$themesdir/$theme/images/150spacer.gif"; ?>' border=0 height=120 width=1><br />
 	<!-- main header content -->
-	<table border=0 width=100% height=30 cellpadding=0 cellspacing=0>
+	<table border=0 width=100% height=30 cellpadding='0' cellspacing='0'>
 	<tr>
 	<td class=topbar width=180 align='center' valign=middle>
 	&nbsp; <!-- search bar -->
 	</td>
 	<td class=topnav>
-	<table border=0 width=100% height=30 cellpadding=0 cellspacing=0>
+	<table border=0 width=100% height=30 cellpadding='0' cellspacing='0'>
 	<tr>
 	<?
 /******************************************************************************
@@ -83,11 +83,11 @@ include("themes/$theme/css.inc.php");
 <tr>
 <td width=100%>
 <!-- content and nav bar -->
-	<table border=0 cellpadding=0 cellspacing=0 width=100%>
+	<table border=0 cellpadding='0' cellspacing='0' width=100%>
 	<tr>
 	<td width=180 class=leftnav valign=top>
 	
-	<table border=0 cellpadding=0 cellspacing=0 width=100%>
+	<table border=0 cellpadding='0' cellspacing='0' width=100%>
 	<!-- left navbar -->
 	<?
 	foreach ($leftnav as $item) {
@@ -102,7 +102,7 @@ include("themes/$theme/css.inc.php");
 			print "</td>";
 		}
 		if ($item[type] == 'divider') {
-			print "<td colspan=2>$item[extra]<br></td>";
+			print "<td colspan=2>$item[extra]<br /></td>";
 		}
 		if ($item[type] == 'heading') {
 			print "<td colspan=2><div class='leftmargin bottommargin5'>$item[name]</div>";
@@ -124,7 +124,7 @@ include("themes/$theme/css.inc.php");
 			print "</td>";
 		}
 		if ($item[type] == 'divider') {
-			print "<td colspan=2>$item[extra]<br></td>";
+			print "<td colspan=2>$item[extra]<br /></td>";
 		}
 		if ($item[type] == 'heading') {
 			print "<td colspan=2><div class='leftmargin bottommargin5'>$item[name]</div>";
@@ -137,7 +137,7 @@ include("themes/$theme/css.inc.php");
 	?>
 	</table>
 	
-	<? 	if ($leftnav_extra) print "<br>$leftnav_extra"; ?>
+	<? 	if ($leftnav_extra) print "<br />$leftnav_extra"; ?>
 	
 	<!-- end left navbar -->
 	</td>

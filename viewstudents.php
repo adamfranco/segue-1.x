@@ -295,5 +295,5 @@ if (db_num_rows($r)) {
     print "<tr><td colspan=4>No log entries.</td></tr>";
 }
 ?>
-</table><BR>
+</table><br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

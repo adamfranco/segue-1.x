@@ -33,7 +33,7 @@ if (count($_ids)) {
 	$filename = "$uploaddir/".$thisSite->name."/$pdfname";
 	$fileurl = "$uploadurl/".$thisSite->name."/$pdfname";
 	if (file_exists($filename)) {
-		$putonlast = "<br><div align='center' class='topmargin5 smaller'>".pdflink($filename,$fileurl)."</div>";
+		$putonlast = "<br /><div align='center' class='topmargin5 smaller'>".pdflink($filename,$fileurl)."</div>";
 	}
 	
 	$i=0;$total = count($last->pages);
@@ -115,7 +115,7 @@ function filesizestr($filename) {
 
 function pdflink($filename,$fileurl,$sm=0) {
 	$size = filesizestr($filename);
-	return "<a href='$fileurl'>".(($sm!=2)?"<img src='images/pdficon".(($sm)?"_sm":"").".gif' align=absmiddle border=0 alt='Download PDF'>":"") . (($sm==1)?" ":(($sm==2)?"":"<BR>") . "Download PDF ")."</a>($size)";
+	return "<a href='$fileurl'>".(($sm!=2)?"<img src='images/pdficon".(($sm)?"_sm":"").".gif' align=absmiddle border=0 alt='Download PDF'>":"") . (($sm==1)?" ":(($sm==2)?"":"<br />") . "Download PDF ")."</a>($size)";
 }
 
 

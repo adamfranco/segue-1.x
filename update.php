@@ -92,7 +92,7 @@ if ($site) {
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
-	print "</div><br>";
+	print "</div><br />";
 }
 
 ?>
@@ -109,7 +109,7 @@ foreach ($updates as $key => $obj) {
 	print "<tr><td colspan=2><hr></td></tr>\n";
 	print "<tr>\n<td width='50%'>\n";
 	print "<b>".$obj->getName()."</b>\n";
-	print "<br>".$obj->getDescription();
+	print "<br />".$obj->getDescription();
 	print "\n</td>\n<td width='50%' align='center' valign='center'>\n";
 	
 	if ($obj->hasRun())
@@ -126,7 +126,7 @@ foreach ($updates as $key => $obj) {
 </td></tr>
 </table>
 
-<BR>
+<br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <?

@@ -34,13 +34,13 @@ if ($_SESSION[sectionObj]->getField("type")=='link' || $_SESSION[sectionObj]->ge
 	
 	$_SESSION[sectionObj]->outputDateForm();
 
-	printc("<br>");
+	printc("<br />");
 	printc("<input type=radio name=active value=0 " . (($_SESSION[sectionObj]->getField("active"))?"":" checked") . "> Hide ");
 	printc("<input type=radio name=active value=1 " . (($_SESSION[sectionObj]->getField("active"))?" checked":"") . "> Don't Hide</b> ");
-	printc(" ".helplink("available")." (this overrides availability option.)<br>");
+	printc(" ".helplink("available")." (this overrides availability option.)<br />");
 }
 
-printc("<br><br>");
+printc("<br /><br />");
 
 
 printc("</form>");

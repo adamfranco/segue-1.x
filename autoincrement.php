@@ -3,7 +3,7 @@ include("dbwrapper.inc.php");
 include("config.inc.php");
 
 $query = "show table status like 'stories'";
-print $query . "<br>";
+print $query . "<br />";
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 $r = db_query($query);
 print $r;

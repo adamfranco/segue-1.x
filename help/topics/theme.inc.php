@@ -7,7 +7,7 @@
 
 <p><b>Pop up Blocker</b></p>
 <p>In order to properly edit Segue themes you must configure you Pop up Blocker to allow pop up windows from Segue.
-You can do this as follows:<br>
+You can do this as follows:<br />
 <ul>
 	<li>Mozilla: 1. Chose Tools > Popup Manager 2. Chose to Allow Popups from this site.</li>
 	<li>Safari: Deselect Safari > Block Pop-up Windows (Note: Safari does not support Segue's WYSIWYG HTML Editor)</li>

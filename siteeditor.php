@@ -183,6 +183,6 @@ if (count($sections)) {
 	print "<tr><td colspan=5>No sections.</td></tr>";
 }
 ?>
-</table><BR>
+</table><br />
 A = active, L = locked
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

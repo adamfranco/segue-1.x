@@ -209,7 +209,7 @@ if ($site) {
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
-	print "</div><br>";
+	print "</div><br />";
 }
 
 
@@ -339,7 +339,7 @@ if ($site) {
 </td></tr>
 </table>
 
-<BR>
+<br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doUserForm($a,$p='',$e=0) {

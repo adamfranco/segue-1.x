@@ -74,5 +74,5 @@ if (count($usernames)) {
 ?>
 </table>
 </td></tr></table>
-<BR>
+<br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

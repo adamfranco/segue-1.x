@@ -119,7 +119,7 @@ class slot {
 					".$this->_datafields[$field][2]."
 			";
 
-/* 			print "<br>".$query; */
+/* 			print "<br />".$query; */
 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 			$r = db_query($query);
 			echo mysql_error();
@@ -147,7 +147,7 @@ class slot {
 		
 			// get id for owner of slot
 			$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
-/* 			echo $query."<br>"; */
+/* 			echo $query."<br />"; */
 			$r = db_query($query);
 			if (!db_num_rows($r)) return false;
 			$a = db_fetch_assoc($r);
@@ -160,7 +160,7 @@ class slot {
 			if ($this->assocSite) {
 				// get id for assoc_site of slot
 				$query = "SELECT slot_id FROM slot WHERE slot_name = '".$this->assocSite."'";
-/* 				echo $query."<br>"; */
+/* 				echo $query."<br />"; */
 				$r = db_query($query);
 				$a = db_fetch_assoc($r);
 				$assocSite = $a[slot_id];
@@ -182,7 +182,7 @@ class slot {
 		
 			// get id for owner of slot
 			$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
-/* 			echo $query."<br>"; */
+/* 			echo $query."<br />"; */
 			$r = db_query($query);
 			if (!db_num_rows($r)) return false;
 			$a = db_fetch_assoc($r);
@@ -195,7 +195,7 @@ class slot {
 			if ($this->assocSite) {
 				// get id for assoc_site of slot
 				$query = "SELECT slot_id FROM slot WHERE slot_name = '".$this->assocSite."'";
-/* 				echo $query."<br>"; */
+/* 				echo $query."<br />"; */
 				$r = db_query($query);
 				$a = db_fetch_assoc($r);
 				$assocSite = $a[slot_id];
@@ -220,7 +220,7 @@ class slot {
 		
 		if ($owner != "") {
 			$query = "SELECT slot_id, slot_name FROM slot INNER JOIN user ON FK_owner=user_id WHERE user_uname='$owner' OR slot_name='$slot_name'";
-			/* echo $query."<br>"; */
+			/* echo $query."<br />"; */
 		} else {
 			$query = "SELECT slot_id, slot_name FROM slot";
 	/* 		echo $query; */

@@ -47,7 +47,7 @@ if ($thisSite->sections) {
 }
 // next, if we have a section, build a list of leftnav items
 if ($thisSection) {
-/* 	print "thisSection found...<BR>"; */
+/* 	print "thisSection found...<br />"; */
 	$thisSection->fetchDown();	//just in case...
 	$i = 0;
 	
@@ -73,7 +73,7 @@ if ($thisSection) {
 						if (($i != 0) && ($i != count($thisSection->pages)-1)) $extra .= " ";
 						//nav reorder down
 						if ($i != count($thisSection->pages)-1) $extra .= "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=page&direction=down&id=$p' class='small' title='Move this page/link/heading/divider down'>&darr;</a>";
-						//if (count($pages)!=1) $extra .= "<BR>";
+						//if (count($pages)!=1) $extra .= "<br />";
 					}
 					// move
 					$extra .= ($thisSection->hasPermission("edit"))?" | <a href='copy_parts.php?$sid&site=$site&section=$section&page=$p&type=page' class='small' title='Move/Copy this page to another section' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
@@ -104,8 +104,8 @@ if ($thisSection) {
 					add_link(leftnav2,$o->getField("title"),'',$extra);
 				}
 				if ($o->getField("type") == 'divider') {
-					add_link(leftnav,'','',(($action=='viewsite' || ereg('preview_edit_as', $action))?"-divider-<br>":"").$extra);
-					add_link(leftnav2,'','',(($action=='viewsite' || ereg('preview_edit_as', $action))?"-divider-<br>":$extra));
+					add_link(leftnav,'','',(($action=='viewsite' || ereg('preview_edit_as', $action))?"-divider-<br />":"").$extra);
+					add_link(leftnav2,'','',(($action=='viewsite' || ereg('preview_edit_as', $action))?"-divider-<br />":$extra));
 				}
 				$i++;
 			}

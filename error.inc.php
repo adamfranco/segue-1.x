@@ -19,7 +19,7 @@ function printerr() {
 		$string .="</ul></div>";
 	}
 	if ($message) {
-		$string .="<div class=desc><b>$message</b><BR></div>";
+		$string .="<div class=desc><b>$message</b><br /></div>";
 	}
 	preprintc($string);
 }
@@ -36,7 +36,7 @@ function printerr2() {
 		$string .="</ul></div>";
 	}
 	if ($message) {
-		$string .="<div class=desc><b>$message</b><BR></div>";
+		$string .="<div class=desc><b>$message</b><br /></div>";
 	}
 	print $string;
 }

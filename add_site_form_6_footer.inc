@@ -23,14 +23,14 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 
 if ($_SESSION[settings][add]) printc("<div class=title>Add Site</div>");
 if ($_SESSION[settings][edit]) printc("<div class=title>Edit Site</div>");
-printc("<br>");
+printc("<br />");
 
 // --- title ---
 printc("<div class=title>".(($_SESSION[settings][edit])?"7":"8").". Custom Footer".helplink("headerfooter")." &nbsp; - &nbsp; <i>Optional</i></div>");
 printc ("<div style='font-size: 10px; margin-left: 30px; margin-right: 30px;'>");
 printc("A custom footer can be an image or text. It will appear at the bottom of all pages in your site.  Some themes look better with footers than others.</div>");
-printc("<br>");
-printc("<br>");
+printc("<br />");
+printc("<br />");
 
 // --- form contents ---
 //printc ("<input type=button name=update value='Update Footer' onClick=\"submitForm()\">");
@@ -40,7 +40,7 @@ printc("<br>");
 * NOTE: this Media Library link is NOT the same as in the Image/File Block UI
 ******************************************************************************/
 
-printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 printc("<tr><td colspan=2>");
 if ($_SESSION[settings][edit]) {
 	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
@@ -55,13 +55,13 @@ else {
 printc(" (media file URL)");
 printc("</div></td></tr>");
 printc("<tr><td>");
-printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
+printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br />2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
 printc("</td></tr>");
-printc("</table></div><br><br>");
+printc("</table></div><br /><br />");
 
 
 //if ($_SESSION[siteObj]->getField("header")) printc("<input type=submit name=copyheader value='Copy From Header'>");
-//printc("<br><br>");
+//printc("<br /><br />");
 
 //	print out text areas with editor (determined by addeditor function)
 //  addeditor function (defined in editor.inc.php)
@@ -78,22 +78,22 @@ printc(addeditor("footer",60,8,$mod_footer));
 //printc(addeditor("footer",60,8,$_SESSION[siteObj]->getField("footer")));
 
 
-printc("<br>");
-printc("<br>");
+printc("<br />");
+printc("<br />");
 
 if ($_SESSION[siteObj]->getField("header") != "") {
 	printc("<div class=title>Current Header:</div>");
 	$header = stripslashes($_SESSION[siteObj]->getField("header"));
 	printc("$header");
-	printc("<br>");
-	printc("<br>");
+	printc("<br />");
+	printc("<br />");
 }
 
 printc("<div class=title>Current Footer:</div>");
 $footer = stripslashes($_SESSION[siteObj]->getField("footer"));
 printc("$footer");
-printc("<br>");
-printc("<br>");
+printc("<br />");
+printc("<br />");
 
 
 printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");

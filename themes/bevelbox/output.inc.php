@@ -64,8 +64,8 @@ include("themes/$theme/css.inc.php");
 </head>
 
 <body style='margin: 0px'>
-<br>
-<table width=90% align='center' cellpadding=0 cellspacing=0>
+<br />
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?
 /* ------------------------------------------- */
@@ -76,11 +76,11 @@ print $siteheader;
 </tr></td>
 </table>
 
-<table width=90% align='center' cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
   <tr> 
     <td class="topleft" height=43></td>
     <td class="top" height=43> 
-	<table width=100% align='center' cellpadding=0 cellspacing=0>
+	<table width=100% align='center' cellpadding='0' cellspacing='0'>
     <tr>
     <td class="sitetitle" height=43>
     <? echo $title ?>
@@ -134,7 +134,7 @@ print $siteheader;
 
 <td class="left" valign=top>
 
-<table width=100% cellpadding=5 cellspacing=0 align=top>
+<table width=100% cellpadding=5 cellspacing='0' align=top>
 <td class=leftnav>
 <?
 
@@ -210,9 +210,9 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav2, $topnav2_extra);
 <td class="bottomright2">&nbsp;</td>
 </tr>
 </table>
-<br>
+<br />
 
-<table width=90% align='center' cellpadding=0 cellspacing=0>
+<table width=90% align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?
 /* ------------------------------------------- */
@@ -222,6 +222,6 @@ print $sitefooter
 ?>
 </tr></td>
 </table>
-<br>
+<br />
 
 	

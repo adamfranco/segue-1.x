@@ -143,7 +143,7 @@ if ($auser == $site_owner) {
 			if ($seca[type]=='section') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec\"'>";
 			print "$seca[title]";
 			if ($seca[type]=='section') print "</a>";
-	//		print "<br><pre>";print_r($secp);print "</pre>";
+	//		print "<br /><pre>";print_r($secp);print "</pre>";
 			print "</td>";
 			foreach($editors as $user) {
 				for ($i=0;$i<3;$i++) {
@@ -185,7 +185,7 @@ if ($auser == $site_owner) {
 					/*if ($sa[type]=='story')*/ print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec&page=$p\"'>";
 					print "$j. &nbsp; $sa[title]";
 					/*if ($sa[type]=='story')*/ print "</a>";
-	//				print "<br><pre>";print_r($sp);print "</pre>";
+	//				print "<br /><pre>";print_r($sp);print "</pre>";
 					print "</td>";					
 					foreach($editors as $user) {
 						print "<td class=td$color align='center'".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
@@ -205,7 +205,7 @@ if ($auser == $site_owner) {
 		print "<tr><td class=td$color colspan=4>No sections in this site.</td></tr>";
 	}
 
-	print "</table><BR>";
+	print "</table><br />";
 } else { 
 	$total_columns = 4;
 	print "<table cellspacing=1 width='100%'>";
@@ -270,7 +270,7 @@ if ($auser == $site_owner) {
 			if ($seca[type]=='section') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec\"'>";
 			print "$seca[title]";
 			if ($seca[type]=='section') print "</a>";
-	//		print "<br><pre>";print_r($secp);print "</pre>";
+	//		print "<br /><pre>";print_r($secp);print "</pre>";
 			print "</td>";
 //			foreach($editors as $user) {
 				for ($i=0;$i<3;$i++) {
@@ -312,7 +312,7 @@ if ($auser == $site_owner) {
 					/*if ($sa[type]=='story')*/ print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec&page=$p\"'>";
 					print "$j. &nbsp; $sa[title]";
 					/*if ($sa[type]=='story')*/ print "</a>";
-	//				print "<br><pre>";print_r($sp);print "</pre>";
+	//				print "<br /><pre>";print_r($sp);print "</pre>";
 					print "</td>";					
 //					foreach($editors as $user) {
 						print "<td class=td$color align='center'".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
@@ -331,7 +331,7 @@ if ($auser == $site_owner) {
 	} else {
 		print "<tr><td class=td$color colspan=4>No sections in this site.</td></tr>";
 	}
-	print "</table><BR>";
+	print "</table><br />";
 }
 ?>
 

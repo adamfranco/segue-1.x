@@ -2,7 +2,7 @@
 // changes the active user
 //include("dbwrapper.inc.php");
 $changeauser = strtolower($_REQUEST[changeauser]);
-//print "change_auser started with $changeauser...<BR>";
+//print "change_auser started with $changeauser...<br />";
 $debug = 0;
 if ($ltype == 'admin') {	// must be admin to do this:
 //	print "we are admin.";
@@ -11,7 +11,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 	$valid = 0;
 	foreach ($_auth_mods as $_auth) {
 		$func = "_valid_".$_auth;
-//			print "<BR>AUTH: trying ".$_auth ."..."; //debug
+//			print "<br />AUTH: trying ".$_auth ."..."; //debug
 		if ($x = $func($changeauser,"",1)) {
 			$valid = 1;
 			break;
@@ -30,7 +30,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 	}
 }
 
-//printpre("<p>$aid, $afname, $auser, $aemail, $atype<BR>");
+//printpre("<p>$aid, $afname, $auser, $aemail, $atype<br />");
 //exit();
 $getVars = "";
 foreach ($_GET as $key => $val) {

@@ -134,13 +134,13 @@ function changeOrder(order) {
 <table width='100%' class='bg'>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<div align='center' style='font-size: 14px;'><b><? echo $cfg[inst_name] ?> Segue</b></div><br>
+	<div align='center' style='font-size: 14px;'><b><? echo $cfg[inst_name] ?> Segue</b></div><br />
 	<div align='left' style='font-size: 10px;'>
 	Included here are all <b>class</b> sites and any other sites that requested to be included in this public listing of
-	<? echo $cfg[inst_name] ?> Segue. These are sorted by those that have been most recently updated.<br>
+	<? echo $cfg[inst_name] ?> Segue. These are sorted by those that have been most recently updated.<br />
 	<i>(Note: not all sites listed here are viewable to all users)</i>
 	</div>
-	<br>
+	<br />
 	<? print "Total active listed Segue sites: ".$totalNumSites ?>
 
 
@@ -309,7 +309,7 @@ if (db_num_rows($r)) {
 	print "<tr><td colspan=5>No sites found based on above criteria.</td></tr>";
 }
 ?>
-</table><BR>
+</table><br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <?

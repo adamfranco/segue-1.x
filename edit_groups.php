@@ -162,5 +162,5 @@ if ($numGroups) {
 	print "<tr><td colspan=2>No class groups.</td></tr>";
 }
 ?>
-</table><BR>
+</table><br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

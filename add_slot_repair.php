@@ -31,13 +31,13 @@ if ($_SESSION['ltype'] != 'admin') {
 	exit();
 }
 
-  print "Add Slot Repair Script<br>";
+  print "Add Slot Repair Script<br />";
   print "All slots whose uploadlimit = default set in config.inc.php should have their ";
-  print "slot_uploadlimit = 'NULL'<br><br>";
-  print "This scripts searches the slots table for all records where:<br>";
-  print "slot_uploadlimit = $userdirlimit<br>";
-  print "and updates these records so that slot_uploadlimit = 'NULL'<br><br>";
-  print "For more information, see: <a href=https://sourceforge.net/tracker/index.php?func=detail&aid=874014&group_id=82171&atid=565234 target=new_window>Segue bug tracker [ 874014 ] Media Library size issue</a><br><br>";
+  print "slot_uploadlimit = 'NULL'<br /><br />";
+  print "This scripts searches the slots table for all records where:<br />";
+  print "slot_uploadlimit = $userdirlimit<br />";
+  print "and updates these records so that slot_uploadlimit = 'NULL'<br /><br />";
+  print "For more information, see: <a href=https://sourceforge.net/tracker/index.php?func=detail&aid=874014&group_id=82171&atid=565234 target=new_window>Segue bug tracker [ 874014 ] Media Library size issue</a><br /><br />";
 
 
 if ($_REQUEST['Update']) {
@@ -122,7 +122,7 @@ print "<hr>";
 <th>owner</th>
 <th>type</th>
 <th>assoc site</th>
-<th colspan=2>uploadlimit<br>(Default = <? print $default_uploadlimit ?> Bytes)</th>
+<th colspan=2>uploadlimit<br />(Default = <? print $default_uploadlimit ?> Bytes)</th>
 </tr>
 <?
 $count = 0;	

@@ -37,8 +37,8 @@ if (is_resource($r)) {
 $allTablesExist = true;
 foreach ($neededTables as $table) {
 	if (!in_array($table,$existingTables)) {
-		print "\nMissing Table: $table<br>";
-		print "\n &nbsp; - Inserting Table: $table<br><br>";
+		print "\nMissing Table: $table<br />";
+		print "\n &nbsp; - Inserting Table: $table<br /><br />";
 		$allTablesExist = false;	
 	}
 }
@@ -323,7 +323,7 @@ if (!$allTablesExist) {
 	";
 	$queryArray = explode(";",$query);
 	foreach ($queryArray AS $query) {
-//		print "<br>\"$query\"";
+//		print "<br />\"$query\"";
 			db_query($query);
 			if (mysql_error()) {
 				print "\n<hr>";

@@ -258,7 +258,7 @@ if ($site) {
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
-	print "</div><br>";
+	print "</div><br />";
 }
 
 ?>
@@ -316,7 +316,7 @@ if ($site) {
 			//$numslots = count($allSlots);
 			print "Total slots found: ".$numslots;
 		} 
-		print "<table cellpadding=2 cellspacing=0>";
+		print "<table cellpadding=2 cellspacing='0'>";
 		print "<tr><td><b>Slot naming conventions:</b></td></tr>";
 		print "<tr><td><i>future course slots</i></td><td>course_code-dev (e.g. al201a-f05-dev)</td></tr>";		
 		print "<tr><td><i>student class project slots</i></td><td>These are best created from class rosters. Convention is course_code-student_username (e.g. al201a-f03-msmith).</td></tr>";
@@ -331,8 +331,8 @@ if ($site) {
 			<th>name</th>
 			<th>owner</th>
 			<th>type</th>
-			<th>associated<br>class site</th>
-			<th colspan=2>uploadlimit<br>(Default = <? print $default_uploadlimit ?> MB)</th>
+			<th>associated<br />class site</th>
+			<th colspan=2>uploadlimit<br />(Default = <? print $default_uploadlimit ?> MB)</th>
 			<th>in use?</th>
 			<th>options</th>
 			</tr>
@@ -386,7 +386,7 @@ if ($site) {
 </tr>
 </table>
 
-<BR>
+<br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doSlotForm($slot,$p='',$e=0) {

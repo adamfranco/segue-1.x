@@ -51,7 +51,7 @@ if ($action == "add" && $addstudent) {
 	$valid = 0;
 	foreach ($_auth_mods as $_auth) {
 		$func = "_valid_".$_auth;
-//		print "<BR>AUTH: trying ".$_auth ."..."; //debug
+//		print "<br />AUTH: trying ".$_auth ."..."; //debug
 		if ($x = $func($addstudent,"",1)) {
 			$valid = 1;
 			break;
@@ -253,9 +253,9 @@ print "<div align='right'>";
 print "Roster";
 print " | <a href='email.php?$sid&siteid=$siteid&site=$class_external_id&action=list&order=user_fname&scope=site'>Participation</a>";
 print " | <a href='viewlogs.php?$sid&site=$class_external_id'>Logs</a>";
-print "</div><br>";
+print "</div><br />";
 ?>
-<!-- <div align='right'>Students | Participants</div><br> -->
+<!-- <div align='right'>Students | Participants</div><br /> -->
 <table cellspacing=1 width='100%' id='maintable'>
 
 <tr>
@@ -307,15 +307,15 @@ if (count($usernames)) {
 <div align='center'><b>Class Roster</b></div>
 Below is a current list of all the students in your class. You have the option of creating a site
 for each of your students that is <i>associated</i> with your class site.  An associated site can be
-used for class projects that involve extensive web publication such as weblogs.<br><br>
+used for class projects that involve extensive web publication such as weblogs.<br /><br />
 <b>add</b> - option to add any <? echo $cfg[inst_name] ?> student, faculty, staff; any visitor and/or guest of 
-<? echo $cfg[inst_name] ?> Segue to this class.<br>
+<? echo $cfg[inst_name] ?> Segue to this class.<br />
 <b>remove</b> - option for all students who are no longer registered for this class or students
-added via the New Students UI above.<br>
-<b>add site</b> - option to create a "slot" (a location where a site can be created) for any student in this class.<br>
-<b>delete site</b> - option to delete a "slot" (only available <i>before</i> a site has been created in that location)<br>
-<b>view site</b> - option to view an associated site (only available <i>after</i> a slot has been created in that location)<br>
-<br><br>
+added via the New Students UI above.<br />
+<b>add site</b> - option to create a "slot" (a location where a site can be created) for any student in this class.<br />
+<b>delete site</b> - option to delete a "slot" (only available <i>before</i> a site has been created in that location)<br />
+<b>view site</b> - option to view an associated site (only available <i>after</i> a slot has been created in that location)<br />
+<br /><br />
 
 <table cellspacing=1 width='100%' id='maintable'>
 <tr>

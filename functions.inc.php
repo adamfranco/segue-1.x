@@ -14,8 +14,8 @@ function makedownloadbar($o) {
 	$filesize = convertfilesize($size);
 	$t = '';
 	$t .= "<div class=downloadbar style='margin-bottom: 10px'>";
-	if ($o->getField("title")) $t.="<b>".spchars($o->getField("title"))."</b><br>";
-	$t .= "<table width=70% cellpadding=0 cellspacing=0 style='margin: 0px; border: 0px;'><tr><td class=leftmargin align='left'><a href='$fileurl' target='new_window'><img src='downarrow.gif' border=0 width=15 height=15 align=absmiddle> $filename</a></td><td align='right'><b>$filesize</b></td></tr></table>";
+	if ($o->getField("title")) $t.="<b>".spchars($o->getField("title"))."</b><br />";
+	$t .= "<table width=70% cellpadding='0' cellspacing='0' style='margin: 0px; border: 0px;'><tr><td class=leftmargin align='left'><a href='$fileurl' target='new_window'><img src='downarrow.gif' border=0 width=15 height=15 align=absmiddle> $filename</a></td><td align='right'><b>$filesize</b></td></tr></table>";
 	if ($o->getField("shorttext")) $t .= "".stripslashes($o->getField("shorttext"));
 	$t.="</div>";
 	return $t;
@@ -25,7 +25,7 @@ function mkfilesize($filename) {
 	$j = 0;
 	$ext = array("B","KB","MB","GB","TB");
 //	$filename = ereg_replace(" ","\\ ",$filename);
-//	print "<br><br>$filename<br><br>";
+//	print "<br /><br />$filename<br /><br />";
 	$file_size = filesize($filename);
 	while ($file_size >= pow(1024,$j)) ++$j;
 	$file_size = round($file_size / pow(1024,$j-1) * 100) / 100 . $ext[$j-1];
@@ -96,7 +96,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	$extn = explode(".",$name);
 	$last = count($extn)-1;
 	$extn = strtolower($extn[$last]);
-//	print "$extn <br>";
+//	print "$extn <br />";
 	$image_extns = array(
 		"jpeg",
 		"jpg",
@@ -108,7 +108,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	if (in_array($extn, $image_extns)) $type = "image";
 	else $type = "file";
 	
-//	print "$userdir/$file[name]<br>";
+//	print "$userdir/$file[name]<br />";
 	if (!is_dir($userdir)) {
 		mkdir($userdir,0777); 
 		chmod($userdir,0775); 
@@ -131,19 +131,19 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	if ($allreadyuploaded) {
 		$r = copy($file[tmp_name],"$userdir/".$name);
 	} else {
-/* 		print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>"; */
+/* 		print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br />"; */
 		$r=move_uploaded_file($file['tmp_name'],$userdir."/".$name);
 	}
 	if (!$r) {
-		print "Upload file error!<br>";
+		print "Upload file error!<br />";
 		log_entry("media_error","File upload attempt by $_SESSION[auser] in site $site failed.",$site,$siteid,"site");
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
 		$query = "UPDATE media SET media_updated_tstamp=NOW(),FK_updatedby='".$_SESSION[aid]."',media_size='$size' WHERE media_id='$replace_id'";
-		/* print $query."<br>"; */
+		/* print $query."<br />"; */
 		db_query($query);
-		print mysql_error()."<br>";
+		print mysql_error()."<br />";
 		
 		$media_id = $replace_id;
 		
@@ -152,9 +152,9 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	} else {
 		$size = filesize($userdir."/".$name);
 		$query = "INSERT INTO media SET media_tag='$name',FK_site='$siteid',FK_createdby='".$_SESSION[aid]."',FK_updatedby='".$_SESSION[aid]."',media_type='$type',media_size='$size'";
-//		print $query."<br>";
+//		print $query."<br />";
 		db_query($query);
-//		print mysql_error()."<br>";
+//		print mysql_error()."<br />";
 		
 		$media_id = lastid();
 		log_entry("media_upload","$_SESSION[auser] uploaded file: $name, id: $media_id, to site $site",$site,$siteid,"site");
@@ -181,7 +181,7 @@ function copy_media($id,$newsitename) {
 		$file[name] = $file_name;
 		$file[tmp_name] = $old_file_path;
 //		print_r ($file);
-//		print "<br>";
+//		print "<br />";
 		$newid = copyuserfile($file,$newsitename,0,0,1);
 	}
 	return $newid;
@@ -207,12 +207,12 @@ function deleteuserfile($fileid) {
 	$siteObj =& new site($a[slot_name]);
 	$file_path = $uploaddir."/".$siteObj->getField("name")."/".$a[media_tag];
 //	$file_path = "../segue_userfiles/afranco/close2.gif";
-//	print "file = \"$file_path\" <br>";
+//	print "file = \"$file_path\" <br />";
 	if (file_exists($file_path)) {
 //		$exists = file_exists($file_path);
-//		print "fileexists = $exists $file_path<br> ";
+//		print "fileexists = $exists $file_path<br /> ";
 		$success = unlink($file_path);
-//		print "success = $success <br>";
+//		print "success = $success <br />";
 		if ($success) {
 			$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
 			db_query($query);
@@ -359,7 +359,7 @@ function makelink($i,$samepage=0,$e='',$newline=0,$bold=0) {
 
 function printc($string) {
 	global $content;
-//	print "printc called...<BR>";
+//	print "printc called...<br />";
 //	$content .= $string . "\n";
 	$content .= $string;
 }
@@ -774,7 +774,7 @@ function handlearchive($stories,$pa) {
 		printc("<option" . (($startyear == $i)?" selected":"") . ">$i\n");
 	}
 	printc("</select>");
-//	printc("<br>");
+//	printc("<br />");
 	printc(" to <select name='endday'>");
 	for ($i=1;$i<=31;$i++) {
 		printc("<option" . (($endday == $i)?" selected":"") . ">$i\n");
@@ -836,7 +836,7 @@ function handlearchive($stories,$pa) {
 	arsort($newstories,SORT_NUMERIC);
 // 	print_r($newstories); 
 	$newstories = array_keys($newstories);
-	printc("<b>Content ranging from $txtstart to $txtend.</b><br><BR>");
+	printc("<b>Content ranging from $txtstart to $txtend.</b><br /><br />");
 	return $newstories;
 }
 
@@ -1151,7 +1151,7 @@ function updateSiteLinksFromHash (& $site, & $nodeToStartOn) {
 	$oldSitename = $siteArray[0];
 	
 	
-// 	print "\n<br>Old Sitename=".$oldSitename;
+// 	print "\n<br />Old Sitename=".$oldSitename;
 // 	printpre($patterns);
 // 	printpre($replacements);
 

@@ -3,7 +3,7 @@
 // check view permissions
 if (!$thisSite->canview()) {
 	ob_start();
-	print "You may not view this site. This may be due to any of the following reasons:<BR>";
+	print "You may not view this site. This may be due to any of the following reasons:<br />";
 	print "\n<ul>";
 	if ($thisSite->site_does_not_exist) {
 		print "\n		<li>This site does not exist. ";
@@ -208,7 +208,7 @@ do {
 							
 							printc("</div>");
 							printc("</div>");
-							//printc("<hr size='1' noshade><br>");
+							//printc("<hr size='1' noshade><br />");
 						}
 						
 					}
@@ -228,7 +228,7 @@ if ($thisSite->isEditor()
 	&& $thisSite->hasPermissionDown("add || edit || delete")
 	&& !$_REQUEST[themepreview]) 
 {
-	$text .= "\n<br> \n\n<div align='right'>";
+	$text .= "\n<br /> \n\n<div align='right'>";
 	if (ereg('preview_as', $_REQUEST['action'])) {
 		$editAction = ereg_replace('preview_as', '&action=preview_edit_as', $_REQUEST['action']);
 	 } else {
@@ -246,5 +246,5 @@ if ($thisSite->isEditor()
 } else {
 	$text = "";
 }
-$text .= "\n<br>\n<div align='right'>\n<div style='font-size: 0px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif>\n</a>\n</div>";
+$text .= "\n<br />\n<div align='right'>\n<div style='font-size: 0px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif>\n</a>\n</div>";
 $sitefooter = $sitefooter . $text;

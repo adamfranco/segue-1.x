@@ -60,7 +60,7 @@ function btnOKClick() {
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
  <tr>
   <td><FIELDSET style="text-align: center"><LEGEND>Insert Date & Time&nbsp;</LEGEND>
-   <table border=0 cellspacing=0 cellpadding=5 style="margin: 5 5 5 5;">
+   <table border=0 cellspacing='0' cellpadding=5 style="margin: 5 5 5 5;">
     <tr>
      <td>Please Pick A Format: &nbsp;</td>
          <td><select name="date" size="1" style="width: 220px">

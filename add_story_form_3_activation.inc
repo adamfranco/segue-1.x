@@ -70,12 +70,12 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 /* 	 */
 /* 	printc("</tr></td></table>"); */
 
-//	printc("<br><div class=desc>To prevent the page from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
+//	printc("<br /><div class=desc>To prevent the page from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
 
 //	printc("<input type=radio name=active value=1 " . (($_SESSION[settings][active])?" checked":"") . "> Enabled | ");
-//	printc("<input type=radio name=active value=0 " . (($_SESSION[settings][active])?"":" checked") . "> Disabled <br>");
+//	printc("<input type=radio name=active value=0 " . (($_SESSION[settings][active])?"":" checked") . "> Disabled <br />");
 
-	printc("<br><br><div class=title style='font-size: 14px'>Category</div>");
+	printc("<br /><br /><div class=title style='font-size: 14px'>Category</div>");
 	printc("Category: <input type=text name=newcategory size=20 value='".$_SESSION[settings][newcategory]."'> <select name=category onChange='document.storyform.newcategory.value = document.storyform.category.value'>");
 	printc("<option value=''".(($_SESSION[storyObj]->getField("category")=='')?" selected":"").">none");
 	foreach ($_SESSION[settings][categories] as $c) {
@@ -83,7 +83,7 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 	}
 	printc("</select>");
 	
-printc("<br><br>");
+printc("<br /><br />");
 
 
 printc("</form>");
