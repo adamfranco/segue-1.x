@@ -150,7 +150,7 @@ class section extends segue {
 		if (!$this->fetchedup || $full) {
 /* 			print "<br>Fetching Up<br>"; */
 			$this->owningSiteObj = new site($this->owning_site);
-			$this->owningSiteObj->fetchFromDB();
+			$this->owningSiteObj->fetchFromDB(1);
 			$this->fetchedup = 1;
 		}
 	}
@@ -288,14 +288,34 @@ class section extends segue {
 		$this->id = mysql_insert_id();
 		
 		$this->fetchUp(1);
+
+		print "<pre style='background-color: #fcc'>";
+		print "Sections = ";
+		print_r($this->owningSiteObj->getField('sections'));
+		print "</pre>";
+		
 		$this->owningSiteObj->addSection($this->id);
+		
+		print "<pre style='background-color: #fcc'>";
+		print "Sections = ";
+		print_r($this->owningSiteObj->getField('sections'));
+		print "</pre>";
+		
 /* 		print "<br>remove origionl: $removeOrigional<br>"; */
 		if ($removeOrigional) $this->owningSiteObj->delSection($origid,0);
 /* 		print "<pre>this->owningsiteobject: "; print_r($this->owningSiteObj); print "</pre>"; */
 		
 		$this->owningSiteObj->updateDB();
-		$orderkey = array_keys($this->owningSiteObj->sections,$this->id);
-		$query = "UPDATE section SET section_order='$orderkey' WHERE section_id=".$this->id;
+		$orderkey = array_keys($this->owningSiteObj->getField('sections'),$this->id);
+		
+		print "<pre style='background-color: #fcc'>id = ".$this->id."<br>";
+		print "Sections = ";
+		print_r($this->owningSiteObj->getField('sections'));
+		print "<br>OrderKey = ";
+		print_r ($orderkey); 
+		print "</pre>";
+		
+		$query = "UPDATE section SET section_order='".$orderkey[0]."' WHERE section_id=".$this->id;
 		print "<BR>query = $query<BR>";
 		db_query($query);
 				
