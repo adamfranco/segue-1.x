@@ -438,7 +438,10 @@ FROM
 	class ON classgroup_id = FK_classgroup AND ".generateTermsFromCode($class)."
 ";
 	$r = db_query($query);
-	if (db_num_rows($r)) { $a = db_fetch_assoc($r); return $a[classgruop_name]; }
+	if (db_num_rows($r)) { 
+		$a = db_fetch_assoc($r); 
+		return $a[classgroup_name]; 
+	}
 	return 0;
 }
 
