@@ -1,0 +1,1 @@
+<? // this file contains an array with a list of themes$possible_themes = array( "bevelbox"=>"Bevel Box","minimal"=>"Minimal Colors","shadowbox"=>"Shadow Box","default"=>"Tabs"/* "white"=>"White", *//* "borders"=>"Alex's Borders", *//* "breadloaf"=>"BreadLoaf" */);?>

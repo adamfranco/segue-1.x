@@ -1,0 +1,63 @@
+
+<script lang="JavaScript">
+//var theme = document.addform.theme.value;
+
+function submitForm() {
+	document.addform.submit();	
+}
+
+</script>
+
+<? // add_site_form_6_footer.inc -- the form that people use to add/edit a site
+
+printc("<form action='$PHP_SELF?$sid&action=".(($settings[add])?"add_site":"edit_site")."' method=post name=addform>");
+
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
+	if ($settings[add]) printc("<input type=submit name=save value=' &nbsp; &nbsp; Finish &nbsp; &nbsp; '>\n"); 
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	if ($settings[edit]) printc("<input type=submit name=save value='Save Changes'>\n");
+//	if ($settings[add]) printc("<input type=submit name=save value='Finish Now'>\n"); 
+printc("</td></tr></table>");
+if ($settings[add]) printc("<div class=title>Add Site</div>");
+if ($settings[edit]) printc("<div class=title>Edit Site</div>");
+printc("<br>");
+
+// --- title ---
+printc("<div class=title>".(($settings[edit])?"7":"8").". Custom Footer".helplink("headerfooter")." &nbsp; - &nbsp; <i>Optional</i></div>");
+printc ("<div style='font-size: 10px; margin-left: 30px; margin-right: 30px;'>");
+printc("A custom footer can be an image or text. It will appear at the bottom of all pages in your site.  Some themes look better with footers than others.</div>");
+printc("<br>");
+printc("<br>");
+
+// --- form contents ---
+printc ("<input type=button name=update value='Update Footer' onClick=\"submitForm()\">");
+if ($settings[header]) printc("<input type=submit name=copyheader value='Copy From Header'>");
+printc("<br>");
+
+printc("<textarea name=footer cols=70 rows=8>");
+$temp = spchars($settings[footer]);
+printc("$temp");
+printc("</textarea>");
+printc("<br>");
+printc("<br>");
+
+if ($settings[header] != "") {
+	printc("<div class=title>Current Header:</div>");
+	printc("$settings[header]");
+	printc("<br>");
+	printc("<br>");
+}
+
+printc("<div class=title>Current Footer:</div>");
+printc("$settings[footer]");
+printc("<br>");
+printc("<br>");
+
+
+printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");
+
+printc("</form>");

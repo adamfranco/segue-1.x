@@ -1,0 +1,104 @@
+
+<script lang="JavaScript">
+//var theme = document.addform.theme.value;
+
+function submitForm() {
+	document.addform.submit();	
+}
+
+function selectTheme(row) {
+	document.addform.themesettings.value = "";
+	document.addform.submit();
+//	window.location= "#"+row;
+}
+
+function doPreviewWin(theme) {
+	if (theme == "<? print $settings[theme]; ?>") {
+		var themesettings = document.addform.themesettings.value;
+	} else {
+		var themesettings = "";
+	}
+	var preview = window.open("index.php?action=site&site=sample&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=500");
+	preview.focus();
+}
+
+function doTemplateWin() {
+	var template = document.addform.template.value;
+	var theme = "<? print $settings[theme]; ?>";
+	var themesettings = document.addform.themesettings.value;
+	if (template != '') {
+		var temp = window.open("index.php?action=site&site="+template+"&themesettings="+themesettings+"&theme="+theme,"template","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=500");
+	}
+	temp.focus();
+}
+
+function doThemeSettings() {
+	var f = document.addform;
+	var theme = "<? print $settings[theme]; ?>";
+	var themesettings = document.addform.themesettings.value;
+	var site = "<? print $settings[sitename]; ?>";
+	var settings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=400");
+}
+</script>
+
+
+<? // add_site_form_2_theme.inc -- the form that people use to add/edit a site
+
+printc("<form action='$PHP_SELF?$sid&action=".(($settings[add])?"add_site":"edit_site")."' method=post name=addform>");
+
+// --- buttons ---
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
+	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	if ($settings[edit]) printc("<input type=submit name=save value='Save Changes'>\n");
+printc("</td></tr></table>");
+if ($settings[add]) printc("<div class=title>Add Site</div>");
+if ($settings[edit]) printc("<div class=title>Edit Site</div>");
+printc("<br>");
+
+// --- title ---
+printc("<div class=title>4. Appearance: &nbsp;Select a Theme".helplink("theme","help")."</div>");
+
+
+// --- form contents ---
+printc("<table width=100% cellspacing=0px>");
+printc("<tr><td> </td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Click to Preview</td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Name</td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Select a theme to<br>edit its settings</td></tr>");
+
+$i=0;
+foreach ($possible_themes as $themename=>$longname) {
+	printc("<tr><td align=center><a name='row$i'>");
+	printc("<input type=radio name=theme value='$themename' ".(($settings[theme]==$themename)?" checked":"")." onClick=\"selectTheme('row$i')\"></td>");
+	printc("<td align=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0></a></td>");
+	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'>$longname</td>");
+	if ($settings[theme]==$themename)
+		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='doThemeSettings()'></td>");
+	else 
+		printc("<td align=center valign=top style='border-top: 1px solid #aaa;'> &nbsp; </td>");
+	printc("</tr>");
+	$i++;
+}
+
+printc("<input type=hidden name=themesettings value='".$settings[themesettings]."'>");
+
+printc("</table>");
+printc("<br>");
+printc("<br>");
+
+printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");
+
+// --- buttons ---
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
+	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	if ($settings[edit]) printc("<input type=submit name=save value='Save Changes'>\n");
+printc("</td></tr></table>");
+
+printc("</form>");

@@ -1,0 +1,115 @@
+<? // viewsite.inc.php	-- allows logged in people to view a site
+
+error("Beware, this script seems to have lots of problems. It will be rewritten soon. patience is appreciated.");
+
+$siteinfo = db_get_line("sites","name='$site'");
+$site_owner = $siteinfo[addedby];
+
+
+
+//check view permissions, etc on site
+siteviewpermissions($siteinfo);
+
+
+// if we're an admin, override all errors
+if ($ltype == 'admin') {
+	clearerror();
+}
+
+// if we produced an error, return (don't let them view the site)
+if ($error) return;
+
+if ($site) {
+//	$query = "select * from sites where id=$site";
+	$siteinfo = db_get_line("sites","name='$site'");
+	$sections = decode_array($siteinfo['sections']);
+	if (!$section && count($sections)) $section = $sections[0]; // get the first section of the site, if it exists
+}
+if ($section) {
+//	$query = "select * from sections where id=$category";
+	$sectioninfo = db_get_line("sections","id=$section");
+	$st = " > " . $sectioninfo['title'];
+	$pages = decode_array($sectioninfo['pages']);
+	if (!$page && count($pages)) $page = $pages[0];
+	// check category permissions
+}
+if ($page) {		// we're viewing a page
+//	$query = "select * from pages where id=$page";
+	$pageinfo = db_get_line("pages","id=$page");
+	$pt = " > " . $pageinfo['title'];
+	// check page permissions
+}
+$pagetitle = $siteinfo['title'] . $st . $pt;
+
+
+$envvars = "site=$site";
+if ($section) $envvars .= "&section=$section";
+if ($page) $envvars .= "&page=$page";
+
+// first build list of categories
+$sections = decode_array($siteinfo['sections']);
+foreach ($sections as $s) {
+	$a = db_get_line("sections","id=$s");
+	if (canview($a)) {
+//		print "$a[title] - ".canview($a)."<BR>";
+		if ($a[type] == 'section') $link = "$PHP_SELF?$sid&site=$site&section=$s&action=site";
+		if ($a[type] == 'url') { $link = $a[url]; $target="_blank";}
+		add_link(topnav,$a['title'],$link,'',$s,$target);
+	}
+}
+
+// next, if we have a section, build a list of leftnav items
+if ($section) {
+	$pages = decode_array(db_get_value("sections","pages","id=$section"));
+	foreach ($pages as $p) {
+		$a = db_get_line("pages","id=$p");
+		if (canview($a)) {
+			if ($a[type] == 'page')
+				add_link(leftnav,$a['title'],"$PHP_SELF?$sid&site=$site&section=$s&page=$p&action=site",'',$p);
+			if ($a[type] == 'url')
+				add_link(leftnav,$a['title'],$a['url'],'',$p,"_blank");
+			if ($a[type] == 'header')
+				add_link(leftnav,$a['title']);
+			if ($a[type] == 'divider')
+				add_link(leftnav);
+		}
+	}
+}
+
+if ($page) {
+	$stories = decode_array(db_get_value("pages","stories","id=$page"));
+	$showcreator = db_get_value("pages","showcreator","id=$page");
+	$showdate = db_get_value("pages","showdate","id=$page");
+	foreach ($stories as $s) {
+		$a = db_get_line("stories","id=$s");
+		if ($a[title]) printc("<div class=contenttitle>".spchars($a[title])."</div>");
+		$st = urldecode($a['shorttext']);
+		if ($a[texttype] == 'text') $st = htmlbr($st);
+		printc("<div class=content>");
+		printc (stripslashes($st));
+		if ($a[discuss] || $a[longertext]) {
+			printc("<div class=contentinfo align=right>");
+			$link = "fullstory.php?$sid&action=fullstory&site=$site&section=$section&page=$page&story=$s";
+			$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
+			$l = array();
+			if ($a[discuss]) $l[] = $link."discuss</a>";
+			if ($a[longertext]) $l[] = $link."full text</a>";
+			printc(implode(" | ",$l));
+			printc("</div>");
+		}
+		if ($showcreator || $showdate) {
+			printc("<div class=contentinfo align=right>");
+			$added = datetime2usdate($a[addedtimestamp]);
+			printc("added");
+			if ($showcreator) printc(" by $a[addedby]");
+			if ($showdate) printc(" on $added");
+			if ($a[editedby]) {
+				printc(", edited");
+				if ($showcreator) printc(" by $a[editedby]");
+				if ($showdate) printc(" on ".timestamp2usdate($a[editedtimestamp]));
+			}
+			printc("</div>");
+		}
+		printc("</div>");
+	}
+}
