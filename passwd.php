@@ -81,12 +81,12 @@ if ($_REQUEST[action] == "newpassword") {
 	$email = $_REQUEST['email'];
 	
 	$error = FALSE;
-	if (!$_REQUEST['uname']) {
-		$message = "<div align=center>You must enter a Name.<br><br></div>";
+	if (!$_REQUEST[action] == "newuser" && $_REQUEST['uname']) {
+		$message .= "<div align=center>You must enter a Name.<br><br></div>";
 		$error = TRUE;
 	}
 	if (!$_REQUEST['email'] || !ereg("@", $_REQUEST['email'])) {
-		 $message = "<div align=center>You must enter a valid email address.<br><br></div>";
+		 $message .= "<div align=center>You must enter a valid email address.<br><br></div>";
 		 $error = TRUE;
 	}
 	
@@ -344,7 +344,7 @@ if ($_REQUEST[action] == "change" || $change) {
 	print "  Your username will be your email address and a password will be emailed to you.<br><br>";
 	if ($cfg['auth_help_on'])
 		print "(".$cfg[auth_help].")<br><br>";
-	print "</td><tr><td> User Name: </td>";
+	print "</td><tr><td> Name: </td>";
 	print "<td><input type=text name='uname' size=30 value='".$_REQUEST['uname']."'></td>";
 	print "<tr><td>Email Address:</td>";
 	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'> </td>";
