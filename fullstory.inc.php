@@ -148,8 +148,13 @@ if ($storyObj->getField("discuss")) {
 	//get number of discuss/assess participants
 	$numparticipants = participants();
 	$storyid = $storyObj->getField('id');
+	$siteid = $siteObj->getField('id');
 	
-	printc("<div style='font-size: 10px'>(<a href='email.php?$sid&story=$storyid' onClick='doWindow(\"email\",700,500)' target='email'>".$numparticipants." participants</a>)</div></td>\n");
+	printc("<div style='font-size: 10px'>");
+	printc("<a href='email.php?$sid&story=$storyid&site=$siteid&action=list' onClick='doWindow(\"email\",700,500)' target='email'>List</a> | \n");
+	printc("<a href='email.php?$sid&story=$storyid&site=$siteid&action=email' onClick='doWindow(\"email\",700,500)' target='email'>Email</a> - \n");
+	printc($numparticipants." participants");
+	printc("</div></td>\n");
 	printc("<td align=right class=dheader2>\n");
 	
 	printc("<table>\n");

@@ -22,6 +22,7 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 // what's the action?
 $curraction = $_REQUEST['action'];
+$scope = $_REQUEST['scope'];
 
 
 /******************************************************************************
@@ -29,8 +30,12 @@ $curraction = $_REQUEST['action'];
  ******************************************************************************/
 		
 $storyid = $_REQUEST['story'];
-
-$where = "story_id = $storyid";	
+$siteid = $_REQUEST['site'];
+if ($scope == "site") {
+	$where = "site_id = $siteid";
+} else {
+	$where = "story_id = $storyid";	
+}
 
 
 /******************************************************************************
@@ -141,16 +146,50 @@ printerr();
 		print "No matching names found";
 		
 /******************************************************************************
- * print out 
+ * depending on action print out either:
+ * list of participants
+ * email UI
+ * sent email confirmation
  ******************************************************************************/
 
 	} else {
 		//$numusers = db_num_rows($r);
 		//print "Total participants found: ".$numparticipants;
-		if ($curraction != 'email' && $curraction != 'send') {
-			print "<a href=$PHP_SELF?$sid&story=$storyid&action=email>Email</a> | ".$numparticipants." participants<br>";
+		
+		/******************************************************************************
+		 * Navigation List | Email participants in discussion or site
+		 ******************************************************************************/
+		print "<form action=$PHP_SELF method=post name=emailform>";
+		print "<table><tr><td><div style='font-size: 12px'>";
+		if ($curraction == "list") {
+			print "<a href=$PHP_SELF?$sid&story=$storyid&site=$siteid&action=email&scope=$scope>Email</a> | List - ".$numparticipants." participants";
 		} else if ($curraction == 'email') {
-			print "<a href=$PHP_SELF?$sid&story=$storyid&action=>List</a> | ".$numparticipants." participants<br><hr>";
+			print "<a href=$PHP_SELF?$sid&story=$storyid&site=$siteid&action=list&scope=$scope>List</a> | Email - ".$numparticipants." participants";
+		} else if ($curraction == 'send') {
+			print "<a href=$PHP_SELF?$sid&story=$storyid&site=$siteid&action=email>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&story=$storyid&site=$siteid&action=list>List</a> - ";
+			print $numparticipants." participants";
+		}
+				
+		?>
+		in this
+		<select name=scope>
+		<option<?=($scope=='discussion')?" selected":""?>>discussion
+		<option<?=($scope=='site')?" selected":""?>>site
+		</select>
+		<input type=hidden name='action' value='<? echo $action ?>'>
+		<input type=hidden name='story' value='<? echo $storyid ?>'>
+		<input type=hidden name='site' value='<? echo $siteid ?>'>
+		<input type=submit name='update' value='Update'>
+		</form>
+		</div></td></tr></table>	
+		
+		<?
+		/******************************************************************************
+		 * if action is email, then compile to list and print out email UI
+		 ******************************************************************************/
+
+		if ($curraction == 'email') {
 			include("htmleditor/editor.inc.php");
 			$emaillist = array();
 			while ($a2 = db_fetch_assoc($r)) {
@@ -174,39 +213,44 @@ printerr();
 			
 			<form action="<? echo $PHP_SELF ?>" method=post name=emailform>
 			<? //addeditor ("body",60,20,$text); ?>
-			<table>
+			<table width=100%>
 			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
 			<tr><td align=right>From:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
-			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50></td><td align=right><input type=submit name='email' value='Send'></td></tr>
-			<tr><td></td><td><textarea name=body cols=50 rows=10>
-			<? echo $text ?>
+			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
+			<tr><td></td><td align=left><textarea name=body cols=60 rows=20 align=left>
+			<? echo //$text ?>
 			</textarea>
 			</td><td><td align=right></td></tr>
 			</table>
 			<input type=hidden name='action' value='send'>
+			<input type=hidden name='scope' value='<? echo $scope ?>'>
 			<input type=hidden name='story' value='<? echo $storyid ?>'>
+			<input type=hidden name='site' value='<? echo $siteid ?>'>
 			<input type=hidden name='to' value='<? echo $to ?>'>
 			<input type=hidden name='from' value='<? echo $from ?>'>
 			</form>
 			<?
 			$r = db_query($query);
 			exit();
+			
+		/******************************************************************************
+		 * if action is send then mail subject and body
+		 ******************************************************************************/
+
 		} else if ($curraction == 'send') {
-			print "<a href=$PHP_SELF?$sid&story=$storyid&action=email>Email</a> | ".$numparticipants." participants<br>";
 			print "<table>";
-			print "<tr><td>to:</td><td>".$to."</td></tr>";
+			print "<tr><td>to:</td><td>".$to."</td></tr><br><hr>";
 			print "<tr><td>from:</td><td>".$_SESSION['afname']."</td></tr>";
 			print "<tr><td>subject:</td><td>".$subject."</td></tr>";
 			print "<tr><td></td><td>".$body."</td></tr>";
 			print "</table>";
+			print "</div>";
 			mail($to,$subject,$body,"From: $from");
 			$r = db_query($query);
+			exit();
 		}
-
-	} 
-	
+	} 	
 	?>
-		
 	<table width='100%'>
 		<tr>
 		<th>full name</th>
