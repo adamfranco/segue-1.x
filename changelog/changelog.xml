@@ -17,6 +17,9 @@
 			well, config options have been added for customing date/time
 			formats.
 		</change>
+		<fix author='adam' ref='878641' reftype='bug'>
+			Removed some unused form fields.
+		</fix>
 	</version>
 	<version number="1.3.2" date="2004-10-07">
 		<fix author='adam'>
