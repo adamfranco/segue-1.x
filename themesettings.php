@@ -58,7 +58,9 @@ if ($submitted) {
 	printc("<input type=hidden name='site' value='$site'>"); 
 	printc("<input type=hidden name='theme' value='$theme'>"); 
 	printc($settings_form); 
-	printc("<div align=right><input type=submit value='Update' class=button><input type=button value='Close' class=button onclick=\"closeAll()\"></div>"); 
+	printc("<div align=right>");
+//	printc("<input type=submit value='Update' class=button>
+	printc("<input type=button value='Close' class=button onclick=\"closeAll()\"></div>"); 
 	 
 	printc("</form>"); 
 } 

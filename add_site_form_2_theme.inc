@@ -10,6 +10,7 @@ function submitForm() {
 function selectTheme(row) {
 	document.addform.themesettings.value = "";
 	if (row > 1) {
+		row = row - 1;
 		action = document.addform.action;
 		document.addform.action=action+"#row"+row;
 	}
@@ -32,7 +33,13 @@ function doPreviewWin(theme, from) {
 	if (from == "settings") {
 		doThemeSettings();	
 	}
-	var preview = window.open("index.php?action=site&site=sample&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=500");
+	var edit = <? print $settings[edit]; ?>;
+	var sitename = "<? print $settings[sitename]; ?>";
+	if (edit) {
+		var preview = window.open("index.php?action=site&site="+sitename+"&themesettings="+themesettings+"&theme="+theme+"&themepreview=1","preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
+	} else {
+		var preview = window.open("index.php?action=site&site=sample&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
+	}
 //	document.addform.previewhandle.value = preview;
 	preview.focus();
 }
@@ -42,7 +49,7 @@ function doTemplateWin() {
 	var theme = "<? print $settings[theme]; ?>";
 	var themesettings = document.addform.themesettings.value;
 	if (template != '') {
-		var temp = window.open("index.php?action=site&site="+template+"&themesettings="+themesettings+"&theme="+theme,"template","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=500");
+		var temp = window.open("index.php?action=site&site="+template+"&themesettings="+themesettings+"&theme="+theme,"template","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
 	}
 	temp.focus();
 }

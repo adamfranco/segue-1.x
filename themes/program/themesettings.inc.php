@@ -12,7 +12,7 @@ if ($themesettings[theme] == 'program') {
 
 ?>
 
-Choose the color scheme you wish to use: <select name='colorscheme'>
+Choose the color scheme you wish to use: <select name='colorscheme' onChange="document.settings.submit()">
 <?
 foreach ($schemes as $s) {
 	print "<option value='$s'".(($colorscheme==$s)?" selected":"").">$s\n";

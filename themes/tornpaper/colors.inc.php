@@ -31,13 +31,13 @@ $_bordercolor = array(
 );
 
 $_bgcolor = array(
-	"white"=>array(
-			"bgshadow"=>		"white",
-			"bg"=>				"FFFFFF"					
-	),
 	"gray"=>array(
 			"bgshadow"=>		"gray",
 			"bg"=>				"CCCCCC"					
+	),
+	"white"=>array(
+			"bgshadow"=>		"white",
+			"bg"=>				"FFFFFF"					
 	),
 	"yellow"=>array(
 			"bgshadow"=>		"yellow",

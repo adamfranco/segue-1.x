@@ -24,21 +24,37 @@ body {
 /* ------------------------------------------ */
 
 
-.nav a {
+.navlink a {
 	color: #<? echo $c['nav']; ?>;
 	text-decoration: none;
 }
+
+.navlink {
+	color: #<? echo $c['nav']; ?>;
+	text-decoration: none;
+}
+
+.navlink2 a {
+	color: #<? echo $c['a']; ?>;
+	text-decoration: none;
+}
+
+.navlink2 {
+	color: #<? echo $c['a']; ?>;
+	text-decoration: none;
+}
+
 
 .nav a:hover {
 	color: #<? echo $c['nav']; ?>;
 	text-decoration: underline;
 }
 
-.nav { 
+.nav {
 	color: #<? echo $c['navtext']; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
-	font-size: <? echo $navsize; ?>;
+	text-decoration: none;
 }
+
 
 .sitetitle {
 	color: #<? echo $c['navtext']; ?>;

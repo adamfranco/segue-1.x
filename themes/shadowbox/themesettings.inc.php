@@ -20,7 +20,7 @@ $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
 
 
-if ($themesettings[theme] == 'beveledge') {
+if ($themesettings[theme] == 'shadowbox') {
 	$bgcolor = $themesettings[bgcolor];
 	$colorscheme = $themesettings[colorscheme];
 	$borderstyle = $themesettings[borderstyle];
@@ -32,14 +32,13 @@ if ($themesettings[theme] == 'beveledge') {
 	$sectionnav_size = $themesettings[sectionnav_size];
 	$nav_size = $themesettings[nav_size];
 } else {
-	$themesettings[theme] = 'beveledge';
+	$themesettings[theme] = 'shadowbox';
 	$themesettings[bgcolor] = $bgcolor;
 	$themesettings[colorscheme] = $colorscheme;
 	$themesettings[borderstyle] = $borderstyle;
 	$themesettings[bordercolor] = $bordercolor;
 	$themesettings[textcolor] = $textcolor;
 	$themesettings[linkcolor] = $linkcolor;
-
 	$themesettings[nav_arrange] = $nav_arrange;
 	$themesettings[nav_width] = $nav_width;
 	$themesettings[sectionnav_size] = $sectionnav_size;
@@ -47,14 +46,13 @@ if ($themesettings[theme] == 'beveledge') {
 }
 
 ?>
-
-<b>Bevel Edge</b><br>
+<b>Shadow Box</b><br>
 This theme creates the illusion of a page that is cast out of a flat surface.  
 This illusion is created by surrounding boxes each of which is larger and less opaque.
 <hr noshade size=1>
 <table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align=left>
 Background Color:</td><td> 
-<select name='bgcolor'>
+<select name='bgcolor' onChange="document.settings.submit()">
 <?
 foreach ($bgcolors as $s) {
 	print "<option value='$s'".(($bgcolor==$s)?" selected":"").">$s\n";
@@ -64,7 +62,7 @@ foreach ($bgcolors as $s) {
 </td></tr>
 <tr><td align=left>
 Foreground Color:</td><td> 
-<select name='colorscheme'>
+<select name='colorscheme' onChange="document.settings.submit()">
 <?
 foreach ($colorschemes as $s) {
 	print "<option value='$s'".(($colorscheme==$s)?" selected":"").">$s\n";
@@ -74,7 +72,7 @@ foreach ($colorschemes as $s) {
 </td></tr>
 <tr><td align=left>
 Border Style:</td><td>
-<select name='borderstyle'>
+<select name='borderstyle' onChange="document.settings.submit()">
 <?
 foreach ($borderstyles as $s) {
 	print "<option value='$s'".(($borderstyle==$s)?" selected":"").">$s\n";
@@ -84,7 +82,7 @@ foreach ($borderstyles as $s) {
 </td></tr>
 <tr><td align=left>
 Border Color:</td><td>
-<select name='bordercolor'>
+<select name='bordercolor' onChange="document.settings.submit()">
 <?
 foreach ($bordercolors as $s) {
 	print "<option value='$s'".(($bordercolor==$s)?" selected":"").">$s\n";
@@ -94,7 +92,7 @@ foreach ($bordercolors as $s) {
 </td></tr>
 <tr><td align=left>
 Text Color:</td><td>
-<select name='textcolor'>
+<select name='textcolor' onChange="document.settings.submit()">
 <?
 foreach ($textcolors as $s) {
 	print "<option value='$s'".(($textcolor==$s)?" selected":"").">$s\n";
@@ -104,7 +102,7 @@ foreach ($textcolors as $s) {
 </td></tr>
 <tr><td align=left>
 Link Color:</td><td>
-<select name='linkcolor'>
+<select name='linkcolor' onChange="document.settings.submit()">
 <?
 foreach ($linkcolors as $s) {
 	print "<option value='$s'".(($linkcolor==$s)?" selected":"").">$s\n";
@@ -115,6 +113,7 @@ foreach ($linkcolors as $s) {
 Note: Make sure that your text stands out from background and that your text and link colors are contrasting.
 <hr noshade size=1>
 <?
+
 //All settings for Navigation are included here
 include("$themesdir/common/settings.inc.php");
 ?>

@@ -50,17 +50,17 @@ $textcolor = $_textcolor[$usetextcolor];
 if (!$uselinkcolor) $uselinkcolor = 'red';
 $linkcolor = $_linkcolor[$uselinkcolor];
 
-if (!$usenav) $usenav = 'Side Sections';
+if (!$usenav) $usenav = 'Top Sections';
 $nav_arrange = $_nav_arrange[$usenav];
 
 if (!$usenavwidth) $usenavwidth = '150 pixels';
-$nav_width = $_nav_width[$usenavwidth];
+$navwidth = $_nav_width[$usenavwidth];
 
 if (!$usesectionnavsize) $usesectionnavsize = '12 pixels';
-$sectionnav_size = $_sectionnav_size[$usesectionnavsize];
+$sectionnavsize = $_sectionnav_size[$usesectionnavsize];
 
 if (!$usenavsize) $usenavsize = '12 pixels';
-$nav_size = $_nav_size[$usenavsize];
+$navsize = $_nav_size[$usenavsize];
 
 
 

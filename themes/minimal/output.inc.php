@@ -34,10 +34,10 @@ if ($themesettings[theme] == 'minimal') {   // indeed these settings are for thi
 
 	
 }
-if (!$usebg) $usebg = 'olive';
+if (!$usebg) $usebg = 'turquoise';
 $bg = $_bgcolor[$usebg];
 
-if (!$usecolor) $usecolor = 'olive';
+if (!$usecolor) $usecolor = 'turquoise';
 $c = $_theme_colors[$usecolor];
 
 if (!$useborder) $useborder = 'dashed';

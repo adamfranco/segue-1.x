@@ -153,7 +153,7 @@ if ($page) {
 }
 
 // add the key to the footer of the page
-if (is_editor($auser,$site)) {
+if (is_editor($auser,$site) && !$themepreview) {
 	/*$u = "$_SERVER[SCRIPT_URI]?action=viewsite&site=$site";*/
 	$u = "$PHP_SELF?$sid&action=viewsite&site=$site";
 	if ($section) $u .= "&section=$section";

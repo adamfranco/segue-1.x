@@ -58,10 +58,10 @@ if (!$usenavwidth) $usenavwidth = '150 pixels';
 $navwidth = $_nav_width[$usenavwidth];
 
 if (!$usesectionnavsize) $usesectionnavsize = '12 pixels';
-$sectionnav_size = $_sectionnav_size[$usesectionnavsize];
+$sectionnavsize = $_sectionnav_size[$usesectionnavsize];
 
 if (!$usenavsize) $usenavsize = '12 pixels';
-$nav_size = $_nav_size[$usenavsize];
+$navsize = $_nav_size[$usenavsize];
 
 
 /* ------------------- END ---------------------------	*/

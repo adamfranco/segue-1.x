@@ -70,7 +70,6 @@ include("themes/$theme/css.inc.php");
 /* ------------------------------------------- */
 print $siteheader; 
 include("themes/common/status.inc.php"); 
-print $sitecrumbs; 
 ?>
 </tr></td>
 </table>
@@ -96,7 +95,7 @@ print $sitecrumbs;
   <tr> 
     <td class="topleft2">&nbsp;</td>
     <td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;
-  
+  	<? print $sitecrumbs; ?>
     
     <div class=topnav align=center>
 	<div class='nav'>
@@ -149,7 +148,7 @@ if ($nav_arrange==1) {
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav($page,$leftnav, $leftnav_extra);
+if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra,'navlink2','navlink2 a');
 ?>
 </div>
 <?
