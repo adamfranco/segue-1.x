@@ -123,6 +123,9 @@ if ($error) {
 					print "<br /><a href='$PHP_SELF?$sid&action=add_site&sitename=".$thisSite->name."'>Create Site</a>";
 				}
 				print "</li>";
+			} else if (!$thisPage) {
+				print "<li>Requested page object doesn't exist.</li>";
+				
 			} else {
 				if (!$_SESSION[auser]) {
 					print "<li>You are not logged in.</li>";

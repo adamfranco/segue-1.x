@@ -237,9 +237,7 @@ function CarpSetCache($cachefile,$cachefunction=1) {
 	} else $cache=2;
 	
 	if ($cache == 2)
-		print "Cache == 2, updating";
-	else
-		print "Cache == $cache, doing something.";
+		print "Updating Cache";
 	return $cache;
 }
 
