@@ -10,7 +10,7 @@
 //add_link(leftnav,'','',"$variables");
 //print $variables."<br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
 //print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
-//print "site = $site<br>section = $section<br>page=$page<br>";
+print "editors=$editors<br>";
 //------------------------------------
 
 // first check if we are allowed to edit this site at all
@@ -113,6 +113,7 @@ if ($settings) {
 if (!$settings && !$error) {
 	// create the settings array with default values. $settings must be passed along with each link.
 	// The array will be saved on clicking a save button.
+	$editors = db_get_value("sites","editors","name='$site'");
 	session_register("settings");
 	$settings = array(
 		"site_owner" => $site_owner,
@@ -131,7 +132,7 @@ if (!$settings && !$error) {
 		"deactivateday" => "00",
 		"deactivatedate" => 0,
 		"active"  => 1,
-		"editors" => "",
+		"editors" => $editors,
 		"permissions" => "",
 		"ediscussion" => 1,
 		"type" => "section",
@@ -340,11 +341,11 @@ if ($settings[step] == 3) {
 
 
 // ---  variables for debugging ---
-//foreach ($settings as $n => $v) {
-//	$variables .= "$n = $v <br>";	
-//}
+foreach ($settings as $n => $v) {
+	$variables .= "$n = $v <br>";	
+}
 //add_link(leftnav,'','',"$variables");
-//print $variables;
+print $variables;
 //------------------------------------
 
 // End of New Code

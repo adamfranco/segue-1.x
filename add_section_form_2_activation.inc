@@ -11,7 +11,7 @@ printc("<input type=hidden name=action value='$action'>");
 //printc("<input type=hidden name=mode value=$mode>");
 printc("<input type=hidden name=typeswitch value=0>");
 
-if ($settings[add]) printc("<div class=title>Add Section to site \"".db_get_value("sites","title","name='$settings[site]'")."\"</div>");
+if ($settings[add]) printc("<div class=title>Add ".(($type == 'section')?"Section":"Link")." to site \"".db_get_value("sites","title","name='$settings[site]'")."\"</div>");
 else  printc("<div class=title>Edit Item \"".db_get_value("sections","title","id=$settings[section]")."\" in Site \"".db_get_value("sites","title","name='$settings[site]'")."\"</div>");
 
 //----Cancel/Save/Next/Previous Buttons -----
@@ -67,7 +67,7 @@ if ($settings[type]=='url' || $settings[type]=='section') {
 	
 	printc("</tr></td></table>");
 
-	printc("<br><div class=desc>To prevent the site from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
+	printc("<br><div class=desc>To prevent this ".(($type == 'section')?"section":"link")." from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
 
 	printc("<input type=radio name=active value=1 " . (($settings[active])?" checked":"") . "> Enabled | ");
 	printc("<input type=radio name=active value=0 " . (($settings[active])?"":" checked") . "> Disabled <br>");

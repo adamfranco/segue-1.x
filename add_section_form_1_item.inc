@@ -11,7 +11,7 @@ printc("<input type=hidden name=action value='$action'>");
 //printc("<input type=hidden name=mode value=$mode>");
 printc("<input type=hidden name=typeswitch value=0>");
 
-if ($settings[add]) printc("<div class=title>Add Section to site \"".db_get_value("sites","title","name='$settings[site]'")."\"</div>");
+if ($settings[add]) printc("<div class=title>Add ".(($type == 'section')?"Section":"Link")." to site \"".db_get_value("sites","title","name='$settings[site]'")."\"</div>");
 else  printc("<div class=title>Edit Item \"".db_get_value("sections","title","id=$settings[section]")."\" in Site \"".db_get_value("sites","title","name='$settings[site]'")."\"</div>");
 	
 //----Cancel/Save/Next/Previous Buttons -----
@@ -34,7 +34,7 @@ else printc("<br><br>");
 if ($settings[add] || $settings[type] == 'section') {
 	printc("<div class=desc><b>");
 	printc("<input type=radio name=type ".(($settings[add])?"onClick='typeChange()'":"")." value='section'".(($settings[type]=='section')?" checked":"").">");
-	printc(" Content Page</b>".(($settings[type]=='page')?" - allows you to create pages with content, such as class syllabi or a resume. (default)":"")."</div>");
+	printc(" Content Section</b>".(($settings[type]=='section')?" - allows you to create a section in which links and pages with content can be created. (default)":"")."</div>");
 }
 
 if ($settings[add] || $settings[type] == 'url') {
@@ -49,7 +49,7 @@ if ($settings[type]=='url') {
 }
 if ($settings[type]=='section') {
 	printc("<div class=title>Content Section</div>");
-	printc("<div class=desc>Enter a title for your page below.</div>");
+	printc("<div class=desc>Enter a title for your section below.</div>");
 }
 
 printc("<div class=leftmargin>");
