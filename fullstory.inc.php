@@ -120,8 +120,15 @@ printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr
 
 		
 // output discussions?
-if ($storyObj->getField("discuss")) {			
-	printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion</td>");
+if ($storyObj->getField("discuss")) {	
+	$showposts = $storyObj->getField("discussdisplay");
+	$showallauthors = $storyObj->getField("discussauthor");		
+	
+	if ($showposts == 1) {
+		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion</td>");
+	} else {
+		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment</td>");	
+	}
 	printc("<td align=right class=dheader2>");
 	$f = $_SESSION['flat_discussion'];
 	if (!$f) {
@@ -137,11 +144,35 @@ if ($storyObj->getField("discuss")) {
 	} else {
 		printc("threaded");
 	}
-	printc("</th></tr></table>");
+	printc("</th></tr>");
+	printc("</table>");
+	
+	//printc("showposts=$showposts<br>");
+	//printc("showallauthors=$showallauthors<br><br>");
+	
+	if ($showposts == 2 && $showallauthors == 1) {
+		printc("Posts to this assessment are currently viewable only be the site owner or system administrators.  Shown here are only your posts.");
+		if ($_SESSION[auser]==$site_owner) {
+			printc("<br><div style='font-size: 9px'> To make posts to this assessment available for discussion by all participants, edit the display options for this content block and select Show Posts.</div>");
+		}
+	} else if ($showposts == 1 && $showallauthors == 2) {
+		printc("Author of posts to this discussion or assessment are known only to the site owner and system administrators.  Other participants will not see your name associated with your posts.");
+		if ($_SESSION[auser]==$site_owner) {
+			printc("<br><div style='font-size: 9px'> To make authors known to all participants, edit the display options for this content block and select Show Authors.</div>");
+		}
+	} else if ($showposts == 2 && $showallauthors == 2) {
+		printc("Posts to this assessment are currently viewable only be the site owner or system administrators.  Shown here are only your posts.");
+		if ($_SESSION[auser]==$site_owner) {
+			printc("<br><div style='font-size: 9px'> To make posts and their authors viewable by all participants, edit the display options for this content block and select both Show Authors and Show Posts.</div>");
+		}
+	}
+
+	
 	printc("</th>");
 	printc("</tr>");
 	
 	
+
 	$ds = & new discussion(&$storyObj);
 	if ($f) $ds->flat(); // must be called before _fetchchildren();
 	$ds->_fetchchildren();
@@ -152,8 +183,9 @@ if ($storyObj->getField("discuss")) {
 	$ds->opt("useoptforchildren",true);
 	$ds->getinfo = $getinfo;
 	
+			
 	// outputAll is a function in objects/discussion.inc.php object
-	$ds->outputAll($storyObj->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true);
+	$ds->outputAll($storyObj->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true,$showposts,$showallauthors);
 	if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
 }
 		

@@ -5,7 +5,7 @@ class discussion {
 	var $storyObj;
 	var $detail;
 //	var $author = array("id"=>0,"uname"=>"","fname"=>"");
-	var $authorid=0,$authoruname,$authorfname;
+	var $authorid=0,$authoruname,$authorfname,$authoremail;
 	
 	var $tstamp,$content,$subject,$order;
 	
@@ -39,7 +39,10 @@ class discussion {
 	function discussion($story,$a=NULL,$parent=0) {
 		if (is_array($a)) $this->_parseDBline($a);
 		if (is_numeric($a)) $this->id = $a;
-		if (is_object($story)) { $this->storyObj = &$story; $this->storyid = $story->id; }
+		if (is_object($story)) { 
+			$this->storyObj = &$story; 
+			$this->storyid = $story->id;
+		}
 		if (is_numeric($story)) $this->storyid = $story;
 		if ($parent) $this->parentid = $parent;
 	}
@@ -94,8 +97,8 @@ class discussion {
 		$str = '';
 		$str .= "$count $posts, last post on ";
 		$str .= timestamp2usdate($lastPostData['timestamp']);
-		$str .= ' by ';
-		$str .= $lastPostData['fullname'];
+		//$str .= ' by ';
+		//$str .= $lastPostData['fullname'];
 		return $str;
 	}
 	
@@ -171,7 +174,7 @@ class discussion {
 	function fetchchildren() { $this->_fetchchildren(); }
 	
 	function _parseDBline($a) {
-		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname");
+		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname","user_email"=>"authoremail");
 		foreach ($_f as $f=>$v) {
 			if ($a[$f]) $this->$v = $a[$f];
 		}
@@ -190,7 +193,7 @@ class discussion {
 		
 		$query = "
 	SELECT
-		discussion_tstamp,discussion_content,discussion_subject,user_uname,user_fname,FK_story,FK_author,FK_parent
+		discussion_tstamp,discussion_content,discussion_subject,user_uname,user_fname,FK_story,FK_author,FK_parent,user_email
 	FROM
 		discussion
 		INNER JOIN
@@ -214,7 +217,7 @@ class discussion {
 		
 		$query = "
 	SELECT
-		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,FK_story,discussion_order,user_uname,user_fname
+		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,FK_story,discussion_order,user_uname,user_fname,user_email
 	FROM
 		discussion
 		LEFT JOIN
@@ -291,7 +294,7 @@ class discussion {
  ******************************************************************************/
 
 	
-	function outputAll($cr=false,$o=false,$top=false) {
+	function outputAll($cr=false,$o=false,$top=false,$showposts=1,$showallauthors=1) {
 		global $sid,$content;
 		// debug
 //		print "outputAll($canreply,$owner,$copt)<BR>";
@@ -310,18 +313,18 @@ class discussion {
 					$this->_outputform('newpost');
 				} else {
 					$newpostbar='';
-					$newpostbar.="<tr><td align=right>";
+					$newpostbar.="<tr><td align=right>";					
 					$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>new post</a>";
 					$newpostbar.="</td></tr>";
 					printc ($newpostbar);
 				}
 			}
 		}
-				
-		
-		if ($this->id) $this->_output($cr,$o);
-		$this->_outputChildren($cr,$o,(($top)?$this->opt:NULL));
-		if ($this->numchildren) printc ($newpostbar);
+			if ($this->id) $this->_output($cr,$o);
+			
+			$this->_outputChildren($cr,$o,(($top)?$this->opt:NULL));
+			
+			if ($this->numchildren && $showposts == 1) printc ($newpostbar);
 	}
 	
 /******************************************************************************
@@ -392,6 +395,9 @@ class discussion {
 				}
 				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
 				$d->insert();
+				if ($mailnotice == 0) {
+					//$this->sendemail($d->subject);
+				}
 			}
 			unset($_REQUEST['discuss'],$_REQUEST['commit']);
 		}
@@ -454,62 +460,92 @@ class discussion {
  ******************************************************************************/
 	
 	function _output($cr,$o) {
-		global $sid,$error;
+		global $sid,$error,$showallauthors,$showposts;
 		
-		// check to see if we have any info to commit
-		$this->_commithttpdata();
-		
-		if ($_REQUEST['discuss'] == 'edit' && $_REQUEST['id'] == $this->id) {
-			$this->_outputform('edit');
-			return true;
-		}
-		
-		if ($_REQUEST['discuss'] == 'del' && $_REQUEST['id'] == $this->id) {
-			$this->_del();
-			return true;
-		}
-		
-		$script = $_SERVER['SCRIPT_NAME'];
-		
-		// output the html and stuff
-		if (!$this->id) return false;
-		printc ("<tr><td class=dheader3>");
-		$s = "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
-//		$s = $this->subject;
-
-		$a = "";
-		if ($this->opt("showauthor")) $a .= "by <span class=subject>".$this->authorfname."</span>";
-		if ($this->opt("showauthor") && $this->opt("showtstamp")) $a .= " on ";
-		if ($this->opt("showtstamp")) $a .= timestamp2usdate($this->tstamp);
-		
-		$b = array();
-		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>";
-		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'> | del</a>";
-		if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'> | edit</a>";
-		if ($a != "" || count($b)) {
-			$c = '';
-			if (count($b)) $c .= implode(" ",$b);
-			/******************************************************************************
-			 * Actual discussion posting content
-			 ******************************************************************************/
-			printc ("<table width=100% cellspacing=0px>");
-				printc ("<tr><td align=left><span class=subject>$s</span><br>$a</td><td align=right valign=bottom>$c</td></tr>");
-			printc("</table>");
-		} else
-			printc ($s);
-		
-		printc ("</td></tr>");
-		
-		// now output the content
-		if ($this->opt("showcontent")) {
-			printc ("<tr><td class=dtext>");
-			printc (htmlbr($this->content));
+		if ($showposts == 1 || $o == 1 || $_SESSION[auser] == $this->authoruname) {
+			// check to see if we have any info to commit
+			$this->_commithttpdata();
+			
+			if ($_REQUEST['discuss'] == 'edit' && $_REQUEST['id'] == $this->id) {
+				$this->_outputform('edit');
+				return true;
+			}
+			
+			if ($_REQUEST['discuss'] == 'del' && $_REQUEST['id'] == $this->id) {
+				$this->_del();
+				return true;
+			}
+			
+			$script = $_SERVER['SCRIPT_NAME'];
+			
+			// output the html and stuff
+			if (!$this->id) return false;
+			printc ("<tr><td class=dheader3>");
+			$s = "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
+	//		$s = $this->subject;
+	
+			$a = "";
+			if ($showallauthors == 1 || $o || $_SESSION[auser] == $this->authoruname) {
+				if ($this->opt("showauthor")) $a .= "by <span class=subject>".$this->authorfname."</span>";
+				if ($this->opt("showauthor") && $this->opt("showtstamp")) $a .= " on ";
+			} else {
+				$a .= "posted on ";
+			}
+			if ($this->opt("showtstamp")) $a .= timestamp2usdate($this->tstamp);
+			
+			$b = array();
+			if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>";
+			if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'> | del</a>";
+			if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
+				$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'> | edit</a>";
+			if ($a != "" || count($b)) {
+				$c = '';
+				if (count($b)) $c .= implode(" ",$b);
+				/******************************************************************************
+				 * Actual discussion posting content
+				 ******************************************************************************/
+				printc ("<table width=100% cellspacing=0px>");
+					printc ("<tr><td align=left><span class=subject>$s</span><br>$a</td><td align=right valign=bottom>$c</td></tr>");
+				printc("</table>");
+			} else
+				printc ($s);
+			
 			printc ("</td></tr>");
+			
+			// now output the content
+			if ($this->opt("showcontent")) {
+				printc ("<tr><td class=dtext>");
+				printc (htmlbr($this->content));
+				printc ("</td></tr>");
+			}
+			// done
+			
+			// now check if we're replying to this post
+			if ($_REQUEST['discuss'] == 'reply' && $_REQUEST['replyto'] == $this->id) $this->_outputform('reply');
 		}
-		// done
-		
-		// now check if we're replying to this post
-		if ($_REQUEST['discuss'] == 'reply' && $_REQUEST['replyto'] == $this->id) $this->_outputform('reply');
 	}
+/******************************************************************************
+ * Emails users information about discussion
+ ******************************************************************************/
+
+	function sendemail($subject="") {
+		global $_full_uri;
+		
+		// send an email to the user with info about discussion!!
+		$subject = "Segue Discussion";
+		$to = $d->authoruname." <".$this->email.">";
+		$from = "segue@".$_SERVER['SERVER_NAME'];
+		//$body = " -- ".(($u)?"YOUR PASSWORD HAS BEEN RESET":"A USER ACCOUNT HAS BEEN CREATED FOR YOU")." --\n\nIn order to log into Segue, click the link below (or enter the URL into your browser) and enter the username and randomly generated password given:\n\n";
+		//$body .= "$_full_uri/index.php\n\n";
+		$body .= $subject." has posted to one of your discussions.  See:<br>";
+		$body .= "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>link</a>";
+		
+		print $body;
+		// send it!
+		mail($to,$subject,$body,"From: $from");
+	}
+		
 }
+
+
+

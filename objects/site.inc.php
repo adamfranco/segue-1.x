@@ -451,6 +451,8 @@ SELECT
 	story_updated_tstamp AS editedtimestamp, 
 	story_created_tstamp AS addedtimestamp,
 	story_discussable AS discuss, 
+	story_discussdisplay AS discussdisplay, 
+	story_discussauthor AS discussauthor, 
 	story_category AS category, 
 	story_text_type AS texttype, 
 	story_text_short AS shorttext,

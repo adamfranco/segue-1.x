@@ -1,9 +1,14 @@
 <? /* $Id$ */
 
 class story extends segue {
+/* 	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp", */
+/* 							"editedby","editedtimestamp","shorttext","longertext", */
+/* 							"activatedate","deactivatedate","discuss", */
+/* 							"locked","category","discussions","texttype","type","url","active"); */
+
 	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp",
 							"editedby","editedtimestamp","shorttext","longertext",
-							"activatedate","deactivatedate","discuss",
+							"activatedate","deactivatedate","discuss","discussdisplay","discussauthor",
 							"locked","category","discussions","texttype","type","url","active");
 	
 	// fields listed in $_datafields are stored in the database.
@@ -115,6 +120,16 @@ class story extends segue {
 		"discuss" => array(
 			"story",
 			array("story_discussable"),
+			"story_id"
+		),
+		"discussdisplay" => array(
+			"story",
+			array("story_discussdisplay"),
+			"story_id"
+		),
+		"discussauthor" => array(
+			"story",
+			array("story_discussauthor"),
 			"story_id"
 		),
 		"category" => array(
@@ -306,6 +321,8 @@ class story extends segue {
 					story_updated_tstamp AS editedtimestamp, 
 					story_created_tstamp AS addedtimestamp,
 					story_discussable AS discuss, 
+					story_discussdisplay AS discussdisplay, 
+					story_discussauthor AS discussauthor, 
 					story_category AS category, 
 					story_text_type AS texttype, 
 					story_text_short AS shorttext,
@@ -585,7 +602,11 @@ SET
 		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
 //		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
 //		if (($all && $this->data[url]) || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
+
 		if ($all || $this->changed[discuss]) $a[] = $this->_datafields[discuss][1][0]."='".(($d[discuss])?1:0)."'";
+		if ($all || $this->changed[discussdisplay]) $a[] = $this->_datafields[discussdisplay][1][0]."='".($d[discussdisplay])."'";
+		if ($all || $this->changed[discussauthor]) $a[] = $this->_datafields[discussauthor][1][0]."='".($d[discussauthor])."'";
+		
 		if ($all || $this->changed[texttype]) $a[] = $this->_datafields[texttype][1][0]."='$d[texttype]'";
 		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='$d[category]'";
 		if ($all || $this->changed[shorttext]) $a[] = $this->_datafields[shorttext][1][0]."='".urlencode($d[shorttext])."'";

@@ -33,6 +33,8 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	if ($_REQUEST[url]) $_SESSION[storyObj]->setField("url",$_REQUEST[url]);
 	if ($_REQUEST[texttype]) $_SESSION[storyObj]->setField("texttype",$_REQUEST[texttype]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discuss",$_REQUEST[discuss]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discussdisplay",$_REQUEST[discussdisplay]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discussauthor",$_REQUEST[discussauthor]);
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("category",$_REQUEST[category]);
 	if ($_REQUEST[newcategory]) {
 		$_SESSION[storyObj]->setField("category",$_REQUEST[newcategory]);
@@ -225,7 +227,7 @@ if (true) {
 	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
 	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href='#' onClick=\"submitFormLink(4)\">";
-	$leftlinks .= "Discussion";
+	$leftlinks .= "Discuss/Assess";
 	if ($_SESSION[settings][step] != 4) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
