@@ -469,7 +469,10 @@ ORDER BY
 		
 		// insert down
 		if ($down && $this->fetcheddown && $this->stories) {
-			foreach ($this->stories as $i=>$o) $o->insertDB(1,$this->owning_site,$this->owning_section,$this->id,1,$keepaddedby);
+			foreach ($this->stories as $i=>$o) {
+				$o->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
+				$o->insertDB(1,$this->owning_site,$this->owning_section,$this->id,1,$keepaddedby);
+			}
 		}
 		return true;
 	}
@@ -480,8 +483,11 @@ ORDER BY
 		
 		if (!isset($this->owningSiteObj)) {
 			$this->owningSiteObj = new site($this->owning_site);
-			$this->owningSiteObj->fetchDown();
+			$this->owningSiteObj->fetchDown(1);
 		}
+/* 		print "<pre>OwningSite: ".$this->owning_site."\nOwning_section: ".$this->owning_section."\nOwningSiteObj for page".$this->id.":\n"; */
+/* 		print_r($this->owningSiteObj); */
+/* 		print "</pre>"; */
 		if (!isset($this->owningSectionObj)) {
 			$this->owningSectionObj = &$this->owningSiteObj->sections[$this->owning_section];
 		}

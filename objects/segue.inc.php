@@ -368,29 +368,26 @@ FROM
 		$parentClass = get_class($newParent);
 /* 		print $this->id."$thisClass - $parentClass<br>"; */
 		if (!($_a[$parentClass]-1 == $_a[$thisClass])) return 0;
-/* 		print " Before ".$this->fetcheddown."<br>"; */
-
-/* 		print "<pre>this: "; print_r($this); print " newparent: "; print "</pre>";		 */
 		$this->fetchDown(1);
-/* 		print " After <br>"; */
-/* 		print "title: ".$this->data[title]."<br>";		 */
-/* 		print "title: ".$this->getField("title")."<br>"; */
-/* 		print "<pre>this: "; print_r($this); print " newparent: "; print_r($newParent); print "</pre>"; */
-/* 		return 0; */
+
+/* 		print "<br><br>Copying $thisClass ".$this->getField("title")." <br>"; */
 
 		if ($thisClass == 'section') {
 			$owning_site = $newParent->name;
+			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 			$this->insertDB(1,$owning_site,$removeOrigional,$keepaddedby);
 		}
 		if ($thisClass == 'page') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->id;
+			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 			$this->insertDB(1,$owning_site,$owning_section,$removeOrigional,$keepaddedby);
 		}
 		if ($thisClass == 'story') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->owning_section;
 			$owning_page = $newParent->id;
+			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 /* 			print "insertDB: 1,$owning_site,$owning_section,$owning_page,$keepaddedby<br>"; */
 			$this->insertDB(1,$owning_site,$owning_section,$owning_page,$removeOrigional,$keepaddedby);
 		}

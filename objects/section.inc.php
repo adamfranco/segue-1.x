@@ -400,7 +400,10 @@ ORDER BY
 		
 		// insert down
 		if ($down && $this->fetcheddown && $this->pages) {
-			foreach ($this->pages as $i=>$o) $o->insertDB(1,$this->owning_site,$this->id,1,$keepaddedby);
+			foreach ($this->pages as $i=>$o) {
+				$o->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
+				$o->insertDB(1,$this->owning_site,$this->id,1,$keepaddedby);
+			}
 		}
 		return true;
 	}
@@ -419,12 +422,16 @@ ORDER BY
 /* 		print "owning_site=".$this->owning_site."\nOwningSiteObj: "; */
 /* 		print_r ($this->owningSiteObj); */
 /* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
+/* 		print "<br>Sections = <pre>"; */
+/* 		print_r($this->owningSiteObj->getField("sections")); */
+/* 		print "</pre>"; */
 		
 //		if ($this->id && ($all || $this->changed[sections])) { //I belive we may always need to fix the order.
 		if ($this->id) {
 			$orderkeys = array_keys($this->owningSiteObj->getField("sections"),$this->id);
 			$a[] = "section_order=".$orderkeys[0];
 		} else {
+/* 			print "<br>No id, inserting at end of other sections. Count=".count($this->owningSiteObj->getField("sections")); */
 			$a[] = "section_order=".count($this->owningSiteObj->getField("sections"));
 		}
 		

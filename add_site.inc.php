@@ -183,12 +183,12 @@ if ($_REQUEST[save]) {
 		$comingFrom = $_SESSION[settings][comingFrom];
 		$add = $_SESSION[settings][add];
 
-/* 		if ($add) { */
-/* 			header("Location: index.php?$sid&action=viewsite&site=$sitename"); */
-/* 		} else { */
-/* 			if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$sitename"); */
-/* 			else header("Location: index.php?$sid"); */
-/* 		} */
+		if ($add) {
+			header("Location: index.php?$sid&action=viewsite&site=$sitename");
+		} else {
+			if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$sitename");
+			else header("Location: index.php?$sid");
+		}
 		
 	} else {
 		printc ("<br>There was an error");

@@ -267,15 +267,10 @@ ORDER BY
 
 
 	function applyTemplate ($template) {
-		print "<br>################  Line 1<br>";
 		$templateObj = new site($template);
-		print "<br>################  Line 2<br>";
 		$templateObj->fetchDown(1);	
-		print "<br>################  Line 3<br>";
-		print "<pre>templateObj: "; print_r($templateObj); print "</pre>";
 		foreach ($templateObj->sections as $i=>$o) 
 			$o->copyObj($this);
-		print "<br>################  Line 4<br>";
 	}
 	
 	function setSiteName($name, $copySite=0) {
@@ -396,7 +391,10 @@ ORDER BY
 		
 		// insert down (insert sections)
 		if ($down && $this->fetcheddown && $this->sections) {
-			foreach ($this->sections as $i=>$o) $o->insertDB(1,$this->name,$copysite);
+			foreach ($this->sections as $i=>$o) {
+				$o->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
+				$o->insertDB(1,$this->name,$copysite);
+			}
 		}
 		return 1;
 	}
