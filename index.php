@@ -8,6 +8,8 @@ include("objects/objects.inc.php");
 ob_start();		// start the output buffer so we can use headers if needed
 session_start();// start the session manager :) -- important, as we just learned
 
+header("Content-type: text/html; charset=utf-8");
+
 if (ereg("^login",getenv("QUERY_STRING"))) {
 	if (session_id()) {
 		session_unset();
