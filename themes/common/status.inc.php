@@ -9,12 +9,13 @@ if ($_loggedin) {	//we're already logged in
 		print "<a href='$PHP_SELF?$sid'>home</a>";
 		if ($ltype=='admin') {
 			print "<input type=hidden name=action value='change_auser'>";
-			print " | <a href='viewlogs.php?$sid' target='logs' onClick='doWindow(\"logs\",600,600)'>logs</a>";
-			print " | <a href='viewsites.php?$sid' target='sites' onClick='doWindow(\"sites\",600,600)'>sites</a>";
+		}
+			print " | <a href='viewsites.php?$sid&site=$site' target='sites' onClick='doWindow(\"sites\",600,600)'>logs</a>";
+		if ($ltype=='admin') {
 			print " | <a href='username_lookup.php' onClick='doWindow(\"lookup\",300,300)' target='lookup'>users</a>";
 			print " | change active user: <input type='text' name='changeauser' size=10 class='textfield small'> <input type='submit' class='button small' value='GO'>";
-			
-		}
+		}	
+		
 	} else print $afname;
 } else {// print out the login thingy
 	//print "Login";
