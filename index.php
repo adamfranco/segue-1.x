@@ -210,7 +210,7 @@ if (!ini_get("register_globals")) {
 }
 
 // debug output -- handy :)
-print "<pre>";
+//print "<pre>";
 /* print "request:\n"; */
 /* print_r($_REQUEST); */
 /* print "\n\n"; */
@@ -234,45 +234,9 @@ print "<pre>";
  	print "thisSite:\n"; 
  	print_r($thisSite); 
  } */
-
-$neededTables = array (
-	"class",
-	"classgroup",
-	"discussion",
-	"log",
-	"media",
-	"page",
-	"permission",
-	"section",
-	"site",
-	"site_editors",
-	"slot",
-	"story",
-	"ugroup",
-	"ugroup_user",
-	"user"
-);
-
-$query = "SHOW TABLES";
-$r = db_query($query);
-$existingTables = array();
-while($a = db_fetch_assoc($r)) {
-	foreach($a as $k => $v) {
-		$existingTables[] = $v;
-	}
-}
-
-print_r($tables);
-
-$allTablesExist = true;
-foreach ($neededTables as $table) {
-	if (!in_array($table,$existingTables)) {
-		print "<br>Missing Table: $table";
-		$allTablesExist = false;	
-	}
-}
  
-print "</pre>";
+//print "</pre>";
+
 
 // debug output -- handy :)
 // print "<pre>"; 
