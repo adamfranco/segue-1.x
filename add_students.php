@@ -8,7 +8,7 @@ session_start();
 include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-
+//printpre($_REQUEST);
 
 if (isset($_REQUEST[name])) {
 	//printpre($name);
@@ -32,7 +32,7 @@ if ($_REQUEST[n]) {
 	//include("config.inc.php");
 	//include("functions.inc.php");
 	$usernames=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
-	$participants=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
+	//$participants=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
 }
 
 // sort alphabetically
@@ -45,6 +45,19 @@ if (count($participants)) {
 	reset($participants);
 }
 
+if ($action == "addsite" && $addclassid && $adduname) {
+
+	$slotname = $addclassid."-".$adduname;
+//	printpre($slotname);
+	$obj = &new slot($slotname);
+	$obj->owner = strtolower($adduname);
+	$obj->assocSite = strtolower($addclassid);
+	$obj->type = 'other';
+	$obj->uploadlimit = 'NULL';
+	
+	$obj->insertDB();
+	//db_query($query);
+}
 
 
 if ($action == "add" && $addstudent) {
@@ -107,6 +120,17 @@ function addStudent(na) {
 	}
 }
 
+function addStudentSite(id, name) {
+	if (confirm("Are you sure you want to create a site associated with " + id + " for " + name + "?")) {
+	f = document.addsiteform;
+	f.action.value = 'addsite';
+	f.addclassid.value = id;
+	f.adduname.value = name;
+	f.submit();
+	}
+}
+
+
 function delStudent(id, name) {
 	if (confirm("Are you sure you want to remove " + name + "?")) {
 		f = document.delform;
@@ -151,6 +175,7 @@ input {
 </style>
 <form action="<? echo $PHP_SELF ?>" method=get name='lookup'>
 <input type=hidden name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>'>
+<input type=hidden name='participants' value='<?=$_REQUEST[name]?>'>
 <!-- <input type=hidden name='ugroup_id' value='<? $ugroup_id ?>'> -->
 
 <?
@@ -162,7 +187,7 @@ printerr2();
 <tr>
 	<th>Use</th>
 	<th>Full Name</th>
-	<th>Username</th>
+	<th></th>
 </tr>
 <tr>
 	<td align=center>
@@ -176,7 +201,7 @@ printerr2();
 	<td>
 		Name: <input type=text name='n' size=20 value='<?echo $_REQUEST[n]?>'> 
 	</td>
-	<td>
+	<td align=center>
 		<input type=submit value='find'>
 	</td>
 </tr>
@@ -230,6 +255,7 @@ $r = db_query($query);
 <tr>
 	<th> </th>
 	<th>Name</th>
+	<th></th>
 </tr>
 <?
 
@@ -249,6 +275,43 @@ while ($a = db_fetch_assoc($r)) {
 		print "<td>";
 		print $a[user_fname]." (".$a[user_uname].")";
 		if ($a[user_type] == "prof") print " - ".$a[user_type]."";
+		print "</td>";
+		print "<td align=center>";
+		if ($_SESSION[ltype]=='admin' && $a[user_type] != "prof") {
+			$slotname = $class_external_id."-".$a[user_uname];
+			$query = "
+			SELECT 
+				slot.slot_name AS name,
+				user.user_uname AS owner,
+				slot.slot_type AS type,
+				assocsite.slot_name AS assocsite_name,
+				slot.FK_site as inuse,
+				slot.slot_uploadlimit AS uploadlimit
+			FROM 
+				slot
+					LEFT JOIN
+				user
+					ON
+						slot.FK_owner = user_id
+					LEFT JOIN
+						slot AS assocsite
+					ON
+						slot.FK_assocsite = assocsite.slot_id
+			WHERE
+				slot.slot_name = '$slotname'
+			";
+			$r = db_query($query);
+			$a = db_fetch_assoc($r);
+			if (!db_num_rows($r)) {
+				print "<input type=button name='classsite' value='add site' onClick=\"addStudentSite('".$class_external_id."','".$a[user_uname]."')\">";
+			} else {
+				if ($a['inuse']) {
+					print "in use";
+				} else {
+					print "not in use";
+				}
+			}
+		}
 		print "</td>";
 	print "</tr>";
 }
@@ -273,6 +336,43 @@ foreach (array_keys($participants) as $key) {
 			print $participants[$key][fname]." (".$participants[$key][uname].")";
 			if ($participants[$key][type] == "prof") print " - ".$participants[$key][type]."";
 			print "</td>";
+			print "<td align=center>";
+			if ($_SESSION[ltype]=='admin' && $a[user_type] != "prof") {
+				$slotname = $class_external_id."-".$a[user_uname];
+				$query = "
+				SELECT 
+					slot.slot_name AS name,
+					user.user_uname AS owner,
+					slot.slot_type AS type,
+					assocsite.slot_name AS assocsite_name,
+					slot.FK_site as inuse,
+					slot.slot_uploadlimit AS uploadlimit
+				FROM 
+					slot
+						LEFT JOIN
+					user
+						ON
+							slot.FK_owner = user_id
+						LEFT JOIN
+							slot AS assocsite
+						ON
+							slot.FK_assocsite = assocsite.slot_id
+				WHERE
+					slot.slot_name = '$slotname'
+				";
+				$r = db_query($query);
+				$a = db_fetch_assoc($r);
+				if (!db_num_rows($r)) {
+					print "<input type=button name='classsite' value='add site' onClick=\"addStudentSite('".$class_external_id."','".$a[user_uname]."')\">";
+				} else {
+					if ($a['inuse']) {
+						print "in use";
+					} else {
+						print "not in use";
+					}
+				}
+			}
+			print "</td>";
 		print "</tr>";
 	}
 
@@ -282,13 +382,20 @@ foreach (array_keys($participants) as $key) {
 ?>
 </table>
 
+<form name='addsiteform'>
+<input type=hidden name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>'>
+<input type=hidden name='addclassid'>
+<input type=hidden name='adduname'>
+<input type=hidden name="action">
+</form>
+
 <form name='addform'>
 <input type=hidden name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>'>
 <!-- <input type=hidden name='ugroup_id' value='<? $ugroup_id ?>'> -->
-
 <input type=hidden name='addstudent'>
 <input type=hidden name="action">
 </form>
+
 
 <form name='delform'>
 <input type=hidden name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>'>

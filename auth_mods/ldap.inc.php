@@ -75,7 +75,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		$x[email] = $results[0][strtolower($cfg[ldap_email_attribute])][0];
 
 		// are they prof?
-		printpre($results[0]);
+		//printpre($results[0]);
 		
 		if (is_array($results[0][strtolower($cfg[ldap_group_attribute])])) {
 			$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
@@ -91,7 +91,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 			$fname = $vars[1] . " " . $vars[0];
 			$x[fullname] = $fname;
 		}
-		printpre($x);
+		//printpre($x);
 	// 	exit;
 		// now check if they're in the database, add if necessary, and get id
 		$x = _auth_check_db($x,1);	
