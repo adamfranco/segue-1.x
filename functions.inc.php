@@ -897,6 +897,65 @@ function sortClasses ( $classes, $direction=SORT_DESC) {
 }
 
 /**
+ * Convert all the links in $sitename that point to other parts of this segue site, or
+ * to this site's media, to placeholder tags for storage. This allows those
+ * tags to still be valid if the segue server url changes.
+ * 
+ * @param string $sitename The site search for links.
+ * @return void
+ * @access public
+ * @date 9/15/04
+ */
+function convertAllInteralLinksToTags ($sitename) {
+	global $cfg;
+	
+	if (!$sitename)
+		printError("convertInteralLinksToTags: no sitename passed!");
+	
+	$site =& new site ($sitename);
+	$site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
+	
+	// Start with the site level text
+	$site->setField("header", 
+		convertInteralLinksToTags($sitename, $site->getField('header')));
+			
+	$site->setField("footer", 
+		convertInteralLinksToTags($sitename, $site->getField('footer')));
+	
+	// Do the sections
+	foreach (array_keys($site->sections) as $sectionId) {
+		$section =& $site->sections[$sectionId];
+		
+		$section->setField("url", 
+			convertInteralLinksToTags($sitename, 	$section->getField('url')));
+		
+		// Do the Pages
+		foreach (array_keys($section->pages) as $pageId) {
+			$page =& $section->pages[$pageId];
+			
+			$page->setField("url", 
+				convertInteralLinksToTags($sitename, $page->getField('url')));
+		
+			// Do the Stories
+			foreach (array_keys($page->stories) as $storyId) {
+				$story =& $page->stories[$storyId];
+				
+				$story->setField("url", 
+					convertInteralLinksToTags($sitename, $story->getField('url')));
+				
+				$story->setField("shorttext", 
+					convertInteralLinksToTags($sitename, $story->getField('shorttext')));
+				
+				$story->setField("longertext", 
+					convertInteralLinksToTags($sitename, $story->getField('longertext')));
+			}
+		}
+	}
+	
+	$site->updatedb(1,1);
+}
+
+/**
  * Convert links in $text that point to other parts of this segue site, or
  * to this site's media, to placeholder tags for storage. This allows those
  * tags to still be valid if the segue server url changes.

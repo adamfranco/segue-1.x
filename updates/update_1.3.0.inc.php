@@ -27,7 +27,9 @@ class Update130
      * @return string Description of the update
 	 */
 	function getDescription() {
-		return "This update modifies Segue to allow the use of RSS Feeds as content-types.  As well it adds visitor and guest usertypes to the user table, adds a discussion label to story table, and changes the column-type of the class_semester column in the class table to allow for user-specified semesters.";
+		return "This update modifies Segue to allow the use of RSS Feeds as content-types.  As well it adds visitor and guest usertypes to the user table, adds a discussion label to story table, and changes the column-type of the class_semester column in the class table to allow for user-specified semesters.
+
+<br /><br />This update will also convert all links internal to a site and all links to media files in the site to links containing placeholder tags that will be parsed out on display. This conversion may take a long time if you have many sites.";
 	}
 	
     /**
@@ -204,6 +206,17 @@ class Update130
 							NOT NULL";
 			$r = db_query($query);
 		}
+		
+		// Go through all the sites and make sure that all of their parts have
+		// the media links updated
+		
+		$allSlots = slot::getAllSlots();
+		print "\n<br>Starting Link->Tag conversion.";
+		foreach($allSlots as $id => $sitename) {
+			print "\n<br>Converting links to tags in site '".$sitename."'...";
+			convertAllInteralLinksToTags($sitename);
+		}
+		print "\n<br>Link->Tag conversion done.";
 		
 	}
 }
