@@ -118,7 +118,7 @@ class section extends segue {
 			$parentObj->delSection($this->id);
 			$parentObj->updateDB();
 		} else {
-			$query = "delete from sections where id=".$this->id;
+			$query = "delete from section where id=".$this->id;
 			db_query($query);
 			
 			// remove pages
@@ -210,16 +210,41 @@ class section extends segue {
 	function updateDB($down=0) {
 		if (count($this->changed)) {
 			$a = $this->createSQLArray();
-			$a[] = "editedby='$_SESSION[auser]'";
-			$a[] = "editedtimestamp = NOW()";
-			$query = "update sections set ".implode(",",$a)." where id=".$this->id;
-/* 			print $query."<p>"; */
+			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
+//			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
+			$query = "update section set ".implode(",",$a)." where section_id=".$this->id;
+			print "<pre>Section->UpdateDB: $query<br>";
 			db_query($query);
+			print mysql_error()."<br>";
+			print_r($this->data['pages']);
+			print "</pre>";
+			
+			// the hard step: update the fields in the JOIN tables
+			// now update all the page ids in the children, if the latter have changed
+			if ($this->changed[pages]) {
+				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent
+				// we do this, because we might have removed a certain section from the array of sections of a site object
+				$query = "UPDATE page SET FK_section=0 WHERE FK_section=".$this->id;
+				db_query($query);
+				
+				// now, update all pages
+				foreach ($this->data['pages'] as $k => $v) {
+					$query = "UPDATE page SET FK_section=".$this->id.", page_order=$k WHERE page_id=".$v;
+					db_query($query);
+				}
+				
+			}			
 		}
 		
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
 		// update permissions
 		$this->updatePermissionsDB();
-		
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+
 		// add log entry
 /* 		log_entry("edit_section",$this->owning_site,$this->id,"","$_SESSION[auser] edited section id ".$this->id." in site ".$this->owning_site); */
 		
@@ -242,15 +267,15 @@ class section extends segue {
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
-			$a[] = "addedby='$_SESSION[auser]'";
-			$a[] = "addedtimestamp = NOW()";
+			$a[] = $this->_datafields[addedby][1][0]."=".$_SESSION[aid];
+			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
 		} else {
-			$a[] = "addedby='".$this->getField("addedby")."'";
-			$a[] = "addedtimestamp='".$this->getField("addedtimestamp")."'";
+			$a[] = $this->_datafields[addedby][1][0]."=".$this->getField('addeby');
+			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
 
-		$query = "insert into sections set ".implode(",",$a);
-/* 		print $query; //debug */
+		$query = "INSERT INTO section SET ".implode(",",$a);
+		print "<BR>query = $query<BR>";
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
@@ -260,9 +285,13 @@ class section extends segue {
 /* 		print "<br>remove origionl: $removeOrigional<br>"; */
 		if ($removeOrigional) $this->owningSiteObj->delSection($origid,0);
 /* 		print "<pre>this->owningsiteobject: "; print_r($this->owningSiteObj); print "</pre>"; */
-
-		$this->owningSiteObj->updateDB();
 		
+		$this->owningSiteObj->updateDB();
+		$orderkey = array_keys($this->owningSiteObj->sections,$this->id);
+		$query = "UPDATE section SET section_order='$orderkey' WHERE section_id=".$this->id;
+		print "<BR>query = $query<BR>";
+		db_query($query);
+				
 		// add new permissions entry.. force update
 		$this->updatePermissionsDB(1);
 		
@@ -280,15 +309,15 @@ class section extends segue {
 		$d = $this->data;
 		$a = array();
 		
-		if ($all || $this->changed[title]) $a[] = "title='".addslashes($d[title])."'";
-		if ($all) $a[] = "site_id='".$this->owning_site."'";
-		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
-		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
-		if ($all || $this->changed[active]) $a[] = "active=".(($d[active])?1:0);
-		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
-		if ($all || $this->changed[pages]) $a[] = "pages='".encode_array($this->getField("pages"))."'";
-		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
-		if ($all || $this->changed[locked]) $a[] = "locked=".(($d[locked])?1:0);
+		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
+//		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".addslashes($d[owning_site])."'";
+		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
+		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
+//		if ($all || $this->changed[pages]) $a[] = "pages='".encode_array($this->getField("pages"))."'";
+		if ($all || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
+		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
 		
 		return $a;
 	}

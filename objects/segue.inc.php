@@ -277,15 +277,21 @@ FROM
 				//print_r($valarray);
 			}
 			
-			if (count($valarray) == 1)
+			// only object_arrays should really be returning arrays to the data array.
+			if (count($valarray) == 1 && !in_array($field,$this->_object_arrays))
 				$this->data[$field] = $valarray[0];
 			else
 				$this->data[$field] = $valarray;
 			$this->fetched[$field] = 1;
+			
+/* 			print "Valarray: "; */
+/* 			print_r($valarray); */
+/* 			print "\nInArray: \n$field";  */
+/* 			print_r($_object_arrays); */
+/* 			print ((in_array($field,$_object_arrays))?"TRUE":"FALSE"); */
+			print "</pre>----------end------------$field<br>";
 		}
-		
-		//print_r($valarray);
-		print "</pre>----------end------------$field<br>";
+
 		return $this->data[$field];
 	}
 	
