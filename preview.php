@@ -30,7 +30,7 @@ $siteObj->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,
 $site_owner = $siteObj->owner;
 
 if ($site_owner != $_SESSION[auser]) {
-	error("You are not an editor for this site. You may not view any permissions.");
+	error("You are not the owner of this site, you can not use this function.");
 } else {
 	$editors = $siteObj->getEditors();
 	
@@ -77,20 +77,27 @@ if ($site_owner != $_SESSION[auser]) {
 <?
 	$color = 0;
 	foreach ($editors as $e) {
-		print "<tr>";
-		print "<td class=td$color>";
+		print "\n<tr>";
+		print "\n\t<td class=td$color>";
+				
+		print "\n\tPreview &nbsp; ";
 		
-		if (ereg('viewsite',$previousLocation))
-			$previewAction = "preview_edit_as";
-		else
-			$previewAction = "preview_as";
+		$startingUrl = "index.php?$sid".$previousLocation;
+		$actions = array (	"preview_as" => "View Mode",
+							"preview_edit_as" => "Edit Mode");
+		$i=0;
+		foreach ($actions as $previewAction => $name) {
+			$url = ereg_replace("&action=[^&]*", "&action=".$previewAction."&previewuser=$e", $startingUrl);
+			
+			if ($i > 0)
+				print " &nbsp; | &nbsp; ";
+			print "\n\t<a href='#' onClick=\"sendWindow('sitepreview',800,600,'".$url."')\">";
+			print $name;
+			print "</a>";
+			$i++;
+		}
 		
-		$url = "index.php?$sid".$previousLocation;
-		$url = ereg_replace("&action=[^&]*", "&action=".$previewAction."&previewuser=$e", $url);
-		
-		print "<a href='#' onClick=\"sendWindow('sitepreview',800,600,'".$url."')\">";
-		
-		print "Preview As: &nbsp; &nbsp; &nbsp; &nbsp; ";
+		print "\n\t &nbsp;  As: &nbsp; &nbsp;";
 
 		if ($e == "everyone")
 			print "Everyone (everyone)";
@@ -99,10 +106,9 @@ if ($site_owner != $_SESSION[auser]) {
 		else
 			print ldapfname($e)." ($e)";
 		
-		print "</a>";
-		print "</td>";
+		print "\n\t</td>";
 		
-		print "</tr>";
+		print "\n</tr>";
 		$color = 1-$color;
 	}
 ?>
