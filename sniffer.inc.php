@@ -1,8 +1,6 @@
 <? /* $Id$ */
 
-	global $HTTP_SERVER_VARS;
-	
-	$uagent = $HTTP_SERVER_VARS["HTTP_USER_AGENT"];
+	$uagent = $_SERVER["HTTP_USER_AGENT"];
 //	print $uagent;
 	$isMac = (ereg("mac",$uagent) || ereg("Mac",$uagent));
 //	print "<br>isMac = $isMac";
