@@ -1265,7 +1265,7 @@ FROM
 					$ed_id = $arr['user_id'];
 				}
 
-				echo "<br><br><b>***** New permissions in $scope #$id with editor $editor: '".$p_new_str."'</b><br>";
+//				echo "<br><br><b>***** New permissions in $scope #$id with editor $editor: '".$p_new_str."'</b><br>";
 //				echo "EID: $ed_id; ETYPE: $ed_type <br>";
 				
 
