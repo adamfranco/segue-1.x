@@ -584,6 +584,14 @@ SET
 		
 		$this->id = lastid();
 		
+		// See if there is a site hash (meaning that we are being copied).
+		// If so, try to match our id with the hash entry for 'NEXT'.
+		if ($GLOBALS['__site_hash']['stories'] 
+			&& $oldId = array_search('NEXT', $GLOBALS['__site_hash']['stories']))
+		{
+			$GLOBALS['__site_hash']['stories'][$oldId] = $this->id;
+		}
+		
 		$this->fetchUp();
 /* 		$this->owningPageObj->addStory($this->id); */
 		if ($removeOrigional) {

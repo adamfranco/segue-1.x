@@ -977,11 +977,22 @@ ORDER BY
 	function copySite($newName, $clearPermissions=1) {
 		if ($newName == $this->name) return FALSE;
 		if ($newName == "" || !$newName) return FALSE;
+		
+		// Make a hash array of site, section, and page ids so that
+		makeSiteHash($this);
 		$newSiteObj = $this;
 		$newSiteObj->setSiteName($newName, 1);
 		$newSiteObj->addEditor("everyone");
 		$newSiteObj->addEditor("institute");
+		
+		// Since we are specifying TRUE for the 'copy' option, each
+		// part should add its new id to the global hash
 		$newSiteObj->insertDB(1,1);
+		
+		// Parse through all the text for links refering to parts of the
+		// old site and update them with the new ids.
+		updateSiteLinksFromHash($newSiteObj);
+		$newSiteObj->updateDB(1);
 	}
 	
 	function updateDB($down=0, $force=0) {
@@ -1068,6 +1079,15 @@ ORDER BY
 /* 		echo $query."<br>"; */
 		db_query($query);
 		
+		
+		// See if there is a site hash (meaning that we are being copied).
+		// If so, try to match our id with the hash entry for 'NEXT'.
+		if ($GLOBALS['__site_hash']['site'] 
+			&& $oldId = array_search('NEXT', $GLOBALS['__site_hash']['site']))
+		{
+			$GLOBALS['__site_hash']['site'][$oldId] = $this->name;
+		}
+		
 		// the sections haven't been created yet, so we don't have to insert data[sections] for now
 
 		// add new permissions entry.. force update
@@ -1079,6 +1099,10 @@ ORDER BY
 		// insert down (insert sections)
 		if ($down && $this->fetcheddown && $this->sections) {
 			foreach (array_keys($this->sections) as $id) {
+				// Mark our Id as the next one to set
+				if (is_array($GLOBALS['__site_hash']['sections']))
+					$GLOBALS['__site_hash']['sections'][$id] = 'NEXT';
+					
 				$this->sections[$id]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 				$this->sections[$id]->insertDB(1,$this->name,$copysite);
 			}

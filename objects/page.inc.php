@@ -529,6 +529,14 @@ SET
 		
 		$this->id = lastid();
 		
+		// See if there is a site hash (meaning that we are being copied).
+		// If so, try to match our id with the hash entry for 'NEXT'.
+		if ($GLOBALS['__site_hash']['pages'] 
+			&& $oldId = array_search('NEXT', $GLOBALS['__site_hash']['pages']))
+		{
+			$GLOBALS['__site_hash']['pages'][$oldId] = $this->id;
+		}
+		
 		$this->fetchUp();
 /* 		$this->owningSectionObj->addPage($this->id); */
 		if ($removeOrigional) $this->owningSectionObj->delPage($origid,0);
@@ -544,6 +552,10 @@ SET
 		// insert down
 		if ($down && $this->fetcheddown && $this->stories) {
 			foreach (array_keys($this->stories) as $k=>$i) {
+				// Mark our Id as the next one to set
+				if (is_array($GLOBALS['__site_hash']['stories']))
+					$GLOBALS['__site_hash']['stories'][$i] = 'NEXT';
+					
 				$this->stories[$i]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 				$this->stories[$i]->insertDB(1,$this->owning_site,$this->owning_section,$this->id,1,$keepaddedby);
 			}

@@ -977,3 +977,177 @@ function convertTagsToInteralLinks ($sitename, $text) {
 	return $text;
 }
 
+/**
+ * Make a global hash with all of the current Ids as the keys. When a site
+ * and its parts are being copied (inserted again with the 'copy' flag), 
+ * their new ids will be added to the global hash as the values.
+ * 
+ * @param object site $site The site to make the cache for.
+ * @return void
+ * @access public
+ * @date 9/16/04
+ */
+function makeSiteHash (& $site) {
+	$GLOBALS['__site_hash'] = array();
+	$GLOBALS['__site_hash']['site'] = array();
+	$GLOBALS['__site_hash']['sections'] = array();
+	$GLOBALS['__site_hash']['pages'] = array();
+	$GLOBALS['__site_hash']['stories'] = array();
+// Currently, Segue doesn't copy discussions, so don't bother.				
+//	$GLOBALS['__site_hash']['discussions'] = array();
+	
+	$GLOBALS['__site_hash']['site'][$site->name] = 'NEXT';
+	
+	// Sections
+	foreach (array_keys($site->sections) as $sectionId) {
+		$GLOBALS['__site_hash']['sections'][$sectionId] = NULL;
+		
+		$section =& $site->sections[$sectionId];
+		
+		foreach (array_keys($section->pages) as $pageId) {
+			$GLOBALS['__site_hash']['pages'][$pageId] = NULL;
+			
+			$page =& $section->pages[$pageId];
+			
+			foreach (array_keys($page->stories) as $storyId) {
+				$GLOBALS['__site_hash']['stories'][$storyId] = NULL;
+
+// Currently, Segue doesn't copy discussions, so don't bother.				
+// 				$story =& $page->stories[$storyId];
+// 				
+// 				foreach ($story->data['discussions'] as $discussionId) {
+// 					$GLOBALS['__site_hash']['discussions'][$discussionId] = NULL;
+// 				}
+			}
+		}
+	}
+}
+
+/**
+ * Take a global hash with all of the old Ids as the keys and the new Ids as 
+ * the values and parse through the whole site, updating all links that point
+ * to the old keys, to the new values.
+ * 
+ * @param object site $site The site to convert the links for.
+ * @return void
+ * @access public
+ * @date 9/16/04
+ */
+function updateSiteLinksFromHash (& $site) {
+	printpre($GLOBALS['__site_hash']);
+	
+	//*****************************************************************
+	// Lets build our search terms for any links to site parts that are 
+	// in the text and replace them with the appropriate new value from 
+	// the hash.
+	//*****************************************************************
+	
+	// Build our pattern and replacement arrays
+	$patterns = array();
+	$replacements = array();
+	
+	// Add all the sections that we have matches for.
+	foreach ($GLOBALS['__site_hash']['sections'] as $oldId => $newId) {
+		if ($oldId && $newId) {
+			$patterns[] = "/&section=".$oldId."/";
+			$replacements[] = "&section=".$newId;
+		}
+	}
+	
+	// Add all the pages that we have matches for.
+	foreach ($GLOBALS['__site_hash']['pages'] as $oldId => $newId) {
+		if ($oldId && $newId) {
+			$patterns[] = "/&page=".$oldId."/";
+			$replacements[] = "&page=".$newId;
+		}
+	}
+	
+	// Add all the pages that we have matches for.
+	foreach ($GLOBALS['__site_hash']['stories'] as $oldId => $newId) {
+		if ($oldId && $newId) {
+			$patterns[] = "/&story=".$oldId."/";
+			$replacements[] = "&story=".$newId;
+		}
+	}
+	
+	// Get the old site name.
+	$siteArray = array_keys ($GLOBALS['__site_hash']['site']);
+	$oldSitename = $siteArray[0];
+	
+	
+	print "\n<br>Old Sitename=".$oldSitename;
+	printpre($patterns);
+	printpre($replacements);
+	
+	// Start with the site level text
+	$site->setField("header", 
+		updateLinksToNewSite($oldSitename, $patterns, $replacements,
+			$site->getField('header')));
+			
+	$site->setField("footer", 
+		updateLinksToNewSite($oldSitename, $patterns, $replacements,
+			$site->getField('footer')));
+	
+	// Do the sections
+	foreach (array_keys($site->sections) as $sectionId) {
+		$section =& $site->sections[$sectionId];
+		
+		$section->setField("url", 
+			updateLinksToNewSite($oldSitename, $patterns, $replacements,
+				$section->getField('url')));
+		
+		// Do the Pages
+		foreach (array_keys($section->pages) as $pageId) {
+			$page =& $section->pages[$pageId];
+			
+			$page->setField("url", 
+				updateLinksToNewSite($oldSitename, $patterns, $replacements,
+					$page->getField('url')));
+		
+			// Do the Stories
+			foreach (array_keys($page->stories) as $storyId) {
+				$story =& $page->stories[$storyId];
+				
+				$story->setField("url", 
+					updateLinksToNewSite($oldSitename, $patterns, $replacements,
+						$story->getField('url')));
+				$story->setField("shorttext", 
+					updateLinksToNewSite($oldSitename, $patterns, $replacements,
+						$story->getField('shorttext')));
+				$story->setField("longertext", 
+					updateLinksToNewSite($oldSitename, $patterns, $replacements,
+						$story->getField('longertext')));
+			}
+		}
+	}	
+}
+
+/**
+ * Convert the link in the passed string to the new ids from the global site hash.
+ * 
+ * @param string $oldSitename The name of the old site to search for.
+ * @param array $patterns The indexed array of patterns to send to preg_replace.
+ * @param array $replacements The indexed array of replacements to send to preg_replace.
+ * @param string $text The text to search for links.
+ * @return string The text with the links converted.
+ * @access public
+ * @date 9/16/04
+ */
+function updateLinksToNewSite ($oldSitename, $patterns, $replacements, $text) {
+	
+// 	print "\n\n<br><br>Before";
+// 	print "\n<br>".$text;
+	
+	// First, lets make sure that all the links were converted to tags.
+	// This should get rid of any references to our site.
+	$text = convertInteralLinksToTags($oldSitename, $text);
+	
+	// Replace the link ids.
+	$text = preg_replace($patterns, $replacements, $text);
+	
+// 	print "\n\n<br>After";
+// 	print "\n<br>".$text;
+	
+	return $text;
+}
+
