@@ -45,69 +45,80 @@ function getuserclasses($user,$time="all") {
 /* 						print "<pre>"; */
 /* 						print_r($r); */
 /* 						print "</pre>"; */
-						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
-							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];
-							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
-							$sem = $classes[$class][sem];
-							$year = $classes[$class][year];					
-							$user_id = db_get_value("user","user_id","user_uname = '$user'");
-							$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='$class'");
-							$classinfo = db_get_line("class","
-										class_department='$r[1]' AND
-										class_number='$r[2]' AND
-										class_section='$r[3]' AND
-										class_semester='$sem' AND
-										class_year='20$r[5]'");
-							
-							if (!$ugroup_id) {
-															
-								$query = "
-									INSERT INTO
-										ugroup
-									SET
-										ugroup_name = '$class',
-										ugroup_type = 'class'
-								";
-								db_query($query);
-								$ugroup_id = lastid();
-							}
-							
-							if (!$classinfo) {		
-								$query = "
-									INSERT INTO
-										class
-									SET
-										class_external_id='$class',
-										class_department='$r[1]',
-										class_number='$r[2]',
-										class_section='$r[3]',
-										class_semester='$sem',
-										class_year='20$r[5]',
-										class_name='',
-										FK_owner=NULL,
-										FK_ugroup=$ugroup_id
-								";
-								db_query($query);
-							}
-							
-							$ugroup_userinfo = db_get_line("ugroup_user","FK_ugroup=$ugroup_id AND FK_user=$user_id");
+						$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];
+/******************************************************************************
+ * update the classes table with the ldap information
+ ******************************************************************************/
+						$sem = $r[4];
+						$year = $r[5];					
+						$user_id = db_get_value("user","user_id","user_uname = '$user'");
+						$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='$class'");
+						$classinfo = db_get_line("class","
+									class_department='$r[1]' AND
+									class_number='$r[2]' AND
+									class_section='$r[3]' AND
+									class_semester='$sem' AND
+									class_year='20$r[5]'");
+						
+						if (!$ugroup_id) {
+														
+							$query = "
+								INSERT INTO
+									ugroup
+								SET
+									ugroup_name = '$class',
+									ugroup_type = 'class'
+							";
+							db_query($query);
+							$ugroup_id = lastid();
+						}
+						
+						if (!$classinfo) {		
+							$query = "
+								INSERT INTO
+									class
+								SET
+									class_external_id='$class',
+									class_department='$r[1]',
+									class_number='$r[2]',
+									class_section='$r[3]',
+									class_semester='$sem',
+									class_year='20$r[5]',
+									class_name='',
+									FK_owner=NULL,
+									FK_ugroup=$ugroup_id
+							";
+							db_query($query);
+						}
+						
+						$ugroup_userinfo = db_get_line("ugroup_user","FK_ugroup=$ugroup_id AND FK_user=$user_id");
 
-							if (!$ugroup_userinfo) {
-								$query = "
-									INSERT INTO
-										ugroup_user
-									SET
-										FK_ugroup = $ugroup_id,
-										FK_user = $user_id
-								";
-								db_query($query);
-							}
-							
+						if (!$ugroup_userinfo) {
+							$query = "
+								INSERT INTO
+									ugroup_user
+								SET
+									FK_ugroup = $ugroup_id,
+									FK_user = $user_id
+							";
+							db_query($query);
+						}
+						
+/******************************************************************************
+ * end update
+ ******************************************************************************/
+
+						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
+//							print "<br>------------>now<br>";
+							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						} else if ($time == "past" && ($r[5] < date('y') || semorder($r[4]) < semorder($semester))) {
+//							print "<br>------------>past<br>";
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						} else if ($time == "future" && ($r[5] == date('y') && semorder($r[4]) > semorder($semester)) || ($r[5] > date('y'))) {
+//							print "<br>------------>future<br>";
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						} else if ($time == "all") {
+//							print "<br>------------>all<br>";
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						}
 					}
@@ -152,7 +163,7 @@ function getuserclasses($user,$time="all") {
 			}
 		}
 	}
-	
+//	print "<pre>$time";print_r($classes);
 	return $classes;
 }
 
