@@ -102,7 +102,7 @@
 			
 			<xsl:text>&#x0A;</xsl:text>
 			<xsl:call-template name="addNewlines">
-				<xsl:with-param name="maxCharacters" select="80"/>
+				<xsl:with-param name="maxCharacters" select="76"/>
 				<xsl:with-param name="remainingString">
 					<xsl:value-of select="normalize-space(.)" />
 			
