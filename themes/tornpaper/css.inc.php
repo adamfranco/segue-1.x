@@ -10,26 +10,19 @@ body {
 /* THEME-SPECIFIC CLASSES */
 /* ------------------------------------------ */
 
-
-
 .header {
-/* 	background-color: #<? echo $c['header']; ?>; */
-/* 	border-bottom: 1px solid #<? echo $c['borders']; ?>; */
-/* 	margin-left: 25px; */
-/* 	margin-right: 25px; */
 	margin-bottom: 0px;
 }
 
 .topnav {
 	padding: 5px;
-/* 	background-color: #<? echo $c['topnav']; ?>; */
 }
 
 .leftnav {
 /* 	float: left; */
 	width: <? echo $navwidth; ?>px;
-	padding: 10px;
-	margin-right: 20px;
+	padding: 5px;
+	margin-right: 5px;
 	border-right: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
 	vertical-align: top;
 }

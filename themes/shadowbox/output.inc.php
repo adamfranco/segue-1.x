@@ -19,7 +19,8 @@ if ($themesettings[theme] == 'shadowbox') {   // indeed these settings are for t
 	$uselinkcolor = $themesettings[linkcolor];
 	$usenav = $themesettings[nav_arrange];
 	$usenavwidth = $themesettings[nav_width];
-	
+	$usesectionnavsize = $themesettings[sectionnav_size];	
+	$usenavsize = $themesettings[nav_size];	
 }
 if (!$usebg) $usebg = 'white';
 $bg = $_bgcolor[$usebg];
@@ -42,9 +43,15 @@ $linkcolor = $_linkcolor[$uselinkcolor];
 if (!$usenav) $usenav = 'Top Sections';
 $nav_arrange = $_nav_arrange[$usenav];
 
+
 if (!$usenavwidth) $usenavwidth = '150 pixels';
 $navwidth = $_nav_width[$usenavwidth];
 
+if (!$usesectionnavsize) $usesectionnavsize = '12 pixels';
+$sectionnavsize = $_sectionnav_size[$usesectionnavsize];
+
+if (!$usenavsize) $usenavsize = '12 pixels';
+$navsize = $_nav_size[$usenavsize];
 
 /* ------------------- END ---------------------------	*/
 

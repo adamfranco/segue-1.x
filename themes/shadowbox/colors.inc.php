@@ -167,3 +167,16 @@ $_nav_width = array(
 	"275 pixels"=>				"275"
 );
 
+$_sectionnav_size = array(
+	"10 pixels"=>				"10",
+	"12 pixels"=>				"12",
+	"14 pixels"=>				"14",
+	"16 pixels"=>				"16"
+);
+
+$_nav_size = array(
+	"10 pixels"=>				"10",
+	"12 pixels"=>				"12",
+	"14 pixels"=>				"14",
+	"16 pixels"=>				"16"
+);
