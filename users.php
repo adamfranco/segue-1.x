@@ -354,6 +354,8 @@ function doUserForm($a,$p='',$e=0) {
 		<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
 		<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof
 		<option<?=($a[$p.'type']=='staff')?" selected":""?>>staff
+		<option<?=($a[$p.'type']=='visitor')?" selected":""?>>visitor
+		<option<?=($a[$p.'type']=='guest')?" selected":""?>>guest
 		<option<?=($a[$p.'type']=='admin')?" selected":""?>>admin
 	</select>
 	</td>

@@ -269,9 +269,9 @@ print "<table width=100%  class='bg'>";
 // for admins print out participation select and where and order by sql
 print "<tr><td class='bg'>";
 if ($_SESSION['ltype']=='admin') {
-	print $action.": ";
-	print "WHERE ".$where." ORDER BY ";
-	print $order;
+	//print $action.": ";
+	//print "WHERE ".$where." ORDER BY ";
+	//print $order;
 }
 print "</td>";
 

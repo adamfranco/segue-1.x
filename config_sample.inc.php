@@ -233,6 +233,16 @@
  		$cfg[visitor_email_excludes] = $visitor_email_excludes = array(
 			""  // "myinstitute.edu" 
 		);
+		
+	/******************************************************************************
+	 * Segue Authentication help
+	 * if Segue is your primary means of authentication include a link to reset
+	 * password below login fields
+	 * (if you use an external authentication system then this should be set to FALSE
+	 ******************************************************************************/
+	 
+		$cfg[password_reset_on] = $password_reset_on = TRUE;	
+
 	
 	/******************************************************************************
 	 * Network - the name of the network you are on. specifies what class functions
@@ -327,7 +337,8 @@
 						"template2"=>"Standard Course Site",
 						"template3"=>"Brief Course Site",
 						"template4"=>"Advanced: Single Section",
-						"template5"=>"Advanced: Blank"
+						"template5"=>"Advanced: Blank",
+						"template6"=>"Weblog"
 						);
 						
 	/******************************************************************************

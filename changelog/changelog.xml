@@ -8,6 +8,12 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		<new author='alex'>
+			Added a config option to include forgot your password link below login
+			fields when there has been no authentication.  This allows users to request
+			Segue to reset the passwords for their Segue user accounts (i.e. those 
+			accounts whose authentication type is "db")
+		</new>		
 		<fix author='adam'>
 			HTMLAREA and plaintext box editing now behavies better with respect to
 			line returns. HTMLArea submissions now have the first line return removed
