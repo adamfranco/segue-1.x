@@ -884,7 +884,7 @@ class discussion {
 		// send an email to the siteowner
 		$html = 1;
 		$emaillist = array();
-		
+		$subject = "Segue: ".$_REQUEST['subject'];
 		
 		$to = $siteownerfname."<".$siteowneremail.">\n";
 		//$to = $siteowneremail;
