@@ -37,7 +37,7 @@ if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
 			session_unregister("sectionObj");
 			session_unregister("pageObj");
 			session_unregister("storyObj");
-		}
+		}	
 		unset($_SESSION[settings],$_SESSION[siteObj],$_SESSION[sectionObj],$_SESSION[pageObj],$_SESSION[storyObj]);
 	}
 }
