@@ -779,15 +779,65 @@ FROM
 		$scope = get_class($this);
 		$site = $this->owning_site;
 		$id = $this->id;
-		$query = "select * from permissions where site='$site' and scope='$scope' and scopeid='$id'";
+
+		// the SQL queries for obtaining the permissions vary with the scope type. Thus, we have 4 cases, 1 for each scope type.
+		
+		// CASE 1: scope is SITE
+		if ($scope == 'site') {
+		$query = "
+SELECT
+	user_uname as editor, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	t_sites
+		INNER JOIN
+	site_editors ON
+		site_id = FK_site
+			AND
+		site_editors_type = 'user'
+		INNER JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		LEFT JOIN
+	permission ON
+		site_id  = FK_scope_id
+			AND
+		permission_scope_type = 'site'
+			AND
+		permission.FK_editor <=> site_editors.FK_editor
+			AND
+		permission_editor_type = site_editors_type
+";
+
+		echo $query;
 		$r = db_query($query);
-		while ($a=db_fetch_assoc($r)) {
-			$this->permissions[strtolower($a[user])] = array( permissions::ADD()=>$a[a], 
+		
+		// for every permisson entry, add it to the permissions array
+		while ($row=db_fetch_assoc($r)) {
+			// decode 'final_permissions'; 
+			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
+			$a = array();
+			$a[a] = (strpos($row[permissions],'a') !== false) ? 1 : 0; // look for 'a' in 'final_permissions'
+			$a[e] = (strpos($row[permissions],'e') !== false) ? 1 : 0;
+			$a[d] = (strpos($row[permissions],'d') !== false) ? 1 : 0;
+			$a[v] = (strpos($row[permissions],'v') !== false) ? 1 : 0;
+			$a[di] = (strpos($row[permissions],'di') !== false) ? 1 : 0;
+			
+			echo "<br><br>Editor: $row[editor]; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+
+			$this->permissions[strtolower($row[editor])] = array(
+				permissions::ADD()=>$a[a], 
 				permissions::EDIT()=>$a[e], 
 				permissions::DELETE()=>$a[d], 
 				permissions::VIEW()=>$a[v], 
-				permissions::DISCUSS()=>$a[di]);
+				permissions::DISCUSS()=>$a[di]
+			);
 		}
+		
+		}
+		
+		
+		/*
 		// build editors array
 		$query = "select * from permissions where site='$site'";
 		$r = db_query($query);
@@ -819,6 +869,8 @@ FROM
 				}
 			}
 		}
+		
+		*/
 	}
 	
 /******************************************************************************
