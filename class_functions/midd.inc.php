@@ -22,6 +22,9 @@ function getuserclasses($user,$time="all") {
 	$ldap_pass = $cfg[ldap_voadmin_pass];
 
 	$classes = array();
+
+	if (!$user)
+		return $classes;
 	
 	$c = ldap_connect($cfg[ldap_server]);
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
