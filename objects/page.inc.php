@@ -179,9 +179,6 @@ class page extends segue {
 			$parentObj->delPage($this->id);
 			$parentObj->updateDB();
 		} else {
-			$query = "delete from pages where id=".$this->id;
-			db_query($query);
-			
 			// remove stories
 			$this->fetchDown();
 			if ($this->stories) {
@@ -189,6 +186,9 @@ class page extends segue {
 					$o->delete();
 				}
 			}
+			
+			$query = "delete from pages where id=".$this->id;
+			db_query($query);
 			
 			$this->clearPermissions();
 			$this->updatePermissionsDB();
@@ -263,20 +263,52 @@ class page extends segue {
 	}
 	
 	function updateDB($down=0) {
-		if ($this->changed) {
+		if (count($this->changed)) {
 			$a = $this->createSQLArray();
-			$a[] = "editedby='$_SESSION[auser]'";
-			$a[] = "editedtimestamp = NOW()";
-			$query = "update pages set ".implode(",",$a)." where id=".$this->id;
+			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
+//			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
+			$query = "update page set ".implode(",",$a)." where page_id=".$this->id;
+			print "<pre>Page->UpdateDB: $query<br>";
 			db_query($query);
+			print mysql_error()."<br>";
+			print_r($this->data['stories']);
+			print "</pre>";
+			
+			// the hard step: update the fields in the JOIN tables
+			
+			// Urls are now stored in the media table
+			if ($this->changed[url]) {
+				 
+			}
+						
+			// now update all the page ids in the children, if the latter have changed
+			if ($this->changed[stories]) {
+				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent
+				// we do this, because we might have removed a certain section from the array of sections of a site object
+				$query = "UPDATE story SET FK_page=0 WHERE FK_page=".$this->id;
+				db_query($query);
+				
+				// now, update all stories
+				foreach ($this->data['stories'] as $k => $v) {
+					$query = "UPDATE story SET FK_page=".$this->id.", story_order=$k WHERE story_id=".$v;
+					db_query($query);
+				}
+				
+			}			
 		}
 		
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
 		// update permissions
 		$this->updatePermissionsDB();
-		
-		// add log entry
-/* 		log_entry("edit_page",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] edited page id ".$this->id." in site ".$this->owning_site); */
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
 
+		// add log entry
+/* 		log_entry("edit_section",$this->owning_site,$this->id,"","$_SESSION[auser] edited section id ".$this->id." in site ".$this->owning_site); */
+		
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->stories) {
@@ -332,22 +364,33 @@ class page extends segue {
 		$d = $this->data;
 		$a = array();
 		
-		if ($all || $this->changed[title]) $a[] = "title='".addslashes($d[title])."'";
-		if ($all) $a[] = "site_id='".$this->owning_site."'";
-		if ($all) $a[] = "section_id=".$this->owning_section;
-		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
-		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
-		if ($all || $this->changed[active]) $a[] = "active=".(($d[active])?1:0);
-		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
-		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
-		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
-		if ($all || $this->changed[ediscussion]) $a[] = "ediscussion=".(($d[ediscussion])?1:0);
-		if ($all || $this->changed[archiveby]) $a[] = "archiveby='$d[archiveby]'";
-		if ($all || $this->changed[showcreator]) $a[] = "showcreator='$d[showcreator]'";
-		if ($all || $this->changed[showdate]) $a[] = "showdate='$d[showdate]'";
-		if ($all || $this->changed[showhr]) $a[] = "showhr='$d[showhr]'";
-		if ($all || $this->changed[storyorder]) $a[] = "storyorder='$d[storyorder]'";
-		if ($all || $this->changed[locked]) $a[] = "locked=".(($d[locked])?1:0);
+		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
+		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'";
+		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section);
+		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->getField("id")."'";
+		
+//		if ($this->id && ($all || $this->changed[pages])) { //I belive we may always need to fix the order.
+		if ($this->id) {
+			$orderkeys = array_keys($this->owningSectionObj->getField("pages"),$this->id);
+			$a[] = "page_order=".$orderkeys[0];
+		} else {
+			$a[] = "page_order=".count($this->owningSectionObj->getField("pages"));
+		}
+		
+		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
+		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
+		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
+		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
+//		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
+//		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
+		if ($all || $this->changed[ediscussion]) $a[] = $this->_datafields[ediscussion][1][0]."='".(($d[ediscussion])?1:0)."'";
+		if ($all || $this->changed[archiveby]) $a[] = $this->_datafields[archiveby][1][0]."='$d[archiveby]'";
+		if ($all || $this->changed[showcreator]) $a[] = $this->_datafields[showcreator][1][0]."='".(($d[showcreator])?1:0)."'";
+		if ($all || $this->changed[showdate]) $a[] = $this->_datafields[showdate][1][0]."='".(($d[showdate])?1:0)."'";
+		if ($all || $this->changed[showhr]) $a[] = $this->_datafields[showhr][1][0]."='".(($d[showhr])?1:0)."'";
+		if ($all || $this->changed[storyorder]) $a[] = $this->_datafields[storyorder][1][0]."='$d[storyorder]'";
 		
 		return $a;
 	}
