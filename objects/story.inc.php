@@ -319,10 +319,10 @@ FROM
 		ON FK_section = section_id
 		INNER JOIN
 	user AS user_createdby
-		ON page.FK_createdby = user_createdby.user_id
+		ON story.FK_createdby = user_createdby.user_id
 		INNER JOIN
 	user AS user_updatedby
-		ON page.FK_updatedby = user_updatedby.user_id
+		ON story.FK_updatedby = user_updatedby.user_id
 		INNER JOIN
 	 site
 		ON section.FK_site = site.site_id

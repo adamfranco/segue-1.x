@@ -955,7 +955,7 @@ FROM
 ";
 		}
 
-		// CASE 3: scope is PAGE
+		// CASE 4: scope is PAGE
 		else if ($scope == 'story') {
 		$query = "
 SELECT

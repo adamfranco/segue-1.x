@@ -107,8 +107,8 @@ if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
 if ($_REQUEST[site]) {						// we are in a site
 	
 	$thisSite =& new site($_REQUEST[site]);
-	$thisSite->fetchDown();
-	$thisSite->buildPermissionsArray(1,1);
+	$thisSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
+//	$thisSite->buildPermissionsArray(1,1);
 	
 	$site_owner = $thisSite->getField("addedby");
 	if ($_REQUEST[theme]) $sid .= "&theme=$_REQUEST[theme]";
@@ -128,12 +128,14 @@ if ($_REQUEST[site]) {						// we are in a site
 
 }
 if ($_REQUEST[section]) {
-	$thisSection =& new section($thisSite->name,$_REQUEST[section],&$thisSite);
+//	$thisSection =& new section($thisSite->name,$_REQUEST[section],&$thisSite);
+	$thisSection =& $thisSite->sections[$_REQUEST[section]];
 //	$thisSection->fetchFromDB();
 //	$thisSection->buildPermissionsArray();
 }
 if ($_REQUEST[page]) {
-	$thisPage =& new page($thisSite->name,$thisSection->id,$_REQUEST[page],&$thisSection);
+//	$thisPage =& new page($thisSite->name,$thisSection->id,$_REQUEST[page],&$thisSection);
+	$thisPage =& $thisSite->sections[$_REQUEST[section]]->page[$_REQUEST[page]];
 //	$thisPage->fetchFromDB();
 //	$thisPage->buildPermissionsArray();
 }

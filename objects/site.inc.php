@@ -122,6 +122,7 @@ class site extends segue {
 		// find if a site with this name already exists in the databse, and if yes, get site_id
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+		
 		$q = "SELECT site_id FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name'";
 		// echo $q;
 		$r = db_query($q);
@@ -151,6 +152,550 @@ class site extends segue {
 		$this->data[footer] = "";
 		$this->data[sections] = array();
 		
+	}
+	
+	// ************************************************************************************************
+	// ************************************************************************************************
+	// description: just look at the function name
+	// THIS IS A BAD ASS FUNCTION. BUT IS IS FAST!!!
+	// ************************************************************************************************
+	// ************************************************************************************************
+	function fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen() {
+		// no $full or $force here, always fetch everything, be strong and stubborn damnit!
+
+		// connect to db and initialize data array
+		global $dbuser, $dbpass, $dbdb, $dbhost;
+		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+		
+		// delete temporary tables if they already exist
+		$query = "DROP TABLE IF EXISTS t_sites";
+		db_query($query);
+		$query = "DROP TABLE IF EXISTS t_sections";
+		db_query($query);
+		$query = "DROP TABLE IF EXISTS t_pages";
+		db_query($query);
+		$query = "DROP TABLE IF EXISTS t_stories";
+		db_query($query);
+		
+		// now, create the temporary tables. each table stores all siteunit ids for this site.
+		
+		// all stories for this site
+		$query = "
+CREATE TEMPORARY TABLE t_stories(
+	UNIQUE uniq (site_id,section_id,page_id,story_id),
+	KEY site_id (site_id),
+	KEY section_id (section_id),
+	KEY page_id (page_id),
+	KEY story_id (story_id)
+) TYPE=MyISAM
+SELECT
+	site_id, section_id, page_id, story_id
+FROM
+	site
+		LEFT JOIN
+	section ON FK_site = site_id
+		LEFT JOIN
+	page ON FK_section = section_id
+		LEFT JOIN
+	story ON FK_page = page_id
+WHERE
+	site_id = ".$this->id;		
+		db_query($query);
+
+		// all sites for this site, i.e. just this site
+		$query = "
+CREATE TEMPORARY TABLE t_sites (
+	UNIQUE uniq (site_id),
+	KEY site_id (site_id)
+)
+SELECT
+	DISTINCT site_id
+FROM
+	t_stories
+";
+		db_query($query);
+
+		// all sections for this site
+		$query = "
+CREATE TEMPORARY TABLE t_sections (
+	UNIQUE uniq (site_id, section_id),
+	KEY site_id (site_id),
+	KEY section_id (section_id)
+)
+SELECT
+	DISTINCT site_id, section_id
+FROM
+	t_stories
+";
+		db_query($query);
+
+		// all pages for this site
+		$query = "
+CREATE TEMPORARY TABLE t_pages (
+	UNIQUE uniq (site_id, section_id, page_id),
+	KEY site_id (site_id),
+	KEY section_id (section_id),
+	KEY page_id (page_id)
+)
+SELECT
+	DISTINCT site_id, section_id, page_id
+FROM
+	t_stories
+";		
+		db_query($query);
+	
+		// first, fetch the site
+		$this->tobefetched=1;
+		$this->data = array();
+		$query = "
+SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+		site_active AS active, site_listed AS listed, site_theme AS theme, site_themesettings AS themesettings,
+		site_header AS header, site_footer AS footer, site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
+		user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
+FROM 
+	t_sites
+		INNER JOIN
+	site
+		ON t_sites.site_id = site.site_id
+		INNER JOIN
+	user AS user_createdby
+		ON FK_createdby = user_createdby.user_id
+		INNER JOIN
+	user AS user_updatedby
+		ON FK_updatedby = user_updatedby.user_id
+		INNER JOIN
+	slot
+		ON site.site_id = FK_site
+";
+		
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		array_change_key_case($a); // make all keys lower case
+		// for each field returned by the query
+		foreach ($a as $field => $value)
+			// make sure we have defined this field in the _allfields array
+			if (in_array($field,$this->_allfields)) {
+				// decode if necessary
+				if (in_array($field,$this->_encode)) 
+					$value = stripslashes(urldecode($value));
+// UPDATE parseMediaTextForEdit *********************************************************************
+//				if (in_array($field,$this->_parse)) 
+//					$value = $this->parseMediaTextForEdit($value);
+				$this->data[$field] = $value;
+				$this->fetched[$field] = 1;
+			}
+			else
+				echo "ERROR: field $field not in _allfields!!!<br>";
+		$this->fetcheddown = 1;
+					
+		// now, create section objects and fetch them
+		$query = "
+SELECT  
+	section.section_id AS section_id,
+	section_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
+	section_created_tstamp AS addedtimestamp,
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
+	media_tag AS url
+FROM 
+	t_sections
+		INNER JOIN
+	slot
+		ON t_sections.site_id = slot.FK_site
+		INNER JOIN
+	section
+		ON t_sections.section_id = section.section_id
+		INNER JOIN
+	user AS user_createdby
+		ON section.FK_createdby = user_createdby.user_id
+		INNER JOIN
+	user AS user_updatedby
+		ON section.FK_updatedby = user_updatedby.user_id
+		LEFT JOIN
+	media
+		ON FK_media = media_id
+ORDER BY
+	section_order
+";	
+		$r = db_query($query);
+		while ($a = db_fetch_assoc($r)) {
+			array_change_key_case($a); // make all keys lower case
+			$section =& new section($this->name,$a[section_id],&$this);
+			$this->sections[$a[section_id]]  =& $section;
+			foreach ($a as $field => $value)
+				// make sure we have defined this field in the _allfields array
+				if ($field == 'section_id' || in_array($field,$section->_allfields)) {
+					// decode if necessary
+					if (in_array($field,$section->_encode)) 
+						$value = stripslashes(urldecode($value));
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	//				if (in_array($field,$this->_parse)) 
+	//					$value = $this->parseMediaTextForEdit($value);
+					$section->data[$field] = $value;
+					$section->fetched[$field] = 1;
+				}
+				else
+					echo "ERROR: field $field not in _allfields!!!<br>";
+			$section->fetcheddown = 1;
+		}
+
+		// now, create page objects and fetch them
+		$query = "
+SELECT
+	t_pages.section_id AS section_id, page.page_id AS page_id, 
+	page_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	page_active AS active, page_story_order AS storyorder, page_show_creator AS showcreator, 
+	page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
+	page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
+	page_ediscussion AS ediscussion,
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id, media_tag AS url
+FROM 
+	t_pages
+		INNER JOIN
+	slot
+		ON t_pages.site_id = slot.FK_site
+		INNER JOIN
+	page
+		ON t_pages.page_id = page.page_id
+		INNER JOIN
+	user AS user_createdby
+		ON page.FK_createdby = user_createdby.user_id
+		INNER JOIN
+	user AS user_updatedby
+		ON page.FK_updatedby = user_updatedby.user_id
+		LEFT JOIN
+	media
+		ON page.FK_media = media_id
+";
+		$r = db_query($query);
+		while ($a = db_fetch_assoc($r)) {
+			array_change_key_case($a); // make all keys lower case
+			$section =& $this->sections[$a[section_id]];
+			$page =& new page($this->name,$a[section_id],$a[page_id],&$section);
+			$section->pages[$a[page_id]]  =& $page;
+			foreach ($a as $field => $value)
+				// make sure we have defined this field in the _allfields array
+				if ($field == 'page_id' || in_array($field,$page->_allfields)) {
+					// decode if necessary
+					if (in_array($field,$page->_encode))
+						$value = stripslashes(urldecode($value));
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	//				if (in_array($field,$this->_parse)) 
+	//					$value = $this->parseMediaTextForEdit($value);
+					$page->data[$field] = $value;
+					$page->fetched[$field] = 1;
+				}
+				else
+					echo "ERROR: field $field not in _allfields!!!<br>";
+			$page->fetcheddown = 1;
+		}
+
+		// now, create story objects and fetch them
+		$query = "
+SELECT
+	t_stories.section_id AS section_id, t_stories.page_id AS page_id, story.story_id AS story_id,
+	story_type AS type, story_title AS title, DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	story_active AS active, story_locked AS locked, story_updated_tstamp AS editedtimestamp, story_created_tstamp AS addedtimestamp,
+	story_discussable AS discuss, story_category AS category, story_text_type AS texttype, story_text_short AS shorttext,
+	story_text_long AS longertext,
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
+	media_tag AS url
+FROM
+	t_stories
+		INNER JOIN
+	slot
+		ON t_stories.site_id = slot.FK_site
+		INNER JOIN
+	story
+		ON t_stories.story_id = story.story_id
+		INNER JOIN
+	user AS user_createdby
+		ON story.FK_createdby = user_createdby.user_id
+		INNER JOIN
+	user AS user_updatedby
+		ON story.FK_updatedby = user_updatedby.user_id
+		LEFT JOIN
+	media
+		ON story.FK_media = media_id		
+";
+		$r = db_query($query);
+		while ($a = db_fetch_assoc($r)) {
+			array_change_key_case($a); // make all keys lower case
+			$section =& $this->sections[$a[section_id]];
+			$page =& $section->pages[$a[page_id]];
+			$story =& new story($this->name,$a[section_id],$a[page_id],$a[story_id],&$page);
+			$page->stories[$a[story_id]]  =& $story;
+			foreach ($a as $field => $value)
+				// make sure we have defined this field in the _allfields array
+				if ($field == 'story_id' || in_array($field,$story->_allfields)) {
+					// decode if necessary
+					if (in_array($field,$story->_encode))
+						$value = stripslashes(urldecode($value));
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	//				if (in_array($field,$this->_parse)) 
+	//					$value = $this->parseMediaTextForEdit($value);
+					$story->data[$field] = $value;
+					$story->fetched[$field] = 1;
+				}
+				else
+					echo "ERROR: field $field not in _allfields!!!<br>";
+			$story->fetcheddown = 1;
+		}
+		
+		$query = "
+SELECT
+	user_uname as editor, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	t_sites
+		INNER JOIN
+	site_editors ON
+		site_id = FK_site
+			AND
+		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		LEFT JOIN
+	user
+		ON site_editors.FK_editor = user_id
+		LEFT JOIN
+	permission ON
+		site_id  = FK_scope_id
+			AND
+		permission_scope_type = 'site'
+			AND
+		permission.FK_editor <=> site_editors.FK_editor
+			AND
+		permission_editor_type = site_editors_type
+";
+		$r = db_query($query);
+
+		$this->editors = array();
+		$this->permissions = array();
+
+		// for every permisson entry, add it to the permissions array
+		while ($row=db_fetch_assoc($r)) {
+			// decode 'final_permissions'; 
+			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
+			$a = array();
+			$a[a] = (strpos($row[permissions],'a') !== false) ? 1 : 0; // look for 'a' in 'final_permissions'
+			$a[e] = (strpos($row[permissions],'e') !== false) ? 1 : 0; // !== is very important here, because a position 0 is interpreted by != as FALSE
+			$a[d] = (strpos($row[permissions],'d') !== false) ? 1 : 0;
+			$a[v] = (strpos($row[permissions],'v') !== false) ? 1 : 0;
+			$a[di] = (strpos($row[permissions],'di') !== false) ? 1 : 0;
+			
+			// if the editor is a user then the editor's name is just the user name
+			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
+			if ($row[editor_type]=='user')
+				$t_editor = $row[editor];
+			else
+				$t_editor = $row[editor_type];
+			
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+
+			// set the permissions for this editor
+			$this->permissions[strtolower($t_editor)] = array(
+				permissions::ADD()=>$a[a], 
+				permissions::EDIT()=>$a[e], 
+				permissions::DELETE()=>$a[d], 
+				permissions::VIEW()=>$a[v], 
+				permissions::DISCUSS()=>$a[di]
+			);
+			
+			// now add the editor to the editor array
+			$this->editors[]=strtolower($t_editor);
+			
+		}
+
+		// now, inherit the permissions to the children
+		foreach (array_keys($this->sections) as $key => $section_id) {
+			$this->sections[$section_id]->editors = $this->editors;
+			$this->sections[$section_id]->permissions = $this->permissions;
+		}
+
+		$this->builtPermissions=1;
+		
+		$query = "
+SELECT
+	section_id, user_uname as editor, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	t_sections
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+			AND
+		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		INNER JOIN
+	permission ON
+		section_id  = FK_scope_id
+			AND
+		permission_scope_type = 'section'
+			AND
+		permission.FK_editor <=> site_editors.FK_editor
+			AND
+		permission_editor_type = site_editors_type
+";
+				
+		$r = db_query($query);
+
+		// for every permisson entry, add it to the permissions array
+		while ($row=db_fetch_assoc($r)) {
+			// decode 'final_permissions'; 
+			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
+			$a = array();
+			if (strpos($row[permissions],'a') !== false) $a[permissions::ADD()] = 1; // look for 'a' in 'final_permissions'
+			if (strpos($row[permissions],'e') !== false) $a[permissions::EDIT()] = 1; // !== is very important here, because a position 0 is interpreted by != as FALSE
+			if (strpos($row[permissions],'d') !== false) $a[permissions::DELETE()] = 1;
+			if (strpos($row[permissions],'v') !== false) $a[permissions::VIEW()] = 1;
+			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
+
+			// if the editor is a user then the editor's name is just the user name
+			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
+			if ($row[editor_type]=='user')
+				$t_editor = $row[editor];
+			else
+				$t_editor = $row[editor_type];
+			
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+
+			foreach ($a as $key => $value)
+				$this->sections[$row[section_id]]->permissions[strtolower($t_editor)][$key] = 1;
+		}
+
+		// now, inherit the permissions to the children
+		foreach (array_keys($this->sections) as $key1 => $section_id) {
+			foreach(array_keys($this->sections[$section_id]->pages) as $key2 => $page_id) {
+				$this->sections[$section_id]->pages[$page_id]->editors = $this->sections[$section_id]->editors;
+				$this->sections[$section_id]->pages[$page_id]->permissions = $this->sections[$section_id]->permissions;
+			}
+			$this->sections[$section_id]->builtPermissions=1;
+		}
+
+		$query = "
+SELECT
+	section_id, page_id, user_uname as editor, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	t_pages
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+			AND
+		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		INNER JOIN
+	permission ON
+		page_id  = FK_scope_id
+			AND
+		permission_scope_type = 'page'
+			AND
+		permission.FK_editor <=> site_editors.FK_editor
+			AND
+		permission_editor_type = site_editors_type
+";
+
+
+
+		$r = db_query($query);
+
+		// for every permisson entry, add it to the permissions array
+		while ($row=db_fetch_assoc($r)) {
+			// decode 'final_permissions'; 
+			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
+			$a = array();
+			if (strpos($row[permissions],'a') !== false) $a[permissions::ADD()] = 1; // look for 'a' in 'final_permissions'
+			if (strpos($row[permissions],'e') !== false) $a[permissions::EDIT()] = 1; // !== is very important here, because a position 0 is interpreted by != as FALSE
+			if (strpos($row[permissions],'d') !== false) $a[permissions::DELETE()] = 1;
+			if (strpos($row[permissions],'v') !== false) $a[permissions::VIEW()] = 1;
+			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
+
+			// if the editor is a user then the editor's name is just the user name
+			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
+			if ($row[editor_type]=='user')
+				$t_editor = $row[editor];
+			else
+				$t_editor = $row[editor_type];
+			
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+
+			foreach ($a as $key => $value)
+				$this->sections[$row[section_id]]->pages[$row[page_id]]->permissions[strtolower($t_editor)][$key] = 1;
+		}
+
+		// now, inherit the permissions to the children
+		foreach (array_keys($this->sections) as $key1 => $section_id)
+			foreach(array_keys($this->sections[$section_id]->pages) as $key2 => $page_id) {
+				foreach(array_keys($this->sections[$section_id]->pages[$page_id]->stories) as $key3 => $story_id) {
+					$this->sections[$section_id]->pages[$page_id]->stories[$story_id]->editors = $this->sections[$section_id]->pages[$page_id]->editors;
+					$this->sections[$section_id]->pages[$page_id]->stories[$story_id]->permissions = $this->sections[$section_id]->pages[$page_id]->permissions;
+					$this->sections[$section_id]->pages[$page_id]->stories[$story_id]->builtPermissions=1;
+				}
+			$this->sections[$section_id]->pages[$page_id]->builtPermissions=1;
+			}
+
+
+		$query = "
+SELECT
+	section_id, page_id, story_id, user_uname as editor, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	t_stories
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+			AND
+		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		INNER JOIN
+	permission ON
+		story_id = FK_scope_id
+			AND
+		permission_scope_type = 'story'
+			AND
+		permission.FK_editor <=> site_editors.FK_editor
+			AND
+		permission_editor_type = site_editors_type
+";
+
+		$r = db_query($query);
+
+		// for every permisson entry, add it to the permissions array
+		while ($row=db_fetch_assoc($r)) {
+			// decode 'final_permissions'; 
+			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
+			$a = array();
+			if (strpos($row[permissions],'a') !== false) $a[permissions::ADD()] = 1; // look for 'a' in 'final_permissions'
+			if (strpos($row[permissions],'e') !== false) $a[permissions::EDIT()] = 1; // !== is very important here, because a position 0 is interpreted by != as FALSE
+			if (strpos($row[permissions],'d') !== false) $a[permissions::DELETE()] = 1;
+			if (strpos($row[permissions],'v') !== false) $a[permissions::VIEW()] = 1;
+			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
+
+			// if the editor is a user then the editor's name is just the user name
+			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
+			if ($row[editor_type]=='user')
+				$t_editor = $row[editor];
+			else
+				$t_editor = $row[editor_type];
+			
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+
+			foreach ($a as $key => $value)
+				$this->sections[$row[section_id]]->pages[$row[page_id]]->stories[$row[story_id]]->permissions[strtolower($t_editor)][$key] = 1;
+		}
+
+
 	}
 	
 	function fetchDown($full=0) {
@@ -200,7 +745,6 @@ SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS ac
 		site_active AS active, site_listed AS listed, site_theme AS theme, site_themesettings AS themesettings,
 		site_header AS header, site_footer AS footer, site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
 		user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
-
 FROM 
 	site
 		INNER JOIN
