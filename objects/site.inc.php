@@ -417,7 +417,7 @@ ORDER BY
 	
 	function delete() {	// delete from db
 		if (!$this->id) return false;
-		$query = "delete from sites where id=".$this->id;
+		$query = "DELETE FROM site WHERE site_id=".$this->id;
 		db_query($query);
 		
 		// remove sections

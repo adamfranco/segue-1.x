@@ -482,7 +482,7 @@ FROM
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='activatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -492,7 +492,7 @@ FROM
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 		
 		printc("</td></tr>");
 		
@@ -501,7 +501,7 @@ FROM
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='deactivatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -510,7 +510,7 @@ FROM
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 		
 		printc("</tr></td></table>");
 	}
@@ -591,8 +591,21 @@ FROM
 		if (count($textarray1) > 1) {
 			for ($i=1; $i < count($textarray1); $i+=2) {
 				$id = $textarray1[$i];
-				$filename = db_get_value("media","media_tag","id=$id");
-				$dir = db_get_value("media","site_id","id=$id");
+				$filename = db_get_value("media","media_tag","media_id=$id");
+				$query = "
+SELECT 
+	slot_name 
+FROM
+	media 
+		INNER JOIN 
+	site ON media.FK_site = site_id
+		INNER JOIN
+	slot ON site_id = slot.FK_site
+WHERE
+	media_id = $id
+";
+				$a = db_fetch_assoc(db_query($query));
+				$dir = $a[slot_name];
 				$filepath = $uploadurl."/".$dir."/".$filename;
 				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
 			}		
@@ -647,7 +660,7 @@ FROM
  ******************************************************************************/
 
 	function isEditor($user='') {
-		if (!$this->builtPermissions) $this->buildPermissionsArray();
+		if (!$this->builtPermissions && $this->id) $this->buildPermissionsArray();
 		if ($user=='') $user=$_SESSION[auser];
 		$this->fetchUp();
 		$owner = $this->owningSiteObj->getField("addedby");
@@ -662,7 +675,8 @@ FROM
 	}
 
 	function addEditor($e) { 
-		if ($e == 'institute' || $e == 'everyone') return false;
+		print "<br>Adding editor $e<br>";
+//		if ($e == 'institute' || $e == 'everyone') return false;	// With the new permissions structure, this may be unwanted.
 		if ($_SESSION[auser] == $e) { error("You do not need to add yourself as an editor."); return false; }
 		if (!in_array($e,$this->editors)) {
 			$this->editors[]=$e;
@@ -685,7 +699,8 @@ FROM
 	}
 	
 	function getEditors() {
-		$this->buildPermissionsArray(0,0);
+		if (!$this->builtPermissions && $this->id)
+			$this->buildPermissionsArray(0,0);
 		return $this->editors;
 	}
 	
@@ -1071,7 +1086,8 @@ FROM
 	}
 	
 	function checkLockedFlag($e,$perm) {
-		$this->buildPermissionsArray();		// just in case
+//		if (!$this->builtPermissions && $this->id)	//might be needed. unknown.
+			$this->buildPermissionsArray();		// just in case
 		$p = $this->getPermissions();
 		$_t = strtoupper($perm);
 		$pid = permissions::$_t();
@@ -1151,6 +1167,11 @@ FROM
 					// if we are changing the permissions, update the db
 					if ($p_str) {
 						// FIGURE OUT HOW TO DO THIS!!!						
+						// FIGURE OUT HOW TO DO THIS!!!						
+						// FIGURE OUT HOW TO DO THIS!!!						
+						// FIGURE OUT HOW TO DO THIS!!!						
+						// FIGURE OUT HOW TO DO THIS!!!						
+						// FIGURE OUT HOW TO DO THIS!!!						
 					}
 					// if we are clearing the permissions, delete the entry from the db
 					else {
@@ -1217,7 +1238,8 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_str')
 	function hasPermission($perms,$ruser='',$useronly=0) {
 		global $allclasses, $_loggedin, $cfg;
 				
-		if (!$this->builtPermissions) $this->buildPermissionsArray();
+		if (!$this->builtPermissions && $this->id) 
+			$this->buildPermissionsArray();
 		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
@@ -1271,7 +1293,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_str')
 		}
 		if (!$useronly) $toCheck = array_merge($this->returnEditorOverlap($allclasses),$toCheck);
 		
-/* 		print "<pre>"; print_r($toCheck); print "</pre><br>"; */
+		print "<pre>"; print_r($toCheck); print "</pre><br>";
 		
 		foreach ($permissions as $u=>$p) $permissions[strtolower($u)] = $p;
 		

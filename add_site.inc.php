@@ -83,6 +83,12 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		$_SESSION[settings][edit]=1;		
 	}
 	
+	if ($_SESSION[settings][add]) {
+		$_SESSION[siteObj]->addEditor("everyone");	//We aren't storing the permissions from form 1.
+		$_SESSION[siteObj]->addEditor("institute");
+		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","1");
+	}
+	
 	if ($_SESSION[settings][edit]) {
 		if (!$_SESSION[settings][sitename]) {
 			$_SESSION[settings][sitename] = $_REQUEST[edit_site];

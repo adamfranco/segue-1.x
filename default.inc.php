@@ -117,7 +117,6 @@ if ($_loggedin) {
                         } else {        // new group
                                 $groupObj->addClasses($_REQUEST[group]);
                                 $groupObj->updateDB();
-/*                              $query = "insert into classgroups set name='$newgroup',classes='$list',owner='$auser'"; */
                                 log_entry("classgroups","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes),$groupObj->id,"classgroup");
                         }
                 } else
@@ -243,7 +242,7 @@ if ($_loggedin) {
         		}
         	}
         	$sites = $sites2;        	
-        
+
 			$slots2 = array();
 	        foreach ($slots as  $s) {
         		$slotObj = new slot($s);
@@ -261,7 +260,7 @@ if ($_loggedin) {
         
         $sites = array_merge($slots,$sites);
         $sites = removePrinted($sites);
-        
+
         if (count($sites)) {
                 printc("<tr><td class='inlineth' colspan=2>Other Sites".helplink("othersites","What are these?")."</td></tr>");
                 foreach ($sites as $s)
@@ -394,7 +393,9 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
         
         $isgroup = ($classlist = group::getClassesFromName($name))?1:0;
         $exists = $obj->fetchFromDB();
+/*      print "<pre>"; */
 /*      print_r($obj); */
+/*      print "</pre>"; */
 
         $namelink = ($exists)?"$PHP_SELF?$sid&action=site&site=$name":"$PHP_SELF?$sid&action=add_site&sitename=$name";
         $namelink2 = ($exists)?"$PHP_SELF?$sid&action=viewsite&site=$name":"$PHP_SELF?$sid&action=add_site&sitename=$name";

@@ -315,7 +315,23 @@ function sitenamevalid($name) {
 // 	print_r($classes); 
 	if ($settings[type]=="other" && $auser==$settings[addedby]) return 1; 
 	if ($atype == 'prof' && is_array($classes[$name])) return 1;
-	if ($atype == 'prof' && db_line_exists("classgroups","name='$name' and owner='$auser'")) return 1;
+	if ($atype == 'prof') {
+		$query = "
+SELECT
+	classgroup_id
+FROM
+	classgroup
+		INNER JOIN
+	user
+		ON FK_owner = user_id AND user_uname = '$auser'
+WHERE
+	classgroup_name = '$name'
+";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		if (count($a) > 0)
+			return 1;			
+	 }
 	
 	return 0;
 */
@@ -372,9 +388,16 @@ function semorder($semester) {
 }
 
 function inclassgroup($class) {
-	$query = "select * from classgroups where classes like '%$class%'";
+	$query = "
+SELECT
+	classgroup_name
+FROM
+	classgroup
+		INNER JOIN
+	class ON classgroup_id = FK_classgroup AND class_code = '$class'
+";
 	$r = db_query($query);
-	if (db_num_rows($r)) { $a = db_fetch_assoc($r); return $a[name]; }
+	if (db_num_rows($r)) { $a = db_fetch_assoc($r); return $a[classgruop_name]; }
 	return 0;
 }
 
