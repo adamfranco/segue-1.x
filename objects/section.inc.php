@@ -246,7 +246,7 @@ class section extends segue {
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
 		// update permissions
-		$this->updatePermissionsDB();
+//		$this->updatePermissionsDB();
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
@@ -296,7 +296,8 @@ class section extends segue {
 		$this->owningSiteObj->updateDB();
 		
 		// add new permissions entry.. force update
-		$this->updatePermissionsDB(1);
+//		$this->updatePermissionsDB(1);	// We shouldn't need this because new sections will just
+										//inherit the permissions of their parent sites
 		
 		// add log entry
 /* 		log_entry("add_section",$this->owning_site,$this->id,"","$_SESSION[auser] added section id ".$this->id." to site ".$this->owning_site); */
