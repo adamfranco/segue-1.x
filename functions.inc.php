@@ -1034,7 +1034,7 @@ function makeSiteHash (& $site) {
  * @date 9/16/04
  */
 function updateSiteLinksFromHash (& $site) {
-	printpre($GLOBALS['__site_hash']);
+// 	printpre($GLOBALS['__site_hash']);
 	
 	//*****************************************************************
 	// Lets build our search terms for any links to site parts that are 
@@ -1075,9 +1075,9 @@ function updateSiteLinksFromHash (& $site) {
 	$oldSitename = $siteArray[0];
 	
 	
-	print "\n<br>Old Sitename=".$oldSitename;
-	printpre($patterns);
-	printpre($replacements);
+// 	print "\n<br>Old Sitename=".$oldSitename;
+// 	printpre($patterns);
+// 	printpre($replacements);
 	
 	// Start with the site level text
 	$site->setField("header", 
