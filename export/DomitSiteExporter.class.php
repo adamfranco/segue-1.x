@@ -1,6 +1,7 @@
 <?
 
 require_once('SiteExporter.class.php');
+require_once('../objects/discussion.inc.php');
 
 /**
  * This class exports a Segue Site to a string in a specified format.
@@ -29,20 +30,21 @@ class DomitSiteExporter {
 		$this->_document =& new DOMIT_Document();
 		$this->_document->xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" '.'?'.'>';
 		$doctype = "<!DOCTYPE site [";
-		$doctype .= "\n\t<!ELEMENT site (title,history,(permissions?),(section|navlink)*)>";
+		$doctype .= "\n\t<!ELEMENT site (title,history,(activation?),(permissions?),(section|navlink)*)>";
 		$doctype .= "\n\t<!ATTLIST site id CDATA #REQUIRED owner CDATA #REQUIRED type (system|class|personal|other) #REQUIRED>";
  		
- 		$doctype .= "\n\t<!ELEMENT section (title,history,(permissions?),(page|navlink|heading|divider)*)>";
-		$doctype .= "\n\t<!ELEMENT page (title,history,(permissions?),(story|link|image|file)*)>";
-		$doctype .= "\n\t<!ELEMENT story (title,history,(permissions?),shorttext,longtext?,discussion?)>";
-		$doctype .= "\n\t<!ELEMENT navlink (title,history,(permissions?),url)>";
-		$doctype .= "\n\t<!ELEMENT heading (title,history,(permissions?))>";
-		$doctype .= "\n\t<!ELEMENT divider (history,(permissions?))>";
-		$doctype .= "\n\t<!ELEMENT link (title,history,(permissions?),description,url)>";
-		$doctype .= "\n\t<!ELEMENT image (title,history,(permissions?),description,(filename|url))>";
-		$doctype .= "\n\t<!ELEMENT file (title,history,(permissions?),description,(filename|url))>";
+ 		$doctype .= "\n\t<!ELEMENT section (title,history,(activation?),(permissions?),(page|navlink|heading|divider)*)>";
+		$doctype .= "\n\t<!ELEMENT page (title,history,(activation?),(permissions?),(story|link|image|file)*)>";
+		$doctype .= "\n\t<!ELEMENT story (title,history,(activation?),(permissions?),shorttext,(longtext?),(category?),(discussion?))>";
+		$doctype .= "\n\t<!ELEMENT navlink (title,history,(activation?),(permissions?),url)>";
+		$doctype .= "\n\t<!ELEMENT heading (title,history,(activation?),(permissions?))>";
+		$doctype .= "\n\t<!ELEMENT divider (history,(activation?),(permissions?))>";
+		$doctype .= "\n\t<!ELEMENT link (title,history,(activation?),(permissions?),description,url,(category?),(discussion?))>";
+		$doctype .= "\n\t<!ELEMENT image (title,history,(activation?),(permissions?),description,(filename|url),(category?),(discussion?))>";
+		$doctype .= "\n\t<!ELEMENT file (title,history,(activation?),(permissions?),description,(filename|url),(category?),(discussion?))>";
 		
 		$doctype .= "\n\t<!ELEMENT discussion (discussion_node*)>";
+		$doctype .= "\n\t<!ATTLIST discussion email_owner (TRUE|FALSE) #REQUIRED show_authors (TRUE|FALSE) #REQUIRED show_others_posts (TRUE|FALSE) #REQUIRED>";
 		$doctype .= "\n\t<!ELEMENT discussion_node (creator,created_time,title,text,(discussion_node*))>";
 		
 		$doctype .= "\n\t<!ELEMENT history (creator,created_time,last_editor,last_edited_time)>";
@@ -51,7 +53,13 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ELEMENT creator (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT last_editor (#PCDATA)>";
 		
-		$doctype .= "\n\t<!ELEMENT permissions ((view_permission)?,(add_permission)?,(edit_permission)?,(delete_permission)?,(discuss_permission)?)>";
+		$doctype .= "\n\t<!ELEMENT activation ((manual_activiation)?,(activate_date)?,(deactivate_date)?)>";
+		$doctype .= "\n\t<!ELEMENT manual_activiation (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT activate_date (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT deactivate_date (#PCDATA)>";
+		
+		$doctype .= "\n\t<!ELEMENT permissions ((locked?),(view_permission?),(add_permission?),(edit_permission?),(delete_permission?),(discuss_permission?))>";
+		$doctype .= "\n\t<!ELEMENT locked (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT view_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT add_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT edit_permission (agent*)>";
@@ -59,9 +67,11 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ELEMENT discuss_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT agent (#PCDATA)>";
 		
+		$doctype .= "\n\t<!ELEMENT category (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT title (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT text (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT shorttext (#PCDATA)>";
+		$doctype .= "\n\t<!ATTLIST shorttext text_type (text|html) #REQUIRED>";
 		$doctype .= "\n\t<!ELEMENT longtext (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT filename (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT url (#PCDATA)>";
@@ -97,21 +107,7 @@ class DomitSiteExporter {
 		$siteElement->setAttribute('owner', slot::getOwner($site->getField('name')));
 		$siteElement->setAttribute('type', $site->getField('type'));
 		
-		// title
-		$title =& $this->_document->createElement('title');
-		$siteElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($site->getField('title'))));
-		
-		// history
-		$history =& $this->_document->createElement('history');
-		$siteElement->appendChild($history);
-		$this->gethistory($site, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($site, $permissions);
-		if ($hasPerms)
-			$siteElement->appendChild($permissions);
+		$this->addCommonProporties($site, $siteElement);
 		
  		foreach ($site->sections as $key => $val) {
   			if ($site->sections[$key]->getField('type') == 'link')
@@ -135,21 +131,7 @@ class DomitSiteExporter {
 		$sectionElement =& $this->_document->createElement('section');
 		$siteElement->appendChild($sectionElement);
 		
-		// title
-		$title =& $this->_document->createElement('title');
-		$sectionElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($section->getField('title'))));
-		
-		// history
-		$history =& $this->_document->createElement('history');
-		$sectionElement->appendChild($history);
-		$this->gethistory($section, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($section, $permissions);
-		if ($hasPerms)
-			$sectionElement->appendChild($permissions);
+		$this->addCommonProporties($section, $sectionElement);
 			
 		foreach ($section->pages as $key => $val) {
  			if ($section->pages[$key]->getField('type') == 'link')
@@ -173,21 +155,7 @@ class DomitSiteExporter {
 		$pageElement =& $this->_document->createElement('page');
 		$sectionElement->appendChild($pageElement);
 		
-		// title
-		$title =& $this->_document->createElement('title');
-		$pageElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($page->getField('title'))));
-		
-		// history
-		$history =& $this->_document->createElement('history');
-		$pageElement->appendChild($history);
-		$this->gethistory($page, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($page, $permissions);
-		if ($hasPerms)
-			$pageElement->appendChild($permissions);
+		$this->addCommonProporties($page, $pageElement);
 		
 		foreach ($page->stories as $key => $val) {
   			if ($page->stories[$key]->getField('type') == 'link')
@@ -212,33 +180,28 @@ class DomitSiteExporter {
 		$storyElement =& $this->_document->createElement('story');
 		$pageElement->appendChild($storyElement);
 		
-		// title
-		$title =& $this->_document->createElement('title');
-		$storyElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('title'))));
+		$this->addCommonProporties($story, $storyElement);
 		
-		// history
-		$history =& $this->_document->createElement('history');
-		$storyElement->appendChild($history);
-		$this->gethistory($story, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($story, $permissions);
-		if ($hasPerms)
-			$storyElement->appendChild($permissions);
-		
+		if ($story->getField('texttype') == "text")
+			$texttype = "text";
+		else
+			$texttype = "html";
+				
  		if ($story->getField('shorttext')) {
  			$shorttext =& $this->_document->createElement('shorttext');
 			$storyElement->appendChild($shorttext);
 			$shorttext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('shorttext'))));
+			$shorttext->setAttribute('text_type', $texttype);
  		}
  		
  		if ($story->getField('longtext')) {
  			$longertext =& $this->_document->createElement('longertext');
 			$storyElement->appendChild($longertext);
 			$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('longertext'))));
+			$longertext->setAttribute('text_type', $texttype);
  		}
+ 		
+ 		$this->addStoryProporties($story, $storyElement);
 	}
 	
 	/**
@@ -251,21 +214,7 @@ class DomitSiteExporter {
 		$linkElement =& $this->_document->createElement('navlink');
 		$parentElement->appendChild($linkElement);
 		
-		// title
-		$title =& $this->_document->createElement('title');
-		$linkElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($link->getField('title'))));
-		
-		// history
-		$history =& $this->_document->createElement('history');
-		$linkElement->appendChild($history);
-		$this->gethistory($link, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($link, $permissions);
-		if ($hasPerms)
-			$linkElement->appendChild($permissions);
+		$this->addCommonProporties($link, $linkElement);
 		
 		// url
 		$url =& $this->_document->createElement('url');
@@ -283,21 +232,7 @@ class DomitSiteExporter {
 		$headingElement =& $this->_document->createElement('heading');
 		$parentElement->appendChild($headingElement);
 		
-		// title
-		$title =& $this->_document->createElement('title');
-		$headingElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($heading->getField('title'))));
-		
-		// history
-		$history =& $this->_document->createElement('history');
-		$headingElement->appendChild($history);
-		$this->gethistory($heading, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($heading, $permissions);
-		if ($hasPerms)
-			$headingElement->appendChild($permissions);
+		$this->addCommonProporties($heading, $headingElement);
 	}
 	
 	/**
@@ -331,34 +266,21 @@ class DomitSiteExporter {
 	function addFile(& $story, & $pageElement) {
 		$storyElement =& $this->_document->createElement('file');
 		$pageElement->appendChild($storyElement);
-		
-		// title
-		$title =& $this->_document->createElement('title');
-		$storyElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('title'))));
-		
-		// history
-		$history =& $this->_document->createElement('history');
-		$storyElement->appendChild($history);
-		$this->gethistory($story, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($story, $permissions);
-		if ($hasPerms)
-			$storyElement->appendChild($permissions);
+				
+		$this->addStoryProporties($story, $storyElement);
 		
  		// description
 		$shorttext =& $this->_document->createElement('description');
 		$storyElement->appendChild($shorttext);
 		$shorttext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('shorttext'))));
  		
- 		
  		// file
 		$longertext =& $this->_document->createElement('filename');
 		$storyElement->appendChild($longertext);
 		$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext"))));
 		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($filename)));
+		
+		$this->addStoryProporties($story, $storyElement);
 	}
 	
 	/**
@@ -371,33 +293,20 @@ class DomitSiteExporter {
 		$storyElement =& $this->_document->createElement('image');
 		$pageElement->appendChild($storyElement);
 		
-		// title
-		$title =& $this->_document->createElement('title');
-		$storyElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('title'))));
-		
-		// history
-		$history =& $this->_document->createElement('history');
-		$storyElement->appendChild($history);
-		$this->gethistory($story, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($story, $permissions);
-		if ($hasPerms)
-			$storyElement->appendChild($permissions);
+		$this->addCommonProporties($story, $storyElement);
 		
  		// description
 		$shorttext =& $this->_document->createElement('description');
 		$storyElement->appendChild($shorttext);
 		$shorttext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('shorttext'))));
  		
- 		
  		// file
 		$longertext =& $this->_document->createElement('filename');
 		$storyElement->appendChild($longertext);
 		$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext"))));
 		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($filename)));
+		
+		$this->addStoryProporties($story, $storyElement);
 	}
 
 	/**
@@ -410,33 +319,20 @@ class DomitSiteExporter {
 		$storyElement =& $this->_document->createElement('link');
 		$pageElement->appendChild($storyElement);
 		
-		// title
-		$title =& $this->_document->createElement('title');
-		$storyElement->appendChild($title);
-		$title->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('title'))));
-		
-		// history
-		$history =& $this->_document->createElement('history');
-		$storyElement->appendChild($history);
-		$this->gethistory($story, $history);
-		
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($story, $permissions);
-		if ($hasPerms)
-			$storyElement->appendChild($permissions);
+		$this->addCommonProporties($story, $storyElement);
 		
  		// description
 		$shorttext =& $this->_document->createElement('description');
 		$storyElement->appendChild($shorttext);
 		$shorttext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('shorttext'))));
  		
- 		
  		// file
 		$longertext =& $this->_document->createElement('url');
 		$storyElement->appendChild($longertext);
 		$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext"))));
 		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($filename)));
+		
+		$this->addStoryProporties($story, $storyElement);
 	}
 	
 	function getHistory(& $obj, &$historyElement) {
@@ -469,13 +365,19 @@ class DomitSiteExporter {
 // 		print "\npermissions:";
 // 		print_r($permissions);
 		
+		if ($isLocked = $obj->getField('locked')) {
+			$locked =& $this->_document->createElement('locked');
+			$permissionsElement->appendChild($locked);
+			$locked->appendChild($this->_document->createTextNode("TRUE"));
+		}
+		
 		$hasView = $this->addPermissions($obj, $permissionsElement, 'view', $permissions);
 		$hasAdd = $this->addPermissions($obj, $permissionsElement, 'add', $permissions);
 		$hasEdit = $this->addPermissions($obj, $permissionsElement, 'edit', $permissions);
 		$hasDelete = $this->addPermissions($obj, $permissionsElement, 'delete', $permissions);
 		$hasDiscuss = $this->addPermissions($obj, $permissionsElement, 'discuss', $permissions);
 		
-		if ($hasView | $hasAdd | $hasEdit | $hasDelete | $hasDiscuss)
+		if ($isLocked | $hasView | $hasAdd | $hasEdit | $hasDelete | $hasDiscuss)
 			$hasAny = TRUE;
 		else
 			$hasAny = FALSE;
@@ -511,4 +413,118 @@ class DomitSiteExporter {
 		return $hasPerms;
 	}
 	
+	function getActivation(& $obj, & $activationElement) {
+		$hasActivation = FALSE;
+		
+		if (get_class($obj) != 'story' && !$obj->getField('active')) {
+			$active =& $this->_document->createElement('manual_activiation');
+			$active->appendChild($this->_document->createTextNode('INACTIVE'));
+			$activationElement->appendChild($active);
+			$hasActivation = TRUE;
+		}
+		
+		if ($obj->getField('activatedate') != '0000-00-00') {
+			$activate_date =& $this->_document->createElement('activate_date');
+			$activate_date->appendChild($this->_document->createTextNode($obj->getField('activatedate')));
+			$activationElement->appendChild($activate_date);
+			$hasActivation = TRUE;
+		}
+		
+		if ($obj->getField('deactivatedate') != '0000-00-00') {
+			$deactivate_date =& $this->_document->createElement('deactivate_date');
+			$deactivate_date->appendChild($this->_document->createTextNode($obj->getField('deactivatedate')));
+			$activationElement->appendChild($deactivate_date);
+			$hasActivation = TRUE;
+		}
+		
+		return $hasActivation;
+	}
+	
+	function addStoryProporties (& $story, & $storyElement) {		
+		// category
+		if ($story->getField('category')) {
+			$category =& $this->_document->createElement('category');
+			$storyElement->appendChild($category);
+			$category->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('category'))));
+		}
+		
+		// discussions
+		if ($story->getField('discuss')) {
+			$discussion =& $this->_document->createElement('discussion');
+			$storyElement->appendChild($discussion);
+			
+			$emailOwner = (($story->getField('discussemail'))?"TRUE":"FALSE");
+			$discussion->setAttribute('email_owner', $emailOwner);
+			
+			$show_authors = (($story->getField('discussauthor') == 1)?"TRUE":"FALSE");
+			$discussion->setAttribute('show_authors', $show_authors);
+			
+			$show_others_posts = (($story->getField('discussdisplay') == 1)?"TRUE":"FALSE");
+			$discussion->setAttribute('show_others_posts', $show_others_posts);
+			
+			$discussionObj = & new discussion(&$story);
+			$discussionObj->_fetchchildren();
+			
+			while ($node =& $discussionObj->getNext()) {
+				$this->addDiscussionNode($node, $discussion);
+			}
+		}
+	}
+	
+	function addCommonProporties (& $partObj, & $element) {
+		// title
+		$title =& $this->_document->createElement('title');
+		$element->appendChild($title);
+		$title->appendChild($this->_document->createTextNode(htmlspecialchars($partObj->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$element->appendChild($history);
+		$this->gethistory($partObj, $history);
+		
+		// permissions
+		$permissions =& $this->_document->createElement('permissions');
+		$hasPerms = $this->getPermissions($partObj, $permissions);
+		if ($hasPerms)
+			$element->appendChild($permissions);
+			
+		// permissions
+		$activation =& $this->_document->createElement('activation');
+		$hasActivation = $this->getActivation($partObj, $activation);
+		if ($hasActivation)
+			$element->appendChild($activation);
+	
+	}
+	
+	function addDiscussionNode(& $node, & $parentElement) {
+		$discussionNode =& $this->_document->createElement('discussion_node');
+		$parentElement->appendChild($discussionNode);
+		
+		// Add the creator, title, timestamp, and text.
+		// creator
+		$creator =& $this->_document->createElement('creator');
+		$discussionNode->appendChild($creator);
+		$creator->appendChild($this->_document->createTextNode(htmlspecialchars($node->authoruname)));
+		
+		// created_time
+		$created_time =& $this->_document->createElement('created_time');
+		$discussionNode->appendChild($created_time);
+		$created_time->appendChild($this->_document->createTextNode(htmlspecialchars($node->tstamp)));
+		
+		// title
+		$title =& $this->_document->createElement('title');
+		$discussionNode->appendChild($title);
+		$title->appendChild($this->_document->createTextNode(htmlspecialchars($node->subject)));
+		
+		// text
+		$text =& $this->_document->createElement('text');
+		$discussionNode->appendChild($text);
+		$text->appendChild($this->_document->createTextNode(htmlspecialchars($node->content)));
+		
+		// If this node has children, add them.
+		$node->_fetchchildren();
+		foreach ($node->children as $key => $val) {
+			$this->addDiscussionNode($node->children[$key], $discussionNode);
+		}
+	}
 }
