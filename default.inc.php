@@ -441,9 +441,10 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 	}
 	printc("<table width=100% cellpadding=0 cellspacing=0><tr><td align=left>");
 	
-	if ($isclass && (!$exists || ($exists && $_SESSION[auser] == slot::getOwner($obj->name)))) {
+	if ($isclass && ((!$exists && (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name))) || ($exists && $_SESSION[auser] == slot::getOwner($obj->name)))) {
 		// if:
 		//		isclass - is a class
+		//		if it doesn't exist, either there is no owner or we are the owner.
 		//		if it exists, the user the owner
 		printc("<input type=checkbox name='group[]' value='$name'>");
 	}
@@ -454,13 +455,19 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 	//printc("<td align=right style='font-size: 11px; color: #777;'>");
 	if ($exists) {
 		printc("<span style ='font-size:14px;'><a href='$namelink'>".$obj->getField("title")."</a></span>");
-	} else {
+	} else if (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name)) {
+	// if the slot doesn't have an owner or we are the owner.
 		if ($_SESSION[atype] == 'prof' && $isclass) {
 			printc("<span style ='font-size:10px;'>Create: <a href='$namelink'>Site</a> | <a href='http://et.middlebury.edu/mots/prof_add_class?$sid&class=$name' target='mots'>Assessments</a> </span>");
 		} else {
 			printc("<span style ='font-size:10px;'><a href='$namelink'>Create Site</a></span>");		    
 		}
+	} else {
+	// if the slot does have an owner that isn't us
+		printc("<span style ='font-size:10px;'>This site is owned by user \"".slot::getOwner($obj->name)."\". Contact your system administrator if you feel you should own this site.</span>");
+	
 	}
+	
 	printc("</td><td align=right>");
 	printc((($active)?"[$active]":""));
 	printc("</td></tr></table>");
