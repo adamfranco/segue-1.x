@@ -88,7 +88,7 @@ th.info { color: #888; }
 <table width=100% id="maintable" cellspacing=1>
 <tr><td>
 	<table cellspacing=1 width=100%>
-		<? if ($fulltext) print "<tr><th align=left>".(($story->getField("title"))?spchars($story->getField("title")):"&nbsp;")."</th></tr><tr><td style='padding-bottom: 15px'>$fulltext</td></tr>"; ?>
+		<? if ($fulltext) print "<tr><th align=left>".(($story->getField("title"))?spchars($story->getField("title")):"&nbsp;")."</th></tr><tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>"; ?>
 		<?
 		
 		// output discussions?

@@ -105,7 +105,7 @@ do {
 	/* 		$stories = handlestoryorder($stories,$pageinfo[storyorder]); */
 		
 		if ($thisPage->stories) {
-			foreach (array_keys($thisPage->stories) as $k=>$s) {
+			foreach (array_keys($thisPage->data[stories]) as $k=>$s) {
 				$o =& $thisPage->stories[$s];
 				if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {		
 					if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 

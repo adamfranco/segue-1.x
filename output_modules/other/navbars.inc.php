@@ -4,7 +4,8 @@ if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <
 
 $i=0;
 if ($thisSite->sections) {
-	foreach ($thisSite->sections as $s=>$o) {
+	foreach ($thisSite->data[sections] as $s) {
+		$o = &$thisSite->sections[$s];
 		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 			if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=$action";
 			if ($o->getField("type") == 'link') { $link = $o->getField("url"); $target="_self";}
@@ -30,7 +31,8 @@ if ($thisSection) {
 	$thisSection->fetchDown();	//just in case...
 	$i = 0;
 	if ($thisSection->pages) {
-		foreach ($thisSection->pages as $p=>$o) {
+		foreach ($thisSection->data[pages] as $p) {
+			$o = &$thisSection->pages[$p];
 			$extra = '';
 			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 				if ($action == 'viewsite' && ($p == $page || $o->getField("type") != 'page')) {

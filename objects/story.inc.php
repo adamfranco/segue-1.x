@@ -550,6 +550,7 @@ SET
 //		if ($this->id && ($all || $this->changed[pages])) { //I belive we may always need to fix the order.
 		if ($this->id) {
 			$orderkeys = array_keys($this->owningPageObj->getField("stories"),$this->id);
+//			print "<br>".$this->id."<br>".$orderkeys[0]."<BR>";
 			$a[] = "story_order=".$orderkeys[0];
 		} else {
 			$a[] = "story_order=".count($this->owningPageObj->getField("stories"));

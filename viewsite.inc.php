@@ -76,10 +76,10 @@ do {
 //			$thisSection->fetchDown();
 		}
 		if ($_REQUEST[reorder] == 'section' && $thisSite->hasPermission("edit")) {
-			echo "<pre>";
-			print_r ($thisSite->getField("sections"));
+/* 			echo "<pre>"; */
+/* 			print_r ($thisSite->getField("sections")); */
 			$thisSite->setField("sections",reorder($thisSite->getField("sections"), $_REQUEST[id],$_REQUEST[direction]));
-			print_r ($thisSite->getField("sections"));
+/* 			print_r ($thisSite->getField("sections")); */
 	
 			foreach(array_keys($thisSite->sections) as $k=>$id)
 				$thisSite->sections[$id]->changed[order] = 1;
@@ -96,14 +96,18 @@ do {
 			if ($thisPage)
 				$thisPage =& $thisSite->sections[$section_id]->pages[$page_id];
 
-			print_r($thisSite);
+/* 			print_r($thisSite); */
 				
 //			$thisSite->fetcheddown=0;
 //			$thisSite->fetchDown();
 		}
 		if ($_REQUEST[reorder] == 'story' && $thisPage->hasPermission("edit")) {
+//			print_r($thisPage->getfield("stories"));
 			$thisPage->setField("stories",reorder($thisPage->getField("stories"),$_REQUEST[id],$_REQUEST[direction]));
-			$thisPage->updateDB();
+//			print_r($thisPage->getfield("stories"));
+			foreach(array_keys($thisPage->stories) as $k=>$id)
+				$thisPage->stories[$id]->changed[order] = 1;
+			$thisPage->updateDB(1);
 //			$thisPage->fetcheddown=0;
 //			$thisPage->fetchDown();
 		}
@@ -144,7 +148,7 @@ do {
 		
 		$i=0;
 		if ($thisPage->stories) {
-			foreach (array_keys($thisPage->stories) as $k=>$s) {
+			foreach ($thisPage->data[stories] as $s) {
 				$o =& $thisPage->stories[$s];
 		/* 		$a = db_get_line("stories","id=$s"); */
 				if ($o->canview() || $thisPage->hasPermissionDown("add or edit or delete")) {
