@@ -9,6 +9,7 @@
     have it an absolute path, such as '/htmlarea/'. -->
     
 <? global $cfg;  ?>
+<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter.	
 
 <script type="text/javascript">
 /*   _editor_url = "../"; */
@@ -24,7 +25,7 @@ var editor = null;
 function initEditor() {
 	/*   editor = new HTMLArea("ta"); */  
 	var config = new HTMLArea.Config();
-	config.width = "auto";
+	config.width = "400";
 	config.height = "300px";
 	
 	config.toolbar = [

@@ -8,6 +8,7 @@
     example ZIP file will work anywhere, but please NOTE THAT it's better to
     have it an absolute path, such as '/htmlarea/'. -->
 <? global $cfg;  ?>
+<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter.	
 
 <script type="text/javascript">
 /*   _editor_url = "../"; */
@@ -24,8 +25,8 @@ var editor = null;
 function initEditor() {
 /*   editor = new HTMLArea("ta"); */  
 	var config = new HTMLArea.Config();
-	config.width = "auto";
-	config.height = "300px";
+	config.width = "600px";
+	config.height = "400px";
 	
 	config.toolbar = [
 	[ "fontname", "space",

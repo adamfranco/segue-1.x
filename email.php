@@ -316,7 +316,12 @@ Participants<br><br>
 			$to = rtrim($to, ",");
 			
 			//compile from and cc into headers
-			$from = $_SESSION['afname']."<".$_SESSION['aemail'].">";
+			if ($_SESSION['ltype']=='admin' && $_SESSION['lfname'] != $_SESSION['afname']) {
+				$from = $_SESSION['lfname']." as ".$_SESSION['afname']."<".$_SESSION['aemail'].">";
+			} else {
+				$from = $_SESSION['afname']."<".$_SESSION['aemail'].">";
+			}
+			
 			$headers = "From: ".$from."\n";
 			$headers .= "Cc: ".$from."\n";
 			
@@ -333,7 +338,12 @@ Participants<br><br>
 			<form action="<? echo $PHP_SELF ?>" method=post name=emailform>
 			<table width=100%>
 			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
-			<tr><td align=right>From:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
+			<? if ($_SESSION['ltype']=='admin' && $_SESSION['lfname'] != $_SESSION['afname']) {
+					print "<tr><td align=right>From:</td><td>".$_SESSION['lfname']." as ".$_SESSION['afname']."</td><td align=right></td></tr>";
+				} else {
+					print "<tr><td align=right>From:</td><td>".$_SESSION['afname']."</td><td align=right></td></tr>";
+				}
+			?>
 			<tr><td align=right>Cc:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
 			<tr><td></td><td align=left>
@@ -364,6 +374,9 @@ Participants<br><br>
 		 ******************************************************************************/
 
 		} else if ($curraction == 'send') {
+			if ($_SESSION['ltype']=='admin' && $_SESSION['lfname'] != $_SESSION['afname']) {
+				$subject = $subject." (sent by Segue Admin: ".$_SESSION['lfname'].")";
+			}
 			print "<table>";
 			print "<tr><td>To:</td><td>".$to."</td></tr><br><hr>\n";
 			print "<tr><td>From:</td><td>".$_SESSION['afname']."</td></tr>\n";

@@ -80,11 +80,22 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	printc("Extended Content (Optional):");
 	printc("<br>");
+	
+		//	print out text areas with editor (determined by addeditor function)
+	//  addeditor function (defined in editor.inc.php)
+	//  addeditor function variables (textarea, cols, rows, text)
+	//printpre($_SESSION[storyObj]);
+	if ($_SESSION[settings][editorinitstate] == "text" && $supported == 1) {
+		$text = htmlbr($_SESSION[storyObj]->getField("longertext"));
+	} else {
+		$text = $_SESSION[storyObj]->getField("longertext");
+	}
+
 		
 	//	print out text areas with editor (determined by addeditor function)
 	//  addeditor function (defined in editor.inc.php)
 	//  addeditor function variables (textarea, cols, rows, text)
-	printc(addeditor ("longertext",60,26,$_SESSION[storyObj]->getField("longertext")));
+	printc(addeditor ("longertext",60,26,$text));
 	printc("</td></tr></table>");
 
 	//sniffer determines browser and os

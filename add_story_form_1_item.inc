@@ -154,9 +154,8 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//  addeditor function (defined in editor.inc.php)
 	//  addeditor function variables (textarea, cols, rows, text)
 	if ($_SESSION[storyObj]->getField("texttype")=='text' && $supported == 1) {
-		printc("<div style='font-size:12px; color:#D00'>
-		</div>");
 		$text = htmlbr($_SESSION[storyObj]->getField("shorttext"));
+		$_SESSION[settings][editorinitstate] = "text";
 	} else {
 		$text = $_SESSION[storyObj]->getField("shorttext");
 	}
