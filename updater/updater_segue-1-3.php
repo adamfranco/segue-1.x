@@ -648,10 +648,6 @@ FROM
 
 	segue_et.sites
 
-WHERE
-
-	viewpermissions = 'anyone'
-
 ORDER BY
 
 	id;
@@ -671,10 +667,6 @@ SELECT
 FROM
 
 	segue_et.sites
-
-WHERE
-
-	viewpermissions = 'midd'
 
 ORDER BY
 
