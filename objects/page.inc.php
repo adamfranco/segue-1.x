@@ -100,8 +100,11 @@ class page extends segue {
 			"page_id"
 		),
 		"editedby" => array(
-			"page",
-			array("FK_updatedby"),
+			"page
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_uname"),
 			"page_id"
 		),
 		"editedtimestamp" => array(
@@ -110,8 +113,11 @@ class page extends segue {
 			"page_id"
 		),
 		"addedby" => array(
-			"page",
-			array("FK_createdby"),
+			"page
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_uname"),
 			"page_id"
 		),
 		"addedtimestamp" => array(

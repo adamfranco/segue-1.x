@@ -81,8 +81,11 @@ class site extends segue {
 			"site_id"
 		),
 		"editedby" => array(
-			"site",
-			array("FK_updatedby"),
+			"site
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_uname"),
 			"site_id"
 		),
 		"editedtimestamp" => array(
@@ -91,8 +94,11 @@ class site extends segue {
 			"site_id"
 		),
 		"addedby" => array(
-			"site",
-			array("FK_createdby"),
+			"site
+				INNER JOIN
+			 user
+			 	ON FK_createdby = user_id",
+			array("user_uname"),
 			"site_id"
 		),
 		"addedtimestamp" => array(

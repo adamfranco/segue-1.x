@@ -66,8 +66,11 @@ class section extends segue {
 			"section_id"
 		),
 		"editedby" => array(
-			"section",
-			array("FK_updatedby"),
+			"section
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_uname"),
 			"section_id"
 		),
 		"editedtimestamp" => array(
@@ -76,8 +79,11 @@ class section extends segue {
 			"section_id"
 		),
 		"addedby" => array(
-			"section",
-			array("FK_createdby"),
+			"section
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_uname"),
 			"section_id"
 		),
 		"addedtimestamp" => array(

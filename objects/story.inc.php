@@ -88,8 +88,11 @@ class story extends segue {
 			"story_id"
 		),
 		"editedby" => array(
-			"story",
-			array("FK_updatedby"),
+			"story
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_uname"),
 			"story_id"
 		),
 		"editedtimestamp" => array(
@@ -98,8 +101,11 @@ class story extends segue {
 			"story_id"
 		),
 		"addedby" => array(
-			"story",
-			array("FK_createdby"),
+			"story
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_uname"),
 			"story_id"
 		),
 		"addedtimestamp" => array(
