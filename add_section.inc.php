@@ -35,7 +35,7 @@ if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 	// handle de/activate dates
 	$_SESSION[sectionObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[sectionObj]->setField("active",$_REQUEST[active]);
-	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setPermissions($_REQUEST[permissions]);
+//	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setPermissions($_REQUEST[permissions]);
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setField("locked",$_REQUEST[locked]);
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions];
 	if ($_REQUEST[url]) $_SESSION[sectionObj]->setField("url",$url);
@@ -128,13 +128,11 @@ if ($_REQUEST[save]) {
 	if ($_SESSION[sectionObj]->getField("type")=='url' && (!$_SESSION[sectionObj]->getField("url") || $_SESSION[sectionObj]->getField("url")=='' || $_SESSION[sectionObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 	
-	if (!$error) { // save it to the database
-		// check make sure the owner is the current user if they are changing permissions
-		if ($site_owner != $_SESSION[auser])
-			$_SESSION[sectionObj]->setPermissionsArray($thisSite->getPermissionsArray());
+	if (!$error) { // save it to the database			
 		
 		// add the new section id to the sites table
 		if ($_SESSION[settings][add]) {
+			$_SESSION[sectionObj]->setPermissions($thisSite->getPermissions());
 			$_SESSION[sectionObj]->insertDB();
 		}
 		if ($_SESSION[settings][edit]) {

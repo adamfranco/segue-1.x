@@ -44,7 +44,7 @@ $site_owner = $_SESSION[obj]->getField("addedby");
 
 $isOwner = $isEditor = 1;
 
-if ($site_owner != $_SESSION[auser] && $_SESSION[ltype] != 'admin') {
+if ($site_owner != $_SESSION[auser]) {
 /* 	error("You are not allowed to edit permissions for this site!"); */
 	$isOwner = 0;
 }
@@ -159,7 +159,7 @@ if ($isOwner) {
 ?>
 <html>
 <head>
-<title>Edit Permissions - </title>
+<title><? print ($isOwner)?"Edit Permissions - ":"Your Permissions - "; print $_SESSION[obj]->getField("title"); ?></title>
 
 <style type='text/css'>
 a {

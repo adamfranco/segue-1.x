@@ -127,7 +127,9 @@ function doEditorLine(&$o) {
 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->id.",0";
 	if ($class == 'story')
 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->owning_page.",".$o->id;
-	print "<td align=center class='lockedcol' style='background-color: $bgColorL'>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onChange=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\" ".((!$isOwner)?"disabled":"").">":"-")."</td>";
+	print "<td align=center class='lockedcol' style='background-color: $bgColorL' width=18>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onChange=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\" ".((!$isOwner)?"disabled":"").">":"&nbsp;")."</td>";
+	
+	$type = $o->getField("type");
 	
 	$o->buildPermissionsArray();
 	$p = $o->getPermissions();
@@ -139,8 +141,9 @@ function doEditorLine(&$o) {
 			$skip = 0;
 			if (($e == 'everyone' || $e == 'institute') && $i<3) $skip = 1;
 			if ($class=='story' && $v == 'add') $skip = 1;
-			if ($skip) print "<td align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">-</td>";
-			else print "<td align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onChange=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v") || !$isOwner)?"disabled":"")."></td>";
+			if ($type != 'story' && $type != 'page' && $type != 'section' && $class != 'site') $skip=1;
+			if ($skip) print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">&nbsp;</td>";
+			else print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onChange=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v") || !$isOwner)?"disabled":"")."></td>";
 		}
 	}
 	print "</tr>";

@@ -126,7 +126,7 @@ if ($thisSection) {
 			if ($p->getField("type") == 'page')
 				add_link(leftnav,$p->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$id&action=viewsite",$extra,$id);
 			if ($p->getField("type") == 'url')
-				add_link(leftnav,$p->getField("title")." <img src=globe.gif border=0 align=absmiddle height=15 width=15>",$a['url'],$extra,$id,"_blank");
+				add_link(leftnav,$p->getField("title")." <img src=globe.gif border=0 align=absmiddle height=15 width=15>",$p->getField("url"),$extra,$id,"_blank");
 			if ($p->getField("type") == 'heading')
 				add_link(leftnav,$p->getField("title"),'',$extra);
 			if ($p->getField("type") == 'divider')

@@ -48,7 +48,7 @@ if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showdate",$_REQUEST[showdate]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("storyorder",$_REQUEST[storyorder]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showhr",$_REQUEST[showhr]);
-	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setPermissions($_REQUEST[permissions]);
+//	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setPermissions($_REQUEST[permissions]);
 	if ($_REQUEST[archiveby]) $_SESSION[pageObj]->setField("archiveby",$_REQUEST[archiveby]);
 	if ($_REQUEST[url]) $_SESSION[pageObj]->setField("url",$_REQUEST[url]);
 	
@@ -93,7 +93,8 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 	}
 	
 	if ($_SESSION[settings][add]) {
-		$_SESSION[pageObj]->setPermissions($thisSection->getPermissions);
+		print "setting permissions";
+		$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 	}
 	
 	if ($_SESSION[settings][edit]) {
@@ -142,20 +143,21 @@ if ($_REQUEST[save]) {
 	// error checking
 	if ($_SESSION[pageObj]->getField("type")!='divider' && (!$_SESSION[pageObj]->getField("title") || $_SESSION[pageObj]->getField("title")==''))
 		error("You must enter a title.");
-	if ($_SESSION[pageObj]->getField("type")=='url' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[settings][url]=='' || $_SESSION[pageObj]->getField("url")=='http://'))
+	if ($_SESSION[pageObj]->getField("type")=='url' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[pageObj]->getField("url")=='' || $_SESSION[pageObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 		
 	if (!$error) { // save it to the database
 		
-		// check make sure the owner is the current user if they are changing permissions
-		if ($site_owner != $_SESSION[auser])
-			$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
+/* 		// check make sure the owner is the current user if they are changing permissions */
+/* 		if ($site_owner != $_SESSION[auser]) */
 		
 		if ($_SESSION[settings][edit]) { 
 			$_SESSION[pageObj]->updateDB();
 /* 			$query = "update pages set editedby='$auser',"; $where = " where id=$_SESSION[settings][page]";  */
 		}
 		if ($_SESSION[settings][add]) {
+			// automatically inherit permissions from above;
+			$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 			$_SESSION[pageObj]->insertDB();
 		}
 		

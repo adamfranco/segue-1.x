@@ -98,7 +98,7 @@ if ($thisSection) {
 
 if ($thisPage) {
 	$thisPage->fetchDown();
-	printc("<div class=title>".$o->getField("title")."</div>");
+	printc("<div class=title>".$thisPage->getField("title")."</div>");
 	$i=0;
 	// handle archiving -- monthly, weekly, etc
 	$thisPage->handleStoryArchive();
