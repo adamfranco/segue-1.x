@@ -722,13 +722,8 @@ print "</table><br>";
 			 ******************************************************************************/
 			if ($curraction != 'review' && $curraction != 'user') {
 			
-		//		if (count($participants)) {
-		//			asort($participants);
-		//			reset($participants);
-		//		}
 				if (is_array($students)) {
 					foreach (array_keys($students) as $key) {
-						//if (is_array($logged_participants)) {
 							if (!in_array($students[$key][uname], $logged_participants)) {
 								print "<tr>";
 								print "<td class=td$color>".$students[$key][fname]."</td>";
@@ -737,7 +732,6 @@ print "</table><br>";
 								print "<td class=td$color></td>";
 								print "</tr>";
 							}
-						//}
 					}
 				}
 			}
