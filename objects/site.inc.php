@@ -8,7 +8,7 @@ class site extends segue {
 	var $sections;
 	var $name;
 	var $_allfields = array("name","title","theme","themesettings","header","footer",
-						"addedby","editedby","editedtimestamp","addedtimestamp",
+						"addedby","addedbyfull", "editedby","editedtimestamp","addedtimestamp",
 						"activatedate","deactivatedate","active","sections",
 						"listed","type");
 
@@ -103,6 +103,14 @@ class site extends segue {
 			 user
 			 	ON FK_createdby = user_id",
 			array("user_uname"),
+			"site_id"
+		),
+		"addedbyfull" => array(
+			"site
+				INNER JOIN
+			 user
+			 	ON FK_createdby = user_id",
+			array("user_fname"),
 			"site_id"
 		),
 		"addedtimestamp" => array(

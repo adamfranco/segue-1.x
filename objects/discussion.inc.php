@@ -23,7 +23,7 @@ class discussion {
 			"useoptforchildren"=>false
 			);
 	var $getinfo;
-			
+							
 	function opt($key,$val=NULL) {
 		if ($val!=NULL) { // they're setting the option
 			$this->opt[$key] = $val;
@@ -38,13 +38,14 @@ class discussion {
 		return $this->opt[$key];
 	}
 	
-	function discussion($story,$a=NULL,$parent=0) {
+	function discussion(& $story,$a=NULL,$parent=0) {
 		if (is_array($a)) $this->_parseDBline($a);
 		if (is_numeric($a)) $this->id = $a;
 		if (is_object($story)) { 
-			$this->storyObj = &$story; 
+			$this->storyObj =& $story; 
 			$this->storyid = $story->id;
 		}
+		
 		if (is_numeric($story)) $this->storyid = $story;
 		if ($parent) $this->parentid = $parent;
 	}
@@ -285,10 +286,8 @@ class discussion {
 
 		db_query($query);
 		//printc($query);
-		
-		$this->id = lastid();
-		
-		return true;
+		$newid = lastid();
+		return $newid;
 	}
 	
 	function _update() {
@@ -302,10 +301,14 @@ class discussion {
 		discussion_id=".$this->id;
 		
 		db_query($query);
+		//$newid = lastid();
 		return true;
 	}
 	
-	function insert() { $this->_insert(); }
+	function insert() { 
+		$newid = $this->_insert(); 
+		return $newid;
+	}
 	function update() { $this->_update(); }
 	
 	function _generateSQLdata() {
@@ -369,8 +372,12 @@ class discussion {
 		$this->_fetchchildren();
 		if ($this->numchildren) {
 			if (is_array($opt)) $p = 0;
-			else $p = 30;
-			printc ("<tr><td style='padding: 0px'><table width=100% style='padding-left:".$p."px' cellspacing=0px>");
+			else $p = 1;
+			if ($p) {
+				printc ("<tr><td style='padding: 0px'><table align=right width=95% style='padding-left:".$p."px' cellspacing=0px>");
+			} else {
+				printc ("<tr><td style='padding: 0px'><table width=100% style='padding-left:".$p."px' cellspacing=0px>");
+			}
 			for ($i=0;$i<$this->numchildren;$i++) {
 				if (is_array($opt)) $this->children[$i]->opt($opt);
 				if ($this->opt("useoptforchildren")) $this->children[$i]->opt($this->opt);
@@ -401,7 +408,7 @@ class discussion {
 	function _commithttpdata() {
 		global $sid,$error;
 		global $mailposts;
-		
+
 		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
 			$site = $_REQUEST['site'];
 			//$action = $_REQUEST['action'];
@@ -441,9 +448,9 @@ class discussion {
 			$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
 			$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:0;
 			$d->libraryfileid = $_REQUEST['libraryfileid'];
-			$d->insert();
+			$newid = $d->insert();
 			if ($mailposts == 1) {
-				$this->sendemail();
+				$this->sendemail($newid);
 			}
 
 			unset($_REQUEST['discuss'],$_REQUEST['commit']);
@@ -481,7 +488,7 @@ class discussion {
 				
 		$p = ($t=='reply')?" style='padding-left: 15px'":'';
 		//
-		printc ("<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
+		printc ("\n<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
 		printc ("<tr><td$p><b>$d</b></td></tr>");
 		printc ("<tr><td$p>");
 		printc ("<table width=100%  cellspacing=0px><tr><td align=left>");
@@ -489,7 +496,7 @@ class discussion {
 		printc ("</td><td align=right><a href='#' onClick='document.postform.submit()'>[$b]</a></td></tr></table>");
 		printc ("</td></tr>");
 		printc ("<tr><td class=content$p>");
-		printc ("<textarea name=content rows=6 cols=60>".spchars($c)."</textarea>");
+		printc ("<textarea name=content rows=10 cols=60>".spchars($c)."</textarea>");
 		//changed from action to discuss
 		printc ("<input type=hidden name=discuss value='".$_REQUEST['discuss']."'>");
 		//added fullstory action for posting form
@@ -503,7 +510,7 @@ class discussion {
 		$site = $_REQUEST[site];		
 		printc ("<br>Upload a File:<input type=text name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size=25 readonly><input type=button name='browsefiles' value='Browse...' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?site=$site&source=discuss&owner=$site_owner&editor=none\")' target='filebrowser' style='text-decoration: none'>");
 		//printc ("<input type=submit name='browsefiles' value='Add'>");
-		printc ("</form>");
+		printc ("</form>\n");
 		
 		if ($_SESSION['aid']) printc ("<br>You will be able to edit your post as long as no-one replies to it.");
 		else printc ("<br>Once submitted, you will not be able to modify your post.");
@@ -517,8 +524,11 @@ class discussion {
 	
 	function _output($cr,$o) {
 		global $sid,$error,$showallauthors,$showposts,$uploadurl,$site_owner;
-		
-		if ($showposts == 1 || $o == 1 || $_SESSION[auser] == $this->authoruname) {
+		$siteOwnerId = db_get_value("user","user_id","user_uname='".$site_owner."'");
+		$parentAuthorId = db_get_value("discussion","FK_author","discussion_id='".$this->parentid."'");
+		//print $siteOwnerId;
+		//printc("author=".$parentAuthorId);
+		if ($showposts == 1 || $o == 1 || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId ) {
 			// check to see if we have any info to commit
 			$this->_commithttpdata();
 			
@@ -539,12 +549,16 @@ class discussion {
  ******************************************************************************/
 
 			if (!$this->id) return false;
-			printc ("<tr><td class=dheader3>");
+			printc ("\n<tr><td class=dheader3>");			
 			$s = "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
+/* 			printc ("\n<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=rateform>"); */
+/* 			printc ("<div align=right><input type=text size= 3 class='textfield small' name='discussion_rate' value='".$this->discussion_rate."'>"); */
+/* 			printc ("<input type=submit name='rate' value='rate' class='button small></div>"); */
+			printc ("</form>");
 	//		$s = $this->subject;
 	
 			$a = "";
-			if ($showallauthors == 1 || $o || $_SESSION[auser] == $this->authoruname) {
+			if ($showallauthors == 1 || $o || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId) {
 				if ($this->opt("showauthor")) $a .= "by <span class=subject>".$this->authorfname."</span>";
 				if ($this->opt("showauthor") && $this->opt("showtstamp")) $a .= " on ";
 			} else {
@@ -563,7 +577,7 @@ class discussion {
 				/******************************************************************************
 				 * Actual discussion posting content
 				 ******************************************************************************/
-				printc ("<table width=100% cellspacing=0px>");
+				printc ("\n<table width=100% cellspacing=0px>");
 					printc ("<tr><td align=left><span class=subject>$s</span><br>$a</td><td align=right valign=bottom>$c</td></tr>"); 
 					if ($this->media_tag) {
 						$media_link = "refer to: <a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target=media>".$this->media_tag."</a>";
@@ -591,7 +605,7 @@ class discussion {
  * Emails site owner discussion posts
  ******************************************************************************/
 
-	function sendemail() {
+	function sendemail($newid=0) {
 		global $sid,$error;
 		global $_full_uri;
 		
@@ -599,29 +613,34 @@ class discussion {
 		$site =& new site($_REQUEST[site]);
 		$siteowneremail = $site->owneremail;
 		$sitetitle = $site->title;
+		//$story =& new story($_REQUEST[story]);
+		//$story = $storyObj->getfield(shorttext);
 		
 		// send an email to the siteowner
 		
 		$to = $siteowneremail;
 		$from = $_SESSION['afname']."<".$_SESSION['aemail'].">";
-		$subject = "Segue Discussion: ".$_REQUEST['subject'];
+		$subject = $sitetitle." Discussion: ".$_REQUEST['subject'];
 
 		$html = 0;
 		if ($html == 1) {
-			$body = $_REQUEST['subject']."<br>";
-			$body .= "by ".$_SESSION['afname']."<br>";
+			$body = $sitetitle."<br>";
+			$body .= "subject: ".$_REQUEST['subject']."<br>";
+			$body .= "author: ".$_SESSION['afname']."<br>";
 			$body .= $_REQUEST['content']."<br><br>";
 			$body .= "See:<br>";
 			$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
 			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
 			$body .= "<a href='".$discussurl."'>".$_full_uri.$discussurl2."</a><br><br>";			
 		} else {
-			$body = $_REQUEST['subject']."\n";		
-			$body .= "by ".$_SESSION['afname']."\n";
-			$body .= $_REQUEST['content']."\n";
+			$body = "site: ".$sitetitle."\n";
+			//$body .= "topic: ".$this->story."\n";	
+			$body .= "subject: ".$_REQUEST['subject']."\n";		
+			$body .= "author: ".$_SESSION['afname']."\n";
+			$body .= $_REQUEST['content']."\n\n";
 			$body .= "See:\n";
 			//$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
-			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
+			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
 			$body .= $_full_uri."/".$discussurl2."\n";
 		}
 		

@@ -165,11 +165,11 @@ do {
 						printc("<div class=contentinfo align=right>");
 						$added = timestamp2usdate($o->getField("addedtimestamp"));
 						printc("added");
-						if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
+						if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedbyfull"));
 						if ($thisPage->getField("showdate")) printc(" on $added");
 						if ($o->getField("editedby")) {
 							printc(", edited");
-							if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedby"));
+							if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedbyfull"));
 							if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
 						}
 						printc("</div>");

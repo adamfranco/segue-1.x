@@ -14,6 +14,7 @@ class Update110
 	var $field02Exists = FALSE;
 	var $field03Exists = FALSE;
 	var $field04Exists = FALSE;
+	var $field05Exists = FALSE;
 	
 	
     /**
@@ -74,8 +75,15 @@ class Update110
 		if (db_num_rows($r))
 			$this->field04Exists = TRUE;
 
+		$query = "
+		DESCRIBE
+			discussion discussion_rate
+		";
+		$r = db_query($query);
+		if (db_num_rows($r))
+			$this->field05Exists = TRUE;
 			
-		if ($this->field01Exists && $this->field02Exists && $this->field03Exists && $this->field04Exists)
+		if ($this->field01Exists && $this->field02Exists && $this->field03Exists && $this->field04Exists && $this->field05Exists)
 			return TRUE;
 		else
 			return FALSE;
@@ -126,6 +134,16 @@ class Update110
 				discussion
 			ADD 
 				 FK_media INT( 10 ) UNSIGNED NULL AFTER FK_parent
+			";
+			$r = db_query($query);
+		}
+				
+		if (!$this->field05Exists) {
+			$query = "
+			ALTER TABLE
+				discussion
+			ADD
+				discussion_rate INT( 10 ) UNSIGNED AFTER discussion_content
 			";
 			$r = db_query($query);
 		}		

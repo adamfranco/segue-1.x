@@ -71,7 +71,7 @@ if ($_REQUEST[source]) {
 	} else {
 		$userfilter = "AND user_id = $user_id";
 	}
-	print "useruname=".$username;
+	//print "useruname=".$username;
 } else {
 	$userfilter = "";
 }

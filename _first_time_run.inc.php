@@ -90,6 +90,7 @@ if (!$allTablesExist) {
 		  discussion_tstamp timestamp(14) NOT NULL,
 		  discussion_subject varchar(255) NOT NULL default '',
 		  discussion_content mediumblob NOT NULL,
+		  discussion_rate INT(10) unsigned default NULL,
 		  FK_story int(10) unsigned NOT NULL default '0',
 		  discussion_order int(10) unsigned NOT NULL default '0',
 		  FK_parent int(10) unsigned default NULL,

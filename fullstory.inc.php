@@ -16,15 +16,16 @@ $content = '';
 
 //include("$themesdir/common/header.inc.php");
 
-if (($tmp = $_REQUEST['flat_discussion'])) {
+if ($tmp = $_REQUEST['flat_discussion']) {
 	$_SESSION['flat_discussion'] = ($tmp=='true')?true:false;
 }
 
-if (($tmp2 = $_REQUEST['recent'])) {
+if ($tmp2 = $_REQUEST['recent']) {
 	$_SESSION['recent'] = ($tmp2=='true')?true:false;
 }
 
-
+//printpre($_SESSION);
+//printpre($_REQUEST);
 
 $partialstatus = 1;
 $siteObj =& new site($_REQUEST[site]);
@@ -130,7 +131,8 @@ printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr
 if ($storyObj->getField("discuss")) {
 	$mailposts = $storyObj->getField("discussemail");	
 	$showposts = $storyObj->getField("discussdisplay");
-	$showallauthors = $storyObj->getField("discussauthor");		
+	$showallauthors = $storyObj->getField("discussauthor");	
+	$siteowner = $siteObj->getField("addedbyfull");	
 	
 	if ($showposts == 1) {
 		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion</td>");
@@ -142,40 +144,43 @@ if ($storyObj->getField("discuss")) {
 	printc("<table>");
 	printc("<tr><td>");
 	$f = $_SESSION['flat_discussion'];
-	printc("<form action='index.php?$sid&&action=site&$getinfo' method=post name=viewform>");
+	printc("<form action='index.php?$sid&action=site&".$getinfo."' method=post name=viewform>");
 	printc("<select name='flat_discussion'>");
-	printc("<option value='true'".(($f)?" selected":"")." onClick='document.viewform.submit()'>Flat");
-	printc("<option value='false'".((!$f)?" selected":"")." onClick='document.viewform.submit()'>Threaded");
+/* 	printc("<option value='true'".(($f)?" selected":"")." onClick='javascript:document.viewform.submit()'>Flat"); */
+/* 	printc("<option value='false'".((!$f)?" selected":"")." onClick='javascript:document.viewform.submit()'>Threaded"); */
+	printc("<option value='true'".(($f)?" selected":"").">Flat");
+	printc("<option value='false'".((!$f)?" selected":"").">Threaded");
 	printc("</select>");
-	printc("</form>");
 	printc("</td><td>");
+
 	$r = $_SESSION['recent'];
-	printc("<form action='index.php?$sid&&action=site&$getinfo' method=post name=orderform>");
 	printc("<select name='recent'>");
-	printc("<option value='true'".(($r)?" selected":"")." onClick='document.orderform.submit()'>Recent First");
-	printc("<option value='false'".((!$r)?" selected":"")." onClick='document.orderform.submit()'>Recent Last");
+/* 	printc("<option value='true'".(($r)?" selected":"")." onClick='javascript:document.viewform.submit()'>Recent First"); */
+/* 	printc("<option value='false'".((!$r)?" selected":"")." onClick='javascript:document.viewform.submit()'>Recent Last"); */
+	printc("<option value='true'".(($r)?" selected":"").">Recent First");
+	printc("<option value='false'".((!$r)?" selected":"").">Recent Last");
 	printc("</select>");
-	printc("</form>");
+	printc("<input type=submit class='button' value='Change'>");
 	printc("</td></tr></table>");
-	
+	printc("</form>");	
 	printc("</th></tr>");
 	printc("</table>");
 	
 	//printc("showposts=$showposts<br>");
 	//printc("showallauthors=$showallauthors<br><br>");
-	
+	//printpre ($siteObj);
 	if ($showposts == 2 && $showallauthors == 1) {
-		printc("Posts to this assessment are currently viewable only be the site owner.  Shown here are only your posts.");
+		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
 		if ($_SESSION[auser]==$site_owner) {
 			printc("<br><div style='font-size: 9px'> To make posts to this assessment available for discussion by all participants, edit the display options for this content block and select Show Posts.</div>");
 		}
 	} else if ($showposts == 1 && $showallauthors == 2) {
-		printc("Author of posts to this discussion or assessment are known only to the site owner.  Other participants will not see your name associated with your posts.");
+		printc("Author of posts to this discussion or assessment are known only to the site owner, <i>$siteowner</i>.  Other participants will not see your name associated with your posts.");
 		if ($_SESSION[auser]==$site_owner) {
 			printc("<br><div style='font-size: 9px'> To make authors known to all participants, edit the display options for this content block and select Show Authors.</div>");
 		}
 	} else if ($showposts == 2 && $showallauthors == 2) {
-		printc("Posts to this assessment are currently viewable only be the site owner.  Shown here are only your posts.");
+		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
 		if ($_SESSION[auser]==$site_owner) {
 			printc("<br><div style='font-size: 9px'> To make posts and their authors viewable by all participants, edit the display options for this content block and select both Show Authors and Show Posts.</div>");
 		}

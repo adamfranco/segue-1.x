@@ -6,7 +6,7 @@ class story extends segue {
 /* 							"activatedate","deactivatedate","discuss", */
 /* 							"locked","category","discussions","texttype","type","url","active"); */
 
-	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp",
+	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp", "addedbyfull", "editedbyfull",
 							"editedby","editedtimestamp","shorttext","longertext",
 							"activatedate","deactivatedate","discuss","discussdisplay","discussauthor","discussemail",
 							"locked","category","discussions","texttype","type","url","active");
@@ -99,6 +99,14 @@ class story extends segue {
 			array("user_uname"),
 			"story_id"
 		),
+		"editedbyfull" => array(
+			"story
+				INNER JOIN
+			user
+				ON FK_updatedby = user_id",
+			array("user_fname"),
+			"story_id"
+		),
 		"editedtimestamp" => array(
 			"story",
 			array("story_updated_tstamp"),
@@ -110,6 +118,14 @@ class story extends segue {
 			user
 				ON FK_createdby = user_id",
 			array("user_uname"),
+			"story_id"
+		),
+		"addedbyfull" => array(
+			"story
+				INNER JOIN
+			user
+				ON FK_createdby = user_id",
+			array("user_fname"),
 			"story_id"
 		),
 		"addedtimestamp" => array(
