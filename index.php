@@ -211,7 +211,11 @@ include("$themesdir/$theme/output.inc.php");
 // ------------------
 // if register_globals is off, we have to do some hacking to get things to work:
 if (!ini_get("register_globals")) {
-	foreach (array_keys($_SESSION) as $n) $_SESSION[$n] = $$n;
+	foreach (array_keys($_SESSION) as $n) { if ($n != "settings" && $n != "siteObj") $_SESSION[$n] = $$n; }
 }
+
+print_r($_SESSION);
+print "<BR><BR>";
+print_r($_REQUEST);
 
 ?>
