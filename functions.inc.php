@@ -180,12 +180,23 @@ function copy_media($id,$newsitename) {
 
 function deleteuserfile($fileid) {
 	global $uploaddir, $auser, $site, $settings;
-	$query = "select * from media where id='$fileid'";
+	$query = "
+			SELECT 
+				* 
+			FROM 
+				media 
+					INNER JOIN
+				slot
+					ON
+				media.FK_site = slot.FK_site
+			WHERE 
+				media_id='$fileid'
+	";
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
-	$a[name] = urldecode($a[name]);
-	$siteObj = new site($a[FK_site]);
-	$file_path = $uploaddir."/".$siteObj->getField("name")."/".$a[name];
+	$a[media_tag] = urldecode($a[media_tag]);
+	$siteObj = new site($a[slot_name]);
+	$file_path = $uploaddir."/".$siteObj->getField("name")."/".$a[media_tag];
 //	$file_path = "../segue_userfiles/afranco/close2.gif";
 //	print "file = \"$file_path\" <br>";
 	if (file_exists($file_path)) {
@@ -194,17 +205,17 @@ function deleteuserfile($fileid) {
 		$success = unlink($file_path);
 //		print "success = $success <br>";
 		if ($success) {
-			$query = "DELETE FROM media WHERE id='$fileid' LIMIT 1";
+			$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
 			db_query($query);
-			log_entry("media_delete","$auser deleted file: ".$a[name].", id: $fileid, from site ".$siteObj->getField("name"),$siteObj->id,"site");
+			log_entry("media_delete","$auser deleted file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name"),$siteObj->id,"site");
 		} else {
-			log_entry("media_error","Delete failed of file: ".$a[name].", id: $fileid, from site ".$siteObj->getField("name")." by $auser",$siteObj->id,"site");
+			log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $auser",$siteObj->id,"site");
 			error("File could not be Deleted");
 		}
 	} else {
-		log_entry("media_error","Delete failed of file: ".$a[name].", id: $fileid, from site ".$siteObj->getField("name")." by $auser. File does not exist. Removed entry.",$siteObj->id,"site");
+		log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $auser. File does not exist. Removed entry.",$siteObj->id,"site");
 		error("File does not exist. Its Entry was deleted");
-		$query = "DELETE FROM media WHERE id='$fileid' LIMIT 1";
+		$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
 		db_query($query);
 	}
 }

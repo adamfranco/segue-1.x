@@ -49,7 +49,7 @@ $r = db_query($query);
 
 $totalsize = 0;
 while ($a = db_fetch_assoc($r)) {
-	$totalsize = $totalsize + $a[size];
+	$totalsize = $totalsize + $a[media_size];
 }
  
 if ($upload) { 
@@ -62,6 +62,10 @@ if ($upload) {
 			slot
 				ON
 			media.FK_site = slot.FK_site
+				INNER JOIN
+			user
+				ON
+			media.FK_createdby = user_id
 		WHERE
 			slot_name='".(($site)?"$site":"$settings[site]")."'"; 
 //	print "$query <br>"; 
@@ -69,9 +73,9 @@ if ($upload) {
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	$nameUsed = 0; 
 	while ($a = db_fetch_assoc($r)) { 
-		if ($a[name] == $filename) {
+		if ($a[media_tag] == $filename) {
 			$nameUsed = 1;
-			$usedId = $a[id];
+			$usedId = $a[media_id];
 		}
 	} 
 	if ($_FILES['file']['tmp_name'] == 'none') { 
@@ -116,13 +120,17 @@ $query = "
 		slot
 			ON
 		media.FK_site = slot.FK_site
+			INNER JOIN
+		user
+			ON
+		media.FK_createdby = user_id
 	$where
 "; 
 $r = db_query($query); 
 
 $totalsize = 0;
 while ($a = db_fetch_assoc($r)) {
-	$totalsize = $totalsize + $a[size];
+	$totalsize = $totalsize + $a[media_size];
 }
 
 if (!isset($order)) $order = "media_tag asc"; 
@@ -134,7 +142,7 @@ if ($ltype == 'admin') {
 	else if ($all) $w[]="slot_name like '%'"; 
 	else $w[]="slot_name='$settings[site]'"; 
 } else $w[]="slot_name='".(($site)?"$site":"$settings[site]")."'"; 
-if ($user) $w[]="media_addedby LIKE '%$user%'"; 
+if ($user) $w[]="user_uname LIKE '%$user%'"; 
 if ($name) $w[]="media_tag LIKE '%$name%'"; 
  
 if (count($w)) $where = " WHERE ".implode(" AND ",$w); 
@@ -148,6 +156,10 @@ $r=db_query("
 		slot
 			ON
 		media.FK_site = slot.FK_site
+			INNER JOIN
+		user
+			ON
+		media.FK_createdby = user_id
 	$where"); 
 $a = db_fetch_assoc($r);
 $numrows = $a['COUNT(*)'];
@@ -168,6 +180,10 @@ $query = "
 		slot
 			ON
 		media.FK_site = slot.FK_site
+			INNER JOIN
+		user
+			ON
+		media.FK_createdby = user_id
 	$where
 	$orderby
 	$limit
@@ -331,7 +347,9 @@ function changePage(lolim) {
 					<?
 					$dirtotal = convertfilesize($totalsize);
 					if ($all) {
-						$dirlimit_B = db_num_rows(db_query("select * from sites"))*$userdirlimit;
+						$res = db_query("SELECT COUNT(*) FROM site");
+						$b = db_fetch_assoc($res);
+						$dirlimit_B = $b['COUNT(*)']*$userdirlimit;
 					} else
 						$dirlimit_B = $userdirlimit;
 					$dirlimit = convertfilesize($dirlimit_B);
@@ -514,12 +532,12 @@ $yesterday = date(Ymd)-1;
  
 if (db_num_rows($r)) { 
 	while ($a=db_fetch_assoc($r)) { 
-		$a[name] = urldecode($a[name]); 
-		$a[size] = convertfilesize($a[size]); 
+		$a[media_tag] = urldecode($a[media_tag]); 
+		$a[media_size] = convertfilesize($a[media_size]); 
 		
-		$url = $uploadurl."/".$a[site_id]."/".rawurlencode($a[name]); 
-		if ($a[type] == 'image') { 
-			$img_path = $uploaddir."/".$a[site_id]."/".$a[name];
+		$url = $uploadurl."/".$a[slot_name]."/".rawurlencode($a[media_tag]); 
+		if ($a[media_type] == 'image') { 
+			$img_path = $uploaddir."/".$a[slot_name]."/".$a[media_tag];
 			$img_url = $url;
 		} else { 
 			$img_path = "images/file.gif";
@@ -541,20 +559,20 @@ if (db_num_rows($r)) {
 		print "<td class=td$color>";
 			if ($comingfrom != "viewsite") {
                 if ($editor == 'none') {
-					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
+					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
                 }
                 else if ($editor == 'text') {
-                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
+                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
                 }
                 else {
-                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[site_id]."','".$a[name]."','".$a[id]."')\">";
+                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[slot_name]."','".$a[media_tag]."','".$a[media_id]."')\">";
                 }   
             } else print " &nbsp; ";
 //			print "<input type=button name='use' value='use' onClick=\"useFile()\">";  
 		print "</td>"; 
  
 		print "<td class=td$color>"; 
-			if ($a[type]=='image') { 
+			if ($a[media_type]=='image') { 
 				$windowSize[x] = $img_size[x]+15; 
 				$windowSize[y] = $img_size[y]+15; 
 //				print "<a href=# onClick=\"window.open('$url','imagewindow',config='width=$img_size[x],height=$img_size[y],resizeable=1,scrollbars=0')\">"; 
@@ -566,39 +584,39 @@ if (db_num_rows($r)) {
 		print "</td>"; 
  
 		print "<td class=td$color>"; 
-			print "$a[id]"; 
+			print "$a[media_id]"; 
 		print "</td>"; 
 		 
 		print "<td class=td$color style='text-align: left'>"; 
-			print "$a[name]"; 
+			print "$a[media_tag]"; 
 		print "</td>"; 
  
 		print "<td class=td$color>"; 
-			print "$a[type]"; 
+			print "$a[media_type]"; 
 		print "</td>"; 
  
 		print "<td class=td$color>"; 
-			print "$a[size]"; 
+			print "$a[media_size]"; 
 		print "</td>"; 
 		 
 		if ($ltype == 'admin') { 
 			print "<td class=td$color>"; 
-			print "$a[site_id]"; 
+			print "$a[slot_name]"; 
 		print "</td>"; 
 		} 
  
 		print "<td class=td$color><nobr>"; 
-			if (strncmp($today, $a[addedtimestamp], 8) == 0 || strncmp($yesterday, $a[addedtimestamp], 8) == 0) print "<b>"; 
-			print $a[addedtimestamp]; 
-			if (strncmp($today, $a[addedtimestamp], 8) == 0 || strncmp($yesterday, $a[addedtimestamp], 8) == 0) print "</b>"; 
+			if (strncmp($today, $a[media_updated_tstamp], 8) == 0 || strncmp($yesterday, $a[media_updated_tstamp], 8) == 0) print "<b>"; 
+			print $a[media_updated_tstamp]; 
+			if (strncmp($today, $a[media_updated_tstamp], 8) == 0 || strncmp($yesterday, $a[media_updated_tstamp], 8) == 0) print "</b>"; 
 		print "</nobr></td>"; 
 		 
 		print "<td class=td$color>"; 
-			print "$a[addedby]"; 
+			print "$a[user_fname] ($a[user_uname])"; 
 		print "</td>"; 
 		 
 		print "<td class=td$color>"; 
-			print "<input type=button value='delete' onClick=\"deleteFile('".$a[id]."','".$a[name]."')\">";  
+			print "<input type=button value='delete' onClick=\"deleteFile('".$a[media_id]."','".$a[media_tag]."')\">";  
 //			print "<input type=button name='delete' value='delete'>";  
 		print "</td>"; 
  

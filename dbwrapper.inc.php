@@ -84,7 +84,7 @@ db_error();
 
 // check if we are already loaded
 if (isset($_db_wrapper)) {
-  if ($debug) print "We're already loaded -- skipping load process.<BR>\n";
+  /* if ($debug) print "We're already loaded -- skipping load process.<BR>\n"; */
   return;
 }
 
@@ -153,10 +153,10 @@ function db_connect ($host_db, $username, $password, $db='', $port=0) {
   global $_connect_id;
   global $db_type; global $debug;
   if ($debug) {
-    print "<br><br>db_connect: starting function with arguments:<br>";
-    print "host_db = $host_db, username = $username, password = $password";
-    print ", db = $db, port = $port<br>";
-    print "db_connect: db_type = $db_type<br>";
+/*     print "<br><br>db_connect: starting function with arguments:<br>"; */
+/*     print "host_db = $host_db, username = $username, password = $password"; */
+/*     print ", db = $db, port = $port<br>"; */
+/*     print "db_connect: db_type = $db_type<br>"; */
   }
   if ($db_type == "mysql") {
     if ($port != 0) $host_db .= ":$port";
@@ -204,19 +204,19 @@ function db_query ($query, $cid=-1) {
 	
   global $db_type; global $debug;
   global $_connect_id;
-//  if ($debug) {
+  if ($debug) {
   	// The $debug variable is set at the top of this script
 	// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-    //echo "<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$query;
-//  }
+    echo "<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$query;
+  }
   if ($cid==-1) $cid = $_connect_id;
   if ($db_type == "mysql") {
     $res = mysql_query($query, $cid);
-//	if ($debug) {
-	  	// The $debug variable is set at the top of this script	
+	if ($debug) {
+	 	// The $debug variable is set at the top of this script	
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-		//echo "<br>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res;
-//	}
+		echo "<br>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res;
+	}
 	echo mysql_error();
     return $res;
   } else if ($db_type == "oracle") {
