@@ -136,24 +136,7 @@ if ($_REQUEST[save]) {
 
 		if ($_SESSION[sectionObj]->getField("type")=='link') {
 		
-			$url = $_SESSION[sectionObj]->getField("url");
-			// replace internal link urls with constant [[linkpath]]
-			$specfic_internal_linkpath = $cfg[full_uri];
-			$general_internal_linkpath = "\[\[linkpath\]\]";
-			$url = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $url);
-			 // replace specific site reference with general
-			$specfic_sitename = "site=".$_SESSION[settings][site];
-			$general_sitename = "site=\[\[site\]\]"  ;
-			$url = eregi_replace($specfic_sitename, $general_sitename, $url);
-			
-			// replace internal links to edit mode (action=viewsite)
-			// with internal links to non-edit mode (action=site)
-			$action_viewsite = "action=viewsite";
-			$action_site = "action=site";			
-			$url = eregi_replace($action_viewsite, $action_site, $url);	
-			
-			// save general internal_linkpath to object	
-			$_SESSION[sectionObj]->setField("url",$url);
+			$_SESSION[sectionObj]->setField("url", convertInteralLinksToTags($_SESSION[settings][site], $_SESSION[sectionObj]->getField("url")));
 		
 		}
 

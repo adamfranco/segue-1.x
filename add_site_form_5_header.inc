@@ -77,10 +77,8 @@ require_once("htmleditor/editor.inc.php");
 /******************************************************************************
  * replace general media library urls (i.e. $mediapath/$sitename/filename)
  ******************************************************************************/
-$mod_header = $_SESSION[siteObj]->getField("header");
-$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][sitename];
-$general_mediapath = "\[\[mediapath\]\]";
-$mod_header = eregi_replace($general_mediapath, $specfic_mediapath, $mod_header);
+
+$mod_header = convertTagsToInteralLinks($_SESSION[settings][sitename], $_SESSION[siteObj]->getField("header"));
 
 printc(addeditor("header",60,8,$mod_header));
 

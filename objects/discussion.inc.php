@@ -595,17 +595,8 @@ class discussion {
 				if ($_SESSION['auser'] != $d->authoruname) return false;
 				$d->subject = $_REQUEST['subject'];
 				
-				// Make sure that we have the content formatted correctly.
-				include ("sniffer.inc.php");
-				// If we are using a WYSIWYG editor, just take the content
-				// straight from that
-				if ($supported) {
-					$d->content = $_REQUEST['content'];
-				}
-				// If we just have a text box, replace new lines with <br> tags
-				else {
-					$d->content = htmlbr($_REQUEST['content']);
-				}
+				$d->content = cleanEditorText($_REQUEST['content']);
+				$d->content = convertInteralLinksToTags($site, $d->content);
 				
 				$d->update();
 				//log_entry("discussion","$_SESSION[auser] edited story ".$_REQUEST['story']." discussion post id ".$_REQUEST['id']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
@@ -635,6 +626,7 @@ class discussion {
 				
 				// Lets pass the cleaning of editor text off to the editor.
 				$d->content = cleanEditorText($_REQUEST['content']);
+				$d->content = convertInteralLinksToTags($site, $d->content);
 					
 				if ($a=='reply') {
 					$d->parentid = $_REQUEST['replyto'];
@@ -785,10 +777,8 @@ class discussion {
 		 ******************************************************************************/
 
 		if ($t != 'rate' && $_SESSION[auser]) {			
-			//printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>\n");
-			require_once("htmleditor/editor.inc.php");
-			include("sniffer.inc.php");
 			printc ("<td class=content$p>\n");
+			$c = convertTagsToInteralLinks ($_REQUEST[site], $c);
 			addeditor ("content",60,20,$c,"discuss");
 		} else {
 			printc ("<td>".$c."<br><br>\n");
@@ -944,7 +934,7 @@ class discussion {
 			 ******************************************************************************/
 			if ($this->opt("showcontent")) {
 				printc ("<tr><td class=dtext>");
-				printc (stripslashes($this->content));
+				printc (convertTagsToInteralLinks ($_REQUEST[site], stripslashes($this->content)));
 				printc ("</td></tr>\n");
 			}
 			// done

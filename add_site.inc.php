@@ -170,12 +170,8 @@ if ($_REQUEST[save]) {
 		 * replace media library urls with $mediapath/$sitename/filename
 		 * replace specific url with general url
 		 ******************************************************************************/
-		 $mod_header = $_SESSION[siteObj]->getField("header",$_REQUEST[header]);
-		 $mod_footer = $_SESSION[siteObj]->getField("footer",$_REQUEST[footer]);
-		 $specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][sitename];
-		 $general_mediapath = "\[\[mediapath\]\]";
-		 $mod_header = eregi_replace($specfic_mediapath, $general_mediapath, $mod_header);
-		 $mod_footer = eregi_replace($specfic_mediapath, $general_mediapath, $mod_footer);
+		$mod_header = convertInteralLinksToTags($_SESSION[settings][sitename], $_SESSION[siteObj]->getField("header"));
+		$mod_footer = convertInteralLinksToTags($_SESSION[settings][sitename], $_SESSION[siteObj]->getField("footer"));
 		 
 		// Lets pass the cleaning of editor text off to the editor.
 		$mod_header = cleanEditorText($mod_header);

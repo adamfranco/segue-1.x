@@ -189,12 +189,8 @@ if ($_REQUEST[site]) {						// we are in a site
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
 	 ******************************************************************************/
-	$mod_header = $thisSite->getField("header");
-	$mod_footer = $thisSite->getField("footer");
-	$specfic_mediapath = $cfg[uploadurl]."/".$_REQUEST[site];
-	$general_mediapath = "\[\[mediapath\]\]";
-	$mod_header = eregi_replace($general_mediapath, $specfic_mediapath, $mod_header);
-	$mod_footer = eregi_replace($general_mediapath, $specfic_mediapath, $mod_footer);
+	$mod_header = convertTagsToInteralLinks($_REQUEST[site], $thisSite->getField("header"));
+	$mod_footer = convertTagsToInteralLinks($_REQUEST[site], $thisSite->getField("footer"));
 	
 	$siteheader .= $mod_header;	
 	//$siteheader .= $thisSite->getField("header");

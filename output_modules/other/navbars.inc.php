@@ -15,14 +15,7 @@ if ($thisSite->sections) {
 				 * replace general media library urls (i.e. $mediapath/$sitename/filename)
 				 * replace general with specific
 				 ******************************************************************************/
-				// replace general [[linkpath]] with specific link path (i.e. $full_uri)
-				$specfic_internal_linkpath = $cfg[full_uri];
-				$general_internal_linkpath = "\[\[linkpath\]\]";
-				$url = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $url);
-				// replace general site reference with specific
-				$specfic_sitename = "site=".$site;
-				$general_sitename = "site=\[\[site\]\]"  ;
-				$url = eregi_replace($general_sitename, $specfic_sitename, $url);
+				$url = convertTagsToInteralLinks($site, $url);
 
 				$link = $url; $target="_self";
 			}
@@ -75,14 +68,7 @@ if ($thisSection) {
 					 * replace general media library urls (i.e. $mediapath/$sitename/filename)
 					 * replace general with specific
 					 ******************************************************************************/
-					// replace general [[linkpath]] with specific link path (i.e. $full_uri)
-					$specfic_internal_linkpath = $cfg[full_uri];
-					$general_internal_linkpath = "\[\[linkpath\]\]";
-					$url = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $url);
-					// replace general site reference with specific
-					$specfic_sitename = "site=".$site;
-					$general_sitename = "site=\[\[site\]\]"  ;
-					$url = eregi_replace($general_sitename, $specfic_sitename, $url);
+					$url = convertTagsToInteralLinks($site, $url);
 				
 					add_link(leftnav,$o->getField("title"),$url,$extra,$p);
 					add_link(leftnav2,$o->getField("title"),$url,$extra,$p);

@@ -896,3 +896,84 @@ function sortClasses ( $classes, $direction=SORT_DESC) {
 	return $classes;
 }
 
+/**
+ * Convert links in $text that point to other parts of this segue site, or
+ * to this site's media, to placeholder tags for storage. This allows those
+ * tags to still be valid if the segue server url changes.
+ * 
+ * @param string $text The text to parse for links.
+ * @return string The text with links converted to tags.
+ * @access public
+ * @date 9/15/04
+ */
+function convertInteralLinksToTags ($sitename, $text) {
+	global $cfg;
+	
+	if (!$sitename)
+		printError("convertInteralLinksToTags: no sitename passed!");
+	
+	$patterns = array();
+	$replacements = array();
+	
+	// replace internal link urls with constant [[linkpath]]
+	$patterns[] = $cfg[full_uri];
+	$replacements[] = "\[\[linkpath\]\]";
+	
+	// replace specific site reference with general
+	$patterns[] = "site=".$sitename;
+	$replacements[] = "site=\[\[site\]\]";
+
+	// replace internal links to edit mode (action=viewsite)
+	// with internal links to non-edit mode (action=site)
+	$patterns[] = "action=viewsite";
+	$replacements[] = "action=site";
+	
+	// replace upload url path with constant [[mediapath]]
+	$patterns[]  = $cfg[uploadurl]."/".$sitename;
+	$replacements[] = "\[\[mediapath\]\]";
+	
+	for ($i=0; $i < count($patterns); $i++) {
+		$text = eregi_replace($patterns[$i], $replacements[$i], $text);
+	}
+	
+	return $text;
+}
+
+/**
+ * Convert placeholder tags for storage to links in $text that point to other parts of this segue site, or
+ * to this site's media. This allows those
+ * tags to still be valid if the segue server url changes.
+ * 
+ * @param string $text The text to parse for tags.
+ * @return string The text with tags converted to links.
+ * @access public
+ * @date 9/15/04
+ */
+function convertTagsToInteralLinks ($sitename, $text) {
+	global $cfg;
+	
+	if (!$sitename)
+		printError("convertTagsToInternalLinks: no sitename passed!");
+	
+	$patterns = array();
+	$replacements = array();
+	
+	// replace internal link urls with constant [[linkpath]]
+	$patterns[] = "\[\[linkpath\]\]";
+	$replacements[] = $cfg[full_uri];
+	
+	// replace specific site reference with general
+	$patterns[] = "site=\[\[site\]\]";
+	$replacements[] = "site=".$sitename;
+	
+	// replace upload url path with constant [[mediapath]]
+	$patterns[] = "\[\[mediapath\]\]";
+	$replacements[]  = $cfg[uploadurl]."/".$sitename;
+	
+	for ($i=0; $i < count($patterns); $i++) {
+		$text = eregi_replace($patterns[$i], $replacements[$i], $text);
+	}
+	
+	return $text;
+}
+

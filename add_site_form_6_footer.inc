@@ -64,10 +64,7 @@ require_once("htmleditor/editor.inc.php");
 /******************************************************************************
  * replace general media library urls (i.e. $mediapath/$sitename/filename)
  ******************************************************************************/
-$mod_footer = $_SESSION[siteObj]->getField("footer");
-$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][sitename];
-$general_mediapath = "\[\[mediapath\]\]";
-$mod_footer = eregi_replace($general_mediapath, $specfic_mediapath, $mod_footer);
+$mod_footer = convertTagsToInteralLinks($_SESSION[settings][sitename], $_SESSION[siteObj]->getField("footer"));
 
 printc(addeditor("footer",60,8,$mod_footer));
 

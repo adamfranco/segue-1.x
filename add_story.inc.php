@@ -213,25 +213,7 @@ if ($_REQUEST[save]) {
 
 			$text = $_SESSION[storyObj]->getField("shorttext");
 			
-			// replace upload url path with constant [[mediapath]]
-			$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
-			$general_mediapath = "\[\[mediapath\]\]";
-			$text = eregi_replace($specfic_mediapath, $general_mediapath, $text);
-			
-			// replace internal link urls with constant [[linkpath]]
-			$specfic_internal_linkpath = $cfg[full_uri];
-			$general_internal_linkpath = "\[\[linkpath\]\]";
-			$text = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $text);
-			// replace specific site reference with general
-			$specfic_sitename = "site=".$_SESSION[settings][site];
-			$general_sitename = "site=\[\[site\]\]"  ;
-			$text = eregi_replace($specfic_sitename, $general_sitename, $text);
-
-			// replace internal links to edit mode (action=viewsite)
-			// with internal links to non-edit mode (action=site)
-			$action_viewsite = "action=viewsite";
-			$action_site = "action=site";			
-			$text = eregi_replace($action_viewsite, $action_site, $text);
+			$text = convertInteralLinksToTags($_SESSION[settings][site], $text);
 			
 			// Lets pass the cleaning of editor text off to the editor.
 			$texttype = $_SESSION[storyObj]->getField("texttype");
@@ -250,21 +232,7 @@ if ($_REQUEST[save]) {
 			
 			$url = $_SESSION[storyObj]->getField("url");
 			
-			// replace internal link urls with constant [[linkpath]]
-			$specfic_internal_linkpath = $cfg[full_uri];
-			$general_internal_linkpath = "\[\[linkpath\]\]";
-			$url = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $url);
-			// replace specific site reference with general
-			$specfic_sitename = "site=".$_SESSION[settings][site];
-			$general_sitename = "site=\[\[site\]\]"  ;
-			$url = eregi_replace($specfic_sitename, $general_sitename, $url);
-
-			
-			// replace internal links to edit mode (action=viewsite)
-			// with internal links to non-edit mode (action=site)
-			$action_viewsite = "action=viewsite";
-			$action_site = "action=site";			
-			$url = eregi_replace($action_viewsite, $action_site, $url);
+			$url = convertInteralLinksToTags($_SESSION[settings][site], $url);
 			
 			// save general mediapath and internal_linkpath to object			
 			$_SESSION[storyObj]->setField("url",$url);
