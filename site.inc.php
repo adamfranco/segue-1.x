@@ -222,13 +222,18 @@ do {
 	}
 } while(0);
 
+ob_start();
+
+if ($thisPage->hasPermission("view", "everyone")) {
+	print "<div align=right><a href='".preg_replace("/action=(viewsite|site)/","action=rss",$_SERVER['REQUEST_URI'])."'>\n<img border=0 src=$cfg[themesdir]/common/images/rss_icon01.gif>\n</a></div>";
+}
 
 // add the key to the footer of the page
 if ($thisSite->isEditor()
 	&& $thisSite->hasPermissionDown("add || edit || delete")
 	&& !$_REQUEST[themepreview]) 
 {
-	$text .= "\n<br /> \n\n<div align='right'>";
+	print "\n<br /> \n\n<div align='right'>";
 	if (ereg('preview_as', $_REQUEST['action'])) {
 		$editAction = ereg_replace('preview_as', '&action=preview_edit_as', $_REQUEST['action']);
 	 } else {
@@ -236,15 +241,17 @@ if ($thisSite->isEditor()
 	}
 
 	if ($_SESSION[auser] == $thisSite->owningSiteObj->owner) {
-		$text .= "\n\t<input type=button style='width: $btnw' class='button' name='preview_as' value=' &nbsp; Preview Site As... &nbsp;' onClick='sendWindow(\"preview_as\",400,300,\"preview.php?$sid&site=$site&query=".urlencode($_SERVER[QUERY_STRING])."\")' target='preview_as' style='text-decoration: none'>";
+		print "\n\t<input type=button style='width: $btnw' class='button' name='preview_as' value=' &nbsp; Preview Site As... &nbsp;' onClick='sendWindow(\"preview_as\",400,300,\"preview.php?$sid&site=$site&query=".urlencode($_SERVER[QUERY_STRING])."\")' target='preview_as' style='text-decoration: none'>";
 	}
 
 	$u = "$PHP_SELF?$sid".$editAction."&site=$site".(($supplement)?"&supplement=$supplement":"");
 	if ($section) $u .= "&section=$section";
 	if ($page) $u .= "&page=$page";
-	$text .= "\n<input type=submit class='button' value='Edit This Site' onClick=\"window.location='$u&$sid'\">\n</div>";
-} else {
-	$text = "";
+	print "\n<input type=submit class='button' value='Edit This Site' onClick=\"window.location='$u&$sid'\">\n</div>";
 }
-$text .= "\n<br />\n<div align='right'>\n<div style='font-size: 0px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif>\n</a>\n</div>";
-$sitefooter = $sitefooter . $text;
+
+print "\n<br />\n<div align='right'>\n<div style='font-size: 1px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif>\n</a>\n</div>";
+
+
+$sitefooter = $sitefooter . ob_get_contents();
+ob_end_clean();
