@@ -82,12 +82,13 @@ input {
 }
 
 </style>
-
+</head>
+<body onLoad="document.passform.oldpass.focus()">
 <?
 printerr2();
 ?>
 
-<form action="<? echo $PHP_SELF ?>" method=post>
+<form action="<? echo $PHP_SELF ?>" method=post name="passform">
 <table cellspacing=1 width='100%'>
 <tr>
 	<th colspan=2>Change Password</th>

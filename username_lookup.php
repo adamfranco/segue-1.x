@@ -32,6 +32,8 @@ if (count($usernames)) {
 ?>
 <html>
 <head>
+<body onLoad="document.searchform.name.focus()">
+
 <title>Username Lookup</title>
 
 <? include("themes/common/logs_css.inc.php"); ?>
@@ -43,7 +45,7 @@ if (count($usernames)) {
 <table cellspacing=1 width='100%'>
 <tr>
 	<td colspan=3>
-		<form action="<? echo $PHP_SELF ?>" method=get>
+		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
 		Name: <input type=text name='name' size=20 value='<?echo $name?>'> <input type=submit value='GO'>
 		</form>
 	</td>

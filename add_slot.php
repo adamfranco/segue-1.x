@@ -99,7 +99,7 @@ input,select {
 
 </style>
 </head>
-<body>
+<body onload="document.addform.name.focus()">
 <? printerr2(); ?>
 
 <form action="<? echo $PHP_SELF ?>" method=post name='addform'>

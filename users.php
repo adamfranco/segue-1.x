@@ -102,7 +102,7 @@ printerr();
 <title>Users</title>
 <? include("themes/common/logs_css.inc.php"); ?>
 </head>
-
+<body onLoad="document.addform.uname.focus()">
 <?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | add/edit users | <a href='classes.php?$sid'>add/edit classes</a></div>":""?>
 
 <?=$content?>

@@ -204,6 +204,7 @@ include("themes/common/logs_css.inc.php");
 include("themes/common/header.inc.php");
 ?>
 </head>
+<body onLoad="document.addform.external_id.focus()">
 
 <?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | <a href='users.php?$sid'>add/edit users</a> | add/edit classes</div>":""?>
 
