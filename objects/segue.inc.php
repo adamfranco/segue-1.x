@@ -532,6 +532,7 @@ class segue {
 			$this->editors = $n;
 			unset($this->permissions[$e]);
 			$this->editorsToDelete[] = $e;
+			$this->changedpermissions = 1;
 		}
 	}
 	
@@ -849,8 +850,10 @@ class segue {
 		$ar = $this->_object_arrays[$class];
 		if ($ar) {
 			$a = &$this->$ar;
-			foreach ($a as $i=>$o) {
-				if($a[$i]->hasPermissionDown($perms,$user)) return true;
+			if ($a) {
+				foreach ($a as $i=>$o) {
+					if($a[$i]->hasPermissionDown($perms,$user)) return true;
+				}
 			}
 		}
 		return false;
