@@ -38,7 +38,7 @@ function editor_htmlarea($textarea,$text,$context) {
 	ob_start();
 	if ($context == "story") {
 		include("htmlarea/story.php");	
-	} else if ($context == "discuss") {
+	} else if ($context == "discuss" || $context == "email") {
 		include("htmlarea/discuss.php");	
 	}
 	$neweditor=ob_get_contents();

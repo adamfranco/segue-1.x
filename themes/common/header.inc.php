@@ -22,10 +22,16 @@ function typeChange() {
 }
 
 function submitForm() {
+	if (typeof(window.editor) != "undefined") {
+		window.editor._textArea.value = editor.getHTML();
+	}
 	document.addform.submit();
 }
 
 function submitFormLink(step) {
+	if (typeof(window.editor) != "undefined") {
+		window.editor._textArea.value = editor.getHTML();
+	}
 	document.addform.step.value = step;
 	document.addform.submit();
 }

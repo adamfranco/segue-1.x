@@ -1,5 +1,6 @@
 <? 
 include("objects/objects.inc.php");
+
 $content = '';
 $message = '';
 
@@ -28,7 +29,7 @@ $sql = $_REQUEST['sql'];
 $query_custom = $_REQUEST['newquery'];
 
 if ($_REQUEST['order']) $order = urldecode($_REQUEST['order']);
-if (!isset($order)) $order = "discussion_tstamp DESC";
+if (!isset($order)) $order = "user_fname ASC";
 $orderby = " ORDER BY $order";
 
 if ($_REQUEST['userfname']) $userfname = urldecode($_REQUEST['userfname']);
@@ -54,8 +55,10 @@ if ($userid) {
 
 if ($action == "review") {
 	$select = "user_id, user_fname, user_email, discussion_rate, discussion_tstamp, discussion_id, discussion_subject, story_id, page_id, page_title, story_text_short, section_id, site_id";
+	if (!isset($order)) $order = "discussion_tstamp ASC";
 } else {
-	$select = "DISTINCT user_id, user_fname, user_email";	
+	$select = "DISTINCT user_id, user_fname, user_email";
+	$order = "user_fname ASC";	
 }
 
 
@@ -168,7 +171,7 @@ Participants<br><br>
 		<td align=right>
 		<?
 		//$order = urlencode($order);
-		$getvariables = "storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&order=$order";
+		$getvariables = "storyid=$storyid&siteid=$siteid&site=$site&scope=$scope";
 		if ($userid) {
 			$userfname = urlencode($userfname);
 			$getusers = "&userid=$userid&userfname=$userfname";
@@ -218,12 +221,12 @@ Participants<br><br>
 		if ($curraction == "list") {
 			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
 			print "List | ";
-			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers&order=$order>Review</a> - ";
 			print $numparticipants." participants";
+			
 		} else if ($curraction == 'review') {
-
-			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
-			print "<a href=$PHP_SELF?$sid&action=list&$getvariables>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers&order=user_fname>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=list&$getvariables&order=user_fname>List</a> | ";
 			
 			if ($userid) {
 				print "<a href=$PHP_SELF?$sid&action=review&$getvariables>Review all</a> - ";
@@ -235,13 +238,14 @@ Participants<br><br>
 			
 		} else if ($curraction == 'email') {
 			print "Email | ";
-			print "<a href=$PHP_SELF?$sid&action=list&$getvariables>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=list&$getvariables&order=user_fname>List</a> | ";
 			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers>Review</a> - ";
 			print $numparticipants." participants";
+			
 		} else if ($curraction == 'send') {
-			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
-			print "<a href=$PHP_SELF?$sid&action=list&$getvariables>List</a> | ";
-			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers&order=user_fname>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=list&$getvariables&order=user_fname>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers&order=$order>Review</a> - ";
 			print $numparticipants." participants";
 		}
 				
@@ -255,17 +259,17 @@ Participants<br><br>
 		
 		<? 
 		if ($_SESSION['ltype']=='admin') {
-			if ($sql) {
-				print "<input type='checkbox' name='sql' checked>";
-			} else {
-				print "<input type='checkbox' name='sql'>";
-			}
-			print "(show sql)<br>";
-			if ($sql) {
-				print "<textarea name=newquery cols=80 rows=10>";
-				print $query;
-				print "</textarea>";
-			}
+/* 			if ($sql) { */
+/* 				print "<input type='checkbox' name='sql' checked>"; */
+/* 			} else { */
+/* 				print "<input type='checkbox' name='sql'>"; */
+/* 			} */
+			//print "(show sql)<br>";
+			//if ($sql) {
+			//	print "<textarea name=newquery cols=80 rows=10>";
+			//	print $query;
+			//	print "</textarea>";
+			//}
 		}
 		?>
 		</form>
@@ -277,7 +281,7 @@ Participants<br><br>
 		 ******************************************************************************/
 
 		if ($curraction == 'email') {
-			include("htmleditor/editor.inc.php");
+			//include("htmleditor/editor.inc.php");
 			$emaillist = array();
 			while ($a2 = db_fetch_assoc($r)) {
 				array_push($emaillist, $a2['user_email']);	
@@ -294,18 +298,19 @@ Participants<br><br>
 				$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
 			}
 		
-			//$text = "email text here";
-			$textarea = "body";
+			$text = "email text here";
+			$textarea = "email";
 			?>
 			
 			<form action="<? echo $PHP_SELF ?>" method=post name=emailform>
-			<? //addeditor ("body",60,20,$text); ?>
-			<table width=100%>
+				<table width=100%>
 			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
 			<tr><td align=right>From:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
-			<tr><td></td><td align=left><textarea name=body cols=60 rows=20>
-			</textarea>
+			<tr><td></td><td align=left>
+			<textarea name=body cols=60 rows=20></textarea>
+			<? //addeditor ("email",60,20,$text,"discuss"); ?>
+
 			</td><td><td align=right></td></tr>
 			</table>
 			<input type=hidden name='action' value='send'>
