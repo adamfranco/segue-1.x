@@ -573,6 +573,18 @@ class segue {
 		$p = strtoupper($perm);
 		$c = permissions::$p();
 		$this->permissions[$user][$c] = $val;
+		
+		if ($class =="site") $n = 0;
+		if ($class =="section")$n =2;
+		if ($class =="page")$n = 4;
+		else $n=6;
+		$i = 0;
+		while($i <= $n) {
+			print " &nbsp; ";
+			$i++;
+		}
+		print $class.": setting ".$this->id." permissions[".$user."][".$c."] = ".$val."<br>";
+		
 		$this->changedpermissions=1;
 		if ($ar) {
 			$a = &$this->$ar;
@@ -731,8 +743,9 @@ class segue {
 				} else {
 					$query = "insert into permissions set ".implode(",",$a2).",".implode(",",$a3);
 				}
-/* 				print "$query<BR><BR>"; */
 				db_query($query);
+				print "$query<br>";
+				print mysql_error()."<br><br>";
 			}
 			// delete the appropriate entries from the table
 			foreach ($this->editorsToDelete as $e) {
