@@ -66,6 +66,11 @@ class permissions {
 			if (count($edlist)) {
 				$color = 0;
 				foreach ($edlist as $e) {
+					// :: hack ::
+					// this is needed until "anonymous" discussion is enabled. could be v 2.0
+					if ($e == 'everyone') continue;
+					// :: /hack ::
+					
 					printc("<tr><td class=td$color align=left>");
 					if ($e == "everyone")
 						printc("Everyone (will override other entries)</td>");
