@@ -1,6 +1,5 @@
 <? // add_page.inc.php -- add a page
 
-
 //--------------------------------------------------------------------------------------------------------
 // Begining of new code
 
@@ -10,18 +9,20 @@
 //}
 //add_link(leftnav,'','',"$variables");
 //print $variables."<br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
+//print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
+//print "site = $site<br>section = $section<br>page=$page<br>";
 //------------------------------------
 
 // first check if we are allowed to edit this site at all
-if ($auser != $site_owner && $auser != $settings[site_owner] && !is_editor($auser,$site)) {
+if ($auser != $site_owner && $auser != $settings[site_owner] && !is_editor($auser,$site) && !is_editor($auser,$settings[site])) {
 	error("You're not even an editor for this site! Bad person!");
 	return;
 }
-if ($edit && !permission($auser,SECTION,EDIT,$section)) {
+if ($edit && !permission($auser,SECTION,EDIT,$section) && !permission($auser,SECTION,EDIT,$settings[section])) {
 	error("You don't have permission to edit this page. Nice try.");
 	return;
 }
-if ($add && !permission($auser,SECTION,ADD,$section)) {
+if ($add && !permission($auser,SECTION,ADD,$section)  && !permission($auser,SECTION,ADD,$settings[section])) {
 	error("You don't have permission to add sections to this site. Nice try.");
 	return;
 }
@@ -78,6 +79,7 @@ if ($settings) {
 	if ($settings[step] == 4 && !$link) $settings[showcreator] = $showcreator;
 	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
 	if ($archiveby) $settings[archiveby] = $archiveby;
+	if ($url) $settings[url] = $url;
 	
 	//---- If switching type, take values to defaults ----
 	if ($typeswitch) {
@@ -171,9 +173,19 @@ if (!$settings && !$error) {
 if ($prevbutton) $settings[step] = $settings[step] - 1;
 if ($nextbutton) $settings[step] = $settings[step] + 1; 
 if ($step != "") $settings[step] = $step;
+if ($settings[step] ==3 && $auser != $settings[site_owner]) {
+	if ($prevbutton) $settings[step] = 2;
+	if ($nextbutton) $settings[step] = 4;
+}
 
 $pagetitle=$settings[pagetitle];
 
+//-----for some reason siteheader and sitefooter keep being define prior to this point on button click. I'm killing them here until their origen is found ----
+$site = "";
+$section = "";
+$page = "";
+$siteheader = "";
+$sitefooter = "";
 
 // ---  variables for debugging ---
 //foreach ($settings as $n => $v) {
@@ -185,9 +197,9 @@ $pagetitle=$settings[pagetitle];
 
 if ($cancel) {
 	$commingFrom = $settings[commingFrom];
-	$sitename = $settings[sitename];
+	$site = $settings[site];
 	session_unregister("settings");
-	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename");
+	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
 	else header("Location: index.php?$sid");
 }
 
@@ -196,7 +208,7 @@ if ($save) {
 	// error checking
 	if ($settings[type]!='divider' && (!$settings[title] || $settings[title]==''))
 		error("You must enter a header title.");
-	if ($type=='settings[url]' && (!$settings[url] || $settings[url]=='' || $settings[url]=='http://'))
+	if ($settings[type]=='url' && (!$settings[url] || $settings[url]=='' || $settings[url]=='http://'))
 		error("You must enter a URL.");
 		
 	if (!$error) { // save it to the database
@@ -213,7 +225,7 @@ if ($save) {
 		
 		// check make sure the owner is the current user if they are changing permissions
 		if ($settings[site_owner] != $auser)
-			$permissions = decode_array(db_get_value("sections","permissions","id=$settings[section]"));
+			$settings[permissions] = decode_array(db_get_value("sections","permissions","id=$settings[section]"));
 		
 		// make sure that the permissions array represents all of the editors (giving them either permission (1) or not (0))
 		$settings[editors] = db_get_value("sites","editors","name='$settings[site]'");
@@ -221,12 +233,12 @@ if ($save) {
 			$edlist = explode(",",$settings[editors]);
 			foreach ($edlist as $e) {
 				for ($i=0;$i<3;$i++) {
-					$permissions[$e][$i] = ($permissions[$e][$i])?1:0;
+					$settings[permissions][$e][$i] = ($settings[permissions][$e][$i])?1:0;
 				}
 			}
 		}
 		
-		$settings[permissions] = encode_array($permissions);
+		$settings[permissions] = encode_array($settings[permissions]);
 		if ($settings[add]) $query = "insert into pages set addedby='$auser',addedtimestamp=NOW(),";
 		$where = '';
 		if ($settings[edit]) { 
@@ -254,7 +266,9 @@ if ($save) {
 		
 		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]".(($type=='page')?"&page=$newid":""));
 		
-	} else $step = 1;
+	} else {
+		$settings[step] = 1;
+	}
 }
 
 // ------- print out the add form -------
@@ -278,7 +292,7 @@ if ($settings[type] == "page" || $settings[type] == "url") {
 	$leftlinks .= "</td></tr>";
 }
 
-if ($settings[type] == "page") {
+if ($settings[type] == "page" && $auser == $settings[site_owner]) {
 	$leftlinks .= "<tr><td>";
 	if ($settings[step] == 3) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";

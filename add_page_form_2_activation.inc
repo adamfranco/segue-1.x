@@ -11,7 +11,19 @@ printc("<input type=hidden name=action value='$action'>");
 //printc("<input type=hidden name=mode value=$mode>");
 printc("<input type=hidden name=typeswitch value=0>");
 
-printc("<div class=title>Add Item to Section <b>".db_get_value("sections","title","id=$settings[section]")."</b></div>");
+if ($settings[add]) printc("<div class=title>Add Item to Section \"".db_get_value("sections","title","id=$settings[section]")."\"</div>");
+else  printc("<div class=title>Edit Item \"".db_get_value("pages","title","id=$settings[page]")."\" in Section \"".db_get_value("sections","title","id=$settings[section]")."\"</div>");
+
+//----Cancel/Save/Next/Previous Buttons -----
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
+	if ($settings[type] == "page") printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	printc("<input type=submit name=save value='Save Now'>\n");
+printc("</td></tr></table>");
 
 
 if ($settings[type]=='url' || $settings[type]=='page') {
@@ -63,12 +75,6 @@ if ($settings[type]=='url' || $settings[type]=='page') {
 
 printc("<br><br>");
 
-//printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid&action=viewsite&site=$site&section=$section'>");
-printc("<input type=submit value='&lt;&lt Back' name=goback>\n");
-printc("<input type=submit value='");
-if ($settings[add])printc("Add");
-if ($settings[edit])printc("Update");
-printc("'>");
 
 printc("</form>");
 

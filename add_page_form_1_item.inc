@@ -2,7 +2,7 @@
 
 printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
 
-printc("<input type=hidden name=site value='$settings[site]'>");
+//printc("<input type=hidden name=site value='$settings[site]'>");
 //printc("<input type=hidden name=section value=$settings[section]>");
 //printc("<input type=hidden name=page value=$settings[page]>");
 //if ($edit) printc("<input type=hidden name=edit_page value=$settings[page]>");
@@ -11,22 +11,49 @@ printc("<input type=hidden name=action value='$action'>");
 //printc("<input type=hidden name=mode value=$mode>");
 printc("<input type=hidden name=typeswitch value=0>");
 
-printc("<div class=title>Add Item to Section <b>".db_get_value("sections","title","id=$settings[section]")."</b></div>");
+if ($settings[add]) printc("<div class=title>Add Item to Section \"".db_get_value("sections","title","id=$settings[section]")."\"</div>");
+else  printc("<div class=title>Edit Item \"".db_get_value("pages","title","id=$settings[page]")."\" in Section \"".db_get_value("sections","title","id=$settings[section]")."\"</div>");
+	
+//----Cancel/Save/Next/Previous Buttons -----
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	printc("<input type=submit name=save value='Save Now'>\n");
+printc("</td></tr></table>");
 
-// top bar w/ mode switch
-printc("\n<table width=100%><tr>");
-printc("<td align=left>Type:".helplink("pagetypes"));
-printc("</td>");
 
-printc("<td align=right><input type=submit name=switchmode value='Switch to ".(($mode)?"Basic":"Advanced")." view'></td>");
-printc("\n</tr></table>");
-printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
-// end
-printc("<div class=desc><b><input type=radio name=type onClick='typeChange()' value='page'".(($settings[type]=='page')?" checked":"")."> Content Page</b>".(($settings[type]=='page')?" - will allow you to add content to your site, along with user discussions if necessary.":"")."</div>");
-printc("<div class=desc><b><input type=radio name=type onClick='typeChange()' value='url'".(($settings[type]=='url')?" checked":"")."> Link/URL</b>".(($settings[type]=='url')?" - is a link to a page outside of your site (like <i>http://www.middlebury.edu/</i>). URLs will open in a new window, allowing users to continue browsing your site.":"")."</div>");
-printc("<div class=desc><b><input type=radio name=type onClick='typeChange()' value='heading'".(($settings[type]=='heading')?" checked":"")."> Heading</b>".(($settings[type]=='heading')?" - appears in the navigation area, but with no link attached. It is useful to categorize your pages or links. Organization is sometimes a good thing.":"")."</div>");
-printc("<div class=desc><b><input type=radio name=type onClick='typeChange()' value='divider'".(($settings[type]=='divider')?" checked":"")."> Divider</b>".(($settings[type]=='divider')?" - will put some sort of dividing space between items in your navigation list. This may just be some white space, or a thin line, depending on what theme you chose for your site.":"")."</div>");
+printc("Type:".helplink("pagetypes"));
 
+if ($settings[add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
+else printc("<br><br>");
+
+
+if ($settings[add] || $settings[type] == 'page') {
+	printc("<div class=desc><b>");
+	printc("<input type=radio name=type ".(($settings[add])?"onClick='typeChange()'":"")." value='page'".(($settings[type]=='page')?" checked":"").">");
+	printc(" Content Page</b>".(($settings[type]=='page')?" - will allow you to add content to your site, along with user discussions if necessary.":"")."</div>");
+}
+
+if ($settings[add] || $settings[type] == 'url') {
+	printc("<div class=desc><b>");
+	printc("<input type=radio name=type ".(($settings[add])?"onClick='typeChange()'":"")." value='url'".(($settings[type]=='url')?" checked":"").">");
+	printc(" Link/URL</b>".(($settings[type]=='url')?" - is a link to a page outside of your site (like <i>http://www.middlebury.edu/</i>). URLs will open in a new window, allowing users to continue browsing your site.":"")."</div>");
+}
+
+if ($settings[add] || $settings[type] == 'heading') {
+	printc("<div class=desc><b>");
+	printc("<input type=radio name=type ".(($settings[add])?"onClick='typeChange()'":"")." value='heading'".(($settings[type]=='heading')?" checked":"").">");
+	printc(" Heading</b>".(($settings[type]=='heading')?" - appears in the navigation area, but with no link attached. It is useful to categorize your pages or links. Organization is sometimes a good thing.":"")."</div>");
+}
+
+if ($settings[add] || $settings[type] == 'divider') {
+	printc("<div class=desc><b>");
+	printc("<input type=radio name=type ".(($settings[add])?"onClick='typeChange()'":"")." value='divider'".(($settings[type]=='divider')?" checked":"").">");
+	printc(" Divider</b>".(($settings[type]=='divider')?" - will put some sort of dividing space between items in your navigation list. This may just be some white space, or a thin line, depending on what theme you chose for your site.":"")."</div>");
+}
 
 
 if ($settings[type]=='divider') {
@@ -210,13 +237,6 @@ if (!$mode) {
 }
 
 printc("<br><br>");
-
-//printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid&action=viewsite&site=$site&section=$section'>");
-printc("<input type=submit value='&lt;&lt Back' name=goback>\n");
-printc("<input type=submit value='");
-if ($settings[add])printc("Add");
-if ($settings[edit])printc("Update");
-printc("'>");
 
 printc("</form>");
 
