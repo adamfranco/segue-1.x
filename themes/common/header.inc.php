@@ -38,16 +38,25 @@ function submitFormLink(step) {
 
 function submitPrevButton() {
 	document.addform.prevbutton.value = '1';
+	if (typeof(window.editor) != "undefined") {
+		window.editor._textArea.value = editor.getHTML();
+	}
 	document.addform.submit();
 }
 
 function submitNextButton() {
 	document.addform.nextbutton.value = '1';
+	if (typeof(window.editor) != "undefined") {
+		window.editor._textArea.value = editor.getHTML();
+	}
 	document.addform.submit();
 }
 
 function cancelForm() {
 	document.addform.cancel.value = '1';
+	if (typeof(window.editor) != "undefined") {
+		window.editor._textArea.value = editor.getHTML();
+	}
 	document.addform.submit();
 }
 
