@@ -564,8 +564,8 @@ class discussion {
 		// send an email to the siteowner
 		
 		$to = $siteowneremail;
-		$from = $_SESSION['aemail'];
-		
+		$from = $_SESSION['afname']."<".$_SESSION['aemail'].">";
+		$subject = "Segue Discussion: ".$_REQUEST['subject'];
 		$body = $_REQUEST['subject'];
 		$body .= "<br>by ".$_SESSION['afname'];
 		$body .= "<br>".$_REQUEST['content'];
