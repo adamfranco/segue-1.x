@@ -64,6 +64,17 @@ if ($curraction == 'add') {
 		db_query($query);
 		$ugroup_id = lastid();
 		
+		if ($owner_id) {
+			$query = "
+				INSERT INTO
+					ugroup_user
+				SET
+					FK_ugroup = $ugroup_id,
+					FK_user = $owner_id
+			";
+			db_query($query);
+		}
+		
 		$obj = &new course();
 		$obj->external_id = $_REQUEST['external_id'];
 		$obj->department = $_REQUEST['department'];
@@ -77,8 +88,8 @@ if ($curraction == 'add') {
 //		$obj->classgroup = $_REQUEST['classgroup'];
 		$obj->insertDB();
 		
-		unset($_REQUEST['external_id'],$_REQUEST['name'],$_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
 		$message = "Class '".generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'])."' added successfully.";
+		unset($_REQUEST['external_id'],$_REQUEST['name'],$_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
 	}
 }
 
@@ -116,8 +127,19 @@ if ($curraction == 'edit') {
 			";
 			db_query($query);
 			
+			if ($owner_id && !db_get_line("ugroup_user","FK_user=$owner_id AND FK_ugroup = ".$obj->ugroup)) {
+				$query = "
+					INSERT INTO
+						ugroup_user
+					SET
+						FK_ugroup = ".$obj->ugroup.",
+						FK_user = $owner_id
+				";
+				db_query($query);
+			}
+			
+			$message = "Class '".generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'])."' updated successfully.";
 			unset($_REQUEST['external_id'],$_REQUEST['name'],$_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
-			$message = "Course '".$obj->code."' updated successfully.";
 		}
 	}
 }

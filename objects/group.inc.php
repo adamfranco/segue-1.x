@@ -29,7 +29,7 @@ class group {
 SELECT
 	classgroup_id AS id, classgroup_name AS name
 FROM classgroup WHERE classgroup_id=".$this->id;
-		echo $query."<br>";
+//		echo $query."<br>";
 			
 		$r = db_query($query);
 		if (db_num_rows($r)) {
@@ -80,7 +80,7 @@ FROM
 		if (!$this->exists($this->name))
         {
 			$query = "INSERT INTO classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
-			echo $query."<br>";
+//			echo $query."<br>";
 			$r = db_query($query);
     		$this->id = mysql_insert_id();
 		}
@@ -94,7 +94,7 @@ FROM
 
 		// first, reset classes that used to be part of this classgroup
 		$query = "UPDATE class SET FK_classgroup = NULL WHERE FK_classgroup = ".$this->id;
-		echo $query."<br>";
+//		echo $query."<br>";
 		$r = db_query($query);
 		
 		// then, set new forign key		
@@ -110,7 +110,7 @@ FROM
 					WHERE
 						".generateTermsFromCode($class_code)."
 				";		
-				echo $query."<br>";
+//				echo $query."<br>";
 				$r = db_query($query);
 			}
 		}
@@ -126,7 +126,7 @@ FROM
 	function getClassesFromName($name) {
 		if (group::exists($name)) {
 			$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_name='$name'";
-			echo $query."<br>";
+//			echo $query."<br>";
 			$r = db_query($query);
 			$classes = array();
 			while ($a = db_fetch_assoc($r))
@@ -138,7 +138,7 @@ FROM
 	
 	function getNameFromClass($class) {
 		$query = "SELECT classgroup_name FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND ".generateTermsFromCode($class);
-		echo $query."<br>";
+//		echo $query."<br>";
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
