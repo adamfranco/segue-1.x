@@ -101,6 +101,7 @@ FROM
  ******************************************************************************/
 
 	function getAllSitesWhereUserIsEditor($user='') {
+		global $dbhost, $dbuser, $dbpass, $dbdb;
 		if ($user == '') $user = $_SESSION[auser];
 
 		// first, get all sites for which the user is an editor
@@ -123,6 +124,7 @@ FROM
 			WHERE
 				slot.FK_owner != user_id
 		";
+		db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 		$r = db_query($query);
 		$ar = array();
 		if (db_num_rows($r))
