@@ -7,6 +7,92 @@ class site extends segue {
 						"addedby","editedby","editedtimestamp","addedtimestamp",
 						"activatedate","deactivatedate","active","sections",
 						"listed","type");
+	// fields listed in $_datafields are stored in the database.
+	// the first element is the table join syntax required to pull the data.
+	// the second element
+	var $_datafields = array(
+		"id" => array(
+			"site",
+			array("site_id"),
+			"site_id"
+		),
+		"name" => array(
+			"site
+				INNER JOIN
+			slot
+				ON site_id = FK_site",
+			array("slot_name"),
+			"site_id"
+		),
+		"owning_site" => array(
+			"site
+				INNER JOIN
+			slot
+				ON site_id = FK_site",
+			array("slot_name"),
+			"site_id"
+		),
+		"type" => array(
+			"site",
+			array("site_type"),
+			"site_id"
+		),
+		"title" => array(
+			"site",
+			array("site_title"),
+			"site_id"
+		),
+		"activatedate" => array(
+			"site",
+			array("site_activate_tstamp"),
+			"site_id"
+		),
+		"deactivatedate" => array(
+			"site",
+			array("site_deactivate_tstamp"),
+			"site_id"
+		),
+		"active" => array(
+			"site",
+			array("site_active"),
+			"site_id"
+		),
+		"listed" => array(
+			"site",
+			array("site_listed"),
+			"site_id"
+		),
+		"theme" => array(
+			"site",
+			array("site_theme"),
+			"site_id"
+		),
+		"themesettings" => array(
+			"site",
+			array("site_themesettings"),
+			"site_id"
+		),
+		"header" => array(
+			"site",
+			array("site_header"),
+			"site_id"
+		),
+		"footer" => array(
+			"site",
+			array("site_footer"),
+			"site_id"
+		),
+		"sections" => array(
+			"site
+				INNER JOIN
+			section
+				ON site_id = FK_site",
+			array("section_id"),
+			"section_order"
+		)
+	);
+	var $_table = "site";
+	
 	
 	function site($name) {
 		$this->name = $name;
