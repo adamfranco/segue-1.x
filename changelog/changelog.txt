@@ -6,6 +6,8 @@ Name: Segue ChangeLog
 v. 1.3.0 (the future)
 ----------------------------------------------------
 		
+	* Change: The 'Site not availible' error is now more informative. (Adam Franco)
+		
 	* Change: When Changing to a differnt active user as admin, you are now kept on the same page. (Adam Franco)
 		
 	* New feature: Segue can now be configured to restrict users to given sites based on the virtual host asked for. Each vhost must be set up on the webserver as well as in the Segue config. (Gabe Schine)
