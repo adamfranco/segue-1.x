@@ -1,5 +1,6 @@
 <? /* $Id$ */
 
+
 function _valid_ldap($name,$pass,$admin_auser=0) {
 //	print "hallooo!";
 	$name = strtolower($name);
@@ -62,6 +63,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		
 		$sr = ldap_search($c,$userSearchDN,$searchFilter,$return);
 		$results = ldap_get_entries($c,$sr);
+		$results[0] = array_change_key_case($results[0], CASE_LOWER);
 		$numldap = ldap_count_entries($c,$sr);
 		if (!$numldap) return 0; // if we don't have any entries, return false
 		ldap_unbind($c);
@@ -70,13 +72,13 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		$x[user] = $name;
 		$x[pass] = $pass;
 		$x[method] = 'ldap';
-		$x[fullname] = $results[0][$cfg[ldap_fullname_attribute]][0];
-		$x[email] = $results[0][$cfg[ldap_email_attribute]][0];
+		$x[fullname] = $results[0][strtolower($cfg[ldap_fullname_attribute])][0];
+		$x[email] = $results[0][strtolower($cfg[ldap_email_attribute])][0];
+
 		// are they prof?
-		
-		if (is_array($results[0][$cfg[ldap_group_attribute]])) {
+		if (is_array($results[0][strtolower($cfg[ldap_group_attribute])])) {
 			$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
-			foreach ($results[0][$cfg[ldap_group_attribute]] as $item) {
+			foreach ($results[0][strtolower($cfg[ldap_group_attribute])] as $item) {
 				if (eregi($isProfSearchString,$item)) {
 					$areprof=1;
 				}
