@@ -381,7 +381,11 @@ ORDER BY
 			if ($this->changed[url]) {
 				 
 			}
-						
+			
+			print "<pre>Stories: ";
+			print_r($this->data['stories']);
+			print "\n</pre>";
+			
 			// now update all the page ids in the children, if the latter have changed
 			if ($this->changed[stories]) {
 				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent
@@ -392,10 +396,15 @@ ORDER BY
 				// now, update all stories
 				foreach ($this->data['stories'] as $k => $v) {
 					$query = "UPDATE story SET FK_page=".$this->id.", story_order=$k WHERE story_id=".$v;
+					print "<br>query = $query";
 					db_query($query);
+					print mysql_error()."<br>";
 				}
 				
-			}			
+			}
+			print "<pre>Stories: ";
+			print_r($this->data['stories']);
+			print "\n</pre>";			
 		}
 		
 // REVISE THIS =================================================================

@@ -377,7 +377,7 @@ ORDER BY
 			$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
 			$query = "UPDATE story SET ".implode(",",$a)." WHERE story_id=".$this->id;
-			print "<pre>Page->UpdateDB: $query<br>";
+			print "<pre>Story->UpdateDB: $query<br>";
 			db_query($query);
 			print mysql_error()."<br>";
 			print_r($this->data['stories']);
