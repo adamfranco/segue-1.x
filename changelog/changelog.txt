@@ -6,6 +6,12 @@ Name: Segue ChangeLog
 v. 1.3.0 (the future)
 ----------------------------------------------------
 		
+	**** IMPORTANT *** Change: Various changes in Segue necessitate that you upgrade to a new config file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make several changes to Segue's database and file-storage structure. (Adam Franco)
+		
+		
+		
+	* Bug Fix: Fixed bug in display of stories by enclosing each story in a table to prevent edit and discuss/assess links from shifting across stories (Alex Chapin)
+		
 	* Change: When logging in and logging out, users are kept on the same page if possible instead of being redirected back to the default page. (Adam Franco)
 		
 	* Change: The 'Site not availible' error is now more informative and includes links to "Home" as well as a "create site" link if the active user is allowed to create a site in that place. The latter is useful when taking advantage of the vhost functionality. (Adam Franco)
@@ -18,7 +24,7 @@ v. 1.3.0 (the future)
 		
 	* Change: Changed the way semesters are defined and handled. Segue can now be configured to have as few or many semesters as desired, each with custom start/end days. (Adam Franco)
 		
-	**** IMPORTANT *** Change: The semester-handling changes involve new config options if upgrading from Segue 1.2.x or earlier. Change also necessitates a database table change if semesters other than w,s,l,f are used. (Adam Franco)
+	**** IMPORTANT *** Change: The semester-handling changes involve new config options if upgrading from Segue 1.2.x or earlier. Change also necessitates a database table change if semesters other than w,s,l,f are used. These table changes can be made by running the 1.3.0 update under 'admin tools' --&gt; 'updates' (Adam Franco)
 		
 	* Bug Fix: Classes are now ordered by year, semester, and code on the default page. (Adam Franco)
 		
@@ -31,8 +37,6 @@ v. 1.3.0 (the future)
 	* New feature: Added error-printing functions to print out backtraces neatly. (Adam Franco)
 		
 	* New feature: Added Media Library link to text content block UI to allow users to easily add media files to text content blocks in a way that is portable across copies of a site and can be exported from one instance of Segue to another. This Media Library link allows users to easily get urls of Media Library files to copy/paste into HTML or text editors. When text content blocks are saved to database the $cfg[uploadurl] and $sitename portions of Media Library file urls (i.e. entire url except filename) are converted to a placeholder (i.e. unique string). When text content blocks are displayed or edited (i.e. fetched from database), the url placeholder is converted back to actual current media file url (based on current $cfg[uploadurl] and site name. (Alex Chapin)
-		
-	* New feature: Added a link to the Media Library from text type content block add/edit UI. This allows users to easily get the urls for media in their Media Libraries and copy/paste them into the HTMLArea editor. (Alex Chapin)
 		
 	* Bug Fix: Fixed bug in media library (filebrowser.php) that prevented getting custom upload limits when called from add content block UI (add_story_form_1_item.inc) (Alex Chapin)
 		

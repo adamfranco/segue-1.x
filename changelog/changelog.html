@@ -4,6 +4,18 @@
 	h1 {font-size: 18pt;}
 	li {padding-bottom: 3px;}
 	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.0</h2><h3>the future</h3><ul>
+		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
+			Various changes in Segue necessitate that you upgrade to a new config
+			file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates'
+			to make several changes to Segue's database and file-storage structure.
+		 (<i>Adam Franco</i>)
+		
+		
+		<li/> Bug Fix:
+	 
+			Fixed bug in display of stories by enclosing each story in a table to
+			prevent edit and discuss/assess links from shifting across stories
+		 (<i>Alex Chapin</i>)
 		<li/> Change:  
 			When logging in and logging out, users are kept on the same page if
 			possible instead of being redirected back to the default page.
@@ -36,7 +48,8 @@
 		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
 			The semester-handling changes involve new config options if upgrading
 			from Segue 1.2.x or earlier. Change also necessitates a database table
-			change if semesters other than w,s,l,f are used.
+			change if semesters other than w,s,l,f are used. These table changes can
+			be made by running the 1.3.0 update under 'admin tools' --&gt; 'updates'
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
@@ -70,11 +83,6 @@
 			(i.e. unique string).  When text content blocks are displayed or edited 
 			(i.e. fetched from database), the url placeholder is converted back to actual 
 			current media file url (based on current $cfg[uploadurl] and site name.
-		 (<i>Alex Chapin</i>)
-		<li/> New feature:  
-			Added a link to the Media Library from text type content block add/edit UI.
-			This allows users to easily get the urls for media in their Media Libraries
-			and copy/paste them into the HTMLArea editor.
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
 	 
