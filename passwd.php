@@ -84,7 +84,8 @@ if ($_REQUEST[action] == "newpassword") {
 	if (!$_REQUEST['uname']) {
 		$message = "<div align=center>You must enter a Name.<br><br></div>";
 		$error = TRUE;
-	} else if (!$_REQUEST['email'] || !ereg("@", $_REQUEST['email'])) {
+	}
+	if (!$_REQUEST['email'] || !ereg("@", $_REQUEST['email'])) {
 		 $message = "<div align=center>You must enter a valid email address.<br><br></div>";
 		 $error = TRUE;
 	}
