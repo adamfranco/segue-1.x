@@ -9,15 +9,32 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 	if (!($c = ldap_connect($cfg[ldap_server]))) $c = ldap_connect($cfg[ldap_server]);
 	
 	// bind as the admin and search for the proper name to bind as
-	$admin_ldap_user = $cfg[ldap_user_bind_dn]."=".$cfg[ldap_voadmin_user];
+	$admin_ldap_user = $cfg[ldap_voadmin_user_dn];
 	$admin_ldap_pass = $cfg[ldap_voadmin_pass];
 
 	$r = @ldap_bind($c,$admin_ldap_user,$admin_ldap_pass);
+//	print "<br>@ldap_bind($c,$admin_ldap_user,$admin_ldap_pass); <br> \"$r\"";
+//	if (!$r) print "<br>Could not bind as admin.";
 	
-	$userSearchDN = $cfg[ldap_base_dn].(($cfg[ldap_user_dn])?",".$cfg[ldap_user_dn]:"");
+	$userSearchDN = (($cfg[ldap_user_dn])?$cfg[ldap_user_dn].",":"").$cfg[ldap_base_dn];
+	$searchFilter = "(".$cfg[ldap_username_attribute]."=".$name.")";
 	
-	$searchResource = ldap_search($r, $userSearchDN, $cfg[ldap_username_attribute]."=".$name);
-	$userFullBindDN = ldap_get_dn($r, $searchResource);
+//	print "<br>$userSearchDN <br>$searchFilter <br>";
+	
+	$searchResource = ldap_search($c, $userSearchDN, $searchFilter);
+	$searchResult = ldap_first_entry($c, $searchResource);
+	
+//	print "<br>ldap_search($c, $userSearchDN, $searchFilter);";
+//	print "<br>ldap_first_entry($c, $searchResource);";
+//	print "<br>$searchResult";
+	
+	if ($searchResult) {
+		$userFullBindDN = ldap_get_dn($c, $searchResult);
+//		print $userFullBindDN;
+	} else {
+//		print "<br>no search result";
+		return 0;
+	}
 	
 	// bind as the proper user
 	$ldap_user = (($admin_auser)?$admin_ldap_user:$userFullBindDN);
@@ -26,7 +43,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 	// No need to unbind, as unbind kills the link, just bind again.
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
 	
-//	print "@ldap_bind($c,$ldap_user,$ldap_pass);";
+//	print "<br>@ldap_bind($c,$ldap_user,$ldap_pass);";
 		
 	if ($r) { // they're good!
 	
@@ -38,17 +55,16 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 			$cfg[ldap_group_attribute]
 		);
 		
-		$dn = $cfg[ldap_base_dn].",".$cfg[ldap_user_dn];
-		$filter = $cfg[ldap_username_attribute]."=".$name;		
+		$userSearchDN = (($cfg[ldap_user_dn])?$cfg[ldap_user_dn].",":"").$cfg[ldap_base_dn];
+		$searchFilter = "(".$cfg[ldap_username_attribute]."=".$name.")";
 		
 //		print "$name with $pass was in the LDAP database!<BR>";//debug
 		
-		$sr = ldap_search($c,$dn,$filter,$return);
+		$sr = ldap_search($c,$userSearchDN,$searchFilter,$return);
 		$results = ldap_get_entries($c,$sr);
-//		print "Found $name's entries: ".ldap_count_entries($c,$sr)."<BR>";//debug
 		$numldap = ldap_count_entries($c,$sr);
 		if (!$numldap) return 0; // if we don't have any entries, return false
-		//ldap_close($c);
+		ldap_unbind($c);
 		
 		$x = array();
 		$x[user] = $name;
@@ -74,38 +90,11 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		}
 								
 		// now check if they're in the database, add if necessary, and get id
-		$x = _auth_check_db($x,1);		
+		$x = _auth_check_db($x,1);	
 		return $x;
 				
 	}
 	return 0;
 }
-
-/*
-
-	if ($num==0) {		// no entries w/ that name
-		// add them to the db
-		$fname = $results[0]["cn"][0];
-		if (ereg(",",$fname)) {			// if there's a comma, change name from "Schine, Gabriel B" to "Gabriel B Schine"
-			$vars = split(",",$fname);
-			$fname = $vars[1] . " " . $vars[0];
-		}
-		$uname=$name;
-		$email = $results[0]["mail"][0];
-		// let's find out what kind of user they are
-		$areprof=0;
-		foreach ($results[0]["memberof"] as $item) {
-			if (eregi("all_faculty",$item)) {
-				$areprof=1;
-			}
-		}
-		$usertype = ($areprof)?"prof":"stud";
-
-		$status = 'ldap';
-		$query = "insert into users set uname='$uname', email='$email', fname='$fname',type='$usertype',pass='LDAP PASS',status='ldap'";
-		db_query($query);
-	}
-	
-*/
 
 ?>
