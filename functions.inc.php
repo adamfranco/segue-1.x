@@ -385,7 +385,7 @@ function insite($site,$section,$page=0,$story=0) {
 $_isgroup_cache = array();
 function isgroup ($group) {
 	global $_isgroup_cache;
-	if (isset($$_isgroup_cache[$group])) return $_isgroup_cache[$group];
+	if (isset($_isgroup_cache[$group])) return $_isgroup_cache[$group];
 	$query = ("SELECT classgroup_id FROM classgroup WHERE classgroup_name='$group'");
 	$r = db_query($query);
 	if (db_num_rows($r)) {
