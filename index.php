@@ -98,7 +98,7 @@ if ($_loggedin) {
 
 	// one array containing all user's classes
 	$allclasses = array_merge($classes,$oldclasses,$futureclasses);
-	
+		
 	// get other sites they have added, but which aren't in the classes list
 	if ($all_sites = segue::getAllSites($_SESSION[auser])) {
 		foreach ($all_sites as $n) {

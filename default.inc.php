@@ -4,7 +4,7 @@
 $pagetitle = "Segue";
 $color = 0;
 $sitesprinted=array();
-//printpre($_SESSION[expand_pastclasses]);
+//printpre($_SESSION);
 
 if (isset($_REQUEST[expand_pastclasses])) {
 	//printpre($_SESSION[expand_pastclasses]);
@@ -532,8 +532,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 		printc("<input type=checkbox name='group[]' value='$name'>");
 	}
 	
-	printc("$name - ");
-	
+	printc("$name - ");	
 	
 	//printc("<td align=right style='font-size: 11px; color: #777;'>");
 	if ($exists) {
@@ -541,7 +540,9 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	} else if (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name)) {
 	// if the slot doesn't have an owner or we are the owner.
 		if ($_SESSION[atype] == 'prof' && $isclass) {
-			printc("<span style ='font-size:10px;'>Create: <a href='$namelink'>Site</a></span>");
+			printc("<span style ='font-size:10px;'>");
+			printc("Create: <a href='$namelink'>Site</a> ");
+			printc("</span>");
 		} else {
 			printc("<span style ='font-size:10px;'><a href='$namelink'>Create Site</a></span>");		    
 		}
@@ -607,6 +608,10 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 			// if the user is an editor
 			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>your permissions</a>");
 		}
+		if ($isclass) {
+			printc(" | <a href=\"Javascript:sendWindow('addstudents',400,250,'add_students.php?$sid&name=".$name."')\">students</a> \n");
+		}
+
 		printc("</div>");
 		
 		

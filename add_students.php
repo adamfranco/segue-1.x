@@ -11,6 +11,19 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 $ugroup_id = $_REQUEST[ugroup_id];
 
+if (isset($_REQUEST[name])) {
+	//printpre($name);
+	$class_external_id = $_REQUEST[name];
+	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_external_id'");
+	$_REQUEST[ugroup_id] = $ugroup_id;
+	//printpre($ugroup_id);
+	$students = getclassstudents($class_external_id);
+	//printpre($class_external_id);
+	//printpre($students);
+
+}
+
+
 if ($_REQUEST[n]) {
 	//include("config.inc.php");
 	//include("functions.inc.php");
@@ -127,6 +140,7 @@ input {
 </style>
 <form action="<? echo $PHP_SELF ?>" method=get name='lookup'>
 <input type=hidden name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>'>
+<!-- <input type=hidden name='ugroup_id' value='<? $ugroup_id ?>'> -->
 
 <?
 printerr2();
@@ -207,7 +221,15 @@ $r = db_query($query);
 	<th>Name</th>
 </tr>
 <?
+
+/******************************************************************************
+ * adds all students who have logged in and are members of the class
+ * all these students are added to an logged students array
+ ******************************************************************************/
+
 while ($a = db_fetch_assoc($r)) {
+
+	$logged_students[] = $a[user_uname];
 	print "<tr>";
 		print "<td align=center>";
 			if ($owner_id != $a[user_id])
@@ -218,12 +240,38 @@ while ($a = db_fetch_assoc($r)) {
 		print "</td>";
 	print "</tr>";
 }
+//printpre($logged_students);
+
+/******************************************************************************
+ * adds all students who are members of the class EXCEPT:
+ * -those who have logged in
+ * need to check if these students are in the fetched array above...
+ ******************************************************************************/
+
+foreach ($students as $student) {
+
+	if (!in_array($student, $logged_students)) {
+		print "<tr>";
+			print "<td align=center>";
+				//if ($owner_id != $a[user_id])
+				//	print "<input type=button name='use' value='remove' onClick=\"delStudent('".$a[user_id]."','".$a[user_fname]." (".$a[user_uname].")')\">";
+			print "</td>";
+			print "<td>";
+				print $student;
+			print "</td>";
+		print "</tr>";
+	}
+
+
+}
 
 ?>
 </table>
 
 <form name='addform'>
 <input type=hidden name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>'>
+<!-- <input type=hidden name='ugroup_id' value='<? $ugroup_id ?>'> -->
+
 <input type=hidden name='addstudent'>
 <input type=hidden name="action">
 </form>
