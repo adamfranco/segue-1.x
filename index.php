@@ -50,7 +50,7 @@ if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
 // We don't want to force the cookie domain if we are not accessing segue
 // from the domain specified (either due to a configuration error or a 
 // vhost setting) as that would make the cookie inaccessible.
-if ($cfg[domain] && ereg($cfg['domain'], $_SERVER["SERVER_NAME"])
+if ($cfg[domain] && ereg($cfg['domain'], $_SERVER["SERVER_NAME"]))
 	ini_set("session.cookie_domain",$cfg[domain]);
 	
 //ini_set("session.name","SeguePHPSESSID");
