@@ -291,11 +291,19 @@ Participants<br><br>
 				$to .= $address.", ";
 			}
 			$to = rtrim($to, ",");
+			
+			//compile from and cc into headers
+			$from = $_SESSION['afname']."<".$_SESSION['aemail'].">";
+			$headers = "From: ".$from."\n";
+			$headers .= "Cc: ".$from."\n";
+			
+			//add content type to header
 			$html = 1;
 			if ($html == 1) {
-				$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\nContent-Type: text/html\n";
+				//$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\nContent-Type: text/html\n";
+				$headers .= "Content-Type: text/html\n";
 			} else {
-				$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
+				//$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
 			}
 		
 			$text = "email text here";
@@ -306,6 +314,7 @@ Participants<br><br>
 				<table width=100%>
 			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
 			<tr><td align=right>From:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
+			<tr><td align=right>Cc:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
 			<tr><td></td><td align=left>
 			<textarea name=body cols=60 rows=20></textarea>
@@ -319,7 +328,8 @@ Participants<br><br>
 			<input type=hidden name='siteid' value='<? echo $siteid ?>'>
 			<input type=hidden name='site' value='<? echo $site ?>'>
 			<input type=hidden name='to' value='<? echo $to ?>'>
-			<input type=hidden name='from' value='<? echo $from ?>'>
+<!-- 			<input type=hidden name='from' value='<? echo $from ?>'> -->
+			<input type=hidden name='headers' value='<? echo $headers ?>'>
 			</form>
 			<?
 			$r = db_query($query);
@@ -331,13 +341,16 @@ Participants<br><br>
 
 		} else if ($curraction == 'send') {
 			print "<table>";
-			print "<tr><td>to:</td><td>".$to."</td></tr><br><hr>";
-			print "<tr><td>from:</td><td>".$_SESSION['afname']."</td></tr>";
-			print "<tr><td>subject:</td><td>".$subject."</td></tr>";
-			print "<tr><td></td><td>".$body."</td></tr>";
-			print "</table>";
-			print "</div>";
-			mail($to,$subject,$body,"From: $from");
+			print "<tr><td>to:</td><td>".$to."</td></tr><br><hr>\n";
+			print "<tr><td>from:</td><td>".$_SESSION['afname']."</td></tr>\n";
+			print "<tr><td>cc:</td><td>".$_SESSION['afname']."</td></tr>\n";
+			print "<tr><td>subject:</td><td>".$subject."</td></tr>\n";
+			print "<tr><td></td><td>".$body."</td></tr>\n";
+			//print "<tr><td></td><td>".$headers."</td></tr>\n";  //debug
+			print "</table>\n";
+			print "</div>\n";
+			//mail($to,$subject,$body,"From: $from");
+			mail($to, $subject, $body, $headers);
 			$r = db_query($query);
 			exit();
 		}
