@@ -23,33 +23,66 @@ if ($_REQUEST[cancel]) {
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
+if ($_REQUEST[site] && isset($_SESSION[obj])) {
+	if ($_REQUEST[site] != $_SESSION[obj]->name)
+		unset($_SESSION[obj],$_SESSION[editors]);
+}
+
 /******************************************************************************
  * create the site object if it doesn't exist.
  ******************************************************************************/
-/* unset($_SESSION[obj]); */
-/* unset($_SESSION[editors]); */
+
 if (!is_object($_SESSION[obj])) {
 	$_SESSION[obj] = new site($_REQUEST[site]);
 /* 	$_SESSION[obj] = new site('gabe'); */
 	$_SESSION[obj]->fetchDown();
-	$_SESSION[obj]->buildPermissionsArray();
+	$_SESSION[obj]->buildPermissionsArray(0,1);
+	$_SESSION[obj]->spiderDownLockedFlag();
 }
 
-$_SESSION[obj]->buildPermissionsArray();
+$site_owner = $_SESSION[obj]->getField("addedby");
+
+$isOwner = $isEditor = 1;
+
+if ($site_owner != $_SESSION[auser] && $_SESSION[ltype] != 'admin') {
+/* 	error("You are not allowed to edit permissions for this site!"); */
+	$isOwner = 0;
+}
+
+if (!$isOwner && !$_SESSION[obj]->isEditor()) {
+	error("You are not an editor for this site. You may not view any permissions.");
+	$isEditor=0;
+}
+
+/* $_SESSION[obj]->buildPermissionsArray(0,1); */
 if (!isset($_SESSION[editors])) $_SESSION[editors] = array();
+
+if ($error) return;
+
+/******************************************************************************
+ * Save changes to the DB
+ ******************************************************************************/
+
+if ($_REQUEST[savechanges]) {
+	if ($isOwner) {
+		$_SESSION[obj]->updateDB(1);
+		unset($_SESSION[obj],$_SESSION[editors]);
+		Header("Location: close.php");
+	}
+}
 
 /******************************************************************************
  * Editor Actions:
  ******************************************************************************/
-if ($_REQUEST[edaction] == 'add') {
+if ($isOwner && $_REQUEST[edaction] == 'add') {
 	$_SESSION[obj]->addEditor($_REQUEST[edname]);
 }
 
-if ($_REQUEST[edaction] == 'del') {
+if ($isOwner && $_REQUEST[edaction] == 'del') {
 	$_SESSION[obj]->delEditor($_REQUEST[edname]);
 }
 
-if (isclass($_SESSION[obj]->name)) {
+if ($isOwner && isclass($_SESSION[obj]->name)) {
 	print "<script lang='javascript'>";
 	print "function addClassEditor() {";
 	print "	f = document.addform;";
@@ -64,12 +97,25 @@ if (isclass($_SESSION[obj]->name)) {
 /******************************************************************************
  * switch between forms 1 and 2
  ******************************************************************************/
-if($_REQUEST[editpermissions]) {
-	$_SESSION[editors] = $_REQUEST[editors];
-	$step = 2;
+if (!$isOwner && $isEditor) {
+	if (!count($_SESSION[editors])) {
+		if (in_array($_SESSION[auser],$_SESSION[obj]->getEditors())) $_SESSION[editors][] = $_SESSION[auser];
+		$_SESSION[editors] = array_merge($_SESSION[editors],$_SESSION[obj]->returnEditorOverlap(getuserclasses($_SESSION[auser])));
+		// done... now send them to step 2
+		$step = 2;
+	}
+}
+ 
+if($isOwner && $_REQUEST[editpermissions]) {
+	if (!count($_REQUEST[editors])) {
+		error("You must choose some editors.");
+	} else {
+		$_SESSION[editors] = $_REQUEST[editors];
+		$step = 2;
+	}
 }
 
-if ($_REQUEST[chooseeditors]) {
+if ($isOwner && $_REQUEST[chooseeditors]) {
 	$step = 1;
 }
 
@@ -86,7 +132,7 @@ $pfield = $_REQUEST[pfield];
 $pwhat = $_REQUEST[pwhat];
 $puser = $_REQUEST[puser];
 
-print "$pscope - $psite - $psection - $ppage - $pstory - $pfield - $pwhat - $puser";
+//print "$pscope - $psite - $psection - $ppage - $pstory - $pfield - $pwhat - $puser";
 
 if ($fieldchange) {	 // we're supposed to change a field
 	$_a = array("story"=>0,"page"=>1,"section"=>2,"site"=>3);
@@ -234,17 +280,24 @@ function doFieldChange(user,scope,site,section,page,story,field,what) {
 <? 
 
 /******************************************************************************
+ * output any errors
+ ******************************************************************************/
+
+printerr();
+print $content;
+
+/******************************************************************************
  * include the appropriate page:
  ******************************************************************************/
 
 if ($step == 2) require("edit_permissions_form2.inc.php");
 else require("edit_permissions_form1.inc.php");
 
-?>
+print "<div align=right>";
+print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
+if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
+print "</div>";
 
-<div align=right><input type=button value='Cancel' onClick='document.location="edit_permissions.php?cancel=1"'></div>
-
-<?
 // debug output -- handy :)
 print "<pre>";
 print "session:\n";

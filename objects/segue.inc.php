@@ -505,7 +505,7 @@ class segue {
 		$this->permissions = array();
 	}
 	
-	function setUserPermissions($user,$add=0,$edit=0,$del=0,$view=1,$discuss=0) {
+	function setUserPermissions($user,$add=0,$edit=0,$del=0,$view=0,$discuss=0) {
 		$this->setUserPermissionsFromArray($user,array(ADD=>$add,EDIT=>$edit,DELETE=>$del,VIEW=>$view,DISCUSS=>$discuss));
 	}
 	
@@ -536,7 +536,7 @@ class segue {
  * buildPermissionsArray - builds the permissions array for current obj from DB
  ******************************************************************************/
 
-	function buildPermissionsArray($force=0) {
+	function buildPermissionsArray($force=0,$down=0) {
 		if (!$force && $this->builtPermissions) return;
 		
 		$scope = get_class($this);
@@ -545,7 +545,7 @@ class segue {
 		$query = "select * from permissions where site='$site' and scope='$scope' and scopeid='$id'";
 		$r = db_query($query);
 		while ($a=db_fetch_assoc($r)) {
-			$this->permissions[$a[user]] = array( permissions::ADD()=>$a[a], 
+			$this->permissions[strtolower($a[user])] = array( permissions::ADD()=>$a[a], 
 												permissions::EDIT()=>$a[e], 
 												permissions::DELETE()=>$a[d], 
 												permissions::VIEW()=>$a[v], 
@@ -570,6 +570,55 @@ class segue {
 		}
 		$this->editors = array_unique($this->editors);
 		$this->builtPermissions=1;
+		
+		if ($down) {
+			$ar = $this->_object_arrays[$scope];
+			if ($ar) {
+				$a = &$this->$ar;
+				foreach ($a as $i=>$o) {
+					$a[$i]->buildPermissionsArray($force,$down);
+				}
+			}
+		}
+	}
+	
+/******************************************************************************
+ * spiderDownLockedFlag - used for editing permissions... sets the locked flag
+ * 				on children of a section with certain permissions
+ *				don't try to understand this, just use it. it works
+ ******************************************************************************/
+
+	function spiderDownLockedFlag() {
+		$editors = $this->getEditors();
+		$p = $this->getPermissions();
+		
+		$_a = array("add","edit","delete","view");
+		
+		foreach ($editors as $e) {
+			for ($i=0;$i<4;$i++) {
+				$this->checkLockedFlag($e,$_a[$i]);
+			}
+		}
+	}
+	
+	function checkLockedFlag($e,$perm) {
+		$this->buildPermissionsArray();		// just in case
+		$p = $this->getPermissions();
+		$_t = strtoupper($perm);
+		$pid = permissions::$_t();
+		$e = strtolower($e);
+		if ($p[$e][$pid]) { // set locked flag
+			$this->setFieldDown("l-$e-$perm",1);
+			$this->setField("l-$e-$perm",0);
+		} else {
+			// keep going down the line
+			$ar = $this->_object_arrays[get_class($this)];
+			if ($ar) {
+				$a = &$this->$ar;
+				foreach ($a as $i=>$o)
+					$a[$i]->checkLockedFlag($e,$perm);
+			}
+		}
 	}
 
 /******************************************************************************

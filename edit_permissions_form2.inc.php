@@ -5,7 +5,7 @@
  ******************************************************************************/
 $totalcolumns = count($_SESSION[editors])*4 + 2;
 
-print "<form action='$PHP_SELF?$SID' medthod=post name=addform>";
+print "<form action='$PHP_SELF?$sid' medthod=post name=addform>";
 print "<input type=hidden name='step' value=$step>";
 
 ?>
@@ -33,8 +33,7 @@ print "</tr>";
 $buttons = "<tr>";
 $c = $totalcolumns - 1;
 $buttons .= "<td align=left>";
-$buttons .= "<input type=submit name='chooseeditors' value='<- Choose Editors'> ";
-$buttons .= "<input type=submit name='savepermissions' value='Save Changes'>";
+if ($isOwner) $buttons .= "<input type=submit name='chooseeditors' value='<- Choose Editors'> ";
 $buttons .= "</td><td align=left colspan=$c>";
 $buttons .= "L = Locked; v = View; a = Add; e = Edit; d = Delete; ".helplink("editors","help");
 $buttons .= "</td></tr>";
@@ -122,7 +121,11 @@ function doEditorLine(&$o) {
 	foreach ($_SESSION[editors] as $e) {
 		$args1 = "'$e',".$args;
 		foreach ($_a as $v=>$i) {
-			print "<td align=center".(($i==3)?" class='viewcol'":"")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onChange=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v"))?"disabled":"")."></td>";
+			$skip = 0;
+			if (($e == 'everyone' || $e == 'institute') && $i<3) $skip = 1;
+			if ($class=='story' && $v == 'add') $skip = 1;
+			if ($skip) print "<td align=center".(($i==3)?" class='viewcol'":"").">-</td>";
+			else print "<td align=center".(($i==3)?" class='viewcol'":"")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onChange=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v"))?"disabled":"")."></td>";
 		}
 	}
 	print "</tr>";
