@@ -2,6 +2,7 @@
 //echo "bla";
 class discussion {
 	var $storyid,$parentid,$id;
+	var $storyObj;
 //	var $author = array("id"=>0,"uname"=>"","fname"=>"");
 	var $authorid=0,$authoruname,$authorfname;
 	
@@ -37,10 +38,10 @@ class discussion {
 	function discussion($story,$a=NULL,$parent=0) {
 		if (is_array($a)) $this->_parseDBline($a);
 		if (is_numeric($a)) $this->id = $a;
-		if ($story) $this->storyid = $story;
+		if (is_object($story)) { $this->storyObj = &$story; $this->storyid = $story->id; }
+		if (is_numeric($story)) $this->storyid = $story;
 		if ($parent) $this->parentid = $parent;
 	}
-	
 	
 	function getNext() {
 		$this->pointer+=$this->direction;
@@ -116,7 +117,7 @@ class discussion {
 	function _fetchchildren() {
 		if (!$this->storyid) return false;
 		if ($this->numchildren) return false; // they've already called _fetchchildren();
-		
+		$this->_commithttpdata();
 		
 		
 		$query = "
@@ -135,7 +136,7 @@ class discussion {
 		."
 	ORDER BY
 		discussion_order ASC";
-		
+		//print $query;
 		
 		$r = db_query($query);
 		while($a = db_fetch_assoc($r)) {
@@ -175,6 +176,7 @@ class discussion {
 		".$this->_generateSQLdata()."
 	WHERE
 		discussion_id=".$this->id;
+		
 		db_query($query);
 		return true;
 	}
@@ -185,19 +187,40 @@ class discussion {
 	function _generateSQLdata() {
 		$query = "FK_author=".$this->authorid;
 		if ($this->parentid) $query .= ",LK_parent=".$this->parentid;
-		$query .= ",discussion_content='".urlencode($this->content)."'";
-		$query .= ",discussion_subject='".urlencode($this->subject)."'";
+		$query .= ",discussion_content='".urlencode(stripslashes($this->content))."'";
+		$query .= ",discussion_subject='".urlencode(stripslashes($this->subject))."'";
 		$query .= ",FK_story=".$this->storyid;
-		$query .= ",discussion_order=".$this->order;
+		if ($this->order) $query .= ",discussion_order=".$this->order;
 		return $query;
 	}
 	
-	function outputAll($cr=false,$o=false,$copt=false) {
+	function outputAll($cr=false,$o=false,$top=false) {
+		global $sid;
 		// debug
 //		print "outputAll($canreply,$owner,$copt)<BR>";
 		// spider down and output every one
+		if ($top) {
+			$cand = $this->storyObj->hasPermission("discuss");
+			if ($cand) {
+				// just in case...
+				$this->_commithttpdata();
+				
+				if ($_REQUEST['action'] == 'newpost') {
+					$this->_outputform('newpost');
+				} else {
+					$newpostbar='';
+					$newpostbar.="<tr><td align=right>";
+					$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=newpost'>[new post]</a>";
+					$newpostbar.="</td></tr>";
+					print $newpostbar;
+				}
+			}
+		}
+				
+		
 		if ($this->id) $this->_output($cr,$o);
-		$this->_outputChildren($cr,$o,(($copt)?$this->opt:NULL));
+		$this->_outputChildren($cr,$o,(($top)?$this->opt:NULL));
+		print $newpostbar;
 	}
 	
 	function _outputChildren($cr,$o,$opt=NULL) {
@@ -234,7 +257,7 @@ class discussion {
 			if ($a=='edit') {
 				$d = & new discussion($_REQUEST['story']);
 				$d->fetchID($_REQUEST['id']);
-				if ($_SESSION['auser'] != $d->authoruname) return false;
+				if ($_SESSION['auser'] != $d->authoruname) print "ubleck!"; //return false;
 				$d->subject = $_REQUEST['subject'];
 				$d->content = $_REQUEST['content'];
 				$d->update();
@@ -257,7 +280,7 @@ class discussion {
 		$script = $_SERVER['SCRIPT_NAME'];
 		if ($t == 'edit') {
 			$b = 'update';
-			$d = "You are editing your post &quot;".$this->subject."&quot;";
+			$d = "<a name='".$this->id."'>You are editing your post &quot;".$this->subject."&quot;</a>";
 			$c = ($_REQUEST['content'])?$_REQUEST['content']:$this->content;
 			$s = ($_REQUEST['subject'])?$_REQUEST['subject']:$this->subject;
 		}
@@ -273,12 +296,12 @@ class discussion {
 			}
 			else $s = $_REQUEST['subject'];
 		}
-		$p = ($t=='reply')?" style='padding-left: 15px'":0;
+		$p = ($t=='reply')?" style='padding-left: 15px'":'';
 		print "<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>";
 		print "<tr><td$p><b>$d</b></td></tr>";
 		print "<tr><td$p>";
 		print "<table width=100%><tr><td align=left>";
-		print "Subject: <input type=text size=50 name=subject value='$s'>";
+		print "Subject: <input type=text size=50 name=subject value='".spchars($s)."'>";
 		print "</td><td align=right class=info><a href='#' onClick='document.postform.submit()'>[$b]</a></td></tr></table>";
 		print "</td></tr>";
 		print "<tr><td class=content$p>";
@@ -314,10 +337,10 @@ class discussion {
 		if ($this->opt("showauthor")) $a[] = $this->authorfname;
 		if ($this->opt("showtstamp")) $a[] = timestamp2usdate($this->tstamp);
 		$b = array();
-		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=reply' class=info>[reply]</a>";
-		if ($o) $b[] = "<a href='#' class=info>[del]</a>";
+		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=reply#".$this->id."' class=info>[reply]</a>";
+		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='#' class=info>[del]</a>";
 		if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-			$b[] = "<a href='#' class=info>[edit]</a>";
+			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=edit#".$this->id."' class=info>[edit]</a>";
 		if (count($a) || count($b)) {
 			$c = '';
 			if (count($a)) $c .= "(".implode(" - ",$a).") ";

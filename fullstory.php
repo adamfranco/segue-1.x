@@ -11,7 +11,9 @@ include("includes.inc.php");
 
 include("$themesdir/common/header.inc.php");
 
-
+if (($tmp = $_REQUEST['flat_discussion'])) {
+	$_SESSION['flat_discussion'] = ($tmp=='true')?true:false;
+}
 
 
 $partialstatus = 1;$site =& new site($_REQUEST[site]);
@@ -73,6 +75,11 @@ th { font-size: 12px; }
 
 .info { color: #888; }
 a.info { color: #a77; }
+th.info { color: #888; }
+
+.content {
+	border-bottom: 1px solid #ddd;
+}
 
 </style>
 </head>
@@ -81,24 +88,33 @@ a.info { color: #a77; }
 <table width=100% id="maintable" cellspacing=1>
 <tr><td>
 	<table cellspacing=1 width=100%>
-		<? if ($fulltext) print "<tr><th align=left>".(($story->getField("title"))?spchars($story->getField("title")):"Content")."</th></tr><tr><td style='padding-bottom: 15px'>$fulltext</td></tr>"; ?>
+		<? if ($fulltext) print "<tr><th align=left>".(($story->getField("title"))?spchars($story->getField("title")):"&nbsp;")."</th></tr><tr><td style='padding-bottom: 15px'>$fulltext</td></tr>"; ?>
 		<?
 		
 		// output discussions?
 		if ($story->getField("discuss")) {
 			print "<tr>";
-			print "<th align=left>Discussion</th>";
+			print "<th align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><th align=left>Discussion</th>";
+			print "<th align=right class=info>";
+			$f = $_SESSION['flat_discussion'];
+			print ((!$f)?"<a class=info href='fullstory.php?$sid&$getinfo&flat_discussion=true'>":"")."flat".((!$f)?"</a>":"");
+			print " | ";
+			print (($f)?"<a class=info href='fullstory.php?$sid&$getinfo&flat_discussion=false'>":"")."threaded".(($f)?"</a>":"");
+			print "</th></tr></table>";
+			print "</th>";
 			print "</tr>";
 			
 			
-			$ds = & new discussion($story->id);
+			$ds = & new discussion(&$story);
+			if ($f) $ds->flat(); // must be called before _fetchchildren();
 			$ds->_fetchchildren();
-			if ($ds->count()) {
-				$ds->opt("showcontent",true);
-				$ds->getinfo = $getinfo;
-				
-				$ds->outputAll($story->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true);
-			} else print "<tr><td>There have been no posts to this discussion.</td></tr>";
+			
+			$ds->opt("showcontent",true);
+			$ds->opt("useoptforchildren",true);
+			$ds->getinfo = $getinfo;
+			
+			$ds->outputAll($story->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true);
+			if (!$ds->count()) print "<tr><td>There have been no posts to this discussion.</td></tr>";
 		}
 		
 		?>
@@ -106,4 +122,4 @@ a.info { color: #a77; }
 
 </tr></td>
 </table>
-<? print "<pre>"; print_r($ds) ?>
+<? print "<pre>"; print_r($_SESSION) ?>
