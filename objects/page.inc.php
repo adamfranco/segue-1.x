@@ -57,8 +57,10 @@ class page extends segue {
 			
 			// remove stories
 			$this->fetchDown();
-			foreach ($this->stories as $s=>$o) {
-				$o->delete();
+			if ($this->stories) {
+				foreach ($this->stories as $s=>$o) {
+					$o->delete();
+				}
 			}
 			
 			$this->clearPermissions();

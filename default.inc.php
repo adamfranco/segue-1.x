@@ -95,7 +95,10 @@ if ($_loggedin) {
         
                 }
         }
-        // handle group adding backend here
+
+ /******************************************************************************
+ * handle group adding backend here
+ ******************************************************************************/
         if (count($_REQUEST[group]) && ($_REQUEST[newgroup] || $_REQUEST[groupname])) { // they chose a group
                 if (!$_REQUEST[newgroup]) $_REQUEST[newgroup] = $_REQUEST[groupname];
                 if (ereg("^[a-zA-Z0-9_-]{1,20}$",$_REQUEST[newgroup])) {
@@ -173,7 +176,7 @@ if ($_loggedin) {
                         printc("</th></tr>");
                         printc("<tr><th colspan=7 align=left>");
                         printc("<div style='padding-left: 10px; font-size: 10px;'>By adding sites to a group you can consolidate multiple class sites into one entity. This is useful if you teach multiple sections of the same class and want to work on only one site for those classes/sections. Check the boxes next to the classes you would like to add, and either type in a new group name or choose an existing one.");
-                        if ($havegroups) printc("<div class=desc><a href='edit_groups.php?$sid' target='groupor' onClick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a></div>");
+                        if ($havegroups) printc("<div class=desc><a href='edit_groups.php?$sid' target='groupeditor' onClick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a></div>");
                         printc("</th></tr>");
                                 
                 }

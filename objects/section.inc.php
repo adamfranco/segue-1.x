@@ -29,8 +29,10 @@ class section extends segue {
 			
 			// remove pages
 			$this->fetchDown();
-			foreach ($this->pages as $p=>$o) {
-				$o->delete();
+			if ($this->pages) {
+				foreach ($this->pages as $p=>$o) {
+					$o->delete();
+				}
 			}
 			
 			$this->clearPermissions();

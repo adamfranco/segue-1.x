@@ -73,7 +73,26 @@ class group {
 	
 	function addClasses($classes) {
 		if (is_array($classes)) {
-			$this->classes = array_unique(array_merge($this->classes,$classes));
+			$classes2 = array();
+			foreach ($classes as $n=>$class) {
+				if (segue::siteExists($class)) {
+					if (!segue::siteExists($this->name)) {
+						$siteObj = new site ($class);
+						$siteObj->fetchDown(1);
+						$siteObj->copySite($this->name);
+						$siteObj = new site ($class);
+						$siteObj->fetchDown(1);
+						$siteObj->delete();
+						$classes2[] = $class;
+					} else {
+						error("You can not add an existing site to a group that already has a site created");
+					}
+				} else {
+					$classes2[] = $class;
+				}
+			}
+		
+			$this->classes = array_unique(array_merge($this->classes,$classes2));
 		}
 	}
 	

@@ -187,8 +187,10 @@ class site extends segue {
 		
 		// remove sections
 		$this->fetchDown();
-		foreach ($this->sections as $s=>$o) {
-			$o->delete();
+		if ($this->sections) {
+			foreach ($this->sections as $s=>$o) {
+				$o->delete();
+			}
 		}
 		
 /* 		print "<pre>this: "; print_r($this); print "</pre>"; */
