@@ -320,10 +320,28 @@ if ($save) {
 		if ($settings[edit]) { 
 			$query = "update stories set editedby='$auser',"; $where = " where id=$settings[story]"; 
 		}
-		$query .= "discuss='$settings[discuss]',discusspermissions='$settings[discusspermissions]',texttype='$settings[texttype]',category='$settings[category]',shorttext='$settings[shorttext]',longertext='$settings[longertext]',url='$settings[url]',type='$settings[type]',title='$settings[title]', locked=$settings[locked], activatedate='$settings[activatedate]', deactivatedate='$settings[deactivatedate]', permissions='$settings[permissions]'";
 		
-		db_query($query.$where);
-		print "$query$where<BR>";
+		$chg = array();
+		$chg[] = "site_id='$settings[site]'";
+		$chg[] = "section_id='$settings[section]'";
+		$chg[] = "page_id='$settings[page]'";
+		$chg[] = "discuss='$settings[discuss]'";
+		$chg[] = "discusspermissions='$settings[discusspermissions]'";
+		$chg[] = "texttype='$settings[texttype]'";
+		$chg[] = "category='$settings[category]'";
+		$chg[] = "shorttext='$settings[shorttext]'";
+		$chg[] = "longertext='$settings[longertext]'";
+		$chg[] = "url='$settings[url]'";
+		$chg[] = "type='$settings[type]'";
+		$chg[] = "title='$settings[title]'";
+		$chg[] = "locked=$settings[locked]";
+		$chg[] = "activatedate='$settings[activatedate]'";
+		$chg[] = "deactivatedate='$settings[deactivatedate]'";
+		$chg[] = "permissions='$settings[permissions]'";
+		
+		$query .= implode(",",$chg);
+		print $query.$where."<BR>";
+		if (count($chg)) db_query($query.$where);
 		print mysql_error();
 		
 		// add the new story id to the pages table

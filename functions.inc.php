@@ -327,48 +327,105 @@ function handlearchive($stories,$pa) {
 }
 
 function copySite($orig,$dest) {
+	// This function does not support the copying of userfiles in this implementation.
+
 	global $auser;
 	$sections = decode_array(db_get_value("sites","sections","name='$orig'"));
 	$nsections = array();
 	foreach ($sections as $s) {
 		$sa = db_get_line("sections","id=$s");
-		$squery = "insert into sections set addedby='$auser', addedtimestamp=NOW()";
-		$squery .= ",title='$sa[title]', active=$sa[active], type='$sa[type]', url='$sa[url]'";
-		
+		$squery = "insert into sections set addedby='$auser', addedtimestamp=NOW(),";
+		$schg = array();
+		$schg[] = "site_id='$dest'";
+		$schg[] = "title='$sa[title]'";
+		$schg[] = "url='$sa[url]'";
+		$schg[] = "type='$sa[type]'";
+		$schg[] = "locked=$sa[locked]";
+		$schg[] = "active=$sa[active]";
+//		$schg[] = "activatedate='$sa[activatedate]'";
+//		$schg[] = "deactivatedate='$sa[deactivatedate]'";
+//		$schg[] = "permissions='$sa[permissions]'";
+
+		$squery .= implode(",",$schg);
+		db_query($squery);
+		print " &nbsp; &nbsp; &nbsp; ".$squery."<BR>";
+		print " &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>";
+
+		$section = lastid();
+		$nsections[] = lastid();
 		
 		$pages = decode_array($sa[pages]);
 		$npages = array();
 		foreach ($pages as $p) {
 			$pa = db_get_line("pages","id=$p");
-			$pquery = "insert into pages set addedby='$auser', addedtimestamp=NOW()";
-			$pquery .= ",ediscussion=1,archiveby='$pa[archiveby]',url='$pa[url]',type='$pa[type]',title='$pa[title]', showcreator=$pa[showcreator], showdate=$pa[showdate], locked=$pa[locked], active=$pa[active]";
+			$pquery = "insert into pages set addedby='$auser', addedtimestamp=NOW(),";
+			$pchg = array();
+			$pchg[] = "site_id='$dest'";
+			$pchg[] = "section_id='$section'";
+			$pchg[] = "ediscussion=1";
+			$pchg[] = "archiveby='$pa[archiveby]'";
+			$pchg[] = "url='$pa[url]'";
+			$pchg[] = "type='$pa[type]'";
+			$pchg[] = "title='$pa[title]'";
+			$pchg[] = "showcreator=$pa[showcreator]";
+			$pchg[] = "showdate=$pa[showdate]";
+			$pchg[] = "locked=$pa[locked]";
+			$pchg[] = "active=$pa[active]";
+//			$pchg[] = "activatedate='$pa[activatedate]'";
+//			$pchg[] = "deactivatedate='$pa[deactivatedate]'";
+//			$pchg[] = "permissions='$pa[permissions]'";
 			
+			$pquery .= implode(",",$pchg);
+			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".$pquery."<BR>";
+			db_query($pquery);
+			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".mysql_error()."<BR>";
+			$page=lastid();
+			$npages[]=lastid();
+		
 			$stories = decode_array($pa[stories]);
 			$nstories = array();
 			foreach ($stories as $st) {
 				$sta = db_get_line("stories","id=$st");
-				$stquery = "insert into stories set addedby='$auser', addedtimestamp=NOW()";
-				$stquery.=",type='$sta[type]',texttype='$sta[texttype]',category='$sta[category]',title='$sta[title]', discuss=$sta[discuss], discusspermissions='$sta[discusspermissions]', shorttext='$sta[shorttext]', longertext='$sta[longertext]', locked=$sta[locked], url='$sta[url]'";
+				$stquery = "insert into stories set addedby='$auser', addedtimestamp=NOW(),";
+				$stchg = array();
+				$stchg[] = "site_id='$dest'";
+				$stchg[] = "section_id='$section'";
+				$stchg[] = "page_id='$page'";
+				$stchg[] = "discuss='$sta[discuss]'";
+				$stchg[] = "discusspermissions='$sta[discusspermissions]'";
+				$stchg[] = "texttype='$sta[texttype]'";
+				$stchg[] = "category='$sta[category]'";
+				$stchg[] = "shorttext='$sta[shorttext]'";
+				$stchg[] = "longertext='$sta[longertext]'";
+				$stchg[] = "url='$sta[url]'";
+				$stchg[] = "type='$sta[type]'";
+				$stchg[] = "title='$sta[title]'";
+				$stchg[] = "locked=$sta[locked]";
+//				$stchg[] = "activatedate='$sta[activatedate]'";
+//				$stchg[] = "deactivatedate='$sta[deactivatedate]'";
+//				$stchg[] = "permissions='$sta[permissions]'";
+	
+				$stquery .= implode(",",$stchg);
+				print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ".$stquery."<BR>";
 				db_query($stquery);
-//				print "$stquery<BR>";
+				print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>";
+
 				$nstories[] = lastid();
 			}
-			
 			$stories = encode_array($nstories);
-			$pquery.=",stories='$stories'";
+			$pquery = "update pages set stories='$stories' where id='$page'";
+			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".$pquery."<BR>";
 			db_query($pquery);
-			$npages[]=lastid();
-//			print "$pquery<BR>";
+			print " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  ".mysql_error()."<BR>";
 		}
-		
 		$pages = encode_array($npages);
-		$squery.=",pages='$pages'";
+		$squery = "update sections set pages='$pages' where id='$section'";
 		db_query($squery);
-		$nsections[] = lastid();
-//		print "$squery<BR>";
+		print " &nbsp; &nbsp; &nbsp; ".$squery."<BR>";
+		print " &nbsp; &nbsp; &nbsp; ".mysql_error()."<BR>";
 	}
 	$sections = encode_array($nsections);
 	$query = "update sites set sections='$sections' where name='$dest'";
 	db_query($query);
-//	print "$query<BR>";
+	print $query."<BR>";
 }

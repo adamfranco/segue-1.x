@@ -246,10 +246,27 @@ if ($save) {
 		if ($settings[edit]) { 
 			$query = "update pages set editedby='$auser',"; $where = " where id=$settings[page]"; 
 		}
-		$query .= "ediscussion=$settings[ediscussion],archiveby='$settings[archiveby]',url='$settings[url]',type='$settings[type]',title='$settings[title]', showcreator=$settings[showcreator], showdate=$settings[showdate], locked=$settings[locked], activatedate='$settings[activatedate]', deactivatedate='$settings[deactivatedate]', active=$settings[active], permissions='$settings[permissions]'";
-		db_query($query.$where);
-		print "$query$where<BR>";
-		//print mysql_error();
+		
+		$chg = array();
+		$chg[] = "site_id='$settings[site]'";
+		$chg[] = "section_id='$settings[section]'";
+		$chg[] = "ediscussion=$settings[ediscussion]";
+		$chg[] = "archiveby='$settings[archiveby]'";
+		$chg[] = "url='$settings[url]'";
+		$chg[] = "type='$settings[type]'";
+		$chg[] = "title='$settings[title]'";
+		$chg[] = "showcreator=$settings[showcreator]";
+		$chg[] = "showdate=$settings[showdate]";
+		$chg[] = "locked=$settings[locked]";
+		$chg[] = "activatedate='$settings[activatedate]'";
+		$chg[] = "deactivatedate='$settings[deactivatedate]'";
+		$chg[] = "active=$settings[active]";
+		$chg[] = "permissions='$settings[permissions]'";
+		
+		$query .= implode(",",$chg);
+		print $query.$where."<BR>";
+		if (count($chg)) db_query($query.$where);
+		print mysql_error();
 		
 		// add the new section id to the sites table
 		if ($settings[add]) {

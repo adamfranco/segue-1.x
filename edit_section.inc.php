@@ -245,9 +245,21 @@ if ($save) {
 		if ($settings[edit]) { 
 			$query = "update sections set editedby='$auser',"; $where = " where id=$settings[section]"; 
 		}
-		$query .= "url='$settings[url]', type='$settings[type]', title='$settings[title]', locked=$settings[locked], activatedate='$settings[activatedate]', deactivatedate='$settings[deactivatedate]', active=$settings[active], permissions='$settings[permissions]'";
-		db_query($query.$where);
-		print "$query$where<BR>";
+		
+		$chg = array();
+		$chg[] = "site_id='$settings[site]'";
+		$chg[] = "url='$settings[url]'";
+		$chg[] = "type='$settings[type]'";
+		$chg[] = "title='$settings[title]'";
+		$chg[] = "locked=$settings[locked]";
+		$chg[] = "activatedate='$settings[activatedate]'";
+		$chg[] = "deactivatedate='$settings[deactivatedate]'";
+		$chg[] = "active=$settings[active]";
+		$chg[] = "permissions='$settings[permissions]'";
+		
+		$query .= implode(",",$chg);
+		print $query.$where."<BR>";
+		if (count($chg)) db_query($query.$where);
 		print mysql_error();
 		
 		// add the new section id to the sites table
