@@ -6,6 +6,10 @@ Name: Segue ChangeLog
 v. 1.3.0 (the future)
 ----------------------------------------------------
 		
+	* Change: When Changing to a differnt active user as admin, you are now kept on the same page. (Adam Franco)
+		
+	* Bug Fix: stripped html tags from of first 25 characters of content that is the topic of discussion and is displayed in discussion/assessment participation summary. (Alex Chapin)
+		
 	* Change: Changed the way semesters are defined and handled. Segue can now be configured to have as few or many semesters as desired, each with custom start/end days. (Adam Franco)
 		
 	**** IMPORTANT *** Change: The semester-handling changes involve new config options if upgrading from Segue 1.2.x or earlier. Change also necessitates a database table change if semesters other than w,s,l,f are used. (Adam Franco)
@@ -14,7 +18,7 @@ v. 1.3.0 (the future)
 		
 	* Bug Fix: sites.php now queries the new (as of a year ago) tables when checking for the type of a site. (Adam Franco)
 		
-	* Bug Fix: Rating can now be set to zero. The default, NULL, -- set by an empty field -- is &quot;no rating&quot;. (Adam Franco)
+	* Bug Fix: Rating can now be set to zero. The default, NULL, -- set by an empty field -- is "no rating". (Adam Franco)
 		
 	* Bug Fix: Public Site Listing now prints next/previous links to additional pages. (Adam Franco)
 		
@@ -30,7 +34,7 @@ v. 1.3.0 (the future)
 		
 	* Change: Link type content blocks no longer print out urls greater than 70 characters but instead truncate their display to avoid stretching their enclosing tables. (Alex Chapin)
 		
-	* Change: Have changed full text link (for content blocks with extended text) so that it is appended at the end of short text as &quot;...more.&quot; Have put an anchor on title of discuss/assess UI and added reference to this anchor in the discuss/assess link. (Alex Chapin)
+	* Change: Have changed full text link (for content blocks with extended text) so that it is appended at the end of short text as "...more." Have put an anchor on title of discuss/assess UI and added reference to this anchor in the discuss/assess link. (Alex Chapin)
 		
 	* New feature: Have added an option to chose a discuss/assess link label. Choses are: discuss, assess, comment, review and register. (Alex Chapin)
 		
@@ -66,7 +70,7 @@ v. 1.2.3 (2004-08-04)
 v. 1.2.2 (2004-07-06)
 ----------------------------------------------------
 		
-	* Bug Fix: Fixed a UI bug in which story timestamps/editors would display&quot;edited by ...&quot; when nobody had done any editing. (Gabe Schine)
+	* Bug Fix: Fixed a UI bug in which story timestamps/editors would display"edited by ..." when nobody had done any editing. (Gabe Schine)
 		
 	* Bug Fix: Fixed browser sniffer bug that prevented inclusion of html editorin add_site_form_5_header.inc and add_site_form_5_footer.inc (Alex Chapin)
 		
@@ -97,7 +101,7 @@ v. 1.1.1 (2004-04-23)
 		
 	* Bug Fix: Fixed a problem in the _first_time_run.inc.php SQL syntax that was preventing the discussion table from being created for new installs of Segue. (Adam Franco)
 		
-	* Bug Fix: Fixed some missing quotation marks, &quot;, in &quot;admin tools&quot; --&gt; &quot;edit users&quot; page that were causing problems with spaces in names. Thanks go to Steve from Nottingham Trent University, England, for finding this problem. (Adam Franco)
+	* Bug Fix: Fixed some missing quotation marks, ", in "admin tools" --&gt; "edit users" page that were causing problems with spaces in names. Thanks go to Steve from Nottingham Trent University, England, for finding this problem. (Adam Franco)
 	
 v. 1.1.0 (2004-04-22)
 ----------------------------------------------------
@@ -170,9 +174,9 @@ v. 1.0.3 (2003-11-12)
 		
 	**** IMPORTANT *** Change: Segue expects that usernames are all lower-case. Checks are in place to force the creation of lowercase usernames when adding users, but if you are using a custom authentication modules, these checks may be bypassed and you should check that usernames in your user table are lower-case if you see strange problems with permissions. (Adam Franco)
 		
-	* New feature: Addition of an update framework for applying database updates in Segue. When templates/database updates are in a release, they will appear in the &quot;Segue Updates&quot; section of the &quot;admin tools&quot;. (Adam Franco)
+	* New feature: Addition of an update framework for applying database updates in Segue. When templates/database updates are in a release, they will appear in the "Segue Updates" section of the "admin tools". (Adam Franco)
 		
-	* Change: Two new site templates: &quot;Advanced: Single Section&quot; and &quot;Advanced: Blank&quot;. (Alex Chapin)
+	* Change: Two new site templates: "Advanced: Single Section" and "Advanced: Blank". (Alex Chapin)
 		
 	**** IMPORTANT *** Change: New templates have been added. To create the new templates, log in as an administrator, then go to 'admin tools' --&gt; 'segue updates' and run the 1.0.3 update if needed. (Adam Franco)
 		
@@ -223,11 +227,11 @@ v. 1.0.0 rc1 (2003-07-14)
 		
 	* New feature: Discussion links now displayed with statistics info. (Gabe Schine)
 		
-	* Change: By-line for default page now has a link to a &quot;credits&quot; page with more info about the authors. (Gabe Schine)
+	* Change: By-line for default page now has a link to a "credits" page with more info about the authors. (Gabe Schine)
 		
 	* Change: ChangeLog is now held in XML format &amp; converted with XSL!
 		
-	* Change: &quot;Powered by Segue&quot; logo now takes you to the Segue page. (Gabe Schine)
+	* Change: "Powered by Segue" logo now takes you to the Segue page. (Gabe Schine)
 	
 v. 1.0.0 beta1 (2003-07-11)
 ----------------------------------------------------
@@ -236,13 +240,13 @@ v. 1.0.0 beta1 (2003-07-11)
 		
 	* Bug Fix: Headings and dividers are now properly displayed when not logged in.
 		
-	**** IMPORTANT *** Change: DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to &quot;000&quot;. (Adam Franco)
+	**** IMPORTANT *** Change: DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to "000". (Adam Franco)
 		
 	* Bug Fix: When integrated with an LDAP server, Segue now correctly synchronizes the user and class database tables when adding users/groups as editors who have not yet logged in/been added to the local tables. (Gabe Schine)
 		
 	* Change: Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.
 		
-	* Change: View/add slots interface: a used slot now displays a &quot;-&quot; under the delete column instead of non-linked &quot;delete&quot; text for clarity. (Gabe Schine)
+	* Change: View/add slots interface: a used slot now displays a "-" under the delete column instead of non-linked "delete" text for clarity. (Gabe Schine)
 	
 v. 1.0.0 alpha3 (2003-06-08)
 ----------------------------------------------------
@@ -253,7 +257,7 @@ v. 1.0.0 alpha3 (2003-06-08)
 		
 	* Change: When an admin is acting as another person, they can only see what that person would see. (Adam Franco)
 		
-	* Bug Fix: The &quot;default&quot; page now appropriately shows sites of which a group member is owner. (Gabe Schine)
+	* Bug Fix: The "default" page now appropriately shows sites of which a group member is owner. (Gabe Schine)
 		
 	* Bug Fix: Move/Copy now shows sites properly when opened on first page load. (Adam Franco)
 		
