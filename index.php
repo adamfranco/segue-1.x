@@ -43,12 +43,6 @@ if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
 /* 	if (isset($_SESSION[editors]) || isset($_SESSION[obj])) unset($_SESSION[obj],$_SESSION[editors]); */
 /* } */
 
-// if they clicked a 'goback' button -- this is OBSOLETE
-/* if ($goback && $gobackurl) { */
-/* 	header("Location: $gobackurl"); */
-/* 	exit; */
-/* } */
-
 // initialize the content variables
 $leftnav = $rightnav = $topnav = $topnav2 = $leftnav2 = array();
 $content= "";
@@ -66,6 +60,11 @@ $classes=array();
 $oldclasses=array();
 $futureclasses=array();
 $oldsites=array();
+
+/* --------------- eventually, this command will be gone... unneeded and handled by ADOdb */
+// connect to the database
+db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+
 
 if ($_loggedin) {
 
@@ -91,10 +90,6 @@ if ($_loggedin) {
 
 
 //if (count($classes)) printc(implode(",",array_keys($classes)));
-
-/* --------------- eventually, this command will be gone... unneeded and handled by ADOdb */
-// connect to the database
-db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 // if we have info stored in settings session var, get some of it
 if ($_SESSION[settings][site]) $_REQUEST[site] = $_SESSION[settings][site];
