@@ -17,9 +17,9 @@ include_once (dirname(__FILE__)."/carprss/carp.php");
 ob_start();
 
 $url = $o->getField("url");
-if (strpos($cfg[full_uri], $url)
-	|| strpos($cfg[personalsitesurl], $url)
-	|| strpos($cfg[classsitesurl], $url))
+if (ereg("^".$cfg[full_uri], $url)
+	|| ereg("^".$cfg[personalsitesurl], $url)
+	|| ereg("^".$cfg[classsitesurl], $url))
 {
 	$url = $url."&sid=$sid";
 	print "\n$url\n<br />";
