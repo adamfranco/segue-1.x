@@ -92,8 +92,6 @@ if ($_SESSION[settings][viewpermissions] == "custom") {
 	 $whocanview = "4";
 }
 
-print "whocanveiw=$whocanview";
-
 printc("Allow: <b><input type=radio name=viewpermissions value='everyone'".(($whocanview == "1")?" checked":"")."> anyone ");
 printc(" <input type=radio name=viewpermissions value='institute'".(($whocanview == "2")?" checked":"")."> $cfg[inst_name] users ");
 if ($_SESSION[siteObj]->getField("type") == "class") {

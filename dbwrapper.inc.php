@@ -204,15 +204,17 @@ function db_query ($query, $cid=-1) {
 	
   global $db_type; global $debug;
   global $_connect_id;
-//  if ($debug) {
-//    echo "<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$query;
-//  }
+  if ($debug) {
+  	// The $debug variable is set at the top of this script
+    echo "<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$query;
+  }
   if ($cid==-1) $cid = $_connect_id;
   if ($db_type == "mysql") {
     $res = mysql_query($query, $cid);
-//	if ($debug) {
+	if ($debug) {
+	  	// The $debug variable is set at the top of this script	
 		echo "<br>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res;
-//	}
+	}
 	echo mysql_error();
     return $res;
   } else if ($db_type == "oracle") {

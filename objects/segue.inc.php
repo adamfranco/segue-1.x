@@ -675,7 +675,7 @@ WHERE
 	}
 
 	function addEditor($e) { 
-		print "<br>Adding editor $e<br>";
+		/* print "<br>Adding editor $e<br>"; */
 //		if ($e == 'institute' || $e == 'everyone') return false;	// With the new permissions structure, this may be unwanted.
 		if ($_SESSION[auser] == $e) { error("You do not need to add yourself as an editor."); return false; }
 		if (!in_array($e,$this->editors)) {
@@ -751,6 +751,8 @@ WHERE
 		$p = strtoupper($perm);
 		$c = permissions::$p();
 		$this->permissions[$user][$c] = $val;
+		$this->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
+														// hasPermission doesn't get a fscked up
 		
 /* 		if ($class == "site") $n = 0; */
 /* 		else if ($class == "section")$n =4; */
@@ -770,7 +772,11 @@ WHERE
 		if ($ar) {
 			$a = &$this->$ar;
 			if ($a) {
-				foreach ($a as $i=>$o) $a[$i]->setUserPermissionDown($perm,$user,$val);
+				foreach ($a as $i=>$o) {
+					$a[$i]->setUserPermissionDown($perm,$user,$val);
+					$a[$i]->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
+																	// hasPermission doesn't get a fscked up
+				}
 			}
 		}
 	}
@@ -1248,10 +1254,12 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_str')
 /* 		$class = get_class($this); */
 /* 		print "checking $perms for $user on  $class ".$this->id."<br>"; */
 		
-		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) return $this->cachedPermissions[$user.$perms];
+		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) 
+			return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
 		$owner = $this->owningSiteObj->getField('addedby');
-		if (strtolower($user) == strtolower($owner)) return true;
+		if (strtolower($user) == strtolower($owner)) 
+			return true;
 		
 		$_a = array('add','edit','delete','view','discuss');
 		
@@ -1273,7 +1281,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_str')
 		// end
 		
 		$permissions = $this->getPermissions();
-/* 		print "<pre>"; print_r($permissions); print "</pre>"; */
+/* 		print "<pre>Permissions: "; print_r($permissions); print "</pre>"; */
 
 		$toCheck = array();
 		if (strlen($user)) $toCheck[] = strtolower($user);
