@@ -1,13 +1,13 @@
 <? /* $Id$ */
 
-class class {
+class course {
 	var $id,$code,$name,$semester,$year,$owner,$ugroup,$classgroup;
 	
-	function class() {
+	function course() {
 		$this->semester = 'f';
 	}
 	
-	function fetchClassID($id) {
+	function fetchCourseID($id) {
 		$this->id = $id;
 		$this->_fetch();
 	}
@@ -69,7 +69,7 @@ class class {
 	function updateDB() { $this->_insert(); }
 	function insertDB() { $this->_insert(); }
 	
-	function classExists($c) {
+	function courseExists($c) {
 		if (!$c) return false;
 		$query = "
 			SELECT
@@ -84,7 +84,7 @@ class class {
 		return false;
 	}
 	
-	function delClass($id) {
+	function delCourse($id) {
 		$query = "
 	DELETE FROM
 		class

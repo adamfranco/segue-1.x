@@ -22,32 +22,43 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 // what's the action?
 $curraction = $_REQUEST['action'];
+$id = $_REQUEST['id'];
 
 if ($curraction == 'del') {
 	$id = $_REQUEST['id'];
-	if ($id > 0) { class::delClass($id); $message = "Class ID $id deleted successfully."; }
+	if ($id > 0) { course::delCourse($id); $message = "Class ID $id deleted successfully."; }
 }
 
-// if they want to add a user...
+// if they want to add a class...
 if ($curraction == 'add') {
 	// check for errors first
-	if (class::classExists($_REQUEST['code'])) error("A class with that code already exists.");
+	if (course::courseExists($_REQUEST['code'])) error("A class with that code already exists.");
 	if (!$_REQUEST['code']) error("You must enter a code.");
 	if (!$_REQUEST['year']) error("You must enter a valid 4-digit year.");
 	// all good
 	if (!$error) {
-		$obj = &new class();
+		$query = "
+			INSERT INTO
+				ugroup
+			SET
+				ugroup_name = '$_REQUEST[code]'
+				ugroup_type = 'class'
+		";
+		db_query($query);
+		$ugroup_id = lastid();
+		
+		$obj = &new course();
 		$obj->code = $_REQUEST['code'];
 		$obj->name = $_REQUEST['name'];
 		$obj->semester = $_REQUEST['semester'];
 		$obj->year = $_REQUEST['year'];
 		$obj->owner = $_REQUEST['owner'];
-		$obj->ugroup = $_REQUEST['ugroup'];
+		$obj->ugroup = $ugroup_id;
 //		$obj->classgroup = $_REQUEST['classgroup'];
 		$obj->insertDB();
 		
-		unset($_REQUEST['uname'],$_REQUEST['fname'],$_REQUEST['email'],$_REQUEST['type']);
-		$message = "User '".$obj->uname."' added successfully.";
+		unset($_REQUEST['code'],$_REQUEST['name'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
+		$message = "Class '".$obj->code."' added successfully.";
 	}
 }
 
@@ -70,17 +81,17 @@ if ($curraction == 'edit') {
 	}
 }
 		
-if ($curraction == 'resetpw') {
-	$id = $_REQUEST['id'];
-	if ($id > 0) {
-		$obj = &new user();
-		$obj->fetchUserID($id);
-		$obj->randpass(5,3);
-		$obj->updateDB();
-		$obj->sendemail(1);
-		$message = "A random password has been generated for '".$obj->uname."' and an email has been sent to them.";
-	}
-}
+/* if ($curraction == 'resetpw') { */
+/* 	$id = $_REQUEST['id']; */
+/* 	if ($id > 0) { */
+/* 		$obj = &new user(); */
+/* 		$obj->fetchUserID($id); */
+/* 		$obj->randpass(5,3); */
+/* 		$obj->updateDB(); */
+/* 		$obj->sendemail(1); */
+/* 		$message = "A random password has been generated for '".$obj->uname."' and an email has been sent to them."; */
+/* 	} */
+/* } */
 		
 		
 $query = "
@@ -136,6 +147,7 @@ printerr();
 			<th>year</th>
 			<th>owner</th>
 			<th>group</th>
+			<th>options</th>
 			</tr>
 			
 			<? // now output all the users
