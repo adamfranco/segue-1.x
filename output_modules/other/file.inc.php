@@ -2,5 +2,5 @@
 
 include("output_modules/common.inc.php");
 
-$t = makedownloadbar($a);
+$t = makedownloadbar($o);
 printc($t);

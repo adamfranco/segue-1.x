@@ -168,4 +168,47 @@ class page extends segue {
 		
 		return $a;
 	}
+	
+	
+	function handleStoryOrder() {
+		// reorders the stories array passed to it depending on the order specified.
+		// Orders: addedesc, addedasc, editeddesc, editedasc, author, editor, category, titledesc, titleasc
+		$newstories = array();
+		$order = $this->getField("storyorder");
+		if ($order == '' || $order=='custom') return;
+		$this->fetchDown();
+		foreach ($this->stories as $s=>$o) {
+			$added = ereg_replace("[:- ]","",$o->getField("addedtimestamp"));
+/* 			$added = str_replace("-","",$added); */
+/* 			$added = str_replace(" ","",$added); */
+	
+			if ($order == "addeddesc" || $order == "addedasc") 
+				$newstories[$s] = $added;
+			else if ($order == "editeddesc" || $order == "editedasc") 
+				$newstories[$s] = $o->getField("editedtimestamp");
+			else if ($order == "author") 
+				$newstories[$s] = $o->getField("addedby");
+			else if ($order == "editor") 
+				$newstories[$s] = $o->getField("editedby");
+			else if ($order == "category") 
+				$newstories[$s] = $o->getField("category");
+			else if ($order == "titledesc" || $order == "titleasc") 
+				$newstories[$s] = strtolower($o->getField("title"));
+		}
+		
+		if ($order == "addeddesc" || $order == "editeddesc")
+			arsort($newstories,SORT_NUMERIC);
+		else if ($order == "addedasc" || $order == "editedasc")
+			asort($newstories,SORT_NUMERIC);
+		else if ($order == "titledesc")
+			arsort($newstories);
+		else
+			asort($newstories);
+		
+		foreach ($newstories as $id=>$n) {
+			$newstories[$id] = $this->stories[$id];
+		}
+		$this->stories = $newstories;
+		$this->data[stories] = array_keys($newstories);
+	}
 }

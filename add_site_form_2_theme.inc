@@ -37,9 +37,9 @@ function doPreviewWin(theme, from) {
 	var edit = <? print $_SESSION[settings][edit]; ?>;
 	var sitename = "<? print $_SESSION[siteObj]->getField("name"); ?>";
 	if (edit) {
-		var preview = window.open("index.php?action=site&site="+sitename+"&themesettings="+themesettings+"&theme="+theme+"&themepreview=1","preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
+		var preview = window.open("index.php?action=site&site="+sitename+"&themesettings="+themesettings+"&theme="+theme+"&themepreview=1&nostatus=1","preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
 	} else {
-		var preview = window.open("index.php?action=site&site=sample&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
+		var preview = window.open("index.php?action=site&site=sample&nostatus=1&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
 	}
 //	document.addform.previewhandle.value = preview;
 	preview.focus();

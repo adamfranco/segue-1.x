@@ -9,6 +9,7 @@ class segue {
 	var $editorsToDelete = array();
 	var $editorsToDeleteInScope = array();
 	var $changedpermissions = 0;
+	var $cachedPermissions = array();
 	
 	var $id = 0;
 	var $data;
@@ -24,6 +25,25 @@ class segue {
 	
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 
+/******************************************************************************
+ * siteExists - checks if the site/slot already exists with a certain name $name
+ ******************************************************************************/
+	
+	function siteExists($site) {
+		$query = "select * from sites where name='$site'";
+		if (db_num_rows(db_query($query))) return 1;
+		$query = "select * from slots where name='$site'";
+		if (db_num_rows(db_query($query))) return 1;
+		return 0;
+	}
+
+/******************************************************************************
+ * siteNameValid - checks if a user is allowed to create a site of name $name
+ ******************************************************************************/
+	
+	function siteNameValid($user,$name) {
+		return 1;
+	}
 	
 /******************************************************************************
  * getAllSites - returns a list of all sites owned by $user
@@ -99,7 +119,7 @@ class segue {
  * - outputDateForm() must be called where the HTML form data should be printed
  * - handleFormDates() must be called where all POST/GET data is processed
  ******************************************************************************/
-	
+
 
 /******************************************************************************
  * handleFormDates - checks form fields for new de/activate dates and subsequently
@@ -274,6 +294,7 @@ class segue {
  * PERMISSIONS FUNCTIONS
  *
  * these functions handle part-specific permissions
+ *	isEditor($user)		checks if $user is an editor for this part
  *	addEditor($e)		adds $e as an editor with default permissions (view only)
  *	delEditor($e)		removes all of $e's site permissions (ALL OF THEM)
  *	getEditors()		returns an array of editors for the site
@@ -294,15 +315,18 @@ class segue {
  *	hasPermission($perms,$user)
  *						takes a formatted string $perms (ex, 'add and (edit or delete)')
  *						and returns true/false if $user has those permissions
+ *	hasPermissionDown($perms,$user)
+ *						checks if someone has $perms anywhere down the line
  ******************************************************************************/
 
 	function isEditor($user='') {
 		if ($user=='') $user=$_SESSION[auser];
 		$this->fetchUp();
-		$owner = $this->owningSiteObj->getField("type");
+		$owner = $this->owningSiteObj->getField("addedby");
+/* 		print "owner: $owner"; */
 		if (strtolower($user) == strtolower($owner)) return 1;
 		$toCheck = array(strtolower($user));
-		$toCheck = array_merge($toCheck,$this->getEditorOverlap(getuserclasses($user)));
+		$toCheck = array_merge($toCheck,$this->returnEditorOverlap(getuserclasses($user)));
 		foreach ($this->editors as $e) {
 			if (in_array(strtolower($e),$toCheck)) return 1;
 		}
@@ -475,7 +499,15 @@ class segue {
 
 	function hasPermission($perms,$ruser='') {
 		global $allclasses, $_logged_in, $cfg;
-
+		
+		if ($ruser=='') $user=$_SESSION[auser];
+		else $user = $ruser;
+		
+		if (isset($this->cachedPermissions[$user.$perms])) return $this->cachedPermissions[$user.$perms];
+		$this->fetchUp();
+		$owner = $this->owningSiteObj->getField('addedby');
+		if (strtolower($user) == strtolower($owner)) return true;
+		
 		$_a = array('add','edit','delete','view','discuss');
 		
 		// check if $perms is malformed
@@ -486,7 +518,7 @@ class segue {
 //			print "$i: $n: ".strlen($n)."<BR>";
 			if (!strlen($n)) continue;
 			if (!($i%2) && !in_array($n,$_a)) $j=0;
-			if (!(($i+1)%2) && $n!='and' && $n!='or') $j=0;
+			if (!(($i+1)%2) && $n!='and' && $n!='or' && $n!='&&' && $n!='||') $j=0;
 			if (!$j) {
 				print "ERROR! loop: $i: Malformed permissions string: $perms<BR><BR>";
 				return 0;
@@ -495,8 +527,6 @@ class segue {
 		}
 		// end
 		
-		if ($ruser=='') $user=$_SESSION[auser];
-		else $user = $ruser;
 		$permissions = $this->getPermissions();
 		$toCheck = array();
 		if (strlen($user)) $toCheck[] = strtolower($user);
@@ -534,14 +564,22 @@ class segue {
 		$isgood = 0;
 		$condition = '$isgood = ('.implode(' || ',$pArray).')?1:0;';
 		eval($condition);
+		$this->cachedPermissions[$user.$perms] = $isgood;	// cache this entry
 //		print $condition;
 		return $isgood;
 	}
 	
 	function hasPermissionDown($perms,$user='') {
-		// write the darned CODE gabe!
-		// ... or just return 1
-		return 1;
+		if (!$this->fetcheddown) $this->fetchDown();
+		if ($this->hasPermission($perms,$user)) return true;
+		$class = get_class($this);
+		$ar = $this->_object_arrays[$class];
+		if ($ar) {
+			foreach ($this->$ar as $i=>$o) {
+				if($o->hasPermissionDown($perms,$user)) return true;
+			}
+		}
+		return false;
 	}
 	
 	function returnEditorOverlap($classes) {
@@ -556,6 +594,7 @@ class segue {
 			}
 			if ($good) $toCheck[]=strtolower($u);
 		}
+/* 		print_r($toCheck); */
 		return $toCheck;
 	}
 }

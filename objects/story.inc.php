@@ -82,7 +82,8 @@ class story extends segue {
 			if (is_array($this->data)) {
 				$this->fetched = 1;
 				$this->buildPermissionsArray();
-
+				$this->data[shorttext] = urldecode($this->data[shorttext]);
+				$this->data[longertext] = urldecode($this->data[longertext]);
 				$this->parseMediaTextForEdit("shorttext");
 				$this->parseMediaTextForEdit("longertext");
 				

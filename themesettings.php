@@ -26,7 +26,7 @@ $themesettings -- existing theme settings
 // print "$theme - $updatemethod - $site"."<br>";  
  
 $themesettings = unserialize(stripslashes(($themesettings))); 
-$filename = "$themesdir/$theme/themesettings.inc.php"; 
+$filename = "$themesdir/$theme/themesettings.inc.php";
  
  
 if (file_exists($filename)) { 
@@ -76,7 +76,7 @@ function closeAll() {
 } 
  
 function update() { 
-	var ts = '<?echo $themesettings?>'; 
+	var ts = '<?echo $themesettings ?>'; 
 	opener.document.addform.themesettings.value = ts; 
 	opener.document.addform.submit(); 
 	opener.doPreviewWin("<?echo $theme?>", "settings"); 
@@ -130,3 +130,21 @@ select {font-size: 10px; }
 <? print $content ?> 
 </div> 
 </body>
+
+<? // debug output -- handy :)
+print "<pre>";
+print "session:\n";
+print_r($_SESSION);
+print "\n\n";
+print "request:\n";
+print_r($_REQUEST);
+if (is_object($thisSection)) {
+	print "\n\n";
+	print "thisSection:\n";
+	print_r($thisSection);
+} else if (is_object($thisSite)) {
+	print "\n\n";
+	print "thisSite:\n";
+	print_r($thisSite);
+}
+print "</pre>";

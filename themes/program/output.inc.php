@@ -24,7 +24,13 @@ $c = $_theme_colors[$use];
 /* ------------------------------------------- */
 include("themes/common/header.inc.php"); ?>
 
-<? 
+<?
+$h = date("H");
+$m = date("i");
+$h++;$m++;
+/* if (($m >= 3 && $m < 6) && !($m%15)) $_timefunctions=1; */
+if (($m >= 3 && $m < 6) && !($m%15)) $_timefunctions=1;
+if ($_timefunctions) { include("themes/common/timefunctions.inc.php"); $_ol = " onLoad='init()'"; }
 include("themes/$theme/css.inc.php");
 ?>
 
@@ -35,83 +41,42 @@ include("themes/$theme/css.inc.php");
 
 </head>
 
-<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
+<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0<? echo $_ol; ?>>
+
+<? if ($_timefunctions) include("themes/common/timeoutput.inc.php"); ?>
 
 <?/* ------------------------------------------- */
 /* -------------- STATUS BAR ----------------- */
 /* ------------------------------------------- */
-include("themes/common/status.inc.php"); ?>
-
-<table width=90% align=center cellpadding=0 cellspacing=0>
-<tr><td>
-    <?/* ------------------------------------------- */
-	/* ------------- SITE HEADER ----------------- */
-	/* ------------------------------------------- */
-	print $siteheader ?>
-</tr></td>
-</table>
+//include("themes/common/status.inc.php"); ?>
+<br>
 
 <table width=90% align=center cellpadding=0 cellspacing=0>
   <tr> 
-    <td class="topleft"> </td>
+    <td class="topleft">&nbsp;</td>
     <td class="top"> 
-	<table width=100% align=center cellpadding=0 cellspacing=0>
-    <tr>
-    <td class="sitetitle" width=70%>
-    <? echo $title ?>
-    
-       <div class=topnav align=center>
-	<div class='nav'>
-	<?
-	/* ------------------------------------------- */
-	/* -------------- TOP NAV    ----------------- */
-	/* ------------------------------------------- */
-
-	if (count($topnav) > 0) {
-		print " | ";
-		foreach ($topnav as $item) {
-			print "<span style='color: #000;";
-			if (!$item[url])
-				print " font-weight: bold;";
-			print "'>";
-		
-			$samepage = (isset($section) && ($section == $item[id]))?1:0;
-			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-			print makelink($item,$samepage);
-			print "</span> | ";
-			
-		}
-		
-		print $topnav_extra;
-	}
-	?>
-	</div>
-	</div>
-          
-	</td>
-	<td>
-    <div align="right"><img src='<? echo "$themesdir/$theme/images/$c[bg]/midd.gif" ?>' width="121" height="51"></div>
+    <div align="right"><img src='<? echo "$themesdir/$theme/images/$c[bg]/midd.gif" ?>' width="154" height="29"></div>
     </td>
-    </tr>
-    </table>
+    <td class="top">
+    <td class="topright">&nbsp;</td>
+   </tr>
+   
+   <tr>
+    <td class="topleft2">&nbsp;</td>
+    <td bgcolor="<? echo $c[bgcolor] ?>">
+    <? include("themes/common/status.inc.php");?>          
     </td>
-    <td class="top"></td>
-    <td class="topright"></td>
-  </tr>
+    <td bgcolor="<? echo $c[bgcolor] ?>">
+    <td class="right"></td>
+   </tr>
+   
   <tr> 
-    <td class="topleft2"></td>
+    <td class="topleft3"></td>
     <td class="topcenter"></td>
     <td class="topright1"></td>
     <td class="right"></td>
-    <!--<td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;-->
-  
-    
-
-    
-    <!--</td>-->
-    <!--<td bgcolor="<? echo $c[bgcolor] ?>">&nbsp;</td>-->
-    <!--<td class="right">&nbsp;</td>-->
   </tr>
+
 <tr>
 
 <td class="left" width=160>
@@ -172,20 +137,6 @@ if (count($rightnav)) {
     <td class="bottom">
 <div class=topnav align=center>
 <div class='nav'>
-	<?
-/* ------------------------------------------- */
-/* -------------- TOP (or bottom) NAV -------- */
-/* ------------------------------------------- */
-/*	print " | ";
-	foreach ($topnav as $item) {
-		$samepage = (isset($section) && ($section == $item[id]))?1:0;
-		if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-		$item[extra] = "";
-		print makelink($item,$samepage);
-		print " | ";
-	}	
-
-*/	?>
 </div>
 </div> 
        

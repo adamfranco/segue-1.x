@@ -18,7 +18,9 @@ if (ereg("^login",getenv("QUERY_STRING"))) {
 
 // actions for which we use pervasive themes (if enabled)
 // and actions for which certain session variables are allowed (settings, *Obj)
-$permittedSettingsActions = $pervasiveActions = array("edit_site","add_site","add_section","edit_section","add_page","edit_page","add_story","edit_story");
+$pervasiveActions = array("edit_site","add_site","add_section","edit_section","add_page","edit_page","add_story","edit_story");
+$permittedSettingsActions = $pervasiveActions;
+$permittedSettingsActions[]='site';
 
 // check if we have any stray session variables
 if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
@@ -101,6 +103,7 @@ if ($_REQUEST[site]) {						// we are in a site
 	$site_owner = $thisSite->getField("addedby");
 	if ($_REQUEST[theme]) $sid .= "&theme=$_REQUEST[theme]";
 	if ($_REQUEST[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&themesettings=$themesettings";}
+	if ($_REQUEST[nostatus]) $sid .= "&nostatus=$_REQUEST[nostatus]";
 	if (!isset($theme)) $theme = $thisSite->getField("theme");
 	if (!isset($themesettings)) $themesettings = $thisSite->getField("themesettings");
 
@@ -120,7 +123,6 @@ if ($_REQUEST[page]) {
 	$thisPage = new page($thisSite->name,$thisSection->id,$_REQUEST[page]);
 	$thisPage->fetchFromDB();
 }
-
 
 // compatibility:
 if (isset($_REQUEST[action])) $action = $_REQUEST[action];
@@ -147,9 +149,10 @@ $t = $action;
 if ($t != 'site') $t = 'viewsite';
 if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]'>".$thisSection->getField("title")."</a>";
 if ($thisPage) $pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]'>".$thisPage->getField("title")."</a>";
-if ($thisSite)
+if ($thisSite) {
 	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]'>".$thisSite->getField("title")."</a>";
-//	$title = $thisSite->getField("title");
+	$title = $thisSite->getField("title");
+}
 $nav .= $sn.$pn;
 if ($nav) {
 	//$siteheader = $siteheader . "<div align=left style='margin-bottom: 5px; margin-left: 10px'>$nav</div>";
@@ -189,7 +192,6 @@ include("$themesdir/$theme/output.inc.php");
 if (!ini_get("register_globals")) {
 	foreach (array_keys($_SESSION) as $n) { if ($n != "settings" && $n != "siteObj" && $n != "sectionObj" && $n != "pageObj" && $n != "storyObj") $_SESSION[$n] = $$n; }
 }
-
 
 // debug output -- handy :)
 print "<pre>";

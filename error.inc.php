@@ -25,7 +25,7 @@ function printerr() {
 }
 
 function printerr2() {
- // this prints out all the errors stored in the error array
+ // this prints out all the errors stored in the error array using "print" instead of "printc"
 	global $errors,$numerrs,$message;
 	$string = '';
 	if ($numerrs) {

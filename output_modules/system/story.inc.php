@@ -2,4 +2,4 @@
 
 //forward to other
 
-include("output_modules/other/$a[type].inc.php");
+include("output_modules/other/story.inc.php");

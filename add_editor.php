@@ -32,9 +32,14 @@ function addEditor(na) {
 	if (na == '') {
 		alert("You must enter a username, or search for one by pressing 'find'.");
 	} else {
+	<? if ($comingfrom == "add_slot") { ?>
+		o.owner.value = na;
+		window.close();
+	<? } else { ?>
 		o.edaction.value = 'add';
 		o.edname.value = na;
 		o.submit();
+	<? } ?>
 	}
 }
 </script>
@@ -105,6 +110,8 @@ if (count($usernames)) {
 }
 ?>
 </table>
+
+<input type=hidden name="comingfrom" value="<? echo $comingfrom ?>">
 </form>
 <div align=right>
 <!-- <input type=button value='Add Editor' onClick='addEditor()'> -->

@@ -1,10 +1,10 @@
 <? /* $Id$ */
 
-function makedownloadbar($a) {
+function makedownloadbar($o) {
 	global $site,$uploaddir,$uploadurl;
-	if ($a[type]!='file') return;
+	if ($o->getField("type")!='file') return;
 	
-	$b = db_get_line("media","id=$a[longertext]");
+	$b = db_get_line("media","id=".$o->getField("longertext"));
 	$filename = urldecode($b[name]);
 	$dir = $b[site_id];
 	$size = $b[size];
@@ -13,9 +13,9 @@ function makedownloadbar($a) {
 	$filesize = convertfilesize($size);
 	$t = '';
 	$t .= "<div class=downloadbar style='margin-bottom: 10px'>";
-	if ($a[title]) $t.="<b>".spchars($a[title])."</b><br>";
+	if ($o->getField("title")) $t.="<b>".spchars($o->getField("title"))."</b><br>";
 	$t .= "<table width=70% cellpadding=0 cellspacing=0 style='margin: 0px'><tr><td class=leftmargin align=left><a href='$fileurl' target='new_window'><img src='downarrow.gif' border=0 width=15 height=15 align=absmiddle> $name</a></td><td align=right><b>$filesize</b></td></tr></table>";
-	if ($a[shorttext]) $t .= "".stripslashes(urldecode($a[shorttext]));
+	if ($o->getField("shorttext")) $t .= "".stripslashes($o->getField("shorttext"));
 	$t.="</div>";
 	return $t;
 }
@@ -479,43 +479,7 @@ function handlearchive($stories,$pa) {
 function handlestoryorder($stories,$order) {
 	// reorders the stories array passed to it depending on the order specified.
 	// Orders: addedesc, addedasc, editeddesc, editedasc, author, editor, category, titledesc, titleasc
-	$newstories = array();
-
-	foreach ($stories as $s) {
-		$a = db_get_line("stories","id=$s");
-		$added = str_replace(":","",$a[addedtimestamp]);
-		$added = str_replace("-","",$added);
-		$added = str_replace(" ","",$added);
-
-		if ($order == "addeddesc" || $order == "addedasc") 
-			$newstories[$s] = $added;
-		else if ($order == "editeddesc" || $order == "editedasc") 
-			$newstories[$s] = $a[editedtimestamp];
-		else if ($order == "author") 
-			$newstories[$s] = $a[addedby];
-		else if ($order == "editor") 
-			$newstories[$s] = $a[editedby];
-		else if ($order == "category") 
-			$newstories[$s] = $a[category];
-		else if ($order == "titledesc" || $order == "titleasc") 
-			$newstories[$s] = strtolower($a[title]);
-	}
-
-//	print_r($newstories); 
-	
-	if ($order == "addeddesc" || $order == "editeddesc")
-		arsort($newstories,SORT_NUMERIC);
-	else if ($order == "addedasc" || $order == "editedasc")
-		asort($newstories,SORT_NUMERIC);
-	else if ($order == "titledesc")
-		arsort($newstories);
-	else
-		asort($newstories);
-	
-//	print_r($newstories); 
-	
-	$newstories = array_keys($newstories);
-	return $newstories;
+	return $stories;
 }
 
 /******************************************************************************

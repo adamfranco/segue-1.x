@@ -145,8 +145,8 @@ if ($_loggedin) {
 		}
 	}
 	// handle group adding backend here
-	if (count($group) && ($newgroup || $groupname)) { // they chose a group
-		if (!$newgroup) $newgroup = $groupname;
+	if (count($_REQUEST[group]) && ($_REQUEST[newgroup] || $_REQUEST[groupname])) { // they chose a group
+		if (!$_REQUEST[newgroup]) $_REQUEST[newgroup] = $_REQUEST[groupname];
 		if (ereg("^[a-zA-Z0-9_-]{1,20}$",$newgroup)) {
 			if (db_line_exists("classgroups","name='$newgroup'")) { // already exists
 				if (db_line_exists("classgroups","name='$newgroup' and owner='$auser'")) {
@@ -177,7 +177,7 @@ if ($_loggedin) {
 	if ($allowpersonalsites) {
 		// print out the personal site
 		printc("<tr><td class='inlineth' colspan=7>Personal Site</td></tr>");
-		printSiteLine($auser);
+		printSiteLine($_SESSION[auser]);
 	}
 	
 	if ($allowclasssites) {	

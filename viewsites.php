@@ -99,8 +99,6 @@ input,select {
 
 </style>
 
-</style>
-
 <script lang="JavaScript">
 
 function changeOrder(order) {
