@@ -126,7 +126,7 @@ select {font-size: 10px; }
 <title>Theme Settings</title> 
 </head> 
  
-<body<?echo $onLoad?> marginheight=0 marginwidth=0 leftmargin=0 rightmargin=0 topmargin=0 bottommargin=0> 
+<body<?echo $onLoad?> style='margin: 0px'> 
 <div class=title>Theme Settings</div> 
  
 <div class=content> 

@@ -44,7 +44,7 @@ include("themes/$theme/css.inc.php");
 
 </head>
 
-<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0<? echo $_ol; ?>>
+<body<? echo $_ol; ?>>
 
 <? if ($_timefunctions) include("themes/common/timeoutput.inc.php"); ?>
 

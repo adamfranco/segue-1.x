@@ -85,7 +85,7 @@ include("themes/$theme/css.inc.php");
 <title><? echo $pagetitle; ?></title>
 </head>
 
-<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 rightmargin=0>
+<body style='margin: 0px'>
 
 <table width=100% cellpadding=0 cellspacing=0>
 <tr><td class=header>
