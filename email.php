@@ -304,9 +304,7 @@ Participants<br><br>
 			if ($html == 1) {
 				//$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\nContent-Type: text/html\n";
 				$headers .= "Content-Type: text/html\n";
-			} else {
-				//$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
-			}
+			} 
 		
 			$text = "email text here";
 			$textarea = "email";
@@ -314,12 +312,15 @@ Participants<br><br>
 			
 			<form action="<? echo $PHP_SELF ?>" method=post name=emailform>
 			<table width=100%>
+			<tr><td align=right>support:</td><td><? echo $supported ?></td><td align=right></td></tr>
 			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
 			<tr><td align=right>From:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Cc:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
 			<tr><td></td><td align=left>
-			<? //addeditor ("body",60,20,$text,"discuss"); ?>
+			<? //addeditor ("body",60,20,$text,"email"); 
+				//print $content;
+			?>
 			<textarea name=body cols=60 rows=20></textarea>
 			</td><td><td align=right></td></tr>
 			</table>
