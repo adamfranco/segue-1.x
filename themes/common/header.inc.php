@@ -48,7 +48,6 @@ input.small {
 }
 
 .smaller {font-size: smaller;}
-.leftmargin, .contenttitle {padding-left: 20px;}
 .contenttitle {font-weight: bolder;}
 .contentinfo {font-size: 10px;}
 .content {padding-bottom: 5px;}

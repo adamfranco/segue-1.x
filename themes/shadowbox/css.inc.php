@@ -110,6 +110,14 @@ th {
 	color: #<? echo $c['contentinfo']; ?>;
 }
 
+.editinfo {
+	font-size: 10px;
+	color: #<? echo $c['contentinfo']; ?>;
+	border-bottom: 1px solid #<? echo $c['contentinfo']; ?>;
+	margin-bottom: 20px;
+}
+
+
 /*      THE, UH, I FORGOT (oh yeah... the download bar thingy)  */
 .downloadbar {
 	color: #<? echo $c['text']; ?>;

@@ -153,6 +153,7 @@ if ($page) {
 					if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
 				}
 				printc("</div>");
+				//printc("<hr size='1' noshade><br>");
 			}
 		}
 		if ($a[type]=='image') {

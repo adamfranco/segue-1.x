@@ -77,7 +77,7 @@ if ($section) {
 			if ($a[type] == 'page')
 				add_link(leftnav,$a['title'],"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
 			if ($a[type] == 'url')
-				add_link(leftnav,$a['title']." <img src=globe.gif border=0 align=absmiddle height=15 width=15>",$a['url'],$extra,$p,"_blank");
+				add_link(leftnav,$a['title'],$a['url'],$extra,$p,"_blank");
 			if ($a[type] == 'heading')
 				add_link(leftnav,$a['title'],'',$extra);
 			if ($a[type] == 'divider')
@@ -131,6 +131,7 @@ if ($page) {
 						if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
 					}
 					printc("</div>");
+					printc("<hr size='1' noshade><br>");
 				}
 			}
 			if ($a[type]=='image') {

@@ -109,7 +109,7 @@ if ($type == 'link') {
 
 if ($type == 'story') {
 	//	Begin modification 1 - 11.1.02 - achapin
-	// remove active-x editor code to editor_activex.php
+	// removed active-x editor code to editor_activex.php
 	// editor.inc.php determines browser/platform and choses appropriate editor
 	include("htmleditor/editor.inc.php");
 		
