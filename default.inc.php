@@ -153,7 +153,7 @@ if ($_loggedin) {
 	
 	if ($allowclasssites) {	       
 		//class sites for professors (for student see above)
-		if ($_SESSION[atype] == 'prof') {
+		if ($_SESSION[atype] == 'prof' || $_SESSION[atype] == 'admin') {
 			//current classes
 			if (count($classes)) {
 				printc("<tr><td class='inlineth' colspan=2>Current Class Sites</td></tr>");
@@ -481,7 +481,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	} else if (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name)) {
 	// if the slot doesn't have an owner or we are the owner.
 		if ($_SESSION[atype] == 'prof' && $isclass) {
-			printc("<span style ='font-size:10px;'>Create: <a href='$namelink'>Site</a> | <a href='http://et.middlebury.edu/mots/prof_add_class?$sid&class=$name' target='mots'>Assessments</a> </span>");
+			printc("<span style ='font-size:10px;'>Create: <a href='$namelink'>Site</a></span>");
 		} else {
 			printc("<span style ='font-size:10px;'><a href='$namelink'>Create Site</a></span>");		    
 		}

@@ -46,15 +46,19 @@ if ($curraction == 'del') {
 if ($curraction == 'add') {
 	// check for errors first
 	if (course::courseExists(generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year']))) error("A class with that code already exists.");
+	if (!ereg("^[a-zA-Z0-9]{1,}$",$_REQUEST['external_id'])) error("You must enter an external ID. Only combination of charactors \"a-z\" and \"A-Z\" and numbers are allowed.");
 	if (!ereg("^[a-zA-Z]{1,}$",$_REQUEST['department'])) error("You must enter a department. Only charactors \"a-z\" and \"A-Z\" are allowed.");
 	if (!ereg("^[0-9]{1,}$",$_REQUEST['number'])) error("You must enter a numeric number.");
 	if (!ereg("^[a-zA-Z]{0,}$",$_REQUEST['section'])) error("Your course section must be letters \"a-z\" and \"A-Z\" only");
 	if (!ereg("^[fwsl]{1}$",$_REQUEST['semester'])) error("You must enter a semester.");
 	if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
+	if (!$_REQUEST['owner']) error("You must assign a owner to this class site.");
+	$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
+	if (!$owner_id) error("The class owner you selected is not a register Segue user.");
+	
 	// all good
 	if (!$error) {
-		$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
-		
+
 		$query = "
 			INSERT INTO
 				ugroup
@@ -102,9 +106,11 @@ if ($curraction == 'edit') {
 		if (!ereg("^[a-zA-Z]{0,}$",$_REQUEST['section'])) error("Your course section must be letters \"a-z\" and \"A-Z\" only");
 		if (!ereg("^[fwsl]{1}$",$_REQUEST['semester'])) error("You must enter a semester.");
 		if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
+		$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
+		if (!$owner_id) error("The class owner you selected is not a register Segue user.");
+
 		if (!$error) {
-			$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
-			
+
 			$obj = &new course();
 			$obj->fetchCourseID($_REQUEST['id']);
 			$obj->external_id = $_REQUEST['external_id'];
@@ -167,7 +173,11 @@ $class_name = $_REQUEST['class_name'];
 $class_dept = $_REQUEST['class_dept'];
 $semester = $_REQUEST['semester'];
 
-$where = "class_external_id LIKE '%'";
+if ($curraction == 'edit') {
+	$where = "class_id =$id";
+} else {
+	$where = "class_external_id LIKE '%'";
+}
 		
 if ($class_external_id) $where = "class_external_id LIKE '$class_external_id%'";
 if ($class_name) $where .= " AND class_name LIKE '%$class_name%'";
@@ -362,8 +372,8 @@ include("themes/common/header.inc.php");
 			
 			if ($curraction == 'edit') {
 				$a = db_fetch_assoc($r);
-				print " id=";
-				print $a['class_external_id'];
+				//print " id=";
+				//print $a['class_external_id'];
 				doClassForm($a,'class_',1);
 				
 			 // output found users	
