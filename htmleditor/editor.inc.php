@@ -15,7 +15,7 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 			include("htmleditor/editor_activex.inc.php");
 			editor_activex($textarea,$cols,$rows,$text);
 		} else if  ($context=="discuss") {
-			include("htmlarea/discuss.html");
+			editor_htmlarea($textarea,$text,$context);
 		}	
 		
 	} else if ($browser_os != "macsafari") {
@@ -37,9 +37,9 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 function editor_htmlarea($textarea,$text,$context) {	
 	ob_start();
 	if ($context == "story") {
-		include("htmlarea/story.html");	
+		include("htmlarea/story.php");	
 	} else if ($context == "discuss") {
-		include("htmlarea/discuss.html");	
+		include("htmlarea/discuss.php");	
 	}
 	$neweditor=ob_get_contents();
 	ob_end_clean();ob_start();
