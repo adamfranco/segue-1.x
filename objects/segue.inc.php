@@ -1136,9 +1136,8 @@ FROM
 				if ($p[VIEW]) $p_str.="v,";
 				if ($p[DISCUSS]) $p_str.="di,";
 				
-				if ($p_str) $p_str[strlen($p_str)-1]='';
+				if ($p_str) $p_str = substr($p_str, 0, strlen($p_str)-1); // strip last comma from the end of a string 
 				echo "'".$p_str."'<br>";
-				
 				
 				// find the id and type of this editor
 				if ($editor == 'everyone' || $editor == 'institute') {
@@ -1155,7 +1154,7 @@ FROM
 					$ed_id = $arr['user_id'];
 				}
 
-//				echo "EID: $ed_id; ETYPE: $ed_type <br>";
+				echo "EID: $ed_id; ETYPE: $ed_type <br>";
 				
 				// now that we have all the information pertaining to this user, check if the permission entry is already present
 				// if yes, update it
@@ -1163,7 +1162,7 @@ FROM
 				
 				$query = "SELECT permission_id FROM permission WHERE permission_scope_type='$scope' AND FK_scope_id=$id AND FK_editor <=> $ed_id AND permission_editor_type = '$ed_type'";
 				echo $query."<br>";
-				$r = db_query($query);
+				$r = db_query($query); // this query checks to see if the an entry exists in the permission table
 
 				// if permission entry exists
 				if (db_num_rows($r)) {
