@@ -5,7 +5,7 @@
 // - but adds functionality specific to coursesdb. i may eventually combine these two into one
 
 // this array contains a list of actions that don't *require* the user to be authenticated
-$actions_noauth = array("site","login","default","previewtheme","fullstory");
+$actions_noauth = array("site","login","default","previewtheme","fullstory","list");
 
 
 $loginerror=0;

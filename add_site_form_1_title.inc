@@ -26,9 +26,15 @@ if ($settings[add]) printc("<div class=title>Add Site</div>");
 if ($settings[edit]) printc("<div class=title>Edit Site</div>");
 
 
-if ($ltype=='admin')
-	printc("name: <input type=text size=20 name=sitename value='$settings[sitename]'><BR><BR>");
-else
+if ($ltype=='admin') {
+	printc("name: <input type=text size=20 name=sitename value='$settings[sitename]'>");
+	printc("<br>type:");
+	printc("<br><input type=radio name=type value='class'".(($settings[type]=='class')?" checked":"")."> class");
+	printc("<br><input type=radio name=type value='personal'".(($settings[type]=='personal')?" checked":"")."> personal");
+	printc("<br><input type=radio name=type value='system'".(($settings[type]=='system')?" checked":"")."> system");
+	printc("<br><input type=radio name=type value='other'".(($settings[type]=='other')?" checked":"")."> other");
+	printc("<BR><BR>");
+} else
 	printc("<input type=hidden name=sitename value='$sitename'>");
 
 printc ("<div style='font-size: 10px; margin-left: 30px; margin-right: 30px;'>");
@@ -52,6 +58,8 @@ printc("Allow: <b><input type=radio name=viewpermissions value='anyone'".(($sett
 printc("<input type=radio name=viewpermissions value='midd'".(($settings[viewpermissions]=='midd')?" checked":"")."> Middlebury College users ");
 if (isclass($settings[sitename])) printc("<input type=radio name=viewpermissions value='class'".(($settings[viewpermissions]=='class')?" checked":"")."> students in class");
 printc("</b> to view this site.");
+if (!isclass($settings[sitename])) printc("<br><input type=checkbox name='listed' value=1".(($settings[listed])?" checked":"")."> Include in public listing of personal sites.");
+else printc("<input type=hidden name='listed' value=1>");
 printc("<br><br><br>");
 
 

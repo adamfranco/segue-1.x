@@ -1,5 +1,6 @@
 <? // add_site.inc.php -- add a site (passed $name)
 
+
 if ($settings) {
 	// if we have already started editing...
 
@@ -28,6 +29,7 @@ if ($settings) {
 	// Checkboxes need a "if ($settings[step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
 	if ($sitename != "") $settings[sitename] = $sitename;
+	if ($type && $ltype=='admin') $settings[type] = $type;
 	if ($settings[step] == 1 && $title != "") $settings[title] = $title;
 	if ($activateyear != "") $settings[activateyear] = $activateyear;
 	if ($activatemonth != "") $settings[activatemonth] = $activatemonth;
@@ -39,6 +41,7 @@ if ($settings) {
 	if ($settings[step] == 1 && !$link) $settings[deactivatedate] = $deactivatedate;
 	if ($active != "") $settings[active] = $active;
 	if ($viewpermissions != "") $settings[viewpermissions] = $viewpermissions;
+	if ($settings[step] == 1 && !$link) $settings[listed] = $listed;
 	if ($theme != "") $settings[theme] = $theme;
 	if ($theme != "") $settings[themesettings] = $themesettings;
 	if ($settings[step] == 3) $settings[template] = $template;
@@ -61,6 +64,7 @@ if (!$settings) {
 		"edit" => 0,
 		"step" => 1,
 		"sitename" => $sitename,
+		"type" => "personal",
 		"title" => "",
 		"activateyear" => "0000",
 		"activatemonth" => "00",
@@ -72,6 +76,7 @@ if (!$settings) {
 		"deactivatedate" => 0,
 		"active"  => 1,
 		"viewpermissions" => "anyone",
+		"listed" => 1,
 		"theme" => "minimal",
 		"themesettings" => "",
 		"template" => "template0",
@@ -83,6 +88,8 @@ if (!$settings) {
 		"footer" => "",
 		"commingFrom" => $commingFrom
 	);
+	
+	if (isclass($settings[sitename])) $settings[type] = "class";
 	
 	if ($action == 'add_site') {
 		$settings[add]=1;
@@ -166,11 +173,12 @@ if ($save) {
 		if ($settings[deactivatedate]) $settings[deactivatedate] = $settings[deactivateyear] . "-" . ($settings[deactivatemonth]+1) . "-" . $settings[deactivateday];
 		else $settings[deactivatedate] = "0000-00-00";
 	
-//		$active = ($active)?1:0;
+		$settings[active] = ($settings[active])?1:0;
+		$settings[listed] = ($settings[listed])?1:0;
 			
 //		$viewpermissions = 'anyone';
 			
-		$query .= ", title='$settings[title]', viewpermissions='$settings[viewpermissions]', activatedate='$settings[activatedate]', deactivatedate='$settings[deactivatedate]', active=$settings[active]";
+		$query .= ", title='$settings[title]', viewpermissions='$settings[viewpermissions]', listed='$settings[listed]', activatedate='$settings[activatedate]', deactivatedate='$settings[deactivatedate]', active=$settings[active], type='$settings[type]'";
 		
 		$query .= ", theme='$settings[theme]', themesettings='$settings[themesettings]'";
 

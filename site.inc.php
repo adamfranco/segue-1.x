@@ -59,7 +59,7 @@ foreach ($sections as $s) {
 	$a = db_get_line("sections","id=$s");
 	if (canview($a,SECTION)) {
 		if ($a[type] == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=site";
-		if ($a[type] == 'url') { $link = $a[url]; $target="_blank";}
+		if ($a[type] == 'url') { $link = $a[url]; $target="_self";}
 		$extra = '';
 		$i++;
 		add_link(topnav,$a['title'],$link,$extra,$s,$target);

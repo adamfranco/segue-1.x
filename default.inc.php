@@ -17,6 +17,8 @@ $urls = array(
 
 if ($_loggedin) {
 	// -------------------------------------------------------------------
+	add_link(leftnav,"Home","index.php?$sid","","");
+	add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
 	foreach ($urls as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
@@ -229,6 +231,8 @@ if ($_loggedin) {
 	
 	printc("</table>");
 } else {
+	add_link(leftnav,"Home","index.php?$sid","","");
+	add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
 	foreach ($urls as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
