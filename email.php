@@ -69,7 +69,30 @@ if ($action == "review") {
  if (!$query_custom || $query_custom) {	
 	$query = "
 	SELECT 
-		DISTINCT user_id, user_fname, user_email
+		user_id
+	FROM 
+		discussion
+	INNER JOIN story ON FK_story = story_id
+	INNER JOIN page ON FK_page = page_id
+	INNER JOIN section ON FK_section = section_id
+	INNER JOIN site ON FK_site = site_id
+	INNER JOIN user ON FK_author = user_id
+	WHERE 
+		$where
+	";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$numrows = db_num_rows($r);
+	
+
+	if (!isset($lowerlimit)) $lowerlimit = 0;
+	if (!isset($range)) $range = 30;
+	if ($lowerlimit < 0) $lowerlimit = 0;
+	$limit = " LIMIT $lowerlimit,$range";
+	
+	$query = "
+	SELECT 
+		DISTINCT user_id
 	FROM 
 		discussion
 	INNER JOIN story ON FK_story = story_id
@@ -83,11 +106,10 @@ if ($action == "review") {
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
 	$numparticipants = db_num_rows($r);
-		
-	if (!isset($lowerlimit)) $lowerlimit = 0;
-	if (!isset($range)) $range = 30;
-	if ($lowerlimit < 0) $lowerlimit = 0;
-	$limit = " LIMIT $lowerlimit,$range";
+	//print $numparticipants."<br>";
+	
+	if ($action == "list") $numrows = $numparticipants;
+	//print $numrows."<br>";
 
 	$query = "
 	SELECT 
@@ -103,11 +125,12 @@ if ($action == "review") {
 		$where $orderby $limit
 	";		
 	$r = db_query($query);
+	
 } else {
 	//$query = $query_custom;
-	$r = db_query($query);
-	$a = db_fetch_assoc($r);
-	$numparticipants = db_num_rows($r);
+	//$r = db_query($query);
+	//$a = db_fetch_assoc($r);
+	//$numparticipants = db_num_rows($r);
 }
 
 printerr();
@@ -178,19 +201,19 @@ Participants<br><br>
 		}
 
 
-		$tpages = ceil($numparticipants/$range);
+		$tpages = ceil($numrows/$range);
 		$curr = ceil(($lowerlimit+$range)/$range);
 		$prev = $lowerlimit-$range;
 		if ($prev < 0) $prev = 0;
 		$next = $lowerlimit+$range;
-		if ($next >= $numparticipants) $next = $numparticipants-$range;
+		if ($next >= $numrows) $next = $numrows-$range;
 		if ($next < 0) $next = 0;
 		print "$curr of $tpages ";
-	//	print "(prev=$prev lowerlimit=$lowerlimit next=$next )";
+		//print "(prev=$prev lowerlimit=$lowerlimit next=$next )";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables&action=$curraction\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction\"'>\n";
 		?>
 
 <!-- 		</form> -->
