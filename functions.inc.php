@@ -3,10 +3,12 @@
 function makedownloadbar($a) {
 	global $site,$uploaddir,$uploadurl;
 	if ($a[type]!='file') return;
-	$name = urldecode($a[longertext]);
-	$filepath = "$uploaddir/$site/$a[id]/$name";
-	$fileurl = "$uploadurl/$site/$a[id]/$name";
-//	print $filepath;
+	
+	$b = db_get_line("media","id=$a[longertext]");
+	$filename = $b[name];
+	$dir = $b[site_id];
+	$fileurl = "$uploadurl/$dir/$filename";
+	$filepath = "$uploaddir/$dir/$filename";
 	$filesize = mkfilesize($filepath);
 	$t = '';
 	$t .= "<div class=downloadbar style='margin-bottom: 10px'>";
