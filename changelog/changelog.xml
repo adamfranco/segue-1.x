@@ -14,10 +14,9 @@
 			corrupted section or page object.
 		</fix>
 		<new author='adam'>
-			When copying a site, section, or page, links internal to that part 
-			(such as links in a	content block that point to another page in the 
-			site or section) are now updated to point to the appropriate place in 
-			the new version of the part.
+			When copying a site, links internal to that site (such as links in a
+			content block that point to another page in the site) are now updated
+			to point to the appropriate place in the new version of the site.
 		</new>
 		<fix author='alex'>
 			When editing slots, information about whether the slot was in use not or not
