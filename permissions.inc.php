@@ -27,7 +27,7 @@ class permissions {
 	// be named 'addform'
 	function outputForm(&$o,$d=0) {
 		global $cfg;
-		$sitename = (get_class($o) == 'site')?$o->getField("name"):$o->owning_site;
+		$sitename = $o->owning_site;
 	
 		// ---- Editor actions ----
 		if ($_REQUEST[edaction] == 'add') {

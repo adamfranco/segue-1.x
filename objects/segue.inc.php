@@ -80,6 +80,7 @@ class segue {
 		// set the permissions array
 		if (is_array($p)) {
 			$this->permissions = $p;
+			$this->editors = array_unique(array_merge(array_keys($p),$this->editors));	// add new editors from new permissions array
 			$this->changedpermissions = 1;
 		}
 	}
@@ -172,8 +173,59 @@ class segue {
 		}
 	}
 
-	function setActivateDate($year,$month,$day) {
+	// this function used for add_??? scripts to handle activate/deactivate dates
+	// automatically... just call the function
+	function handleFormDates($step=1) {
+		// initialize the session vars.. if needed
+		if (!isset($_SESSION[settings][activateyear]) || !isset($_SESSION[settings][deactivateyear])) {
+			$this->initFormDates();
+		}
+		if ($_REQUEST[activateyear] != "") $_SESSION[settings][activateyear] = $_REQUEST[activateyear];
+		if ($_REQUEST[activatemonth] != "") $_SESSION[settings][activatemonth] = $_REQUEST[activatemonth];
+		if ($_REQUEST[activateday] != "") $_SESSION[settings][activateday] = $_REQUEST[activateday];
+		if ($_REQUEST[deactivateyear] != "") $_SESSION[settings][deactivateyear] = $_REQUEST[deactivateyear];
+		if ($_REQUEST[deactivatemonth] != "") $_SESSION[settings][deactivatemonth] = $_REQUEST[deactivatemonth];
+		if ($_REQUEST[deactivateday] != "") $_SESSION[settings][deactivateday] = $_REQUEST[deactivateday];
+		if (!$_REQUEST[link] && $_REQUEST[activatedate]) { 
+			$_SESSION[settings][activatedate] = 1;
+			$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
+		} else if ($_SESSION[settings][step] == $step) {
+			$_SESSION[settings][activatedate] = 0;
+			$this->setActivateDate(-1);
+		}
+		if (!$_REQUEST[link] && $_REQUEST[deactivatedate]) {
+			$_SESSION[settings][deactivatedate] = 1;
+			$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
+		} else if ($_SESSION[settings][step] == $step) {
+			$_SESSION[settings][deactivatedate] = 0;
+			$this->setDeactivateDate(-1);
+		}
+	}
+	
+	function initFormDates() {
+		$_SESSION[settings][activateyear] = "0000";
+		$_SESSION[settings][activatemonth] = "00";
+		$_SESSION[settings][activateday] = "00";
+		$_SESSION[settings][activatedate] = 0;
+		$_SESSION[settings][deactivateyear] = "0000";
+		$_SESSION[settings][deactivatemonth] = "00";
+		$_SESSION[settings][deactivateday] = "00";
+		$_SESSION[settings][deactivatedate] = 0;
+		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$this->getField("activatedate"));
+		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
+		$_SESSION[settings][activatemonth]-=1;
+		$_SESSION[settings][deactivatemonth]-=1;
+		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
+		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
+	}
+
+	function setActivateDate($year,$month=0,$day=0) {
 		// test to see if it's a valid date
+//		print "activate: $year-$month-$day<br>";
+		if ($year == -1) { // unset field
+			$this->setField("activatedate","0000-00-00");
+			return true;
+		}
 		if (!checkdate($month,$day,$year)) {
 			error("The activate date you entered is invalid. It has not been set.");
 			return false;
@@ -182,8 +234,13 @@ class segue {
 		return true;
 	}
 	
-	function setDeactivateDate($year,$month,$day) {
+	function setDeactivateDate($year,$month=0,$day=0) {
 		// test to see if it's a valid date
+//		print "deactivate: $year-$month-$day<br>";
+		if ($year == -1) { // unset field
+			$this->setField("deactivatedate","0000-00-00");
+			return true;
+		}
 		if (!checkdate($month,$day,$year)) {
 			error("The deactivate date you entered is invalid. It has not been set.");
 			return false;

@@ -68,6 +68,7 @@ class site extends segue {
 			$a[] = "editedby='$_SESSION[auser]'";
 			$a[] = "editedtimestamp=NOW()";
 			$query = "update sites set ".implode(",",$a)." where id=".$this->id." and name='".$this->name."'";
+			print "site->updateDB: $query<BR>";
 			db_query($query);
 		}
 				
@@ -92,7 +93,8 @@ class site extends segue {
 	
 	function addSection($id) {
 		if (!is_array($this->data[sections])) $this->data[sections] = array();
-		$this->data[sections][] = $id;
+		print "<br>adding section $id to ".$this->name."<br>"; //debug
+		array_push($this->data[sections],$id);
 		$this->changed = 1;
 	}
 	
@@ -113,7 +115,7 @@ class site extends segue {
 		$d = $this->data;
 		$a = array();
 		
-		$a[] = "title='$d[title]'";
+		$a[] = "title='".addslashes($d[title])."'";
 //		$a[] = "viewpermissions='$d[viewpermissions]'";
 		$a[] = "listed=".(($d[listed])?1:0);
 		$a[] = "activatedate='$d[activatedate]'";

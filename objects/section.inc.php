@@ -4,13 +4,17 @@ class section extends segue {
 	var $pages;
 	
 	function section($insite,$id=0) {
-		$this->pages = array();
-		$this->data = array();
 		$this->owning_site = $insite;
 		$this->id = $id;
 		
 		// initialize the data array
 		$this->data[site_id] = $insite;
+		$this->init();
+	}
+	
+	function init($formdates=0) {
+		$this->pages = array();
+		$this->data = array();
 		$this->data[title] = "";
 		$this->data[activatedate] = $this->data[deactivatedate] = "0000-00-00";
 		$this->data[active] = 1;
@@ -19,6 +23,9 @@ class section extends segue {
 		$this->data[showcreator] = 0;
 		$this->data[showdate] = 0;
 		$this->data[archiveby] = "none";
+		$this->data[type] = "section";
+		if ($this->id) $this->fetchFromDB();
+		if ($formdates) $this->initFormDates();
 	}
 	
 	function fetchFromDB($id=0) {
@@ -57,12 +64,15 @@ class section extends segue {
 		$a[] = "addedby='$_SESSION[auser]'";
 		$a[] = "addedtimestamp = NOW()";
 		$query = "insert into sections set ".implode(",",$a);
+		print $query; //debug
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
 		
-		$this->owningSiteObj = new site($this->owning_site);
-		$this->owningSiteObj->fetchFromDB();
+		if (!$this->fetchedup) {
+			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj->fetchFromDB();
+		}
 		$this->owningSiteObj->addSection($this->id);
 		$this->owningSiteObj->updateDB();
 		
@@ -75,7 +85,7 @@ class section extends segue {
 		$d = $this->data;
 		$a = array();
 		
-		$a[] = "title='$d[title]'";
+		$a[] = "title='".addslashes($d[title])."'";
 		$a[] = "site_id='".$this->owning_site."'";
 		$a[] = "activatedate='$d[activatedate]'";
 		$a[] = "deactivatedate='$d[deactivatedate]'";

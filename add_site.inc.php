@@ -6,18 +6,11 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($settings[step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) { $_SESSION[settings][activatedate] = $_REQUEST[activatedate]; $_SESSION[settings][deactivatedate] = $_REQUEST[deactivatedate]; }
 	if ($_REQUEST[sitename] != ""  && $_SESSION[ltype] == "admin") { $_SESSION[siteObj]->setSiteName($_REQUEST[sitename]); $_SESSION[settings][sitename] = $_REQUEST[sitename]; }
 	if ($_REQUEST[type] && $_SESSION[ltype]=='admin') $_SESSION[siteObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1 && $_REQUEST[title] != "") $_SESSION[siteObj]->setField("title",$_REQUEST[title]);
-	if ($_REQUEST[activateyear] != "") $_SESSION[settings][activateyear] = $_REQUEST[activateyear];
-	if ($_REQUEST[activatemonth] != "") $_SESSION[settings][activatemonth] = $_REQUEST[activatemonth];
-	if ($_REQUEST[activateday] != "") $_SESSION[settings][activateday] = $_REQUEST[activateday];
-	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link] && $_SESSION[settings][activatedate]) $_SESSION[siteObj]->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
-	if ($_REQUEST[deactivateyear] != "") $_SESSION[settings][deactivateyear] = $_REQUEST[deactivateyear];
-	if ($_REQUEST[deactivatemonth] != "") $_SESSION[settings][deactivatemonth] = $_REQUEST[deactivatemonth];
-	if ($_REQUEST[deactivateday] != "") $_SESSION[settings][deactivateday] = $_REQUEST[deactivateday];
-	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link] && $_SESSION[settings][deactivatedate]) $_SESSION[siteObj]->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
+	// handle de/activate dates
+	$_SESSION[siteObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[siteObj]->setField("active",$_REQUEST[active]);
 //	if ($_REQUEST[viewpermissions] != "") $_SESSION[settings][viewpermissions] = $_REQUEST[viewpermissions];
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[siteObj]->setField("listed",$_REQUEST[listed]);
@@ -41,12 +34,6 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		"add" => 0,
 		"edit" => 0,
 		"step" => 1,
-		"activateyear" => "0000",
-		"activatemonth" => "00",
-		"activateday" => "00",
-		"deactivateyear" => "0000",
-		"deactivatemonth" => "00",
-		"deactivateday" => "00",
 		"recursiveenable" => "",
 		"copydownpermissions" => "",
 		"template" => "template0",
@@ -83,11 +70,13 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		$_SESSION[settings][copydownpermissions] = decode_array($_SESSION[settings][copydownpermissions]);
 		$_SESSION[settings][site_owner] = $_SESSION[siteObj]->getField("addedby");	
 	}
+	$_SESSION[siteObj]->initFormDates();
+	$dontCheckError = 1;
 }
 
 /* ---------------------------------------------------------------------------------------------*/
 /*						ERROR CHECKING															*/
-if ($_SESSION[settings][step] == 1) {
+if ($_SESSION[settings][step] == 1 && !$dontCheckError) {
 	if ((!$_SESSION[siteObj]->getField("title") || $_SESSION[siteObj]->getField("title") == ''))
 		error("You must enter a site title.");
 	if ($_SESSION[ltype] == "admin" && $_SESSION[siteObj]->getField("name") == "")

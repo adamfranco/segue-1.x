@@ -1,6 +1,7 @@
 <? // viewsite.inc.php	-- allows logged in people to view a site
  
-if ($settings) session_unregister("settings");
+// session variable reset has moved to index.php
+		
 
 $site_owner = db_get_value("sites","addedby","name='$site'");
 if ($site) {

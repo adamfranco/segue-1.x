@@ -8,29 +8,30 @@ include("objects/objects.inc.php");
 ob_start();		// start the output buffer so we can use headers if needed
 session_start();// start the session manager :) -- important, as we just learned
 
-/* if (!ini_get("register_globals")) { */
-/* 	if ($HTTP_POST_VARS) { */
-/* 		foreach ($HTTP_POST_VARS as $n=>$v) */
-/* 			$$n = $v; */
-/* 	} */
-/* 	if ($HTTP_GET_VARS) { */
-/* 		foreach ($HTTP_GET_VARS as $n=>$v) */
-/* 			$$n = $v; */
-/* 	} */
-/* 	if ($HTTP_SESSION_VARS) { */
-/* 		foreach ($HTTP_SESSION_VARS as $n=>$v) $$n = $v; */
-/* 	} */
-/* 	if ($_SESSION) { */
-/* 		foreach ($_SESSION as $n=>$v) $$n = $v; */
-/* 	} */
-/* } */
-
 if (ereg("^login",getenv("QUERY_STRING"))) {
 	if (session_id()) {
 		session_unset();
 		session_destroy();
 	}
 	header("Location: index.php");
+}
+
+// actions for which we use pervasive themes (if enabled)
+// and actions for which certain session variables are allowed (settings, *Obj)
+$permittedSettingsActions = $pervasiveActions = array("edit_site","add_site","add_section","edit_section","add_page","edit_page","add_story","edit_story");
+
+// check if we have any stray session variables
+if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
+	if ($_SESSION[settings] || $_SESSION[siteObj] || $_SESSION[sectionObj] || $_SESSION[pageObj] || $_SESSION[storyObj]) {
+		if (ini_get("register_globals")) {
+			session_unregister("settings");
+			session_unregister("siteObj");
+			session_unregister("sectionObj");
+			session_unregister("pageObj");
+			session_unregister("storyObj");
+		}
+		unset($_SESSION[settings],$_SESSION[siteObj],$_SESSION[sectionObj],$_SESSION[pageObj],$_SESSION[storyObj]);
+	}
 }
 
 // if they clicked a 'goback' button
@@ -83,6 +84,12 @@ if ($_loggedin) {
 // connect to the database
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
+// if we have info stored in settings session var, get some of it
+if ($_SESSION[settings][site]) $_REQUEST[site] = $_SESSION[settings][site];
+if ($_SESSION[settings][section]) $_REQUEST[section] = $_SESSION[settings][section];
+if ($_SESSION[settings][page]) $_REQUEST[page] = $_SESSION[settings][page];
+if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
+
 // set up theme, header,footer and navlinks
 if ($_REQUEST[site]) {						// we are in a site
 	$thisSite = new site($_REQUEST[site]);
@@ -108,11 +115,11 @@ if (isset($_REQUEST[action])) $action = $_REQUEST[action];
 
 // if we don't already have content (probably login error messages), then output some shite
 if (!$loginerror) {
-	$try = "$_REQUEST[action].$_SESSION[ltype].inc.php";			// first try a ltype-specific action file
+	$try = "$action.$_SESSION[ltype].inc.php";			// first try a ltype-specific action file
 	if (file_exists($try)) {					// yes, indeed
 		include($try);
 	} else {
-		$try = "$_REQUEST[action].inc.php";				// try a general one
+		$try = "$action.inc.php";				// try a general one
 		if (file_exists($try)) include($try);
 		else include("no_action.inc.php");		// action not implemented yet or doesn't exist :(
 	}
@@ -141,7 +148,7 @@ if ($_REQUEST[page]) {		// we're viewing a page
 }
 if ($_REQUEST[site])
 	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]'>".$thisSite->getField("title")."</a>";
-	$title = $thisSite->getField("title");
+//	$title = $thisSite->getField("title");
 $nav .= $sn.$pn;
 if ($nav) {
 	//$siteheader = $siteheader . "<div align=left style='margin-bottom: 5px; margin-left: 10px'>$nav</div>";
@@ -150,7 +157,7 @@ if ($nav) {
 
 // Load non-pervasive theme for "program" actions
 // the theme and settings are defined in the config.inc.php
-$pervasiveActions = array("edit_site","add_site","add_section","edit_section","add_page","edit_page","add_story","edit_story");
+
 if (!$pervasivethemes && in_array($action,$pervasiveActions)) {
 	$theme = $programtheme;
 	$themesettings = $programthemesettings;
@@ -192,6 +199,9 @@ print_r($_SESSION);
 print "\n\n";
 print "request:\n";
 print_r($_REQUEST);
+print "\n\n";
+print "thisSite:\n";
+print_r($thisSite);
 print "</pre>";
 
 ?>
