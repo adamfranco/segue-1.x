@@ -922,6 +922,10 @@ ORDER BY
 		$templateObj =& new site($template);
 		$templateObj->fetchDown(1);	
 		/* print "<pre>"; print_r($this); print_r($templateObj); print "</pre>"; */
+		if (!$this->name) {
+			print ("Site doesn't exist. Can't add template to it. Please contact the administrator with the steps that you did to get to this point.");
+			exit;	
+		}
 		foreach ($templateObj->sections as $i=>$o) 
 			$o->copyObj(&$this);
 	}
