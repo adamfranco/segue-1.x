@@ -21,7 +21,7 @@ if (ereg("^".$cfg[full_uri], $url)
 	|| ereg("^".$cfg[personalsitesurl], $url)
 	|| ereg("^".$cfg[classsitesurl], $url))
 {
-	$url = $url."&sid=$sid";
+	$url = $url."&sid=".session_id();
 	print "\n$url\n<br />";
 }
 
