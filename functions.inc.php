@@ -5,7 +5,7 @@ function makedownloadbar($a) {
 	if ($a[type]!='file') return;
 	
 	$b = db_get_line("media","id=$a[longertext]");
-	$filename = $b[name];
+	$filename = urldecode($b[name]);
 	$dir = $b[site_id];
 	$size = $b[size];
 	$fileurl = "$uploadurl/$dir/$filename";

@@ -352,6 +352,10 @@ if ($save) {
 		$settings[shorttext]=urlencode($settings[shorttext]);
 		$settings[longertext]=urlencode($settings[longertext]);
 		
+		// put image id into the longer text field
+		if ($settings[type] == "image" || $settings[type] == "file") {
+			$settings[longertext] = $settings[libraryfileid];
+		}
 		
 		// check make sure the owner is the current user if they are changing permissions
 		if ($settings[site_owner] != $auser) {
@@ -385,7 +389,7 @@ if ($save) {
 		$chg[] = "texttype='$settings[texttype]'";
 		$chg[] = "category='$settings[category]'";
 		$chg[] = "shorttext='$settings[shorttext]'";
-		$chg[] = "longertext='$settings[libraryfileid]'";
+		$chg[] = "longertext='$settings[longertext]'";
 		$chg[] = "url='$settings[url]'";
 		$chg[] = "type='$settings[type]'";
 		$chg[] = "title='$settings[title]'";

@@ -159,7 +159,7 @@ if ($page) {
 				printc("</table>");
 			}
 			if ($a[type]=='file') {
-				$t = makedownloadbar($a);
+				$t = makedownloadbar(urldecode($a));
 				printc($t);
 			}
 			if ($a[type]=='link') {
