@@ -101,7 +101,7 @@ function ldapfname($uname) {
 	if (isgroup($uname)) return "Students in group";
 	if (isclass($uname)) return "Students in class";
 	if ($fname = db_get_value("users","fname","uname='$uname'")) return $fname;
-	$r = ldaplookup($uname,LDAP_USER,LDAP_EXACT,LDAP_LASTNAME,1);
+	$r = userlookup($uname,LDAP_USER,LDAP_EXACT,LDAP_LASTNAME,1);
 	return $r[$uname];
 }
 

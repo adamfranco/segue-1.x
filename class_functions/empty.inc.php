@@ -17,7 +17,7 @@ function ldapfname($uname) {
 	return "n/a";
 }
 
-function ldaplookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0) {
+function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0) {
 	return array();
 }
 
