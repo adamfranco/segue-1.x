@@ -9,7 +9,7 @@ if ($thisSite->sections) {
 			if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=$action";
 			if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
 			$extra = '';
-			if ($action == 'viewsite' && ($section == $s) || ($o->getField("type") == 'url')) {
+			if ($action == 'viewsite' && (($section == $s) || ($o->getField("type") == 'url'))) {
 				if ($thisSite->hasPermission("edit")) {
 					if ($i != 0) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=up&id=$s' class='".(($topsections)?"btnlink":"small")."' title='Move this section to the left'>".(($topsections)?"&larr;":"&uarr;")."</a>";
 					if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$s' class=".(($topsections)?"btnlink":"small")." title='Move this section to the right'>".(($topsections)?"&rarr;":"&darr;")."</a>";
