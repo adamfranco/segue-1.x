@@ -418,7 +418,7 @@ if ($site) {
 						print "<td align=center><nobr>";
 						print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>del</a> | \n";
 						print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>edit</a> | \n";
-						print "<a href=\"Javascript:sendWindow('addstudents',400,250,'add_students.php?$sid&ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
+						print "<a href=\"Javascript:sendWindow('addstudents',500,350,'add_students.php?$sid&ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
 						print "</nobr></td>";
 						print "</tr>";
 					}
