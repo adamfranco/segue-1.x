@@ -793,7 +793,7 @@ class segue {
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
 		
-		if (isset($this->cachedPermissions[$user.$perms])) return $this->cachedPermissions[$user.$perms];
+		if (isset($this->cachedPermissions[$user.$perms]) && count($this->chachedPermissions)) return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
 		$owner = $this->owningSiteObj->getField('addedby');
 		if (strtolower($user) == strtolower($owner)) return true;
