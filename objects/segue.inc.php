@@ -231,10 +231,10 @@ FROM
 			return $this->data[$field];
 		if ($this->tobefetched && !$this->fetched[$field] && $this->id) {	// we haven't allready gotten this data
 													// and this object is in the database.
- 			print "<pre>".get_class($this)."  --$field---\n"; 
- 			print_r ($this->_datafields[$field][1]); 
+// 			print "<pre>".get_class($this)."  --$field---\n"; 
+// 			print_r ($this->_datafields[$field][1]); 
 //			print_r($this);
- 			print "</pre>"; 
+// 			print "</pre>"; 
 //			echo "<br>HERE: ".$field."<br>";
 
 			$query = "
