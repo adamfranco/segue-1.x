@@ -3,7 +3,7 @@
 class site extends segue {
 	var $canview; // an array of editors that can view this site
 				  // (i.e. have view permissions somewhere in the hierarchy)
-	var $owner, $owneremail;
+	var $owner, $owneremail, $ownerfname;
 	var $title;
 	var $sections;
 	var $name;
@@ -135,13 +135,14 @@ class site extends segue {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 		
-		$q = "SELECT site_id, site_title, user_email, user_uname FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name' INNER JOIN user ON user_id = FK_owner";
+		$q = "SELECT site_id, site_title, user_email, user_uname, user_fname FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name' INNER JOIN user ON user_id = FK_owner";
 		// echo $q;
 		$r = db_query($q);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
 			$this->id = $a[site_id];
 			$this->owner = $a[user_uname];
+			$this->ownerfname = $a[user_fname];
 			$this->owneremail = $a[user_email];
 			$this->title = $a[site_title];
 		} else

@@ -140,10 +140,16 @@ if ($storyObj->getField("discuss")) {
 	$siteowner = $siteObj->getField("addedbyfull");	
 	
 	if ($showposts == 1) {
-		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion</td>\n");
+		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion\n");
 	} else {
-		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment</td>\n");	
+		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment\n");	
 	}
+	
+	//get number of discuss/assess participants
+	$numparticipants = participants();
+	$storyid = $storyObj->getField('id');
+	
+	printc("<div style='font-size: 10px'>(<a href='email.php?$sid&story=$storyid' onClick='doWindow(\"email\",700,500)' target='email'>".$numparticipants." participants</a>)</div></td>\n");
 	printc("<td align=right class=dheader2>\n");
 	
 	printc("<table>\n");
@@ -248,6 +254,32 @@ printc("</table>\n");
 printc("</tr></td>\n");
 printc("</table>\n");
 printc("<BR><BR>\n");
+
+
+function participants() {
+	global $storyObj;
+	$storyid = $storyObj->getField("id");	
+	$where = "story_id = $storyid";
+	$query = "
+	SELECT 
+		distinct user_fname, user_email
+	FROM 
+		discussion
+	INNER JOIN story ON FK_story = story_id
+	INNER JOIN page ON FK_page = page_id
+	INNER JOIN section ON FK_section = section_id
+	INNER JOIN site ON FK_site = site_id
+	INNER JOIN user ON FK_author = user_id
+	WHERE 
+		$where
+	";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$num = db_num_rows($r);
+	//$num.= " participants";
+	return $num;
+
+}
 
 ?>
 <!--<div align=right><input type=button value="Close Window" onClick="window.close()"></div>-->

@@ -863,13 +863,14 @@ class discussion {
  * Emails site owner discussion posts
  ******************************************************************************/
 
-	function sendemail($newid=0) {
+	function sendemail($newid=0,$emaillist=0) {
 		global $sid,$error;
 		global $_full_uri;
 		
 		//$script = $_SERVER['SCRIPT_NAME'];
 		$site =& new site($_REQUEST[site]);
 		$siteowneremail = $site->owneremail;
+		$siteownerfname = $site->ownerfname;
 		$sitetitle = $site->title;
 		
 		$pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$sectionObj);
@@ -879,33 +880,42 @@ class discussion {
 		
 		// send an email to the siteowner
 		$html = 1;
+		$emaillist = array();
 		
-		$to = $siteowneremail;
-		if ($html == 1) {
-			$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\nContent-Type: text/html\n";
+		
+		if ($emaillist==0) {
+			$to = $siteownerfname."<".$siteowneremail.">\n";
+			//$to = $siteowneremail;
+			if ($html == 1) {
+				$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\nContent-Type: text/html\n";
+			} else {
+				$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
+			}
+			$discussurl = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
+	
+			if ($html == 1) {
+				$body = $siteownerfname.", There has been a discussion posting from the following Segue site:<br>\n";			
+				$body .= "<a href='".$_full_uri.$discussurl."'>".$sitetitle." > ".$pagetitle."</a><br><br>\n";			
+				$body .= "<table cellpadding=0 cellspacing=0 border=0>";
+				$body .= "<tr><td>subject: </td><td>".$_REQUEST['subject']."</td></tr>\n";
+				$body .= "<tr><td>author: </td><td>".$_SESSION['afname']."</td></tr></table><br>\n";
+				$body .= $_REQUEST['content']."<br><br>\n";
+				$body .= "For complete discussion, see:<br>";
+				$body .= "<a href='".$_full_uri.$discussurl."'>".$sitetitle." > ".$pagetitle."</a><br><br>\n";			
+			} else {
+				$body = "site: ".$sitetitle."\n";
+				//$body .= "topic: ".$this->story."\n";	
+				$body .= "subject: ".$_REQUEST['subject']."\n";		
+				$body .= "author: ".$_SESSION['afname']."\n";
+				$body .= $_REQUEST['content']."\n\n";
+				$body .= "For complete discussion, see:\n";
+				$discussurl2 = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
+				$body .= $_full_uri.$discussurl2."\n";
+			}
 		} else {
-			$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
-		}
-		$discussurl = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
-
-		if ($html == 1) {
-			$body = "There has been a discussion posting from the following Segue site:<br>\n";			
-			$body .= "<a href='".$_full_uri.$discussurl."'>".$sitetitle." > ".$pagetitle."</a><br><br>\n";			
-			$body .= "<table cellpadding=0 cellspacing=0 border=0>";
-			$body .= "<tr><td>subject: </td><td>".$_REQUEST['subject']."</td></tr>\n";
-			$body .= "<tr><td>author: </td><td>".$_SESSION['afname']."</td></tr></table><br>\n";
-			$body .= $_REQUEST['content']."<br><br>\n";
-			$body .= "For complete discussion, see:<br>";
-			$body .= "<a href='".$_full_uri.$discussurl."'>".$sitetitle." > ".$pagetitle."</a><br><br>\n";			
-		} else {
-			$body = "site: ".$sitetitle."\n";
-			//$body .= "topic: ".$this->story."\n";	
-			$body .= "subject: ".$_REQUEST['subject']."\n";		
-			$body .= "author: ".$_SESSION['afname']."\n";
-			$body .= $_REQUEST['content']."\n\n";
-			$body .= "For complete discussion, see:\n";
-			$discussurl2 = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
-			$body .= $_full_uri.$discussurl2."\n";
+			$from = $siteowneremail;
+		
+		
 		}
 		
 		// send it!
