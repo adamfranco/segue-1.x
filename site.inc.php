@@ -34,6 +34,7 @@ if (!$thisSite->canview()) {
 	return;
 }	
 
+// Do some checking to make sure that we have valid parts we are looking for.
 if (get_class($thisSite) == 'site')
 	$site=$thisSite->name;
 else if ($thisSite) {
@@ -62,6 +63,8 @@ else if ($thisPage
 	error("The requested page does not exist. Please update your link.");
 	return;
 }
+// End validation
+
 
 do {
 	// for publication sites
