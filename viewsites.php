@@ -1,5 +1,9 @@
 <? /* $Id$ */
 
+// we need to include object files before session_start() or registered
+// objects will be broken.
+include("objects/objects.inc.php");
+
 $content = '';
 
 ob_start();
@@ -213,7 +217,7 @@ if (db_num_rows($r)) {
 		print "</td>";
 		print "<td class=td$color>$a[name]</td>";
 		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
-		print "<td class=td$color>$a[type]</td>";
+		print "<td class=td$color>".((group::getClassesFromName($a[name]))?"group - ":"")."$a[type]</td>";
 		print "<td class=td$color><span style='color: #";
 			if ($a[viewpermissions] == 'anyone') print "000";
 			if ($a[viewpermissions] == 'midd') print "00c";

@@ -1,5 +1,5 @@
 <? /* $Id$ */
-
+include("objects/objects.inc.php");
 $content = '';
 
 ob_start();
@@ -34,7 +34,17 @@ $w = array();
 //if ($type) $w[]="type='$type'";
 //if ($site) $w[]="site='$name'";
 if ($user) $w[]="uname like '%$user%'";
-if ($site) $w[]="name like '%$site%'";
+if ($site) {
+	$isgroup = ($classlist = group::getClassesFromName($site))?1:0;
+	if ($isgroup) {
+		$arg = "(name='";
+		$arg .= implode("' or name='",$classlist);
+		$arg .= "')";
+		$w[]=$arg;
+	} else {
+		$w[]="name like '%$site%'";
+	}
+}
 //if ($title) $w[]="title like '%$title%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 

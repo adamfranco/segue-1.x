@@ -17,7 +17,7 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 ?>
 <html>
 <head>
-<title>Editor Access</title>
+<title>Update Permissions</title>
 
 <style type='text/css'>
 a {
@@ -65,14 +65,14 @@ input {
 }
 
 </style>
-
+Update Permissions
 <? print $content; ?>
 <? 
-
 $query = "select * from sites";
 $r = db_query($query);
 
 while ($a = db_fetch_assoc($r)) {
+	
 	$site = $a['name'];
 	$site_id = $a['id'];
 	$sa = db_get_line("sites","name='$site'");
