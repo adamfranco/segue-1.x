@@ -8,7 +8,9 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
-		
+		<change author='adam'>
+			Added the HTML Area editor to Image, Link, and File, story types.
+		</change>
 		<fix author='alex'>
 			Fixed bug in display of stories by enclosing each story in a table to
 			prevent edit and discuss/assess links from shifting across stories

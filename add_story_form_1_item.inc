@@ -135,18 +135,7 @@ printc("</table>");
 
 
 /******************************************************************************
- * Short Text: link = description; story = abstract;
- ******************************************************************************/
-
-if ($_SESSION[storyObj]->getField("type")=='link') {	
-	printc("<br><br>Description (optional):");
-	printc("<br>");
-	printc("<textarea name=shorttext class=textarea rows=4 cols=80>".spchars($_SESSION[storyObj]->getField("shorttext"))."</textarea>");
-}
-
-
-/******************************************************************************
- * Text Block: includes HTML Editor code and link to Media Library
+ * Text Block: includes a link to Media Library
  * 
  ******************************************************************************/
 
@@ -169,19 +158,61 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
 	printc("</td></tr>");
 	printc("</table></div>");
-	
+}
+
+/******************************************************************************
+ * File/Image Block: Media Library Upload UI
+ ******************************************************************************/
+
+if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->getField("type") == 'file') {
+
+	printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+	printc("<tr><td colspan=2>");
+	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
+	printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
+	printc("<input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'>");	
+	printc(" <input type=text class='textfield' small name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=75 readonly>");
+
+	printc("</td></tr>");
+	printc("<tr><td>");
+	if ($_SESSION[storyObj]->getField("type")=='image') {	
+		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for image files. <br>");
+ 		printc("2. Accepted types here GIF, JPEG (JPG), and PNG. (chose <b>File for Download</b> to create links to other types of files)</div>");
+ 	} else {
+		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>");
+ 		printc("(2. All File types accepted. (chose <b>Image</b> to display images inline)</div>"); 	
+ 	}
+	printc("</td></tr>");
+	printc("</table></div>");
+
+}
+
+
+/******************************************************************************
+ * HTML Area
+ ******************************************************************************/
+if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	/******************************************************************************
 	 * Internal linking: note to users...
 	 ******************************************************************************/
-	
-	printc("<table width= 80% cellpadding=3 cellspacing=0>");
+	printc ("\n<br />");
+	printc("<table width= 80% cellpadding=3 cellspacing=0 style='border: 1px solid grey'>");
+	printc("<tr><td>");
+	if ($_SESSION[storyObj]->getField("type")=='story') {
+		printc("Content (or Abstract):");
+	} else if ($_SESSION[storyObj]->getField("type")=='image') {
+		printc("Caption/Description (optional):");
+	} else {
+		printc("Description (optional):");
+	}
+	printc("</td></tr>");
 	printc("<tr><td>");
 	printc("<div style='font-size:10px; color:#D00'>");
 	printc("Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. ");
 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
 	printc("</div>");
 	printc("</td></tr>");
-	printc("</table>");
+	printc("<tr><td>");
 
 	/******************************************************************************
 	 * 	Sniff determines browser and os
@@ -237,7 +268,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	 ******************************************************************************/
 		
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
-	printc("Content (or Abstract):");
+	
 	printc("<br>");
 			
 	if ($_SESSION[storyObj]->getField("texttype")=='text' && $supported == 1) {
@@ -285,60 +316,9 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		printc("</div>");
 		printc("<div class=desc style>If you choose \"Preformatted HTML\" Segue will not convert newline characters to the HTML equivalent: &lt;br&gt;. If you are unsure, select <b>Plain text</b>.</div>");
 	}
-	//	end modification 1 - 11.1.02 - achapin
-}
-
-/******************************************************************************
- * File/Image Block: Media Library Upload UI
- ******************************************************************************/
-
-if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->getField("type") == 'file') {
-
-	printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
-	printc("<tr><td colspan=2>");
-	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
-	printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
-	printc("<input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'>");	
-	printc(" <input type=text class='textfield' small name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=75 readonly>");
-	//if ($_SESSION[storyObj]->getField("type")=='image')
-
-	//printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
-	//printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
-	//printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
-	//printc(" (media file URL)");
+	
 	printc("</td></tr>");
-	printc("<tr><td>");
-	if ($_SESSION[storyObj]->getField("type")=='image') {	
-		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for image files. <br>");
- 		printc("2. Accepted types here GIF, JPEG (JPG), and PNG. (chose <b>File for Download</b> to create links to other types of files)</div>");
- 	} else {
-		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>");
- 		printc("(2. All File types accepted. (chose <b>Image</b> to display images inline)</div>"); 	
- 	}
-	printc("</td></tr>");
-	printc("</table></div><br><br>");
-
-	//printc("<br><br>");
-	//printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
-	//printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
-	//printc((($_SESSION[storyObj]->getField("type")=='image')?"Image":"File").": <input type=text name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=25 readonly> <input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'> <br><br>");
-	//if ($_SESSION[storyObj]->getField("type")=='image') printc("<div class=desc>Accepted image types are GIF, JPEG (JPG), and PNG.</div>");
-	//else // printc("<div class=desc>Select the file you would like to make available by clicking the 'Browse...' button above.</div>");
-	//printc("<br>");
-	
-	/******************************************************************************
-	 * File/Image Block: Caption/Description 
-	 ******************************************************************************/
-
-	if ($_SESSION[storyObj]->getField("type")=='image') {
-		printc("Caption/Description (optional):");
-	} else {
-		printc("Description (optional):");
-	}
-	
-	printc("<br>");
-	printc("<textarea name=shorttext class=textarea rows=4 cols=80>".spchars($_SESSION[storyObj]->getField("shorttext"))."</textarea>");
-	
+	printc("</table>");
 }
 
  printc("<br>");

@@ -9,6 +9,7 @@ v. 1.3.0 (the future)
 	**** IMPORTANT *** Change: Various changes in Segue necessitate that you upgrade to a new config file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make several changes to Segue's database and file-storage structure. (Adam Franco)
 		
 		
+	* Change: Added the HTML Area editor to Image, Link, and File, story types. (Adam Franco)
 		
 	* Bug Fix: Fixed bug in display of stories by enclosing each story in a table to prevent edit and discuss/assess links from shifting across stories (Alex Chapin)
 		
