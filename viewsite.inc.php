@@ -183,7 +183,7 @@ if ($thisPage) {
 	/* 		$a = db_get_line("stories","id=$s"); */
 			if ($o->canview() || $thisPage->hasPermissionDown("add or edit or delete")) {
 				if ($i!=0)
-					printc("<hr class=block style='margin-top: 10px'>");
+					printc("<hr style='margin-top: 10px'>");
 					
 				if ($o->getField("category")) {
 					printc("<div class=contentinfo id=contentinfo2 align=right>");
