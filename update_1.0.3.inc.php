@@ -43,4 +43,16 @@ if (!db_num_rows($r)) {
 	";
 	db_query($query);
 	$slotId = lastid();
+
+// Insert the section
+	$query = "
+		INSERT INTO
+			site
+		SET
+			site_title = 'Advanced: Single Section',
+			site_theme = 'minimal',
+			site_listed = 0
+	";
+	db_query($query);
+	$siteId = lastid();
 }

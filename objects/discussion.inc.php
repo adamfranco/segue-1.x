@@ -333,7 +333,7 @@ class discussion {
 		if ($this->numchildren) {
 			if (is_array($opt)) $p = 0;
 			else $p = 30;
-			printc ("<tr><td><table width=100% style='padding-left:".$p."px'>");
+			printc ("<tr><td style='padding: 0px'><table width=100% style='padding-left:".$p."px' cellspacing=0px>");
 			for ($i=0;$i<$this->numchildren;$i++) {
 				if (is_array($opt)) $this->children[$i]->opt($opt);
 				if ($this->opt("useoptforchildren")) $this->children[$i]->opt($this->opt);
@@ -352,7 +352,7 @@ class discussion {
 	
 	function output($canreply=false,$owner=false) {
 		// print a small table that will house the discussion
-		printc ("<table width=100%>");
+		printc ("<table width=100% style='padding:0' cellspacing=0px>");
 		$this->_output($canreply,$owner);
 		printc ("</table>");
 	}
@@ -428,7 +428,7 @@ class discussion {
 		printc ("<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
 		printc ("<tr><td$p><b>$d</b></td></tr>");
 		printc ("<tr><td$p>");
-		printc ("<table width=100%><tr><td align=left>");
+		printc ("<table width=100%  cellspacing=0px><tr><td align=left>");
 		printc ("Subject: <input type=text size=50 name=subject value='".spchars($s)."'>");
 		printc ("</td><td align=right><a href='#' onClick='document.postform.submit()'>[$b]</a></td></tr></table>");
 		printc ("</td></tr>");
@@ -473,32 +473,37 @@ class discussion {
 		
 		// output the html and stuff
 		if (!$this->id) return false;
-		printc ("<tr><td>");
+		printc ("<tr><td class=dheader3>");
 		$s = "<a href='$script?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
 //		$s = $this->subject;
 
-		$a = array();
-		if ($this->opt("showauthor")) $a[] = $this->authorfname;
-		if ($this->opt("showtstamp")) $a[] = timestamp2usdate($this->tstamp);
+		$a = "";
+		if ($this->opt("showauthor")) $a .= "by <span class=subject>".$this->authorfname."</span>";
+		if ($this->opt("showauthor") && $this->opt("showtstamp")) $a .= " on ";
+		if ($this->opt("showtstamp")) $a .= timestamp2usdate($this->tstamp);
+		
 		$b = array();
 		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>";
 		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'> | del</a>";
 		if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
 			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'> | edit</a>";
-		if (count($a) || count($b)) {
+		if ($a != "" || count($b)) {
 			$c = '';
-			if (count($a)) $c .= "(".implode(" - ",$a).") ";
 			if (count($b)) $c .= implode(" ",$b);
 			/******************************************************************************
 			 * Actual discussion posting content
 			 ******************************************************************************/
-			printc ("<table width=100%><tr><td align=left class=subject>$s</td><td align=right>$c</td></tr></table>");
+			printc ("<table width=100% cellspacing=0px>");
+				printc ("<tr><td align=left><span class=subject>$s</span><br>$a</td><td align=right valign=bottom>$c</td></tr>");
+			printc("</table>");
 		} else
 			printc ($s);
 		
+		printc ("</td></tr>");
+		
 		// now output the content
 		if ($this->opt("showcontent")) {
-			printc ("<tr><td class=content>");
+			printc ("<tr><td class=dtext>");
 			printc (htmlbr($this->content));
 			printc ("</td></tr>");
 		}

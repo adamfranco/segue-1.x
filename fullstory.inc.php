@@ -67,15 +67,37 @@ if ($storyObj->getField("type") == 'file') {
 <? //include("themes/common/logs_css.inc.php"); ?>
 <style type="text/css">
 
-.subject { font-weight: bolder; }
+.subject { 
+	font-weight: bolder; 
+}
 
-.content {
-	border-bottom: 1px solid #000;
+.dtext {
+	padding-top: 0px;
+	padding-bottom: 20px;
+	padding-left: 0px;
+	padding-right: 0px;
 }
 
 .dheader {
 	font-size: 14px;
 	border-bottom: 1px solid #000;
+	background: #b5b5b5;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+.dheader2 {
+	border-bottom: 1px solid #000;
+	background: #b5b5b5;
+	padding-right: 5px;
+	padding-top: 5px;
+}
+
+.dheader3 {
+	border-top: 0px solid #000;
+	background: #b5b5b5;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 </style>
@@ -100,7 +122,7 @@ printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr
 // output discussions?
 if ($storyObj->getField("discuss")) {			
 	printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion</td>");
-	printc("<td align=right class=content>");
+	printc("<td align=right class=dheader2>");
 	$f = $_SESSION['flat_discussion'];
 	if (!$f) {
 		//need to change href to index??
