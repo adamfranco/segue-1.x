@@ -175,9 +175,9 @@
 	 * Network - the name of the network you are on. specifies what class functions
 	 *				are to be used. will be phased out eventually
 	 *
-	 * DON'T USE THIS OPTION UNLESS
+	 * DON'T USE THIS OPTION, for now
 	 ******************************************************************************/
-	$cfg[network] = $_network = "midd";
+	$cfg[network] = $_network = "none";
 	
 	/******************************************************************************
 	 * pervasivethemes - 1 to use site's theme for add/edit pages

@@ -52,7 +52,8 @@ class discussion {
 	
 	function _del() {
 		global $site_owner;
-		if ($_SESSION['auser'] != $site_owner || $this->authorid != $_SESSION['aid']) return false;
+//		print "$site_owner";
+		if ($_SESSION['auser'] != $site_owner && $this->authorid != $_SESSION['aid']) return false;
 		if (!$this->id) return false;
 		if ($this->count() || $this->dbcount()) {
 			$this->_fetchchildren();
@@ -61,10 +62,11 @@ class discussion {
 			}
 			$this->numchildren=0;
 		}
-		$this->_delID($this->id);
+		discussion::delID($this->id);
 	}
 	
-	function _delID($id) {
+	function delID($id) {
+//		print "deleting $id.<BR>";
 		$query = "
 	DELETE FROM
 		discussion

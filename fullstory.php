@@ -23,7 +23,10 @@ $story =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST
 $getinfo = "site=".$site->name."&section=".$section->id."&page=".$page->id."&story=".$story->id;
 
 $story->fetchFromDB();
+$story->owningSiteObj->fetchFromDB();
 $site_owner=$story->owningSiteObj->getField("addedby");
+//print_r($story->owningSiteObj);
+//print $site_owner;
 
 // get the correct shorttext
 if ($story->getField("type") == 'story') {
