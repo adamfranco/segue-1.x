@@ -143,7 +143,7 @@ if ($_loggedin) {
                                 $gs = array();
                                 foreach ($classes as $c=>$a) {
                                         if ($g = group::getNameFromClass($c)) {
-                                                if (!$gs[$g]) printSiteLine($g,$_SESSION[atype]);
+                                                if (!$gs[$g]) printSiteLine($g,0,1,$_SESSION[atype]);
                                                 $gs[$g] = 1;
                                         } else
                                                 printSiteLine($c,0,1,$_SESSION[atype]);
@@ -287,6 +287,7 @@ if ($_loggedin) {
         }
         
         printc("</td><td align=right>");
+        if ($_SESSION[amethod] =='db' || $_SESSION[lmethod]=='db') printc("<a href='passwd.php?' target='password' onClick='doWindow(\"password\",300,300)'>change password</a> | ");	
         if ($_SESSION[ltype]=='admin') printc("<a href='add_slot.php' onClick='doWindow(\"slots\",375,300)' target='slots' class='navlink'>add new slot</a>");
         printc("</td></tr></table></td></tr>");
         
@@ -450,6 +451,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
                 printc("<div align=right>");
                                 
                 printc(" <a href='$PHP_SELF?$sid&action=viewsite&site=$name'>edit</a> | ");
+                
                 if (!$ed) {
                         printc(" <a href='$PHP_SELF?$sid&action=delete_site&name=$name'>delete</a> | ");
                         printc(" <a href='$PHP_SELF?$sid&action=edit_site&edit_site=$name'>settings</a> | ");
