@@ -3,8 +3,15 @@
 Name: Segue ChangeLog
 
 
+v. 1.0.4 (2003-11-13)
+----------------------------------------------------
+		
+	* Change: Fixed a bug in the 1.0.3 permissions checking that prevented institution users from accessing sites. (Adam Franco)
+	
 v. 1.0.3 (2003-11-12)
 ----------------------------------------------------
+		
+	* Change: Default page and permissions checking re-written to be faster. (Dobo Radichkov)
 		
 	* Change: Permissions window now has Save/Cancel buttons at the top of the window. (Adam Franco)
 		
