@@ -3,7 +3,65 @@
 	h1, h2 {color: #005;}
 	h1 {font-size: 18pt;}
 	li {padding-bottom: 3px;}
-	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.0.6</h2><h3>2003-12-29</h3><ul>
+	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.1.0</h2><h3>future</h3><ul>
+		<li/> New feature:  
+			Command-line XML import/export scripts now allow for backup of Segue sites
+			to flat XML files.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Adding of editors now works in the 'discussions settings' step of the add/edit 
+			story interface.
+		 (<i>Adam Franco</i>)
+		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
+			New database fields have been added to the story and discussion tables. To add new fields,
+			log in as an administrator, then go to 'admin tools' &gt; 'segue updates' and run the 1.1.0 
+			update if needed.
+		 (<i>Alex Chapin</i>)
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888585&amp;group_id=82171&amp;atid=565237">
+        			#888585</a> 
+			Added file upload UI to discussion/assessment post form.  This feature will allow
+			those who post to a discussion to attach a file.  Upload UI uses the site 
+			Media Library (accessible from filebrowser.php).  When the Media Library is
+			accessed from discussion/assessment, only files uploaded by the currently authenticated
+			user will appear (unless that user is the site owner).  This new functionality will
+			allow the discussion/assessment UI to function as an assignment/assessment dropbox.
+		 (<i>Alex Chapin</i>)
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888588&amp;group_id=82171&amp;atid=565237">
+        			#888588</a> 
+			Added option to show or hide authors of discussion/assessment posts.  This feature 
+			will allow site owners to create publicly anonymous discussions while
+			retaining their own access to the identity of discussion post authors.  All users (other
+			then the site owner) will see only then own posts identified.  This feature will also
+			allow site owners to let all users see then results of an assessment without revealing
+			identity of assessment post authors.
+		 (<i>Alex Chapin</i>)
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888588&amp;group_id=82171&amp;atid=565237">
+        			#888588</a> 
+			Added option to show or hide discussion/assessment posts.  This feature will allow
+			site owners to use discussions as assessments.  Thus if hide posts is set
+			then posts referred to collectively as an Assessment.  All users (other then the site owner) will
+			see their own posts only.
+		 (<i>Alex Chapin</i>)
+		<li/> New feature:  
+			Added option to email site owner all discussion/assessment posts.  This feature
+			will allow site owners to get email updates of posts to their discussions. 
+		 (<i>Alex Chapin</i>)
+		<li/> New feature:  
+			Added option to sort discussion/assessment posts by recent first or recent last. 
+		 (<i>Alex Chapin</i>)	
+		<li/> Change:  
+			Information on who posted last to a given discussion/assessment has been removed.
+			This has been done to preserve integrity of assessment mode described above.
+		 (<i>Alex Chapin</i>)
+		<li/> Change:  
+			Link to discussions have been changed from Discussion to Discuss/Assess.
+		 (<i>Alex Chapin</i>)
+		<li/> Change:  
+			The user full name, email, and type in the db are now updated from LDAP
+			or other auth method if the db version doesn't match.
+		 (<i>Adam Franco</i>)
+	</ul><br/><h2>Version 1.0.6</h2><h3>2003-12-29</h3><ul>
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=750109&amp;group_id=82171&amp;atid=565234">
         			#750109</a> 
@@ -12,7 +70,8 @@
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=865065&amp;group_id=82171&amp;atid=565234">
         			#865065</a> 
-			Now checks that the destination name is not the same as the source name and is also not an empty string.
+			Now checks that the destination name is not the same as the source name
+			and is also not an empty string.
 		 (<i>Gabe Schine</i>)
 	</ul><br/><h2>Version 1.0.5</h2><h3>2003-12-19</h3><ul>
 		<li/> Change:  

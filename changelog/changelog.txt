@@ -3,6 +3,31 @@
 Name: Segue ChangeLog
 
 
+v. 1.1.0 (future)
+----------------------------------------------------
+		
+	* New feature: Command-line XML import/export scripts now allow for backup of Segue sites to flat XML files. (Adam Franco)
+		
+	* Bug Fix: Adding of editors now works in the 'discussions settings' step of the add/edit story interface. (Adam Franco)
+		
+	**** IMPORTANT *** Change: New database fields have been added to the story and discussion tables. To add new fields, log in as an administrator, then go to 'admin tools' &gt; 'segue updates' and run the 1.1.0 update if needed. (Alex Chapin)
+		
+	* New feature: #888585 Added file upload UI to discussion/assessment post form. This feature will allow those who post to a discussion to attach a file. Upload UI uses the site Media Library (accessible from filebrowser.php). When the Media Library is accessed from discussion/assessment, only files uploaded by the currently authenticated user will appear (unless that user is the site owner). This new functionality will allow the discussion/assessment UI to function as an assignment/assessment dropbox. (Alex Chapin)
+		
+	* New feature: #888588 Added option to show or hide authors of discussion/assessment posts. This feature will allow site owners to create publicly anonymous discussions while retaining their own access to the identity of discussion post authors. All users (other then the site owner) will see only then own posts identified. This feature will also allow site owners to let all users see then results of an assessment without revealing identity of assessment post authors. (Alex Chapin)
+		
+	* New feature: #888588 Added option to show or hide discussion/assessment posts. This feature will allow site owners to use discussions as assessments. Thus if hide posts is set then posts referred to collectively as an Assessment. All users (other then the site owner) will see their own posts only. (Alex Chapin)
+		
+	* New feature: Added option to email site owner all discussion/assessment posts. This feature will allow site owners to get email updates of posts to their discussions. (Alex Chapin)
+		
+	* New feature: Added option to sort discussion/assessment posts by recent first or recent last. (Alex Chapin)	
+		
+	* Change: Information on who posted last to a given discussion/assessment has been removed. This has been done to preserve integrity of assessment mode described above. (Alex Chapin)
+		
+	* Change: Link to discussions have been changed from Discussion to Discuss/Assess. (Alex Chapin)
+		
+	* Change: The user full name, email, and type in the db are now updated from LDAP or other auth method if the db version doesn't match. (Adam Franco)
+	
 v. 1.0.6 (2003-12-29)
 ----------------------------------------------------
 		
