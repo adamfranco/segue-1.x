@@ -7,7 +7,6 @@
  * The second screen is for the editing of the permissions for selected editors
  ******************************************************************************/
 
-
 require("objects/objects.inc.php");
 
 ob_start();
@@ -33,10 +32,9 @@ if ($_REQUEST[site] && isset($_SESSION[obj])) {
  ******************************************************************************/
 
 if (!is_object($_SESSION[obj])) {
-	$_SESSION[obj] = new site($_REQUEST[site]);
-/* 	$_SESSION[obj] = new site('gabe'); */
-	$_SESSION[obj]->fetchDown();
-	$_SESSION[obj]->buildPermissionsArray(0,1);
+	$_SESSION[obj] =& new site($_REQUEST[site]);
+/* 	$_SESSION[obj] =& new site('gabe'); */
+	$_SESSION[obj]->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,1);
 	$_SESSION[obj]->spiderDownLockedFlag();
 }
 
@@ -57,7 +55,9 @@ if (!$isOwner && !$_SESSION[obj]->isEditor()) {
 /* $_SESSION[obj]->buildPermissionsArray(0,1); */
 if (!isset($_SESSION[editors])) $_SESSION[editors] = array();
 
-if ($error) return;
+//print "here";exit;
+
+if ($error) { printerr2(); return; }
 
 /******************************************************************************
  * Save changes to the DB
@@ -67,8 +67,13 @@ if ($_REQUEST[savechanges]) {
 	if ($isOwner) {
 		/* print "<pre>"; print_r($_SESSION[obj]); print "</pre>"; */
 		$_SESSION[obj]->updateDB(1);
+//		print_r($_SESSION[obj]->editorsToDelete);
+		$_SESSION[obj]->deletePendingEditors();
+//		echo "<pre>";
+//		print_r($_SESSION[obj]);
 		unset($_SESSION[obj],$_SESSION[editors]);
 		Header("Location: close.php");
+		return;
 	}
 }
 
@@ -76,7 +81,14 @@ if ($_REQUEST[savechanges]) {
  * Editor Actions:
  ******************************************************************************/
 if ($isOwner && $_REQUEST[edaction] == 'add') {
-	$_SESSION[obj]->addEditor($_REQUEST[edname]);
+	if (isgroup($_REQUEST[edname])) {
+		$classes = group::getClassesFromName($_REQUEST[edname]);
+		foreach ($classes as $class) {
+			$_SESSION[obj]->addEditor($class);
+		}
+	} else {
+		$_SESSION[obj]->addEditor($_REQUEST[edname]);
+	}
 }
 
 if ($isOwner && $_REQUEST[edaction] == 'del') {
@@ -88,7 +100,7 @@ if ($isOwner && isclass($_SESSION[obj]->name)) {
 	print "function addClassEditor() {";
 	print "	f = document.addform;";
 	print "	f.edaction.value='add';";
-	print "	f.edname.value='$sitename';";
+	print "	f.edname.value='".$_SESSION[obj]->getField("name")."';";
 	print "	f.submit();";
 	print "}";
 	print "</script>";
@@ -101,7 +113,7 @@ if ($isOwner && isclass($_SESSION[obj]->name)) {
 if (!$isOwner && $isEditor) {
 	if (!count($_SESSION[editors])) {
 		if (in_array($_SESSION[auser],$_SESSION[obj]->getEditors())) $_SESSION[editors][] = $_SESSION[auser];
-		$_SESSION[editors] = array_merge($_SESSION[editors],$_SESSION[obj]->returnEditorOverlap(getuserclasses($_SESSION[auser])));
+		$_SESSION[editors] = array_merge($_SESSION[editors],$_SESSION[obj]->returnEditorOverlap(getuserclasses($_SESSION[auser],"all")));
 		// done... now send them to step 2
 		$step = 2;
 	}
@@ -148,8 +160,9 @@ if ($isOwner) {
 			$regs = split('-',$pfield);
 			$perm = $regs[1];
 			$theObj->setUserPermissionDown($perm,$puser,$pwhat);
-			$theObj->setFieldDown("l-$puser-$perm",$pwhat);
-			if ($pwhat ==1) $theObj->setField("l-$puser-$perm",(1-$pwhat));
+			$theObj->setFieldDown("l%$puser%$perm",$pwhat);
+//			echo "l-$puser-$perm: ".$pwhat;
+			if ($pwhat ==1) $theObj->setField("l%$puser%$perm",(1-$pwhat));
 		}
 	}
 }

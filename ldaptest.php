@@ -23,12 +23,12 @@ if ($userid) {
 
 	echo "<h3>LDAP query test for: $userid</h3>";
 	echo "Connecting ...";
-	$ds=ldap_connect("tiger.middlebury.edu");  // must be a valid LDAP server!
+	$ds=ldap_connect("jaguar.middlebury.edu");  // must be a valid LDAP server!
 	echo "connect result is ".$ds."<br>";
 
 	if ($ds) { 
 	    echo "Binding ..."; 
-	    $r=ldap_bind($ds,"cn=fjones,cn=Recipients,ou=MIDD,o=MC","lk87df");
+	    $r=ldap_bind($ds,"cn=fjones,cn=midd","lk87df");
 	//    $r=ldap_bind($ds);
 	    echo "Bind result is ".$r."<br>";
 

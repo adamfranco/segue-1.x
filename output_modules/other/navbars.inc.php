@@ -4,12 +4,13 @@ if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <
 
 $i=0;
 if ($thisSite->sections) {
-	foreach ($thisSite->sections as $s=>$o) {
+	foreach ($thisSite->data[sections] as $s) {
+		$o = &$thisSite->sections[$s];
 		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 			if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=$action";
-			if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
+			if ($o->getField("type") == 'link') { $link = $o->getField("url"); $target="_self";}
 			$extra = '';
-			if ($action == 'viewsite' && (($section == $s) || ($o->getField("type") == 'url'))) {
+			if ($action == 'viewsite' && (($section == $s) || ($o->getField("type") == 'link'))) {
 				if ($thisSite->hasPermission("edit")) {
 					if ($i != 0) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=up&id=$s' class='".(($topsections)?"btnlink":"small")."' title='Move this section to the left'>".(($topsections)?"&larr;":"&uarr;")."</a>";
 					if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$s' class=".(($topsections)?"btnlink":"small")." title='Move this section to the right'>".(($topsections)?"&rarr;":"&darr;")."</a>";
@@ -30,7 +31,8 @@ if ($thisSection) {
 	$thisSection->fetchDown();	//just in case...
 	$i = 0;
 	if ($thisSection->pages) {
-		foreach ($thisSection->pages as $p=>$o) {
+		foreach ($thisSection->data[pages] as $p) {
+			$o = &$thisSection->pages[$p];
 			$extra = '';
 			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 				if ($action == 'viewsite' && ($p == $page || $o->getField("type") != 'page')) {
@@ -49,7 +51,7 @@ if ($thisSection) {
 					add_link(leftnav,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=$action",$extra,$p);
 					add_link(leftnav2,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=$action",$extra,$p);
 				}
-				if ($o->getField("type") == 'url') {
+				if ($o->getField("type") == 'link') {
 					add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
 					add_link(leftnav2,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
 				}

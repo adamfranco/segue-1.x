@@ -4,7 +4,7 @@
 /* $p = new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[delete_page]); */
 /* $p->fetchFromDB(); */
 
-if (/* in_array($delete_page,$pages) &&  */permission($_SESSION[auser],SECTION,DELETE,$_REQUEST[section])) {
+if ($thisSection->hasPermission("delete",$_SESSION[auser])) {
 	$thisSection->delPage($_REQUEST[delete_page]);
 	$thisSection->updateDB();
 /* 	$stories = decode_array(db_get_value("pages","stories","id=$delete_page")); // get stories to delete */
@@ -26,7 +26,7 @@ if (/* in_array($delete_page,$pages) &&  */permission($_SESSION[auser],SECTION,D
 /* 			deleteuserfile($s,urldecode(db_get_value("stories","longertext","id=$s"))); */
 /* 		db_query("delete from stories where id=$s"); */
 /* 	} */
-	log_entry("delete_page","$_SESSION[auser] deleted page id $_REQUEST[delete_page]",$_REQUEST[site],$_REQUEST[section]);
-} else log_entry("delete_page","$_SESSION[auser] deleting page id $_REQUEST[delete_page] failed",$_REQUEST[site],$_REQUEST[section],$_REQUEST[delete_page]);
+	log_entry("delete_page","$_SESSION[auser] deleted page id $_REQUEST[delete_page]",$thisSection->owning_site,$_REQUEST[section],"section");
+} else log_entry("delete_page","$_SESSION[auser] deleting page id $_REQUEST[delete_page] failed",$thisSection->owning_site,$_REQUEST[delete_page],"page");
 
 header("Location: $PHP_SELF?$sid&site=$_REQUEST[site]&section=$_REQUEST[section]&action=viewsite");

@@ -36,7 +36,7 @@ if ($_SESSION[pageObj]->getField("type")=='page') {
 	
 	printc("Order the Content Blocks on this page by: ");
 	printc("<select name='storyorder'>");
-		printc("<option value=''".(($_SESSION[pageObj]->getField("storyorder")=='')?" selected":"").">Custom (Default)");
+		printc("<option value='custom'".(($_SESSION[pageObj]->getField("storyorder")=='')?" selected":"").">Custom (Default)");
 		printc("<option value='addeddesc'".(($_SESSION[pageObj]->getField("storyorder")=='addeddesc')?" selected":"").">Recent First");
 		printc("<option value='addedasc'".(($_SESSION[pageObj]->getField("storyorder")=='addedasc')?" selected":"").">Recent Last");
 		printc("<option value='editeddesc'".(($_SESSION[pageObj]->getField("storyorder")=='editeddesc')?" selected":"").">Recently Edited First");

@@ -6,7 +6,7 @@
 /* print permission($auser,PAGE,DELETE,$page) . " permission<BR>"; */
 /* print "$site_owner is the owner. should be ". db_get_value("sites","addedby","name='$site'") ."<BR>"; */
 
-if (/* in_array($delete_story,$stories) && permission($auser,PAGE,DELETE,$page) */1) {
+if ($thisPage->hasPermission("delete",$_SESSION[auser])) {
 	$thisPage->delStory($_REQUEST[delete_story]);
 	$thisPage->updateDB();
 /* 	$a = db_get_line("stories","id=$delete_story"); */
@@ -22,7 +22,7 @@ if (/* in_array($delete_story,$stories) && permission($auser,PAGE,DELETE,$page) 
 /* 	$stories = encode_array($newstories); */
 /* 	$query = "update pages set stories='$stories' where id=$page"; */
 /* 	db_query($query); */
-	log_entry("delete_story","$_SESSION[auser] deleted story id $_REQUEST[delete_story]",$_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story]);
-} else log_entry("delete_story","$_SESSION[auser] deleting story id $_REQUEST[delete_story] failed",$_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story]);
+	log_entry("delete_story","$_SESSION[auser] deleted story id $_REQUEST[delete_story]",$thisPage->owning_site,$_REQUEST[story],"story");
+} else log_entry("delete_story","$_SESSION[auser] deleting story id $_REQUEST[delete_story] failed",$thisPage->owning_site,$_REQUEST[story],"story");
 
 header("Location: $PHP_SELF?$sid&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]&action=viewsite");

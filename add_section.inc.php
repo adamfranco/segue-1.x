@@ -30,7 +30,7 @@ if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-	if ($_REQUEST[type]) $_SESSION[sectionObj]->setField("type",$_REQUEST[type]);
+		if ($_REQUEST[type]) $_SESSION[sectionObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1) $_SESSION[sectionObj]->setField("title",$_REQUEST[title]);
 	// handle de/activate dates
 	$_SESSION[sectionObj]->handleFormDates();
@@ -61,7 +61,7 @@ if (!is_array($_SESSION[settings]) || !is_object($_SESSION[sectionObj])) {
 		"comingFrom" => $_REQUEST[comingFrom]
 	);
 	
-	$_SESSION[sectionObj] = new section($thisSite->name);
+	$_SESSION[sectionObj] =& new section($thisSite->name,0,&$thisSite);
 	
 	if ($action == 'add_section') {
 		$_SESSION[settings][add]=1;
@@ -125,7 +125,7 @@ if ($_REQUEST[save]) {
 	// error checking
 	if ($_SESSION[sectionObj]->getField("type")=='section' && (!$_SESSION[sectionObj]->getField("title") || $_SESSION[sectionObj]->getField("title")==''))
 		error("You must enter a section title.");
-	if ($_SESSION[sectionObj]->getField("type")=='url' && (!$_SESSION[sectionObj]->getField("url") || $_SESSION[sectionObj]->getField("url")=='' || $_SESSION[sectionObj]->getField("url")=='http://'))
+	if ($_SESSION[sectionObj]->getField("type")=='link' && (!$_SESSION[sectionObj]->getField("url") || $_SESSION[sectionObj]->getField("url")=='' || $_SESSION[sectionObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 	
 	if (!$error) { // save it to the database			
@@ -134,11 +134,11 @@ if ($_REQUEST[save]) {
 		if ($_SESSION[settings][add]) {
 			$_SESSION[sectionObj]->setPermissions($thisSite->getPermissions());
 			$_SESSION[sectionObj]->insertDB();
-			log_entry("add_section","$_SESSION[auser] added section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id);
+			log_entry("add_section","$_SESSION[auser] added section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[sectionObj]->updateDB();
-			log_entry("edit_section","$_SESSION[auser] edited section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id);
+			log_entry("edit_section","$_SESSION[auser] edited section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
 		}
 		
 		// do the recursive update of active flag and such... .... ugh
@@ -182,7 +182,7 @@ if ($_REQUEST[save]) {
 /* 			 */
 /* 		} */
 		
-		header("Location: index.php?$sid&action=viewsite&site=".$_SESSION[sectionObj]->owning_site.(($_SESSION[sectionObj]->getField("type")=='section')?"&section=$newid":""));
+		header("Location: index.php?$sid&action=viewsite&site=".$_SESSION[sectionObj]->owning_site.(($_SESSION[sectionObj]->getField("type")=='section')?"&section=".$_SESSION[sectionObj]->id:""));
 		
 	} else {
 		$_SESSION[settings][step] = 1;
@@ -200,7 +200,7 @@ $leftlinks .= "Item";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
 
-if ($_SESSION[sectionObj]->getField("type") == "section" || $_SESSION[sectionObj]->getField("type") == "url") {
+if ($_SESSION[sectionObj]->getField("type") == "section" || $_SESSION[sectionObj]->getField("type") == "link") {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";

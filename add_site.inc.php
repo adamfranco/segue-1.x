@@ -14,6 +14,7 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	if ($_REQUEST[active] != "") $_SESSION[siteObj]->setField("active",$_REQUEST[active]);
 	if ($_REQUEST[viewpermissions] == "everyone") {
 		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","1");
+		$_SESSION[siteObj]->addEditor("institute");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
@@ -24,12 +25,26 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 		$_SESSION[settings][viewpermissions] = "";
 	}
 	if ($_REQUEST[viewpermissions] == "class") {
-		if (!$_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name"))) {
-			$_SESSION[siteObj]->addEditor($_SESSION[siteObj]->getField("name"));
+		if (isgroup($_SESSION[siteObj]->getField("name"))) {
+//			print "<br>".$_SESSION[siteObj]->getField("name")."is a classgroup";
+			$classes = group::getClassesFromName($_SESSION[siteObj]->getField("name"));
+//			print "<br>Classes contained:<pre>"; print_r($classes); print "</pre>";
+			foreach ($classes as $class) {
+				if (!$_SESSION[siteObj]->isEditor($class)) {
+					$_SESSION[siteObj]->addEditor($class);
+//					print "<br>Adding $class as editor";
+				}
+				$_SESSION[siteObj]->setUserPermissionDown("view",$class,"1");
+//				print "<br>Setting 1 view permission for $class";
+			}		
+		} else {
+			if (!$_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name"))) {
+				$_SESSION[siteObj]->addEditor($_SESSION[siteObj]->getField("name"));
+			}
+			$_SESSION[siteObj]->setUserPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1");
 		}
 		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","0");
 		$_SESSION[siteObj]->setUserPermissionDown("view","institute","0");
-		$_SESSION[siteObj]->setUserPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
@@ -64,7 +79,7 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		"template" => "template0",
 		"comingFrom" => $_REQUEST[comingFrom]
 	);
-	$_SESSION[siteObj] = new site($_REQUEST[sitename]);
+	$_SESSION[siteObj] =& new site($_REQUEST[sitename]);
 	
 	if (slot::exists($_REQUEST[sitename])) {
 		$slotObj = new slot ($_REQUEST[sitename]);
@@ -81,6 +96,12 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 	if ($_REQUEST[action] == 'edit_site') { 
 		$_SESSION[settings][add]=0;
 		$_SESSION[settings][edit]=1;		
+	}
+	
+	if ($_SESSION[settings][add]) {
+		$_SESSION[siteObj]->addEditor("everyone");	//We aren't storing the permissions from form 1.
+		$_SESSION[siteObj]->addEditor("institute");
+		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","1");
 	}
 	
 	if ($_SESSION[settings][edit]) {
@@ -146,16 +167,15 @@ if ($_REQUEST[save]) {
 		print "<BR><BR>".$_SESSION[settings][sitename]."<BR><BR>";
 		if ($_SESSION[settings][add]) {
 			$_SESSION[siteObj]->insertDB();
-			log_entry("add_site","$_SESSION[auser] added ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name);
+			log_entry("add_site","$_SESSION[auser] added ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name,$_SESSION[siteObj]->id,"site");
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[siteObj]->updateDB(1);
-			log_entry("edit_site","$_SESSION[auser] edited ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name);
+			log_entry("edit_site","$_SESSION[auser] edited ".$_SESSION[siteObj]->name,$_SESSION[siteObj]->name,$_SESSION[siteObj]->id,"site");
 		}
 		
 		/* ----------------------------------------------------- */
 		/*   will have to update this to use object-related site copy functions */
-		
 		// --- Copy the Template on add ---
 		if ($_SESSION[settings][add] && $_SESSION[settings][template] != "") {
 /* 			copySite($_SESSION[settings][template],$_SESSION[siteObj]->getField("name")); */

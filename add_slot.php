@@ -99,7 +99,7 @@ input,select {
 
 </style>
 </head>
-<body>
+<body onload="document.addform.name.focus()">
 <? printerr2(); ?>
 
 <form action="<? echo $PHP_SELF ?>" method=post name='addform'>
@@ -120,7 +120,7 @@ input,select {
 <br><input type=radio name="stype" value="personal"<? print (($stype == 'personal')?" checked":""); ?>> Personal
 <br><input type=radio name="stype" value="other"<? print (($stype == 'other')?" checked":""); ?>> Other
 <br><input type=radio name="stype" value="system"<? print (($stype == 'system')?" checked":""); ?>> System
-<br><input type=radio name="stype" value="publication"<? print (($stype == 'publication')?" checked":""); ?>> Publication
+<!--<br><input type=radio name="stype" value="publication"<? print (($stype == 'publication')?" checked":""); ?>> Publication-->
 </td>
 </tr>
 <tr>
@@ -143,18 +143,20 @@ input,select {
 <th>owner</th>
 <th>type</th>
 <th>assocSite</th>
+<th>in use?</th>
 </tr>
 
 <?
 $allSlots = slot::getAllSlotsInfo();
 foreach ($allSlots as $slot) {
 	print "<tr>";
-	print "<td><a href=''><a href='$PHP_SELF?$SID&delete=$slot[id]'>delete</a></td>";
+	print "<td>".(($slot[FK_site])?"":"<a href='$PHP_SELF?$SID&delete=$slot[id]'>")."delete".(($slot[FK_site])?"":"</a>")."</td>";
 	print "<td>$slot[id]</td>";
 	print "<td>$slot[name]</td>";
 	print "<td>$slot[owner]</td>";
 	print "<td>$slot[type]</td>";
 	print "<td>$slot[assocsite]</td>";
+	print "<td align=center>".(($slot[FK_site])?"<b>YES</b>":"NO")."</td>";
 	print "</tr>";
 }
 ?>

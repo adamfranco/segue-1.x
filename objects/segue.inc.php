@@ -4,8 +4,10 @@
  ******************************************************************************/
 
 class segue {
-	var $permissions = array("everyone"=>array(3=>1),"institute"=>array(3=>1));
-	var $editors = array("everyone","institute");
+//	var $permissions = array("everyone"=>array(3=>1),"institute"=>array(3=>1));
+	var $permissions = array();
+//	var $editors = array("everyone","institute");
+	var $editors = array();
 	var $editorsToDelete = array();
 	var $editorsToDeleteInScope = array();
 	var $changedpermissions = 0;
@@ -28,12 +30,21 @@ class segue {
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 	var $_tables = array("site"=>"sites","section"=>"sections","page"=>"pages","story"=>"stories"); // used for getField
 
+	var $_encode = array("title","header","footer","shorttext","longertext","discussions","url");
+	var $_parse = array("header","footer","shorttext","longertext");
+
 /******************************************************************************
  * siteExists - checks if the site/slot already exists with a certain name $name
  ******************************************************************************/
 	
 	function siteExists($site) {
-		$query = "select * from sites where name='$site'";
+		$query = "
+SELECT site_id
+	FROM slot INNER JOIN site
+		ON FK_site = site_id AND slot_name='$site'
+";
+
+//		echo $query."<br>";
 		if (db_num_rows(db_query($query))) return 1;
 		return 0;
 	}
@@ -54,7 +65,7 @@ class segue {
 		if (!is_array($sites)) return array();
 		$a = array();
 		foreach ($sites as $s) {
-			$a[$s] = new site($s);
+			$a[$s] =& new site($s);
 			$a[$s]->fetchFromDB();
 		}
 		return $a;
@@ -66,13 +77,27 @@ class segue {
 
 	function getAllSites($user) {
 		$sites = array();
-		if (db_num_rows($r = db_query("select * from sites where addedby='$user'"))) {
+		$query = "
+SELECT
+	slot_name
+FROM
+	slot
+		INNER JOIN 
+	site
+		ON FK_site = site_id
+		INNER JOIN 
+	user
+		ON FK_createdby = user_id
+			AND
+		user_uname = '$user'
+";
+
+		if (db_num_rows($r = db_query($query)))
 			while ($a = db_fetch_assoc($r)) {
-				$sites[] = $a[name];
-			}
-		}
+					$sites[] = $a[slot_name];
+				}
 		return $sites;
-	}
+}
 
 /******************************************************************************
  * getAllSitesWhereUserIsEditor - gets all sites where $user is an editor
@@ -80,14 +105,63 @@ class segue {
 
 	function getAllSitesWhereUserIsEditor($user='') {
 		if ($user == '') $user = $_SESSION[auser];
-		$query = "select * from permissions where user='$user'";
+
+		// first, get all sites for which the user is an editor
+		$query = "
+			SELECT
+				slot_name
+			FROM
+				slot
+					INNER JOIN
+				site
+					ON slot.FK_site = site_id
+					INNER JOIN 
+				site_editors ON (
+					site_id = site_editors.FK_site 
+						AND 
+					site_editors_type = 'user'
+				)
+					INNER JOIN
+				user ON FK_editor = user_id AND user_uname='$user'
+			WHERE
+				slot.FK_owner != user_id
+		";
 		$r = db_query($query);
 		$ar = array();
-		if (db_num_rows($r)) {
+		if (db_num_rows($r))
 			while ($a = db_fetch_assoc($r)) {
-				$ar[] = $a[site];
+				$ar[] = $a[slot_name];
 			}
-		}
+
+		// now, if a user is a member of any groups, get all sites for which those groups are editors
+		$query = "
+			SELECT
+				slot_name
+			FROM
+				slot
+					INNER JOIN
+				site
+					ON slot.FK_site = site_id
+					INNER JOIN 
+				site_editors ON (
+					site_id = site_editors.FK_site 
+						AND 
+					site_editors_type = 'ugroup'
+				)
+					INNER JOIN
+				ugroup ON FK_editor = ugroup_id
+					INNER JOIN
+				ugroup_user ON ugroup_id = FK_ugroup
+					INNER JOIN
+				user ON FK_user = user_id AND user_uname='$user'";
+		$r = db_query($query);
+		if (db_num_rows($r))
+			while ($a = db_fetch_assoc($r)) {
+				$ar[] = $a[slot_name];
+			}
+			
+		// the two queries will return unique values, but their union could have non-unique entries.
+		// therefore, uniquize it.
 		return array_unique($ar);
 	}
 
@@ -136,36 +210,122 @@ class segue {
 	}
 
 /******************************************************************************
- * getField - will fetch a field either from the DB or from array we have it
+ * getField - Will return the value of a field in the data array.
+ *			$field should be the name of the field in the object, not the database
+ *			
+ *			If the value of the field has not yet been fetched from the database,
+ *			it is fetched from the database, otherwise it is simply returned from 
+ *			the data array.
+ *			
+ * 			Each class that extends segue has the following properties:
+ *			
+ *			An associative array called _datafields that associates the object 
+ *			field name to a database join syntax and a database field name or pair of names.
+ *			
+ *			An array called _encode that holds the names of fields that need to
+ *			have slashes added and urlencoding to save them into the database
  ******************************************************************************/
-
-	function getField($field) {
+	function getField ($field) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
-/* 		print "getting $field | tobefetched: ".$this->tobefetched."<br>"; */
-		if ($this->tobefetched && !ereg("^l-",$field)) {	// we're supposed to fetch this field
-			$_unencode = array("title","header","footer","shorttext","longertext");
-			$_parse = array("header","footer","shorttext","logertext");
-			$_ardecode = array("sections","pages","stories","discussions");
-			if (!$this->fetched[$field]) {
-				$class = get_class($this);
-				$table = $this->_tables[$class]; // the table to use
-				if ($class=='site') $where = "name='".$this->name."'";
-				else $where = "id=".$this->id;
-				$query = "select $field from $table where $where limit 1";
-				db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-				$r = db_query($query);
-				if (!db_num_rows($r)) return false;
-				$a = db_fetch_assoc($r);
-				$val = $a[$field];
-				if (in_array($field,$_unencode)) $val = stripslashes(urldecode($val));
-				if (in_array($field,$_ardecode)) $val = decode_array($val);
-				$this->data[$field] = $val;
-				$this->fetched[$field] = 1;
-				if (in_array($field,$_parse)) $this->parseMediaTextForEdit($field);
-			}
-		} // done fetching
+		if (ereg("^l%",$field)) 
+			return $this->data[$field];
+		if ($this->tobefetched && !$this->fetched[$field] && $this->id) {	// we haven't allready gotten this data
+													// and this object is in the database.
+// 			print "<pre>".get_class($this)."  --$field---\n"; 
+// 			print_r ($this->_datafields[$field][1]); 
+//			print_r($this);
+// 			print "</pre>"; 
+//			echo "<br>HERE: ".$field."<br>";
+
+			$query = "
+				SELECT 
+					".implode(",",$this->_datafields[$field][1])."
+				FROM
+					".$this->_datafields[$field][0]."
+				WHERE
+					".$this->_table."_id=".$this->id."
+				ORDER BY
+					".$this->_datafields[$field][2]."
+			";
+/* 			print $query; */
 			
+			if ($debug) 
+				print "-----------beginning---------$field<br><pre>".$query; 
+	
+			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+			$r = db_query($query);
+			
+			if ($debug) {
+				print mysql_error()."<br>Numrows = ".db_num_rows($r);
+				print "\n\nresult arrays:\n";
+			}
+			
+			if (!db_num_rows($r)) {	// if we get no results
+				if (in_array($field,$this->_object_arrays)) {
+					// return an empty array
+					$this->data[$field] = array();
+				} else {
+					return false;
+				}
+			}
+			
+			$valarray = array();
+			while($a = db_fetch_assoc($r)) {
+			//	print_r($a);
+				
+				if (count($this->_datafields[$field][1]) == 1) { 
+					// We just want a single value
+					$val = $a[$this->_datafields[$field][1][0]];
+					$key = 0;
+				} else {
+					// we want a pair of values
+					$val = $a[$this->_datafields[$field][1][0]];
+					$key = $a[$this->_datafields[$field][1][1]];
+				}
+
+				// Decode this value if it is a member of _encode
+				if (in_array($field,$this->_encode)) 
+					$val = stripslashes(urldecode($val));
+
+// UPDATE parseMediaTextForEdit *********************************************************************
+// UPDATE parseMediaTextForEdit *********************************************************************
+// UPDATE parseMediaTextForEdit *********************************************************************
+//				if (in_array($field,$this->_parse)) 
+//					$val = $this->parseMediaTextForEdit($val);
+
+				if (count($this->_datafields[$field][1]) == 1) { 
+					$valarray[] = $val;
+				} else {
+					$valarray[$key] = $val;
+				}
+/* 				print "<br>key = $key \nval = $val \nvalarray =\n"; */
+//				print_r($valarray);
+			}
+			
+			// only object_arrays should really be returning arrays to the data array.
+			if (count($valarray) == 1 && !in_array($field,$this->_object_arrays))
+				$this->data[$field] = $valarray[0];
+			else
+				$this->data[$field] = $valarray;
+			$this->fetched[$field] = 1;
+			
+			if ($debug) {
+				print "Valarray: ";
+				print_r($valarray);
+				print "\nInArray: \n$field"; 
+				print_r($_object_arrays);
+				print "<br>Is object?: ".((in_array($field,$this->_object_arrays))?"TRUE":"FALSE");
+				print "</pre>----------end------------$field<br>";
+			}
+		}
+
 		return $this->data[$field];
+	}
+	
+	function fetchAllFields() {
+		foreach ($this->_datafields as $key => $val) {
+			$this->getField($key);
+		}
 	}
 	
 	function setField($name,$value) {
@@ -221,29 +381,26 @@ class segue {
 		$parentClass = get_class($newParent);
 /* 		print $this->id."$thisClass - $parentClass<br>"; */
 		if (!($_a[$parentClass]-1 == $_a[$thisClass])) return 0;
-/* 		print " Before ".$this->fetcheddown."<br>"; */
-
-/* 		print "<pre>this: "; print_r($this); print " newparent: "; print "</pre>";		 */
 		$this->fetchDown(1);
-/* 		print " After <br>"; */
-/* 		print "title: ".$this->data[title]."<br>";		 */
-/* 		print "title: ".$this->getField("title")."<br>"; */
-/* 		print "<pre>this: "; print_r($this); print " newparent: "; print_r($newParent); print "</pre>"; */
-/* 		return 0; */
+
+/* 		print "<br><br>Copying $thisClass ".$this->getField("title")." <br>"; */
 
 		if ($thisClass == 'section') {
 			$owning_site = $newParent->name;
+			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 			$this->insertDB(1,$owning_site,$removeOrigional,$keepaddedby);
 		}
 		if ($thisClass == 'page') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->id;
+			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 			$this->insertDB(1,$owning_site,$owning_section,$removeOrigional,$keepaddedby);
 		}
 		if ($thisClass == 'story') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->owning_section;
 			$owning_page = $newParent->id;
+			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 /* 			print "insertDB: 1,$owning_site,$owning_section,$owning_page,$keepaddedby<br>"; */
 			$this->insertDB(1,$owning_site,$owning_section,$owning_page,$removeOrigional,$keepaddedby);
 		}
@@ -307,14 +464,14 @@ class segue {
 		if ($_REQUEST[setformdates]) {
 			if (/* !$_REQUEST[link] &&  */$_REQUEST[activatedate]) { 
 				$_SESSION[settings][activatedate] = 1;
-				$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
+				$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth],$_REQUEST[activateday]);
 			} else {
 				$_SESSION[settings][activatedate] = 0;
 				$this->setActivateDate(-1);
 			}
 			if (/* !$_REQUEST[link] &&  */$_REQUEST[deactivatedate]) {
 				$_SESSION[settings][deactivatedate] = 1;
-				$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
+				$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth],$_REQUEST[deactivateday]);
 			} else {
 				$_SESSION[settings][deactivatedate] = 0;
 				$this->setDeactivateDate(-1);
@@ -327,18 +484,20 @@ class segue {
  ******************************************************************************/
 
 	function outputDateForm() {
-		global $months;
+		global $months, $months_values;
+	//	print_r($_SESSION[settings][activatedate]);
 		printc("<input type=hidden name='setformdates' value=1>");
 		printc("<table>");
 		printc("<tr><td align=right>");
 		printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>");
 		for ($i=1;$i<=31;$i++) {
-			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
+			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">".$i."\n");
 		}
-		printc("</select>\n");
+		
+		printc("</select>");
 		printc("<select name='activatemonth'>");
 		for ($i=0; $i<12; $i++) {
-			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+			printc("<option value='$months_values[$i]'" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">".$months[$i]."\n");
 		}
 		printc("</select>\n<select name='activateyear'>");
 		$curryear = date("Y");
@@ -352,12 +511,12 @@ class segue {
 		printc("<tr><td align=right>");
 		printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>");
 		for ($i=1;$i<=31;$i++) {
-			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
+			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">".$i."\n");
 		}
 		printc("</select>\n");
 		printc("<select name='deactivatemonth'>");
 		for ($i=0; $i<12; $i++) {
-			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+			printc("<option value='$months_values[$i]'" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
 		}
 		printc("</select>\n<select name='deactivateyear'>");
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
@@ -385,6 +544,7 @@ class segue {
 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
 		$_SESSION[settings][activatemonth]-=1;
 		$_SESSION[settings][deactivatemonth]-=1;
+/* 		echo $this->getField("activatedate")."<br>"; */
 		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
 		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
 	}
@@ -442,10 +602,23 @@ class segue {
 		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->getField($field));
 		$textarray1 = explode("####", $this->getField($field));
 		if (count($textarray1) > 1) {
-			for ($i=1; $i<count($textarray1); $i+=2) {
+			for ($i=1; $i < count($textarray1); $i+=2) {
 				$id = $textarray1[$i];
-				$filename = db_get_value("media","name","id=$id");
-				$dir = db_get_value("media","site_id","id=$id");
+				$filename = db_get_value("media","media_tag","media_id=$id");
+				$query = "
+SELECT 
+	slot_name 
+FROM
+	media 
+		INNER JOIN 
+	site ON media.FK_site = site_id
+		INNER JOIN
+	slot ON site_id = slot.FK_site
+WHERE
+	media_id = $id
+";
+				$a = db_fetch_assoc(db_query($query));
+				$dir = $a[slot_name];
 				$filepath = $uploadurl."/".$dir."/".$filename;
 				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
 			}		
@@ -500,30 +673,35 @@ class segue {
  ******************************************************************************/
 
 	function isEditor($user='') {
-		if (!$this->builtPermissions) $this->buildPermissionsArray();
+		if (!$this->builtPermissions && $this->id) $this->buildPermissionsArray();
 		if ($user=='') $user=$_SESSION[auser];
 		$this->fetchUp();
 		$owner = $this->owningSiteObj->getField("addedby");
 /* 		print "owner: $owner"; */
 		if (strtolower($user) == strtolower($owner)) return 1;
 		$toCheck = array(strtolower($user));
-		$toCheck = array_merge($toCheck,$this->returnEditorOverlap(getuserclasses($user)));
+		$toCheck = array_merge($toCheck,$this->returnEditorOverlap(getuserclasses($user,"all")));
+//		print_r($toCheck);
+//		print_r($this->editors);
 		foreach ($this->editors as $e) {
-			if (in_array(strtolower($e),$toCheck)) return 1;
+			if (in_array($e,$toCheck)) return 1;
 		}
 		return 0;
 	}
 
 	function addEditor($e) { 
-		if ($e == 'institute' || $e == 'everyone') return false;
+		/* print "<br>Adding editor $e<br>"; */
+//		if ($e == 'institute' || $e == 'everyone') return false;	// With the new permissions structure, this may be unwanted.
 		if ($_SESSION[auser] == $e) { error("You do not need to add yourself as an editor."); return false; }
 		if (!in_array($e,$this->editors)) {
 			$this->editors[]=$e;
 			$this->setUserPermissions($e);
+			$this->changedpermissions = 1;
 		}
 	}
 
 	function delEditor($e) {
+		$class=get_class($this);
 		if ($e == 'institute' || $e == 'everyone') return false;
 		if (in_array($e,$this->editors)) {
 			$n = array();
@@ -531,14 +709,23 @@ class segue {
 				if ($v != $e) $n[]=$v;
 			}
 			$this->editors = $n;
-			unset($this->permissions[$e]);
+			$this->setFieldDown("l%$e%add",0);
+			$this->setFieldDown("l%$e%edit",0);
+			$this->setFieldDown("l%$e%delete",0);
+			$this->setFieldDown("l%$e%view",0);
+			$this->setFieldDown("l%$e%discuss",0);
+			$this->setUserPermissionDown("ADD",$e,0);
+			$this->setUserPermissionDown("VIEW",$e,0);
+			$this->setUserPermissionDown("EDIT",$e,0);
+			$this->setUserPermissionDown("DELETE",$e,0);
+			$this->setUserPermissionDown("DISCUSS",$e,0);
 			$this->editorsToDelete[] = $e;
-			$this->changedpermissions = 1;
 		}
 	}
 	
 	function getEditors() {
-		$this->buildPermissionsArray(0,0);
+		if (!$this->builtPermissions && $this->id)
+			$this->buildPermissionsArray(0,0);
 		return $this->editors;
 	}
 	
@@ -565,9 +752,8 @@ class segue {
 /* 		} */
 /* 	} */
 	
-	function clearPermissions() {
+	function clearPermissions($editor = '') {
 /* 		print "Editors: <pre>"; print_r($this->getEditors()); print "</pre>"; */
-		$this->editorsToDeleteInScope = array_unique(array_merge(array_keys($this->permissions),$this->getEditors()));
 /* 		print "To Delete: <pre>"; print_r($this->editorsToDeleteInScope); print "</pre>"; */
 		$this->editors = array();
 		$this->permissions = array();
@@ -588,8 +774,14 @@ class segue {
 		$ar = $this->_object_arrays[$class];
 		$p = strtoupper($perm);
 		$c = permissions::$p();
-		$this->permissions[$user][$c] = $val;
+		if ($this->permissions[$user][$c] != $val) {
+			$this->permissions[$user][$c] = $val;
+			$this->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
+														// hasPermission doesn't get a fscked up
+			$this->changedpermissions=1;
+		}
 		
+
 /* 		if ($class == "site") $n = 0; */
 /* 		else if ($class == "section")$n =4; */
 /* 		else if ($class == "page")$n = 8; */
@@ -604,11 +796,14 @@ class segue {
 /* 		print $this->permissions[$user][$c]; */
 /* 		print "<pre>"; print_r($this->permissions[$user]); print "</pre>"; */
 		
-		$this->changedpermissions=1;
 		if ($ar) {
 			$a = &$this->$ar;
 			if ($a) {
-				foreach ($a as $i=>$o) $a[$i]->setUserPermissionDown($perm,$user,$val);
+				foreach (array_keys($a) as $k=>$i) {
+					$a[$i]->setUserPermissionDown($perm,$user,$val);
+					$a[$i]->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
+																	// hasPermission doesn't get a fscked up
+				}
 			}
 		}
 	}
@@ -646,33 +841,260 @@ class segue {
 		$scope = get_class($this);
 		$site = $this->owning_site;
 		$id = $this->id;
-		$query = "select * from permissions where site='$site' and scope='$scope' and scopeid='$id'";
+
+		// the SQL queries for obtaining the permissions vary with the scope type. Thus, we have 4 cases, 1 for each scope type.
+		
+		// editors can be either institute, everyone, a username or a ugroup name
+		// we need two queries for any one scope
+		
+		
+		// CASE 1: scope is SITE
+		if ($scope == 'site') {
+		$query = "
+SELECT
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	site
+		INNER JOIN
+	site_editors ON
+		site_id = ".$this->id."
+			AND
+		site_id = FK_site
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
+		LEFT JOIN
+	permission ON
+		site_id  = FK_scope_id
+			AND
+		permission_scope_type = 'site'
+			AND
+		permission.FK_editor <=> site_editors.FK_editor
+			AND
+		permission_editor_type = site_editors_type
+";
+		}
+
+		// CASE 2: scope is SECTION
+		else if ($scope == 'section') {
+		$query = "
+SELECT
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	site
+		INNER JOIN
+	section
+		ON site_id = section.FK_site
+			AND
+		section_id = ".$this->id."
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
+		LEFT JOIN
+	permission as p1 ON
+		site_id  = p1.FK_scope_id
+			AND
+		p1.permission_scope_type = 'site'
+			AND
+		p1.FK_editor <=> site_editors.FK_editor
+			AND
+		p1.permission_editor_type = site_editors_type
+		LEFT JOIN 
+	permission as p2 ON
+		section_id  = p2.FK_scope_id
+			AND
+		p2.permission_scope_type = 'section'
+			AND
+		p2.FK_editor <=> site_editors.FK_editor
+			AND
+		p2.permission_editor_type = site_editors_type
+";
+		}
+
+		// CASE 3: scope is PAGE
+		else if ($scope == 'page') {
+		$query = "
+SELECT
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	site
+		INNER JOIN
+	section
+		ON site_id = section.FK_site
+		INNER JOIN
+	page
+		ON section_id = page.FK_section
+			AND
+		page_id = ".$this->id."
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
+		LEFT JOIN
+	permission as p1 ON
+		site_id  = p1.FK_scope_id
+			AND
+		p1.permission_scope_type = 'site'
+			AND
+		p1.FK_editor <=> site_editors.FK_editor
+			AND
+		p1.permission_editor_type = site_editors_type
+		LEFT JOIN 
+	permission as p2 ON
+		section_id  = p2.FK_scope_id
+			AND
+		p2.permission_scope_type = 'section'
+			AND
+		p2.FK_editor <=> site_editors.FK_editor
+			AND
+		p2.permission_editor_type = site_editors_type
+		LEFT JOIN
+	permission as p3 ON
+		page_id  = p3.FK_scope_id
+			AND
+		p3.permission_scope_type = 'page'
+			AND
+		p3.FK_editor <=> site_editors.FK_editor
+			AND
+		p3.permission_editor_type = site_editors_type
+";
+		}
+
+		// CASE 4: scope is PAGE
+		else if ($scope == 'story') {
+		$query = "
+SELECT
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
+	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0) | IFNULL(p4.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+FROM
+	site
+		INNER JOIN
+	section
+		ON site_id = section.FK_site
+		INNER JOIN
+	page
+		ON section_id = page.FK_section
+		INNER JOIN
+	story
+		ON page_id = story.FK_page
+			AND
+		story_id = ".$this->id."
+		INNER JOIN
+	site_editors ON
+		site_id = site_editors.FK_site
+		LEFT JOIN
+	user ON
+		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
+		LEFT JOIN
+	permission as p1 ON
+		site_id  = p1.FK_scope_id
+			AND
+		p1.permission_scope_type = 'site'
+			AND
+		p1.FK_editor <=> site_editors.FK_editor
+			AND
+		p1.permission_editor_type = site_editors_type
+		LEFT JOIN 
+	permission as p2 ON
+		section_id  = p2.FK_scope_id
+			AND
+		p2.permission_scope_type = 'section'
+			AND
+		p2.FK_editor <=> site_editors.FK_editor
+			AND
+		p2.permission_editor_type = site_editors_type
+		LEFT JOIN
+	permission as p3 ON
+		page_id  = p3.FK_scope_id
+			AND
+		p3.permission_scope_type = 'page'
+			AND
+		p3.FK_editor <=> site_editors.FK_editor
+			AND
+		p3.permission_editor_type = site_editors_type
+		LEFT JOIN
+	permission as p4 ON
+		story_id = p4.FK_scope_id
+			AND
+		p4.permission_scope_type = 'story'
+			AND
+		p4.FK_editor <=> site_editors.FK_editor
+			AND
+		p4.permission_editor_type = site_editors_type
+";
+		}
+
+		// execute the query
+//		echo $query;
 		$r = db_query($query);
-		while ($a=db_fetch_assoc($r)) {
-			$this->permissions[strtolower($a[user])] = array( permissions::ADD()=>$a[a], 
+		//echo "Query result: ".$r."<br>";
+		
+		
+		// reset the editor array		
+		if ($r) {
+			$this->editors = array();
+			$this->permissions = array();
+		}
+		
+		// for every permisson entry, add it to the permissions array
+		while ($row=db_fetch_assoc($r)) {
+			// decode 'final_permissions'; 
+			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
+			$a = array();
+			$a[a] = (strpos($row[permissions],'a') !== false) ? 1 : 0; // look for 'a' in 'final_permissions'
+			$a[e] = (strpos($row[permissions],'e') !== false) ? 1 : 0; // !== is very important here, because a position 0 is interpreted by != as FALSE
+			$a[d] = (strpos($row[permissions],'d') !== false) ? 1 : 0;
+			$a[v] = (strpos($row[permissions],'v') !== false) ? 1 : 0;
+			$a[di] = (strpos($row[permissions],'di') !== false) ? 1 : 0;
+			
+			// if the editor is a user then the editor's name is just the user name
+			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
+			if ($row[editor_type]=='user')
+				$t_editor = $row[editor];
+			else if ($row[editor_type]=='ugroup')
+				$t_editor = $row[editor2];
+			else
+				$t_editor = $row[editor_type];
+			
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+
+			// set the permissions for this editor
+//			$this->permissions[strtolower($t_editor)] = array(
+			$this->permissions[$t_editor] = array(
+				permissions::ADD()=>$a[a], 
 				permissions::EDIT()=>$a[e], 
 				permissions::DELETE()=>$a[d], 
 				permissions::VIEW()=>$a[v], 
-				permissions::DISCUSS()=>$a[di]);
+				permissions::DISCUSS()=>$a[di]
+			);
+			
+			// now add the editor to the editor array
+//			$this->editors[]=strtolower($t_editor);
+			$this->editors[]=$t_editor;
 		}
-		// build editors array
-		$query = "select * from permissions where site='$site'";
-		$r = db_query($query);
-		$this->editors = array();
-		while ($a=db_fetch_assoc($r)) {
-			$this->editors[]=$a[user];
-		}
-		if (!in_array("everyone",$this->editors)) {
-			$this->editors[] = "everyone";
-			$this->setUserPermissions("everyone",0,0,0,1,0);
-			$this->changedpermissions = 1;
-		}
-		if (!in_array("institute",$this->editors)) {
-			$this->editors[] = "institute";
-			$this->setUserPermissions("institute",0,0,0,1,0);
-			$this->changedpermissions = 1;
-		}
-		$this->editors = array_unique($this->editors);
+		
+//		print_r($this->permissions);
+
 		$this->builtPermissions=1;
 		
 		if ($down) {
@@ -686,6 +1108,7 @@ class segue {
 				}
 			}
 		}
+		
 	}
 	
 /******************************************************************************
@@ -697,10 +1120,11 @@ class segue {
 	function spiderDownLockedFlag() {
 		$editors = $this->getEditors();
 		$p = $this->getPermissions();
-		
+//		print_r($editors);print "<br>";print_r($p);
 		$_a = array("add","edit","delete","view");
 		
 		foreach ($editors as $e) {
+//			print "doing flags for $e<br>";
 			for ($i=0;$i<4;$i++) {
 				$this->checkLockedFlag($e,$_a[$i]);
 			}
@@ -708,14 +1132,15 @@ class segue {
 	}
 	
 	function checkLockedFlag($e,$perm) {
-		$this->buildPermissionsArray();		// just in case
+//		if (!$this->builtPermissions && $this->id)	//might be needed. unknown.
+			$this->buildPermissionsArray();		// just in case
 		$p = $this->getPermissions();
 		$_t = strtoupper($perm);
 		$pid = permissions::$_t();
-		$e = strtolower($e);
+		$e = $e;
 		if ($p[$e][$pid]) { // set locked flag
-			$this->setFieldDown("l-$e-$perm",1);
-			$this->setField("l-$e-$perm",0);
+			$this->setFieldDown("l%$e%$perm",1);
+			$this->setField("l%$e%$perm",0);
 		} else {
 			// keep going down the line
 			$ar = $this->_object_arrays[get_class($this)];
@@ -739,43 +1164,221 @@ class segue {
 			$id = $this->id;
 			$site = $this->owning_site;
 
-			// build a quickie array
-			$a = array();
-			$a[] = "site='$site'";
-			$a[] = "scope='$scope'";
-			$a[] = "scopeid=$id";
+			$n = array_unique(array_merge($this->editors,$this->editorsToDelete,array_keys($this->permissions)));
 			
-			$n = array_unique(array_merge($this->editors,array_keys($this->permissions)));
-			
-			foreach ($n as $user) {
-				$p = $this->permissions[$user];
-				$a2 = $a;
-				$a2[] = "user='$user'";
-				$a3 = array();
-				$a3[] = "a=".(($p[ADD])?"'1'":"'0'");
-				$a3[] = "e=".(($p[EDIT])?"'1'":"'0'");
-				$a3[] = "d=".(($p[DELETE])?"'1'":"'0'");
-				$a3[] = "v=".(($p[VIEW])?"'1'":"'0'");
-				$a3[] = "di=".(($p[DISCUSS])?"'1'":"'0'");
-				if (db_get_line("permissions",implode(" and ",$a2))) {
-					$query = "update permissions set ".implode(",",$a3)." where ".implode(" and ",$a2);
-				} else {
-					$query = "insert into permissions set ".implode(",",$a2).",".implode(",",$a3);
+//			print_r($n);
+
+			foreach ($n as $editor) {
+				$p2 = $this->permissions[$editor];
+				if (!is_array($p2)) {
+//					echo "p2: ************************** BE CAREFUL!!!! ********************************<BR>";
+					$p2 = array();
+					$p2[ADD] = 0;
+					$p2[EDIT] = 0;
+					$p2[DELETE] = 0;
+					$p2[VIEW] = 0;
+					$p2[DISCUSS] = 0;
 				}
-				db_query($query);
-/* 				print "$query<br>"; */
-/* 				print mysql_error()."<br><br>"; */
-			}
-			// delete the appropriate entries from the table
-			foreach ($this->editorsToDelete as $e) {
-				db_query("delete from permissions where user='$e' and site='$site'");
-			}
-			foreach ($this->editorsToDeleteInScope as $e) {
-/* 				print "<br>delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id"; */
-				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");
+//				print_r($p);
+
+				// now get the permissions for the parent object. We need to do this so that we can determine whether
+				// the child permissions have simply inherited the parent permissions, or they have added something new.
+				
+				// if a section object, get permissions for the site
+				if ($scope == "section")
+					$p1 = $this->owningSiteObj->permissions[$editor];
+				// if a page object, get permissions for the parent section
+				else if ($scope == "page")
+					$p1 = $this->owningSectionObj->permissions[$editor];
+				// if a story object, get permissions for the parent page
+				else if ($scope == "story")
+					$p1 = $this->owningPageObj->permissions[$editor];
+					
+				if (!is_array($p1) && $scope != 'site') {
+//					echo "p1: ************************** BE CAREFUL!!!! ********************************<BR>";
+					$p1 = array();
+					$p1[ADD] = 0;
+					$p1[EDIT] = 0;
+					$p1[DELETE] = 0;
+					$p1[VIEW] = 0;
+					$p1[DISCUSS] = 0;
+				}
+					
+					
+					// note that if a certain permission is set in $p1, it is impossible that the same permission is not set in $p2 (because $p2 inherits $p1's permissions)
+					// thus, there are 3 possibilities:
+					// 1) $p1 - SET,   $p2 - SET   
+					// 2) $p1 - UNSET, $p2 - SET
+					// 3) $p1 - UNSET, $p2 - UNSET
+
+				// now, put the inherited permissions in $p_inherit and the new permissions in $p_new
+				$p_inherit = array();
+				$p_new = array();
+				if ($scope != "site") {
+					foreach ($p1 as $key => $value)
+						// in case 1) and 3) $p2 inherits $p1's permission
+						if ($p1[$key] || (!$p1[$key] && !$p2[$key])) {
+							$p_inherit[$key] = 1;
+							$p_new[$key] = 0;
+						}
+						// in case 2), $p2 adds a new permission
+						else {
+							$p_inherit[$key] = 0;
+							$p_new[$key] = 1;
+						}
+				}
+				// if a site object
+				else {
+					$p_new = $p2; // everything is new
+					foreach ($p2 as $key => $value)
+						$p_inherit[$key] = 0; // nothing is inherited					
+				}
+
+				// convert $p_new to a "'a','v',..." format.
+				$p_new_str = "";
+				if ($p_new[ADD]) $p_new_str.="a,";
+				if ($p_new[EDIT]) $p_new_str.="e,";
+				if ($p_new[DELETE]) $p_new_str.="d,";
+				if ($p_new[VIEW]) $p_new_str.="v,";
+				if ($p_new[DISCUSS]) $p_new_str.="di,";
+				
+				if ($p_new_str) $p_new_str = substr($p_new_str, 0, strlen($p_new_str)-1); // strip last comma from the end of a string 
+
+				// find the id and type of this editor
+				if ($editor == 'everyone' || $editor == 'institute') {
+					$ed_type = $editor;
+					$ed_id = 'NULL';				
+				}
+				else if ($ugroup_id = ugroup::getGroupID($editor)) {
+					$ed_type = 'ugroup';
+					$ed_id = $ugroup_id;
+				}
+				else {
+					$ed_type = 'user';
+					// need to fetch the id from the user table
+					$query = "SELECT user_id FROM user WHERE user_uname = '$editor'";
+					$r = db_query($query);
+					if (!db_num_rows($r)) {
+						echo $query."<br>";
+						fatalerror("updatePermissionsDB() :: could not find an ID to associate with editor: '$editor'!!!");
+					}
+					
+					$arr = db_fetch_assoc($r);
+					$ed_id = $arr['user_id'];
+				}
+
+//				echo "<br><br><b>***** New permissions in $scope #$id with editor $editor: '".$p_new_str."'</b><br>";
+//				echo "EID: $ed_id; ETYPE: $ed_type <br>";
+				
+
+				// if this is a site object, see if the editor is in the site_editors table
+				if ($scope == "site") {
+					$query = "
+SELECT
+	FK_editor
+FROM
+	site_editors
+WHERE
+	FK_editor <=> $ed_id AND
+	site_editors_type = '$ed_type' AND
+	FK_site = $id
+";
+//					echo $query."<br>";
+					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
+					// if the editor is not in the site_editors then insert him
+					if (!db_num_rows($r_editor)) {
+						$query = "
+INSERT
+INTO site_editors
+	(FK_site, FK_editor, site_editors_type)
+VALUES
+	($id, $ed_id, '$ed_type')
+";					
+
+//					echo $query."<br>";
+						db_query($query);
+					}
+					
+				}
+
+
+				// now that we have all the information pertaining to this user, check if the permission entry is already present
+				// if yes, update it
+				// if not, insert it
+				
+				$query = "
+SELECT 
+	permission_id 
+FROM permission 
+WHERE 
+	permission_scope_type='$scope' AND 
+	FK_scope_id=$id AND 
+	FK_editor <=> $ed_id AND 
+	permission_editor_type = '$ed_type'
+";
+				
+
+//				echo $query."<br>";
+				$r_perm = db_query($query); // this query checks to see if the entry exists in the permission table
+				
+				// if permission entry exists
+				if (db_num_rows($r_perm)) {
+					$a = db_fetch_assoc($r_perm);
+					// if we are changing the permissions, update the db
+					if ($p_new_str) {
+						$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
+						echo $query."<br>";
+						db_query($query);
+					}
+					// if we are clearing the permissions, delete the entry from the db
+					else {
+						$query = "DELETE FROM permission WHERE permission_id = ".$a[permission_id];
+						db_query($query);
+					}
+				}
+				// if permission entry does not exist in the permission table
+				else if ($p_new_str) {
+					// need to insert permissions
+					$query = "
+INSERT
+INTO permission
+	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
+VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
+";
+//						echo $query."<br>";
+					db_query($query);
+				}
 			}
 		}
 	}
+	
+/******************************************************************************
+ * deletePendingEditors() - takes care of editors in editorsToDelete and
+ * 		editorsToDeleteInScope. 
+ * 	THIS FUNCTION MUST BE CALLED AFTER updatePermissionsDB()!!!
+ ******************************************************************************/
+
+	function deletePendingEditors() {
+			// if user wants to delete editors, remove their permissions from site_editors
+			foreach ($this->editorsToDelete as $e) {
+					$query = "SELECT user_id FROM user WHERE user_uname = '$e'";
+					$r = db_query($query);
+					$arr = db_fetch_assoc($r);
+					$ed_id = $arr['user_id'];
+					if ($ed_id) {
+						$query = "DELETE FROM site_editors WHERE FK_editor = $ed_id AND site_editors_type = 'user' AND FK_site = ".$this->id;
+						$r = db_query($query);
+					}
+			}
+			$this->editorsToDelete = array();
+			
+			/*
+			foreach ($this->editorsToDeleteInScope as $e) {
+				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");
+			}
+			*/
+	}
+
 
 /******************************************************************************
  * canview - checks if part is active & within date range. if so, forwards
@@ -785,16 +1388,16 @@ class segue {
 	function canview($user="") {
 		if ($user == "") $user = $_SESSION[auser];
 		if ($user == 'anyuser') $noperms=1;
-		$_ignore_types = array("page"=>array("heading","divider"));
+//		$_ignore_types = array("page"=>array("heading","divider"));
 		$scope = get_class($this);
-		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
+//		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
+//		print "<br>$scope - ".$this->getField("type");
 		$this->fetchUp();
 		if ($this->owningSiteObj->getField("addedby") == $user) return 1;
-		if ($scope != 'story') {
+		if ($scope != 'story' && $this->getField("type") != 'heading') {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
-/* 		print "$user<br>"; */
 		if (!$noperms) return $this->hasPermissionDown("view",$user,0,1);
 		return 1;
 	}
@@ -807,21 +1410,30 @@ class segue {
 
 	function hasPermission($perms,$ruser='',$useronly=0) {
 		global $allclasses, $_loggedin, $cfg;
-				
-		if (!$this->builtPermissions) $this->buildPermissionsArray();
+		
+			
+		if (!$this->builtPermissions && $this->id) 
+			$this->buildPermissionsArray();
+
 		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
+		
+		if (!is_array($allclasses)) $allclasses = getuserclasses($user,"all");
 		
 		/* Debuging stuff */
 /* 		$class = get_class($this); */
 /* 		print "checking $perms for $user on  $class ".$this->id."<br>"; */
 		
-		if (isset($this->cachedPermissions[$user.$perms]) && count($this->chachedPermissions)) return $this->cachedPermissions[$user.$perms];
+		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) 
+			return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
 		$owner = $this->owningSiteObj->getField('addedby');
-		if (strtolower($user) == strtolower($owner)) return true;
-		
+		if (strtolower($user) == strtolower($owner)) 
+			return true;
+			
+//		echo "Id: ".$this->id.", Scope: ".get_class($this).", Title: ".$this->data[title]."<br>";
+
 		$_a = array('add','edit','delete','view','discuss');
 		
 		// check if $perms is malformed
@@ -842,7 +1454,7 @@ class segue {
 		// end
 		
 		$permissions = $this->getPermissions();
-/* 		print "<pre>"; print_r($permissions); print "</pre>"; */
+/* 		print "<pre>Permissions: "; print_r($permissions); print "</pre>"; */
 
 		$toCheck = array();
 		if (strlen($user)) $toCheck[] = strtolower($user);
@@ -911,17 +1523,20 @@ class segue {
 	
 	function returnEditorOverlap($classes) {
 		$toCheck = array();
+//		print_r($classes);
 		foreach ($this->editors as $u) {
 			$good=0;
+//			print "$u - ";
+//			if (isclass($u)) print "class";
 			$c = array();
 			if (isclass($u)) $c[] = $u;
 			if ($g = isgroup($u)) $c = array_merge($c,$g);
 			foreach($c as $class) {
 				if (is_array($classes[$class])) $good=1;
 			}
-			if ($good) $toCheck[]=strtolower($u);
+			if ($good) $toCheck[]=$u;
 		}
 /* 		print_r($toCheck); */
-		return $toCheck;
+		return $toCheck; 
 	}
 }

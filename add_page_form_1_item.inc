@@ -20,7 +20,7 @@ printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
 printc("</td><td width=50% align=right>");
 /* 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n"); */
-	if ($_SESSION[pageObj]->getField("type") == 'page' || $_SESSION[pageObj]->getField("type") == 'url') printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
+	if ($_SESSION[pageObj]->getField("type") == 'page' || $_SESSION[pageObj]->getField("type") == 'link') printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
 printc("</td><td align=right>");
 	printc("<input type=submit name=save value='Save Now'>\n");
@@ -42,10 +42,10 @@ if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'page') 
 	printc(" Content Page</b>".(($_SESSION[pageObj]->getField("type")=='page')?" - will allow you to add content to your site, along with user discussions if necessary.":"")."</div>");
 }
 
-if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'url') {
+if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'link') {
 	printc("<div class=desc><b>");
-	printc("<input type=radio name=type ".(($_SESSION[settings][add])?"onClick='typeChange()'":"")." value='url'".(($_SESSION[pageObj]->getField("type")=='url')?" checked":"").">");
-	printc(" Link/URL</b>".(($_SESSION[pageObj]->getField("type")=='url')?" - is a link to a page outside of your site (like <i>http://www.middlebury.edu/</i>). URLs will open in a new window, allowing users to continue browsing your site.":"")."</div>");
+	printc("<input type=radio name=type ".(($_SESSION[settings][add])?"onClick='typeChange()'":"")." value='link'".(($_SESSION[pageObj]->getField("type")=='link')?" checked":"").">");
+	printc(" Link/URL</b>".(($_SESSION[pageObj]->getField("type")=='link')?" - is a link to a page outside of your site (like <i>http://www.middlebury.edu/</i>). URLs will open in a new window, allowing users to continue browsing your site.":"")."</div>");
 }
 
 if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'heading') {
@@ -69,7 +69,7 @@ if ($_SESSION[pageObj]->getField("type")=='heading') {
 	printc("<div class=title>Heading</div>");
 	printc("<div class=desc>Enter a title for your header below.</div>");
 }
-if ($_SESSION[pageObj]->getField("type")=='url') {
+if ($_SESSION[pageObj]->getField("type")=='link') {
 	printc("<div class=title>URL</div>");
 	printc("<div class=desc>Enter a title and URL for your link.</div>");
 }
@@ -111,7 +111,7 @@ if ($thisSite->getField("type") == 'publication') {
 }
 	
 
-if ($_SESSION[pageObj]->getField("type")=='url') {	
+if ($_SESSION[pageObj]->getField("type")=='link') {	
 	printc("<div class=leftmargin>");
 	printc("URL: <input type=text name=url value='".$_SESSION[pageObj]->getField("url")."' size=50>");
 	printc("</div>");

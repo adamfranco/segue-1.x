@@ -43,11 +43,11 @@ if (!$_REQUEST[nostatus]) {
 				print "<input type=hidden name=action value='change_auser'>";
 			}
 			if ( $_SESSION[auser] == $site_owner || $_SESSION[ltype]=='admin') {
-				print " | <a href='viewsites.php?$sid&site=$site' target='sites' onClick='doWindow(\"sites\",600,600)' class='navlink'>logs</a>";
+				print " | <a href='viewsites.php?$sid".((is_object($site))?"":"&site=$site")."' target='sites' onClick='doWindow(\"sites\",600,600)' class='navlink'>logs</a>";
 			}
 			if ($_SESSION[ltype]=='admin') {
-				print " | <a href='username_lookup.php' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>users</a>";
-/* 				print " | <a href='add_slot.php' onClick='doWindow(\"slots\",375,300)' target='slots' class='navlink'>slots</a>"; */
+//				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>user lookup</a>";
+				print " | <a href='users.php?$sid' onClick='doWindow(\"users\",700,500)' target='users' class='navlink'>users</a>";
 				print " | change active user: <input type='text' name='changeauser' size=10 class='textfield small'> <input type='submit' class='button small' value='GO'>";
 			}	
 			

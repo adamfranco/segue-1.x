@@ -55,7 +55,7 @@ include("themes/$theme/css.inc.php");
   <tr> 
     <td class="topleft">&nbsp;</td>
     <td class="top"> 
-    <div align="right"><img src='<? echo "$themesdir/$theme/images/$c[bg]/midd.gif" ?>' width="154" height="29"></div>
+    <div align="right"><img src='<? echo "$cfg[inst_logo_url]" ?>'></div>
     </td>
     <td class="top">
     <td class="topright">&nbsp;</td>

@@ -8,7 +8,7 @@
 //	$variables .= "$n = $v <br>";	
 //}
 //add_link(leftnav,'','',"$variables");
-//print $variables."<br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
+//print $variables."br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
 //print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
 //print "site = $site<br>section = $section<br>page=$page<br>";
 //------------------------------------
@@ -77,7 +77,7 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 		"comingFrom" => $comingFrom
 	);
 
-	$_SESSION[pageObj] = new page($thisSite->name,$thisSection->id);
+	$_SESSION[pageObj] =& new page($thisSite->name,$thisSection->id,0,&$thisSection);
 	
 	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > ";
 	
@@ -140,7 +140,7 @@ if ($_REQUEST[save]) {
 	// error checking
 	if ($_SESSION[pageObj]->getField("type")!='divider' && (!$_SESSION[pageObj]->getField("title") || $_SESSION[pageObj]->getField("title")==''))
 		error("You must enter a title.");
-	if ($_SESSION[pageObj]->getField("type")=='url' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[pageObj]->getField("url")=='' || $_SESSION[pageObj]->getField("url")=='http://'))
+	if ($_SESSION[pageObj]->getField("type")=='link' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[pageObj]->getField("url")=='' || $_SESSION[pageObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 		
 	if (!$error) { // save it to the database
@@ -150,14 +150,14 @@ if ($_REQUEST[save]) {
 		
 		if ($_SESSION[settings][edit]) { 
 			$_SESSION[pageObj]->updateDB();
-			log_entry("edit_page","$_SESSION[auser] edited page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->id);
+			log_entry("edit_page","$_SESSION[auser] edited page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->id,"page");
 /* 			$query = "update pages set editedby='$auser',"; $where = " where id=$_SESSION[settings][page]";  */
 		}
 		if ($_SESSION[settings][add]) {
 			// automatically inherit permissions from above;
 			$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 			$_SESSION[pageObj]->insertDB();
-			log_entry("add_page","$_SESSION[auser] added page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->id);
+			log_entry("add_page","$_SESSION[auser] added page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->id,"page");
 		}
 		
 		// do the recursive update of active flag and such... .... ugh
@@ -199,7 +199,7 @@ $leftlinks .= "Item";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
 
-if ($_SESSION[pageObj]->getField("type") == "page" || $_SESSION[pageObj]->getField("type") == "url") {
+if ($_SESSION[pageObj]->getField("type") == "page" || $_SESSION[pageObj]->getField("type") == "link") {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";

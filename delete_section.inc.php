@@ -5,7 +5,7 @@
 /* $s = new section($_REQUEST[site],$_REQUEST[delete_section]); */
 /* $s->fetchFromDB(); */
 
-if (/* in_array($delete_section,$sections) &&  */permission($_SESSION[auser],SITE,DELETE,$_REQUEST[site])) {
+if ($thisSite->hasPermission("delete",$_SESSION[auser])) {
 	$thisSite->delSection($_REQUEST[delete_section]);
 	$thisSite->updateDB();
 /* 	$pages = decode_array(db_get_value("sections","pages","id=$delete_section")); */
@@ -32,7 +32,7 @@ if (/* in_array($delete_section,$sections) &&  */permission($_SESSION[auser],SIT
 /* 		} */
 /* 	} */
 /* 	// done; */
-	log_entry("delete_section","$_SESSION[auser] deleted section id $_REQUEST[delete_section]",$_REQUEST[site]);
-} else log_entry("delete_section","$_SESSION[auser] deleting section id $_REQUEST[delete_section] failed",$_REQUEST[site],$_REQUEST[delete_section]);
+	log_entry("delete_section","$_SESSION[auser] deleted section id $_REQUEST[delete_section]",$_REQUEST[site],$_REQUEST[site],"site");
+} else log_entry("delete_section","$_SESSION[auser] deleting section id $_REQUEST[delete_section] failed",$_REQUEST[site],$_REQUEST[delete_section],"section");
 
 header("Location: $PHP_SELF?$sid&site=$_REQUEST[site]&action=viewsite");

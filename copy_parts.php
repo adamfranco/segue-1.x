@@ -28,7 +28,7 @@ if ($_REQUEST[type] && isset($_SESSION[origSiteObj])) {
 }
 
 if (!is_object($_SESSION[origSiteObj])) {
-	$_SESSION[origSiteObj] = new site($_REQUEST[site]);
+	$_SESSION[origSiteObj] =& new site($_REQUEST[site]);
 	$_SESSION[origSiteObj]->fetchDown();
 
 	$_SESSION[origSite] = $_REQUEST[site];
@@ -37,6 +37,8 @@ if (!is_object($_SESSION[origSiteObj])) {
 	$_SESSION[origStory] = $_REQUEST[story];
 	
 	$_SESSION[type] = $_REQUEST[type];
+	
+	$_SESSION[sites] = array();
 	
 /******************************************************************************
  * Make sure that the user try to move, has permission to delete the origional
@@ -65,7 +67,7 @@ if (!is_object($_SESSION[origSiteObj])) {
 	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($auser));
 	foreach ($sitesArray as $s) {
 /* 		print $s."<br>"; */
-		$temp = new site($s);
+		$temp =& new site($s);
 		$temp->fetchDown();
 		if ($temp->hasPermissionDown("add",$auser) || $temp->name == $_REQUEST[site] || $temp->site_owner == $auser) {
 			$_SESSION[sites][$s] = $temp;
@@ -108,7 +110,7 @@ if (!isset($action)) $action = "COPY";
 /******************************************************************************
  * Initialize the current site.
  ******************************************************************************/
-$siteObj = new site($_REQUEST[site]);
+$siteObj =& new site($_REQUEST[site]);
 $siteObj->fetchDown();
 $site = $_REQUEST[site];
 $section = $_REQUEST[section];
@@ -155,21 +157,21 @@ if ($domove) {
 		$parentObj = $siteObj;
 		if ($action == "COPY" && $parentObj->name == $_SESSION[origSite]) $removeOrigional = 0;
 		else $removeOrigional = 1;
-		log_entry($actionlc."_section","$_SESSION[auser] ".$actionlc."d section ".$partObj->id." from site ".$_SESSION[origSiteObj]->name." to ".$parentObj->name,$parentObj->name);
+		log_entry($actionlc."_section","$_SESSION[auser] ".$actionlc."d section ".$partObj->id." from site ".$_SESSION[origSiteObj]->name." to ".$parentObj->name,$parentObj->name,$parentObj->id,"site");
 	}
 	else if ($_SESSION[type] == "page") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]];
 		$parentObj = $siteObj->sections[$section];
 		if ($action == "COPY" && $parentObj->id == $_SESSION[origSection]) $removeOrigional = 0;
 		else $removeOrigional = 1;
-		log_entry($actionlc."_page","$_SESSION[auser] ".$actionlc."d page ".$partObj->id." from site ".$_SESSION[origSite].", section ".$_SESSION[origSection]." to site ".$parentObj->owning_site.", section ".$parentObj->id,$parentObj->owning_site,$parentObj->id);
+		log_entry($actionlc."_page","$_SESSION[auser] ".$actionlc."d page ".$partObj->id." from site ".$_SESSION[origSite].", section ".$_SESSION[origSection]." to site ".$parentObj->owning_site.", section ".$parentObj->id,$parentObj->owning_site,$parentObj->id,"section");
 	}
 	else if ($_SESSION[type] == "story") {
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]];
 		$parentObj = $siteObj->sections[$section]->pages[$page];
 		if ($action == "COPY" && $parentObj->id == $_SESSION[origPage]) $removeOrigional = 0;
 		else $removeOrigional = 1;
-		log_entry($actionlc."_story","$_SESSION[auser] ".$actionlc."d story ".$partObj->id." from site ".$_SESSION[origSite].", section ".$_SESSION[origSection].", page ".$_SESSION[origPage]." to site ".$parentObj->owning_site.", section ".$parentObj->owning_section.", page ".$parentObj->id,$parentObj->owning_site,$parentObj->owning_section,$parentObj->id);
+		log_entry($actionlc."_story","$_SESSION[auser] ".$actionlc."d story ".$partObj->id." from site ".$_SESSION[origSite].", section ".$_SESSION[origSection].", page ".$_SESSION[origPage]." to site ".$parentObj->owning_site.", section ".$parentObj->owning_section.", page ".$parentObj->id,$parentObj->owning_site,$parentObj->id,"story");
 	} else 
 		print "Major Error!!!!!!!!!!!!!!!!!!!!!!  AHHHHHhhhhhhhh!!!!!!!!!!!!!!!!!!!!";
 	
@@ -525,7 +527,7 @@ print "</tr>";
 /* 	print "thisSite:\n"; */
 /* 	print_r($thisSite); */
 /* } */
-print "</pre>";
+/* print "</pre>"; */
 ?>
 </body>
 </html>

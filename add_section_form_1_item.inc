@@ -41,13 +41,13 @@ if ($_SESSION[settings][add] || $_SESSION[sectionObj]->getField("type") == 'sect
 	printc(" Content Section</b>".(($_SESSION[sectionObj]->getField("type")=='section')?" - allows you to create a section in which links and pages with content can be created. (default)":"")."</div>");
 }
 
-if ($_SESSION[settings][add] || $_SESSION[sectionObj]->getField("type") == 'url') {
+if ($_SESSION[settings][add] || $_SESSION[sectionObj]->getField("type") == 'link') {
 	printc("<div class=desc><b>");
-	printc("<input type=radio name=type ".(($_SESSION[settings][add])?"onClick='typeChange()'":"")." value='url'".(($_SESSION[sectionObj]->getField("type")=='url')?" checked":"").">");
-	printc(" Link/URL</b>".(($_SESSION[sectionObj]->getField("type")=='url')?" - allows you to enter an internet address (such as http://www.middlebury.edu/yourpage/) to allows users to click on to look at a different website. Links will open in a new window, allowing people to continue browsing your site.":"")."</div>");
+	printc("<input type=radio name=type ".(($_SESSION[settings][add])?"onClick='typeChange()'":"")." value='link'".(($_SESSION[sectionObj]->getField("type")=='link')?" checked":"").">");
+	printc(" Link/URL</b>".(($_SESSION[sectionObj]->getField("type")=='link')?" - allows you to enter an internet address (such as http://www.middlebury.edu/yourpage/) to allows users to click on to look at a different website. Links will open in a new window, allowing people to continue browsing your site.":"")."</div>");
 }
 
-if ($_SESSION[sectionObj]->getField("type")=='url') {
+if ($_SESSION[sectionObj]->getField("type")=='link') {
 	printc("<div class=title>URL</div>");
 	printc("<div class=desc>Enter a title and URL for your link.</div>");
 }
@@ -60,7 +60,7 @@ printc("<div class=leftmargin>");
 printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[sectionObj]->getField("title"))."'>");
 printc("</div><br>");
 
-if ($_SESSION[sectionObj]->getField("type")=='url') {	
+if ($_SESSION[sectionObj]->getField("type")=='link') {	
 	printc("<div class=leftmargin>");
 	printc("URL: <input type=text name=url value='".$_SESSION[sectionObj]->getField("url")."' size=50>");
 	printc("</div>");

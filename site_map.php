@@ -11,7 +11,7 @@ include("includes.inc.php");
 include("objects/objects.inc.php");
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-$siteObj = new site($site);
+$siteObj =& new site($site);
 $siteObj->fetchDown();
 ?>
 <html>

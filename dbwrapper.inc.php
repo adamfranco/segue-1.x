@@ -20,9 +20,6 @@
 //		possible values: "oracle", "mysql"    (values are case-insensitive)
 $db_type = "MySQL";
 
-// $debug: set this to 1 if you would like all debug output to be printed to the browser.
-//		possible values: 1, 0
-$debug = 0;
 
 /*--------------------------------------------------------------------------------------*/
 /* --------------------------  /end GLOBALS ----------------------------------------	*/
@@ -84,7 +81,7 @@ db_error();
 
 // check if we are already loaded
 if (isset($_db_wrapper)) {
-  if ($debug) print "We're already loaded -- skipping load process.<BR>\n";
+  /* if ($debug) print "We're already loaded -- skipping load process.<BR>\n"; */
   return;
 }
 
@@ -153,10 +150,10 @@ function db_connect ($host_db, $username, $password, $db='', $port=0) {
   global $_connect_id;
   global $db_type; global $debug;
   if ($debug) {
-    print "db_connect: starting function with arguments:<br>";
-    print "host_db = $host_db, username = $username, password = $password";
-    print ", db = $db, port = $port<br>";
-    print "db_connect: db_type = $db_type<br>";
+/*     print "<br><br>db_connect: starting function with arguments:<br>"; */
+/*     print "host_db = $host_db, username = $username, password = $password"; */
+/*     print ", db = $db, port = $port<br>"; */
+/*     print "db_connect: db_type = $db_type<br>"; */
   }
   if ($db_type == "mysql") {
     if ($port != 0) $host_db .= ":$port";
@@ -192,18 +189,32 @@ function ocidie ($t) {
   die ($t);
 }
 
+/******************************************************************************
+ * for counting the number of queries done.
+ ******************************************************************************/
+$_totalQueries = 0;
+
 function db_query ($query, $cid=-1) {
+	// for counting the total number of queries
+	global $_totalQueries;
+	$_totalQueries++;
+	
   global $db_type; global $debug;
   global $_connect_id;
   if ($debug) {
-    print "db_query: starting function with arguments:<BR>";
-    print "query = $query, cid = $cid<BR>";
-    print "db_query: db_type = $db_type <BR>";
+  	// The $debug variable is set at the top of this script
+	// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
+    echo "<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$query;
   }
   if ($cid==-1) $cid = $_connect_id;
-  if ($debug) print "db_query: cid is now $cid<BR>";
   if ($db_type == "mysql") {
-    $res = mysql_query($query, $cid);  
+    $res = mysql_query($query, $cid);
+	if ($debug) {
+	 	// The $debug variable is set at the top of this script	
+		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
+		echo "<br><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res."</b>";
+	}
+	echo "<b>".mysql_error()."</b>";
     return $res;
   } else if ($db_type == "oracle") {
     $stmt = OCIParse($cid, $query) or ocidie ("db_query: could not query the server with $query");

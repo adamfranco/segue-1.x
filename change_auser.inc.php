@@ -1,10 +1,9 @@
 <? /* $Id$ */
 // changes the active user
 
+$changeauser = strtolower($_REQUEST[changeauser]);
 print "change_auser started with $changeauser...<BR>";
-
-$changeauser = strtolower($changeauser);
-
+$debug = 1;
 if ($ltype == 'admin') {	// must be admin to do this:
 	print "we are admin.";
 // we'll check first the db, to see if they're there, then ldap if they're not there.
@@ -31,24 +30,24 @@ if ($ltype == 'admin') {	// must be admin to do this:
 	$valid = 0;
 	foreach ($_auth_mods as $_auth) {
 		$func = "_valid_".$_auth;
-//			print "<BR>AUTH: trying ".$_auth ."..."; //debug
+			print "<BR>AUTH: trying ".$_auth ."..."; //debug
 		if ($x = $func($changeauser,"",1)) {
 			$valid = 1;
 			break;
 		}
 	}
 	if ($valid) {
-		$auser = $changeauser;
-		$aemail = $x[email];
-		$afname = $x[fullname];
-		$atype = $x[type];
-		$aid = $x[id];
-		$amethod = $x[method];
+		$_SESSION[auser] = $changeauser;
+		$_SESSION[aemail] = $x[email];
+		$_SESSION[afname] = $x[fullname];
+		$_SESSION[atype] = $x[type];
+		$_SESSION[aid] = $x[id];
+		$_SESSION[amethod] = $x[method];
 		log_entry("change_auser","$luser as $auser");
 	}
 }
 
-//print "$aid, $afname, $auser, $aemail, $atype<BR>";
+print "<p>$aid, $afname, $auser, $aemail, $atype<BR>";
 
 header("Location: index.php?$sid");
 

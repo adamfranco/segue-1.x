@@ -24,33 +24,81 @@ if ($clear) {
 	$_luser = "";
 }
 
-if (!isset($order)) $order = "timestamp asc";
+if ($_REQUEST[order]) $order = $_REQUEST[order];
+if (!isset($order)) $order = "log_tstamp ASC";
 $orderby = " order by $order";
 
 $w = array();
-if ($type) $w[]="type='$type'";
-if ($user) $w[]="content like '%$user%'";
-if ($_luser) $w[]="luser='$_luser'";
-if ($_auser) $w[]="auser='$_auser'";
-if ($ltype != 'admin') {
-	$w[]="site like '%$site%'";
+if ($_REQUEST[type]) $w[]="log_type='$type'";
+if ($_REQUEST[user]) $w[]="log_desc like '%$user%'";
+if ($_REQUEST[_luser]) $w[]="FK_luser='$_luser'";
+if ($_REQUEST[_auser]) $w[]="FK_auser='$_auser'";
+if ($_SESSION[ltype] != 'admin') {
+	$w[]="slot_name LIKE '%$site%'";
 } else {
-	if ($site) $w[]="site like '%$site%'";
+	if ($_REQUEST[site]) $w[]="slot_name LIKE '%$site%'";
 }
-if ($hideadmin) $w[]="type not like 'change_auser'";
+if ($_REQUEST[hideadmin]) $w[]="log_type NOT LIKE 'change_auser'";
 	
 
-if (count($w)) $where = " where ".implode(" and ",$w);
+if (count($w)) $where = " WHERE ".implode(" AND ",$w);
 
-$numlogs=db_num_rows(db_query("select * from logs$where"));
+$query = "
+	SELECT 
+		COUNT(*) AS log_count
+	FROM 
+		log
+			LEFT JOIN
+		slot
+			ON
+		log.FK_slot = slot.slot_id
+			INNER JOIN
+		user AS user1
+			ON
+		log.FK_luser = user1.user_id
+			INNER JOIN
+		user AS user2
+			ON
+		log.FK_auser = user2.user_id		
+	$where";
+$r=db_query($query); 
+$a = db_fetch_assoc($r);
+$numlogs = $a[log_count];
 
-if (!isset($lowerlimit) && $order == 'timestamp asc') $lowerlimit = $numlogs-30;
-if (!isset($lowerlimit) && $order != 'timestamp asc') $lowerlimit = 0;
+if (!isset($lowerlimit) && $order == 'log_tstamp ASC') $lowerlimit = $numlogs-30;
+if (!isset($lowerlimit) && $order != 'log_tstamp ASC') $lowerlimit = 0;
 if ($lowerlimit < 0) $lowerlimit = 0;
 
-$limit = " limit $lowerlimit,30";
+$limit = " LIMIT $lowerlimit,30";
 
-$query = "select * from logs$where$orderby$limit";
+$query = "
+SELECT 
+		log_type,
+		log_tstamp,
+		log_desc,
+		FK_siteunit AS siteunit,
+		log_siteunit_type AS siteunit_type,
+		user1.user_uname AS luser,
+		user2.user_uname AS auser,
+		slot_name,
+		FK_site AS site_id
+	FROM 
+		log
+			LEFT JOIN
+		slot
+			ON
+		log.FK_slot = slot.slot_id
+			INNER JOIN
+		user AS user1
+			ON
+		log.FK_luser = user1.user_id
+			INNER JOIN
+		user AS user2
+			ON
+		log.FK_auser = user2.user_id
+	$where
+	$orderby
+	$limit";
 
 $r = db_query($query);
 
@@ -108,13 +156,13 @@ function changeOrder(order) {
 			print "Logs of $site <br>";
 		}
 		
-		$r1 = db_query("select distinct type from logs order by type asc");
+		$r1 = db_query("SELECT DISTINCT log_type FROM log ORDER BY log_type asc");
 		?>
 		type: <select name=type>
 		<option value=''>all
 		<?
 		while ($a=db_fetch_assoc($r1))
-			print "<option".(($type==$a[type])?" selected":"").">$a[type]\n";
+			print "<option".(($type==$a[log_type])?" selected":"").">$a[log_type]\n";
 		?>
 		</select>
 		<?
@@ -157,19 +205,19 @@ function changeOrder(order) {
 
 <?
 	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='timestamp asc') print "timestamp desc";
-	else print "timestamp asc";
+	if ($order =='log_tstamp asc') print "log_tstamp desc";
+	else print "log_tstamp asc";
 	print "')\" style='color: #000'>Time";
-	if ($order =='timestamp asc') print " &or;";
-	if ($order =='timestamp desc') print " &and;";	
+	if ($order =='log_tstamp asc') print " &or;";
+	if ($order =='log_tstamp desc') print " &and;";	
 	print "</a></th>";
 	
 	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='type asc') print "type desc";
-	else print "type asc";
+	if ($order =='log_type asc') print "log_type desc";
+	else print "log_type asc";
 	print "')\" style='color: #000'>Type";
-	if ($order =='type asc') print " &or;";
-	if ($order =='type desc') print " &and;";	
+	if ($order =='log_type asc') print " &or;";
+	if ($order =='log_type desc') print " &and;";	
 	print "</a></th>";
 	
 	print "<th><a href=# onClick=\"changeOrder('";
@@ -189,19 +237,19 @@ function changeOrder(order) {
 	print "</a></th>";
 	
 	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='site asc') print "site desc";
-	else print "site asc";
+	if ($order =='slot_name asc') print "slot_name desc";
+	else print "slot_name asc";
 	print "')\" style='color: #000'>Site";
-	if ($order =='site asc') print " &or;";
-	if ($order =='site desc') print " &and;";	
+	if ($order =='slot_name asc') print " &or;";
+	if ($order =='slot_name desc') print " &and;";	
 	print "</a></th>";
 
 	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='content asc') print "content desc";
-	else print "content asc";
+	if ($order =='log_desc asc') print "log_desc desc";
+	else print "log_desc asc";
 	print "')\" style='color: #000'>Text";
-	if ($order =='content asc') print " &or;";
-	if ($order =='content desc') print " &and;";	
+	if ($order =='log_desc asc') print " &or;";
+	if ($order =='log_desc desc') print " &and;";	
 	print "</a></th>";
 ?>
 </tr>
@@ -214,35 +262,35 @@ if (db_num_rows($r)) {
 	while ($a=db_fetch_assoc($r)) {
 		print "<tr>";
 		print "<td class=td$color><span style='color: #";
-			if (strstr("add_site, delete_site, classgroups",$a[type])) 
+			if (strstr("add_site, delete_site, classgroups",$a[log_type])) 
 				print "F90";
-			else if (strstr("login, change_auser",$a[type])) 
+			else if (strstr("login, change_auser",$a[log_type])) 
 				print "000";
 			else
 				print "00C";
 		print "'><nobr>";
 //		print "<td class=td$color><nobr>";
-		if (strncmp($today, $a[timestamp], 8) == 0 || strncmp($yesterday, $a[timestamp], 8) == 0) print "<b>";
-		print timestamp2usdate($a[timestamp],1);
-		if (strncmp($today, $a[timestamp], 8) == 0 || strncmp($yesterday, $a[timestamp], 8) == 0) print "</b>";
+		if (strncmp($today, $a[log_tstamp], 8) == 0 || strncmp($yesterday, $a[log_tstamp], 8) == 0) print "<b>";
+		print timestamp2usdate($a[log_tstamp],1);
+		if (strncmp($today, $a[log_tstamp], 8) == 0 || strncmp($yesterday, $a[log_tstamp], 8) == 0) print "</b>";
 		print "</nobr></span></td>";
 //		print "</nobr></td>";
 		print "<td class=td$color><span style='color: #";
-			if (strstr("add_site, delete_site, classgroups",$a[type])) 
+			if (strstr("add_site, delete_site, classgroups",$a[log_type])) 
 				print "F90";
-			else if (strstr("login, change_auser",$a[type])) 
+			else if (strstr("login, change_auser",$a[log_type])) 
 				print "000";
 			else
 				print "00C";
-		print "'>$a[type]</span></td>";
+		print "'>$a[log_type]</span></td>";
 /*		print "<td class=td$color><span style='color: #";
-			if (strstr("add_site, delete_site, classgroups",$a[type])) 
+			if (strstr("add_site, delete_site, classgroups",$a[log_type])) 
 				print "F90";
-			else if (strstr("login, change_auser",$a[type])) 
+			else if (strstr("login, change_auser",$a[log_type])) 
 				print "000";
 			else
 				print "00C";
-		print "'>$a[luser]</span></td>";
+		print "'>$a[log_luser]</span></td>";
 */		print "<td class=td$color><a href=# onClick=\"selectLUser('".$a[luser]."')\"  style='color: #000;'>$a[luser]</a></td>";
 /*		print "<td class=td$color><span style='color: #";
 			if (strstr("add_site, delete_site, classgroups",$a[type])) 
@@ -254,14 +302,14 @@ if (db_num_rows($r)) {
 		print "'>$a[auser]</span></td>";
 */		print "<td class=td$color><a href=# onClick=\"selectAUser('".$a[auser]."')\"  style='color: #000;'>$a[auser]</a></td>";
 		print "<td class=td$color>";
-			if ($a[site]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[site]\"'>";
-			print "$a[site]";
-			if ($a[site]) print "</a>";
+			if ($a[site_id]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]\"'>";
+			print "$a[slot_name]";
+			if ($a[site_id]) print "</a>";
 		print "</td>";
 		print "<td class=td$color>";
-			if ($a[section]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[site]&section=$a[section]&page=$a[page]\"'>";
-			print "$a[content]";
-			if ($a[section]) print "</a>";
+			if ($a[siteunit_type] == "section") print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]&section=$a[siteunit]\"'>";
+			print "$a[log_desc]";
+			if ($a[siteunit_type] == "section") print "</a>";
 		print "</td>";
 		print "</tr>";
 		$color = 1-$color;

@@ -1,11 +1,8 @@
 <? /* $Id$ */
 
-/* print "canview: ".$thisSite->canview()."<br>"; */
-/* print "hasperm: ".$thisSite->hasPermissionDown("add or edit or delete","",0,1)."<br>"; */
-/* print "<pre>"; print_r($thisSite); print "</pre>"; */
 
 // check view permissions
-if (!$thisSite->canview() && !$thisSite->hasPermissionDown("add or edit or delete")) {
+if (!$thisSite->canview()) {
 	error("You may not view this site. This may be due to any of the following reasons:<BR><ul><li>The site has not been activated by the owner.<li>You are not on a computer within $cfg[inst_name].<li>You are not logged in.<li>You are not part of a set of specific users or groups allowed to view this site.</ul>");
 }	
 
@@ -36,7 +33,7 @@ do {
 	}
 	
 	// if we're an admin, override all errors
-	if ($_SESSION[ltype] == 'admin') {
+	if ($_SESSION[ltype] == 'admin' && $_SESSION[luser]==$_SESSION[auser]) {
 		clearerror();
 	}
 	
@@ -44,19 +41,25 @@ do {
 	if ($error) return;
 	
 	if ($thisSite) {
+		// If no section is specified, select the first one that we can view.
 		if (!$thisSection && count($thisSite->getField("sections"))) {
 			$thisSite->fetchDown();
+//			$thisSite->buildPermissionsArray();
 			foreach ($thisSite->sections as $s=>$o) {
-				if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisSection = &$thisSite->sections[$s]; break; }
+				if ($o->getField("type") == 'section' && $o->canview()) { 
+					$thisSection = &$thisSite->sections[$s]; 
+					break; 
+				}
 			}
 		}
 		$sitetype = $thisSite->getField("type");
 	}
 	if ($thisSection) {
+		// If no page is specified, select the first one that we can view.
 		if (!$thisPage && count($thisSection->getField("pages"))) {
 			$thisSection->fetchDown();
 			foreach ($thisSection->pages as $p=>$o) {
-				if ($o->getField("type") == 'page' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisPage = &$thisSection->pages[$p]; break; }
+				if ($o->getField("type") == 'page' && $o->canview()) { $thisPage = &$thisSection->pages[$p]; break; }
 			}
 		}
 		$st = " > " . $thisSection->getField("title");
@@ -78,6 +81,8 @@ do {
 	$page=$thisPage->id;
 	$thisSite->fetchDown();			// just in case we haven't already
 	
+	$topsections = !ereg("Side\+Sections",$thisSite->getField("themesettings"));
+	
 	// build the navbars
 	include("output_modules/".$thisSite->getField("type")."/navbars.inc.php");
 	
@@ -94,9 +99,9 @@ do {
 	/* 		$stories = handlestoryorder($stories,$pageinfo[storyorder]); */
 		
 		if ($thisPage->stories) {
-			foreach ($thisPage->stories as $s=>$o) {
-			
-				if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {		
+			foreach ($thisPage->data[stories] as $s) {
+				$o =& $thisPage->stories[$s];
+				if ($o->canview()) {		
 					if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
 						printc("<hr size='1' noshade style='margin-top: 5px'>");
 					if ($o->getField("category")) {
@@ -108,12 +113,12 @@ do {
 					printc("<div style='margin-bottom: 10px'>");
 					
 					$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
-					//print $incfile; // debug
+//					print $incfile; // debug
 					include($incfile);
 		
 					if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
 						printc("<div class=contentinfo align=right>");
-						$added = datetime2usdate($o->getField("addedtimestamp"));
+						$added = timestamp2usdate($o->getField("addedtimestamp"));
 						printc("added");
 						if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
 						if ($thisPage->getField("showdate")) printc(" on $added");
@@ -141,5 +146,8 @@ if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
 	if ($section) $u .= "&section=$section";
 	if ($page) $u .= "&page=$page";
 	$text .= "<br> <div align=right><input type=submit class='button' value='edit this site' onClick=\"window.location='$u&$sid'\"></div>";
-	$sitefooter = $sitefooter . $text;
+} else {
+	$text = "";
 }
+$text .= "<br><div align=right><img src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></div>";
+$sitefooter = $sitefooter . $text;

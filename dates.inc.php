@@ -103,6 +103,7 @@ function indaterange($date1, $date2) {
 	} else $unix2=0;
 //	print "ctime: ".time()."<BR>";
 	$ctime = time();
+
 	return (($unix1==0 || $unix1<=$ctime) && ($unix2==0 || $unix2>=$ctime));
 }
 

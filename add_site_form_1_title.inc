@@ -78,14 +78,19 @@ printc("<br><br>");
 /* print "ClassDirect:".$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3]."<br>"; */
 /* print "--------------------------------<br>"; */
 
-if ($_SESSION[settings][viewpermissions] == "custom") $whocanview = "4";
-else if ($_SESSION[siteObj]->hasPermission("view","everyone","1")) $whocanview = "1";
-else if ($_SESSION[siteObj]->hasPermission("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")) $whocanview = "2";
-else if ($_SESSION[siteObj]->getField("type") == "class") {
+
+if ($_SESSION[settings][viewpermissions] == "custom") {
+	$whocanview = "4";
+} else if ($_SESSION[siteObj]->hasPermission("view","everyone","1")) {
+	$whocanview = "1";
+} else if ($_SESSION[siteObj]->hasPermission("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")) {
+	 $whocanview = "2";
+} else if ($_SESSION[siteObj]->getField("type") == "class") {
 	if ($_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1") && !$_SESSION[siteObj]->hasPermissionDown("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")) $whocanview = "3";
 	else  $whocanview = "4";
-} 
-else  $whocanview = "4";
+} else {
+	 $whocanview = "4";
+}
 
 printc("Allow: <b><input type=radio name=viewpermissions value='everyone'".(($whocanview == "1")?" checked":"")."> anyone ");
 printc(" <input type=radio name=viewpermissions value='institute'".(($whocanview == "2")?" checked":"")."> $cfg[inst_name] users ");
@@ -115,6 +120,7 @@ if ($_SESSION[siteObj]->getField("type") == "class") {
 		printc("> custom");
 	}
 }
+
 printc("</b> to view this site.<br><br>");
 
 printc("<div class=title>2. When is this site available?".helplink("daterange")." &nbsp; - &nbsp; <i>Optional</i></div>");

@@ -17,7 +17,7 @@ $dbuser = "sitesdb";
 $dbpass = "sitesdb#%&";
 $dbdb = "sitesdb";
 
-$ldapserver = "tiger.middlebury.edu";
+$ldapserver = "jaguar.middlebury.edu";
 $ldap_voadmin_user = "fjones";
 $ldap_voadmin_pass = "lk87df";
 

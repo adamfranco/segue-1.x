@@ -26,18 +26,35 @@ if ($clear) {
 	$title = "";
 }
 
-if (!isset($order)) $order = "editedtimestamp desc";
-$orderby = " order by $order";
+if ($_REQUEST[order]) $order = $_REQUEST[order];
+if (!isset($order)) $order = "editedtimestamp DESC";
+$orderby = " ORDER BY $order";
 
 $w = array();
-if ($type) $w[]="type='$type'";
-if ($user) $w[]="addedby like '%$user%'";
+if ($_REQUEST[type]) $w[]="slot_type='$type'";
+if ($_REQUEST[user]) $w[]="user_uname like '%$user%'";
 //if ($site) $w[]="site like '%$name%'";
-if ($site) $w[]="name like '%$site%'";
-if ($title) $w[]="title like '%$title%'";
+if ($_REQUEST[site]) $w[]="slot_name like '%$site%'";
+if ($_REQUEST[title]) $w[]="site_title like '%$title%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
-$numlogs=db_num_rows(db_query("select * from sites$where"));
+$query = "
+	SELECT 
+		COUNT(*) AS log_count
+	FROM 
+		slot
+			INNER JOIN
+		site
+			ON
+		FK_site = site_id
+			INNER JOIN
+		user
+			ON
+		FK_owner = user_id	
+	$where";
+$r=db_query($query); 
+$a = db_fetch_assoc($r);
+$numlogs = $a[log_count];
 
 if (!isset($lowerlimit)) $lowerlimit = 0;
 if ($lowerlimit < 0) $lowerlimit = 0;
@@ -45,7 +62,27 @@ if ($lowerlimit < 0) $lowerlimit = 0;
 
 $limit = " limit $lowerlimit,30";
 
-$query = "select * from sites$where$orderby$limit";
+$query = "
+	SELECT 
+		slot_type AS type,
+		slot_name AS name,
+		site_title AS title,
+		site_theme AS theme,
+		site_updated_tstamp AS editedtimestamp,
+		site_active AS active,
+		user_uname AS addedby,
+		user_fname AS addedbyfull		
+	FROM
+		slot
+			INNER JOIN
+		site
+			ON
+		FK_site = site_id
+			INNER JOIN
+		user
+			ON
+		FK_owner = user_id
+	$where$orderby$limit";
 
 $r = db_query($query);
 
@@ -165,13 +202,13 @@ function changeOrder(order) {
 	if ($order =='type desc') print " &and;";	
 	print "</a></th>";
 	
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='viewpermissions asc') print "viewpermissions desc";
-	else print "viewpermissions asc";
-	print "')\" style='color: #000'>View";
-	if ($order =='viewpermissions asc') print " &or;";
-	if ($order =='viewpermissions desc') print " &and;";	
-	print "</a></th>";
+/* 	print "<th><a href=# onClick=\"changeOrder('"; */
+/* 	if ($order =='viewpermissions asc') print "viewpermissions desc"; */
+/* 	else print "viewpermissions asc"; */
+/* 	print "')\" style='color: #000'>View"; */
+/* 	if ($order =='viewpermissions asc') print " &or;"; */
+/* 	if ($order =='viewpermissions desc') print " &and;";	 */
+/* 	print "</a></th>"; */
 
 	print "<th><a href=# onClick=\"changeOrder('";
 	if ($order =='theme asc') print "theme desc";
@@ -218,11 +255,11 @@ if (db_num_rows($r)) {
 		print "<td class=td$color>$a[name]</td>";
 		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
 		print "<td class=td$color>".((group::getClassesFromName($a[name]))?"group - ":"")."$a[type]</td>";
-		print "<td class=td$color><span style='color: #";
-			if ($a[viewpermissions] == 'anyone') print "000";
-			if ($a[viewpermissions] == 'midd') print "00c";
-			if ($a[viewpermissions] == 'class') print "900";
-		print "'>$a[viewpermissions]</span></td>";
+/* 		print "<td class=td$color><span style='color: #"; */
+/* 			if ($a[viewpermissions] == 'anyone') print "000"; */
+/* 			if ($a[viewpermissions] == 'midd') print "00c"; */
+/* 			if ($a[viewpermissions] == 'class') print "900"; */
+/* 		print "'>$a[viewpermissions]</span></td>"; */
 		print "<td class=td$color>$a[theme]</td>";
 		print "<td class=td$color>";
 		print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
@@ -230,7 +267,7 @@ if (db_num_rows($r)) {
 		print "</a>";
 		print "</td>";
 		print "<td class=td$color>";
-		print "$a[addedby]";
+		print "$a[addedbyfull] ($a[addedby])";
 		print "</td>";
 		print "</tr>";
 		$color = 1-$color;
@@ -241,3 +278,30 @@ if (db_num_rows($r)) {
 ?>
 </table><BR>
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+
+<?
+// debug output -- handy :)
+/* print "<pre>"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
+
+/*
+ if (is_object($thisPage)) { 
+ 	print "\n\n"; 
+ 	print "thisPage:\n"; 
+ 	print_r($thisPage); 
+ } /*else if (is_object($thisSection)) { 
+	print "\n\n"; 
+ 	print "thisSection:\n"; 
+ 	print_r($thisSection); 
+ } else if (is_object($thisSite)) { 
+ 	print "\n\n"; 
+ 	print "thisSite:\n"; 
+ 	print_r($thisSite); 
+ } */
+ 
+/* print "</pre>"; */

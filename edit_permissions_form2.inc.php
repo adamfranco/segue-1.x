@@ -152,12 +152,16 @@ function doEditorLine(&$o) {
 	foreach ($_SESSION[editors] as $e) {
 		$args1 = "'$e',".$args;
 		foreach ($_a as $v=>$i) {
+//			print "l-$e$v";
 			$skip = 0;
 			if (($e == 'everyone' || $e == 'institute') && $i<3) $skip = 1;
 			if ($class=='story' && $v == 'add') $skip = 1;
-			if ($type != 'story' && $type != 'page' && $type != 'section' && $class != 'site') $skip=1;
-			if ($skip) print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">&nbsp;</td>";
-			else print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onClick=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v") || !$isOwner)?"disabled":"")."></td>";
+			if ($type != 'story' && $type != 'page' && $type != 'section' && $class != 'site' && $v == 'add') $skip=1;
+			if ($skip) {
+				print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">&nbsp;</td>";
+			} else {
+				print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onClick=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l%$e%$v") || !$isOwner)?"disabled":"")."></td>";
+			}
 		}
 	}
 	print "</tr>";
@@ -170,7 +174,7 @@ function doEditorLine(&$o) {
 function getBgColor($class,$special=0) {
 	$baseR = 7;
 	$baseG = 7;
-	$baseB = 7;
+	$baseB = 8;
 	$step = 2;
 	$lockedR = 1;  
 	$viewG = 1;

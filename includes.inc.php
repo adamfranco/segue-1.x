@@ -1,5 +1,24 @@
 <? /* $Id$ */
 
+// set the $sid var for easy use
+$sid = SID;
+
+// what kind of error reporting do we want? (how cluttered do we want our site to be?)
+//error_reporting(0);				// none
+//error_reporting(E_ERROR);		// only fatal errors
+error_reporting(E_ERROR | E_WARNING);	// more errors
+//error_reporting(E_ERROR | E_WARNING | E_NOTICE); 		// lots of errors
+//error_reporting(E_ALL);			// all errors !!
+/* NOTE: the last two options here enable so much error reporting that they will */
+/* seriously screw up Segue's functionality with HTML forms. Just don't use them */
+
+//defines - DO NOT CHANGE THESE!!!
+define("leftnav","leftnav",TRUE);
+define("rightnav","rightnav",TRUE);
+define("topnav","topnav",TRUE);
+
+
+
 if (!ini_get("register_globals")) {
 	import_request_variables("gp");
 	if (is_array($_SESSION)) foreach (array_keys($_SESSION) as $n) {$$n = $_SESSION[$n];}
@@ -7,8 +26,8 @@ if (!ini_get("register_globals")) {
 }
 
 include("functions.inc.php");
-include("dbwrapper.inc.php");
 include("config.inc.php");
+include("dbwrapper.inc.php");
 include("error.inc.php");
 include("themes/themeslist.inc.php");
 include("dates.inc.php");

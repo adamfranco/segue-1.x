@@ -4,11 +4,11 @@ function makedownloadbar($o) {
 	global $site,$uploaddir,$uploadurl;
 	if ($o->getField("type")!='file') return;
 	
-	$b = db_get_line("media","id=".$o->getField("longertext"));
-	$filename = urldecode($b[name]);
-	print $filename;
-	$dir = $b[site_id];
-	$size = $b[size];
+	$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id=".$o->getField("longertext"));
+	$filename = urldecode($b[media_tag]);
+/* 	print $filename; */
+	$dir = $b[slot_name];
+	$size = $b[media_size];
 	$fileurl = "$uploadurl/$dir/$filename";
 	$filepath = "$uploaddir/$dir/$filename";
 	$filesize = convertfilesize($size);
@@ -76,12 +76,20 @@ function get_sizes($pic,$maxsize) {
 }
 
 function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
-	global $uploaddir, $auser;
+	global $uploaddir;
+	
+	$sitename = $site;
+	$query = "SELECT FK_site FROM slot WHERE slot_name='$site'";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$siteid = $a[FK_site];
+	
 	if (!$file[name]) {
 		print "No File";
 		return "ERROR";
 	}
 	
+	$siteObj =& new site($site);
 	$userdir = "$uploaddir/$site";
 	
 	$name = ereg_replace("[\x27\x22]",'',stripslashes(trim($file['name'])));
@@ -119,36 +127,36 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	}
 	if (!$r) {
 		print "Upload file error!<br>";
-		log_entry("media_error","File upload attempt by $auser in site $site failed.",$site);
+		log_entry("media_error","File upload attempt by $_SESSION[auser] in site $site failed.",$site,$siteid,"site");
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
-		$query = "update media set addedtimestamp=NOW(),addedby='$auser',size='$size' where id='$replace_id'";
+		$query = "UPDATE media SET media_updated_tstamp=NOW(),FK_updatedby='".$_SESSION[aid]."',media_size='$size' WHERE media_id='$replace_id'";
 		/* print $query."<br>"; */
 		db_query($query);
 		print mysql_error()."<br>";
 		
 		$media_id = $replace_id;
 		
-		log_entry("media_update","$auser updated file: $name, id: $media_id, in site $site",$site);
+		log_entry("media_update","$_SESSION[auser] updated file: $name, id: $media_id, in site $site",$site,$siteid,"site");
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
-		$query = "insert into media set name='$name',site_id='$site',addedtimestamp=NOW(),addedby='$auser',type='$type',size='$size'";
+		$query = "INSERT INTO media SET media_tag='$name',FK_site='$siteid',FK_createdby='".$_SESSION[aid]."',FK_updatedby='".$_SESSION[aid]."',media_type='$type',media_size='$size'";
 //		print $query."<br>";
 		db_query($query);
 //		print mysql_error()."<br>";
 		
 		$media_id = lastid();
-		log_entry("media_upload","$auser uploaded file: $name, id: $media_id, to site $site",$site);
+		log_entry("media_upload","$_SESSION[auser] uploaded file: $name, id: $media_id, to site $site",$site,$siteid,"site");
 		return $media_id;
 	}
 }
 
 function copy_media($id,$newsitename) {
 	global $uploaddir;
-	$oldsitename = db_get_value("media","site_id","id=$id");
-	$file_name = db_get_value("media","name","id=$id");
+	$oldsitename = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=$id");
+	$file_name = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_tag","media_id=$id");
 	$sourcedir  = "$uploaddir/$oldsitename";
 	$destdir = "$uploaddir/$newsitename";
 	$old_file_path = $sourcedir."/".$file_name;
@@ -158,7 +166,7 @@ function copy_media($id,$newsitename) {
 		chmod($destdir,0775); 
 	}
 	if (file_exists($new_file_path)) {
-		$newid = db_get_value("media","id","site_id='$newsitename' && name='$file_name'");
+		$newid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='$newsitename' && media_tag='$file_name'");
 	} else {
 		$file = array();
 		$file[name] = $file_name;
@@ -171,12 +179,24 @@ function copy_media($id,$newsitename) {
 }
 
 function deleteuserfile($fileid) {
-	global $uploaddir, $auser, $site, $settings;
-	$query = "select * from media where id='$fileid'";
+	global $uploaddir, $site, $settings;
+	$query = "
+			SELECT 
+				* 
+			FROM 
+				media 
+					INNER JOIN
+				slot
+					ON
+				media.FK_site = slot.FK_site
+			WHERE 
+				media_id='$fileid'
+	";
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
-	$a[name] = urldecode($a[name]);
-	$file_path = $uploaddir."/".$a[site_id]."/".$a[name];
+	$a[media_tag] = urldecode($a[media_tag]);
+	$siteObj =& new site($a[slot_name]);
+	$file_path = $uploaddir."/".$siteObj->getField("name")."/".$a[media_tag];
 //	$file_path = "../segue_userfiles/afranco/close2.gif";
 //	print "file = \"$file_path\" <br>";
 	if (file_exists($file_path)) {
@@ -185,17 +205,17 @@ function deleteuserfile($fileid) {
 		$success = unlink($file_path);
 //		print "success = $success <br>";
 		if ($success) {
-			$query = "DELETE FROM media WHERE id='$fileid' LIMIT 1";
+			$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
 			db_query($query);
-			log_entry("media_delete","$auser deleted file: ".$a[name].", id: $fileid, from site ".$a[site_id],$a[site_id]);
+			log_entry("media_delete","$_SESSION[auser] deleted file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name"),$siteObj->name,$siteObj->id,"site");
 		} else {
-			log_entry("media_error","Delete failed of file: ".$a[name].", id: $fileid, from site ".$a[site_id]." by $auser",$a[site_id]);
+			log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $_SESSION[auser]",$siteObj->name,$siteObj->id,"site");
 			error("File could not be Deleted");
 		}
 	} else {
-		log_entry("media_error","Delete failed of file: ".$a[name].", id: $fileid, from site ".$a[site_id]." by $auser. File does not exist. Removed entry.",$a[site_id]);
+		log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $_SESSION[auser]. File does not exist. Removed entry.",$siteObj->name,$siteObj->id,"site");
 		error("File does not exist. Its Entry was deleted");
-		$query = "DELETE FROM media WHERE id='$fileid' LIMIT 1";
+		$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
 		db_query($query);
 	}
 }
@@ -281,10 +301,35 @@ function spchars($string) {
 	return htmlspecialchars(stripslashes($string),ENT_QUOTES);
 }
 
-function log_entry($type,$content,$site="",$section="",$page="",$story="") {
-	global $dbhost, $dbuser,$dbpass, $dbdb, $auser, $luser;
+function log_entry($type,$content,$site=0,$siteunit=0,$siteunit_type="site") {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+	
+	if ($site) {
+		$query = " 
+			SELECT 
+				slot_id
+			FROM
+				slot
+			WHERE
+				slot_name = '$site'
+		";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		$slot_id = "'".$a[slot_id]."'";
+	} else {
+		$slot_id = "NULL";
+	}
+	
 	db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-	db_query("insert into logs set type='$type',content='$content',luser='$luser',auser='$auser',site='$site',section='$section',page='$page',story='$story'");
+	db_query("insert into log set 
+		log_type='$type',
+		log_desc='$content',
+		FK_luser='".$_SESSION[lid]."',
+		FK_auser='".$_SESSION[aid]."',
+		FK_slot=$slot_id,
+		FK_siteunit='$siteunit',
+		log_siteunit_type='$siteunit_type'
+	");
 }
 
 function htmlbr($string) {
@@ -295,17 +340,33 @@ function sitenamevalid($name) {
 	// sitenamevalid doen't really check if the sitename is valid and throws errors.
 	// its purpose needs to be clarified and the function rewritten
 	
-/*	global $auser,$atype,$classes,$ltype, $settings;
-	$auser = strtolower($auser);
+/*	global $_SESSION[auser],$atype,$classes,$ltype, $settings;
+	$_SESSION[auser] = strtolower($_SESSION[auser]);
 	$name = strtolower($name);
-	if ($name == $auser) return 1;
+	if ($name == $_SESSION[auser]) return 1;
 	if ($ltype=='admin') return 1;
 	// look at the classes list.. if the site is in the classes list, then it's valid
 // 	print "$atype -- $name"; 
 // 	print_r($classes); 
-	if ($settings[type]=="other" && $auser==$settings[addedby]) return 1; 
+	if ($settings[type]=="other" && $_SESSION[auser]==$settings[addedby]) return 1; 
 	if ($atype == 'prof' && is_array($classes[$name])) return 1;
-	if ($atype == 'prof' && db_line_exists("classgroups","name='$name' and owner='$auser'")) return 1;
+	if ($atype == 'prof') {
+		$query = "
+SELECT
+	classgroup_id
+FROM
+	classgroup
+		INNER JOIN
+	user
+		ON FK_owner = user_id AND user_uname = '$_SESSION[auser]'
+WHERE
+	classgroup_name = '$name'
+";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		if (count($a) > 0)
+			return 1;			
+	 }
 	
 	return 0;
 */
@@ -320,13 +381,24 @@ function insite($site,$section,$page=0,$story=0) {
 	return $ok;
 }
 
+
+$_isgroup_cache = array();
 function isgroup ($group) {
-	global $auser;
-	$r = db_query("select * from classgroups where name='$group'");
+	global $_isgroup_cache;
+	if (isset($_isgroup_cache[$group])) return $_isgroup_cache[$group];
+	$query = ("SELECT classgroup_id FROM classgroup WHERE classgroup_name='$group'");
+	$r = db_query($query);
 	if (db_num_rows($r)) {
 		$a = db_fetch_assoc($r);
-		return explode(",",$a[classes]);
+		$query = "SELECT class_id FROM class INNER JOIN classgroup ON classgroup_id = ".$a[classgroup_id];
+		$r = db_query($query);
+		$temp_c = array();
+		while ($a = db_fetch_assoc($r))
+			$temp_c[] = generateCourseCode($a[class_id]);
+		$_isgroup_cache[$group] = true;
+		return $temp_c;
 	}
+	$_isgroup_cache[$group] = false;
 	return 0;
 }
 
@@ -340,7 +412,7 @@ function currentsemester () {
 	}elseif (($currmonth>1)&&($currmonth<6)){
 	$semester='s';
 	}elseif (($currmonth>5)&&($currmonth<9)){
-	$semester='ls';
+	$semester='l';
 	}else{
 	$semester='f';
 	}
@@ -350,15 +422,22 @@ function currentsemester () {
 function semorder($semester) {
 	if ($semester == "w") $order = 1;
 	else if ($semester == "s") $order = 2;
-	else if ($semester == "ls")	$order = 3;
+	else if ($semester == "l")	$order = 3;
 	else if ($semester == "f") $order = 4;
 	return $order;
 }
 
 function inclassgroup($class) {
-	$query = "select * from classgroups where classes like '%$class%'";
+	$query = "
+SELECT
+	classgroup_name
+FROM
+	classgroup
+		INNER JOIN
+	class ON classgroup_id = FK_classgroup AND ".generateTermsFromCode($class)."
+";
 	$r = db_query($query);
-	if (db_num_rows($r)) { $a = db_fetch_assoc($r); return $a[name]; }
+	if (db_num_rows($r)) { $a = db_fetch_assoc($r); return $a[classgruop_name]; }
 	return 0;
 }
 
@@ -510,7 +589,7 @@ function handlestoryorder($stories,$order) {
 /*  */
 /* function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) { */
 /* 	// $action can have value MOVE or COPY */
-/* 	global $auser; */
+/* 	global $_SESSION[auser]; */
 /* 	$action = strtolower($action); */
 /* //	print "--------------------------<br>"; */
 /* //	print "action = $action<br>parttype = $parttype<br>id = $id<br>newparentid = $newparentid<br>isSubCall = $isSubCall<br>"; */
@@ -547,9 +626,9 @@ function handlestoryorder($stories,$order) {
 /*  */
 /* 	// Log the move if this is not part of a larger move call */
 /* 	if (!$isSubCall) { */
-/* 		if ($parttype == 'story') log_entry("$action_story",$newparent[site_id],$newparent[section_id],$newparentid,"$auser MOVED story $id FROM site $part[site_id], section $part[section_id], page $part[page_id]  TO site $newparent[site_id], section $newparent[section_id], page $newparentid"); */
-/* 		if ($parttype == 'page') log_entry("$action_page",$newparent[site_id],$newparent[section_id],$id,"$auser MOVED page $id FROM site $part[site_id], section $part[section_id]  TO site $newparent[site_id], section $newparent[section_id]"); */
-/* 		if ($parttype == 'section') log_entry("$action_section",$newparent[site_id],$id,"","$auser MOVED section $id FROM site $part[site_id] TO site $newparent[site_id]"); */
+/* 		if ($parttype == 'story') log_entry("$action_story",$newparent[site_id],$newparent[section_id],$newparentid,"$_SESSION[auser] MOVED story $id FROM site $part[site_id], section $part[section_id], page $part[page_id]  TO site $newparent[site_id], section $newparent[section_id], page $newparentid"); */
+/* 		if ($parttype == 'page') log_entry("$action_page",$newparent[site_id],$newparent[section_id],$id,"$_SESSION[auser] MOVED page $id FROM site $part[site_id], section $part[section_id]  TO site $newparent[site_id], section $newparent[section_id]"); */
+/* 		if ($parttype == 'section') log_entry("$action_section",$newparent[site_id],$id,"","$_SESSION[auser] MOVED section $id FROM site $part[site_id] TO site $newparent[site_id]"); */
 /* 	} */
 /* 	 */
 /* 	// if MOVING remove the reference to the part in the old parent's array */
@@ -614,10 +693,10 @@ function handlestoryorder($stories,$order) {
 /* 	 */
 /* 	// Update the part's fields if MOVING, if COPYING insert into new row */
 /* 	if ($action == "move") {	// MOVE */
-/* 		$query = "update $parttable set editedby='$auser',";  */
+/* 		$query = "update $parttable set editedby='$_SESSION[auser]',";  */
 /* 		$where = " where id='$id'"; */
 /* 	} else {	// COPY */
-/* 		$query = "insert into $parttable set addedby='$auser',addedtimestamp=NOW(),";  */
+/* 		$query = "insert into $parttable set addedby='$_SESSION[auser]',addedtimestamp=NOW(),";  */
 /* 		$where = ""; */
 /* 	} */
 /* 			 */
@@ -678,7 +757,7 @@ function handlestoryorder($stories,$order) {
 /*  */
 /* 	$query .= implode(",",$chg); */
 /* 	if (count($chg)) db_query($query.$where); */
-/* //	print $query.$where."<BR>"; */
+/* //	print $query.$where."BR>"; */
 /* //	print mysql_error()."<br>"; */
 /*  */
 /* 	// Make sure that we have the correct new ID */
@@ -723,12 +802,12 @@ function handlestoryorder($stories,$order) {
 /* function copySite($orig,$dest) { */
 /* 	// This function does not support the copying of userfiles in this implementation. */
 /*  */
-/* 	global $auser; */
+/* 	global $_SESSION[auser]; */
 /* 	$sections = decode_array(db_get_value("sites","sections","name='$orig'")); */
 /* 	$nsections = array(); */
 /* 	foreach ($sections as $s) { */
 /* 		$sa = db_get_line("sections","id=$s"); */
-/* 		$squery = "insert into sections set addedby='$auser', addedtimestamp=NOW(),"; */
+/* 		$squery = "insert into sections set addedby='$_SESSION[auser]', addedtimestamp=NOW(),"; */
 /* 		$schg = array(); */
 /* 		$schg[] = "site_id='$dest'"; */
 /* 		$schg[] = "title='$sa[title]'"; */
@@ -752,7 +831,7 @@ function handlestoryorder($stories,$order) {
 /* 		$npages = array(); */
 /* 		foreach ($pages as $p) { */
 /* 			$pa = db_get_line("pages","id=$p"); */
-/* 			$pquery = "insert into pages set addedby='$auser', addedtimestamp=NOW(),"; */
+/* 			$pquery = "insert into pages set addedby='$_SESSION[auser]', addedtimestamp=NOW(),"; */
 /* 			$pchg = array(); */
 /* 			$pchg[] = "site_id='$dest'"; */
 /* 			$pchg[] = "section_id='$section'"; */
@@ -780,7 +859,7 @@ function handlestoryorder($stories,$order) {
 /* 			$nstories = array(); */
 /* 			foreach ($stories as $st) { */
 /* 				$sta = db_get_line("stories","id=$st"); */
-/* 				$stquery = "insert into stories set addedby='$auser', addedtimestamp=NOW(),"; */
+/* 				$stquery = "insert into stories set addedby='$_SESSION[auser]', addedtimestamp=NOW(),"; */
 /* 				$stchg = array(); */
 /* 				$stchg[] = "site_id='$dest'"; */
 /* 				$stchg[] = "section_id='$section'"; */

@@ -11,7 +11,9 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 // include all necessary files 
 include("includes.inc.php"); 
 include("sniffer.inc.php");
+include("objects/objects.inc.php");
  
+//$siteObj = new site ($site);
 //if ($ltype != 'admin') exit; 
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb); 
@@ -21,32 +23,66 @@ if ($delete) {
 	printerr2(); 
 } 
 
+$sitelist = array();
+
 $w = array(); 
 if ($ltype == 'admin') { 
-	if ($site) $w[]="site_id='$site'"; 
-	else if ($all) $w[]="site_id like '%'"; 
-	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
-if (count($w)) $where = " where ".implode(" and ",$w); 
+	if ($_REQUEST[site]) 
+		$w[]="slot_name='$_REQUEST[site]'"; 
+	else if ($all) $w[]="slot_name like '%'"; 
+	else $w[]="slot_name='$settings[site]'"; 
+} else $w[]="slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'"; 
+if (count($w)) $where = " WHERE ".implode(" and ",$w); 
 
-$query = "select * from media$where"; 
+$query = "
+	SELECT 
+		media_id,
+		media_tag,
+		media_type,
+		media_size,
+		slot_name
+	FROM 
+		media
+			INNER JOIN
+		slot
+			ON media.FK_site = slot.FK_site		
+	$where AND media_location = 'local'
+"; 
 $r = db_query($query); 
 
 $totalsize = 0;
 while ($a = db_fetch_assoc($r)) {
-	$totalsize = $totalsize + $a[size];
+	$totalsize = $totalsize + $a[media_size];
 }
  
 if ($upload) { 
-	$query = "select * from media where site_id='".(($site)?"$site":"$settings[site]")."'"; 
+	$query = "
+		SELECT 
+			media_tag,
+			media_id,
+			media_size,
+			media_type,
+			slot_name,
+			user_fname,
+			user_uname
+		FROM 
+			media
+				INNER JOIN
+			slot
+				ON media.FK_site = slot.FK_site
+				INNER JOIN
+			user
+				ON media.FK_createdby = user_id
+		WHERE
+			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."' AND media_location = 'local'"; 
 //	print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	$nameUsed = 0; 
 	while ($a = db_fetch_assoc($r)) { 
-		if ($a[name] == $filename) {
+		if ($a[media_tag] == $filename) {
 			$nameUsed = 1;
-			$usedId = $a[id];
+			$usedId = $a[media_id];
 		}
 	} 
 	if ($_FILES['file']['tmp_name'] == 'none') { 
@@ -54,12 +90,12 @@ if ($upload) {
 	} else if (($_FILES[file][size] + $totalsize) > $userdirlimit) {
 		$upload_results = "<li>There is not enough room in your directory for $filename."; 
 	} else if ($overwrite && $nameUsed) {
-		$newID = copyuserfile($_FILES['file'],(($site)?"$site":"$settings[site]"),1,$usedId,0); 
+		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
 	} else { 
-		$newID = copyuserfile($_FILES['file'],(($site)?"$site":"$settings[site]"),0,0); 
+		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
 	}	 
 } 
@@ -71,49 +107,105 @@ if ($clear) {
 		$name = ""; 
 	} else {
 		$name = "";
+		$user = $_REQUEST[user];
+		$site = $_REQUEST[site];
 	}
 } 
 
 $w = array(); 
 if ($ltype == 'admin') { 
-	if ($site) $w[]="site_id='$site'"; 
-	else if ($all) $w[]="site_id like '%'"; 
-	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
+	if ($site) $w[]="slot_name='$site'"; 
+	else if ($all) $w[]="slot_name like '%'"; 
+	else $w[]="slot_name='$settings[site]'"; 
+} else $w[]="slot_name='".(($site)?"$site":"$settings[site]")."'"; 
 if (count($w)) $where = " where ".implode(" and ",$w); 
 
-$query = "select * from media$where"; 
+$query = "
+	SELECT 
+		media_tag,
+		media_id,
+		media_size,
+		media_type,
+		slot_name,
+		user_fname,
+		user_uname
+
+	FROM 
+		media
+			INNER JOIN
+		slot
+			ON media.FK_site = slot.FK_site
+			INNER JOIN
+		user
+			ON media.FK_createdby = user_id
+	$where AND media_location = 'local'
+"; 
 $r = db_query($query); 
 
 $totalsize = 0;
 while ($a = db_fetch_assoc($r)) {
-	$totalsize = $totalsize + $a[size];
+	$totalsize = $totalsize + $a[media_size];
 }
 
-if (!isset($order)) $order = "name asc"; 
-$orderby = " order by $order"; 
+if (!isset($order)) $order = "media_tag asc"; 
+$orderby = " ORDER BY $order"; 
  
 $w = array(); 
 if ($ltype == 'admin') { 
-	if ($site) $w[]="site_id='$site'"; 
-	else if ($all) $w[]="site_id like '%'"; 
-	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
-if ($user) $w[]="addedby like '%$user%'"; 
-if ($name) $w[]="name like '%$name%'"; 
+	if ($site) $w[]="slot_name='$site'"; 
+	else if ($all) $w[]="slot_name like '%'"; 
+	else $w[]="slot_name='$settings[site]'"; 
+} else $w[]="slot_name='".(($site)?"$site":"$settings[site]")."'"; 
+if ($user) $w[]="user_uname LIKE '%$user%'"; 
+if ($name) $w[]="media_tag LIKE '%$name%'"; 
  
-if (count($w)) $where = " where ".implode(" and ",$w); 
+if (count($w)) $where = " WHERE ".implode(" AND ",$w); 
  
-$numrows=db_num_rows(db_query("select * from media$where")); 
+$query = "	SELECT 
+		COUNT(media_id) AS media_count
+	FROM 
+		media
+			INNER JOIN
+		slot
+			ON media.FK_site = slot.FK_site
+			INNER JOIN
+		user
+			ON media.FK_createdby = user_id
+	$where AND media_location = 'local'";
+$r=db_query($query); 
+$a = db_fetch_assoc($r);
+$numrows = $a[media_count];
 $numperpage = 20; 
  
  
 if (!isset($lowerlimit)) $lowerlimit = 0; 
 if ($lowerlimit < 0) $lowerlimit = 0; 
  
-$limit = " limit $lowerlimit,$numperpage"; 
+$limit = " LIMIT $lowerlimit,$numperpage"; 
  
-$query = "select * from media$where$orderby$limit"; 
+$query = "
+	SELECT 
+		media_tag,
+		media_id,
+		media_size,
+		date_format(media_updated_tstamp, '%M %e, %Y %k:%i') AS media_updated_tstamp_text,
+		media_updated_tstamp,
+		media_type,
+		slot_name,
+		user_fname,
+		user_uname
+	FROM 
+		media
+			INNER JOIN
+		slot
+			ON media.FK_site = slot.FK_site
+			INNER JOIN
+		user
+			ON media.FK_createdby = user_id
+	$where AND media_location = 'local'
+	$orderby
+	$limit
+"; 
  
 $r = db_query($query); 
  
@@ -261,7 +353,7 @@ function changePage(lolim) {
 					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
 					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
-						print "<input type=file name='file' class=textfield style='color: #FFF'>";
+						print "<input type=file name='file' class=textfield style='color: #000'>";
 						print "<input type=submit value='Upload'>";
 					} else {
 						print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";
@@ -273,7 +365,9 @@ function changePage(lolim) {
 					<?
 					$dirtotal = convertfilesize($totalsize);
 					if ($all) {
-						$dirlimit_B = db_num_rows(db_query("select * from sites"))*$userdirlimit;
+						$res = db_query("SELECT COUNT(site_id) AS num_sites FROM site");
+						$b = db_fetch_assoc($res);
+						$dirlimit_B = $b['num_sites']*$userdirlimit;
 					} else
 						$dirlimit_B = $userdirlimit;
 					$dirlimit = convertfilesize($dirlimit_B);
@@ -390,61 +484,61 @@ if (1) {
 	<th> </th> 
 <? 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='id asc') print "id desc"; 
-	else print "id asc"; 
+	if ($order =='media_id asc') print "media_id desc"; 
+	else print "media_id asc"; 
 	print "')\" style='color: #000'>ID"; 
-	if ($order =='id asc') print " &or;"; 
-	if ($order =='id desc') print " &and;";	 
+	if ($order =='media_id asc') print " &or;"; 
+	if ($order =='media_id desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='name asc') print "name desc"; 
-	else print "name asc"; 
+	if ($order =='media_tag asc') print "media_tag desc"; 
+	else print "media_tag asc"; 
 	print "')\" style='color: #000'>File Name"; 
-	if ($order =='name asc') print " &or;"; 
-	if ($order =='name desc') print " &and;";	 
+	if ($order =='media_tag asc') print " &or;"; 
+	if ($order =='media_tag desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='type asc') print "type desc"; 
-	else print "type asc"; 
+	if ($order =='media_type asc') print "media_type desc"; 
+	else print "media_type asc"; 
 	print "')\" style='color: #000'>Type"; 
-	if ($order =='type asc') print " &or;"; 
-	if ($order =='type desc') print " &and;";	 
+	if ($order =='media_type asc') print " &or;"; 
+	if ($order =='media_type desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='size asc') print "size desc"; 
-	else print "size asc"; 
+	if ($order =='media_size asc') print "media_size desc"; 
+	else print "media_size asc"; 
 	print "')\" style='color: #000'>Size"; 
-	if ($order =='size asc') print " &or;"; 
-	if ($order =='size desc') print " &and;";	 
+	if ($order =='media_size asc') print " &or;"; 
+	if ($order =='media_size desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	if ($ltype == 'admin') { 
 		print "<th><a href=# onClick=\"changeOrder('"; 
-		if ($order =='site_id asc') print "site_id desc"; 
-		else print "site_id asc"; 
+		if ($order =='slot_name asc') print "slot_name desc"; 
+		else print "slot_name asc"; 
 		print "')\" style='color: #000'>Site"; 
-		if ($order =='site_id asc') print " &or;"; 
-		if ($order =='site_id desc') print " &and;";	 
+		if ($order =='slot_name asc') print " &or;"; 
+		if ($order =='slot_name desc') print " &and;";	 
 		print "</a></th>"; 
 	} 
  
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='addedtimestamp asc') print "addedtimestamp desc"; 
-	else print "addedtimestamp asc"; 
-	print "')\" style='color: #000'>Date Created"; 
-	if ($order =='addedtimestamp asc') print " &or;"; 
-	if ($order =='addedtimestamp desc') print " &and;";	 
+	if ($order =='media_updated_tstamp asc') print "media_updated_tstamp desc"; 
+	else print "media_updated_tstamp asc"; 
+	print "')\" style='color: #000'>Date Modified"; 
+	if ($order =='media_updated_tstamp asc') print " &or;"; 
+	if ($order =='media_updated_tstamp desc') print " &and;";	 
 	print "</a></th>"; 
 	 
 	print "<th><a href=# onClick=\"changeOrder('"; 
-	if ($order =='addedby asc') print "addedby desc"; 
-	else print "addedby asc"; 
+	if ($order =='user_uname asc') print "user_uname desc"; 
+	else print "user_uname asc"; 
 	print "')\" style='color: #000'>Added by User:"; 
-	if ($order =='addedby asc') print " &or;"; 
-	if ($order =='addedby desc') print " &and;";	 
+	if ($order =='user_uname asc') print " &or;"; 
+	if ($order =='user_uname desc') print " &and;";	 
 	print "</a></th>"; 
 ?>	 
 	<th> </th> 
@@ -456,12 +550,12 @@ $yesterday = date(Ymd)-1;
  
 if (db_num_rows($r)) { 
 	while ($a=db_fetch_assoc($r)) { 
-		$a[name] = urldecode($a[name]); 
-		$a[size] = convertfilesize($a[size]); 
+		$a[media_tag] = urldecode($a[media_tag]); 
+		$a[media_size] = convertfilesize($a[media_size]); 
 		
-		$url = $uploadurl."/".$a[site_id]."/".rawurlencode($a[name]); 
-		if ($a[type] == 'image') { 
-			$img_path = $uploaddir."/".$a[site_id]."/".$a[name];
+		$url = $uploadurl."/".$a[slot_name]."/".rawurlencode($a[media_tag]); 
+		if ($a[media_type] == 'image') { 
+			$img_path = $uploaddir."/".$a[slot_name]."/".$a[media_tag];
 			$img_url = $url;
 		} else { 
 			$img_path = "images/file.gif";
@@ -483,20 +577,20 @@ if (db_num_rows($r)) {
 		print "<td class=td$color>";
 			if ($comingfrom != "viewsite") {
                 if ($editor == 'none') {
-					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
+					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
                 }
                 else if ($editor == 'text') {
-                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
+                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
                 }
                 else {
-                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[site_id]."','".$a[name]."','".$a[id]."')\">";
+                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[slot_name]."','".$a[media_tag]."','".$a[media_id]."')\">";
                 }   
             } else print " &nbsp; ";
 //			print "<input type=button name='use' value='use' onClick=\"useFile()\">";  
 		print "</td>"; 
  
 		print "<td class=td$color>"; 
-			if ($a[type]=='image') { 
+			if ($a[media_type]=='image') { 
 				$windowSize[x] = $img_size[x]+15; 
 				$windowSize[y] = $img_size[y]+15; 
 //				print "<a href=# onClick=\"window.open('$url','imagewindow',config='width=$img_size[x],height=$img_size[y],resizeable=1,scrollbars=0')\">"; 
@@ -508,39 +602,39 @@ if (db_num_rows($r)) {
 		print "</td>"; 
  
 		print "<td class=td$color>"; 
-			print "$a[id]"; 
+			print "$a[media_id]"; 
 		print "</td>"; 
 		 
 		print "<td class=td$color style='text-align: left'>"; 
-			print "$a[name]"; 
+			print "$a[media_tag]"; 
 		print "</td>"; 
  
 		print "<td class=td$color>"; 
-			print "$a[type]"; 
+			print "$a[media_type]"; 
 		print "</td>"; 
  
 		print "<td class=td$color>"; 
-			print "$a[size]"; 
+			print "$a[media_size]"; 
 		print "</td>"; 
 		 
 		if ($ltype == 'admin') { 
 			print "<td class=td$color>"; 
-			print "$a[site_id]"; 
+			print "$a[slot_name]"; 
 		print "</td>"; 
 		} 
  
 		print "<td class=td$color><nobr>"; 
-			if (strncmp($today, $a[addedtimestamp], 8) == 0 || strncmp($yesterday, $a[addedtimestamp], 8) == 0) print "<b>"; 
-			print $a[addedtimestamp]; 
-			if (strncmp($today, $a[addedtimestamp], 8) == 0 || strncmp($yesterday, $a[addedtimestamp], 8) == 0) print "</b>"; 
+			if (strncmp($today, $a[media_updated_tstamp], 8) == 0 || strncmp($yesterday, $a[media_updated_tstamp], 8) == 0) print "<b>"; 
+			print $a[media_updated_tstamp_text]; 
+			if (strncmp($today, $a[media_updated_tstamp], 8) == 0 || strncmp($yesterday, $a[media_updated_tstamp], 8) == 0) print "</b>"; 
 		print "</nobr></td>"; 
 		 
 		print "<td class=td$color>"; 
-			print "$a[addedby]"; 
+			print "$a[user_fname] ($a[user_uname])"; 
 		print "</td>"; 
 		 
 		print "<td class=td$color>"; 
-			print "<input type=button value='delete' onClick=\"deleteFile('".$a[id]."','".$a[name]."')\">";  
+			print "<input type=button value='delete' onClick=\"deleteFile('".$a[media_id]."','".$a[media_tag]."')\">";  
 //			print "<input type=button name='delete' value='delete'>";  
 		print "</td>"; 
  
@@ -565,3 +659,30 @@ if (db_num_rows($r)) {
 </form> 
  
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div> 
+
+<?
+
+// debug output -- handy :)
+/* print "<pre>"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
+
+/* if (is_object($thisPage)) { */
+/* 	print "\n\n"; */
+/* 	print "thisPage:\n"; */
+/* 	print_r($thisPage); */
+/* } else if (is_object($thisSection)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSection:\n"; */
+/* 	print_r($thisSection); */
+/* } else if (is_object($thisSite)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSite:\n"; */
+/* 	print_r($thisSite); */
+/* } */
+print "</pre>";
+?>

@@ -8,6 +8,8 @@ include("objects/objects.inc.php");
 ob_start();		// start the output buffer so we can use headers if needed
 session_start();// start the session manager :) -- important, as we just learned
 
+header("Content-type: text/html; charset=utf-8");
+
 if (ereg("^login",getenv("QUERY_STRING"))) {
 	if (session_id()) {
 		session_unset();
@@ -35,7 +37,7 @@ if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
 			session_unregister("sectionObj");
 			session_unregister("pageObj");
 			session_unregister("storyObj");
-		}
+		}	
 		unset($_SESSION[settings],$_SESSION[siteObj],$_SESSION[sectionObj],$_SESSION[pageObj],$_SESSION[storyObj]);
 	}
 }
@@ -53,6 +55,8 @@ if (ereg("\.",$action)) $action="no_action";	// security to prevent someone from
 
 // include all necessary files
 include("includes.inc.php");
+
+//echo "<pre>";
 
 // if we are logged in, get a list of classes the user has
 // but only if login method was LDAP.. otherwise don't waste the time
@@ -102,9 +106,9 @@ if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
 // set up theme, header,footer and navlinks
 if ($_REQUEST[site]) {						// we are in a site
 	
-	$thisSite = new site($_REQUEST[site]);
-	$thisSite->fetchFromDB();
-	$thisSite->buildPermissionsArray();
+	$thisSite =& new site($_REQUEST[site]);
+	$thisSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_REQUEST[section],$_REQUEST[page]);
+//	$thisSite->buildPermissionsArray(1,1);
 	
 	$site_owner = $thisSite->getField("addedby");
 	if ($_REQUEST[theme]) $sid .= "&theme=$_REQUEST[theme]";
@@ -124,14 +128,16 @@ if ($_REQUEST[site]) {						// we are in a site
 
 }
 if ($_REQUEST[section]) {
-	$thisSection = new section($thisSite->name,$_REQUEST[section]);
-	$thisSection->fetchFromDB();
-	$thisSection->buildPermissionsArray();
+//	$thisSection =& new section($thisSite->name,$_REQUEST[section],&$thisSite);
+	$thisSection =& $thisSite->sections[$_REQUEST[section]];
+//	$thisSection->fetchFromDB();
+//	$thisSection->buildPermissionsArray();
 }
 if ($_REQUEST[page]) {
-	$thisPage = new page($thisSite->name,$thisSection->id,$_REQUEST[page]);
-	$thisPage->fetchFromDB();
-	$thisPage->buildPermissionsArray();
+//	$thisPage =& new page($thisSite->name,$thisSection->id,$_REQUEST[page],&$thisSection);
+	$thisPage =& $thisSite->sections[$_REQUEST[section]]->pages[$_REQUEST[page]];
+//	$thisPage->fetchFromDB();
+//	$thisPage->buildPermissionsArray();
 }
 
 // compatibility:
@@ -148,6 +154,8 @@ if (!$loginerror) {
 		else include("no_action.inc.php");		// action not implemented yet or doesn't exist :(
 	}
 }
+
+//echo "</pre>";
 
 // output any errors that may exist to the content variables
 printerr();
@@ -198,29 +206,62 @@ if (!ini_get("register_globals")) {
 	$_ign = array("editors","obj","settings","siteObj","sectionObj","pageObj","storyObj",
 				"auser","lpass","afname","aemail","atype","amethod","lmethod","ltype",
 				"lemail","lfname","luser","lid","aid");
-	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = $$n; }
+	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = &$$n; }
 }
 
 // debug output -- handy :)
 /* print "<pre>"; */
-/* print "session:\n"; */
-/* print_r($_SESSION); */
-/* print "\n\n"; */
 /* print "request:\n"; */
 /* print_r($_REQUEST); */
-/* if (is_object($thisPage)) { */
-/* 	print "\n\n"; */
-/* 	print "thisPage:\n"; */
-/* 	print_r($thisPage); */
-/* } else if (is_object($thisSection)) { */
-/* 	print "\n\n"; */
-/* 	print "thisSection:\n"; */
-/* 	print_r($thisSection); */
-/* } else if (is_object($thisSite)) { */
-/* 	print "\n\n"; */
-/* 	print "thisSite:\n"; */
-/* 	print_r($thisSite); */
-/* } */
-/* print "</pre>"; */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION[storyObj]->editors); */
+/* print_r($_SESSION[storyObj]->permissions); */
+/* print "\n\n"; */
+
+//if ($thisPage) print_r($thisPage);
+
+/*
+ if (is_object($thisPage)) { 
+ 	print "\n\n"; 
+ 	print "thisPage:\n"; 
+ 	print_r($thisPage); 
+ } /*else if (is_object($thisSection)) { 
+	print "\n\n"; 
+ 	print "thisSection:\n"; 
+ 	print_r($thisSection); 
+ } else if (is_object($thisSite)) { 
+ 	print "\n\n"; 
+ 	print "thisSite:\n"; 
+ 	print_r($thisSite); 
+ } */
+ 
+/* print "</pre>" */;
+
+
+// debug output -- handy :)
+// print "<pre>"; 
+/*  print "session:\n";  */
+/*  print_r($_SESSION);  */
+/*  print "\n\n";  */
+/*  print "request:\n";  */
+/*  print_r($_REQUEST);  */
+/*  if (is_object($thisSite)) {  */
+/*  	print "\n\n";  */
+/*  	print "****************************** ***************  thisSite:\n";  */
+/*  	print_r($thisSite);  */
+/*  }  */
+/*  if (is_object($thisPage)) {  */
+/*  	print "\n\n";  */
+/*  	print "*************** *************** *************** thisPage:\n";  */
+/*  	print_r($thisPage);  */
+/*  }  */
+/*  if (is_object($thisSection)) {  */
+/*  	print "\n\n";  */
+/*  	print "***************************** *************** * thisSection:\n";  */
+/*  	print_r($thisSection);  */
+/*  }  */
+// print "</pre>"; 
+//print "<p>Total Queries: ".$_totalQueries."</p>";
 
 ?>

@@ -72,7 +72,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 		"comingFrom" => $_REQUEST[comingFrom]
 	);
 	
-	$_SESSION[storyObj] = new story($thisSite->name,$thisSection->id,$thisPage->id);
+	$_SESSION[storyObj] =& new story($thisSite->name,$thisSection->id,$thisPage->id, 0,&$thisPage);
 	
 	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > " . $thisPage->getField("title") . " > ";
 	
@@ -94,12 +94,13 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 	
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[storyObj]->fetchFromDB($_REQUEST[edit_story]);
+//		$_SESSION[storyObj]->getPermissions();
 /* 		$_SESSION[storyObj]->fetchDown(1); */
 		$_SESSION[storyObj]->buildPermissionsArray();
 		
 		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
 			$_SESSION[settings][libraryfileid] = $_SESSION[storyObj]->getField("longertext");
-			$_SESSION[settings][libraryfilename] = db_get_value("media","name","id=".$_SESSION[settings][libraryfileid]);
+			$_SESSION[settings][libraryfilename] = db_get_value("media","media_tag","media_id=".$_SESSION[settings][libraryfileid]);
 		}
 	}
 	
@@ -167,11 +168,11 @@ if ($_REQUEST[save]) {
 
 		if ($_SESSION[settings][add]) {
 			$_SESSION[storyObj]->insertDB();
-			log_entry("add_story","$_SESSION[auser] added content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->owning_section,$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->id);
+			log_entry("add_story","$_SESSION[auser] added content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->id,"story");
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[storyObj]->updateDB();
-			log_entry("edit_story","$_SESSION[auser] edited content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->owning_section,$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->id);
+			log_entry("edit_story","$_SESSION[auser] edited content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->id,"story");
 		}
 		
 /* 			log_entry("add_story",$_SESSION[settings][site],$_SESSION[settings][section],$page,"$auser added content id $newid to page $_SESSION[settings][page] in section $_SESSION[settings][section] of site $_SESSION[settings][site]"); */
@@ -257,4 +258,6 @@ if ($_SESSION[settings][step] == 4) {
 //add_link(leftnav,'','',"$variables");
 //printc("$variables");
 //------------------------------------
-
+/* print "<pre>"; */
+/* print_r($_SESSION[storyObj]->data); */
+/* print "</pre>"; */
