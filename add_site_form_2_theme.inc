@@ -76,14 +76,19 @@ printc("<input type=hidden name='step'>");
 
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");
-	printc("<input type=submit value='Cancel' name='cancel'>\n");
+	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
 printc("</td><td width=50% align=right>");
-	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
-	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
+	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
 printc("</td><td align=right>");
 	if ($_SESSION[settings][edit]) printc("<input type=submit name=save value='Save Changes'>\n");
 printc("</td></tr></table>");
+printc("<input type=hidden value='0' name='cancel'>");
+printc("<input type=hidden value='0' name='prevbutton'>");
+printc("<input type=hidden value='0' name='nextbutton'>");
+
+
 if ($_SESSION[settings][add]) printc("<div class=title>Add Site</div>");
 if ($_SESSION[settings][edit]) printc("<div class=title>Edit Site</div>");
 printc("<br>");
@@ -122,10 +127,10 @@ printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");
 
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");
-	printc("<input type=submit value='Cancel' name='cancel'>\n");
+	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
 printc("</td><td width=50% align=right>");
-	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
-	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
+	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
 printc("</td><td align=right>");
 	if ($_SESSION[settings][edit]) printc("<input type=submit name=save value='Save Changes'>\n");

@@ -17,14 +17,17 @@ else  printc("<div class=title>Edit Item \"".$_SESSION[sectionObj]->getField("ti
 
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
-	printc("<input type=submit value='Cancel' name='cancel'>\n");
+	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
 printc("</td><td width=50% align=right>");
-	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
+	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
+/* 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n"); */
 printc("</td></tr><tr><td>");
 printc("</td><td align=right>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
-
+printc("<input type=hidden value='0' name='cancel'>");
+printc("<input type=hidden value='0' name='prevbutton'>");
+printc("<input type=hidden value='0' name='nextbutton'>");
 
 if ($_SESSION[sectionObj]->getField("type")=='url' || $_SESSION[sectionObj]->getField("type")=='section') {
 	printc("<div class=title style='font-size: 14px'>Activation & Availability</div>");

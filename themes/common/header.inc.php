@@ -30,6 +30,21 @@ function submitFormLink(step) {
 	document.addform.submit();
 }
 
+function submitPrevButton() {
+	document.addform.prevbutton.value = '1';
+	document.addform.submit();
+}
+
+function submitNextButton() {
+	document.addform.nextbutton.value = '1';
+	document.addform.submit();
+}
+
+function cancelForm() {
+	document.addform.cancel.value = '1';
+	document.addform.submit();
+}
+
 function delEditor(n) {
 	if (confirm('ALERT: Removing an editor will completely remove all their permissions from every part of your site! If you wish to revoke privileges for this part only, uncheck all the associated boxes instead of removing them. Continue if you are sure you want to remove all privileges for this user.')) {		
 		f = document.addform;

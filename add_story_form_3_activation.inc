@@ -17,16 +17,17 @@ else  printc("<div class=title>Edit Content on Page \"".$thisPage->getField("tit
 
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
-	printc("<input type=submit value='Cancel' name='cancel'>\n");
+	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
 printc("</td><td width=50% align=right>");
-	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
-	if (($_SESSION[storyObj]->getField("type") == "story" && $thisPage->getField("ediscussion")) || $_SESSION[auser] == $site_owner) printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
+	if (($_SESSION[storyObj]->getField("type") == "story" && $thisPage->getField("ediscussion")) || $_SESSION[auser] == $site_owner) printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
 printc("</td><td align=right>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
-
-
+printc("<input type=hidden value='0' name='cancel'>");
+printc("<input type=hidden value='0' name='prevbutton'>");
+printc("<input type=hidden value='0' name='nextbutton'>");
 
 	printc("<div class=title style='font-size: 14px'>Activation & Availability</div>");
 
