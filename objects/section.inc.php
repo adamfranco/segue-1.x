@@ -18,8 +18,14 @@ class section extends segue {
 			"section_id"
 		),
 		"site_id" => array(
-			"section",
-			array("FK_site"),
+			"section
+				INNER JOIN
+			 site
+			 	ON section.FK_site = site.site_id
+			 	INNER JOIN
+			 slot
+				ON site.site_id = slot.FK_site",
+			array("slot_name"),
 			"section_id"
 		),
 		"type" => array(
@@ -69,7 +75,7 @@ class section extends segue {
 			"section
 				INNER JOIN
 			user
-				ON FK_createdby = user_id",
+				ON FK_updatedby = user_id",
 			array("user_uname"),
 			"section_id"
 		),
@@ -197,23 +203,102 @@ class section extends segue {
 	function fetchFromDB($id=0,$force=0) {
 		if ($id) $this->id = $id;
 		$this->tobefetched=1;
-		$this->id = $this->getField("id");
-/* 		if ($this->id) { */
-/* 			$query = "select * from sections where id=".$this->id." limit 1"; */
-/* 			$this->data = db_fetch_assoc(db_query($query)); */
-/* 			if (is_array($this->data)) { */
-/* 				$this->fetched = 1; */
-/* 				$this->buildPermissionsArray(); */
-/* 				 */
-/* 				$this->data[pages] = decode_array($this->data[pages]); */
-/* 				 */
-/* 				return true; */
-/* 			} */
-/* 		} */
-		if ($force && $this->id) {
-			foreach ($this->_allfields as $f) $this->getField($f);
-		}	
+
+		global $dbuser, $dbpass, $dbdb, $dbhost;
+		global $cfg;
+		// take this out when appropriate & replace occurences;
+		global $uploaddir;
+		
+		$this->tobefetched=1;
+		
+		//$this->id = $this->getField("id"); // why need to do this?
+		
+		if ($force) {
+			// the code below is inefficient! why fetch each field separately when we can fetch all fields at same time
+			// thus we can cut the number of queries significantly
+/*			foreach ($this->_allfields as $f) {
+				$this->getField($f);
+			}
+*/
+
+			// connect to db and initialize data array
+ 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+			$this->data = array();
+
+			// first fetch all fields that are not part of a 1-to-many relationship
+ 			$query = "
+SELECT  
+	section_type AS type, section_title AS title, section_activate_tstamp AS activatedate, section_deactivate_tstamp AS deactivatedate,
+	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
+	section_created_tstamp AS addedtimestamp,
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
+	media_tag AS url
+FROM 
+	section
+		INNER JOIN
+	user AS user_createdby
+		ON section.FK_createdby = user_createdby.user_id
+		INNER JOIN
+	user AS user_updatedby
+		ON section.FK_updatedby = user_updatedby.user_id
+		INNER JOIN
+	 site
+		ON section.FK_site = site.site_id
+		INNER JOIN
+	 slot
+		ON site.site_id = slot.FK_site
+		LEFT JOIN
+	media
+		ON FK_media = media_id
+WHERE section_id = ".$this->id;
+
+			$r = db_query($query);
+			$a = db_fetch_assoc($r);
+			array_change_key_case($a); // make all keys lower case
+			// for each field returned by the query
+			foreach ($a as $field => $value)
+				// make sure we have defined this field in the _allfields array
+				if (in_array($field,$this->_allfields)) {
+					// decode if necessary
+					if (in_array($field,$this->_encode)) 
+						$value = stripslashes(urldecode($value));
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	//				if (in_array($field,$this->_parse)) 
+	//					$value = $this->parseMediaTextForEdit($value);
+					$this->data[$field] = $value;
+					$this->fetched[$field] = 1;
+				}
+				else
+					echo "ERROR: field $field not in _allfields!!!<br>";
+			
+
+			// now fetch the sections (they are part of a 1-to-many relationship and therefore
+			// we cannot fetch them along with the other fields)			
+			$query = "
+SELECT
+	page_id
+FROM
+	section
+		INNER JOIN
+	page
+		ON section_id = FK_section
+WHERE section_id = ".$this->id."
+ORDER BY
+	page_order
+";
+
+			$r = db_query($query);
+			$this->data[pages] = array();
+			while ($a = db_fetch_assoc($r))
+				$this->data[pages][] = $a[page_id];
+
+			$this->fetched[pages] = 1;
+		}
+		
 		return $this->id;
+
 	}
 	
 	function updateDB($down=0) {

@@ -84,7 +84,7 @@ class site extends segue {
 			"site
 				INNER JOIN
 			user
-				ON FK_createdby = user_id",
+				ON FK_updatedby = user_id",
 			array("user_uname"),
 			"site_id"
 		),
@@ -177,37 +177,89 @@ class site extends segue {
 		
 		$this->tobefetched=1;
 		
-		$this->id = $this->getField("id");
+		//$this->id = $this->getField("id"); // why need to do this?
 		
 		if ($force) {
-/* 			db_connect($dbhost,$dbuser,$dbpass, $dbdb); */
-/* 			$query = "select * from sites where name='".$this->name."' limit 1"; */
-/* 			$r = db_query($query); */
-/* 			if (db_num_rows($r)) { */
-/* 				$this->data = db_fetch_assoc($r); */
-/* 				$this->fetched = 1; */
-/* 		//		$this->sections = unserialize(urldecode($this->getField("sections"))); */
-/* 				$this->id = $this->getField("id"); */
-/* 				 */
-/* 				// decode appropriate info */
-/* 				$this->data[sections] = decode_array($this->getField("sections")); */
-/* 				$this->data[header] = stripslashes(urldecode($this->data[header])); */
-/* 				$this->data[footer] = stripslashes(urldecode($this->data[footer])); */
-/* 				$this->parseMediaTextForEdit("header"); */
-/* 				$this->parseMediaTextForEdit("footer"); */
-/* 				$this->buildPermissionsArray(); */
-/* 				if (strlen($this->data[type])) $this->data[type] = 'personal'; */
-/* 				return true; */
-/* 			} */
-/* 			print "<pre>allFields: "; print_r($this->_allfields); print "</pre>"; */
-			foreach ($this->_allfields as $f) {
-//				echo $f."<br>";
+			// the code below is inefficient! why fetch each field separately when we can fetch all fields at same time
+			// thus we can cut the number of queries significantly
+/*			foreach ($this->_allfields as $f) {
 				$this->getField($f);
 			}
+*/
+
+			// connect to db and initialize data array
+ 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+			$this->data = array();
+
+			// first fetch all fields that are not part of a 1-to-many relationship
+ 			$query = "
+SELECT  site_title AS title, site_activate_tstamp AS activatedate, site_deactivate_tstamp AS deactivatedate,
+		site_active AS active, site_listed AS listed, site_theme AS theme, site_themesettings AS themesettings,
+		site_header AS header, site_footer AS footer, site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
+		user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
+
+FROM 
+	site
+		INNER JOIN
+	user AS user_createdby
+		ON FK_createdby = user_createdby.user_id
+		INNER JOIN
+	user AS user_updatedby
+		ON FK_updatedby = user_updatedby.user_id
+		INNER JOIN
+	slot
+		ON site_id = FK_site
+WHERE site_id = ".$this->id;
+
+			$r = db_query($query);
+			$a = db_fetch_assoc($r);
+			array_change_key_case($a); // make all keys lower case
+			// for each field returned by the query
+			foreach ($a as $field => $value)
+				// make sure we have defined this field in the _allfields array
+				if (in_array($field,$this->_allfields)) {
+					// decode if necessary
+					if (in_array($field,$this->_encode)) 
+						$value = stripslashes(urldecode($value));
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	//				if (in_array($field,$this->_parse)) 
+	//					$value = $this->parseMediaTextForEdit($value);
+					$this->data[$field] = $value;
+					$this->fetched[$field] = 1;
+				}
+				else
+					echo "ERROR: field $field not in _allfields!!!<br>";
+			
+
+			// now fetch the sections (they are part of a 1-to-many relationship and therefore
+			// we cannot fetch them along with the other fields)			
+			$query = "
+SELECT
+	section_id
+FROM
+	site
+		INNER JOIN
+	section
+		ON site_id = FK_site
+WHERE site_id = ".$this->id."
+ORDER BY
+	section_order
+";
+
+			$r = db_query($query);
+			$this->data[sections] = array();
+			while ($a = db_fetch_assoc($r))
+				$this->data[sections][] = $a[section_id];
+			$this->fetched[sections] = 1;
 		}
+		
 		return $this->id;
 	}
 	
+
+
 	function applyTemplate ($template) {
 		$templateObj = new site($template);
 		$templateObj->fetchDown(1);

@@ -25,6 +25,11 @@ class story extends segue {
 				INNER JOIN
 			 section
 			 	ON FK_section = section_id
+			 site
+			 	ON section.FK_site = site.site_id
+			 	INNER JOIN
+			 slot
+				ON site.site_id = slot.FK_site
 			",
 			array("FK_site"),
 			"story_id"
@@ -91,7 +96,7 @@ class story extends segue {
 			"story
 				INNER JOIN
 			user
-				ON FK_createdby = user_id",
+				ON FK_updatedby = user_id",
 			array("user_uname"),
 			"story_id"
 		),
@@ -136,7 +141,7 @@ class story extends segue {
 			 	ON FK_story = story_id
 			",
 			array("discussion_id"),
-			"story_id"
+			"discussion_order"
 		),
 		"shorttext" => array(
 			"story",
@@ -264,25 +269,105 @@ class story extends segue {
 	
 	function fetchFromDB($id=0,$force=0) {
 		if ($id) $this->id = $id;
-		if ($this->id) {
-			$this->tobefetched=1;
-			$this->id = $this->getField("id");
-			if ($force) {
-				foreach ($this->_allfields as $f) $this->getField($f);
+		global $dbuser, $dbpass, $dbdb, $dbhost;
+		global $cfg;
+		// take this out when appropriate & replace occurences;
+		global $uploaddir;
+		
+		$this->tobefetched=1;
+		
+		//$this->id = $this->getField("id"); // why need to do this?
+		
+		if ($force) {
+			// the code below is inefficient! why fetch each field separately when we can fetch all fields at same time
+			// thus we can cut the number of queries significantly
+/*			foreach ($this->_allfields as $f) {
+				$this->getField($f);
 			}
-/* 			$query = "select * from stories where id=".$this->id." limit 1"; */
-/* 			$this->data = db_fetch_assoc(db_query($query)); */
-/* 			if (is_array($this->data)) { */
-/* 				$this->fetched = 1; */
-/* 				$this->buildPermissionsArray(); */
-/* 				$this->data[shorttext] = urldecode($this->data[shorttext]); */
-/* 				$this->data[longertext] = urldecode($this->data[longertext]); */
-/* 				$this->parseMediaTextForEdit("shorttext"); */
-/* 				$this->parseMediaTextForEdit("longertext"); */
-/* 				 */
-/* 				return true; */
-/* 			} */
+*/
+
+			// connect to db and initialize data array
+ 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+			$this->data = array();
+
+			// first fetch all fields that are not part of a 1-to-many relationship
+ 			$query = "
+SELECT  
+	story_type AS type, story_title AS title, story_activate_tstamp AS activatedate, story_deactivate_tstamp AS deactivatedate,
+	story_active AS active, story_locked AS locked, story_updated_tstamp AS editedtimestamp, story_created_tstamp AS addedtimestamp,
+	story_discussable AS discuss, story_category AS category, story_text_type AS texttype, story_text_short AS shorttext,
+	story_text_long AS longertext,
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
+	FK_section AS section_id, FK_page as page_id, media_tag AS url
+FROM 
+	story
+		INNER JOIN
+	page
+	 	ON FK_page = page_id
+		INNER JOIN
+	 section
+		ON FK_section = section_id
+		INNER JOIN
+	user AS user_createdby
+		ON page.FK_createdby = user_createdby.user_id
+		INNER JOIN
+	user AS user_updatedby
+		ON page.FK_updatedby = user_updatedby.user_id
+		INNER JOIN
+	 site
+		ON section.FK_site = site.site_id
+		INNER JOIN
+	 slot
+		ON site.site_id = slot.FK_site
+		LEFT JOIN
+	media
+		ON story.FK_media = media_id
+WHERE section_id = ".$this->id;
+
+			$r = db_query($query);
+			$a = db_fetch_assoc($r);
+			array_change_key_case($a); // make all keys lower case
+			// for each field returned by the query
+			foreach ($a as $field => $value)
+				// make sure we have defined this field in the _allfields array
+				if (in_array($field,$this->_allfields)) {
+					// decode if necessary
+					if (in_array($field,$this->_encode)) 
+						$value = stripslashes(urldecode($value));
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	// UPDATE parseMediaTextForEdit *********************************************************************
+	//				if (in_array($field,$this->_parse)) 
+	//					$value = $this->parseMediaTextForEdit($value);
+					$this->data[$field] = $value;
+					$this->fetched[$field] = 1;
+				}
+				else
+					echo "ERROR: field $field not in _allfields!!!<br>";
+			
+
+			// now fetch the discussion entries for this story
+			$query = "
+SELECT
+	discussion_id
+FROM
+	story
+		INNER JOIN
+	discussion
+		ON FK_story = story_id
+WHERE story_id = ".$this->id."
+ORDER BY
+	discussion_order
+";
+
+			$r = db_query($query);
+			$this->data[discussions] = array();
+			while ($a = db_fetch_assoc($r))
+				$this->data[discussions][] = $a[discussion_id];
+
+			$this->fetched[discussions] = 1;
 		}
+		
 		return $this->id;
 	}
 	
