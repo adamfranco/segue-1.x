@@ -191,7 +191,7 @@ function deleteuserfile($fileid) {
 			db_query($query);
 			log_entry("media_delete","$auser deleted file: ".$a[name].", id: $fileid, from site ".$siteObj->getField("name"),$siteObj->id,"site");
 		} else {
-			log_entry("media_error","Delete failed of file: ".$a[name].", id: $fileid, from site ".$siteObj->getField("name")." by $auser",$siteObj->id,"site";
+			log_entry("media_error","Delete failed of file: ".$a[name].", id: $fileid, from site ".$siteObj->getField("name")." by $auser",$siteObj->id,"site");
 			error("File could not be Deleted");
 		}
 	} else {
@@ -293,7 +293,7 @@ function log_entry($type,$content,$siteunit=0,$siteunit_type="site") {
 		FK_luser='".$_SESSION[lid]."',
 		FK_auser='".$_SESSION[aid]."',
 		FK_siteunit='$siteunit',
-		log_siteunit_type='$siteunit_type',
+		log_siteunit_type='$siteunit_type'
 	");
 }
 

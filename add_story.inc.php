@@ -181,7 +181,7 @@ if ($_REQUEST[save]) {
 /* 			$newid=$_SESSION[settings][page]; */
 /* 		} */
 
-//		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
+		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
 		
 	} else {
 		$_SESSION[settings][step] = 1;
