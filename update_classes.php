@@ -6,7 +6,7 @@
 include("functions.inc.php");
 include("dbwrapper.inc.php");
 include("config.inc.php");
-
+ 
 // connect to the database
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
@@ -26,7 +26,8 @@ while ($a = db_fetch_assoc($ru)) {
 	$nextuser = $a['uname'];
 	$nextuser = strtolower($nextuser);	
 	//print $nextuser."<br>"; 
-	$c = ldap_connect($ldapserver);
+	
+	$c = ldap_connect($ldapserver); 
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);	
 	if ($r) {		// connected & logged in
 		$return = array("uid","cn","memberof");
@@ -55,16 +56,16 @@ while ($a = db_fetch_assoc($ru)) {
 						$year = "20".$r[5];
 						$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						$classinfo = db_get_line("classes","name='$class'");
-						if (!$classinfo) {
+						//if (!$classinfo) {
 							$query = "insert into classes set name='$class', uname='$nextuser', semester='$semester', year='$year'";
 							print $query."<br>";
-							//db_query($query);
-						}	
+							db_query($query);
+						//}	
 					}
 				}
 			}
 		}
-	}		
+	}
 }
 
 
