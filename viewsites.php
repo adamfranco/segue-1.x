@@ -155,13 +155,13 @@ if (db_num_rows($r)) {
 		print "<td class=td$color><nobr>";
 		print timestamp2usdate($a[editedtimestamp],1);
 		print "</nobr></td>";
-		print "<td>$a[name]</td>";
+		print "<td class=td$color>$a[name]</td>";
 		print "<td class=td$color>";
 		print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
 		print "$a[title]";
 		print "</a>";
 		print "</td>";
-		print "<td> class=td$color";
+		print "<td class=td$color>";
 		print "$a[addedby]";
 		print "</td>";
 		print "</tr>";
