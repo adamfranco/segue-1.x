@@ -282,7 +282,8 @@ if ($_REQUEST[action] == "change" || $change) {
 		print "</td></tr>";
 	} else {	
 		print "<tr><td colspan=2 align=center> Chose a new password below.<br>";
-		print "<br><div align=left>(".$cfg[auth_help].")</div><br>";
+		if ($cfg['auth_help_on'])
+			print "<br><div align=left>(".$cfg[auth_help].")</div><br>";
 		print "<tr><td> User Name: </td>";
 		print "<td><input type=text name='uname' size=30 value='".$_SESSION['auser']."' readonly></td>"; 
 		print "</tr>";
@@ -319,7 +320,8 @@ if ($_REQUEST[action] == "change" || $change) {
 
 } else if ($_REQUEST[action] == "login" || $auth) {
 	print "<tr><td colspan=2 align=center> Please enter your username and password. <br>";
-	print "<br><div align=left>(".$cfg[auth_help].")</div><br>";
+	if ($cfg['auth_help_on'])
+		print "<br><div align=left>(".$cfg[auth_help].")</div><br>";
 	print "</td><tr><td> User Name: </td>";
 	print "<td><input type=text name='uname' size=30 value=''></td>";
 	print "<tr><td>Password:</td>";
@@ -339,7 +341,8 @@ if ($_REQUEST[action] == "change" || $change) {
 	print "<tr><td colspan=2 align=left> Please enter your name and your email address.";
 	print "  Once you have registered you will be able to post to this and all other $cfg[inst_name] public forums.";
 	print "  Your username will be your email address and a password will be emailed to you.<br><br>";
-	print "(".$cfg[auth_help].")<br><br>";
+	if ($cfg['auth_help_on'])
+		print "(".$cfg[auth_help].")<br><br>";
 	print "</td><tr><td> User Name: </td>";
 	print "<td><input type=text name='uname' size=30 value='".$_REQUEST['uname']."'></td>";
 	print "<tr><td>Email Address:</td>";
@@ -354,7 +357,8 @@ if ($_REQUEST[action] == "change" || $change) {
 
 } else if ($_REQUEST[action] == "reset" || $reset) {
 	print "<tr><td colspan=2 align=left> Please enter your email address and a new password will be sent to you.<br><br>";
-	print "(".$cfg[auth_help].")<br><br>";
+	if ($cfg['auth_help_on'])
+		print "(".$cfg[auth_help].")<br><br>";
 	print "</td><tr><td>Email Address:</td>";
 	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'></td></tr>";
 	print"<tr><td colspan=2 align=center><input type=submit name='submit' value='Send new password'><br><br>";
