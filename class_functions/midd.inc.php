@@ -46,8 +46,10 @@ function getuserclasses($user,$time="all") {
 /* 						print_r($r); */
 /* 						print "</pre>"; */
 						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
-							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];					
+							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];
 							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
+							$sem = $classes[$class][sem];
+							$year = $classes[$class][year];					
 							$user_id = db_get_value("user","user_id","user_uname = '$user'");
 							$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='$class'");
 							$classinfo = db_get_line("class","
@@ -57,10 +59,6 @@ function getuserclasses($user,$time="all") {
 										class_semester='$sem' AND
 										class_year='20$r[5]'");
 							
-/* 							print "<pre>"; */
-/* 							print "user_id=$user_id"; */
-							$sem = $classes[$class][sem];
-							$year = $classes[$class][year];
 							if (!$ugroup_id) {
 															
 								$query = "
@@ -74,8 +72,6 @@ function getuserclasses($user,$time="all") {
 								$ugroup_id = lastid();
 							}
 							
-/* 							print "classinfo"; */
-/* 							print_r($classinfo); */
 							if (!$classinfo) {		
 								$query = "
 									INSERT INTO
@@ -95,9 +91,7 @@ function getuserclasses($user,$time="all") {
 							}
 							
 							$ugroup_userinfo = db_get_line("ugroup_user","FK_ugroup=$ugroup_id AND FK_user=$user_id");
-/* 							print "ugroup_userinfo"; */
-/* 							print_r($ugroup_userinfo); */
-/* 							print "</pre>"; */
+
 							if (!$ugroup_userinfo) {
 								$query = "
 									INSERT INTO
