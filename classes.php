@@ -290,16 +290,36 @@ include("themes/common/header.inc.php");
 </head>
 <!-- <body onLoad="document.addform.external_id.focus()"> -->
 <body onLoad="document.searchform.name.focus()">
+<?
+/******************************************************************************
+ * Get site id for links to participation section
+ ******************************************************************************/
+	
+	$siteObj =&new site($site);
+	$siteid = $siteObj->id;
 
-<?=($_SESSION['ltype']=='admin')?
-	"<div align=right>
-		<a href='username_lookup.php?$sid'>user lookup</a> | 
-		<a href='users.php?$sid'>add/edit users</a> | 
-		add/edit classes | 
-		<a href='add_slot.php?$sid'>add/edit slots</a> |
-		<a href='update.php?$sid'>segue updates</a>
-	</div>"
-:""?>
+if ($_SESSION['ltype']=='admin') {
+	print "<table width=100%  class='bg'><tr><td class='bg'>
+	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
+	 | <a href='viewusers.php?$sid&site=$site'>users</a>
+	</td><td align=right class='bg'>
+	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
+	  add/edit classes | 
+	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
+	<a href='update.php?$sid&site=$site'>segue updates</a>
+	</td></tr></table>";
+}
+
+if ($site) {
+	print "<div align=right>";
+	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
+	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
+	print " | Logs";
+	print "</div><br>";
+}
+
+
+?>
 
 <?=$content?>
 

@@ -89,6 +89,13 @@ $query = "
 
 $r = db_query($query);
 
+/******************************************************************************
+ * Get site id for links to participation section
+ ******************************************************************************/
+	
+	$siteObj =&new site($name);
+	$siteid = $siteObj->id;
+
 ?>
 <html>
 <head>
@@ -108,16 +115,39 @@ function changeOrder(order) {
 
 <table width='100%' class='bg'>
 <tr><td  align=right class='bg'>
-	<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
-	| Sites
-<!-- 	| <<a href='email.php?<? echo $sid ?>&storyid=<? echo $storyid ?>&siteid=<? echo $siteid ?>&site=<? echo $site ?>&action=list'>Participants</a> -->
 
+<?
+/******************************************************************************
+ * Get site id for links to participation section
+ ******************************************************************************/
+	
+	$siteObj =&new site($site);
+	$siteid = $siteObj->id;
+
+
+if ($_SESSION['ltype']=='admin') {
+	print "<table width=100%  class='bg'><tr><td class='bg'>
+	Logs: sites
+	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
+	</td><td align=right class='bg'>
+	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
+	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
+	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
+	<a href='update.php?$sid&site=$site'>segue updates</a>
+	</td></tr></table>";
+}
+if ($site) {
+	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
+	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
+	print " | Logs";
+}
+
+
+?>
 
 </td></tr>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<? //print $numlogs . " | " . $query; ?>
-	<? print "Total Segue Sites:".$numlogs ?>
 
 
 </td></tr>
@@ -163,8 +193,11 @@ function changeOrder(order) {
 			<input type=submit value='go'>
 			<input type=submit name='clear' value='clear'>
 			<input type=hidden name='order' value='<? echo $order ?>'>
-		<? } ?>
+		<? } 
+		print "<br>Total sites found:".$numlogs;
+		?>
 		</form>
+		
 		</td>
 		<td align=right>
 		<?

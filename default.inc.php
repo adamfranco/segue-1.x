@@ -499,6 +499,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 
 	$obj =& $site;
 	$name = $obj->getField("name");
+	
 
 	if (in_array($name,$sitesprinted)) return;
 	$sitesprinted[]=$name;

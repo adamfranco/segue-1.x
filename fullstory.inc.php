@@ -8,7 +8,7 @@ $content = '';
  * This script is an adaptation of fullstory.php
  * this script is included in site.inc.php when detail variable is set
  ******************************************************************************/
-
+//printpre($_REQUEST);
 //session_start();
 
 // include all necessary files
@@ -139,7 +139,7 @@ printc("<tr><td align=left><b>".(($storyObj->getField('title'))?spchars($storyOb
 printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>\n");
 printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>\n");
 
-		
+
 // output discussions?
 if ($storyObj->getField("discuss")) {
 	$mailposts = $storyObj->getField("discussemail");	

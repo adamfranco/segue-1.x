@@ -224,7 +224,7 @@ printerr();
 ?>
 <html>
 <head>
-<title>Users</title>
+<title>Slots</title>
 <? 
 include("themes/common/logs_css.inc.php"); 
 include("themes/common/header.inc.php");
@@ -233,15 +233,35 @@ include("themes/common/header.inc.php");
 <!-- <body onLoad="document.addform.<?=($curraction == 'edit')?"owner":"name"?>.focus()"> -->
 <body onLoad="document.searchform.name.focus()">
 
-<?=($_SESSION['ltype']=='admin')?
-	"<div align=right>
-		<a href='username_lookup.php?$sid'>user lookup</a> | 
-		<a href='users.php?$sid'>add/edit users</a> | 
-		<a href='classes.php?$sid'>add/edit classes</a> | 
-		add/edit slots |
-		<a href='update.php?$sid'>segue updates</a>
-	</div>"
-:""?>
+<?
+/******************************************************************************
+ * Get site id for links to participation section
+ ******************************************************************************/
+	
+	$siteObj =&new site($site);
+	$siteid = $siteObj->id;
+
+if ($_SESSION['ltype']=='admin') {
+	print "<table width=100%  class='bg'><tr><td class='bg'>
+	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
+	 | <a href='viewusers.php?$sid&site=$site'>users</a>
+	</td><td align=right class='bg'>
+	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
+	<a href='classes.php?$sid&site=$site'>add/edit classes</a> |  
+	 add/edit slots |
+	<a href='update.php?$sid&site=$site'>segue updates</a>
+	</td></tr></table>";
+}
+
+if ($site) {
+	print "<div align=right>";
+	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
+	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
+	print " | Logs";
+	print "</div><br>";
+}
+
+?>
 
 <?=$content?>
 

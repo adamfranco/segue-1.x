@@ -223,10 +223,12 @@ function getclassstudents($class_id) {
 	 ******************************************************************************/
 	 
 	$participants = $external_memberlist_participants;
+	$participants_unames = $external_memberlist_participant_unames;
 	 
 	foreach (array_keys($db_participants) as $key) {
 		if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
 			$participants[] = $db_participants[$key];
+			$participants_unames = $db_participants[$key][uname];
 		}			
 	}	
 	return $participants;

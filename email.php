@@ -35,7 +35,11 @@ $orderby = " ORDER BY $order";
 if ($_REQUEST['userfname']) $userfname = urldecode($_REQUEST['userfname']);
 if ($_REQUEST['userid']) $userid = $_REQUEST['userid'];
 
-$storyid = $_REQUEST['storyid'];
+if ($_REQUEST['storyid']) {
+	$storyid = $_REQUEST['storyid'];
+} else {
+
+}
 $siteid = $_REQUEST['siteid'];
 $class_id = $_REQUEST['site'];
 
@@ -167,10 +171,29 @@ function changeOrder(order) {
 </head>
 <!-- <body onLoad="document.addform.uname.focus()">  -->
 <body onLoad="initEditor()">
-<div align=right>
+
+<?
+if ($_SESSION['ltype']=='admin') {
+	print "<table width=100%  class='bg'><tr><td class='bg'>
+	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
+	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
+	</td><td align=right class='bg'>
+	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
+	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
+	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
+	<a href='update.php?$sid&site=$site'>segue updates</a>
+	</td></tr></table>";
+}
+
+print "<div align=right>";
+print "<a href=add_students.php?$sid&name=$site>Roster</a>";
+print " | Participation";
+print " | <a href='viewlogs.php?$sid&site=$site'>Logs</a>";
+if ($_SESSION[ltype]=='admin') print " | <a href='viewsites.php?$sid&site=$site'>Sites</a>";
+print "</div><br>";
+?>
 <!-- <a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a> -->
 <!-- | <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a> -->
-Participants<br><br>
 
 
 <?
@@ -183,7 +206,7 @@ Participants<br><br>
 /* 	" */
 /* :"" */
 ?>
-</div>
+
 <?=$content?>
 
 <table cellspacing=1 width='100%' id='maintable'>
@@ -251,7 +274,7 @@ Participants<br><br>
 		 * Navigation List | Email participants in discussion or site
 		 ******************************************************************************/
 		//print "<form action=$PHP_SELF method=post name=emailform>";
-		print "<table><tr><td><div style='font-size: 12px'>";
+		print "<table><tr><td ><div style='font-size: 12px'>";
 
 		if ($curraction == "list") {
 			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
@@ -456,6 +479,7 @@ Participants<br><br>
 		/******************************************************************************
 		 * Print out stats and links
 		 ******************************************************************************/
+		 	$color = 0;
 			while ($a = db_fetch_assoc($r)) {
 			
 				/******************************************************************************
@@ -509,19 +533,20 @@ Participants<br><br>
 				print "<tr>";
 				
 				if ($curraction == 'review') {
-					print "<td><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
-					print "<td><a href='#' onClick='opener.window.location=\"$page_link\"'>".$a['page_title']."</a> > <a href='#' onClick='opener.window.location=\"$fullstory_link\"'>".$shory_text."</a></td>";
-					print "<td><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".urldecode($a['discussion_subject'])."</a></td>";
-					print "<td>".$a['discussion_rate']."</td>";
-					print "<td><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
+					print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
+					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$page_link\"'>".$a['page_title']."</a> > <a href='#' onClick='opener.window.location=\"$fullstory_link\"'>".$shory_text."</a></td>";
+					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".urldecode($a['discussion_subject'])."</a></td>";
+					print "<td class=td$color>".$a['discussion_rate']."</td>";
+					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
 				} else {
-					print "<td><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
-					print "<td>".$a['user_email']."</td>";
-					print "<td>".$postcount."</td>";
-					print "<td>".$avg_rating."</td>";
+					print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
+					print "<td class=td$color>".$a['user_email']."</td>";
+					print "<td class=td$color>".$postcount."</td>";
+					print "<td class=td$color>".$avg_rating."</td>";
 				}
 								
 				print "</tr>";
+				$color = 1-$color;
 			}
 			
 			/******************************************************************************
@@ -529,22 +554,23 @@ Participants<br><br>
 			 * participated 
 			 ******************************************************************************/
 			if ($curraction != 'review') {
-				if (count($students)) {
-					asort($students);
-					reset($students);
-				}
+		//		if (count($participants)) {
+		//			asort($participants);
+		//			reset($participants);
+		//		}
 	
 				foreach (array_keys($students) as $key) {
 	
 					if (!in_array($students[$key][uname], $logged_participants)) {
 						print "<tr>";
-						print "<td>".$students[$key][fname]."</td>";
-						print "<td>".$students[$key][email]."</td>";
-						print "<td>0</td>";
-						print "<td></td>";
+						print "<td class=td$color>".$students[$key][fname]."</td>";
+						print "<td class=td$color>".$students[$key][email]."</td>";
+						print "<td class=td$color>0</td>";
+						print "<td class=td$color></td>";
 						print "</tr>";
 					}
 				}
+				
 			}
 
 		?>

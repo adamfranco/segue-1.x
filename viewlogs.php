@@ -1,5 +1,5 @@
 <? /* $Id$ */
-
+require("objects/objects.inc.php");
 $content = '';
 
 ob_start();
@@ -159,15 +159,38 @@ function changeOrder(order) {
 
 <table width='100%' class='bg'>
 <td align=right class='bg'>
-	Logs
-	| <a href=viewsites.php?<? echo $sid ?>&site=<? echo $site ?>>Sites</a>
-<!-- 	| <<a href='email.php?<? echo $sid ?>&storyid=<? echo $storyid ?>&siteid=<? echo $siteid ?>&site=<? echo $site ?>&action=list'>Participants</a> -->
+<?
+/******************************************************************************
+ * Get site id for links to participation section
+ ******************************************************************************/
+	
+$siteObj =&new site($site);
+$siteid = $siteObj->id;
+
+
+if ($_SESSION['ltype']=='admin') {
+	print "<table width=100%  class='bg'><tr><td class='bg'>
+	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
+	 | users
+	</td><td align=right class='bg'>
+	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
+	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
+	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
+	<a href='update.php?$sid&site=$site'>segue updates</a>
+	</td></tr></table>";
+}
+if ($site) {
+	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
+	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
+	print " | Logs";
+}
+
+?>
 
 </td></tr>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<? //print $numlogs . " | " . $query; ?>
-	<? print "Total Log Entries: ".$numlogs; ?>
+
 </td></tr>
 </table>
 
@@ -208,6 +231,7 @@ function changeOrder(order) {
 		<input type=hidden name='order' value='<? echo $order ?>'>
 		<input type=hidden name='_auser' value='<? echo $_auser ?>'>
 		<input type=hidden name='_luser' value='<? echo $_luser ?>'>
+		<? print "<br>Total log entries:".$numlogs; ?>
 		</form>
 		</td>
 		<td align=right>
@@ -226,6 +250,7 @@ function changeOrder(order) {
 			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&enddate=$enddate&startdate=$startdate&lowerlimit=$prev&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
 			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&enddate=$enddate&startdate=$startdate&lowerlimit=$next&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
+		
 		?>
 		</td>
 		</tr>

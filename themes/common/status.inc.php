@@ -44,20 +44,21 @@ if (!$_REQUEST[nostatus]) {
 		if (!$_REQUEST[partialstatus]) {
 			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'
 && $_SESSION[luser] != $_SESSION[auser])?" (acting as $_SESSION[afname])":"")."
-(".$_userTypes[$_SESSION[atype]].") : " ;
-			print "<a href='$PHP_SELF?login' class='navlink'>logout</a> | ";
-			print "<a href='$PHP_SELF?$sid' class='navlink'>home</a>";
+(".$_userTypes[$_SESSION[atype]]."): " ;
+			print "<a href='$PHP_SELF?login' class='navlink'>logout</a>";
+			print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>directory</a>";
 			if ($_SESSION[ltype]=='admin') {
 				print "<input type=hidden name=action value='change_auser'>";
 			}
-			if ( $_SESSION[auser] == $site_owner || $_SESSION[ltype]=='admin') {
-				print " | <a href='viewsites.php?$sid".((is_object($site))?"":"&site=$site")."' target='sites' onClick='doWindow(\"sites\",600,600)' class='navlink'>logs</a>";
+			if ( $_SESSION[auser] == $site_owner) {
+				print " | <a href='viewlogs.php?$sid".((is_object($site))?"":"&site=$site")."' target='sites' onClick='doWindow(\"sites\",600,600)' class='navlink'>logs</a>";
 			}
+			print " | <a href='$PHP_SELF?$sid' class='navlink'>home</a>";
 			if ($_SESSION[ltype]=='admin') {
-//				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>user lookup</a>";
-				print " | <a href='username_lookup.php?$sid' onClick='doWindow(\"users\",700,500)' target='users' class='navlink'>admin tools</a>";
+				print " | <a href='viewsites.php?$sid&site=$site' onClick='doWindow(\"users\",700,500)' target='users' class='navlink'>admin</a>";
 				print " | change active user: <input type='text' name='changeauser' size=10 class='textfield small'> <input type='submit' class='button small' value='GO'>";
 			}	
+			
 			
 		} else print $_SESSION[afname];
 	} else {// print out the login thingy

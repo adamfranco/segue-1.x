@@ -45,7 +45,7 @@ if (count($usernames)) {
 		<a href='classes.php?$sid'>add/edit classes</a> | 
 		<a href='add_slot.php?$sid'>add/edit slots</a> |
 		<a href='update.php?$sid'>segue updates</a>
-	</div>"
+	</div><br>"
 :""?>
 
 <table cellspacing=1 width='100%' id='maintable'>

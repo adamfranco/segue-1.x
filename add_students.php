@@ -79,6 +79,7 @@ if ($action == "delete" && $delstudent) {
 	db_query($query);
 }
 
+
 /******************************************************************************
  * Lookup a student in userlookup
  ******************************************************************************/
@@ -100,7 +101,6 @@ if (isset($_REQUEST[name])) {
 	$class_external_id = $_REQUEST[name];
 	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_external_id'");
 	$_REQUEST[ugroup_id] = $ugroup_id;
-	//printpre($ugroup_id);
 	$participants = getclassstudents($class_external_id);
 	//printpre($class_external_id);
 	//printpre($participants);
@@ -113,10 +113,14 @@ if (isset($_REQUEST[name])) {
 	$ugroup_id = $_REQUEST[ugroup_id];
 	$class_external_id = db_get_value("class","class_external_id","FK_ugroup = $ugroup_id");
 	$participants = getclassstudents($class_external_id);
-
 }
 
-
+/******************************************************************************
+ * Get site id for links to participation section
+ ******************************************************************************/
+	
+	$siteObj =&new site($class_external_id);
+	$siteid = $siteObj->id;
 
 /******************************************************************************
  * Sort alphabetically usernames from userlookup and participant names
@@ -136,7 +140,7 @@ if (count($usernames)) {
 <html>
 <head>
 <title>Add Students</title>
-
+<? include("themes/common/logs_css.inc.php"); ?>
 <script lang='JavaScript'>
 function addStudent(na) {
 	f = document.addform;
@@ -171,36 +175,6 @@ function delStudent(id, name) {
 
 </script>
 
-<style type='text/css'>
-table {
-	border: 1px solid #555;
-}
-
-th, td {
-	border: 0px;
-	background-color: #ddd;
-}
-
-th { 
-	background-color: #ccc; 
-	font-variant: small-caps;
-}
-
-body { 
-	background-color: white; 
-}
-
-body, table, td, th, input {
-	font-size: 12px;
-	font-family: "Verdana", "sans-serif";
-}
-
-input {
-	border: 1px solid black;
-	background-color: white;
-	font-size: 10px;
-}
-
 </style>
 <form action="<? echo $PHP_SELF ?>" method=get name='lookup'>
 <input type=hidden name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>'>
@@ -209,9 +183,27 @@ input {
 
 <?
 printerr2();
-?>
+if ($_SESSION['ltype']=='admin') {
+	print "<table width=100%  class='bg'><tr><td class='bg'>
+	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
+	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
+	</td><td align=right class='bg'>
+	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
+	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
+	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
+	<a href='update.php?$sid&site=$site'>segue updates</a>
+	</td></tr></table>";
+}
 
-<table cellspacing=1 width='100%'>
+print "<div align=right>";
+print "Roster";
+print " | <a href='email.php?$sid&siteid=$siteid&site=$class_external_id&action=list&scope=site'>Participation</a>";
+print " | <a href='viewlogs.php?$sid&site=$class_external_id'>Logs</a>";
+if ($_SESSION[ltype]=='admin') print " | <a href='viewsites.php?$sid&site=$class_external_id'>Sites</a>";
+print "</div><br>";
+?>
+<!-- <div align=right>Students | Participants</div><br> -->
+<table cellspacing=1 width='100%' id='maintable'>
 
 <tr>
 	<th>Use</th>
@@ -242,10 +234,11 @@ if (count($usernames)) {
 		if (!ereg("[a-z]",$u)) next;
 		$u = strtolower($u);
 		print "<tr>";
-		print "<td align=center><input type=button name='use' value='add' onClick='addStudent(\"$u\")'></td>";
-		print "<td>$f</td><td>$u</td>";
+		print "<td align=center class=td$color><input type=button name='use' value='add' onClick='addStudent(\"$u\")'></td>";
+		print "<td class=td$color>$f</td><td class=td$color>$u</td>";
 		print "</tr>";
 		$c++;
+		$color = 1-$color;
 	}
 } else {
 	print "<tr><td colspan=3>No usernames. Enter a name or part of a name above.</td></tr>";
@@ -256,7 +249,7 @@ if (count($usernames)) {
 
 <p>
 
-<table width=100%>
+<table cellspacing=1 width='100%' id='maintable'>
 <tr>
 	<th> </th>
 	<th>Name</th>
@@ -275,16 +268,16 @@ foreach (array_keys($participants) as $key) {
 	//printpre($participants[$key][uname]);
 	
 		print "<tr>";
-			print "<td align=center>";
+			print "<td align=center  class=td$color>";
 			if ($owner_uname != $participants[$key][uname] && $participants[$key][memberlist] != "external") {
 				print "<input type=button name='use' value='remove' onClick=\"delStudent('".$participants[$key][id]."','".$participants[$key][fname]." (".$participants[$key][uname].")')\">";
 			}
 			print "</td>";
-			print "<td>";
+			print "<td class=td$color>";
 			print $participants[$key][fname]." (".$participants[$key][uname].")";
 			if ($participants[$key][type] == "prof") print " - ".$participants[$key][type]."";
 			print "</td>";
-			print "<td align=center>";
+			print "<td align=center class=td$color>";
 			if ($_SESSION[ltype]=='admin' && $participants[$key][type] != "prof") {
 				$slotname = $class_external_id."-".$participants[$key][uname];
 				$query = "
@@ -322,6 +315,7 @@ foreach (array_keys($participants) as $key) {
 			}
 			print "</td>";
 		print "</tr>";
+		$color = 1-$color;
 	//}
 
 
