@@ -19,6 +19,7 @@
 	
 	/******************************************************************************
 	 * full_uri - Segue's full URL path (ie, http://segue.middlebury.edu)
+	 *		Don't put a slash "/" at the end of the url!
 	 ******************************************************************************/
 	$cfg[full_uri] = $_full_uri = "";			// "http://segue.middlebury.edu"
 	
@@ -78,7 +79,9 @@
 	 *		can use the same database data.
 	 * 
 	 * personalsitesurl - the URL of your personal sites instance of Segue
+	 *		Don't put a slash "/" at the end of the url!
 	 * classsitesurl - the URL of your class sites instance of Segue
+	 *		Don't put a slash "/" at the end of the url!
 	 ******************************************************************************/
 	$cfg[allowpersonalsites] = $allowpersonalsites = 1;
 	$cfg[allowclasssites] = $allowclasssites = 1;
