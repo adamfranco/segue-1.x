@@ -117,4 +117,4 @@ printc("</table><BR>");
 
 
 
-$sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gabe@schine.net'>Gabriel Schine</a> and <a href='mailto:achapin@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a></div>";
+$sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gabe@schine.net'>Gabriel Schine</a>, <a href='mailto:achapin@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>,  and <a href='mailto:afranco@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a></div>";
