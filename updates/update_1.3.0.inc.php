@@ -25,7 +25,8 @@ class Update130
      * @return string Description of the update
 	 */
 	function getDescription() {
-		return "This update modifies Segue to allow the use of RSS Feeds as content-types.";
+		return "This update modifies Segue to allow the use of RSS Feeds as content-types.  As well 
+		it added visitor and guest usertypes to the user table";
 	}
 	
     /**
@@ -43,6 +44,7 @@ class Update130
 		";
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
+		
 		if (!eregi("(enum\()(.*'rss'.*)(\))", $a['Type'], $parts)) {
 			$hasRun = FALSE;
 			print "\nNeeds type, 'rss' in ".$a['Type']."<br>";
@@ -54,6 +56,19 @@ class Update130
 		if (!file_exists($path."/RSScache/autocache/")) {
 			$hasRun = FALSE;
 			print "\nRSS cache path, ".$path."/RSScache/autocache/".", doesn't exist.<br>";
+		}
+		
+		// check for usertype visitor and guest enum option
+		$query = "
+		DESCRIBE
+			user user_type
+		";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		
+		if (!eregi("(enum\()(.*'visitor'.*)(\))", $a['Type'], $parts)) {
+			$hasRun = FALSE;
+			print "\nNeeds type, 'visitor' and 'guest' in ".$a['Type']."<br>";
 		}
 		
 		return $hasRun;	
@@ -98,7 +113,32 @@ class Update130
 		
 		if (!file_exists($path."/RSScache/autocache/")) {
 			mkdir ($path."/RSScache/autocache/", 0770);
-		}		
+		}	
+		
+		//modify the usertype in user table	
+		$query = "
+		DESCRIBE
+			user user_type
+		";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		
+	 	if (!eregi("(enum\()(.*'visitor'.*)(\))", $a['Type']) && 
+	 		eregi("(enum\()(.*)(\))", $a['Type'], $parts)) {
+
+			$query = "
+			ALTER TABLE 
+				user
+			CHANGE 
+				user_type user_type  
+					ENUM(".$parts[2].",'visitor','guest') 
+					DEFAULT '".$a['Default']."' 
+					".(($a['Null'])?"":"NOT")." NULL
+			";
+			
+			$r = db_query($query);
+		}
+
 
 	}
 }

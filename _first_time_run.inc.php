@@ -310,7 +310,7 @@ if (!$allTablesExist) {
 		  user_first_name varchar(255) default NULL,
 		  user_last_name varchar(255) default NULL,
 		  user_email varchar(255) NOT NULL default '',
-		  user_type enum('stud','prof','staff','admin') NOT NULL default 'stud',
+		  user_type enum('stud','prof','staff','visitor','guest','admin') NOT NULL default 'stud',
 		  user_authtype enum('ldap','db','pam') NOT NULL default 'ldap',
 		  PRIMARY KEY  (user_id),
 		  UNIQUE KEY user_uname (user_uname),
