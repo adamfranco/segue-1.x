@@ -527,7 +527,7 @@ print "</div><br>";
 				$page_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id'];
 				$fullstory_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id'];
 				$dicuss_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id']."#".$a['discussion_id'];
-				$shory_text_all = urldecode($a['story_text_short']);
+				$shory_text_all = strip_tags(urldecode($a['story_text_short']));
 				$shory_text = substr($shory_text_all,0,25)."...";
 				print "<tr>";
 				
