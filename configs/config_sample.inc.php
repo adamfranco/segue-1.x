@@ -1,10 +1,5 @@
 <? /* $Id$ */
 
-/******************************************************************************
- * $db_type: set this variable to the type of db you will be connecting to.
- *		possible values: "oracle", "mysql"    (values are case-insensitive)
- ******************************************************************************/
-$db_type = "MySQL";
 
 /******************************************************************************
  * $debug: set this to 1 if you would like all debug output from dbwrapper to be printed to the browser.
