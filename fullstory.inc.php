@@ -197,16 +197,25 @@ if ($storyObj->getField("discuss")) {
 	printc("</th></tr>\n");
 	printc("</table>\n");
 	
+/******************************************************************************
+ * Explain discuss/assess settings to participants 
+ ******************************************************************************/
+	
 	// hide posts (assessment)
 	if ($showposts == 2 && $showallauthors == 1) {
 		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
 	// show posts, hide author names (Anonymous Discussion)
 	} else if ($showposts == 1 && $showallauthors == 2) {
-		printc("Author of posts to this discussion are known only to the site owner, <i>$siteowner</i>.  Other participants will not see your name associated with your posts.");
+		printc("Author of posts to this discussion are known only to the site owner, <i>$siteowner</i>.  Other participants will not see your name associated with your posts (unless you include it in the subject or body of your post).");
 	// hide posts, hide authornames  (assessment)
 	} else if ($showposts == 2 && $showallauthors == 2) {
 		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
 	}
+	
+/******************************************************************************
+ * Summarize discuss/assess settings for site owner
+ ******************************************************************************/
+	
 	if ($_SESSION[auser]==$site_owner) {
 		printc("<br><table class=dinfo1 width=90% align=center>");
 		printc("<tr><td align=left><div style='font-size: 9px'>");
@@ -227,8 +236,8 @@ if ($storyObj->getField("discuss")) {
 		}
 		printc("</div></td></tr>");		
 		printc("<tr><td align=left><div style='font-size: 9px'>");
-		if ($showallauthors == 2 && $showposts == 1) {
-			printc("<b>Hide Authors:</b> Authors of posts have been hidden from participants to allow for anonymous discussion.");
+		if ($showallauthors == 2 && ($showposts == 1 || !showposts)) {
+			printc("<b>Hide Authors:</b> Authors of posts have been hidden from participants to allow for anonymous discussion (only you can see participant names).");
 		} else if ($showallauthors == 1) {
 			printc("<b>Show Authors:</b> Author of each and every post is identified to all participants.");
 		}		
