@@ -142,6 +142,7 @@ class section extends segue {
 			$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='section';";
 			db_query($query);
 			
+			
 			$this->clearPermissions();
 			$this->updatePermissionsDB();
 		}
