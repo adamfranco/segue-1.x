@@ -159,8 +159,6 @@ function editor_generate(objname,w,h) {
   + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Horizontal Rule" id="_' +objname+ '_InsertHorizontalRule" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_hr.gif" unselectable="on"></button>'
   +    '<button title="Insert Web Link" id="_' +objname+ '_CreateLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_link.gif" unselectable="on"></button>'
-  +    '<button title="Insert File Browser" id="_' +objname+ '_InsertFileBrowser" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_link.gif" unselectable="on"></button>' 
-  
   + '</td></tr></table>\n'
 
   + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;" unselectable="on"><tr><td style="border: inset 1px;">\n'
