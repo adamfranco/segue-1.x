@@ -8,7 +8,7 @@ function isclass ($class) {
 	global $auser,$_isclass_cache;
 	if (isset($_isclass_cache[$class])) return $_isclass_cache[$class];
 	$auser = strtolower($auser);
-	$v = ereg("^(([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]{1})([0-9]{2}))$",$class);
+	$v = ereg("^(([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]|bl{1})([0-9]{2}))$",$class);
 	if (!$v && isgroup($class)) $v = 1;
 	$_isclass_cache[$class] = $v;
 	return $v;
@@ -16,33 +16,42 @@ function isclass ($class) {
 
 function getuserclasses($user,$time="all") {
 	$user = strtolower($user);
-	global $ldap_voadmin_user, $ldap_voadmin_pass,$ldapserver;
-	$ldap_user = "cn=$ldap_voadmin_user,cn=midd";
-	$ldap_pass = $ldap_voadmin_pass;
+	global $cfg;
+	
+	$ldap_user = $cfg[ldap_voadmin_user_dn];
+	$ldap_pass = $cfg[ldap_voadmin_pass];
+
 	$classes = array();
 	
-	/*if (!($c=ldap_connect()))*/ $c = ldap_connect($ldapserver);
+	$c = ldap_connect($cfg[ldap_server]);
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
-	if ($r) {		// connected & logged in
-		$return = array("uid","cn","memberof");
-		$base_dn = "ou=Midd,o=MC";
-		$filter = "uid=$user";
+	if ($r && true) {		// connected & logged in
+	
+		$return = array(
+			$cfg[ldap_username_attribute],
+			$cfg[ldap_fullname_attribute],
+			$cfg[ldap_email_attribute],
+			$cfg[ldap_group_attribute]
+		);
+		$userSearchDN = (($cfg[ldap_user_dn])?$cfg[ldap_user_dn].",":"").$cfg[ldap_base_dn];
+		$searchFilter = "(".$cfg[ldap_username_attribute]."=".$user.")";
 		
-		$sr = ldap_search($c,$base_dn,$filter,$return);
+		$sr = ldap_search($c,$userSearchDN,$searchFilter,$return);
 		$res = ldap_get_entries($c,$sr);
+		$res[0] = array_change_key_case($res[0], CASE_LOWER);
 //		print "<pre>";print_r($res);print"</pre>";
 		$num = ldap_count_entries($c,$sr);
 //		print "num: $num<br>";
 		ldap_close($c);
 		if ($num) {
-//			print "memberof num: ".$res[0]['memberof']['count']."<br>";
-//			print "or ".count($res[0][memberof])."<br>";
-			for ($i = 0; $i<$res[0]['memberof']['count']; $i++) {
-				$f = $res[0]['memberof'][$i];
+			for ($i = 0; $i<$res[0][strtolower($cfg[ldap_group_attribute])]['count']; $i++) {
+				$f = $res[0][strtolower($cfg[ldap_group_attribute])][$i];
 //				print "$f<br>";
 				$parts = explode(",",$f);
 				foreach ($parts as $p) {
-					if (ereg("cn=([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2})",$p,$r)) {
+//					print "$p<br>";
+//					if (ereg("cn=([a-zA-Z]{0,3})([0-9]{1,3})([a-zA-Z]{0,1})-([lsfw]|bl{1})([0-9]{2})",$p,$r)) {
+					if (eregi($cfg[ldap_groupname_attribute]."=([a-zA-Z]{0,4})([0-9]{1,4})([a-zA-Z]{0,1})-([lsfw]|bl{1})([0-9]{2})",$p,$r)) {
 //						print "goood!";
 						$semester = currentsemester ();
 /* 						print "<pre>"; */
@@ -111,13 +120,13 @@ function getuserclasses($user,$time="all") {
  * end update
  ******************************************************************************/
 
-						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
+						if ($time == "now" && $r[5] == date('y') && semorder($r[4]) == semorder($semester)) {
 //							print "<br>------------>now<br>";
 							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						} else if ($time == "past" && ($r[5] < date('y') || semorder($r[4]) < semorder($semester))) {
 //							print "<br>------------>past<br>";
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
-						} else if ($time == "future" && ($r[5] == date('y') && semorder($r[4]) > semorder($semester)) || ($r[5] > date('y'))) {
+						} else if ($time == "future" && (($r[5] == date('y') && semorder($r[4]) > semorder($semester)) || ($r[5] > date('y')))) {
 //							print "<br>------------>future<br>";
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						} else if ($time == "all") {
@@ -155,7 +164,7 @@ function getuserclasses($user,$time="all") {
 	while ($a = db_fetch_assoc($r)) {
 		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
 		if (!$classes[$class_code]) {
-			if ($time == "now" && ($a[class_year] == date('Y') && $a[class_semester] == $semester)) {
+			if ($time == "now" && ($a[class_year] == date('Y') && semorder($a[class_semester]) == semorder($semester))) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			} else if ($time == "past" && ($a[class_year] < date('Y') || ($a[class_year] == date('Y') && semorder($a[class_semester]) < semorder($semester)))) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
@@ -195,7 +204,7 @@ function generateCodeFromData($dept,$number,$section,$semester,$year,$ext_id="",
 }
 
 function generateTermsFromCode($code) {
-	ereg("([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]{1})([0-9]{2})",$code,$r);
+	ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]|bl{1})([0-9]{2})",$code,$r);
 	$department = $r[1];
 	$number = $r[2];
 	$section = $r[3];
@@ -214,7 +223,8 @@ function generateTermsFromCode($code) {
 
 //This function checks for non-Segue sites (those in web courses database created in course folders)
 function coursefoldersite($cl) {
-	db_connect("et.middlebury.edu","httpd","httpd","it");
+	global $cfg;
+	db_connect($cfg[coursefolders_host],$cfg[coursefolders_username],$cfg[coursefolders_password],$cfg[coursefolders_db]);
 	if (ereg("([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2})",$cl,$regs)) {
 		$class = $regs[1].$regs[2].$regs[3];
 
@@ -236,12 +246,12 @@ function coursefoldersite($cl) {
 			$year = "20".$curr_year;
 		}	
 	}
-	$query = ("select * from courses where code = '$class' and semester = '$semester' and year = '$year'");
+	$query = ("select * from ".$cfg[coursefolders_table]." where ".$cfg[coursefolders_coursecode_column]." = '$class' and ".$cfg[coursefolders_semester_column]." = '$semester' and ".$cfg[coursefolders_year_column]." = '$year'");
 	$r = db_query($query);	
 	if (db_num_rows($r)) {
 		$a = db_fetch_assoc($r);
-		$title = $a['title'];
-		$url = $a['url'];
+		$title = $a[$cfg[coursefolders_title_column]];
+		$url = $a[$cfg[coursefolders_url_column]];
 		$site_info = array('title' => $title, 'url' => $url);
 		return $site_info;
 	}	
@@ -266,26 +276,32 @@ define("LDAP_FIRSTNAME",1);
 
 function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0,$extra=false) {
 	$name = strtolower($name);
-	global $ldap_voadmin_pass,$ldap_voadmin_user,$ldapserver;
-	$ldap_user = "cn=$ldap_voadmin_user,cn=midd";
-	$ldap_pass = $ldap_voadmin_pass;
+	global $cfg;
+	$ldap_user = $cfg[ldap_voadmin_user_dn];
+	$ldap_pass = $cfg[ldap_voadmin_pass];
 	
 	$wc = ($wild==LDAP_WILD)?"*":"";
 	
-	$c = ldap_connect($ldapserver);
+	$c = ldap_connect($cfg[ldap_server]);
 	$r = ldap_bind($c,$ldap_user,$ldap_pass);
 	if ($r) {
-		$return = array("uid","cn");
-		if ($extra) { $return[]="mail"; $return[]="memberof"; }
-		$base_dn = "ou=Midd,o=MC";
-//		$filter = "cn=*$name*";
-		if ($type == LDAP_USER) $filter = "uid=$wc$name$wc";
-		if ($type == LDAP_FNAME) $filter = "cn=$wc$name$wc";
-		if ($type == LDAP_BOTH) $filter = "(|(cn=$wc$name$wc)(uid=$wc$name$wc))";
-//		print $filter."<BR>";
+		$return = array(
+			$cfg[ldap_username_attribute], 
+			$cfg[ldap_fullname_attribute]
+		);
 		
-		$sr = ldap_search($c,$base_dn,$filter,$return);
+		if ($extra) {
+			$return[] = $cfg[ldap_email_attribute]; 
+			$return[] = $cfg[ldap_group_attribute]; 
+		}
+		$dn = (($cfg[ldap_user_dn])?$cfg[ldap_user_dn].",":"").$cfg[ldap_base_dn];
+		if ($type == LDAP_USER) $filter = $cfg[ldap_username_attribute]."=$wc$name$wc";
+		if ($type == LDAP_FNAME) $filter = $cfg[ldap_fullname_attribute]."=$wc$name$wc";
+		if ($type == LDAP_BOTH) $filter = "(|(".$cfg[ldap_username_attribute]."=$wc$name$wc)(".$cfg[ldap_fullname_attribute]."=$wc$name$wc))";
+		
+		$sr = ldap_search($c,$dn,$filter,$return);
 		$res = ldap_get_entries($c,$sr);
+		$res[0] = array_change_key_case($res[0], CASE_LOWER);
 		$num = ldap_count_entries($c,$sr);
 		ldap_close($c);
 /* 		print "<pre>"; */
@@ -294,8 +310,8 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 		if ($num) {
 			$usernames = array();
 			for ($i = 0; $i<$res['count'];$i++) {
-				$uid = $res[$i]['uid'][0];
-				$fname = $res[$i]['cn'][0];
+				$uid = $res[$i][strtolower($cfg[ldap_username_attribute])][0];
+				$fname = $res[$i][strtolower($cfg[ldap_fullname_attribute])][0];
 				if (!ereg(",",$fname) && !$n) {
 					$vars = split(" ",$fname);
 					if (count($vars) == 2)
@@ -307,15 +323,16 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 				if ($extra) {
 					// we must find out if they are a professor or a student.
 					$areprof = false;
-					if (is_array($res[0]["memberof"])) {
-						foreach ($res[0]["memberof"] as $item) {
-							if (eregi("All_Staff",$item) || eregi("All_Faculty",$item)) {
-								$areprof=true;
+					if (is_array($res[0][strtolower($cfg[ldap_group_attribute])])) {
+						$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
+						foreach ($results[0][strtolower($cfg[ldap_group_attribute])] as $item) {
+							if (eregi($isProfSearchString,$item)) {
+								$areprof=1;
 							}
 						}
 					}
 					$userType = ($areprof)?"prof":"stud";
-					$usernames[strtolower($uid)] = array($fname,$res[$i]['mail'][0],$userType);
+					$usernames[strtolower($uid)] = array($fname,$res[$i][strtolower($cfg[ldap_email_attribute])][0],$userType);
 				}
 				else $usernames[strtolower($uid)] = $fname;
 			}
