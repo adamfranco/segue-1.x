@@ -192,7 +192,16 @@ function ocidie ($t) {
   die ($t);
 }
 
+/******************************************************************************
+ * for counting the number of queries done.
+ ******************************************************************************/
+$_totalQueries = 0;
+
 function db_query ($query, $cid=-1) {
+	// for counting the total number of queries
+	global $_totalQueries;
+	$_totalQueries++;
+	
   global $db_type; global $debug;
   global $_connect_id;
   if ($debug) {
