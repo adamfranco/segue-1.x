@@ -275,7 +275,7 @@ function finishUp(action) {
 	if (action == "COPY") {
 		opener.history.go(0);
 	} else {
-		opener.window.location = "index.php?$sid&action=viewsite&site=<? echo $_SESSION[origSite]; ?>";
+		opener.window.location = "index.php?$sid&action=viewsite&site=<? print $_SESSION[origSite]; if ($_SESSION[type] != "section") print "&section=".$_SESSION[origSection]; if ($_SESSION[type] == "story") print "&page=".$_SESSION[origPage]; ?>";
 	}
 }
 
@@ -489,9 +489,9 @@ print "<tr>";
 		if ($_SESSION[type] == "story")
 			print "index.php?$sid&action=viewsite&site=$site&section=$section&page=$page";
 		if ($_SESSION[type] == "page")
-			print "index.php?$sid&action=viewsite&site=$site&section=$section&page=$newid";
+			print "index.php?$sid&action=viewsite&site=$site&section=$section&page=".$partObj->id;
 		if ($_SESSION[type] == "section")
-			print "index.php?$sid&action=viewsite&site=$site&section=$newid";
+			print "index.php?$sid&action=viewsite&site=$site&section=".$partObj->id;
 		print "')\">";
 	}
 	print "</td>";
