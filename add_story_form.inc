@@ -131,7 +131,7 @@ if ($type == 'story') {
 	printc("Full Content: (optional)");
 	printc("<br>");
 	
-	printc(addeditor ("longertext",80,16,$text));
+	printc(addeditor ("longertext",80,16,$longertext));
 	printc("</td></tr></table>");
 			
 	printc("<div align=right>");
