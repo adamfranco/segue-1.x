@@ -117,7 +117,13 @@ function changeOrder(order) {
 <table width='100%' class='bg'>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<? print "Total Active Segue Sites: ".$numSites ?>
+	<div align=center style='font-size: 14px;'><b><? echo $cfg[inst_name] ?> Segue</b></div><br>
+	<div align=left style='font-size: 10px;'>
+	Listed here are all the publically accessible sites created in 
+	<? echo $cfg[inst_name] ?> Segue sorted by those that have been most recently updated.
+	</div>
+	<br>
+	<? print "Total active public Segue sites: ".$numSites ?>
 
 
 </td></tr>

@@ -319,7 +319,7 @@ if ($site) {
 		print "<table cellpadding=2 cellspacing=0>";
 		print "<tr><td><b>Slot naming conventions:</b></td></tr>";
 		print "<tr><td><i>future course slots</i></td><td>course_code-dev (e.g. al201a-f05-dev)</td></tr>";		
-		print "<tr><td><i>student class project slots</i></td><td>course_code-student_username (e.g. al201a-f03-msmith)<br>(These are best created from class rosters)</td></tr>";
+		print "<tr><td><i>student class project slots</i></td><td>These are best created from class rosters. Convention is course_code-student_username (e.g. al201a-f03-msmith).</td></tr>";
 		print "<tr><td><i>faculty project slots</i></td><td>faculty_username-single_word_descriptor (e.g. jrprof-politics, saprof-poetry)</td></tr>";
 		print "<tr><td><i>topical slots</i></td><td>single_word_descriptor (e.g. digitization, segue)</td></tr>";
 		print "</table>";	
@@ -374,7 +374,7 @@ if ($site) {
 						print "<td align=center><nobr>";
 						if (!$a[FK_site])
 							print "<a href='add_slot.php?$sid&action=del&id=".$a['id']."'>del</a> | \n";
-						print "<a href='add_slot.php?$sid&slot_type=$slot_type&slot_name=$slot_name&slot_owner=$slot_owner&slot_use=$slot_use&action=edit&id=".$a['id']."'>edit</a>\n";
+						print "<a href='add_slot.php?$sid&slot_type=$slot_type&slot_name=$slot_name&slot_owner=$slot_owner&slot_use=".(($a['inuse'])?"YES":"NO")."&action=edit&id=".$a['id']."'>edit</a>\n";
 						print "</nobr></td>";
 						print "</tr>";
 					}
@@ -444,7 +444,7 @@ function doSlotForm($slot,$p='',$e=0) {
 	</select>
 	</td>
 	<? if ($e) { ?>
-		<td align=center><?=(($slot[FK_site])?"<b>YES</b>":"NO")?></td>
+		<td align=center><?=(($slot[$p.'inuse'])?"<b>YES</b>":"NO")?></td>
 	<? } else { ?>
 		<td>&nbsp;  </td>
 	<? } ?>

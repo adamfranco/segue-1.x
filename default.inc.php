@@ -18,11 +18,11 @@ if (isset($_REQUEST[expand_pastclasses])) {
  * public site listing link
  ******************************************************************************/
 $leftnav_extra .= <<< END
-<br/><br/>
+<br/>
 <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
 	<tr>
 		<td height="100%" valign="bottom" style="font-weight: bolder">
-		<a href='sitelisting.php?$sid' onClick='doWindow("listing",600,500)' target='listing'>Public Site Listing</a>
+		<a href='sitelisting.php?$sid' onClick='doWindow("listing",600,500)' target='listing'>Public Sites</a>
 		</td>
 	</tr>
 </table>
@@ -73,11 +73,11 @@ if ($allowclasssites != $allowpersonalsites &&
  ******************************************************************************/
 if ($_loggedin) {
 
-	add_link(leftnav,"Links");
+	//add_link(leftnav,"Links");
 	foreach ($defaultlinks as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
 	
-	add_link(leftnav,helplink("index"));
+	add_link(leftnav,helplink("index"),"1");
 
 	/******************************************************************************
 	 * List sites

@@ -115,7 +115,6 @@ if ($_REQUEST['findall']) {
 	$where = "user_id = $userid";
 }
 
-//if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action != "list" && $action != "email") {
 if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action == "review") {
 	$where .= " AND user_id = $userid";
 }

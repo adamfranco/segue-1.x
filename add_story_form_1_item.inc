@@ -218,10 +218,10 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	}
 	printc("</td></tr>");
 	printc("<tr><td>");
-	printc("<div style='font-size:10px; color:#D00'>");
-	printc("Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. ");
-	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
-	printc("</div>");
+/* 	printc("<div style='font-size:10px; color:#D00'>"); */
+/* 	printc("Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. "); */
+/* 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>"); */
+/* 	printc("</div>"); */
 	printc("</td></tr>");
 	printc("<tr><td>");
 

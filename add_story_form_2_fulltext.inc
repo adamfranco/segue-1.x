@@ -49,19 +49,15 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
 	printc("</td></tr>");
 	printc("</table></div>");
-	
-	/******************************************************************************
-	 * Internal linking: note to users...
-	 ******************************************************************************/
-	
-	printc("<table width= 80% cellpadding=3 cellspacing=0>");
-	printc("<tr><td>");
-	printc("<div style='font-size:10px; color:#D00'>");
-	printc("Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. ");
-	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
-	printc("</div>");
-	printc("</td></tr>");
-	printc("</table>");
+		
+/* 	printc("<table width= 80% cellpadding=3 cellspacing=0>"); */
+/* 	printc("<tr><td>"); */
+/* 	printc("<div style='font-size:10px; color:#D00'>"); */
+/* 	printc("Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. "); */
+/* 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>"); */
+/* 	printc("</div>"); */
+/* 	printc("</td></tr>"); */
+/* 	printc("</table>"); */
 
 	/******************************************************************************
 	 * 	Sniff determines browser and os
@@ -116,7 +112,9 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	 *  addeditor function variables (textarea, cols, rows, text)
 	 ******************************************************************************/
 		
-	printc("<br>");
+	printc("<br><table width= 80% cellpadding=3 cellspacing=0 style='border: 1px solid grey'>");
+	printc("<tr><td>");
+
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	printc("Extended Content (Optional):");
 	printc("<br>");
@@ -128,6 +126,8 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		$text = $_SESSION[storyObj]->getField("longertext");
 	}
 
+	printc("</td></tr></table>");
+	
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
 	 * replace general with specific

@@ -8,6 +8,13 @@ v. 1.3.0 (the future)
 		
 	**** IMPORTANT *** Change: Various changes in Segue necessitate that you upgrade to a new config file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make several changes to Segue's database and file-storage structure. (Adam Franco)
 		
+	* Bug Fix: When editing slots, information about whether the slot was in use not or not is now accurate. (Alex Chapin)
+		
+	* Change: Added new template to config.inc.php. (Alex Chapin)		
+		
+	* Change: Changed display of links on home page. In particular, change &quot;Public Site Lising&quot; to &quot;Public Sites&quot;. Removed &quot;links&quot; header and removed header formatting from help link. Also added text to public site listing. (Alex Chapin)		
+		
+	* New feature: Added a config option to include forgot your password link below login fields when there has been no authentication. This allows users to request Segue to reset the passwords for their Segue user accounts (i.e. those accounts whose authentication type is &quot;db&quot;) (Alex Chapin)		
 		
 	* Bug Fix: HTMLAREA and plaintext box editing now behavies better with respect to line returns. HTMLArea submissions now have the first line return removed to prevent them from accumulating. Plain textarea line returns are converted to &lt;br /&gt; tags. (Adam Franco)
 		
