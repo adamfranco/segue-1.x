@@ -182,7 +182,7 @@ if ($_REQUEST[save]) {
 /* 			 */
 /* 		} */
 		
-		header("Location: index.php?$sid&action=viewsite&site=".$_SESSION[sectionObj]->owning_site.(($_SESSION[sectionObj]->getField("type")=='section')?"&section=$newid":""));
+		header("Location: index.php?$sid&action=viewsite&site=".$_SESSION[sectionObj]->owning_site.(($_SESSION[sectionObj]->getField("type")=='section')?"&section=".$_SESSION[sectionObj]->id:""));
 		
 	} else {
 		$_SESSION[settings][step] = 1;

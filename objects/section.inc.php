@@ -121,10 +121,6 @@ class section extends segue {
 		$this->init();
 		$this->data[type] = "section";
 		$this->data[id] = $id;
-		
-/* 		print "<pre>"; */
-/* 		print_r($this); */
-/* 		print "</pre>"; */
 	}
 	
 	function delete($deleteFromParent=0) {	// delete from db
@@ -309,7 +305,7 @@ ORDER BY
 	function updateDB($down=0) {
 		if (count($this->changed)) {
 			$a = $this->createSQLArray();
-			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
+			$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
 			$query = "UPDATE section SET ".implode(",",$a)." WHERE section_id=".$this->id;
 			print "<pre>Section->UpdateDB: $query<br>";
@@ -373,10 +369,10 @@ ORDER BY
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
-			$a[] = $this->_datafields[addedby][1][0]."=".$_SESSION[aid];
+			$a[] = "FK_createdby=".$_SESSION[aid];
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
 		} else {
-			$a[] = $this->_datafields[addedby][1][0]."=".$this->getField('addeby');
+			$a[] = "FK_createdby=".$this->getField('addedby');
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
 
@@ -412,8 +408,16 @@ ORDER BY
 		$d = $this->data;
 		$a = array();
 		
-		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
-		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'";
+		if (!isset($this->owningSiteObj)) {
+			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj->fetchDown();
+		}
+		if ($all) $a[] = "FK_site='".$this->owningSiteObj->id."'";
+		
+/* 		print "<pre>\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n"; */
+/* 		print "owning_site=".$this->owning_site."\nOwningSiteObj: "; */
+/* 		print_r ($this->owningSiteObj); */
+/* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
 		
 //		if ($this->id && ($all || $this->changed[sections])) { //I belive we may always need to fix the order.
 		if ($this->id) {
