@@ -118,9 +118,6 @@ class section extends segue {
 			$parentObj->delSection($this->id);
 			$parentObj->updateDB();
 		} else {
-			$query = "delete from section where id=".$this->id;
-			db_query($query);
-			
 			// remove pages
 			$this->fetchDown();
 			if ($this->pages) {
@@ -128,6 +125,9 @@ class section extends segue {
 					$o->delete();
 				}
 			}
+
+			$query = "delete from section where id=".$this->id;
+			db_query($query);
 			
 			$this->clearPermissions();
 			$this->updatePermissionsDB();
@@ -289,36 +289,12 @@ class section extends segue {
 		
 		$this->fetchUp(1);
 
-		print "<pre style='background-color: #fcc'>";
-		print "Sections = ";
-		print_r($this->owningSiteObj->getField('sections'));
-		print "</pre>";
-		
-		$this->owningSiteObj->addSection($this->id);
-		
-		print "<pre style='background-color: #fcc'>";
-		print "Sections = ";
-		print_r($this->owningSiteObj->getField('sections'));
-		print "</pre>";
-		
 /* 		print "<br>remove origionl: $removeOrigional<br>"; */
 		if ($removeOrigional) $this->owningSiteObj->delSection($origid,0);
 /* 		print "<pre>this->owningsiteobject: "; print_r($this->owningSiteObj); print "</pre>"; */
 		
 		$this->owningSiteObj->updateDB();
-		$orderkey = array_keys($this->owningSiteObj->getField('sections'),$this->id);
 		
-		print "<pre style='background-color: #fcc'>id = ".$this->id."<br>";
-		print "Sections = ";
-		print_r($this->owningSiteObj->getField('sections'));
-		print "<br>OrderKey = ";
-		print_r ($orderkey); 
-		print "</pre>";
-		
-		$query = "UPDATE section SET section_order='".$orderkey[0]."' WHERE section_id=".$this->id;
-		print "<BR>query = $query<BR>";
-		db_query($query);
-				
 		// add new permissions entry.. force update
 		$this->updatePermissionsDB(1);
 		
@@ -338,6 +314,14 @@ class section extends segue {
 		
 		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
 		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'";
+		
+//		if ($this->id && ($all || $this->changed[sections])) { //I belive we may always need to fix the order.
+		if ($this->id) {
+			$orderkeys = array_keys($this->owningSiteObj->getField("sections"),$this->id);
+			$a[] = "section_order=".$orderkeys[0];
+		} else {
+			$a[] = "section_order=".count($this->owningSiteObj->getField("sections"));
+		}
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
 		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp

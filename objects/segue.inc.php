@@ -1098,8 +1098,8 @@ FROM
 				if ($p[VIEW]) $p_str.="v,";
 				if ($p[DISCUSS]) $p_str.="di,";
 				
-				$p_str[strlen($p_str)-1]='';
-				echo $p_str."<br>";
+				if ($p_str) $p_str[strlen($p_str)-1]='';
+				echo "'".$p_str."'<br>";
 				
 				
 				// find the id and type of this editor
@@ -1126,9 +1126,20 @@ FROM
 				$query = "SELECT permission_id FROM permission WHERE permission_scope_type='$scope' AND FK_scope_id=$id AND FK_editor <=> $ed_id AND permission_editor_type = '$ed_type'";
 				echo $query."<br>";
 				$r = db_query($query);
-				// if permission entry exists and there are permissions to add
-//				if (db_num_rows($r) && )
-			
+
+				// if permission entry exists
+				if (db_num_rows($r)) {
+					// if we are changing the permissions, update the db
+					if ($p_str) {
+						// FIGURE OUT HOW TO DO THIS!!!						
+					}
+					// if we are clearing the permissions, delete the entry from the db
+					else {
+						$a = db_fetch_assoc($r);
+						$query = 'DELETE FROM permission WHERE permission_id = '.$a[permission_id];
+						db_query($query);
+					}
+				}
 				/*
 				$a2 = $a;
 				$a2[] = "user='$user'";
