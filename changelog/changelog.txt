@@ -3,8 +3,18 @@
 Name: Segue ChangeLog
 
 
-v. 1.3.1 (The Future)
+v. 1.3.1 (2004-10-04)
 ----------------------------------------------------
+		
+	* Bug Fix: When moving or copying sections/pages/stories within a site, the 'added' timestamps are now preserved. (Adam Franco)
+		
+	* Bug Fix: Link to Segue site listing (sitelisting.php) changed from Public Sites to Site Listing to reflect that sites actually listed are not necessarily public. Clarification made in explanation of site listing to indicate that the listing includes all class sites and all other sites that have settings which specify public listing. (Alex Chapin)
+		
+	* Bug Fix: If a section has a single page, that page link will not be displayed. However, if that page is a &quot;link&quot; then it will be displayed to make it accessable. (Alex Chapin)
+		
+	* Bug Fix: The side-sections navigation was all screwed up and not printing editing links in viewsite mode. (Adam Franco)
+		
+	* Bug Fix: Page titles are now displayed with the title CSS class instead of just bold letters. (Adam Franco)
 		
 	* Bug Fix: The sample_config was replicating the auth_help string. (Adam Franco)
 		

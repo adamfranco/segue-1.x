@@ -3,7 +3,33 @@
 	h1, h2 {color: #005;}
 	h1 {font-size: 18pt;}
 	li {padding-bottom: 3px;}
-	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.1</h2><h3>The Future</h3><ul>
+	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.1</h2><h3>2004-10-04</h3><ul>
+		<li/> Bug Fix:
+	 
+			When moving or copying sections/pages/stories within a site, the 
+			'added' timestamps are now preserved.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Link to Segue site listing (sitelisting.php) changed from Public Sites to Site Listing to reflect
+			that sites actually listed are not necessarily public.  Clarification made in explanation
+			of site listing to indicate that the listing includes all class sites and all other sites
+			that have settings which specify public listing.
+		 (<i>Alex Chapin</i>)
+		<li/> Bug Fix:
+	 
+			If a section has a single page, that page link will not be displayed.
+			However, if that page is a &quot;link&quot; then it will be displayed to make
+			it accessable.
+		 (<i>Alex Chapin</i>)
+		<li/> Bug Fix:
+	 
+			The side-sections navigation was all screwed up and not printing editing links in viewsite mode.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Page titles are now displayed with the title CSS class instead of just bold letters.
+		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
 			The sample_config was replicating the auth_help string.
