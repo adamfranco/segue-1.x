@@ -343,6 +343,22 @@
 		
 	);
 	
+	/******************************************************************************
+	 * Date/time formats
+	 *
+	 * date_format: The format that dates (but not their time component) should be 
+	 *				displayed in. Please see the documentation for PHP's date()
+	 *				function for more options. If no format is specified, "n/j/Y"
+	 *				will be used.
+	 * time_format: The format that the time should be displayed in. Please see the
+	 *				documentation for PHP's date() function for more options. If no 
+	 *				format is specified, "g:i A" will be used.
+	 *
+	 * PHP Documentation: http://us2.php.net/manual/en/function.date.php
+	 ******************************************************************************/
+	$cfg['date_format'] = "";
+	$cfg['time_format'] = "";
+	
 	//months
 	$cfg['months'] = $months = array("January","February","March","April","May","June","July","August","September","October","November","December");
 	

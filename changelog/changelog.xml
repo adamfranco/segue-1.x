@@ -12,6 +12,11 @@
 			Database errors on connection will now not print the database password
 			used unless the debug configuration option is set to 1.
 		</fix>
+		<change author='adam'>
+			Date printing has been re-worked to support more timestamp formats. As
+			well, config options have been added for customing date/time
+			formats.
+		</change>
 	</version>
 	<version number="1.3.2" date="2004-10-07">
 		<fix author='adam'>
