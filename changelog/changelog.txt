@@ -3,6 +3,21 @@
 Name: Segue ChangeLog
 
 
+v. 1.3.2 (The Future)
+----------------------------------------------------
+		
+	* Bug Fix: #1042319 Classes with the external ID different from the internal code now are pulled properly in the roster. (Adam Franco)
+		
+	* Change: Headers have been reworked to print a doctype tag as well as html and head tags in the right order. Some attributes, such as align='right', have their attributes quoted, and br tags have trailing slashes added. Much more cleaning up of the HTML needs to be done before Segue code will validate, but it is now partially along the way. (Adam Franco)
+		
+	* Bug Fix: Site-listing next/previous buttons now reflect search results. (Adam Franco)
+		
+	* Bug Fix: Fixed midd network's LDAP search function to properly show members of the class as students. (Adam Franco)
+		
+	* Bug Fix: Modified HTMLarea to not capture CTRL+v, which was violating Mozilla's security policy for clipboard access. (Adam Franco)
+		
+	* Bug Fix: Content blocks created in plain-text mode now have br tags replacing line breaks. (Adam Franco)
+	
 v. 1.3.1 (2004-10-05)
 ----------------------------------------------------
 		
