@@ -56,6 +56,8 @@ class Update103
 		$r = db_query($query);
 		if (db_num_rows($r))
 			$this->fourExists = TRUE;
+		else
+			print "\nTemplate 4 doesn't exist<br />";
 		
 		// check for template5
 		$query = "
@@ -73,6 +75,8 @@ class Update103
 		$r = db_query($query);
 		if (db_num_rows($r))
 			$this->fiveExists = TRUE;
+		else
+			print "\nTemplate 5 doesn't exist<br />";
 		
 		// return results
 		if ($this->fourExists && $this->fiveExists)
