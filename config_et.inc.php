@@ -36,7 +36,7 @@ $_full_uri = "http://sitesdb.middlebury.edu";
 $themesdir = "themes";
 
 //folder for data uploads (images and files)
-$uploaddir = "/www/sitesdb/userfiles";
+$uploaddir = "/www/sitesdb_userfiles";
 $uploadurl = "userfiles";
 
 // Theme for login/default pages
