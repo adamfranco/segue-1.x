@@ -21,7 +21,7 @@ if (ereg("^".$cfg[full_uri], $url)
 	|| ereg("^".$cfg[personalsitesurl], $url)
 	|| ereg("^".$cfg[classsitesurl], $url))
 {
-	$url = str_replace("index.php?", "index.php?".strip_tags(session_id()), $url);
+	$url = str_replace("index.php?", "index.php?".session_id(), $url);
 	print "\n$url\n<br />";
 }
 
