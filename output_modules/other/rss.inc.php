@@ -17,14 +17,14 @@ include_once (dirname(__FILE__)."/carprss/carp.php");
 ob_start();
 
 $url = $o->getField("url");
-if (ereg("^".$cfg[full_uri], $url)
-	|| ereg("^".$cfg[personalsitesurl], $url)
-	|| ereg("^".$cfg[classsitesurl], $url))
-{
-	$replacement = "index.php?".session_name()."=".session_id();
-	$url = ereg_replace("index.php\?", $replacement, $url);
-	print "\n$url\n<br />";
-}
+// if (ereg("^".$cfg[full_uri], $url)
+// 	|| ereg("^".$cfg[personalsitesurl], $url)
+// 	|| ereg("^".$cfg[classsitesurl], $url))
+// {
+// 	$replacement = "index.php?".session_name()."=".session_id();
+// 	$url = ereg_replace("index.php\?", $replacement, $url);
+// 	print "\n$url\n<br />";
+// }
 
 // If we have an auser, create a cache just for them.
 if ($_SESSION['auser']) {
