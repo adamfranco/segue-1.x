@@ -294,7 +294,7 @@ print "</td>";
 
 print "<td class='bg' align=right>";
 // roster
-if (isclass($_REQUEST[site])) print "<a href=add_students.php?$sid&name=$site>Rosters</a> |";
+if (isclass($_REQUEST[site])) print "<a href=add_students.php?$sid&name=$site>Roster</a> |";
 
 // participation (not link when coming from home)
 if ($_REQUEST[from] != "home") {
@@ -726,19 +726,20 @@ print "</table><br>";
 		//			asort($participants);
 		//			reset($participants);
 		//		}
-	
-				foreach (array_keys($students) as $key) {
-	
-					if (!in_array($students[$key][uname], $logged_participants)) {
-						print "<tr>";
-						print "<td class=td$color>".$students[$key][fname]."</td>";
-						print "<td class=td$color>".$students[$key][email]."</td>";
-						print "<td class=td$color>0</td>";
-						print "<td class=td$color></td>";
-						print "</tr>";
+				if (is_array($students)) {
+					foreach (array_keys($students) as $key) {
+						//if (is_array($logged_participants)) {
+							if (!in_array($students[$key][uname], $logged_participants)) {
+								print "<tr>";
+								print "<td class=td$color>".$students[$key][fname]."</td>";
+								print "<td class=td$color>".$students[$key][email]."</td>";
+								print "<td class=td$color>0</td>";
+								print "<td class=td$color></td>";
+								print "</tr>";
+							}
+						//}
 					}
 				}
-				
 			}
 
 		?>
