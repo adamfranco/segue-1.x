@@ -225,7 +225,13 @@ function changeOrder(order) {
 	f = document.searchform; 
 	f.order.value=order; 
 	f.submit(); 
-} 
+}
+
+function changePage(lolim) {
+	f = document.searchform;
+	f.lowerlimit.value=lolim;
+	f.submit();
+}
  
 </script> 
  
@@ -344,6 +350,7 @@ if (1) {
 		<input type=hidden name='order' value='<? echo $order ?>'> 
 		<input type=hidden name='editor' value='<? echo $editor ?>'> 
 		<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
+		<input type=hidden name='lowerlimit' value=0>
 		</form> 
 		</td> 
 		<td align=right> 
@@ -359,9 +366,9 @@ if (1) {
 		print "$curr of $tpages "; 
 //		print "$prev $lowerlimit $next "; 
 		if ($prev != $lowerlimit) 
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&all=$all\"'>\n"; 
+			print "<input type=button value='&lt;&lt' onClick=\"changePage('$prev')\">\n"; 
 		if ($next != $lowerlimit && $next > $lowerlimit) 
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&all=$all\"'>\n"; 
+			print "<input type=button value='&gt;&gt' onClick=\"changePage('$next')\">\n"; 
 		?> 
 		</td> 
 		</tr> 
