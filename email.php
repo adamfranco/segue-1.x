@@ -12,17 +12,18 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 // include all necessary files
 include("includes.inc.php");
 
-if ($_SESSION['ltype'] != 'admin') {
-	// take them right to the user lookup page
-	header("Location: username_lookup.php");
-	exit;
-}
+/* if ($_SESSION['ltype'] != 'admin') { */
+/* 	// take them right to the user lookup page */
+/* 	header("Location: username_lookup.php"); */
+/* 	exit; */
+/* } */
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 // what's the action?
 if ($_REQUEST['action']) $curraction = $_REQUEST['action'];
-$scope = $_REQUEST['scope'];
+if ($_REQUEST['scope']) $scope = $_REQUEST['scope'];
+
 $sql = $_REQUEST['sql'];
 $query_custom = $_REQUEST['newquery'];
 

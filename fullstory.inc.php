@@ -152,12 +152,10 @@ if ($storyObj->getField("discuss")) {
 	$site=$siteObj->name;
 	
 	printc("<div style='font-size: 10px'>");
-	if ($_SESSION[auser]==$site_owner) {
-		
+	if ($_SESSION[auser]==$site_owner || $_SESSION[ltype]=="admin") {		
 		printc("<a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list' onClick='doWindow(\"email\",700,500)' target='email'>List</a> | \n");
 		printc("<a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email' onClick='doWindow(\"email\",700,500)' target='email'>Email</a> - \n");
 		printc($numparticipants." participants");
-
 	} else {
 		printc($numparticipants." participants");
 	}
