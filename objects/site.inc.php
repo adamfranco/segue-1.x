@@ -962,7 +962,7 @@ ORDER BY
 		// the hard step: update the fields in the JOIN tables
 
 			// first update 'slot_name' in the slot table, if the latter has changed
-			if ($this->changed[name]) {
+			if ($this->changed[name] && $this->data[name]) {
 				$new_name = $this->data[name];
 				$query = "UPDATE slot SET slot_name = '$new_name' WHERE FK_site=".$this->id;
 				db_query($query);

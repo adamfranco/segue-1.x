@@ -202,10 +202,13 @@ class slot {
 			} else
 				$assocSite = "NULL";
 			
-			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite=".$assocSite.",slot_uploadlimit=".$this->uploadlimit;
-/* 			print $query; */
-			db_query($query);
-			echo mysql_error();
+			if (!$this->name) error("Slot name not specified. Please notify the administrator of the steps that took you to this point.");
+			if (!$error) {
+				$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite=".$assocSite.",slot_uploadlimit=".$this->uploadlimit;
+	/* 			print $query; */
+				db_query($query);
+				echo mysql_error();
+			}
 		}
 	}
 	
