@@ -2,7 +2,34 @@
 
 // check view permissions
 if (!$thisSite->canview()) {
-	error("You may not view this site. This may be due to any of the following reasons:<BR><ul><li>The site has not been activated by the owner.<li>You are not on a computer within $cfg[inst_name].<li>You are not logged in.<li>You are not part of a set of specific users or groups allowed to view this site.</ul>");
+	ob_start();
+	print "You may not view this site. This may be due to any of the following reasons:<BR>";
+	print "\n<ul>";
+	if ($thisSite->site_does_not_exist) {
+		print "\n		<li>This site does not exist. ";
+		if (
+			$_SESSION[auser] == slot::getOwner($thisSite->name)
+				|| (
+					$allowpersonalsites 
+					&& $_SESSION[atype] != 'visitor'
+					&& $thisSite->name == $_SESSION[auser]
+				)
+			) 
+		{
+			print "\n<br /><a href='$PHP_SELF?$sid&action=add_site&sitename=".$thisSite->name."'>Create Site</a>";
+		}
+		print "</li>";
+	} else {
+		if (!$_SESSION[auser]) {
+			print "\n		<li>You are not logged in.</li>";
+			print "\n		<li>You are not on a computer within $cfg[inst_name]</li>";
+		}
+		print "\n		<li>The site has not been activated by the owner.</li>";
+		print "\n		<li>You are not part of a set of specific users or groups allowed to view this site.</li>";
+	}
+	print "\n</ul>";
+	error(ob_get_contents());
+	ob_end_clean();
 	return;
 }	
 
