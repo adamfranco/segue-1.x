@@ -1138,7 +1138,7 @@ function updateSiteLinksFromHash (& $site, & $nodeToStartOn) {
 // 	printpre($patterns);
 // 	printpre($replacements);
 
-	if (!$nodeToStartOn) {
+	if (!$nodeToStartOn ||  get_class($nodeToStartOn) == 'site') {
 			
 		// Start with the site level text
 		$site->setField("header", 

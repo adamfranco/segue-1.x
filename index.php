@@ -166,7 +166,12 @@ if ($_SESSION[settings][section]) $_REQUEST[section] = $_SESSION[settings][secti
 if ($_SESSION[settings][page]) $_REQUEST[page] = $_SESSION[settings][page];
 if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
 
-
+print "<div style='border: 4px solid red; font-size: large;'>
+This is a Beta-Testing instance of Segue. No data entered here will be saved.
+<p>Please help us test the new version of Segue by performing operations that you do
+normally with Segue. 
+<p>Thank you for your help!<br> - The Segue Development Team
+</div>";
 
 // set up theme, header,footer and navlinks
 if ($_REQUEST[site]) {						// we are in a site
