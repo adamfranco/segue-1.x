@@ -218,7 +218,7 @@ if (!$domove) {
 		print "<th style='text-align: left' colspan=2>";
 		if (!$domove) {
 			print ucwords($actionlc)." ".ucwords($type);
-			print "to:";
+			print " to:";
 		} else {
 			print ucwords($actionlc)." ".ucwords($type)." Successfull";
 		}
