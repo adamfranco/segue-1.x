@@ -158,9 +158,10 @@ class site extends segue {
 	// ************************************************************************************************
 	// description: just look at the function name
 	// THIS IS A BAD ASS FUNCTION. BUT IS IS FAST!!!
+	// @param $section_id, $page_id If these are specified the function will fetch along them
 	// ************************************************************************************************
 	// ************************************************************************************************
-	function fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen() {
+	function fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_section_id = 0, $_page_id = 0) {
 		// no $full or $force here, always fetch everything, be strong and stubborn damnit!
 
 		// connect to db and initialize data array
@@ -199,7 +200,10 @@ FROM
 		LEFT JOIN
 	story ON FK_page = page_id
 WHERE
-	site_id = ".$this->id;		
+	site_id = ".$this->id." 
+ORDER BY
+	section_order, page_order, story_order
+";		
 		db_query($query);
 
 		// all sites for this site, i.e. just this site
@@ -244,6 +248,39 @@ FROM
 ";		
 		db_query($query);
 	
+	
+		// create the object hierarchy
+		
+		$query = "SELECT site_id, section_id FROM t_sections";
+		$r = db_query($query);
+		while ($a = db_fetch_assoc($r))
+			if ($a[section_id] != null) {
+				$section =& new section($this->name,$a[section_id],&$this);
+				$this->sections[$a[section_id]]  =& $section;
+				$this->data[sections][]  = $a[section_id];
+			}
+
+		$query = "SELECT site_id, section_id, page_id FROM t_pages";
+		$r = db_query($query);
+		while ($a = db_fetch_assoc($r))
+			if ($a[section_id] != null && $a[page_id] != null)  {
+				$section =& $this->sections[$a[section_id]];
+				$page =& new page($this->name,$a[section_id],$a[page_id],&$section);
+				$section->pages[$a[page_id]]  =& $page;
+				$section->data[pages][]  = $a[page_id];
+		}
+
+		$query = "SELECT site_id, section_id, page_id, story_id FROM t_stories";
+		$r = db_query($query);
+		while ($a = db_fetch_assoc($r))
+			if ($a[section_id] != null && $a[page_id] != null && $a[story_id] != null)  {
+				$section =& $this->sections[$a[section_id]];
+				$page =& $section->pages[$a[page_id]];
+				$story =& new story($this->name,$a[section_id],$a[page_id],$a[story_id],&$page);
+				$page->stories[$a[story_id]]  =& $story;
+				$page->data[stories][]  = $a[story_id];
+		}
+		
 		// first, fetch the site
 		$this->tobefetched=1;
 		$this->data = array();
@@ -314,14 +351,10 @@ FROM
 		LEFT JOIN
 	media
 		ON FK_media = media_id
-ORDER BY
-	section_order
 ";	
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r)) {
-			array_change_key_case($a); // make all keys lower case
-			$section =& new section($this->name,$a[section_id],&$this);
-			$this->sections[$a[section_id]]  =& $section;
+			$section =& $this->sections[$a[section_id]];
 			foreach ($a as $field => $value)
 				// make sure we have defined this field in the _allfields array
 				if ($field == 'section_id' || in_array($field,$section->_allfields)) {
@@ -353,7 +386,7 @@ SELECT
 	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id, media_tag AS url
 FROM 
 	t_pages
-		INNER JOIN
+		INNER JOIN 
 	slot
 		ON t_pages.site_id = slot.FK_site
 		INNER JOIN
@@ -369,12 +402,12 @@ FROM
 	media
 		ON page.FK_media = media_id
 ";
+		if ($_section_id) $query = $query." WHERE section_id = $_section_id";
+	
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r)) {
 			array_change_key_case($a); // make all keys lower case
-			$section =& $this->sections[$a[section_id]];
-			$page =& new page($this->name,$a[section_id],$a[page_id],&$section);
-			$section->pages[$a[page_id]]  =& $page;
+			$page =& $this->sections[$a[section_id]]->pages[$a[page_id]];
 			foreach ($a as $field => $value)
 				// make sure we have defined this field in the _allfields array
 				if ($field == 'page_id' || in_array($field,$page->_allfields)) {
@@ -422,13 +455,15 @@ FROM
 	media
 		ON story.FK_media = media_id		
 ";
+		if ($_section_id) {
+			$query = $query." WHERE section_id = $_section_id";
+			if ($_page_id) $query = $query." AND page_id = $_page_id";		
+		}
+
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r)) {
 			array_change_key_case($a); // make all keys lower case
-			$section =& $this->sections[$a[section_id]];
-			$page =& $section->pages[$a[page_id]];
-			$story =& new story($this->name,$a[section_id],$a[page_id],$a[story_id],&$page);
-			$page->stories[$a[story_id]]  =& $story;
+			$story =& $this->sections[$a[section_id]]->pages[$a[page_id]]->stories[$a[story_id]];
 			foreach ($a as $field => $value)
 				// make sure we have defined this field in the _allfields array
 				if ($field == 'story_id' || in_array($field,$story->_allfields)) {

@@ -107,7 +107,7 @@ if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
 if ($_REQUEST[site]) {						// we are in a site
 	
 	$thisSite =& new site($_REQUEST[site]);
-	$thisSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
+	$thisSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_REQUEST[section],$_REQUEST[page]);
 //	$thisSite->buildPermissionsArray(1,1);
 	
 	$site_owner = $thisSite->getField("addedby");
