@@ -69,7 +69,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 		"site" => $_REQUEST[site],
 		"section" => $_REQUEST[section],
 		"page" => $_REQUEST[page],
-		"commingFrom" => $_REQUEST[commingFrom]
+		"comingFrom" => $_REQUEST[comingFrom]
 	);
 	
 	$_SESSION[storyObj] = new story($thisSite->name,$thisSection->id,$thisPage->id);
@@ -126,11 +126,10 @@ $siteheader = "";
 $sitefooter = "";
 
 if ($_REQUEST[cancel]) {
-	$commingFrom = $_SESSION[settings][commingFrom];
-	$site = $thisSite->name;
+	$comingFrom = $_SESSION[settings][comingFrom];
 	print "cancelling...";
-	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
-	else header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
+	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyobj->owning_section."&page=".$storyObj->owning_page);
+	else header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyobj->owning_section."&page=".$storyObj->owning_page);
 }
 
 if ($_REQUEST[save]) {
@@ -224,7 +223,7 @@ if ($_SESSION[storyObj]->getField("type") == "story" && ($thisPage->getField("ed
 	$leftlinks .= "</td></tr>";
 }
 
-$leftlinks .= "</table>_________________<br><a href=$PHP_SELF?$sid&action=add_page&cancel=1>Cancel</a>";
+$leftlinks .= "</table>_________________<br><a href=$PHP_SELF?$sid&action=add_story&cancel=1>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
 

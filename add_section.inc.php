@@ -58,7 +58,7 @@ if (!is_array($_SESSION[settings]) || !is_object($_SESSION[sectionObj])) {
 		"add" => 0,
 		"edit" => 0,
 		"step" => 1,
-		"commingFrom" => $_REQUEST[commingFrom]
+		"comingFrom" => $_REQUEST[comingFrom]
 	);
 	
 	$_SESSION[sectionObj] = new section($thisSite->name);
@@ -111,12 +111,12 @@ $siteheader = "";
 $sitefooter = "";
 
 if ($_REQUEST[cancel]) {
-	$commingFrom = $_SESSION[settings][commingFrom];
+	$comingFrom = $_SESSION[settings][comingFrom];
 	$site = $_SESSION[sectionObj]->owning_site;
 	if ($_SESSION[settings][edit] && $_SESSION[sectionObj]->getField("type")=='section') $section = $_SESSION[sectionObj]->id;
 /* 	if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("sectionObj"); } */
 /* 	unset($_SESSION[sectionObj],$_SESSION[settings]); */
-	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site".(($section)?"&section=$section":""));
+	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site".(($section)?"&section=$section":""));
 	else header("Location: index.php?$sid");
 }
 

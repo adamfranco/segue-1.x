@@ -37,7 +37,7 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		"recursiveenable" => "",
 		"copydownpermissions" => "",
 		"template" => "template0",
-		"commingFrom" => $_REQUEST[commingFrom]
+		"comingFrom" => $_REQUEST[comingFrom]
 	);
 	$_SESSION[siteObj] = new site($_REQUEST[sitename]);
 	
@@ -96,11 +96,11 @@ if (!sitenamevalid($_SESSION[siteObj]->getField("name"))) {// check if the site 
 }
 
 if ($_REQUEST[cancel]) {
-	$commingFrom = $_SESSION[settings][commingFrom];
+	$comingFrom = $_SESSION[settings][comingFrom];
 	$site = $_SESSION[siteObj]->getField("name");
 //	if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("siteObj"); }
 //	unset($_SESSION[siteObj],$_SESSION[setting]);
-	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
+	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site");
 	else header("Location: index.php?$sid");
 }
 
@@ -142,13 +142,13 @@ if ($_REQUEST[save]) {
 		}
 				
 		$sitename = $_SESSION[siteObj]->getField("name");
-		$commingFrom = $_SESSION[settings][commingFrom];
+		$comingFrom = $_SESSION[settings][comingFrom];
 		$add = $_SESSION[settings][add];
 
 		if ($add) {
 			header("Location: index.php?$sid&action=viewsite&site=$sitename");
 		} else {
-			if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename");
+			if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$sitename");
 			else header("Location: index.php?$sid");
 		}
 		

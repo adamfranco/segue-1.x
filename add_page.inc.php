@@ -74,7 +74,7 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 		"step" => 1,
 		"site" => $thisSite->name,
 		"section" => $thisSection->id,
-		"commingFrom" => $commingFrom
+		"comingFrom" => $comingFrom
 	);
 
 	$_SESSION[pageObj] = new page($thisSite->name,$thisSection->id);
@@ -131,10 +131,10 @@ $siteheader = "";
 $sitefooter = "";
 
 if ($_REQUEST[cancel]) {
-	$commingFrom = $_SESSION[settings][commingFrom];
+	$comingFrom = $_SESSION[settings][comingFrom];
 	$site = $thisSite->name;
 //	session_unregister("settings"); // handled by index.php
-	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
+	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site");
 	else header("Location: index.php?$sid");
 }
 

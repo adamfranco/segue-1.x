@@ -78,7 +78,7 @@ if ($thisSection) $envvars .= "&section=".$thisSection->id;
 if ($thisPage) $envvars .= "&page=".$thisPage->id;
 
 // first build list of categories
-$topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&commingFrom=viewsite' class='btnlink' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
+$topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&comingFrom=viewsite' class='btnlink' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 
 $site=$thisSite->name;
 $section=$thisSection->id;
@@ -96,7 +96,7 @@ if ($thisSite->sections) {
 				if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$id' class=btnlink title='Move this section to the right'>&rarr;</a>";
 			}
 			$extra .= ($thisSite->hasPermission("edit"))?" <a href='copy_parts.php?$sid&site=$site&section=$id&type=section' class='btnlink' title='Move/Copy this section to another site' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
-			$extra .= ($thisSite->hasPermission("edit"))?" <a href='$PHP_SELF?$sid&site=$site&section=$id&action=edit_section&edit_section=$id&commingFrom=viewsite' class='btnlink' title='Edit the title and properties of this section'>edit</a>":"";
+			$extra .= ($thisSite->hasPermission("edit"))?" <a href='$PHP_SELF?$sid&site=$site&section=$id&action=edit_section&edit_section=$id&comingFrom=viewsite' class='btnlink' title='Edit the title and properties of this section'>edit</a>":"";
 			$extra .= ($thisSite->hasPermission("delete"))?" <a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHP_SELF?$sid&$envvars&action=delete_section&delete_section=$id\")' class='btnlink' title='Delete this section'>del</a>":"";
 		}
 		$i++;
@@ -121,7 +121,7 @@ if ($thisSection) {
 					//if (count($pages)!=1) $extra .= "<BR>";
 				}
 				$extra .= ($thisSection->hasPermission("edit"))?" | <a href='copy_parts.php?$sid&site=$site&section=$section&page=$id&type=page' class='small' title='Move/Copy this page to another section' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
-				$extra .= ($thisSection->hasPermission("edit"))?" | <a href='$PHP_SELF?$sid&$envvars&action=edit_page&edit_page=$id&commingFrom=viewsite' class='small' title='Edit the name/settings for this page/link/heading/divider'>edit</a>":"";
+				$extra .= ($thisSection->hasPermission("edit"))?" | <a href='$PHP_SELF?$sid&$envvars&action=edit_page&edit_page=$id&comingFrom=viewsite' class='small' title='Edit the name/settings for this page/link/heading/divider'>edit</a>":"";
 				$extra .= ($thisSection->hasPermission("delete"))?" | <a href='javascript:doconfirm(\"Are you sure you want to permanently delete this item and any data that may be contained within it?\",\"$PHPSELF?$sid&$envvars&action=delete_page&delete_page=$id\")' class='small' title='Delete this page/link/heading/divider'>del</a>":"";
 			}
 			$i++;
@@ -137,7 +137,7 @@ if ($thisSection) {
 			}
 		}
 	}
-	$leftnav_extra = ($thisSection->hasPermission("add"))?"<div align=right><nobr><a href='$PHP_SELF?$sid&site=$site&section=$section&action=add_page&commingFrom=viewsite' class='small' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></nobr></div>":"";
+	$leftnav_extra = ($thisSection->hasPermission("add"))?"<div align=right><nobr><a href='$PHP_SELF?$sid&site=$site&section=$section&action=add_page&comingFrom=viewsite' class='small' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></nobr></div>":"";
 }
 
 if ($thisPage) {
@@ -153,7 +153,7 @@ if ($thisPage) {
 	
 	$_top_addlink_orders = array("addeddesc","editeddesc","author","editor","category","titleasc","titledesc");
 	if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_top_addlink_orders)) 
-		printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br><hr class=block>");
+		printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br><hr class=block>");
 	
 	$i=0;
 	if ($thisPage->stories) {
@@ -195,7 +195,7 @@ if ($thisPage) {
 						if ($i!=count($thisPage->stories)-1 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) $l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=down&id=$s' class=small title='Move this Content Block down'><b>&darr;</b></a>";
 					}
 					if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='copy_parts.php?$sid&site=$site&section=$section&page=$page&story=$s&type=story' class='small' title='Move/Copy this Content Block to another page' onClick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>";
-					if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='$PHP_SELF?$sid&$envvars&action=edit_story&edit_story=$s&commingFrom=viewsite' class='small' title='Edit this Content Block'>edit</a>";
+					if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='$PHP_SELF?$sid&$envvars&action=edit_story&edit_story=$s&comingFrom=viewsite' class='small' title='Edit this Content Block'>edit</a>";
 					if ($thisPage->hasPermission("delete") || $o->hasPermission("delete")) $l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&$envvars&action=delete_story&delete_story=$s\")' class=small title='Delete this Content Block'>delete</a>";
 				}
 				printc(implode(" | ",$l));
@@ -205,7 +205,7 @@ if ($thisPage) {
 		}
 	}
 	$_b = array("","custom","addedasc","editedasc");
-	if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) printc("<br><hr class=block><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+	if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) printc("<br><hr class=block><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 }
 
 
@@ -217,7 +217,7 @@ if ($page) $u .= "&page=$page";
 $text .= "<div align=right><table><tr>";
 $text .= "<td><form method=post action='$u&$sid'><input type=submit value='Preview This Site'></form></td>";
 $text .= "<td><form action='site_map.php?$sid&site=$site' onClick='doWindow(\"sitemap\",600,400)' target='sitemap' method=post><input type=submit value=' &nbsp; Site Map &nbsp;'></form></td>";
-if ($thisSite->hasPermission("edit")) $text .= "</tr><tr><td><form action='$PHP_SELF?$sid&action=edit_site&edit_site=$site&commingFrom=viewsite' method=post><input type=submit value='Edit Site Settings'></form></td>";
+if ($thisSite->hasPermission("edit")) $text .= "</tr><tr><td><form action='$PHP_SELF?$sid&action=edit_site&edit_site=$site&comingFrom=viewsite' method=post><input type=submit value='Edit Site Settings'></form></td>";
 else $text .= "</tr><tr><td> &nbsp; </td>";
 $text .= "<td><form action='edit_permissions.php?$sid&site=$site' onClick='doWindow(\"permissions\",600,400)' target='permissions' method=post><input type=submit value='Permissions'></form></td>";
 $text .= "</tr><tr>";
