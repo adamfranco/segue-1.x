@@ -228,6 +228,7 @@ class slot {
 		return $allSlots;
 	}
 	
+	// This function has been incorporated into add_slot.php 
 	function getAllSlotsInfo($slot_owner="",$slot_name="",$slot_id="",$slot_type="",$slot_use="") {
 		$allSlots = array();
 		

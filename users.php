@@ -41,6 +41,7 @@ if ($curraction == 'add') {
 		$obj->fname = $_REQUEST['fname'];
 		$obj->email = $_REQUEST['email'];
 		$obj->type = $_REQUEST['type'];
+		$obj->authtype = 'db';
 		$obj->randpass(5,3);
 		$obj->insertDB();
 		$obj->sendemail();
@@ -88,11 +89,14 @@ if ($curraction == 'resetpw') {
 $name = $_REQUEST['name'];
 $id = $_REQUEST['id'];
 $type = $_REQUEST['type'];
+$authtype = $_REQUEST['authtype'];
 
 if ($findall) {
 	$name = '%';
 	$type = "Any";
+	$authtype = "All";
 }
+
 
 /******************************************************************************
  * query database only if search has been made
@@ -102,12 +106,10 @@ if ($findall) {
  if ($id) {	
 	$query = "
 	SELECT
-		user_id,user_uname,user_fname,user_email,user_type
+		user_id,user_uname,user_fname,user_email,user_type,user_authtype
 	FROM
 		user
 	WHERE
-		user_authtype='db'
-	AND
 		user_id = $id
 	ORDER BY
 		user_uname ASC";
@@ -125,13 +127,17 @@ if ($findall) {
 		$where .= " AND user_type = '$type'";
 	}
 	
+	if (!$authtype || $authtype == "All") {
+		$authtype = '%';
+	}
+	
 	$query = "
 	SELECT
 		COUNT(*) AS user_count
 	FROM
 		user
 	WHERE
-		user_authtype='db'
+		user_authtype='$authtype'
 	AND
 		$where";
 		
@@ -146,11 +152,11 @@ if ($findall) {
 	
 	$query = "
 	SELECT
-		user_id,user_uname,user_fname,user_email,user_type
+		user_id,user_uname,user_fname,user_email,user_type,user_authtype
 	FROM
 		user
 	WHERE
-		user_authtype='db'
+		user_authtype LIKE '$authtype'
 	AND
 		$where
 	ORDER BY
@@ -192,7 +198,7 @@ printerr();
 	<tr><td>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
 		Name: <input type=text name='name' size=20 value='<?echo $name?>'> 
-		Type:
+		User Type:
 		<select name=type>
 		<option<?=($type=='Any')?" selected":""?>>Any
 		<option<?=($type=='stud')?" selected":""?>>stud
@@ -200,9 +206,27 @@ printerr();
 		<option<?=($type=='staff')?" selected":""?>>staff
 		<option<?=($type=='admin')?" selected":""?>>admin
 		</select>
+		<?
+		$query = "
+		SELECT
+			DISTINCT user_authtype
+		FROM
+			user";			
+		$r2 = db_query($query);
+		?>
+		Auth Type:
+		<select name=authtype>
+		<option<?=($authtype=='All')?" selected":""?>>All
+		<?
+		while ($a = db_fetch_assoc($r2)) {
+			print "<option ";
+			($authtype==$a['user_authtype'])? print "selected": print "";
+			print ">".$a['user_authtype'];		
+		}	
+		?>
+		</select>
 		<input type=submit name='search' value='Find'>
 		<input type=submit name='findall' value='Find All'>
-		(Segue database users only)
 		</td>
 		<td align=right>
 		<?
@@ -242,6 +266,7 @@ printerr();
 		<th>full name</th>
 		<th>email</th>
 		<th>type</th>
+		<th>AuthN</th>
 		<th>options</th>
 		</tr>
 		
@@ -260,10 +285,19 @@ printerr();
 				print "<td>".$a['user_fname']."</td>";
 				print "<td>".$a['user_email']."</td>";
 				print "<td>".$a['user_type']."</td>";
+				print "<td>".$a['user_authtype']."</td>";
 				print "<td align=center><nobr>";
-				print "<a href='users.php?$sid&name=$name&type=$type&action=del&id=".$a['user_id']."&delname=".$a['user_uname']."'>del</a> | \n";
-				print "<a href='users.php?$sid&name=$name&type=$type&action=edit&id=".$a['user_id']."'>edit</a> | \n";
-				print "<a href='users.php?$sid&name=$name&type=$type&action=resetpw&id=".$a['user_id']."'>reset pwd</a>\n";
+				if ($a['user_authtype'] == "db") {
+					print "<a href='users.php?$sid&name=$name&type=$type&action=del&id=".$a['user_id']."&delname=".$a['user_uname']."'>del</a> | \n";
+				} else {
+					print "del | \n";
+				}
+				print "<a href='users.php?$sid&name=$name&type=$type&action=edit&id=".$a['user_id']."'>edit</a>\n";
+				if ($a['user_authtype'] == "db") {
+					print " | <a href='users.php?$sid&name=$name&type=$type&action=resetpw&id=".$a['user_id']."'>reset pwd</a>\n";
+				} else {
+					print " | reset pwd\n";
+				}
 				print "</nobr></td>";
 				print "</tr>";
 			}
@@ -281,9 +315,9 @@ function doUserForm($a,$p='',$e=0) {
 	<form method='post' name='addform'>
 	<tr>
 	<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-	<td><input type=text name='uname' size=10 value="<?=$a[$p.'uname']?>"></td>
-	<td><input type=text name='fname' size=20 value="<?=$a[$p.'fname']?>"></td>
-	<td><input type=text name='email' size=30 value="<?=$a[$p.'email']?>"></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='uname' size=10 value=".$a[$p.'uname'].">":$a[$p.'uname']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='fname' size=20 value=".$a[$p.'fname'].">":$a[$p.'fname']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='email' size=30 value=".$a[$p.'email'].">":$a[$p.'email']?></td>
 	<td><select name=type>
 		<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
 		<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof
@@ -291,10 +325,23 @@ function doUserForm($a,$p='',$e=0) {
 		<option<?=($a[$p.'type']=='admin')?" selected":""?>>admin
 	</select>
 	</td>
+	<td><?=($e)?$a[$p.'authtype']:"db"?></td>
 	<td align=center>
 	<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
-	<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-	<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add user"?></a> | <a href='users.php'>cancel</a>
+	<?
+	if ($e) {
+		print "<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>";
+		if ($a[$p.'authtype'] != "db") {
+			print "<input type=hidden name='uname' value=".$a[$p.'uname'].">";
+			print "<input type=hidden name='fname' value=".$a[$p.'fname'].">";
+			print "<input type=hidden name='email' value=".$a[$p.'email'].">";
+		}
+	} else {
+		print "";
+	}	
+	?>
+	<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add user"?></a>
+	<!-- | <a href='users.php'>cancel</a> -->
 	</td>
 	</tr>
 	</form>

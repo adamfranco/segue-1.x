@@ -195,7 +195,7 @@ if ($findall) {
  ******************************************************************************/
  
 
-if ($class_external_id || $class_name || $class_dept ||	$semester || $class_year || $class_owner) {
+if ($curraction == "edit" || $class_external_id || $class_name || $class_dept ||	$semester || $class_year || $class_owner) {
 	$query = "
 		SELECT
 			COUNT(*) AS class_count
@@ -358,11 +358,13 @@ include("themes/common/header.inc.php");
 			<th>options</th>
 			</tr>
 			
-			<? if ($curraction != 'edit') { doUserForm($_REQUEST); } 
+			<? if ($curraction != 'edit') { doClassForm($_REQUEST); } 
 			
 			if ($curraction == 'edit') {
 				$a = db_fetch_assoc($r);
-				doUserForm($a,'class_',1);
+				print " id=";
+				print $a['class_external_id'];
+				doClassForm($a,'class_',1);
 				
 			 // output found users	
 			} else if ($r) {					
@@ -397,35 +399,36 @@ include("themes/common/header.inc.php");
 <BR>
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div>
 <?
-function doUserForm($a,$p='',$e=0) {
+function doClassForm($a,$p='',$e=0) {
 	global $_semesters;
 	?>
-			<form method='post' name='addform'>
-			<tr>
-			<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-			<td><?=($e)?generateCourseCode($a['class_id']):""?></td>
-			<td><input type=text name='external_id' size=10 value="<?=$a[$p.'external_id']?>"></td>
-			<td><input type=text name='name' size=20 value="<?=$a[$p.'name']?>"></td>
-			<td><input type=text name='department' size=3 value="<?=$a[$p.'department']?>"></td>
-			<td><input type=text name='number' size=3 value="<?=$a[$p.'number']?>"></td>
-			<td><input type=text name='section' size=1 value="<?=$a[$p.'section']?>"></td>
-			<td><select name=semester>
-				<option<?=($a[$p.'semester']=='f')?" selected":""?> value='f'><?=$_semesters[f]?>
-				<option<?=($a[$p.'semester']=='w')?" selected":""?> value='w'><?=$_semesters[w]?>
-				<option<?=($a[$p.'semester']=='s')?" selected":""?> value='s'><?=$_semesters[s]?>
-				<option<?=($a[$p.'semester']=='l')?" selected":""?> value='l'><?=$_semesters[l]?>
-			</select>
-			</td>
-			<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>
-			<td><input type=text name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
-			<td><?=$a[classgroup_name]?></td>
-			<td align=center>
-			<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
-			<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-			<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add class"?></a> | <a href='classes.php'>cancel</a>
-			</td>
-			</tr>
-			</form>
+		<form method='post' name='addform'>
+		<tr>
+		<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
+  		<td><?=($e)?generateCourseCode($a[$p.'id']):""?></td>
+		<td><input type=text name='external_id' size=10 value="<?=$a[$p.'external_id']?>"></td>
+		<td><input type=text name='name' size=20 value="<?=$a[$p.'name']?>"></td>
+		<td><input type=text name='department' size=3 value="<?=$a[$p.'department']?>"></td>
+		<td><input type=text name='number' size=3 value="<?=$a[$p.'number']?>"></td>
+		<td><input type=text name='section' size=1 value="<?=$a[$p.'section']?>"></td>
+		<td><select name=semester>
+			<option<?=($a[$p.'semester']=='f')?" selected":""?> value='f'><?=$_semesters[f]?>
+			<option<?=($a[$p.'semester']=='w')?" selected":""?> value='w'><?=$_semesters[w]?>
+			<option<?=($a[$p.'semester']=='s')?" selected":""?> value='s'><?=$_semesters[s]?>
+			<option<?=($a[$p.'semester']=='l')?" selected":""?> value='l'><?=$_semesters[l]?>
+		</select>
+		</td>
+		<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>
+		<td><input type=text name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
+		<td><?=$a[classgroup_name]?></td>
+		<td align=center>
+		<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
+		<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
+		<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add class"?></a>
+		<!-- | <a href='classes.php'>cancel</a> -->
+		</td>
+		</tr>
+		</form>
 	<?
 }
 
