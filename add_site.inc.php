@@ -94,11 +94,8 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 	 uncomment this line when permissions are set and done */
 		$_SESSION[settings][copydownpermissions] = decode_array($_SESSION[settings][copydownpermissions]);
 		$_SESSION[settings][site_owner] = $_SESSION[siteObj]->getField("addedby");	
-	} else {
-		print "tobefetched: ".$_SESSION[siteObj]->tobefetched."<br>";
-		$_SESSION[siteObj]->tobefetched = 0;
-		print "tobefetched: ".$_SESSION[siteObj]->tobefetched."<br>";
 	}
+	
 	$_SESSION[siteObj]->initFormDates();
 	$dontCheckError = 1;
 }

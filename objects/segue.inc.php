@@ -141,7 +141,7 @@ class segue {
 
 	function getField($field) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
-		print "getting $field | tobefetched: ".$this->tobefetched."<br>";
+/* 		print "getting $field | tobefetched: ".$this->tobefetched."<br>"; */
 		if ($this->tobefetched && !ereg("^l-",$field)) {	// we're supposed to fetch this field
 			$_unencode = array("title","header","footer","shorttext","longertext");
 			$_parse = array("header","footer","shorttext","logertext");
@@ -885,7 +885,7 @@ class segue {
 	}
 	
 	function hasPermissionDown($perms,$user='',$useronly=0) {
-		if (!$this->fetcheddown) $this->fetchDown();
+/* 		if (!$this->fetcheddown) $this->fetchDown(); */
 				
 		if ($this->hasPermission($perms,$user,$useronly)) {
 			return true;

@@ -20,7 +20,6 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 if ($_SESSION[settings][add]) printc("<div class=title>Add Site</div>");
 if ($_SESSION[settings][edit]) printc("<div class=title>Edit Site</div>");
 
-print $_SESSION[siteObj]->data[name];
 if ($ltype=='admin') {
 	printc("name: ".$_SESSION[siteObj]->getField("name"));
 	printc("<br>type: ".$_SESSION[siteObj]->getField("type"));
