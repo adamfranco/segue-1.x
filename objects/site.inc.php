@@ -45,8 +45,8 @@ class site extends segue {
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 		$query = "select * from sites where name='".$this->name."' limit 1";
 		$r = db_query($query);
-		$this->data = db_fetch_assoc($r);
-		if (is_array($this->data)) {
+		if (db_num_rows($r)) {
+			$this->data = db_fetch_assoc($r);
 			$this->fetched = 1;
 	//		$this->sections = unserialize(urldecode($this->data['sections']));
 			$this->id = $this->data['id'];
@@ -58,7 +58,7 @@ class site extends segue {
 			$this->parseMediaTextForEdit("header");
 			$this->parseMediaTextForEdit("footer");
 			$this->buildPermissionsArray();
-			return 1;
+			return true;
 		}
 		return false;
 	}

@@ -2,11 +2,12 @@
 
 /* $sections = decode_array(db_get_value("sites","sections","name='$site'")); */
 
-$s = new section($_REQUEST[site],$_REQUEST[delete_section]);
-$s->fetchFromDB();
+/* $s = new section($_REQUEST[site],$_REQUEST[delete_section]); */
+/* $s->fetchFromDB(); */
 
 if (/* in_array($delete_section,$sections) &&  */permission($_SESSION[auser],SITE,DELETE,$_REQUEST[site])) {
-	$s->delete();
+	$thisSite->delSection($_REQUEST[delete_section]);
+	$thisSite->updateDB();
 /* 	$pages = decode_array(db_get_value("sections","pages","id=$delete_section")); */
 /* 	$query = "delete from sections where id=$delete_section"; */
 /* 	db_query($query); // delete the section entry */

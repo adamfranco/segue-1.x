@@ -1,4 +1,7 @@
 <? /* $Id$ */
+/******************************************************************************
+ * Segue object - basis for all other section, page, and story objects
+ ******************************************************************************/
 
 class segue {
 	var $permissions = array("everyone"=>array(3=>1),"institute"=>array(3=>1));
@@ -19,18 +22,25 @@ class segue {
 	var $owning_page; var $owningPageObj;		// only used for stories
 	
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
-	
+
+/******************************************************************************
+ * getAllValues - returns all values of $name in $scope in the current tree
+ ******************************************************************************/
+
 	function getAllValues($scope,$name) {
 		if (!$this->fetcheddown) $this->fetchDown();
 		$class = get_class($this);
 		$ar = $this->_object_arrays[$class];
 //		print "getting all values for $name in $class ".$this->getField("title")." with scope $scope<BR>";
 		if ($class==$scope) {
-			return array($this->getField($name));
+			if (($n = $this->getField($name)) != "")
+				return array($n);
+			else return array();
 		}
 		if ($ar) {
 			$a = array();
 			foreach ($this->$ar as $i=>$o) {
+//				print "doing $i in $ar...<BR>";
 				$a = array_merge($a,$o->getAllValues($scope,$name));
 			}
 		}
@@ -48,6 +58,8 @@ class segue {
 			$this->changed = 1;
 			$this->parseMediaTextForEdit("header");
 			$this->parseMediaTextForEdit("footer");
+			$this->parseMediaTextForEdit("shorttext");
+			$this->parseMediaTextForEdit("longertext");
 		}
 	}
 
@@ -63,6 +75,191 @@ class segue {
 		}
 	}
 	
+/******************************************************************************
+ * ACTIVATE/DEACTIVATE FUNCTIONS
+ *
+ * these functions handle de/activate dates in forms
+ * - initFormDates() must be called upon edit session initialization
+ * - outputDateForm() must be called where the HTML form data should be printed
+ * - handleFormDates() must be called where all POST/GET data is processed
+ ******************************************************************************/
+	
+
+/******************************************************************************
+ * handleFormDates - checks form fields for new de/activate dates and subsequently
+ *    sets the correct $_SESSION[settings][] variables
+ ******************************************************************************/
+
+	function handleFormDates() {
+		// initialize the session vars.. if needed
+		if (!isset($_SESSION[settings][activateyear]) || !isset($_SESSION[settings][deactivateyear])) {
+			$this->initFormDates();
+		}
+		if ($_REQUEST[activateyear] != "") $_SESSION[settings][activateyear] = $_REQUEST[activateyear];
+		if ($_REQUEST[activatemonth] != "") $_SESSION[settings][activatemonth] = $_REQUEST[activatemonth];
+		if ($_REQUEST[activateday] != "") $_SESSION[settings][activateday] = $_REQUEST[activateday];
+		if ($_REQUEST[deactivateyear] != "") $_SESSION[settings][deactivateyear] = $_REQUEST[deactivateyear];
+		if ($_REQUEST[deactivatemonth] != "") $_SESSION[settings][deactivatemonth] = $_REQUEST[deactivatemonth];
+		if ($_REQUEST[deactivateday] != "") $_SESSION[settings][deactivateday] = $_REQUEST[deactivateday];
+		if ($_REQUEST[setformdates]) {
+			if (/* !$_REQUEST[link] &&  */$_REQUEST[activatedate]) { 
+				$_SESSION[settings][activatedate] = 1;
+				$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
+			} else {
+				$_SESSION[settings][activatedate] = 0;
+				$this->setActivateDate(-1);
+			}
+			if (/* !$_REQUEST[link] &&  */$_REQUEST[deactivatedate]) {
+				$_SESSION[settings][deactivatedate] = 1;
+				$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
+			} else {
+				$_SESSION[settings][deactivatedate] = 0;
+				$this->setDeactivateDate(-1);
+			}
+		}
+	}
+	
+/******************************************************************************
+ * outputDateForm - outputs the HTML de/activate date form to be handled by above
+ ******************************************************************************/
+
+	function outputDateForm() {
+		global $months;
+		printc("<input type=hidden name='setformdates' value=1>");
+		printc("<table>");
+		printc("<tr><td align=right>");
+		printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>");
+		for ($i=1;$i<=31;$i++) {
+			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
+		}
+		printc("</select>\n");
+		printc("<select name='activatemonth'>");
+		for ($i=0; $i<12; $i++) {
+			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+		}
+		printc("</select>\n<select name='activateyear'>");
+		$curryear = date("Y");
+		for ($i=$curryear; $i <= ($curryear+5); $i++) {
+			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
+		}
+		printc("</select>");
+		
+		printc("</td></tr>");
+		
+		printc("<tr><td align=right>");
+		printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>");
+		for ($i=1;$i<=31;$i++) {
+			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
+		}
+		printc("</select>\n");
+		printc("<select name='deactivatemonth'>");
+		for ($i=0; $i<12; $i++) {
+			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+		}
+		printc("</select>\n<select name='deactivateyear'>");
+		for ($i=$curryear; $i <= ($curryear+5); $i++) {
+			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
+		}
+		printc("</select>");
+		
+		printc("</tr></td></table>");
+	}
+	
+/******************************************************************************
+ * initFormDates - initializes necessary session vars for form date handling
+ ******************************************************************************/
+
+	function initFormDates() {
+		$_SESSION[settings][activateyear] = "0000";
+		$_SESSION[settings][activatemonth] = "00";
+		$_SESSION[settings][activateday] = "00";
+		$_SESSION[settings][activatedate] = 0;
+		$_SESSION[settings][deactivateyear] = "0000";
+		$_SESSION[settings][deactivatemonth] = "00";
+		$_SESSION[settings][deactivateday] = "00";
+		$_SESSION[settings][deactivatedate] = 0;
+		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$this->getField("activatedate"));
+		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
+		$_SESSION[settings][activatemonth]-=1;
+		$_SESSION[settings][deactivatemonth]-=1;
+		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
+		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
+	}
+
+	function setActivateDate($year,$month=0,$day=0) {
+		// test to see if it's a valid date
+//		print "activate: $year-$month-$day<br>";
+		if ($year == -1) { // unset field
+			$this->setField("activatedate","0000-00-00");
+			return true;
+		}
+		if (!checkdate($month,$day,$year)) {
+			error("The activate date you entered is invalid. It has not been set.");
+			return false;
+		}
+		$this->setField("activatedate",$year."-".$month."-".$day);
+		return true;
+	}
+	
+	function setDeactivateDate($year,$month=0,$day=0) {
+		// test to see if it's a valid date
+//		print "deactivate: $year-$month-$day<br>";
+		if ($year == -1) { // unset field
+			$this->setField("deactivatedate","0000-00-00");
+			return true;
+		}
+		if (!checkdate($month,$day,$year)) {
+			error("The deactivate date you entered is invalid. It has not been set.");
+			return false;
+		}
+		$this->setField("deactivatedate",$year."-".$month."-".$day);
+		return true;
+	}
+	
+/******************************************************************************
+ * parseMediaTextForEdit - replaces ####<id>#### with appropriate filename info
+ *			-> used for inline images from the media library in text
+ ******************************************************************************/
+
+	function parseMediaTextForEdit($field) {
+		if (!$this->data[$field]) return false;
+		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->data[$field]);
+		$textarray1 = explode("####", $this->data[$field]);
+		if (count($textarray1) > 1) {
+			for ($i=1; $i<count($textarray1); $i+=2) {
+				$id = $textarray1[$i];
+				$filename = db_get_value("media","name","id=$id");
+				$dir = db_get_value("media","site_id","id=$id");
+				$filepath = $uploadurl."/".$dir."/".$filename;
+				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
+			}		
+			$this->data[$field] = implode("",$textarray1);
+		}
+	}
+
+/******************************************************************************
+ * parseMediaTextForDB - does the exact opposite of above
+ ******************************************************************************/
+
+	function parseMediaTextForDB($field) {
+		if (!$this->data[$field]) return false;
+		$textarray1 = explode("&&&&", $this->data[$field]);
+		if (count($textarray1) > 1) {
+			for ($i=1; $i<count($textarray1); $i=$i+2) {
+				$textarray2 = explode("@@@@", $textarray1[$i]);
+				$id = $textarray2[1];
+				$textarray1[$i] = "src='####".$id."####'";
+			}		
+			$this->data[$field] = implode("",$textarray1);
+		}
+	}
+	
+/******************************************************************************
+ * PERMISSIONS FUNCTIONS
+ *
+ * these functions handle part-specific permissions
+ ******************************************************************************/
+
 	function addEditor($e) { 
 		if ($e == 'institute' || $e == 'everyone') return false;
 		if ($_SESSION[auser] == $e) { error("You do not need to add yourself as an editor."); return false; }
@@ -126,6 +323,10 @@ class segue {
 		return $this->permissions;
 	}
 	
+/******************************************************************************
+ * buildPermissionsArray - builds the permissions array for current obj from DB
+ ******************************************************************************/
+
 	function buildPermissionsArray() {
 		// builds the permissions array from the database
 		$scope = get_class($this);
@@ -159,6 +360,10 @@ class segue {
 		}
 		$this->editors = array_unique($this->editors);
 	}
+
+/******************************************************************************
+ * updatePermissionsDB - updates the permissions DB based on new permissions
+ ******************************************************************************/
 
 	function updatePermissionsDB($force=0) {
 		if ($this->changedpermissions || $force) {
@@ -199,152 +404,41 @@ class segue {
 		}
 	}
 
-	// this function used for add_??? scripts to handle activate/deactivate dates
-	// automatically... just call the function
-	function handleFormDates() {
-		// initialize the session vars.. if needed
-		if (!isset($_SESSION[settings][activateyear]) || !isset($_SESSION[settings][deactivateyear])) {
-			$this->initFormDates();
+/******************************************************************************
+ * canview - checks if part is active & within date range. if so, forwards
+ *    to hasPermission() to check view permissions
+ ******************************************************************************/
+
+	function canview($user="") {
+		if ($user == "") $user = $_SESSION[auser];
+		$_ignore_types = array("page"=>array("heading","divider"));
+		$scope = get_class($this);
+		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
+		if ($scope != 'story') {
+			if (!$this->getField("active")) return 0;
 		}
-		if ($_REQUEST[activateyear] != "") $_SESSION[settings][activateyear] = $_REQUEST[activateyear];
-		if ($_REQUEST[activatemonth] != "") $_SESSION[settings][activatemonth] = $_REQUEST[activatemonth];
-		if ($_REQUEST[activateday] != "") $_SESSION[settings][activateday] = $_REQUEST[activateday];
-		if ($_REQUEST[deactivateyear] != "") $_SESSION[settings][deactivateyear] = $_REQUEST[deactivateyear];
-		if ($_REQUEST[deactivatemonth] != "") $_SESSION[settings][deactivatemonth] = $_REQUEST[deactivatemonth];
-		if ($_REQUEST[deactivateday] != "") $_SESSION[settings][deactivateday] = $_REQUEST[deactivateday];
-		if ($_REQUEST[setformdates]) {
-			if (/* !$_REQUEST[link] &&  */$_REQUEST[activatedate]) { 
-				$_SESSION[settings][activatedate] = 1;
-				$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
-			} else {
-				$_SESSION[settings][activatedate] = 0;
-				$this->setActivateDate(-1);
-			}
-			if (/* !$_REQUEST[link] &&  */$_REQUEST[deactivatedate]) {
-				$_SESSION[settings][deactivatedate] = 1;
-				$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
-			} else {
-				$_SESSION[settings][deactivatedate] = 0;
-				$this->setDeactivateDate(-1);
-			}
-		}
-	}
-	
-	function outputDateForm() {
-		global $months;
-		printc("<input type=hidden name='setformdates' value=1>");
-		printc("<table>");
-		printc("<tr><td align=right>");
-		printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>");
-		for ($i=1;$i<=31;$i++) {
-			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
-		}
-		printc("</select>\n");
-		printc("<select name='activatemonth'>");
-		for ($i=0; $i<12; $i++) {
-			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
-		}
-		printc("</select>\n<select name='activateyear'>");
-		$curryear = date("Y");
-		for ($i=$curryear; $i <= ($curryear+5); $i++) {
-			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
-		}
-		printc("</select>");
-		
-		printc("</td></tr>");
-		
-		printc("<tr><td align=right>");
-		printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>");
-		for ($i=1;$i<=31;$i++) {
-			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
-		}
-		printc("</select>\n");
-		printc("<select name='deactivatemonth'>");
-		for ($i=0; $i<12; $i++) {
-			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
-		}
-		printc("</select>\n<select name='deactivateyear'>");
-		for ($i=$curryear; $i <= ($curryear+5); $i++) {
-			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
-		}
-		printc("</select>");
-		
-		printc("</tr></td></table>");
-	}
-	
-	function initFormDates() {
-		$_SESSION[settings][activateyear] = "0000";
-		$_SESSION[settings][activatemonth] = "00";
-		$_SESSION[settings][activateday] = "00";
-		$_SESSION[settings][activatedate] = 0;
-		$_SESSION[settings][deactivateyear] = "0000";
-		$_SESSION[settings][deactivatemonth] = "00";
-		$_SESSION[settings][deactivateday] = "00";
-		$_SESSION[settings][deactivatedate] = 0;
-		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$this->getField("activatedate"));
-		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
-		$_SESSION[settings][activatemonth]-=1;
-		$_SESSION[settings][deactivatemonth]-=1;
-		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
-		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
+		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
+		return $this->hasPermission("view",$user);
+		return 1;
 	}
 
-	function setActivateDate($year,$month=0,$day=0) {
-		// test to see if it's a valid date
-//		print "activate: $year-$month-$day<br>";
-		if ($year == -1) { // unset field
-			$this->setField("activatedate","0000-00-00");
-			return true;
+/******************************************************************************
+ * hasPermission - checks to see if a user has certain permissions
+ * 		$perms paramater can be a complex string consisting of ()'s, 'and',
+ *		'or', and permission types: 'add','edit','delete','view','discuss'
+ ******************************************************************************/
+
+	function hasPermission($perms,$user='') {
+		if ($user=='') $user=$_SESSION[auser];
+		$_a = array('add','edit','delete','view','discuss');
+		$permissions = $this->getPermissions();
+		$exec = $perms;
+		$exec = str_replace('and','&&',$exec);
+		$exec = str_replace('or','||',$exec);
+		foreach ($_a as $p) {
+			$exec = str_replace($p,'$permissions[$user][permissions::'.strtoupper($p).'()]',$exec);
 		}
-		if (!checkdate($month,$day,$year)) {
-			error("The activate date you entered is invalid. It has not been set.");
-			return false;
-		}
-		$this->setField("activatedate",$year."-".$month."-".$day);
-		return true;
-	}
-	
-	function setDeactivateDate($year,$month=0,$day=0) {
-		// test to see if it's a valid date
-//		print "deactivate: $year-$month-$day<br>";
-		if ($year == -1) { // unset field
-			$this->setField("deactivatedate","0000-00-00");
-			return true;
-		}
-		if (!checkdate($month,$day,$year)) {
-			error("The deactivate date you entered is invalid. It has not been set.");
-			return false;
-		}
-		$this->setField("deactivatedate",$year."-".$month."-".$day);
-		return true;
-	}
-	
-	function parseMediaTextForEdit($field) {
-		if (!$this->data[$field]) return false;
-		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->data[$field]);
-		$textarray1 = explode("####", $this->data[$field]);
-		if (count($textarray1) > 1) {
-			for ($i=1; $i<count($textarray1); $i+=2) {
-				$id = $textarray1[$i];
-				$filename = db_get_value("media","name","id=$id");
-				$dir = db_get_value("media","site_id","id=$id");
-				$filepath = $uploadurl."/".$dir."/".$filename;
-				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";
-			}		
-			$this->data[$field] = implode("",$textarray1);
-		}
-	}
-	
-	function parseMediaTextForDB($field) {
-		if (!$this->data[$field]) return false;
-		$textarray1 = explode("&&&&", $this->data[$field]);
-		if (count($textarray1) > 1) {
-			for ($i=1; $i<count($textarray1); $i=$i+2) {
-				$textarray2 = explode("@@@@", $textarray1[$i]);
-				$id = $textarray2[1];
-				$textarray1[$i] = "src='####".$id."####'";
-			}		
-			$this->data[$field] = implode("",$textarray1);
-		}
+		//print $exec;
+		return eval($exec);
 	}
 }

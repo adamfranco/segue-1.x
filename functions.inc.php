@@ -89,6 +89,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	$extn = strtolower($extn[$last]);
 //	print "$extn <br>";
 	$image_extns = array(
+		"jpeg",
 		"jpg",
 		"gif",
 		"bmp",
@@ -344,6 +345,9 @@ function inclassgroup($class) {
 	return 0;
 }
 
+/******************************************************************************
+ * canview - to be phased out by $obj->canview($user)
+ ******************************************************************************/
 
 function canview($a,$type=SITE) {
 //	if (!$a[type]=='page'&&!$a[type]=='section'&&!$a[theme]) return 0;
@@ -518,6 +522,10 @@ function handlestoryorder($stories,$order) {
 	$newstories = array_keys($newstories);
 	return $newstories;
 }
+
+/******************************************************************************
+ * copyPart - holy god... um, re-write to use objects... should be substantially shorter
+ ******************************************************************************/
 
 function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 	// $action can have value MOVE or COPY
@@ -727,6 +735,11 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 	
 	if (!$isSubCall) return $newid;
 }
+
+/******************************************************************************
+ * copySite - to be re-written to use objects... should be much shorter
+ ******************************************************************************/
+
 
 function copySite($orig,$dest) {
 	// This function does not support the copying of userfiles in this implementation.

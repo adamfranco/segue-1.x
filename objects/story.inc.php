@@ -39,6 +39,22 @@ class story extends segue {
 		$this->updatePermissionsDB();
 	}
 	
+	function addStory($id) {
+		if (!is_array($this->data[stories])) $this->data[stories] = array();
+		array_push($this->data[stories],$id);
+		$this->changed = 1;
+	}
+	
+	function delStory($id) {
+		$d = array();
+		foreach ($this->data[stories] as $s)
+			if ($s != $id) $d[]=$s;
+		$this->data[stories] = $d;
+		$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
+		$story->delete();
+		$this->changed=1;
+	}
+	
 	function fetchUp() {
 		if (!$this->fetchedup) {
 			$this->owningSiteObj = new site($this->owning_site);
@@ -112,14 +128,14 @@ class story extends segue {
 		$this->id = mysql_insert_id();
 		
 		$this->fetchUp();
-		$this->owningSectionObj->addPage($this->id);
-		$this->owningSectionObj->updateDB();
+		$this->owningPageObj->addStory($this->id);
+		$this->owningPageObj->updateDB();
 		
 		// add new permissions entry.. force update
 		$this->updatePermissionsDB(1);
 		
 		// add log entry
-		log_entry("add_page",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added content id ".$this->id." to site ".$this->owning_site);
+		log_entry("add_story",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added content id ".$this->id." to site ".$this->owning_site);
 		
 		// insert down
 		if ($down && $this->fetcheddown) {

@@ -12,12 +12,14 @@ define("DELETE",2);
 define("VIEW",3);
 define("DISCUSS",4);
 
-/* BEGIN PERMISSIONS OBJECT */
+/******************************************************************************
+ * PERMISSIONS OBJECT
+ ******************************************************************************/
 
 class permissions {
 
 	// defines
-	function ADD() { return 0; }
+	function ADD() {return 0;}
 	function EDIT() {return 1;}
 	function DELETE() {return 2;}
 	function VIEW() {return 3;}
@@ -61,9 +63,6 @@ class permissions {
 			if (count($edlist)) {
 				$color = 0;
 				foreach ($edlist as $e) {
-/* 					print "$e:<BR>"; */
-/* 					print_r($permissions[$e]); */
-/* 					print "<BR><BR>"; */
 					printc("<tr><td class=td$color align=center>");
 					/*if ($_SESSION[settings][edit])*/ printc("<input type=checkbox name='copydownpermissions[]' value='$e' ".(($_SESSION[settings][copydownpermissions] && in_array($e,$_SESSION[settings][copydownpermissions]))?" checked":"")."></td><td class=td$color>");
 					if ($e == "everyone")
@@ -100,10 +99,10 @@ class permissions {
 	
 }
 
-/*     END OF OBJECT     */
-	
-// code..... to be written
-if ($site) $site_owner = db_get_value("sites","addedby","name='$site'");
+/******************************************************************************
+ * END OBJECT
+ ******************************************************************************/
+
 
 function has_permissions($user, $this_level,$site,$section,$page,$story) {
 	// gets $user (person trying to edit), $type (SITE, SECTION, PAGE, or STORY)
@@ -368,7 +367,7 @@ function siteviewpermissions($siteinfo,$pe=0) {
 		}
 		
 		if (!$isgood) {
-			error("You must be a student in this class in order to view the site. Log in above with your Middlebur username and password to view the site.",$pe);
+			error("You must be a student in this class in order to view the site. Log in above with your Middlebury username and password to view the site.",$pe);
 			$x=1;
 		}
 	}

@@ -1,5 +1,9 @@
 <? /* $Id$ */
 
+/******************************************************************************
+ * page object - handles site pages
+ ******************************************************************************/
+
 class page extends segue {
 	var $stories;
 	
@@ -65,8 +69,8 @@ class page extends segue {
 		if (!$this->fetcheddown) {
 			if (!$this->fetched) $this->fetchFromDB();
 			foreach ($this->data[stories] as $s) {
-				$this->stories[$p] = new story($this->owning_site,$this->owning_section,$this->id,$s);
-				$this->stories[$p]->fetchDown();
+				$this->stories[$s] = new story($this->owning_site,$this->owning_section,$this->id,$s);
+				$this->stories[$s]->fetchDown();
 			}
 			$this->fetcheddown = 1;
 		}
