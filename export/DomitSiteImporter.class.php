@@ -40,12 +40,15 @@ class DomitSiteImporter {
 	 *
 	 * @return boolean True on success.
 	 */
-	function importString($xml, $mediaSource = "") {
+	function importString($xml, $mediaSource = "", $apacheUser = "", $apacheGroup = "") {
 		$this->_document =& new DOMIT_Document;
 		$loaded = $this->_document->parseXML($xml);
 		
 		if ($loaded) {
 			$this->_mediaSource = $mediaSource;
+			$this->_apacheUser = $apacheUser;
+			$this->_apacheGroup = $apacheGroup;
+			
 			return $this->createSite();
 		} else
 			return FALSE;
@@ -58,12 +61,15 @@ class DomitSiteImporter {
 	 *
 	 * @return boolean True on success.
 	 */
-	function importFile($xmlFile, $mediaSource = "") {
+	function importFile($xmlFile, $mediaSource = "", $apacheUser = "", $apacheGroup = "") {
 		$this->_document =& new DOMIT_Document;
 		$loaded = $this->_document->loadXML($xmlFile);
 		
 		if ($loaded) {
 			$this->_mediaSource = $mediaSource;
+			$this->_apacheUser = $apacheUser;
+			$this->_apacheGroup = $apacheGroup;
+			
 			return $this->createSite();
 		} else
 			return FALSE;
@@ -240,14 +246,24 @@ class DomitSiteImporter {
 	/*********************************************************
 	 * Set the fields.
 	 *********************************************************/
-	 	if ($sectionElement->nodeName == "section")
-			$section->setField( 'type', "section" );
-		else if ($sectionElement->nodeName == "navlink")
-			$section->setField( 'type', "link" );
-		
-		if (!$sectionElement->hasChildNodes()) {
+	 	if (!$sectionElement->hasChildNodes()) {
 			print "\nNo child elements of the section!";
 			return FALSE;
+		}
+		
+		if ($sectionElement->nodeName == "section")
+			$section->setField( 'type', "section" );
+		else if ($sectionElement->nodeName == "navlink") {
+			$section->setField( 'type', "link" );
+			
+			// url
+			$urlList =& $sectionElement->getElementsByPath("url");
+			if ($urlList->getLength() != 1) {
+				print "\nRequired 'url' element is missing!";
+				return FALSE;
+			}
+			$urlElement =& $urlList->item(0);
+			$section->setField('url', html_entity_decode(trim($urlElement->getText())));
 		}
 		
 		// Common Fields - title, history, activation, permissions
@@ -260,6 +276,8 @@ class DomitSiteImporter {
 	 *********************************************************/
 	 	$section->insertDB(1,null,0,1);
 	 	
+		// update permissions
+		$section->updatePermissionsDB(1);
 		
 	/*********************************************************
 	 * Add the children
@@ -288,19 +306,28 @@ class DomitSiteImporter {
 	/*********************************************************
 	 * Set the fields.
 	 *********************************************************/
-	 	if ($pageElement->nodeName == "page")
-			$page->setField( 'type', "page" );
-		else if ($pageElement->nodeName == "navlink")
-			$page->setField( 'type', "link" );
-		else if ($pageElement->nodeName == "heading")
-			$page->setField( 'type', "heading" );
-		else if ($pageElement->nodeName == "divider")
-			$page->setField( 'type', "divider" );
-		
-		if (!$pageElement->hasChildNodes()) {
+	 	if (!$pageElement->hasChildNodes()) {
 			print "\nNo child elements of the page!";
 			return FALSE;
 		}
+		
+	 	if ($pageElement->nodeName == "page")
+			$page->setField( 'type', "page" );
+		else if ($pageElement->nodeName == "navlink") {
+			$page->setField( 'type', "link" );
+		
+			// url
+			$urlList =& $sectionElement->getElementsByPath("url");
+			if ($urlList->getLength() != 1) {
+				print "\nRequired 'url' element is missing!";
+				return FALSE;
+			}
+			$urlElement =& $urlList->item(0);
+			$page->setField('url', html_entity_decode(trim($urlElement->getText())));
+		} else if ($pageElement->nodeName == "heading")
+			$page->setField( 'type', "heading" );
+		else if ($pageElement->nodeName == "divider")
+			$page->setField( 'type', "divider" );
 		
 		// Common Fields - title, history, activation, permissions
 		if (!$this->setCommonFields($page, $pageElement))
@@ -315,6 +342,8 @@ class DomitSiteImporter {
 	 *********************************************************/
 	 	$page->insertDB(1,NULL,0,0,1);
 		
+		// update permissions
+		$page->updatePermissionsDB(1);
 		
 	/*********************************************************
 	 * Add the children
@@ -460,7 +489,9 @@ class DomitSiteImporter {
 	 *********************************************************/
 	 	$story->insertDB(1,NULL,0,0,0,1);
 	 	
-	 
+	 	// update permissions
+		$story->updatePermissionsDB(1);
+		
 	 /*********************************************************
 	 * Add the discussion posts
 	 *********************************************************/		
@@ -693,6 +724,8 @@ class DomitSiteImporter {
 			$partObj->setField("locked", 1);
 		}
 		
+		// We will update the permissions db after inserting our partObj
+		
 		if ($viewGood && $addGood && $editGood && $deleteGood && $discussGood)
 			return TRUE;
 		else
@@ -788,14 +821,24 @@ class DomitSiteImporter {
 			// Make sure that we have the directory created.
 			if (!is_dir($sitedir))
 				mkdir($sitedir,0775);
+				
+			// Make sure the ownership is right
+			if ($this->_apacheUser) {
+				if (!chown($sitedir, $this->_apacheUser))
+					print "\nError changing owner of ".$sitedir." to ".$this->_apacheUser.".";
+			}
+			if ($this->_apacheGroup) {
+				if (!chgrp($sitedir, $this->_apacheGroup))
+					print "\nError changing group of ".$sitedir." to ".$this->_apacheGroup.".";
+			}
 			
 			// Get the file list
 			$fileList =& $mediaElement->getElementsByPath("media_file");
 			$numFiles =& $fileList->getLength();
-			
+						
 			// Add each file
 			for ($i=0; $i<$numFiles; $i++) {
-				$fileElement =& $fileList->item(0);
+				$fileElement =& $fileList->item($i);
 				
 				// get the filename
 				$filenameList =& $fileElement->getElementsByPath("filename");
@@ -807,6 +850,16 @@ class DomitSiteImporter {
 				if (!$result) {
 					print "\nError copying file '".$this->_mediaSource.$filename."' to '".$sitedir.$filename."'. ";
 					return FALSE;
+				}
+				
+				// Make sure the ownership is right
+				if ($this->_apacheUser) {
+					if (!chown($sitedir.$filename, $this->_apacheUser))
+						print "\nError changing owner of ".$sitedir.$filename." to ".$this->_apacheUser.".";
+				}
+				if ($this->_apacheGroup) {
+					if (!chgrp($sitedir.$filename, $this->_apacheGroup))
+						print "\nError changing group of ".$sitedir.$filename." to ".$this->_apacheGroup.".";
 				}
 				
 				// Collect our info about the file
@@ -843,6 +896,7 @@ class DomitSiteImporter {
 						media_size='".$size."'";
 				
 				db_query($query);
+				print mysql_error();
 			}
 		}
 		

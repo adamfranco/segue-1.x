@@ -19,7 +19,7 @@ require_once(dirname(__FILE__).'/../objects/story.inc.php');
 require_once(dirname(__FILE__).'/../permissions.inc.php');
 
 // print help if requested/needed
-if ($argc != 3 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) {
+if ($argc != 5 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) {
 
 ?>
 
@@ -31,24 +31,29 @@ not be copied.
 
 Usage:
 
-<?php echo $argv[0]; ?> <xml file path> <media directory>
+<?php echo $argv[0]; ?> <apache uid> <apache gid> <xml file path> <media directory>
 
 With the --help, -help, -h,
 or -? options, you can get this help.
 
 <?
 } else {
-	
+	$apacheUser = $argv[$argc-4];
+	$apacheGroup = $argv[$argc-3];
 	$xmlFile = $argv[$argc-2];
 	$mediaDir = $argv[$argc-1];
 	
 	// Get the XML for the site
 	$siteImporter =& new DomitSiteImporter();
-	$successfull =& $siteImporter->importFile($xmlFile, $mediaDir);
+	$successfull =& $siteImporter->importFile($xmlFile, $mediaDir, $apacheUser, $apacheGroup);
 	
-	print "\n";
-	print (($successfull)?"Success! :-)":"Failure.... :-( ");
-	print "\n";
+	
+	if (!$successfull) {
+		print "\n";
+		print"Failure.... :-( ";
+		print "\n";
+	} else
+		print "\n";
 	
 // 
 // 	// destination for the media files.

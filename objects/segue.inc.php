@@ -1341,7 +1341,7 @@ WHERE
 					// if we are changing the permissions, update the db
 					if ($p_new_str) {
 						$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
-						echo $query."<br>";
+//						echo $query."<br>";
 						db_query($query);
 					}
 					// if we are clearing the permissions, delete the entry from the db
