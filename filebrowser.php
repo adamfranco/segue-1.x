@@ -25,9 +25,17 @@ if ($delete) {
 
 $sitelist = array();
 $owner = $_REQUEST[owner];
+$site = $_SESSION[settings][site];
+if ($_REQUEST[site]) {
+	$site = $_REQUEST[site];
+} else {
+	$site = $_SESSION[settings][site];
+}
+
 //print $owner;
 //printpre($_SESSION);
 //printpre($_REQUEST);
+//printpre($settings[site]);
 
 $w = array(); 
 if ($ltype == 'admin') { 
@@ -142,10 +150,12 @@ if ($upload) {
 			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'";
 	$res = db_query($q);
 	$b = db_fetch_assoc($res);
-	if ($b[slot_uploadlimit])
+	if ($b[slot_uploadlimit]) {
 		$dirlimit = $b[slot_uploadlimit];
-	else
+		
+	} else {
 		$dirlimit = $userdirlimit;
+	}
 	
 	if ($_FILES['file']['tmp_name'] == 'none') { 
 		$upload_results = "<li>No file selected"; 
@@ -219,7 +229,7 @@ while ($a = db_fetch_assoc($r)) {
 	$totalsize = $totalsize + $a[media_size];
 }
 
-if (!isset($order)) $order = "media_tag asc"; 
+if (!isset($order)) $order = "media_updated_tstamp desc"; 
 $orderby = " ORDER BY $order"; 
  
 $w = array(); 
@@ -260,7 +270,7 @@ $query = "
 		media_tag,
 		media_id,
 		media_size,
-		date_format(media_updated_tstamp, '%M %e, %Y %k:%i') AS media_updated_tstamp_text,
+		date_format(media_updated_tstamp, '%m/%d/%Y %k:%i') AS media_updated_tstamp_text,
 		media_updated_tstamp,
 		media_type,
 		slot_name,
@@ -467,10 +477,12 @@ function changePage(lolim) {
 					<?
 					$dirtotal = convertfilesize($totalsize);
 					if ($all) {
+						
 						$res = db_query("SELECT COUNT(site_id) AS num_sites FROM site");
 						$b = db_fetch_assoc($res);
 						$dirlimit_B = $b['num_sites']*$userdirlimit;
 					} else {
+						printpre($dirlimit);
 						if ($site) {
 							$q = "SELECT slot_uploadlimit FROM slot WHERE slot_name='$site'";
 							$res = db_query($q);
@@ -483,6 +495,7 @@ function changePage(lolim) {
 							$dirlimit_B = $userdirlimit;
 					}
 					$dirlimit = convertfilesize($dirlimit_B);
+					
 					$percentused = round($totalsize/$dirlimit_B,"4")*100;
 					$percentfree = 100-$percentused;
 					$space = $dirlimit_B - $totalsize;

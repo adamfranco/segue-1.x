@@ -56,6 +56,7 @@ if ($storyObj->getField("type") == 'story') {
 	if ($storyObj->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);	
 	if ($storyObj->getField("texttype") == 'text') $smalltext = htmlbr($smalltext);
 }
+
 if ($storyObj->getField("type") == 'image') {
 	$filename = urldecode(db_get_value("media","media_tag","media_id=".$storyObj->getField("longertext")));
 	$dir = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=".$storyObj->getField("longertext"));

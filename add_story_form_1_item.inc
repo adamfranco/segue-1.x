@@ -120,6 +120,19 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	// editor.inc.php determines browser/platform and choses appropriate editor
 	//print $shorttext;
 	
+	/******************************************************************************
+ 	* support for inserting media from media library into story
+ 	******************************************************************************/
+
+ 	//printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
+	//printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
+	//printc("Get Image: <input type=text name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=25 readonly> <input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'>");
+	//printc("<input type=button name='addimage' value='Add Image' onClick=''> <br><br>");
+
+	/******************************************************************************
+	 * end insert media into story
+	 ******************************************************************************/
+	
 	printc("<div style='font-size:10px; color:#D00'>");
 	printc("<br>Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. ");
 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
@@ -194,6 +207,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//	end modification 1 - 11.1.02 - achapin
 }
 
+//printpre($_SESSION[settings]);
 
 if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->getField("type") == 'file') {
 	printc("<br><br>");

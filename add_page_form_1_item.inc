@@ -45,7 +45,7 @@ if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'page') 
 if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'link') {
 	printc("<div class=desc><b>");
 	printc("<input type=radio name=type ".(($_SESSION[settings][add])?"onClick='typeChange()'":"")." value='link'".(($_SESSION[pageObj]->getField("type")=='link')?" checked":"").">");
-	printc(" Link/URL</b>".(($_SESSION[pageObj]->getField("type")=='link')?" - is a link to a page outside of your site (like <i>http://www.middlebury.edu/</i>). URLs will open in a new window, allowing users to continue browsing your site.":"")."</div>");
+	printc(" Link/URL</b>".(($_SESSION[pageObj]->getField("type")=='link')?" - is a link to a page outside of your site (like <i>http://www.middlebury.edu/</i>).":"")."</div>");
 }
 
 if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'heading') {

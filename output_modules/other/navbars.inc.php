@@ -52,8 +52,8 @@ if ($thisSection) {
 					add_link(leftnav2,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=$action",$extra,$p);
 				}
 				if ($o->getField("type") == 'link') {
-					add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
-					add_link(leftnav2,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
+					add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p);
+					add_link(leftnav2,$o->getField("title"),$o->getField("url"),$extra,$p);
 				}
 				if ($o->getField("type") == 'heading') {
 					add_link(leftnav,$o->getField("title"),'',$extra);
