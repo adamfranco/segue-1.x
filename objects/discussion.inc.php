@@ -616,7 +616,7 @@ class discussion {
 			$body .= "See:\n";
 			//$discussurl = "$script?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
 			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
-			$body .= $_full_uri.$discussurl2."\n";
+			$body .= $_full_uri."/".$discussurl2."\n";
 		}
 		
 		//print "To:".$to."<br>";
