@@ -211,7 +211,7 @@ if ($_loggedin) {
         }
         
         $sites=array();
-        $esites=segue::buildObjArrayFromSites(segue::getAllSites($_SESSION[auser]));
+        $esites=segue::buildObjArrayFromSites(segue::getAllSites($_SESSION[aid]));
         foreach ($esites as $n=>$s) {
                 if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
                         array_push($sites,$n);
@@ -272,8 +272,8 @@ if ($_loggedin) {
  ******************************************************************************/
         printc("<tr><td class='inlineth'><form action=$PHP_SELF?$sid method=post name='copyform'><table width=100%><tr><td>");
         
-        $allExistingSites = allSitesSlots($_SESSION[auser],1);
-        $allExistingSlots = allSitesSlots($_SESSION[auser],0);
+        $allExistingSites = allSitesSlots($_SESSION[aid],1);
+        $allExistingSlots = allSitesSlots($_SESSION[aid],0);
         
         if (count($allExistingSites) && count($allExistingSlots)) {
 			printc("Copy Site: ");

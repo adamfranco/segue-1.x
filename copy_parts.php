@@ -61,8 +61,8 @@ if (!is_object($_SESSION[origSiteObj])) {
 /******************************************************************************
  * Get the sites that a person is the owner or editor of.
  ******************************************************************************/
-	$sitesArray = segue::getAllSites($auser);
-	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($auser));
+	$sitesArray = segue::getAllSites($aid);
+	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($aid));
 	foreach ($sitesArray as $s) {
 /* 		print $s."<br>"; */
 		$temp = new site($s);

@@ -32,9 +32,12 @@ class segue {
  * siteExists - checks if the site/slot already exists with a certain name $name
  ******************************************************************************/
 	
-	function siteExists($site) {
-// !!!!!!!!!!!!!!!!! UPDATE THIS QUERY	
-		$query = "SELECT site_id FROM site WHERE site_id='$site'";
+	function siteExists($site_name) {
+		$query = "
+SELECT site_id
+	FROM slot INNER JOIN site
+		ON FK_site = site_id AND slot_name='$site_name'
+";
 		if (db_num_rows(db_query($query))) return 1;
 		return 0;
 	}
@@ -51,6 +54,7 @@ class segue {
  * buildObjArrayFromSites($sites) - builds an array of objects from site names
  ******************************************************************************/
 
+	// revised by Dobo
 	function buildObjArrayFromSites($sites) {
 		if (!is_array($sites)) return array();
 		$a = array();
@@ -65,6 +69,7 @@ class segue {
  * getAllSites - returns a list of all sites owned by $user
  ******************************************************************************/
 
+	// revised by Dobo
 	function getAllSites($user) {
 		$sites = array();
 		if (db_num_rows($r = db_query("SELECT site_id FROM site WHERE FK_createdby=$user"))) {
@@ -79,16 +84,59 @@ class segue {
  * getAllSitesWhereUserIsEditor - gets all sites where $user is an editor
  ******************************************************************************/
 
-	function getAllSitesWhereUserIsEditor($user='') {
-		if ($user == '') $user = $_SESSION[auser];
-		$query = "select * from permissions where user='$user'";
+	function getAllSitesWhereUserIsEditor($user_id=0) {
+		if ($user_id == 0) $user_id = $_SESSION[aid];
+
+		// first, get all sites for which the user is an editor
+		$query = "
+			SELECT
+				site_id
+			FROM
+				site
+					INNER JOIN 
+				site_editors ON (
+					site_id = FK_site 
+						AND 
+					site_editors_type = 'user'
+				)
+					INNER JOIN
+				user ON FK_editor = $user_id";
 		$r = db_query($query);
 		$ar = array();
 		if (db_num_rows($r)) {
 			while ($a = db_fetch_assoc($r)) {
-				$ar[] = $a[site];
+				$ar[] = $a[site_id];
 			}
 		}
+		}
+
+		// now, if a user is a member of any groups, get all sites for which those groups are editors
+		$query = "
+			SELECT
+				site_id
+			FROM
+				site
+					INNER JOIN 
+				site_editors ON (
+					site_id = FK_site 
+						AND 
+					site_editors_type = 'ugroup'
+				)
+					INNER JOIN
+				ugroup ON FK_editor = ugroup_id
+					INNER JOIN
+				ugroup_user ON ugroup_id = FK_ugroup
+					INNER JOIN
+				user ON FK_user = user_id";
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			while ($a = db_fetch_assoc($r)) {
+				$ar[] = $a[site_id];
+			}
+		}
+
+		// the two queries will return unique values, but their union could have non-unique entries.
+		// therefore, uniquize it.
 		return array_unique($ar);
 	}
 
@@ -96,6 +144,7 @@ class segue {
  * getAllValues - returns all values of $name in $scope in the current tree
  ******************************************************************************/
 
+	// revised by Dobo
 	function getAllValues($scope,$name) {
 		if (!$this->fetcheddown) $this->fetchDown();
 		$class = get_class($this);
@@ -144,15 +193,17 @@ class segue {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 /* 		print "getting $field | tobefetched: ".$this->tobefetched."<br>"; */
 		if ($this->tobefetched && !ereg("^l-",$field)) {	// we're supposed to fetch this field
-			$_unencode = array("title","header","footer","shorttext","longertext");
-			$_parse = array("header","footer","shorttext","logertext");
-			$_ardecode = array("sections","pages","stories","discussions");
+			$_unencode = array("site_title","section_title","page_title","story_title",
+								"site_header","site_footer","story_text_short","story_text_long");
+			$_parse = array("site_header","site_footer","story_text_short","story_text_long");
+			$_ardecode = array();
 			if (!$this->fetched[$field]) {
 				$class = get_class($this);
 				$table = $this->_tables[$class]; // the table to use
-				if ($class=='site') $where = "name='".$this->name."'";
-				else $where = "id=".$this->id;
-				$query = "select $field from $table where $where limit 1";
+				
+				$where = $this->getWhereClause();
+
+				$query = "SELECT $field FROM $table WHERE $where LIMIT 1";
 				db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 				$r = db_query($query);
 				if (!db_num_rows($r)) return false;
@@ -215,6 +266,8 @@ class segue {
 /******************************************************************************
  * copyObj - Copies an object to a new parent
  ******************************************************************************/
+ 
+ 	// to revise
 	function copyObj(&$newParent,$removeOrigional=1,$keepaddedby=0) {
 		$_a = array("site"=>3,"section"=>2,"page"=>1,"story"=>0);
 		// check that the newParent can be a parent
@@ -382,47 +435,60 @@ class segue {
 		$_SESSION[settings][deactivatemonth] = "00";
 		$_SESSION[settings][deactivateday] = "00";
 		$_SESSION[settings][deactivatedate] = 0;
-		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$this->getField("activatedate"));
-		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
-		$_SESSION[settings][activatemonth]-=1;
-		$_SESSION[settings][deactivatemonth]-=1;
-		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
-		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
+
+		$date = getdate($this->getField($get_class($this)."_activate_tstamp");
+		$_SESSION[settings][activateyear] = $date["year"];
+		$_SESSION[settings][activatemonth] = $date["mon"];
+		$_SESSION[settings][activateday] = $date["mday"];
+	
+		$date = getdate($this->getField($get_class($this)."_deactivate_tstamp");
+		$_SESSION[settings][deactivateyear] = $date["year"];
+		$_SESSION[settings][deactivatemonth] = $date["mon"];
+		$_SESSION[settings][deactivateday] = $date["mday"];
+	
+		//list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$this->getField($this->class."_activate_tstamp"));
+		//list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField($this->class."_deactivate_tstamp"));
+		
+		//$_SESSION[settings][activatemonth]-=1;
+		//$_SESSION[settings][deactivatemonth]-=1;
+		
+		$_SESSION[settings][activatedate]=($this->getField($get_class($this)."_activate_tstamp")=='00000000000000')?0:1;
+		$_SESSION[settings][deactivatedate]=($this->getField($get_class($this)."_deactivate_tstamp")=='00000000000000')?0:1;
 	}
 
-	function setActivateDate($year,$month=0,$day=0) {
+	function setActivateDate($year,$month='00',$day='00') {
 		// test to see if it's a valid date
 //		print "activate: $year-$month-$day<br>";
 		if ($year == -1) { // unset field
-			$this->setField("activatedate","0000-00-00");
+			$this->setField($get_class($this)."_activate_tstamp","00000000000000");
 			return true;
 		}
 		if (!checkdate($month,$day,$year)) {
 			error("The activate date you entered is invalid. It has not been set.");
 			return false;
 		}
-		$this->setField("activatedate",$year."-".$month."-".$day);
+		$this->setField($get_class($this)."_activate_tstamp",$year.$month.$day."000000");
 		return true;
 	}
 	
-	function setDeactivateDate($year,$month=0,$day=0) {
+	function setDeactivateDate($year,$month='00',$day='00') {
 		// test to see if it's a valid date
 //		print "deactivate: $year-$month-$day<br>";
 		if ($year == -1) { // unset field
-			$this->setField("deactivatedate","0000-00-00");
+			$this->setField($get_class($this)."_deactivate_tstamp","00000000000000");
 			return true;
 		}
 		if (!checkdate($month,$day,$year)) {
 			error("The deactivate date you entered is invalid. It has not been set.");
 			return false;
 		}
-		$this->setField("deactivatedate",$year."-".$month."-".$day);
+		$this->setField($get_class($this)."_deactivate_tstamp",$year.$month.$day."000000");
 		return true;
 	}
 	
 /******************************************************************************
  * cropString - crops a string to an appropriate length and adds elipses if
- * 				nessisary.
+ * 				necessary.
  ******************************************************************************/
 	function cropString ($string, $maxChars) {
 		$length = strlen($string);
@@ -500,17 +566,17 @@ class segue {
  *						checks if someone has $perms anywhere down the line
  ******************************************************************************/
 
-	function isEditor($user='') {
+	function isEditor($user=0) {
 		if (!$this->builtPermissions) $this->buildPermissionsArray();
-		if ($user=='') $user=$_SESSION[auser];
+		if ($user==0) $user=$_SESSION[aid];
 		$this->fetchUp();
-		$owner = $this->owningSiteObj->getField("addedby");
+		$owner = $this->owningSiteObj->getField("FK_createdby");
 /* 		print "owner: $owner"; */
-		if (strtolower($user) == strtolower($owner)) return 1;
-		$toCheck = array(strtolower($user));
+		if ($user == $owner) return 1;
+		$toCheck = array($user);
 		$toCheck = array_merge($toCheck,$this->returnEditorOverlap(getuserclasses($user)));
 		foreach ($this->editors as $e) {
-			if (in_array(strtolower($e),$toCheck)) return 1;
+			if (in_array($e,$toCheck)) return 1;
 		}
 		return 0;
 	}
@@ -621,7 +687,7 @@ class segue {
 	
 	function movePermission($action, $user, $origSite, $moveLevel) {
 		// determines whether user can move an object here
-		if ($this->getField("type") != get_class($this)) return 0;
+		if ($this->getField(get_class($this)."_type") != get_class($this)) return 0;
 		if ($this->owning_site == $origSite) {
 			if ($action == "COPY") {
 				if ($this->hasPermission("add",$user)) return 1;

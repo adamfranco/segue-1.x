@@ -29,6 +29,11 @@ class site extends segue {
 		$this->data[sections] = array();
 	}
 	
+	// Added by Dobo
+	function getWhereClause() {
+		return "site_id=".$this->id;
+	}
+	
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown || $full) {
 /* 			print "site fetchdown ".$this->name."<BR>"; */

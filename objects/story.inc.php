@@ -1,11 +1,10 @@
 <? /* $Id$ */
 
 class story extends segue {
-	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp",
-							"editedby","editedtimestamp","shorttext","longertext",
-							"activatedate","deactivatedate","discuss",
-							"locked","category","discussions","texttype","type","url");
-	
+	var $_allfields = array("story_id","FK_page","story_order","story_title","FK_updatedby","story_updated_tstamp","FK_createdby",
+							"story_created_tstamp","story_text_short","story_text_long","story_active","story_activate_tstamp",
+							"story_deactivate_tstamp","story_discussable","story_category","story_text_type","story_type","story_locked")
+
 	
 	function story($insite,$insection,$inpage,$id=0) {
 		$this->owning_site = $insite;
@@ -33,6 +32,20 @@ class story extends segue {
 		$this->data[locked] = 0;
 		if ($this->id) $this->fetchFromDB();
 		if ($formdates) $this->initFormDates();
+	}
+	
+	function getField($field) {
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	}
+
+	// Added by Dobo
+	function getWhereClause() {
+		return "story_id=".$this->id;
 	}
 	
 	function getFirst($length) {

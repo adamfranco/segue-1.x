@@ -44,6 +44,20 @@ class page extends segue {
 		if ($formdates) $this->initFormDates();
 	}
 	
+	function getField($field) {
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	}
+
+	// Added by Dobo
+	function getWhereClause() {
+		return "page_id=".$this->id;
+	}
+	
 	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
@@ -257,7 +271,7 @@ class page extends segue {
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($startday == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='startmonth'>");
 		for ($i=0; $i<12; $i++)
 			printc("<option value=".($i+1). (($startmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -267,13 +281,13 @@ class page extends segue {
 		for ($i=$curryear-10; $i <= ($curryear); $i++) {
 			printc("<option" . (($startyear == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 	//	printc("<br>");
 		printc(" to <select name='endday'>");
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($endday == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='endmonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=".($i+1) . (($endmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -282,7 +296,7 @@ class page extends segue {
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($endyear == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 		printc(" <input type=submit class=button value='go'>");
 		printc("</form></div>");
 	

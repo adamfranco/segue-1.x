@@ -16,6 +16,20 @@ class section extends segue {
 		$this->data[type] = "section";
 	}
 	
+	function getField($field) {
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	// OVERRIDE THIS FUNCTION!!!
+	}
+
+	// Added by Dobo
+	function getWhereClause() {
+		return "section_id=".$this->id;
+	}
+	
 	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
