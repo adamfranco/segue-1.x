@@ -6,7 +6,7 @@ require("objects/objects.inc.php");
  
 ob_start(); 
 session_start(); 
- 
+
 //output a meta tag 
 print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'; 
  
@@ -17,6 +17,31 @@ require("sniffer.inc.php");
 //if ($ltype != 'admin') exit; 
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+
+/******************************************************************************
+ * create an origional site object if starting.
+ ******************************************************************************/
+
+if ($_REQUEST[type] && isset($_SESSION[origSiteObj])) {
+	unset($_SESSION[origSiteObj],$_SESSION[type],$_SESSION[origSite],$_SESSION[origSection],$_SESSION[origPage]);
+}
+
+if (!is_object($_SESSION[origSiteObj])) {
+	$_SESSION[origSiteObj] = new site($_REQUEST[site]);
+	$_SESSION[origSiteObj]->fetchDown();
+
+	$_SESSION[origSite] = $_REQUEST[site];
+	$_SESSION[origSection] = $_REQUEST[section];
+	$_SESSION[origPage] = $_REQUEST[page];
+	
+	$_SESSION[type] = $_REQUEST[type];
+}
+/* $oname = $_SESSION[origSiteObj]->sections['$_SESSION[origSection]']->getField("title"); */
+/* print "<pre>"; print_r($_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->getField("title")); print "</pre>"; */
+
+/******************************************************************************
+ * save move to DB
+ ******************************************************************************/
 
 if ($domove) {
 	// set the origional objects to move/copy	
@@ -52,65 +77,87 @@ if ($domove) {
 
 if (!isset($action)) $action = "MOVE";
 
-if (!isset($origionalsite)) $origionalsite = $site;
-if (!isset($origionalsection)) $origionalsection = $section;
-if (!isset($origionalpage)) $origionalpage = $page;
+// $oname = $_SESSION[origionalsiteObj]->sections['$_SESSION[origionalsection]']->getField("title");
 
-// Get the sites that a person is the editor of.
+/******************************************************************************
+ * Get the sites that a person is the owner or editor of.
+ ******************************************************************************/
 if (!isset($sites)) {
-	$query = "select * from sites where (editors LIKE '%$auser') || (addedby='$auser')";
-	$r=db_query($query);
-	$sites = array();
-	while ($a=db_fetch_assoc($r)) {
-//		print "possible site = $a[name]<br>";			//Debug
-		if (is_editor($auser,$a[name])) {
-//			print "$auser is an editor for $a[name]<br>";	// Debug
-			if ($type == "section" && permission($auser,SITE,ADD,$a[name])) {
-				array_push($sites,$a[name]);
-			} else if ($type != "section") {
-				array_push($sites,$a[name]);
-			}
-//			$perm = permission($auser,SITE,ADD,$a[name]);
-//			print "permission = $perm<br>";
-//			print_r($sites); print "<br>";
-		}
+	$sitesArray = segue::getAllSites($auser);
+	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($auser));
+	foreach ($sitesArray as $s) {
+/* 		print $s."<br>"; */
+		$sites[$s] = new site($s);
+		$sites[$s]->fetchDown();
+/* 		$title = $sites[$s]->getField("title"); */
+/* 		print "title = $title <br>"; */
 	}
-} else {
-	$sites = decode_array($sites);
+}
+/* print "<pre>"; print_r($sites); print "</pre>"; */
+/* $name = $sites[gabe]->getField("title"); */
+/* print $name; */
+
+/* // debug output -- handy :) */
+/* print "<pre>"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* if (is_object($thisPage)) { */
+/* 	print "\n\n"; */
+/* 	print "thisPage:\n"; */
+/* 	print_r($thisPage); */
+/* } else if (is_object($thisSection)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSection:\n"; */
+/* 	print_r($thisSection); */
+/* } else if (is_object($thisSite)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSite:\n"; */
+/* 	print_r($thisSite); */
+/* } */
+/* print "</pre>"; */
+/* return 1; */
+
+/******************************************************************************
+ * Initialize the current site.
+ ******************************************************************************/
+$siteObj = new site($_REQUEST[site]);
+$siteObj->fetchDown();
+$site = $_REQUEST[site];
+$section = $_REQUEST[section];
+$page = $_REQUEST[page];
+
+if (($_SESSION[type] != "section" && !isset($section)) || $selecttype == "site") {
+	$sectionsArray = $siteObj->getField("sections");
+	$section = $sectionsArray[0];
 }
 
-if ($type != "section") {
-	$sections = decode_array(db_get_value("sites","sections","name='$site'"));
-	$newsections = array();
-	foreach ($sections as $s) {
-		$sectiontype = db_get_value("sections","type","id=$s");
-		if ($type == "page" && permission($auser,SECTION,ADD,$s) && $sectiontype == "section")
-			array_push($newsections,$s);
-		else if ($type == "story" && $sectiontype == "section") 
-			array_push($newsections,$s);
-	}
-	$sections = $newsections;
-	if ($selecttype == "site")
-		$section = $sections[0];
-}
+/* print "<pre>"; print_r($siteObj); print "</pre>"; */
+/* print "section = ".$section."<br>"; */
+/* print "section = ".$site."<br>"; */
 
-if ($type == "story") {
-	$pages = decode_array(db_get_value("sections","pages","id=$section"));
-	$newpages = array();
-	foreach ($pages as $p) {
-		$pagetype = db_get_value("pages","type","id=$p");
-		if (permission($auser,PAGE,ADD,$p) && $pagetype == "page")
-			array_push($newpages,$p);
-	}
-	$pages = $newpages;
-	if ($selecttype == "site" || $selecttype == "section")
-		$page = $pages[0];
+if (($type == "story" && !isset($page)) || ($selecttype == "site" || $selecttype == "section")) {
+	$pagesArray = $siteObj->sections[$section]->getField("pages");
+	$page = $pagesArray[0];
 }
+/* print "<pre>"; print_r($siteObj->sections); print "</pre>"; */
+/* return 1; */
+/* if ($type == "story") { */
+/* 	$pages = $sectionObj->getField("pages"); */
+/* 	$newpages = array(); */
+/* 	foreach ($pages as $p) { */
+/* 		$pagetype = db_get_value("pages","type","id=$p"); */
+/* 		if (permission($auser,PAGE,ADD,$p) && $pagetype == "page") */
+/* 			array_push($newpages,$p); */
+/* 	} */
+/* 	$pages = $newpages; */
+/* 	if ($selecttype == "site" || $selecttype == "section") */
+/* 		$page = $pages[0]; */
+/* } */
 
 $actionlc = strtolower($action);
-
-// variables for debugging
-//print "\$type = $type <br>\$site = $site<br>\$section = $section<br>\$page = $page<br>\$story = $story<br>\$selecttype = $selecttype<br>\$auser = $auser<br>";
 
 ?> 
 <html> 
@@ -216,12 +263,11 @@ else
 	print "<body>";
  
 print "<form action='$PHP_SELF?$sid' name='moveform' method='post'>";
-print "<input type=hidden name='type' value='$type'>";
-print "<input type=hidden name='origionalsite' value='$origionalsite'>";
-print "<input type=hidden name='origionalsection' value='$origionalsection'>";
-print "<input type=hidden name='origionalpage' value='$origionalpage'>";
+/* print "<input type=hidden name='origionalsite' value='$origionalsite'>"; */
+/* print "<input type=hidden name='origionalsection' value='$origionalsection'>"; */
+/* print "<input type=hidden name='origionalpage' value='$origionalpage'>"; */
 print "<input type=hidden name='selecttype'>";
-print "<input type=hidden name='sites' value='".encode_array($sites)."'>";
+/* print "<input type=hidden name='sites' value='".encode_array($sites)."'>"; */
 if ($type == "story")
 	print "<input type=hidden name='story' value='$story'>";
 if ($type == "page")
@@ -239,81 +285,91 @@ if (!$domove) {
 		print "</td>";
 	print "</tr> ";
 }
-	print "<tr>";
-		print "<th style='text-align: left;' colspan=1>";
-		if (!$domove) {
-			print ucwords($actionlc)." ".ucwords($type);
-			print " to:";
-		} else {
-			print ucwords($actionlc)." ".ucwords($type)." Successfull";
-		}
-		print "</th>";
-		print "<th style='text-align: right'>";
-			print helplink("copy_parts");
-		print "</th>";
-	print "</tr>";
 
-	print "<tr>";
-		print "<td style='text-align: left;'>Site: </td>";
-		print "<td>";
-		if (!$domove) {
-			print "<select name='site' onChange=\"updateForm('site')\">";
-			foreach ($sites as $s) {
-				$name = db_get_value("sites","title","name='$s'");
-				print "<option value='$s'".(($s==$site)?" selected":"").">$name\n";
-			}
-			print "</select>";
-		} else {
-			$oname = db_get_value("sites","title","name='$origionalsite'");
-			$name = db_get_value("sites","title","name='$site'");
-			print "$oname => $name";
-		}	
-		print "</td>";
-	print "</tr>";
+print "<tr>";
+	print "<th style='text-align: left;' colspan=1>";
+	if (!$domove) {
+		print ucwords($actionlc)." ".ucwords($type);
+		print " to:";
+	} else {
+		print ucwords($actionlc)." ".ucwords($type)." Successfull";
+	}
+	print "</th>";
+	print "<th style='text-align: right'>";
+		print helplink("copy_parts");
+	print "</th>";
+print "</tr>";
+
+print "<tr>";
+	print "<td style='text-align: left;'>Site: </td>";
+	print "<td>";
+	if (!$domove) {
+		print "<select name='site' onChange=\"updateForm('site')\">";
+		foreach ($sites as $s=>$v) {
+			$name = $sites[$s]->getField("title");
+			print "<option value='$s'".(($sites[$s]->name == $site)?" selected":"").">$name\n";
+		}
+		print "</select>";
+//	} else {
+		$oname = $_SESSION[origSiteObj]->getField("title");
+		$name = $siteObj->getField("title");
+		print "$oname => $name";
+	}	
+	print "</td>";
+print "</tr>";
 	
 if ($type != "section") {
 	print "<tr>";
 		print "<td style='text-align: left'>Section: </td>";
 		print "<td>";
 		if (!$domove) {
-			if (count($sections)) {
-				print "<select name='section' onChange=\"updateForm('section')\">";
-				foreach ($sections as $s) {
-					$name = db_get_value("sections","title","id=$s");
-					print "<option value='$s'".(($s==$section)?" selected":"").">$name\n";
+			if (count($siteObj->sections)) {
+				print "<select name='section' onChange=\"updateForm('section')\"";
+				print (($siteObj->sections[$section]->getField("type") != "section")?" style='background-color: #F00'":"").">";
+				foreach ($siteObj->sections as $s=>$v) {
+					$name = $siteObj->sections[$s]->getField("title");
+					print "<option value='$s'";
+					print (($siteObj->sections[$s]->id == $section)?" selected":"");
+					print (($siteObj->sections[$s]->getField("type") != "section")?" style='background-color: #F00'":"");
+					print ">$name\n";
 				}
 				print "</select>";
 			} else {
-				print "No permission to $actionlc here.";
+				print "No Sections.";
 				$cantmovehere=1;
 			}
-		} else {
-			$oname = db_get_value("sections","title","id=$origionalsection");
-			$name = db_get_value("sections","title","id=$section");
+//		} else {
+			$oname = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->getField("title");
+			$name = $siteObj->sections[$section]->getField("title");
 			print "$oname => $name";
 		}
 		print "</td>";
 	print "</tr>";
 }
+
 if ($type == "story") {
 	print "<tr>";
 		print "<td style='text-align: left'>Page: </td>";
 		print "<td>";
 		if (!$domove) {
-			if (count($pages)) {
-				print "<select name='page' onChange=\"updateForm('page')\">";
-				foreach ($pages as $p) {
-					$name = db_get_value("pages","title","id=$p");
-					print "<option value='$p'".(($p==$page)?" selected":"").">$name\n";
+			if (count($siteObj->sections[$section]->pages)) {
+				print "<select name='page' onChange=\"updateForm('page')\"";
+				print (($siteObj->sections[$section]->pages[$page]->getField("type") != "page")?" style='background-color: #F00'":"").">";
+				foreach ($siteObj->sections[$section]->pages as $p=>$v) {
+					$name = $siteObj->sections[$section]->pages[$p]->getField("title");
+					print "<option value='$p'";
+					print (($siteObj->sections[$section]->pages[$p]->id == $page)?" selected":"");
+					print (($siteObj->sections[$section]->pages[$p]->getField("type") != "page")?" style='background-color: #F00'":"");
+					print ">$name\n";
 				}
 				print "</select>";
 			} else {
-				print "No permission to $actionlc here.";
+				print "No Pages.";
 				$cantmovehere=1;
 			}
-		} else {
-			$oname = db_get_value("pages","title","id=$origionalpage");
-			$name = db_get_value("pages","title","id=$page");
+//		} else {
+			$oname = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->getField("title");
+			$name = $siteObj->sections[$section]->pages[$page]->getField("title");
 			print "$oname => $name";
 		}
 		print "</td>";
@@ -326,7 +382,7 @@ if ($type == "story") {
 			if (!$cantmovehere)
 				print "<input type=submit name='domove' value='$action'>";
 			else 
-				print "<input type=button value='$action' style='background-color: #F00;' onClick=\"showError('$type','$actionlc')\">";				
+				print "<input type=button value='$action' style='background-color: #F00;' onClick=\"showError('$_SESSION[type]','$actionlc')\">";				
 		} else {
 			print "<input type=button value='Go To ".(($action=="MOVE")?"Moved":"Copied")." $type' onClick=\"followLink('";
 			if ($type == "story")
@@ -344,6 +400,29 @@ if ($type == "story") {
 </form>
  
 <input type=button value='Cancel' onClick='window.close()' align=right><BR> 
-
+------------------------------------
+<?
+// debug output -- handy :)
+/* print "<pre>"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* if (is_object($thisPage)) { */
+/* 	print "\n\n"; */
+/* 	print "thisPage:\n"; */
+/* 	print_r($thisPage); */
+/* } else if (is_object($thisSection)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSection:\n"; */
+/* 	print_r($thisSection); */
+/* } else if (is_object($thisSite)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSite:\n"; */
+/* 	print_r($thisSite); */
+/* } */
+/* print "</pre>"; */
+?>
 </body>
 </html>
