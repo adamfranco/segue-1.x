@@ -194,6 +194,7 @@ $query = "
 		media_id,
 		media_size,
 		date_format(media_updated_tstamp, '%M %e, %Y %k:%i') AS media_updated_tstamp_text,
+		media_updated_tstamp,
 		media_type,
 		slot_name,
 		user_fname,

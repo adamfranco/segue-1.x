@@ -131,7 +131,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
-		$query = "UPDATE media SET media_updated_tstamp=NOW(),FK_createdby='".$_SESSION[aid]."',media_size='$size' WHERE media_id='$replace_id'";
+		$query = "UPDATE media SET media_updated_tstamp=NOW(),FK_updatedby='".$_SESSION[aid]."',media_size='$size' WHERE media_id='$replace_id'";
 		/* print $query."<br>"; */
 		db_query($query);
 		print mysql_error()."<br>";
@@ -142,7 +142,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
-		$query = "INSERT INTO media SET media_tag='$name',FK_site='$siteid',FK_createdby='".$_SESSION[aid]."',media_type='$type',media_size='$size'";
+		$query = "INSERT INTO media SET media_tag='$name',FK_site='$siteid',FK_createdby='".$_SESSION[aid]."',FK_updatedby='".$_SESSION[aid]."',media_type='$type',media_size='$size'";
 //		print $query."<br>";
 		db_query($query);
 //		print mysql_error()."<br>";
