@@ -212,32 +212,34 @@ if ($section) $u .= "&section=$section";
 if ($page) $u .= "&page=$page";
 if ($supplement) $u .="&supplement=$supplement";
 
-$text .= "<br><div align=right><table style='border-top: 1px solid #555; border-left: 1px solid #555; border-bottom: 2px solid #555; border-right: 2px solid #555; background-color: #ddd;'><tr>";
+$text .= "<br><div align=right><table style='border-top: 2px solid #666; border-left: 2px solid #666; border-bottom: 2px solid #666; border-right: 2px solid #666; background-color: #ddd;'><tr>";
 $text .= "<td valign=top align=left>";
 
+$btnw = 125 . "px"; // button width
+$sty = "style='width: $btnw;"; // ignore this
 if ($thisSite->hasPermission("edit")) 
-$text .= "<input type=button class='button' value='Edit Site Settings' onClick=\"window.location='index.php?$sid&action=edit_site&sitename=$site&comingFrom=viewsite'\" style='width: 120px;'>";
+$text .= "<input type=button style='width: $btnw' class='button' value='Edit Site Settings' onClick=\"window.location='index.php?$sid&action=edit_site&sitename=$site&comingFrom=viewsite'\">";
 else $text .= "&nbsp; ";
 
 $text .= "</td>";
 $text .= "<td valign=top align=left>";
 
-$text .= "<input type=button class='button' name='sitemap' value=' Permissions ' onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=$site\")' target='permissions' style='text-decoration: none; width: 120px;'>";
+$text .= "<input type=button style='width: $btnw' class='button' name='sitemap' value=' Permissions ' onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=$site\")' target='permissions' style='text-decoration: none'>";
 
 $text .= "</td>";
 $text .= "<td valign=top align=left>";
 
-$text .= "<input type=button class='button' value='Preview This Site'  onClick=\"window.location='$u&$sid'\" style='width: 120px;'>";
+$text .= "<input type=button style='width: $btnw' class='button' value='Preview This Site'  onClick=\"window.location='$u&$sid'\">";
 
 $text .= "</td>";
 $text .= "</tr><tr><td valign=top align=left>";
 
-$text .= "<input type=button class='button' name='browsefiles' value=' &nbsp; Media Library &nbsp; ' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none; width: 120px;'>";
+$text .= "<input type=button style='width: $btnw' class='button' name='browsefiles' value=' &nbsp; Media Library &nbsp; ' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none'>";
 
 $text .= "</td>";
 $text .= "<td valign=top align=left>";
 
-$text .= "<input type=button class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none; width: 120px;'>";
+$text .= "<input type=button style='width: $btnw' class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none'>";
 
 $text .= "</td>";
 $text .= "<td valign=top align=center>";

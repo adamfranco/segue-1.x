@@ -206,11 +206,11 @@ if (!ini_get("register_globals")) {
 	$_ign = array("editors","obj","settings","siteObj","sectionObj","pageObj","storyObj",
 				"auser","lpass","afname","aemail","atype","amethod","lmethod","ltype",
 				"lemail","lfname","luser","lid","aid");
-	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = $$n; }
+	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = &$$n; }
 }
 
 // debug output -- handy :)
-print "<pre>";
+//print "<pre>";
 /* print "request:\n"; */
 /* print_r($_REQUEST); */
 /* print "\n\n"; */
@@ -235,11 +235,11 @@ print "<pre>";
  	print_r($thisSite); 
  } */
  
-print "</pre>";
+//print "</pre>";
 
 
 // debug output -- handy :)
- print "<pre>"; 
+// print "<pre>"; 
 /*  print "session:\n";  */
 /*  print_r($_SESSION);  */
 /*  print "\n\n";  */
@@ -260,7 +260,7 @@ print "</pre>";
 /*  	print "***************************** *************** * thisSection:\n";  */
 /*  	print_r($thisSection);  */
 /*  }  */
- print "</pre>"; 
-print "<p>Total Queries: ".$_totalQueries."</p>";
+// print "</pre>"; 
+//print "<p>Total Queries: ".$_totalQueries."</p>";
 
 ?>
