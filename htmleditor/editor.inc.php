@@ -8,7 +8,7 @@
 function addeditor($textarea,$cols,$rows,$text,$context="story") {
 	//sniffer determines browser and os
 	include("sniffer.inc.php");
-		
+	
 	//chose editor based on browser and platfrom
 	if ($winIEVersion > 5.5) {
 		if ($context=="story") {	
@@ -35,7 +35,7 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
  * $text is content of textarea
  ******************************************************************************/
 function editor_htmlarea($textarea,$text,$context) {	
-	ob_start();
+	ob_start();	
 	if ($context == "story") {
 		include("htmlarea/story.php");	
 	} else if ($context == "discuss" || $context == "email") {

@@ -279,9 +279,11 @@ Participants<br><br>
 		/******************************************************************************
 		 * if action is email, then compile to list and print out email UI
 		 ******************************************************************************/
-
+		
 		if ($curraction == 'email') {
+			//include("sniffer.inc.php");
 			//include("htmleditor/editor.inc.php");
+			
 			$emaillist = array();
 			while ($a2 = db_fetch_assoc($r)) {
 				array_push($emaillist, $a2['user_email']);	
@@ -311,15 +313,14 @@ Participants<br><br>
 			?>
 			
 			<form action="<? echo $PHP_SELF ?>" method=post name=emailform>
-				<table width=100%>
+			<table width=100%>
 			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
 			<tr><td align=right>From:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Cc:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
 			<tr><td></td><td align=left>
+			<? //addeditor ("body",60,20,$text,"discuss"); ?>
 			<textarea name=body cols=60 rows=20></textarea>
-			<? //addeditor ("email",60,20,$text,"discuss"); ?>
-
 			</td><td><td align=right></td></tr>
 			</table>
 			<input type=hidden name='action' value='send'>
@@ -341,12 +342,12 @@ Participants<br><br>
 
 		} else if ($curraction == 'send') {
 			print "<table>";
-			print "<tr><td>to:</td><td>".$to."</td></tr><br><hr>\n";
-			print "<tr><td>from:</td><td>".$_SESSION['afname']."</td></tr>\n";
-			print "<tr><td>cc:</td><td>".$_SESSION['afname']."</td></tr>\n";
-			print "<tr><td>subject:</td><td>".$subject."</td></tr>\n";
+			print "<tr><td>To:</td><td>".$to."</td></tr><br><hr>\n";
+			print "<tr><td>From:</td><td>".$_SESSION['afname']."</td></tr>\n";
+			print "<tr><td>Cc:</td><td>".$_SESSION['afname']."</td></tr>\n";
+			print "<tr><td>Subject:</td><td>".$subject."</td></tr>\n";
 			print "<tr><td></td><td>".$body."</td></tr>\n";
-			//print "<tr><td></td><td>".$headers."</td></tr>\n";  //debug
+/* 			print "<tr><td></td><td>".$headers."</td></tr>\n";  //debug */
 			print "</table>\n";
 			print "</div>\n";
 			//mail($to,$subject,$body,"From: $from");
