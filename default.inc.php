@@ -384,7 +384,7 @@ if ($_loggedin) {
 	}
 	
 	printc("</td><td align=right>");
-	if ($_SESSION[amethod] =='db' || $_SESSION[lmethod]=='db') printc("<a href='passwd.php?' target='password' onClick='doWindow(\"password\",400,300)'>change password</a>");	
+	if ($_SESSION[amethod] =='db' || $_SESSION[lmethod]=='db') printc("<a href='passwd.php?$sid&action=change' target='password' onClick='doWindow(\"password\",400,300)'>change password</a>");	
 	printc("</td></tr></table></td></tr>");
 	
 	printc("</table>");

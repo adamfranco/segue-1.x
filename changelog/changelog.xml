@@ -144,12 +144,19 @@
 			institute users and can view institute-only content.  In addition, guests
 			are given a slot for a personal site.
 		</new>
+		<change author='alex'>
+			Changed passwd.php to handle 1. changing passwords of users authenticated via
+			Segue's db 2. registering new visitor type users 3. Log in of existing users.
+		</change>
 		<new author='alex'>
 			Added user registration UI that appears in public discussions when posts
 			are made without authentication.  User registration UI requires unauthenticated
 			users to submit their name and email address when posting to public discussions.
 			Email address in user registration UI is checked against email addresses in 
-			user table.  Segue user accounts are created for users who register this way and
+			user table.  In addition, their is a new config option for specifying emails
+			that cannot be registered as visitor (these would be emails address that are 
+			set up for an institution' users and part of their user account and authentication.
+			Segue user accounts are created for users who register this way and
 			these users are sent an email with their username (=email address) and a auto-
 			generated password.  These users are visitor usertypes. 
 		</new>

@@ -10,11 +10,13 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // include all necessary files
 include("includes.inc.php");
+//printpre ($_SESSION);
 
-if ($_REQUEST[reset]) $reset = $_REQUEST[reset];
-if ($_REQUEST[email]) $email = $_REQUEST[email];
+if ($_REQUEST[reset] == "reset") $reset = $_REQUEST[reset];
+//if ($_REQUEST[email]) $email = $_REQUEST[email];
+//if ($_REQUEST[uname]) $uname = $_REQUEST[uname];
 
-if ($_REQUEST[action] == "change") {
+if ($_REQUEST[action] == "newpassword") {
 	$db_pass = db_get_value("user","user_pass","user_uname = '$_SESSION[auser]'");
 	$origPassValid = !strcmp($_REQUEST[oldpass],$db_pass);
 	if ($origPassValid) {
@@ -31,88 +33,166 @@ if ($_REQUEST[action] == "change") {
 				} else {
 					unset($newpass1);
 					unset($newpass2);
-					error("New password contains prohibited characters");
+					$message = "<div align=center>New password contains prohibited characters</div>";
 				}
 			} else {
 				unset($newpass1);
 				unset($newpass2);
-				error("New password is not between 8 and 200 characters");
+				$message = "<div align=center>New password is not between 8 and 200 characters</div>";
 			}
 		} else {
 			unset($newpass1);
 			unset($newpass2);
-			error ("New passwords don't match");
+			$message = "<div align=center>New passwords don't match</div>";
 		}
 	} else {
 		unset($oldpass);
-		error ("Your old password is invalid");
+		$message = "<div align=center>Your old password is invalid</div>";
 	}
-} else if ($_REQUEST[action] == "send") {
+	
+	if ($passwordGood) {
+		$message = "<div align=center>Your password has been changed<br><br></div>";
+		$message .= "<div align=center><input type=button value='Return' onClick='window.close()'></div>";
+	}
+	
+} else if ($_REQUEST[action] == "send" || $_REQUEST[action] == "newuser") {
+	$name = $_REQUEST['uname'];
 	$email = $_REQUEST['email'];
-	
-	$id = db_get_value("user","user_id","user_uname='$email'");
-	
-	if ($id > 0) {
-		$obj = &new user();
-		$obj->fetchUserID($id);
-		$obj->randpass(5,3);
-		$obj->updateDB();
-		$obj->sendemail(1);
-		$message = "A new random password has been sent to the email address you entered above.";		
-	} else {
-		$message = "There is no visitor user account for this email address...";
+	if (!$_REQUEST['uname']) $message = "<div align=center>You must enter a Name.<br><br></div>";
+	if (!$_REQUEST['email'] || !ereg("@", $_REQUEST['email'])) {
+		 $message = "<div align=center>You must enter a valid email address.<br><br></div>";
 	}
 	
+	$error = FALSE;
 	foreach ($cfg[visitor_email_excludes] as $visitor_email_exclude) {
 		if ($exclude = ereg($visitor_email_exclude, $email)) {
-			$message = "You cannot reset your $cfg[inst_name] account password here.";
+			if ($_REQUEST[action] == "send") {
+				$message = "<div align=center>You cannot reset your $cfg[inst_name] account password here.<br></div>";
+			} else {
+				$message = "You cannot register your $cfg[inst_name] account here. ";
+				$message .= "(<a href=passwd.php?$sid&action=login>Login</a>).<br><br>";
+			}
 			$id = 0;
+			$error = TRUE;
 			break;
 		}
 	}
+	
+	$id = db_get_value("user","user_id","user_email='$email'");
+	$authtype = db_get_value("user", "user_authtype", "user_id = $id");
+	if ($id && $authtype != "db") {
+		$error=TRUE;
+		$message = "<div align=left>This user account is not authenticated by Segue and so you cannot reset this account's password here.<br></div>";
+	}
+	 	
+	// a matching user was found and email not excluded
+	if ($id > 0 && $error != TRUE) {
+		
+		if ($_REQUEST[action] == "send") {
+			$obj = &new user();
+			$obj->fetchUserID($id);
+			$obj->randpass(5,3);
+			$obj->updateDB();
+			$obj->sendemail(1);
+			$message = "<div align=left>A new random password has been sent to the email address you entered above.<br></div>";
+		} else {
+			$message = "<div align=left>Your email address is already in our database.";
+			$message .= " (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>).</div>";
+		}		
+	} else if ($_REQUEST[action] == "send" && $error != TRUE) {
+		$message = "<div align=center>There is no visitor user account for this email address...<br></div>";
+		
+	} else if ($_REQUEST[action] == "newuser" && $error != TRUE) {
+		$name = $email;
+		$obj = &new user();
+		$obj->uname = $_REQUEST['email'];
+		$obj->fname = $_REQUEST['uname'];
+		$obj->email = $_REQUEST['email'];
+		$obj->type = "visitor";
+		$obj->authtype = 'db';
+		$obj->randpass(5,3);
+		$obj->insertDB();
+		$obj->sendemail();
+		$visitor_id = lastid();
+		
+		$valid = 0;
+		foreach ($_auth_mods as $_auth) {
+		$func = "_valid_".$_auth;
+			//print "<BR>AUTH: trying ".$_auth ."..."; //debug
+			if ($x = $func($name,"",1)) {
+				$valid = 1;
+				break;
+			}
+		}
+		if ($valid) {
+			$_SESSION[luser] = $x[user];
+			$_SESSION[lemail] = $x[email];
+			$_SESSION[lfname] = $x[fullname];
+			$_SESSION[ltype] = $x[type];
+			$_SESSION[lid] = $x[id];
+			$_SESSION[lmethod] = $x[method];
+			$_SESSION[auser] = $x[user];
+			$_SESSION[aemail] = $x[email];
+			$_SESSION[afname] = $x[fullname];
+			$_SESSION[atype] = $x[type];
+			$_SESSION[aid] = $x[id];
+			$_SESSION[amethod] = $x[method];
+		}
+		$message = "Thank you for registering. Your user account information has been emailed to you.  Use this information to log into Segue.<br><br>";
+		$message .= "<div align=center><input type=button value='Return' onClick='refreshParent()'></div>";
 
-	 
+	}
+
+} else if ($_REQUEST[action] == "auth") {
+	$name = $_REQUEST['uname'];
+	$pass = $_REQUEST['password'];
+	$valid = 0;
+	foreach ($_auth_mods as $_auth) {
+		$func = "_valid_".$_auth;
+		//print "<BR>AUTH: trying ".$_auth ."..."; //debug
+		if ($x = $func($name,$pass)) {
+			$valid = 1;
+			break;
+		}
+	}
+	if ($valid) {
+		$_SESSION[luser] = $x[user];
+		$_SESSION[lemail] = $x[email];
+		$_SESSION[lfname] = $x[fullname];
+		$_SESSION[ltype] = $x[type];
+		$_SESSION[lid] = $x[id];
+		$_SESSION[lmethod] = $x[method];
+		$_SESSION[auser] = $x[user];
+		$_SESSION[aemail] = $x[email];
+		$_SESSION[afname] = $x[fullname];
+		$_SESSION[atype] = $x[type];
+		$_SESSION[aid] = $x[id];
+		$_SESSION[amethod] = $x[method];
+		$message = "<div align=left>Your login information was correct. Use Return button below to complete authentication<br><br></div>";
+		$message .= "<div align=center><input type=button value='Return' onClick='refreshParent()'></div>";
+	} else {
+		$message = "<div align=left>Your password/username was incorrect.";
+		$message .= " (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>).</div>";
+	}
 
 }
-
-
 
 ?>
 <html>
 <head>
 <title>Password</title>
 <? include("themes/common/logs_css.inc.php"); ?>
-<!-- <style type='text/css'> -->
-<!-- table { -->
-<!-- 	border: 1px solid #555; -->
-<!-- } -->
-<!--  -->
-<!-- th, td { -->
-<!-- 	border: 0px; -->
-<!-- 	background-color: #ddd; -->
-<!-- } -->
-<!--  -->
-<!-- th {  -->
-<!-- 	background-color: #ccc;  -->
-<!-- 	font-variant: small-caps; -->
-<!-- } -->
-<!--  -->
-<!-- body {  -->
-<!-- 	background-color: white;  -->
-<!-- } -->
-<!--  -->
-<!-- body, table, td, th, input { -->
-<!-- 	font-size: 12px; -->
-<!-- 	font-family: "Verdana", "sans-serif"; -->
-<!-- } -->
-<!--  -->
-<!-- input { -->
-<!-- 	border: 1px solid black; -->
-<!-- 	background-color: white; -->
-<!-- 	font-size: 10px; -->
-<!-- } -->
+<script lang='JavaScript'>
 
-</style>
+function refreshParent() {
+	window.opener.location.href = window.opener.location.href;
+	if (window.opener.progressWindow) {
+		window.opener.progressWindow.close();
+	}
+	window.close();
+}
+
+</script>
 </head>
 <body onLoad="document.passform.oldpass.focus()">
 <?
@@ -121,112 +201,90 @@ if ($_REQUEST[action] == "change") {
 
 <form action="<? echo $PHP_SELF ?>" method=post name="passform">
 <table cellspacing=1 width='100%'>
-<tr>
-	<th colspan=2><? echo ($reset)?"Forgot My":"Change"; ?> Password</th>
-</tr>
-<?
-if ($passwordGood) {
-?>
-
-<tr>
-	<td>
-		Your password has been changed.
-	</td>
-</tr>
-
-<? } else { 
-
-	if (!$reset) {
-?>
-<tr>
-	<td>
-		User Name: 
-	</td>
-	<td>
-		<input type=text name='uname' size=30 value='<? echo $_SESSION[auser] ?>' readonly> 
-	</td>
-</tr>
-<tr>
-	<td>
-		Full Name: 
-	</td>
-	<td>
-		<input type=text name='fname' size=30 value='<? echo $_SESSION[afname] ?>' readonly> 
-	</td>
-</tr>
-<?
+<tr><th colspan=2>
+	<? 
+	if ($_REQUEST[action] == "reset" || $reset) {
+		print "Forgot My Password";
+	} else if ($_REQUEST[action] == "login" || $auth) {
+		print "Log In";
+	} else if ($_REQUEST[action] == "register" || $newuser) {
+		print "Register";
+	} else if ($_REQUEST[action] == "change" || $change) {
+		print "Change My Password";
 	}
-?>
-<tr>
-	<td>
-		Email Address: 
-	</td>
-	<td>
-		<? 
-		if ($reset) {
-			print"<input type=text name='email' size=30 value='".$_REQUEST['email']."'> ";
-			print"<input type=submit name='submit' value='Send new password'>";
-			print"<input type=hidden name='action' value='send'>";
-			print"<input type=hidden name='reset' value='1'>";
-		} else {
-			print"<input type=text name='email' size=30 value='".$_SESSION[aemail]."' readonly>";
-		}
-		?>
+	?>	
+</th></tr>
 
-	</td>
-</tr>
 <?
-		if (!$reset) {
-?>
-<tr>
-	<td>
-		Old Password: 
-	</td>
-	<td>
-		<input type=password name='oldpass' size=30 value='<?echo $oldpass?>'> 
-	</td>
-</tr>
-<tr>
-	<td>
-		New Password: 
-	</td>
-	<td>
-		<input type=password name='newpass1' size=30 value='<?echo $newpass1?>'> <span style='color: #a00'>*</span>
-	</td>
-</tr>
-<tr>
-	<td>
-		Again: 
-	</td>
-	<td>
-		<input type=password name='newpass2' size=30 value='<?echo $newpass2?>'>  <span style='color: #a00'>*</span>
-	</td>
-</tr>
-<tr>
-	<td colspan=2>
-		<span style='color: #a00'>* Must be 8-200 characters long and not contain any of the following: " '</span> 
-	</td>
-</tr>
-<?
-		}
-?>
-<tr>
-	<td colspan=2 align=center>
-		<? if ($reset) {
-				print"<br>";
-				print $message;
-				print"<br><br>";
-			} else {
-				print"<input type=submit name='action' value='Change password'>";
-				print"<input type=hidden name='action' value='change'>";
-			}
-		?>
-	</td>
-</tr>
-<? } ?>
 
-</table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+if ($_REQUEST[action] == "change" || $change) {
+	print "<tr><td> User Name: </td>";
+	print "<td><input type=text name='uname' size=30 value='".$_SESSION['auser']."' readonly></td>"; 
+	print "</tr>";
+	print "<tr><td>Full Name: </td>";
+	print "<td><input type=text name='fname' size=30 value='".$_SESSION['afname']."' readonly></td>";
+	print "</tr>";
+	print "<tr><td>Email Address:</td>";
+	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."' readonly></td> ";
+	print"<tr>";
+	print"<td>Old Password:</td>";
+	print"<td><input type=password name='oldpass' size=30 value='".$oldpass."'></td></tr>";
+	print"<tr>";
+	print"<td>New Password:</td>";
+	print"<td><input type=password name='newpass1' size=30 value='".$newpass1."'> <span style='color: #a00'>*</span></td>";
+	print"</tr>";
+	print"<tr>";
+	print"<td>Again:</td>";
+	print"<td><input type=password name='newpass2' size=30 value='".$newpass2."'>  <span style='color: #a00'>*</span></td>";
+	print"</tr>";
+	print"<tr>";
+	print"<td colspan=2><span style='color: #a00'>* Must be 8-200 characters long and not contain any of the following: \" '</span></td>";
+	print"</tr>";
+	print"<tr><td colspan=2 align=center><input type=submit value='Change password'></td></tr>";
+	print"<input type=hidden name='action' value='newpassword'>";
+	print"<input type=hidden name='change' value='1'>";
+
+} else if ($_REQUEST[action] == "login" || $auth) {
+	print "<tr><td colspan=2 align=center> Please enter your username and password. <br></td>";
+	print "<tr><td> User Name: </td>";
+	print "<td><input type=text name='uname' size=30 value=''></td>";
+	print "<tr><td>Password:</td>";
+	print"<td><input type=password name='password' size=30 value=''> </td>";
+	print"<tr><td colspan=2 align=center><input type=submit value='Log In'><br>";
+	print" (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>)</td></tr>";
+	print"<input type=hidden name='action' value='auth'>";
+	print"<input type=hidden name='auth' value='1'>";
+
+} else if ($_REQUEST[action] == "register" || $newuser) {
+	print "<tr><td colspan=2 align=left> Please enter your name and your email address.";
+	print "  Once you have registered you will be able to post to this and all other $cfg[inst_name] public forums.";
+	print "  Your username will be your email address and a password will be emailed to you.<br><br></td>";
+	print "<tr><td> User Name: </td>";
+	print "<td><input type=text name='uname' size=30 value='".$_REQUEST['uname']."'></td>";
+	print "<tr><td>Email Address:</td>";
+	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'> </td>";
+	print"<tr><td colspan=2 align=center><input type=submit value='Register'></td></tr>";
+	print"<input type=hidden name='action' value='newuser'>";
+	print"<input type=hidden name='newuser' value='1'>";
+} else if ($_REQUEST[action] == "reset" || $reset) {
+	print "<tr><td colspan=2 align=center> Please enter your email address and a password will be sent to you.<br><br></td>";
+	print "<tr><td>Email Address:</td>";
+	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'></td></tr>";
+	print"<tr><td colspan=2 align=center><input type=submit name='submit' value='Send new password'></td></tr>";
+	print"<input type=hidden name='action' value='send'>";
+	print"<input type=hidden name='reset' value='1'>";
+}
+print "</td></tr>";
+print "<tr><td colspan=2>"; 
+print"<br>";
+print $message;
+print"<br>";
+print"</td></tr>";
+
+
+print "</table><BR>";
+//print "<div align=right><input type=button value='Close Window' onClick='window.close()'></div>";
+?>
 
 <? 
 // debug output -- handy :)

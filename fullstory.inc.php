@@ -162,7 +162,7 @@ if ($storyObj->getField("discuss")) {
 	$storyid = $storyObj->getField('id');
 	$siteid = $siteObj->getField('id');
 	$site=$siteObj->name;
-	
+	//printpre($_SESSION);
 	printc("<div style='font-size: 10px'>");
 	if ($_SESSION[auser]==$site_owner || $_SESSION[ltype]=="admin") {		
 		printc("<a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list' onClick='doWindow(\"email\",700,500)' target='email'>List</a> | \n");
