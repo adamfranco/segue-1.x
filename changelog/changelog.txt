@@ -1,0 +1,58 @@
+
+
+Name: Segue ChangeLog
+
+
+v. 1.0.0 rc1
+----------------------------------------------------
+		
+	* New feature: Added new config option: $cfg[domain] -- the cookie domain for session info. Allows session info to cross sites if they are running the same instance of segue. (Gabe Schine)
+		
+	* New feature: Discussion links now displayed with statistics info. (Gabe Schine)
+		
+	* Change: By-line for default page now has a link to a &quot;credits&quot; page with more info about the authors. (Gabe Schine)
+		
+	* Change: ChangeLog is now held in XML format &amp; converted with XSL!
+		
+	* Change: &quot;Powered by Segue&quot; logo now takes you to the Segue page. (Gabe Schine)
+	
+v. 1.0.0 beta1 (2003-07-11)
+----------------------------------------------------
+		
+	* Change: Permissions can now be assigned to link type sections and pages and image and file type stories.
+		
+	* Bug Fix: Headings and dividers are now properly displayed when not logged in.
+		
+	**** IMPORTANT *** Change: DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to &quot;000&quot;. (Adam Franco)
+		
+	* Bug Fix: When integrated with an LDAP server, Segue now correctly synchronizes the user and class database tables when adding users/groups as editors who have not yet logged in/been added to the local tables. (Gabe Schine)
+		
+	* Change: Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.
+		
+	* Change: View/add slots interface: a used slot now displays a &quot;-&quot; under the delete column instead of non-linked &quot;delete&quot; text for clarity. (Gabe Schine)
+	
+v. 1.0.0 alpha3 (2003-06-08)
+----------------------------------------------------
+		
+	* New feature: Owners of class sites can now easily add members of their class as an editor. (Adam Franco)
+		
+	* Change: Activation/Deactivation Date form now has valid day options. (Adam Franco)
+		
+	* Change: When an admin is acting as another person, they can only see what that person would see. (Adam Franco)
+		
+	* Bug Fix: The &quot;default&quot; page now appropriately shows sites of which a group member is owner. (Gabe Schine)
+		
+	* Bug Fix: Move/Copy now shows sites properly when opened on first page load. (Adam Franco)
+		
+	* Change: More debug output has been removed.
+	
+v. 1.0.0 alpha2 (2003-06-07)
+----------------------------------------------------
+		
+	* Change: Removed debug output. (Gabe Schine)
+	
+v. 1.0.0 alpha (2003-06-06)
+----------------------------------------------------
+		
+	* New feature: First official release.
+	

@@ -10,7 +10,7 @@ ob_start();		// start the output buffer so we can use headers if needed
 // we need to include the config before we start the session 
 require_once("config.inc.php");
 if ($cfg[domain]) ini_set("session.cookie_domain",$cfg[domain]);
-ini_set("session.name","SeguePHPSESSID");
+//ini_set("session.name","SeguePHPSESSID");
 session_start();// start the session manager :) -- important, as we just learned
 
 header("Content-type: text/html; charset=utf-8");
