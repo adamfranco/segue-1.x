@@ -81,8 +81,8 @@ printc("<br>(this overrides availability option above)<br>");
 if ($_SESSION[settings][edit]) {
 	printc("<p><div class=desc>");
 	printc("<input type=checkbox name=recursiveenable value=1".(($_SESSION[settings][recursiveenable])?" checked":"").">");
-	printc("Check this box if you would like to enable/disable (depending on what you have selected above) every part of this site (sections and pages).");
-	printc(" This is useful if you have enabled or disabled various sections or pages of your site and want to reset all of the \"enable\" settings");
+	printc("Check this box if you would like to hide/un-hide (depending on what you have selected above) every part of this site (sections and pages).");
+	printc(" This is useful if you have hidden or un-hidden various sections or pages of your site and want to reset all of the \"Hide\" settings");
 	printc("</div>");
 }
 
