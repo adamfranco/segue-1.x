@@ -114,7 +114,8 @@ function _auth_check_db($x,$add_to_db=0) {
 	// $x[user] and $x[method] must be set
 	global $dbuser,$dbhost,$dbpass,$dbdb;
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-	$query = "SELECT * FROM user WHERE user_uname='".$x[user]."' AND user_authtype='".$x[method]."'";
+//	$query = "SELECT * FROM user WHERE user_uname='".$x[user]."' AND user_authtype='".$x[method]."'";
+	$query = "SELECT * FROM user WHERE user_uname='".$x[user]."'";
 	$r = db_query($query);	
 	if (db_num_rows($r)) {		// they have an entry already -- pull down their info
 		$a = db_fetch_assoc($r);
