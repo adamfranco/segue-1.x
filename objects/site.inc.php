@@ -253,8 +253,8 @@ class site extends segue {
 				db_query($query);
 				
 				// now, update all sections
-				foreach ($this->data['sections'] as $v) {
-					$query = "UPDATE section SET FK_site=".$this->id." WHERE section_id=".$v;
+				foreach ($this->data['sections'] as $k=>$v) {
+					$query = "UPDATE section SET FK_site=".$this->id.", section_order=$k WHERE section_id=".$v;
 					db_query($query);
 				}
 				
