@@ -788,19 +788,37 @@ WHERE
 $r = db_query($query);
 
 while ($a = db_fetch_assoc($r)) {
+	// first see if the link is already in the media table
 	$query = "
-INSERT
-INTO ".$destinationDB.".media
-SET
-	FK_site = ".$a[FK_site].", 
-	FK_createdby = ".$a[FK_createdby].", 
-	media_tag = '".$a[media_tag]."', 
-	media_location = '".$a[media_location]."', 
-	FK_updatedby = ".$a[FK_updatedby];
+SELECT
+	media_id
+FROM ".$destinationDB.".media
+WHERE
+	FK_site = ".$a[FK_site]." AND
+	FK_createdby = ".$a[FK_createdby]." AND
+	media_tag = '".$a[media_tag]."' AND
+	media_location = '".$a[media_location];
 
-	db_query($query);
-
-$media_id = lastid();
+	$r1 = db_query($query);
+	
+	if ($a1 = db_fetch_assoc($r1)) {
+		$media_id = $a1[media_id];
+	}
+	else {
+		$query = "
+	INSERT
+	INTO ".$destinationDB.".media
+	SET
+		FK_site = ".$a[FK_site].", 
+		FK_createdby = ".$a[FK_createdby].", 
+		media_tag = '".$a[media_tag]."', 
+		media_location = '".$a[media_location]."', 
+		FK_updatedby = ".$a[FK_updatedby];
+	
+		db_query($query);
+	
+		$media_id = lastid();
+	}
 
 	$query = "
 UPDATE
@@ -837,19 +855,38 @@ WHERE
 $r = db_query($query);
 
 while ($a = db_fetch_assoc($r)) {
+	// first see if the link is already in the media table
 	$query = "
-INSERT
-INTO ".$destinationDB.".media
-SET
-	FK_site = ".$a[FK_site].", 
-	FK_createdby = ".$a[FK_createdby].", 
-	media_tag = '".$a[media_tag]."', 
-	media_location = '".$a[media_location]."', 
-	FK_updatedby = ".$a[FK_updatedby];
+SELECT
+	media_id
+FROM ".$destinationDB.".media
+WHERE
+	FK_site = ".$a[FK_site]." AND
+	FK_createdby = ".$a[FK_createdby]." AND
+	media_tag = '".$a[media_tag]."' AND
+	media_location = '".$a[media_location];
 
-	db_query($query);
+	$r1 = db_query($query);
+	
+	if ($a1 = db_fetch_assoc($r1)) {
+		$media_id = $a1[media_id];
+	}
+	else {
+		$query = "
+	INSERT
+	INTO ".$destinationDB.".media
+	SET
+		FK_site = ".$a[FK_site].", 
+		FK_createdby = ".$a[FK_createdby].", 
+		media_tag = '".$a[media_tag]."', 
+		media_location = '".$a[media_location]."', 
+		FK_updatedby = ".$a[FK_updatedby];
+	
+		db_query($query);
+	
+		$media_id = lastid();
+	}
 
-$media_id = lastid();
 
 	$query = "
 UPDATE
@@ -888,19 +925,38 @@ WHERE
 $r = db_query($query);
 
 while ($a = db_fetch_assoc($r)) {
+	// first see if the link is already in the media table
 	$query = "
-INSERT
-INTO ".$destinationDB.".media
-SET
-	FK_site = ".$a[FK_site].", 
-	FK_createdby = ".$a[FK_createdby].", 
-	media_tag = '".$a[media_tag]."', 
-	media_location = '".$a[media_location]."', 
-	FK_updatedby = ".$a[FK_updatedby];
+SELECT
+	media_id
+FROM ".$destinationDB.".media
+WHERE
+	FK_site = ".$a[FK_site]." AND
+	FK_createdby = ".$a[FK_createdby]." AND
+	media_tag = '".$a[media_tag]."' AND
+	media_location = '".$a[media_location];
 
-	db_query($query);
+	$r1 = db_query($query);
+	
+	if ($a1 = db_fetch_assoc($r1)) {
+		$media_id = $a1[media_id];
+	}
+	else {
+		$query = "
+	INSERT
+	INTO ".$destinationDB.".media
+	SET
+		FK_site = ".$a[FK_site].", 
+		FK_createdby = ".$a[FK_createdby].", 
+		media_tag = '".$a[media_tag]."', 
+		media_location = '".$a[media_location]."', 
+		FK_updatedby = ".$a[FK_updatedby];
+	
+		db_query($query);
+	
+		$media_id = lastid();
+	}
 
-$media_id = lastid();
 
 	$query = "
 UPDATE
