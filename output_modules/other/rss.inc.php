@@ -24,6 +24,7 @@ if (ereg("^".$cfg[full_uri], $url)
 	$replacement = "index.php?".session_name()."=".session_id();
 	$url = ereg_replace("index.php\?", $replacement, $url);
 	print "\n$url\n<br />";
+	exit;
 }
 
 // If we have an auser, create a cache just for them.
