@@ -1,10 +1,13 @@
 <? /* $Id$ */
 
+$_isclass_cache = array();
 function isclass ($class) {
-	global $auser;
+	global $auser,$_isclass_cache;
+	if (isset($_isclass_cache[$class])) return $_isclass_cache[$class];
 	$auser = strtolower($auser);
 	$v = ereg("^(([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2}))$",$class);
 	if (!$v && db_line_exists("classgroup","classgroup_name='$class'")) $v = 1;
+	$_isclass_cache[$class] = $v;
 	return $v;
 }
 
