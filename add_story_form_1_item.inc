@@ -153,12 +153,15 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//	print out text areas with editor (determined by addeditor function)
 	//  addeditor function (defined in editor.inc.php)
 	//  addeditor function variables (textarea, cols, rows, text)
+	
 	if ($_SESSION[storyObj]->getField("texttype")=='text' && $supported == 1) {
 		$text = htmlbr($_SESSION[storyObj]->getField("shorttext"));
 		$_SESSION[settings][editorinitstate] = "text";
+		//$_SESSION[storyObj]->getField("texttype") = "html";
 	} else {
 		$text = $_SESSION[storyObj]->getField("shorttext");
 	}
+	//printpre($_SESSION[settings]);
 	printc(addeditor ("shorttext",60,20,$text));
 	printc("</td></tr></table>");
 	

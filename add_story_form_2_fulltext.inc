@@ -84,14 +84,14 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		//	print out text areas with editor (determined by addeditor function)
 	//  addeditor function (defined in editor.inc.php)
 	//  addeditor function variables (textarea, cols, rows, text)
-	//printpre($_SESSION[storyObj]);
+	
 	if ($_SESSION[settings][editorinitstate] == "text" && $supported == 1) {
 		$text = htmlbr($_SESSION[storyObj]->getField("longertext"));
-		$_SESSION[settings][editorinitstate] == "html";
+		$_SESSION[settings][editorinitstate] = "html";
 	} else {
 		$text = $_SESSION[storyObj]->getField("longertext");
 	}
-
+	//printpre($_SESSION[settings]);
 		
 	//	print out text areas with editor (determined by addeditor function)
 	//  addeditor function (defined in editor.inc.php)

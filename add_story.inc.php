@@ -203,7 +203,8 @@ if ($_REQUEST[save]) {
 /* 		} */
 
 		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
-		
+	
+	// if error take them to page where error occured	
 	} else {
 		if ($_REQUEST[discuss] == 1 && $permissionset != 1) {
 			$_SESSION[settings][step] = 4;
