@@ -16,9 +16,18 @@ include_once (dirname(__FILE__)."/carprss/carp.php");
  
 ob_start();
 
+$url = $o->getField("url");
+if (strpos($cfg[full_uri], $url)
+	|| strpos($cfg[personalsitesurl], $url)
+	|| strpos($cfg[classsitesurl], $url))
+{
+	$url = $url."&sid=$sid";
+	print "\n$url\n<br />";
+}
+
 // If we have an auser, create a cache just for them.
 if ($_SESSION['auser']) {
-	CarpCacheShow($o->getField("url"), '', 1,  $_SESSION['auser']);
+	CarpCacheShow($url, '', 1,  $_SESSION['auser']);
 } else {
 
 	// If the user has a valid campus ip-address, then they are a
@@ -36,12 +45,12 @@ if ($_SESSION['auser']) {
 	// if we are in the institute IPs, use the institute
 	// cache.
 	if ($ipIsInInstitute) {
-		CarpCacheShow($o->getField("url"), '', 1, 'institute');
+		CarpCacheShow($url, '', 1, 'institute');
 	}
 	// If we aren't logged in or in the institute IPs, just use the
 	// everyone cache.
 	else {
-		CarpCacheShow($o->getField("url"));
+		CarpCacheShow($url);
 	}
 }
 
