@@ -925,6 +925,8 @@ ORDER BY
  * copySite - clearPermissions currently has no effect. All permissions are cleared.
  ******************************************************************************/
 	function copySite($newName, $clearPermissions=1) {
+		if ($newName == $this->name) return FALSE;
+		if ($newName == "" || !$newName) return FALSE;
 		$newSiteObj = $this;
 		$newSiteObj->setSiteName($newName, 1);
 		$newSiteObj->addEditor("everyone");
