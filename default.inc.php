@@ -409,6 +409,10 @@ function removePrinted($sites) {
 }
 
 function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
+	// The $ed parameter is a bunch of crap and makes assumptions about 
+	// editor permissions that don't exist, such as profs of a class 
+	// always being the owner. It should have no effect in this function.
+
 	global $color,$possible_themes;
 	global $sitesprinted;
 	global $_full_uri;
@@ -435,7 +439,18 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 		if ($obj->canview("anyuser")) $active = "<span class=green>active</span>";
 		else $active = "<span class=red>(inactive)</span>";
 	}
-	printc("<table width=100% cellpadding=0 cellspacing=0><tr><td align=left>".(($isclass)?"<input type=checkbox name='group[]' value='$name'> ":"")."$name - ");
+	printc("<table width=100% cellpadding=0 cellspacing=0><tr><td align=left>");
+	
+	if ($isclass && (!$exists || ($exists && $_SESSION[auser] == slot::getOwner($obj->name)))) {
+		// if:
+		//		isclass - is a class
+		//		if it exists, the user the owner
+		printc("<input type=checkbox name='group[]' value='$name'>");
+	}
+	
+	printc("$name - ");
+	
+	
 	//printc("<td align=right style='font-size: 11px; color: #777;'>");
 	if ($exists) {
 		printc("<span style ='font-size:14px;'><a href='$namelink'>".$obj->getField("title")."</a></span>");
@@ -482,15 +497,24 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 		printc("<div style='padding-left: 20px; font-size: 12px;'>URL: <a href='$addr' target='_blank'>$addr</a><br></div></div>");
 		
 		printc("<div align=right>");
-				
-		printc(" <a href='$PHP_SELF?$sid&action=viewsite&site=$name'>edit</a> | ");
 		
-		if (!$ed) {
-			printc(" <a href='$PHP_SELF?$sid&action=delete_site&name=$name'>delete</a> | ");
+		if ($obj->hasPermissionDown("add or edit or delete",$_SESSION[auser],0,1) || $_SESSION[auser] == slot::getOwner($obj->name)) {
+			// if the user is an editor or the owner			
+			printc(" <a href='$PHP_SELF?$sid&action=viewsite&site=$name'>edit</a> | ");
+		}
+		
+		if ($obj->hasPermission("edit")) {
+			// if the user is the owner or a site-level editor...
 			printc(" <a href='$PHP_SELF?$sid&action=edit_site&sitename=$name'>settings</a> | ");
+		}
+		
+		if ($_SESSION[auser] == slot::getOwner($obj->name)) { 
+			// if the user is the owner, not an editor
+			printc(" <a href='$PHP_SELF?$sid&action=delete_site&name=$name'>delete</a> | ");
 			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>permissions</a>");
 			
-		} else {
+		} else if ($obj->hasPermissionDown("add or edit or delete",$_SESSION[auser],0,1) && $_SESSION[auser] != slot::getOwner($obj->name)) {	
+			// if the user is an editor
 			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>your permissions</a>");
 		}
 		printc("</div>");
