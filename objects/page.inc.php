@@ -411,31 +411,7 @@ WHERE
 				db_query($query);
 
 				 
-			}
-			
-/* 			print "<pre>Stories: "; */
-/* 			print_r($this->data['stories']); */
-/* 			print "\n</pre>"; */
-/* 			 */
-/* 			// now update all the page ids in the children, if the latter have changed */
-/* 			if ($this->changed[stories]) { */
-/* 				// first, a precautionary step: reset the parent of every story that used to have this page object as the parent */
-/* 				// we do this, because we might have removed a certain story from the array of stories of a site object */
-/* 				$query = "UPDATE story SET FK_page=0 WHERE FK_page=".$this->id; */
-/* 				db_query($query); */
-/* 				 */
-/* 				// now, update all stories */
-/* 				foreach ($this->data['stories'] as $k => $v) { */
-/* 					$query = "UPDATE story SET FK_page=".$this->id.", story_order=$k WHERE story_id=".$v; */
-/* 					print "<br>query = $query"; */
-/* 					db_query($query); */
-/* 					print mysql_error()."<br>"; */
-/* 				} */
-/* 				 */
-/* 			} */
-/* 			print "<pre>Stories: "; */
-/* 			print_r($this->data['stories']); */
-/* 			print "\n</pre>";	 */		
+			}	
 		}
 		
 		// update permissions
@@ -447,7 +423,7 @@ WHERE
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->stories) {
-				foreach (array_keys($this->stories) as $k=>$i) $this->stories[$i]->updateDB($down, $force);
+				foreach (array_keys($this->stories) as $i) $this->stories[$i]->updateDB($down, $force);
 			}
 		}
 		return true;
@@ -551,7 +527,7 @@ SET
 		
 		// insert down
 		if ($down && $this->fetcheddown && $this->stories) {
-			foreach (array_keys($this->stories) as $k=>$i) {
+			foreach (array_keys($this->stories) as $i) {
 				// Mark our Id as the next one to set
 				if (is_array($GLOBALS['__site_hash']['stories']))
 					$GLOBALS['__site_hash']['stories'][$i] = 'NEXT';

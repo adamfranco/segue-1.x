@@ -7,6 +7,12 @@
 			file as well as run the '1.3.0 update' under 'admin tools' --> 'updates'
 			to make several changes to Segue's database and file-storage structure.
 		</important>
+		
+		<new author='adam'>
+			When copying a site, links internal to that site (such as links in a
+			content block that point to another page in the site) are now updated
+			to point to the appropriate place in the new version of the site.
+		</new>
 		<fix author='alex'>
 			When editing slots, information about whether the slot was in use not or not
 			is now accurate.

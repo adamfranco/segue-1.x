@@ -978,21 +978,26 @@ ORDER BY
 		if ($newName == $this->name) return FALSE;
 		if ($newName == "" || !$newName) return FALSE;
 		
+				
 		// Make a hash array of site, section, and page ids so that
 		makeSiteHash($this);
 		$newSiteObj = $this;
 		$newSiteObj->setSiteName($newName, 1);
-		$newSiteObj->addEditor("everyone");
-		$newSiteObj->addEditor("institute");
 		
 		// Since we are specifying TRUE for the 'copy' option, each
 		// part should add its new id to the global hash
 		$newSiteObj->insertDB(1,1);
 		
+		$newSiteObj = NULL;
+		unset($newSiteObj);
+		
+		$newSiteObj = new site($newName);
+		$newSiteObj->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
+		
 		// Parse through all the text for links refering to parts of the
 		// old site and update them with the new ids.
 		updateSiteLinksFromHash($newSiteObj);
-		$newSiteObj->updateDB(1);
+		$newSiteObj->updateDB(1,1);
 	}
 	
 	function updateDB($down=0, $force=0) {
