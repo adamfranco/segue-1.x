@@ -331,7 +331,7 @@ if ($site) {
 			<th>name</th>
 			<th>owner</th>
 			<th>type</th>
-			<th>assoc site</th>
+			<th>associated<br>class site</th>
 			<th colspan=2>uploadlimit<br>(Default = <? print $default_uploadlimit ?> MB)</th>
 			<th>in use?</th>
 			<th>options</th>

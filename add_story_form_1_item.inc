@@ -210,18 +210,12 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	printc("<table width= 80% cellpadding=3 cellspacing=0 style='border: 1px solid grey'>");
 	printc("<tr><td>");
 	if ($_SESSION[storyObj]->getField("type")=='story') {
-		printc("Content (or Abstract):");
+		printc("Content (or Abstract):".helplink('msword'));
 	} else if ($_SESSION[storyObj]->getField("type")=='image') {
 		printc("Caption/Description (optional):");
 	} else {
 		printc("Description (optional):");
 	}
-	printc("</td></tr>");
-	printc("<tr><td>");
-/* 	printc("<div style='font-size:10px; color:#D00'>"); */
-/* 	printc("Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. "); */
-/* 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>"); */
-/* 	printc("</div>"); */
 	printc("</td></tr>");
 	printc("<tr><td>");
 
@@ -280,7 +274,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 		
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	
-	printc("<br>");
+	//printc("<br>");
 			
 	$text = $_SESSION[storyObj]->getField("shorttext");
 	

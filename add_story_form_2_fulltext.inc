@@ -116,7 +116,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<tr><td>");
 
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
-	printc("Extended Content (Optional):");
+	printc("Extended Content (Optional):".helplink('msword'));
 	printc("<br>");
 		
 	if ($_SESSION[settings][editorinitstate] == "text" && $supported == 1) {
