@@ -28,8 +28,11 @@ class site extends segue {
 			"site_id"
 		),
 		"type" => array(
-			"site",
-			array("site_type"),
+			"site
+				INNER JOIN
+			slot
+				ON site_id = FK_site",
+			array("slot_type"),
 			"site_id"
 		),
 		"title" => array(
