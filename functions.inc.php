@@ -1111,9 +1111,11 @@ function updateSiteLinksFromHash (& $site) {
 				$story->setField("url", 
 					updateLinksToNewSite($oldSitename, $patterns, $replacements,
 						$story->getField('url')));
+				
 				$story->setField("shorttext", 
 					updateLinksToNewSite($oldSitename, $patterns, $replacements,
 						$story->getField('shorttext')));
+				
 				$story->setField("longertext", 
 					updateLinksToNewSite($oldSitename, $patterns, $replacements,
 						$story->getField('longertext')));
@@ -1135,18 +1137,12 @@ function updateSiteLinksFromHash (& $site) {
  */
 function updateLinksToNewSite ($oldSitename, $patterns, $replacements, $text) {
 	
-// 	print "\n\n<br><br>Before";
-// 	print "\n<br>".$text;
-	
 	// First, lets make sure that all the links were converted to tags.
 	// This should get rid of any references to our site.
 	$text = convertInteralLinksToTags($oldSitename, $text);
 	
 	// Replace the link ids.
 	$text = preg_replace($patterns, $replacements, $text);
-	
-// 	print "\n\n<br>After";
-// 	print "\n<br>".$text;
 	
 	return $text;
 }
