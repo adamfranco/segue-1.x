@@ -177,8 +177,8 @@ if ($_REQUEST[site]) {						// we are in a site
 //	$thisSite->buildPermissionsArray(1,1);
 	
 	$site_owner = $thisSlot->getField("owner");
-	if ($_REQUEST[theme]) $sid .= "&theme=$_REQUEST[theme]";
-	if ($_REQUEST[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&themesettings=$themesettings";}
+	if ($_GET[theme]) $sid .= "&theme=$_REQUEST[theme]";
+	if ($_GET[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&themesettings=$themesettings";}
 	if ($_REQUEST[nostatus]) $sid .= "&nostatus=1";
 	if ($_REQUEST[themepreview]) $sid .= "&themepreview=1";
 	if (!isset($theme)) $theme = $thisSite->getField("theme");

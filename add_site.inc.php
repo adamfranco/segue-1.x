@@ -214,8 +214,11 @@ if ($_REQUEST[save]) {
 		if ($add) {
 			header("Location: index.php?$sid&action=viewsite&site=$sitename");
 		} else {
-			if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$sitename");
-			else header("Location: index.php?$sid");
+			if ($comingFrom) {
+				header("Location: index.php?$sid&action=$comingFrom&site=$sitename");
+			} else {
+				header("Location: index.php?$sid");
+			}
 		}
 		
 	} else {
