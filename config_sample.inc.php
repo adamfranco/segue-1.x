@@ -48,6 +48,8 @@
 	 * defaultmessage - the message to be displayed. can contain HTML
 	 * defaultlinks - an associative array of links to display on the left navigation
 	 *				  bar for quick access to other sites in your institution
+	 * inst_logo_url - the url to the logo that will appear in the upper right of
+	 *					the login screen
 	 ******************************************************************************/
 	$cfg[defaulttitle] = $defaulttitle = "Segue";
 	$cfg[defaultmessage] = $defaultmessage = "<p>Welcome to Segue! To access your personal and class websites, please login with your username and password above.</p><p>With Segue, you can quickly and easily create websites for yourself and, if you are a professor, for your classes.</p>";
@@ -57,6 +59,7 @@
 		"Libraries"=>"www.middlebury.edu/~lib/",
 		"Middlebury College"=>"www.middlebury.edu"
 	);
+	$cfg[inst_logo_url] = $inst_logo_url = "themes/program/images/gray/midd.gif";
 	
 	/******************************************************************************
 	 * defaulttheme - the theme used for non site-specific pages (ie, login page)
