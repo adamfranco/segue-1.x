@@ -205,7 +205,10 @@ class story extends segue {
 			return $text;
 		}
 	}
-
+	
+/******************************************************************************
+ * these functions are old & suck.
+ ******************************************************************************/
 
 	function addDiscussion($id) {
 		if (!$this->getField("discussions")) $this->data[discussions] = array();
@@ -213,9 +216,7 @@ class story extends segue {
 		$this->changed[discussions] = 1;
 	}
 	
-/******************************************************************************
- * doesn't seem to acctually delete discussions! look into this!!!!!!
- ******************************************************************************/
+
 	function delDiscussion($id) {
 		if (!$this->getField("discussions")) return;
 		$d = array();
@@ -226,6 +227,11 @@ class story extends segue {
 		$this->changed[discussiosn] = 1;
 	}
 	
+/******************************************************************************
+ * end
+ ******************************************************************************/
+
+
 	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
@@ -235,13 +241,13 @@ class story extends segue {
 			$parentObj->delStory($this->id);
 			$parentObj->updateDB();
 		} else {
-			/******************************************************************************
-			 * should probably delete discussions too! Look into this!!!!
-			 ******************************************************************************/
 			$query = "DELETE FROM story WHERE story_id=".$this->id;
 			db_query($query);
 
 			$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='story';";
+			db_query($query);
+			
+			$query = "DELETE FROM discussion WHERE FK_story=".$this->id;
 			db_query($query);
 			
 			$this->clearPermissions();

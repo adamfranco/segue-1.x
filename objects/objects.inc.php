@@ -7,3 +7,4 @@ require("objects/story.inc.php");
 require("objects/slot.inc.php");
 require("objects/group.inc.php");
 require("objects/user.inc.php");
+require("objects/discussion.inc.php");

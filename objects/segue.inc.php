@@ -30,7 +30,7 @@ class segue {
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 	var $_tables = array("site"=>"sites","section"=>"sections","page"=>"pages","story"=>"stories"); // used for getField
 
-	var $_encode = array("title","header","footer","shorttext","longertext");
+	var $_encode = array("title","header","footer","shorttext","longertext","discussions");
 	var $_parse = array("header","footer","shorttext","longertext");
 
 /******************************************************************************

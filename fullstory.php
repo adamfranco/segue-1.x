@@ -16,9 +16,9 @@ $partialstatus = 1;
 /* if ($_REQUEST[section])$section=$_REQUEST[section]; */
 /* if ($_REQUEST[page])$page=$_REQUEST[page]; */
 
-print "owningsiteObj<pre>";
-print_r ($story->owningSiteObj);
-print "</pre>";
+/* print "owningsiteObj<pre>"; */
+/* print_r ($story->owningSiteObj); */
+/* print "</pre>"; */
 
 $site =& new site($_REQUEST[site]);
 $section =& new section($_REQUEST[site],$_REQUEST[section], &$site);
@@ -28,9 +28,9 @@ $story =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST
 $story->fetchFromDB();
 $site_owner=$story->owningSiteObj->getField("addedby");
 
-print "owningsiteObj<pre>";
-print_r ($story->owningSiteObj);
-print "</pre>";
+/* print "owningsiteObj<pre>"; */
+/* print_r ($story->owningSiteObj); */
+/* print "</pre>"; */
 
 /* if (!insite($site,$section,$page,$story)) { */
 /* 	print "Something screwed up. Seems this story isn't in the site you're viewing."; */
@@ -172,24 +172,25 @@ textarea { font-size: 11px; font-family: "Verdana"; }
 <?
 if ($fulltext) print "<tr><th align=left>".(($story->getField("title"))?spchars($story->getField("title")):"Full Text")."</th></tr><tr><td style='padding-bottom: 15px'>$fulltext</td></tr>";
 
-$discussions = $story->getField("discussions");
+$dsObj = &new discussions($story->id);
+$dsObj->fetchFromDB();
+
+/* print_r($dsObj); */
 
 if ($story->getField("discuss")) {
 	print "<tr>";
 	print "<th align=left>Discussions</th>";
 	print "</tr>";
 	
-	if ($discussions && count($discussions)) {
-		foreach ($discussions as $id) {
-			$d = db_get_line("discussions","id=$id");
-			$addedby = ($d[authortype]=='user')?ldapfname($d[author]):$d[author];
+	if ($dsObj->total) {
+		while ($dObj = $dsObj->getNext()) {
 			print "<tr><td>";
-			print "<div style='color: #777' align=right>Posted: ".timestamp2usdate($d[timestamp])." by $addedby";
+			print "<div style='color: #777' align=right>Posted: ".timestamp2usdate($dObj->tstamp)." by ".$dObj->authorfname;
 			if ($_SESSION[auser]== $site_owner) {
-				print " <a href='fullstory.php?$sid&site=$site&section=$section&page=$page&story=$story&del=1&id=$id'>[delete]</a>";
+				print " <a href='fullstory.php?$sid&site=".$site->id."&section=".$section->id."&page=".$page->id."&story=".$story->id."&del=1&id=".$dObj->id."'>[delete]</a>";
 			}
 			print "</div>";
-			print htmlbr(spchars(urldecode($d[content])));
+			print htmlbr(spchars($dObj->content));
 			print "</td></tr>";
 		}
 	} else {
@@ -220,11 +221,6 @@ if ($story->getField("discuss")) {
 		print "</td></tr>";
 	} else {
 		if (!$_loggedin) {
-/* 			if ($a[discusspermissions] == 'midd') { */
-/* 				print "<tr><td>You must log in above to post to this discussion.</td></tr>"; */
-/* 			} else if ($a[discusspermissions] == 'class') { */
-/* 				print "<tr><td>You must log in above and be a member of this class to post to this discussion.</td></tr>"; */
-/* 			} */
 			print "<tr><td>Sorry, you are not allowed to post to this discussion.</td></tr>";
 		} else print "<tr><td>Sorry, you are not allowed to post to this discussion. Try logging in above.</td></tr>";
 	}
