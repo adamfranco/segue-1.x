@@ -5,7 +5,7 @@
 /* $s = new section($_REQUEST[site],$_REQUEST[delete_section]); */
 /* $s->fetchFromDB(); */
 
-if (/* in_array($delete_section,$sections) &&  */permission($_SESSION[auser],SITE,DELETE,$_REQUEST[site])) {
+if ($thisSite->hasPermission("delete",$_SESSION[auser])) {
 	$thisSite->delSection($_REQUEST[delete_section]);
 	$thisSite->updateDB();
 /* 	$pages = decode_array(db_get_value("sections","pages","id=$delete_section")); */

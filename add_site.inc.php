@@ -161,7 +161,6 @@ if ($_REQUEST[save]) {
 		
 		/* ----------------------------------------------------- */
 		/*   will have to update this to use object-related site copy functions */
-		
 		// --- Copy the Template on add ---
 		if ($_SESSION[settings][add] && $_SESSION[settings][template] != "") {
 /* 			copySite($_SESSION[settings][template],$_SESSION[siteObj]->getField("name")); */

@@ -139,7 +139,7 @@ class section extends segue {
 				}
 			}
 
-			$query = "DELETE FROM section WHERE id=".$this->id."; ";
+			$query = "DELETE FROM section WHERE section_id=".$this->id."; ";
 			db_query($query);
 			$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='section';";
 			db_query($query);
@@ -365,7 +365,11 @@ ORDER BY
 			$this->owning_site = $newsite;
 		}
 		
-		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
+		if (!isset($this->owningSiteObj)) {
+			print "<h1>creating a new owning site</h1>";
+			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj->fetchDown(1);
+		}
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
@@ -418,13 +422,13 @@ ORDER BY
 		}
 		if ($all) $a[] = "FK_site='".$this->owningSiteObj->id."'";
 		
-/* 		print "<pre>\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n"; */
-/* 		print "owning_site=".$this->owning_site."\nOwningSiteObj: "; */
-/* 		print_r ($this->owningSiteObj); */
-/* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
-/* 		print "<br>Sections = <pre>"; */
-/* 		print_r($this->owningSiteObj->getField("sections")); */
-/* 		print "</pre>"; */
+		print "<pre>\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
+		print "owning_site=".$this->owning_site."\nOwningSiteObj: ";
+		print_r ($this->owningSiteObj);
+		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>";
+		print "<br>Sections = <pre>";
+		print_r($this->owningSiteObj->getField("sections"));
+		print "</pre>";
 		
 //		if ($this->id && ($all || $this->changed[sections])) { //I belive we may always need to fix the order.
 		if ($this->id) {

@@ -269,6 +269,7 @@ ORDER BY
 	function applyTemplate ($template) {
 		$templateObj = new site($template);
 		$templateObj->fetchDown(1);	
+		/* print "<pre>"; print_r($this); print_r($templateObj); print "</pre>"; */
 		foreach ($templateObj->sections as $i=>$o) 
 			$o->copyObj($this);
 	}
@@ -362,6 +363,8 @@ ORDER BY
 		db_query($query);
 		$this->id = mysql_insert_id();
 		
+		print "<H1>ID = ".$this->id."</H1>";
+		
 		// in order to insert a site, the active user must own a slot
 		// update the name for that slot
 		if (slot::exists($this->data[name])) {
@@ -381,7 +384,7 @@ ORDER BY
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
-//		$this->updatePermissionsDB(1);
+		$this->updatePermissionsDB(1);
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
 // REVISE THIS =================================================================
@@ -421,11 +424,11 @@ ORDER BY
 	
 	function delete() {	// delete from db
 		if (!$this->id) return false;
+		$this->fetchDown();
 		$query = "DELETE FROM site WHERE site_id=".$this->id;
 		db_query($query);
 		
 		// remove sections
-		$this->fetchDown();
 		if ($this->sections) {
 			foreach ($this->sections as $s=>$o) {
 				$o->delete();

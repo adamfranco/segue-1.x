@@ -4,7 +4,7 @@
 /* $p = new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[delete_page]); */
 /* $p->fetchFromDB(); */
 
-if (/* in_array($delete_page,$pages) &&  */permission($_SESSION[auser],SECTION,DELETE,$_REQUEST[section])) {
+if ($thisSection->hasPermission("delete",$_SESSION[auser])) {
 	$thisSection->delPage($_REQUEST[delete_page]);
 	$thisSection->updateDB();
 /* 	$stories = decode_array(db_get_value("pages","stories","id=$delete_page")); // get stories to delete */

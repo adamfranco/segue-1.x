@@ -6,7 +6,7 @@
 /* print permission($auser,PAGE,DELETE,$page) . " permission<BR>"; */
 /* print "$site_owner is the owner. should be ". db_get_value("sites","addedby","name='$site'") ."<BR>"; */
 
-if (/* in_array($delete_story,$stories) && permission($auser,PAGE,DELETE,$page) */1) {
+if ($thisPage->hasPermission("delete",$_SESSION[auser])) {
 	$thisPage->delStory($_REQUEST[delete_story]);
 	$thisPage->updateDB();
 /* 	$a = db_get_line("stories","id=$delete_story"); */

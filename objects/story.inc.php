@@ -232,11 +232,9 @@ class story extends segue {
 			/******************************************************************************
 			 * should probably delete discussions too! Look into this!!!!
 			 ******************************************************************************/
-			$query = "DELETE FROM story WHERE id=".$this->id;
+			$query = "DELETE FROM story WHERE story_id=".$this->id;
 			db_query($query);
 
-			$query = "DELETE FROM story WHERE id=".$this->id."; ";
-			db_query($query);
 			$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='story';";
 			db_query($query);
 			

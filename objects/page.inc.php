@@ -185,6 +185,7 @@ class page extends segue {
 	}
 	
 	function delete($deleteFromParent=0) {	// delete from db
+		print "<br><BR> Deleting Page<bR><BR>";
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
 			$parentObj = new section($this->owning_site,$this->owning_section);
@@ -200,7 +201,7 @@ class page extends segue {
 				}
 			}
 			
-			$query = "DELETE FROM page WHERE id=".$this->id."; ";
+			$query = "DELETE FROM page WHERE page_id=".$this->id;
 			db_query($query);
 			$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='page';";
 			db_query($query);
