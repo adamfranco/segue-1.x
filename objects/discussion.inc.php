@@ -287,7 +287,7 @@ class discussion {
 		if ($this->tstamp) $query .= ",discussion_tstamp='".$this->tstamp."'";
 
 		db_query($query);
-		printc($query);
+		//printc($query);
 		$newid = lastid();
 		return $newid;
 	}
@@ -303,7 +303,7 @@ class discussion {
 		WHERE
 			discussion_id=".$this->id;
 		
-		printc ($query);
+		//printc ($query);
 		db_query($query);
 		//$newid = lastid();
 		return true;
@@ -434,22 +434,22 @@ class discussion {
 				//log_entry("discussion","$_SESSION[auser] edited story ".$_REQUEST['story']." discussion post id ".$_REQUEST['id']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
 				
 				unset($_REQUEST['discuss'],$_REQUEST['commit']);
-				unset($d);
+				//unset($d);
 			}
 			
 			if ($a=='rate') {
 				$d = & new discussion($_REQUEST['story']);
-				$d->fetchID($_REQUEST['replyto']);
+				$d->fetchID($_REQUEST['id']);
 				$d->authoruname;
 				$d->subject = $_REQUEST['subject'];
 				$d->content = $_REQUEST['content'];
 				$d->rating = $_REQUEST['rating'];
-				printc ($d->rating);
+				//printc ($d->rating);
 				$d->update();
 				//log_entry("discussion","$_SESSION[auser] edited story ".$_REQUEST['story']." discussion post id ".$_REQUEST['id']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
 				
 				unset($_REQUEST['discuss'],$_REQUEST['commit']);
-				unset($d);
+				// unset($d);
 			}
 			
 			if ($a=='reply'||$a=='newpost') {
@@ -462,7 +462,7 @@ class discussion {
 				} else {
 					//log_entry("discussion","$_SESSION[auser] posted to story ".$_REQUEST['story']." discussion in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");				
 				}
-				
+				$newid = $d->insert();	
 			}
 			/******************************************************************************
  			* gather data for sendmail function
@@ -471,7 +471,7 @@ class discussion {
 			$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
 			$d->authorfname = ($_SESSION['afname'])?$_SESSION['afname']:0;
 			$d->libraryfileid = $_REQUEST['libraryfileid'];
-			$newid = $d->insert();
+			
 			if ($mailposts == 1) {
 				$this->sendemail($newid);
 			}
@@ -558,8 +558,8 @@ class discussion {
 		printc ("<input type=hidden name=site value='".$_REQUEST['site']."'>");	
 		printc ("<input type=hidden name=libraryfileid value='".$_REQUEST['libraryfileid']."'>");	
 		printc ("<input type=hidden name=commit value=1>");
-		if ($t=='edit') printc ("<input type=hidden name=id value=".$_REQUEST['id'].">");
-		if ($t=='reply' || $t=='rate') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">");
+		if ($t=='edit' || $t=='rate') printc ("<input type=hidden name=id value=".$_REQUEST['id'].">");
+		if ($t=='reply') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">");
 		$site = $_REQUEST[site];
 		
 		//print file upload UI
@@ -636,7 +636,7 @@ class discussion {
 				$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'>edit</a> | ";
 				
 			if ($o) 
-				$b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>";
+				$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>";
 				
 			if ($a != "" || count($b)) {
 				$c = '';
