@@ -25,6 +25,10 @@ class discussion {
 			"useoptforchildren"=>false
 			);
 	var $getinfo;
+
+/******************************************************************************
+ * sets discussion options variables from $opt array
+ ******************************************************************************/
 							
 	function opt($key,$val=NULL) {
 		if ($val!=NULL) { // they're setting the option
@@ -40,6 +44,16 @@ class discussion {
 		return $this->opt[$key];
 	}
 	
+/******************************************************************************
+ * called from fetchchilden, passed $a = array
+ *    (FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,
+ *    discussion_content,discussion_rate,FK_story,media_tag,discussion_order,
+ *    user_uname,user_fname,user_last_name,user_email)
+ * if discussion posts exist, parse post info from database
+ * calls _parseDBline which creates discussion post variables for each discussion post
+ * (discussion posts are displayed by outputAll called from fullstory.inc.php)
+ ******************************************************************************/
+	
 	function discussion(& $story,$a=NULL,$parent=0) {
 		if (is_array($a)) $this->_parseDBline($a);
 		if (is_numeric($a)) $this->id = $a;
@@ -51,6 +65,10 @@ class discussion {
 		if (is_numeric($story)) $this->storyid = $story;
 		if ($parent) $this->parentid = $parent;
 	}
+
+/******************************************************************************
+ * gets next post
+ ******************************************************************************/
 	
 	function getNext() {
 		$this->pointer+=$this->direction;
@@ -58,6 +76,10 @@ class discussion {
 		if (($this->direction > 0 && $this->pointer >= $this->numchildren) || ($this->direction < 0 && $this->pointer <= -1)) return false;
 		return $this->children[$this->pointer];
 	}
+
+/******************************************************************************
+ * delete post
+ ******************************************************************************/
 	
 	function _del() {
 		global $site_owner;
@@ -150,14 +172,26 @@ class discussion {
 	function end() { $this->pointer = $this->numchildren; }
 	function startfrombeginning() { $this->rewind(); $this->setstep(1); }
 	function startfromend() { $this->end(); $this->setstep(-1); }
+
+/******************************************************************************
+ * flat or threaded
+ ******************************************************************************/
 	
 	function flat() { $this->flat = true; }
 	function threaded() { $this->flat = false; }
+
+/******************************************************************************
+ * discussion sort order
+ ******************************************************************************/
 	
 	function recentfirst() { $this->dis_order = "recentfirst"; }
 	function recentlast() { $this->dis_order = "recentlast"; }
 	function rating() { $this->dis_order = "rating"; }
 	function author() { $this->dis_order = "author"; }
+	
+/******************************************************************************
+ * number of posts (children)
+ ******************************************************************************/
 	
 	function count() { return $this->numchildren; }
 	function dbcount() {
@@ -182,6 +216,16 @@ class discussion {
 	
 	function fetch() { $this->_fetch(); }
 	function fetchchildren() { $this->_fetchchildren(); }
+
+/******************************************************************************
+ * called from discussion
+ * parses DB line from query for discussion post info
+ * creates $_f array of discussion post variables:
+ *    (FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,
+ *    discussion_content,discussion_rate,FK_story,media_tag,discussion_order,
+ *    user_uname,user_fname,user_last_name,user_email)
+ * creates variables for each item in $_f array
+ ******************************************************************************/
 	
 	function _parseDBline($a) {
 		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","media_tag"=>"media_tag","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_rate"=>"rating","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname","user_email"=>"authoremail");
@@ -197,6 +241,10 @@ class discussion {
 			$this->authorid = 0;
 		}
 	}
+
+/******************************************************************************
+ * not sure when this is called...?
+ ******************************************************************************/
 	
 	function _fetch() {
 		if (!$this->id) return false;
@@ -224,7 +272,7 @@ class discussion {
 	}
 
 /******************************************************************************
- * 
+ * get all discussion posts
  ******************************************************************************/
 	
 	function _fetchchildren() {
@@ -243,35 +291,48 @@ class discussion {
 		}
 				
 		$query = "
-	SELECT
-		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,discussion_rate,FK_story,media_tag,discussion_order,user_uname,user_fname,user_last_name,user_email
-	FROM
-		discussion
-		LEFT JOIN
-			user
-		ON
-			FK_author = user_id
-		LEFT JOIN
-			media
-		ON
-			FK_media = media_id
-	WHERE
-		FK_story = ".$this->storyid.
-		// check if we're not top-level - if !flat disc, fetch all children, otherwise fetch all discussions
-		(($this->flat)?"":" and FK_parent<=>".(($this->id)?$this->id:"NULL"))
-		."
-	ORDER BY ".
+		SELECT
+			FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,discussion_rate,FK_story,media_tag,discussion_order,user_uname,user_fname,user_last_name,user_email
+		FROM
+			discussion
+			LEFT JOIN
+				user
+			ON
+				FK_author = user_id
+			LEFT JOIN
+				media
+			ON
+				FK_media = media_id
+		WHERE
+			FK_story = ".$this->storyid.
+			// check if we're not top-level - if !flat disc, fetch all children, otherwise fetch all discussions
+			(($this->flat)?"":" and FK_parent<=>".(($this->id)?$this->id:"NULL"))
+			."
+		ORDER BY ".
 		$order;
 		
 		//print $query;
 		
 		$r = db_query($query);
+		
+		/******************************************************************************
+		 * instantiate a discussion object for each post (child) to this story's discussion
+		 * pass discussion object $a = array of discussion posts
+		 * (FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,
+		 * discussion_content,discussion_rate,FK_story,media_tag,discussion_order,
+		 * user_uname,user_fname,user_last_name,user_email)
+		 ******************************************************************************/
+		
 		while($a = db_fetch_assoc($r)) {
 			$this->children[] = &new discussion($this->storyid,$a);
 			$this->numchildren++;
 		}
 		return true;
 	}
+	
+/******************************************************************************
+ * insert new posts into dicussion table
+ ******************************************************************************/
 	
 	function _insert() {
 		$query = "
@@ -301,6 +362,10 @@ class discussion {
 		return $this->id;
 	}
 	
+	
+/******************************************************************************
+ * update posts in dicussion table
+ ******************************************************************************/
 	
 	function _update() {
 		if (!$this->id) return false;
@@ -346,9 +411,10 @@ class discussion {
 	}
 	
 /******************************************************************************
- * outputs new post link and calls _output function
+ * Threaded dicussion: outputs new post link and calls _output function
+ * for all children of current post
+ * $cr=can reply (ie has permission), $o=owner, $top=parent
  ******************************************************************************/
-
 	
 	function outputAll($cr=false,$o=false,$top=false,$showposts=1,$showallauthors=1,$mailposts=0) {
 		global $sid,$content;
@@ -360,6 +426,10 @@ class discussion {
 //			$cand = $this->storyObj->hasPermission("discuss");
 			$newpostbar='';
 			$newpostbar.="<tr><td>\n";
+			
+			/******************************************************************************
+			 * if user can reply (cr) (ie has permission
+			 ******************************************************************************/	
 			if ($cr) {
 				// just in case...
 				$this->_commithttpdata();
@@ -379,6 +449,11 @@ class discussion {
 					}
 				//	$newpostbar.="</td></tr>";
 				}
+			
+			/******************************************************************************
+			 * if user doesn't have permission....
+			 ******************************************************************************/
+
 			} else {
 				if (!$_SESSION[auser]) {
 					$newpostbar.="You must be logged in to do contribute to this discussion.\n";
@@ -390,7 +465,15 @@ class discussion {
 			printc ($newpostbar);
 		}
 		
+		/******************************************************************************
+		 * output a discussion post
+		 ******************************************************************************/
+				
 		if ($this->id) $this->_output($cr,$o);
+		
+		/******************************************************************************
+		 * output all discussion of current post's thread (children)
+		 ******************************************************************************/
 		
 		$this->_outputChildren($cr,$o,(($top)?$this->opt:NULL));
 		
@@ -398,7 +481,8 @@ class discussion {
 	}
 	
 /******************************************************************************
- * 
+ * Threaded discussion: calls _fetchchildren to get all threads of current post
+ * for each post (child) calls outputAll (threaded) or _output (flat) to display
  ******************************************************************************/
 	
 	function _outputChildren($cr,$o,$opt=NULL) {
@@ -415,8 +499,11 @@ class discussion {
 				if (is_array($opt)) $this->children[$i]->opt($opt);
 				if ($this->opt("useoptforchildren")) $this->children[$i]->opt($this->opt);
 				$this->children[$i]->getinfo = $this->getinfo;
-				if ($this->flat) $this->children[$i]->_output($cr,$o);
-				else $this->children[$i]->outputAll($cr,$o);
+				
+				if ($this->flat) 
+					$this->children[$i]->_output($cr,$o);
+				else 
+					$this->children[$i]->outputAll($cr,$o);
 			}
 			printc ("</table></td></tr>\n");
 		}
@@ -509,6 +596,7 @@ class discussion {
 	
 /******************************************************************************
  * outputs posting form (new post, edit, reply)
+ * add editor options here...
  ******************************************************************************/
 
 	
@@ -596,6 +684,11 @@ class discussion {
 		
 		// print out post content
 		//printc ("<tr><td class=content$p>");
+		
+		/******************************************************************************
+		 * print out editor here... (if editing post or adding new or not rating)
+		 ******************************************************************************/
+
 		if ($t != 'rate') {			
 			printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>\n");
 		} else {
@@ -603,7 +696,10 @@ class discussion {
 			printc ("<input type=hidden name=content value='".spchars($c)."'>\n");
 		}
 		
-		// print hidden fields
+		/******************************************************************************
+		 * 	print hidden fields
+		 ******************************************************************************/
+		 
 		printc ("<input type=hidden name=discuss value='".$_REQUEST['discuss']."'>\n");
 		//added fullstory action for posting form
 		printc ("<input type=hidden name=action value='".$_REQUEST['action']."'>\n");
@@ -616,7 +712,10 @@ class discussion {
 		if ($t=='reply') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">\n");
 		$site = $_REQUEST[site];
 		
-		//print file upload UI
+		/******************************************************************************
+		 * print file upload UI
+		 ******************************************************************************/
+		 
 		if ($t != 'rate'  && $_SESSION[auser]) {		
 			printc ("<br>Upload a File:<input type=text name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size=25 readonly>\n<input type=button name='browsefiles' value='Browse...' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?site=$site&source=discuss&owner=$site_owner&editor=none\")' target='filebrowser' style='text-decoration: none'>\n\n");
 			if ($_SESSION['aid']) printc ("<br>You will be able to edit your post as long as no-one replies to it.\n");
@@ -659,9 +758,10 @@ class discussion {
 			
 			//$script = $_SERVER['SCRIPT_NAME'];
 			
-/******************************************************************************
- * 	Outputs html for displaying posts
- ******************************************************************************/
+			/******************************************************************************
+			 * 	Outputs html for displaying posts
+			 * outputs discussion post info
+			 ******************************************************************************/
 
 			if (!$this->id) return false;
 			//printc ("\n<tr><td class=dheader3>");			
@@ -678,7 +778,9 @@ class discussion {
 			}
 			if ($this->opt("showtstamp")) $a .= timestamp2usdate($this->tstamp);
 			
-			// collect possible actions to current post (rely | del | edit | rate)
+			/******************************************************************************
+			 * 	 collect possible actions to current post (rely | del | edit | rate)
+			 ******************************************************************************/
 			$b = array();
 			if ($cr) 
 				$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>\n";
@@ -691,24 +793,34 @@ class discussion {
 				
 			if ($o) 
 				$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>\n";
-				
+			
+			/******************************************************************************
+			 * if there are dicussion actions (rely | del | edit | rate) then print 
+			 ******************************************************************************/
+	
 			if ($a != "" || count($b)) {
 				$c = '';
 				if (count($b)) $c .= implode(" ",$b);
+				
 				/******************************************************************************
 				 * discussion post header info (subject=$s, author and timestamp=$a, options=$c)
 				 ******************************************************************************/
+				 
 				printc ("\n<tr><td class=dheader3>\n");
 				
 				printc ("<table width=100% cellspacing=0px>\n");
 				printc ("<tr><td align=left>\n");
 				printc ("<span class=subject>\n");
+				// subject
 				printc ($s);
+				// rating
 				if ($this->rating) printc (" (Rating: ".$this->rating.")");
 				printc ("</span></td>\n");
+				// link for rating
 				printc ("<td align=right>$ratelink</td>\n");
 				printc ("</tr><tr>\n");
 				printc ("<td align=left>$a\n");
+				// link to media
 				if ($this->media_tag) {
 					$media_link = "<a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target=media>".$this->media_tag."</a>\n";
 					printc ("<br>attached: $media_link\n");
@@ -717,13 +829,18 @@ class discussion {
 				
 				printc ("<td align=right valign=bottom>$c</td></tr>\n"); 
 				printc("</table>\n");
-			} else
-				printc ($s);
+				
+			/******************************************************************************
+			 * if there are no dicussion actions (rely | del | edit | rate) then 
+			 * print subject only
+			 ******************************************************************************/
+				
+			} else printc ($s);
 			
 			printc ("</td></tr>");
-			
+		
 			/******************************************************************************
-			 * 	discussion entry content
+			 * 	print discussion post content
 			 ******************************************************************************/
 			if ($this->opt("showcontent")) {
 				printc ("<tr><td class=dtext>");
@@ -731,12 +848,13 @@ class discussion {
 				printc ("</td></tr>\n");
 			}
 			// done
-			
+		
 			// now check if we're replying to this post
 			if ($_REQUEST['discuss'] == 'reply' && $_REQUEST['replyto'] == $this->id) $this->_outputform('reply');
 			//if ($_REQUEST['discuss'] == 'rate' && $_REQUEST['replyto'] == $this->id) $this->_outputform('rate');
 		}
 	}
+	
 /******************************************************************************
  * Emails site owner discussion posts
  ******************************************************************************/

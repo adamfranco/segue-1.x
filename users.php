@@ -83,26 +83,46 @@ if ($curraction == 'resetpw') {
 }
 
 /******************************************************************************
- * get search variables and query only if search form has been submitted
+ * get search variables and create query
  ******************************************************************************/
 		
 $name = $_REQUEST['name'];
 $id = $_REQUEST['id'];
 $type = $_REQUEST['type'];
 $authtype = $_REQUEST['authtype'];
+$order = $_REQUEST['authtype'];
 
+
+$where = "user_uname LIKE '%'";	
+if ($name) $where = "(user_uname LIKE '%$name%' OR user_fname LIKE '%$name%')";
+
+if ($type == "Any") {
+	$where .= " AND user_type LIKE '%'";
+} else if ($type) {
+	$where .= " AND user_type = '$type'";
+}
+
+if ($authtype == "All") {
+	$where .= " AND user_authtype LIKE '%'";
+} else if ($authtype) {
+	$where .= " AND user_authtype = '$authtype'";
+}
+	
 if ($findall) {
 	$name = '%';
 	$type = "Any";
 	$authtype = "All";
+	$where = "user_uname LIKE '%'";
 }
+
+
 
 
 /******************************************************************************
  * query database only if search has been made
  ******************************************************************************/
  
-//$id is set when user is edited
+//if $id then editing a user
  if ($id) {	
 	$query = "
 	SELECT
@@ -115,21 +135,8 @@ if ($findall) {
 		user_uname ASC";
 	$r = db_query($query);
 
-//users can be searched by name or type	
-} else if ($name || $type) {
-	$where = "user_uname LIKE '%'";	
-	if ($name) $where = "(user_uname LIKE '%$name%' OR user_fname LIKE '%$name%')";
-	
-	//$name = '%';
-	if ($type == "Any") {
-		$where .= " AND user_type LIKE '%'";
-	} else if ($type) {
-		$where .= " AND user_type = '$type'";
-	}
-	
-	if (!$authtype || $authtype == "All") {
-		$authtype = '%';
-	}
+//if not editing then get all users by name or type	or authtype
+} else if ($name || $type || $authtype) {
 	
 	$query = "
 	SELECT
@@ -137,8 +144,6 @@ if ($findall) {
 	FROM
 		user
 	WHERE
-		user_authtype='$authtype'
-	AND
 		$where";
 		
 	$r = db_query($query);
@@ -146,8 +151,9 @@ if ($findall) {
 	$numusers = $a[user_count];
 	
 	if (!isset($lowerlimit)) $lowerlimit = 0;
+	if (!isset($range)) $range = 30;
 	if ($lowerlimit < 0) $lowerlimit = 0;
-	$limit = " LIMIT $lowerlimit,30";
+	$limit = " LIMIT $lowerlimit,$range";
 
 	
 	$query = "
@@ -156,8 +162,6 @@ if ($findall) {
 	FROM
 		user
 	WHERE
-		user_authtype LIKE '$authtype'
-	AND
 		$where
 	ORDER BY
 		user_uname ASC
@@ -230,19 +234,19 @@ printerr();
 		</td>
 		<td align=right>
 		<?
-		$tpages = ceil($numusers/30);
-		$curr = ceil(($lowerlimit+30)/30);
-		$prev = $lowerlimit-30;
+		$tpages = ceil($numusers/$range);
+		$curr = ceil(($lowerlimit+$range)/$range);
+		$prev = $lowerlimit-$range;
 		if ($prev < 0) $prev = 0;
-		$next = $lowerlimit+30;
-		if ($next >= $numusers) $next = $numusers-30;
+		$next = $lowerlimit+$range;
+		if ($next >= $numusers) $next = $numusers-$range;
 		if ($next < 0) $next = 0;
 		print "$curr of $tpages ";
-//		print "$prev $lowerlimit $next ";
+	//	print "(prev=$prev lowerlimit=$lowerlimit next=$next )";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&name=$name&order=$order\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&authtype=$authtype&name=$name&order=$order\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&name=$name&order=$order\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&authtype=$authtype&name=$name&order=$order\"'>\n";
 		?>
 
 		</form>
