@@ -113,6 +113,8 @@ if ($site_owner != $_SESSION[auser]) {
 	}
 ?>
 	</table>
+	<br />Note: Only 'View Mode' and 'Edit Mode' can be previewed. 
+	<br />If you click on a link to Discuss, Edit, Add, etc, you will leave the preview and execute do that function as yourself.
 <?
 }
 ?>
