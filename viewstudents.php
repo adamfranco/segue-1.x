@@ -160,7 +160,8 @@ function changeOrder(order) {
 </td></tr>
 <tr><td class='bg'>
     <? print $content; ?>
-    <? print $numlogs . " | " . $query;
+    <? //print $numlogs . " | " . $query;
+    print "Current Site Users: ".$numlogs
     ?>
 </td></tr>
 </table>

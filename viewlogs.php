@@ -22,6 +22,7 @@ if ($clear) {
 	$site = "";
 	$_auser = "";
 	$_luser = "";
+	$startdate = "";
 }
 
 if ($_REQUEST[order]) $order = $_REQUEST[order];
@@ -33,10 +34,21 @@ if ($_REQUEST[type]) $w[]="log_type='$type'";
 if ($_REQUEST[user]) $w[]="log_desc like '%$user%'";
 if ($_REQUEST[_luser]) $w[]="FK_luser='$_luser'";
 if ($_REQUEST[_auser]) $w[]="FK_auser='$_auser'";
+
 if ($_SESSION[ltype] != 'admin') {
 	$w[]="slot_name LIKE '%$site%'";
 } else {
 	if ($_REQUEST[site]) $w[]="slot_name LIKE '%$site%'";
+	
+//cannot figure how to compare dates	
+/* 	if ($_REQUEST[startdate]) { */
+/* 		$startdate = "$_REQUEST[startdate]";	 */
+/* 		print $startdate."<br>"; */
+/* 		$startdate = strtotime("$startdate"); */
+/* 		print $startdate;		 */
+/* 		$w[]="log_tstamp > $startdate"; */
+/* 	} */
+
 }
 if ($_REQUEST[hideadmin]) $w[]="log_type NOT LIKE 'change_auser'";
 	
@@ -140,7 +152,8 @@ function changeOrder(order) {
 </td></tr>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<? print $numlogs . " | " . $query; ?>
+	<? //print $numlogs . " | " . $query; ?>
+	<? print "Total Log Entries: ".$numlogs; ?>
 </td></tr>
 </table>
 
@@ -165,6 +178,7 @@ function changeOrder(order) {
 			print "<option".(($type==$a[log_type])?" selected":"").">$a[log_type]\n";
 		?>
 		</select>
+<!-- 		start date: <input type=text name=startdate size=10 value='<?echo $startdate?>'> -->
 		<?
 		if ($ltype == 'admin') {
 		?>
