@@ -3,6 +3,13 @@
 Name: Segue ChangeLog
 
 
+v. 1.0.2 (Not Yet Released)
+----------------------------------------------------
+		
+	* Bug Fix: #795587 Problems with the [De]Activate dates have been fixed (Adam Franco)
+		
+	* Bug Fix: #791954 The Move/Copy UI now shows the sitename to differentiate between similarly titled sites. (Adam Franco)
+	
 v. 1.0.1 (2003-08-08)
 ----------------------------------------------------
 		
