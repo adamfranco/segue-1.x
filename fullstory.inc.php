@@ -20,9 +20,13 @@ if ($tmp = $_REQUEST['flat_discussion']) {
 	$_SESSION['flat_discussion'] = ($tmp=='true')?true:false;
 }
 
-if ($tmp2 = $_REQUEST['recent']) {
-	$_SESSION['recent'] = ($tmp2=='true')?true:false;
+if ($tmp = $_REQUEST['order']) {
+	$_SESSION['order'] = $_REQUEST['order'];
 }
+
+/* if ($tmp2 = $_REQUEST['recent']) { */
+/* 	$_SESSION['recent'] = ($tmp2=='true')?true:false; */
+/* } */
 
 //printpre($_SESSION);
 //printpre($_REQUEST);
@@ -157,12 +161,13 @@ if ($storyObj->getField("discuss")) {
 	printc("<select name='order'>");
 /* 	printc("<option value='true'".(($r)?" selected":"")." onClick='javascript:document.viewform.submit()'>Recent First"); */
 /* 	printc("<option value='false'".((!$r)?" selected":"")." onClick='javascript:document.viewform.submit()'>Recent Last"); */
-	printc("<option value='1'".(($order == 1)?" selected":"").">Recent First");
 	printc("<option value='2'".(($order == 2)?" selected":"").">Recent Last");
-	if ($_SESSION[auser]==$site_owner) {
+	printc("<option value='1'".(($order == 1)?" selected":"").">Recent First");
+	
+	//if ($_SESSION[auser]==$site_owner) {
 		printc("<option value='3'".(($order == 3)?" selected":"").">Rating");
 		printc("<option value='4'".(($order == 4)?" selected":"").">Author");
-	}
+	//}
 	printc("</select>");
 	printc("<input type=submit class='button' value='Change'>");
 	printc("</td></tr></table>");
@@ -207,6 +212,8 @@ if ($storyObj->getField("discuss")) {
 		$ds->rating();
 	} else if ($order == 4) {
 		$ds->author();
+	} else {
+		//$ds->recentlast();
 	}
 	
 	$ds->_fetchchildren();

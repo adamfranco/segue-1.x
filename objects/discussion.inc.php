@@ -233,9 +233,9 @@ class discussion {
 		$this->_commithttpdata();
 		
 		if ($this->dis_order == "recentfirst") {
-			$order = " discussion_order DESC";
+			$order = " discussion_tstamp DESC";
 		} else if ($this->dis_order == "recentlast") {
-			$order = " discussion_order ASC";
+			$order = " discussion_tstamp ASC";
 		} else if ($this->dis_order == "rating") {
 			$order = " discussion_rate DESC";
 		} else if ($this->dis_order == "author") {
@@ -262,6 +262,7 @@ class discussion {
 		."
 	ORDER BY ".
 		$order;
+		
 		//print $query;
 		
 		$r = db_query($query);
@@ -766,14 +767,6 @@ class discussion {
 			$body .= $_full_uri."/".$discussurl2."\n";
 		}
 		
-		//print "To:".$to."<br>";
-		//print "From:".$from."<br><br>";
-		//print $body."<br>";
-		//print "discussurl=".$discussurl."<br>";
-		//print "script=".$script."<br>";
-		//print "_full_uri=".$_full_uri."<br>";
-		//printpre($_SESSION);
-		//printpre($_REQUEST);
 		// send it!
 		mail($to,$subject,$body,"From: $from");
 	}
