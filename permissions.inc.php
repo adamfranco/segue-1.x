@@ -118,7 +118,17 @@ class permissions {
 		} else printc("\n<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=".($a[$d]+1).">no editors added</td></tr>");
 		
 		if ($canAddEditors) {
-			printc("\n<tr><th colspan=".($a[$d]+1).">".(($className = getNameOfClassForSite($sitename) && !in_array($className,$edlist))?"<a href='#' onClick='addClassEditor();'>Add students in ".$className."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
+			printc("\n<tr><th colspan=".($a[$d]+1).">");
+			
+			$className = getNameOfClassForSite($sitename);
+			
+			if ( $className && !in_array($className,$edlist)) {
+				printc("<a href='#' onClick='addClassEditor();'>Add students in ".$className."</a>");
+			} else {
+				printc("&nbsp;");
+			}
+			
+			printc("</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
 		}
 		
 		printc("\n</table>");

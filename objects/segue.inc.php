@@ -1210,8 +1210,7 @@ FROM
 			$site = $this->owning_site;
 
 			$n = array_unique(array_merge($this->editors,$this->editorsToDelete,array_keys($this->permissions)));
-			
-//			printpre($n);
+// 			printpre($n);
 
 			foreach ($n as $editor) {
 				$p2 = $this->permissions[$editor];
@@ -1313,6 +1312,10 @@ FROM
 				}
 				else {
 					$ed_type = 'user';
+					
+					// Make sure the person is in the DB and synched.
+					synchronizeLocalUserAndClassDB($editor);
+					
 					// need to fetch the id from the user table
 					$query = "SELECT user_id FROM user WHERE user_uname = '$editor'";
 					$r = db_query($query);

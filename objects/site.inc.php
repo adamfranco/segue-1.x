@@ -980,6 +980,8 @@ ORDER BY
 		
 		$oldName = $this->name;
 		
+		$this->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
+		
 		// Make a hash array of site, section, and page ids so that
 		makeSiteHash($this);
 		$newSiteObj = $this;
@@ -1012,10 +1014,21 @@ WHERE
 		$newSiteObj = new site($newName);
 		$newSiteObj->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
 		
+		// Remove the permissions if we are clearing them.
+		if ($clearPermissions) {
+			$editors = $newSiteObj->getEditors();
+			foreach ($editors as $editor) {
+				$newSiteObj->delEditor($editor);
+			}
+		}
+		
 		// Parse through all the text for links refering to parts of the
 		// old site and update them with the new ids.
 		updateSiteLinksFromHash($newSiteObj, $newSiteObj);
 		$newSiteObj->updateDB(1,1);
+		
+		// Delete any editors that we wanted to delete.
+		$newSiteObj->deletePendingEditors();
 	}
 	
 	function updateDB($down=0, $force=0, $keepEditHistory=FALSE) {

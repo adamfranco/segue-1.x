@@ -8,6 +8,14 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		<change author='adam'>
+			Everyone and institute permissions are now not dropped on site-copy.
+			As well, when creating a group from an existing site, the permissions are 
+			now retained.
+		</change>
+		<fix author='adam' ref='1036482' reftype='bug'>
+			LDAP users are now syched with the database when they are given permissions.
+		</fix>
 		<fix author='adam'>
 			When adding slots to a group, they now disapear from the site listing.
 		</fix>
