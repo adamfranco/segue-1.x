@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
-	<version number="1.0.2" date="Not Yet Released">
+	<version number="1.0.2" date="2003-09-08">
+		<change author='adam' ref='777065' reftype="fr">The admin interface has been changed so that slot and their properties can be changed along side the classes and users. Custom upload limits can be set in this slot interface now instead of editing the DB directly.</change>
+		<fix author='adam' ref='802499' reftype='bug'>Story problems with the [De]Activate dates have been fixed</fix>
 		<fix author='adam' ref='795587' reftype='bug'>Problems with the [De]Activate dates have been fixed</fix>
 		<fix author='adam' ref='791954' reftype='bug'>The Move/Copy UI now shows the sitename to differentiate between similarly titled sites.</fix>
 	</version>

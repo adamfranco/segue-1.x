@@ -3,8 +3,12 @@
 Name: Segue ChangeLog
 
 
-v. 1.0.2 (Not Yet Released)
+v. 1.0.2 (2003-09-08)
 ----------------------------------------------------
+		
+	* Change: #777065 The admin interface has been changed so that slot and their properties can be changed along side the classes and users. Custom upload limits can be set in this slot interface now instead of editing the DB directly. (Adam Franco)
+		
+	* Bug Fix: #802499 Story problems with the [De]Activate dates have been fixed (Adam Franco)
 		
 	* Bug Fix: #795587 Problems with the [De]Activate dates have been fixed (Adam Franco)
 		
