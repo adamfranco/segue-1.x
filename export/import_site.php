@@ -44,7 +44,7 @@ or -? options, you can get this help.
 	
 	// Get the XML for the site
 	$siteImporter =& new DomitSiteImporter();
-	$successfull =& $siteImporter->importFile($xmlFile);
+	$successfull =& $siteImporter->importFile($xmlFile, $mediaDir);
 	
 	print "\n";
 	print (($successfull)?"Success! :-)":"Failure.... :-( ");

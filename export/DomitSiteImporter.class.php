@@ -10,6 +10,7 @@ require_once(dirname(__FILE__).'/../objects/site.inc.php');
 require_once(dirname(__FILE__).'/../objects/section.inc.php');
 require_once(dirname(__FILE__).'/../objects/page.inc.php');
 require_once(dirname(__FILE__).'/../objects/story.inc.php');
+require_once(dirname(__FILE__).'/../objects/ugroup.inc.php');
 require_once(dirname(__FILE__).'/../permissions.inc.php');
 
 /**
@@ -25,7 +26,11 @@ class DomitSiteImporter {
 	 */
 	var $_document;
 	
-	function DomitSiteExporter() {
+	/**
+	 *	The source directory for the media.
+	 */
+	
+	function DomitSiteImporter() {
 	}
 	
 	/**
@@ -35,13 +40,14 @@ class DomitSiteImporter {
 	 *
 	 * @return boolean True on success.
 	 */
-	function importString($xml) {
+	function importString($xml, $mediaSource = "") {
 		$this->_document =& new DOMIT_Document;
 		$loaded = $this->_document->parseXML($xml);
 		
-		if ($loaded)
+		if ($loaded) {
+			$this->_mediaSource = $mediaSource;
 			return $this->createSite();
-		else
+		} else
 			return FALSE;
 	}
 	
@@ -52,13 +58,14 @@ class DomitSiteImporter {
 	 *
 	 * @return boolean True on success.
 	 */
-	function importFile($xmlFile) {
+	function importFile($xmlFile, $mediaSource = "") {
 		$this->_document =& new DOMIT_Document;
 		$loaded = $this->_document->loadXML($xmlFile);
 		
-		if ($loaded)
+		if ($loaded) {
+			$this->_mediaSource = $mediaSource;
 			return $this->createSite();
-		else
+		} else
 			return FALSE;
 	}
 
@@ -70,7 +77,7 @@ class DomitSiteImporter {
 	function createSite() {
 		$siteElement =& $this->_document->documentElement;
 		global $dbhost, $dbuser, $dbpass, $dbdb, $debug;
-		$debug=1;
+		$debug=0;
 		db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 		
 		// Make sure that we have a valid XML file
@@ -122,17 +129,39 @@ class DomitSiteImporter {
 		/*********************************************************
 		 * Add all the editors
 		 *********************************************************/
+		 	$editors = array();
+		 
+		 	// Editors
 			$agentList =& $this->_document->getElementsByTagName('agent');
 			$numAgents = $agentList->getLength();
-			$editors = array();
 			for ($i=0; $i<$numAgents; $i++) {
 				$agentElement =& $agentList->item($i);
 				$editors[] = trim($agentElement->getText());
 			}
+// 			
+// 			// Creators
+// 			$agentList =& $this->_document->getElementsByTagName('creator');
+// 			$numAgents = $agentList->getLength();
+// 			for ($i=0; $i<$numAgents; $i++) {
+// 				$agentElement =& $agentList->item($i);
+// 				$editors[] = trim($agentElement->getText());
+// 			}
+// 			
+// 			// Last Editors
+// 			$agentList =& $this->_document->getElementsByTagName('last_editor');
+// 			$numAgents = $agentList->getLength();
+// 			for ($i=0; $i<$numAgents; $i++) {
+// 				$agentElement =& $agentList->item($i);
+// 				$editors[] = trim($agentElement->getText());
+// 			}
+			
+			
 			$editors = array_unique($editors);
 			
 			foreach ($editors as $key => $editor) {
-				$site->addEditor($editor);
+				// add the editors
+				if ($editor != $siteElement->getAttribute('owner'))
+					$site->addEditor($editor);
 			}
 		 
 			
@@ -151,7 +180,12 @@ class DomitSiteImporter {
 				return FALSE;
 			
 			// Header and footer
-			// @todo
+			if (!$this->setHeaderFooter($site, $siteElement))
+				return FALSE;
+			
+			// Theme
+			if (!$this->setTheme($site, $siteElement))
+				return FALSE;
 
 		
 		/*********************************************************
@@ -163,7 +197,8 @@ class DomitSiteImporter {
 		/*********************************************************
 		 * Add the media
 		 *********************************************************/
-		 	// @todo
+		 	if (!$this->addMedia($site, $siteElement))
+				return FALSE;
 		
 
 		/*********************************************************
@@ -367,10 +402,14 @@ class DomitSiteImporter {
 			}
 			$descriptionElement =& $descriptionList->item(0);
 			$story->setField('description', html_entity_decode(trim($descriptionElement->getText())));
-// 			
-// 			// Assume that the files have been added to the media table.
-// 			$mediaID = db_get_value("media_id","media", 
-// @todo
+ 			
+ 			// Assume that the files have been added to the media table.
+ 			$filenameList =& $storyElement->getElementsByPath("filename");
+			$filenameElement =& $filenameList->item(0);
+			$filename = trim($filenameElement->getText());
+			
+ 			$mediaID = db_get_value("media","media_id", "media_tag='".$filename."'");
+			$story->setField('longertext', $mediaID);
 			
 		}
 		
@@ -468,7 +507,7 @@ class DomitSiteImporter {
 		// creator
 		$creatorList =& $discussion_nodeElement->getElementsByPath("creator");
 		if ($creatorList->getLength() != 1) {
-			print "\nRequired 'creator' element is missing!";
+			print "\nRequired 'creator' element is missing from the discussion!";
 			return FALSE;
 		}
 		$creatorElement =& $creatorList->item(0);
@@ -477,7 +516,7 @@ class DomitSiteImporter {
 		// created_time
 		$created_timeList =& $discussion_nodeElement->getElementsByPath("created_time");
 		if ($created_timeList->getLength() != 1) {
-			print "\nRequired 'created_time' element is missing!";
+			print "\nRequired 'created_time' element is missing from the discussion!";
 			return FALSE;
 		}
 		$created_timeElement =& $created_timeList->item(0);
@@ -486,7 +525,7 @@ class DomitSiteImporter {
 		// title
 		$titleList =& $discussion_nodeElement->getElementsByPath("title");
 		if ($titleList->getLength() != 1) {
-			print "\nRequired 'title' element is missing!";
+			print "\nRequired 'title' element is missing from the discussion!";
 			return FALSE;
 		}
 		$titleElement =& $titleList->item(0);
@@ -495,7 +534,7 @@ class DomitSiteImporter {
 		// text
 		$textList =& $discussion_nodeElement->getElementsByPath("text");
 		if ($textList->getLength() != 1) {
-			print "\nRequired 'text' element is missing!";
+			print "\nRequired 'text' element is missing from the discussion!";
 			return FALSE;
 		}
 		$textElement =& $textList->item(0);
@@ -529,11 +568,11 @@ class DomitSiteImporter {
 		// Title
 		$titleList =& $partElement->getElementsByPath("title");
 		$titleElement =& $titleList->item(0);
-		if ($titleList->getLength() != 1 && $titleElement->parentNode->nodeName != 'divider') {
-			print "\nRequired 'title' element is missing!";
+		if ($titleList->getLength() != 1 && $partElement->nodeName != 'divider') {
+			print "\nRequired 'title' element is missing from a ".$partElement->nodeName."!";
 			return FALSE;
-		}
-		$partObj->setField('title', html_entity_decode(trim($titleElement->getText())));
+		} else if ($partElement->nodeName != 'divider') 
+			$partObj->setField('title', html_entity_decode(trim($titleElement->getText())));
 		
 		// History
 		$historyList =& $partElement->getElementsByPath("history");
@@ -678,6 +717,135 @@ class DomitSiteImporter {
 				$partObj->setUserPermissionDown($type, trim($agentElement->getText()));
 			}
 		}
+		return TRUE;
+	}
+	
+	function setHeaderFooter(& $site, & $siteElement) {
+		// header
+		$headerList =& $siteElement->getElementsByPath("header");
+		$headerElement =& $headerList->item(0);
+		if ($headerElement) {
+			$site->setField('header', html_entity_decode(trim($headerElement->getText())));
+		}
+		
+		// footer
+		$footerList =& $siteElement->getElementsByPath("footer");
+		$footerElement =& $footerList->item(0);
+		if ($footerElement) {
+			$site->setField('footer', html_entity_decode(trim($footerElement->getText())));
+		}
+		
+		return TRUE;
+	}
+	
+	function setTheme(& $site, & $siteElement) {
+		// theme
+		$themeList =& $siteElement->getElementsByPath("theme");
+		$themeElement =& $themeList->item(0);
+		if ($themeElement) {
+
+			$settingsParts = array(
+						'name' => 'theme',
+						'color_scheme' => 'colorscheme',
+						'background_color' => 'bgcolor',
+						'border_style' => 'borderstyle',
+						'border_color' => 'bordercolor',
+						'text_color' => 'textcolor',
+						'link_color' => 'linkcolor',
+						'navigation_arrangement' => 'nav_arrange',
+						'navigation_width' => 'nav_width',
+						'section_nav_size' => 'sectionnav_size',
+						'page_nav_size' => 'nav_size'
+			);
+			
+			$themeSettings = array();
+			
+			foreach ($settingsParts as $tag => $key) {
+				$list =& $themeElement->getElementsByPath($tag);
+				$element =& $list->item(0);
+				if ($element) {
+					if ($tag == 'name')
+						$site->setField($key, trim($element->getText()));
+					$themeSettings[$key] = trim($element->getText());
+				}
+			}
+			
+			$site->setField('themesettings', urlencode(serialize($themeSettings)));
+		}
+		
+		return TRUE;
+	}
+	
+	function addMedia(& $site, & $siteElement) {
+		global $uploaddir;
+		$sitedir = $uploaddir.$site->name."/";
+		
+		// media
+		$mediaList =& $siteElement->getElementsByPath("media");
+		$mediaElement =& $mediaList->item(0);
+		if ($mediaElement) {
+			
+			// Make sure that we have the directory created.
+			if (!is_dir($sitedir))
+				mkdir($sitedir,0775);
+			
+			// Get the file list
+			$fileList =& $mediaElement->getElementsByPath("media_file");
+			$numFiles =& $fileList->getLength();
+			
+			// Add each file
+			for ($i=0; $i<$numFiles; $i++) {
+				$fileElement =& $fileList->item(0);
+				
+				// get the filename
+				$filenameList =& $fileElement->getElementsByPath("filename");
+				$filenameElement =& $filenameList->item(0);
+				$filename = trim($filenameElement->getText());
+				
+				// Copy the file to segue
+				$result = copy($this->_mediaSource.$filename,$sitedir.$filename);
+				if (!$result) {
+					print "\nError copying file '".$this->_mediaSource.$filename."' to '".$sitedir.$filename."'. ";
+					return FALSE;
+				}
+				
+				// Collect our info about the file
+				$size = filesize($sitedir.$filename);
+				
+				$creatorList =& $fileElement->getElementsByPath("creator");
+				$creatorElement =& $creatorList->item(0);
+				$creatorId =  db_get_value("user", "user_id", "user_uname='".trim($creatorElement->getText())."'");
+				
+				$last_editorList =& $fileElement->getElementsByPath("last_editor");
+				$last_editorElement =& $last_editorList->item(0);
+				$last_editorId =  db_get_value("user", "user_id", "user_uname='".trim($last_editorElement->getText())."'");
+				
+				$last_edited_timeList =& $fileElement->getElementsByPath("last_edited_time");
+				$last_edited_timeElement =& $last_edited_timeList->item(0);
+				$last_edited_time = trim($last_edited_timeElement->getText());
+				
+				$typeList =& $fileElement->getElementsByPath("type");
+				$typeElement =& $typeList->item(0);
+				$type = trim($typeElement->getText());
+				
+				
+				// Insert into the media directory
+				$query = "
+					INSERT INTO 
+						media 
+					SET 
+						media_tag='".$filename."',
+						FK_site='".$site->id."',
+						FK_createdby='".$creatorId."',
+						FK_updatedby='".$last_editorId."',
+						media_updated_tstamp='".$last_edited_time."',
+						media_type='".$type."',
+						media_size='".$size."'";
+				
+				db_query($query);
+			}
+		}
+		
 		return TRUE;
 	}
 

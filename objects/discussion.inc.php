@@ -288,8 +288,9 @@ class discussion {
 
 		db_query($query);
 		//printc($query);
-		$newid = lastid();
-		return $newid;
+		$this->id = lastid();
+		
+		return $this->id;
 	}
 	
 	
