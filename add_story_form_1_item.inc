@@ -117,7 +117,7 @@ if ($settings[type]=='story') {
 	printc("</select>");
 	printc("</div>");
 	printc("<div class=desc>Choose above if the text you entered is formatted HTML (the formatting commands used by the WWW). If you are unsure, select <b>Plain text</b>.</div>");
-	printc("<div class=desc><b>NOTE</b>: <b>Plain text</b> may still contain HTML commands. By choosing <b>Preformatted HTML</b>, SitesDB will not convert newline characters to the HTML equivalent: &lt;br&gt;</div>");
+	printc("<div class=desc><b>NOTE</b>: <b>Plain text</b> may still contain HTML commands. By choosing <b>Preformatted HTML</b>, Segue will not convert newline characters to the HTML equivalent: &lt;br&gt;</div>");
 	//	end modification 1 - 11.1.02 - achapin
 }
 

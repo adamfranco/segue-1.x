@@ -1,6 +1,6 @@
 update_readme.txt
 
-0.	If your server is in use, relpace index.php with index_offline.php to shut-down sitesdb
+0.	If your server is in use, relpace index.php with index_offline.php to shut-down Segue
 1. 	Backup tables/userfiles
 2.	chmod 777 -R userfiles
 3.	run update_tablekeys.php

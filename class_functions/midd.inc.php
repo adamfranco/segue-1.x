@@ -61,7 +61,7 @@ function getuserclasses($user,$time="now") {
 	return $classes;
 }
 
-//This function checks for non-SitesDB sites (those in web courses database created in course folders)
+//This function checks for non-Segue sites (those in web courses database created in course folders)
 function coursefoldersite($cl) {
 	db_connect("et.middlebury.edu","httpd","httpd","it");
 	if (ereg("([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2})",$cl,$regs)) {

@@ -1,7 +1,7 @@
 <? 
-//adds classes currently in LDAP to class table in SitesDB
+//adds classes currently in LDAP to class table in Segue
 //this allows for listing of students in a class, adding sites for students that are related to a class
-//maintaining a history of classes in SitesDB
+//maintaining a history of classes in Segue
 
 print "<a href='update_filepath.php'>Next Step: update_filepath.php</a><br><br>";
 

@@ -1,5 +1,5 @@
 <? 
-//moves all userfiles from subdirectories to site directory in sitesdb_userfiles
+//moves all userfiles from subdirectories to site directory in segue_userfiles
 //renames files by adding incremental number to end of file name
 
 print "<a href='update_media.php'>Next Step: update_media.php</a><br><br>";
@@ -80,7 +80,7 @@ while ($entry = readdir($dirName)) {
 
 print "<br><br>NUMBER OF FILES MOVED: $count";
 
-//$mediapath = "/www/sitesdb_userfiles";
+//$mediapath = "/www/segue_userfiles";
 $dirName = opendir($mediapath);
 
 while ($entry = readdir($dirName)) {

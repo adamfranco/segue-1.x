@@ -2,12 +2,12 @@
 
 <html>
 <head>
-<title>SitesDB</title>
+<title>Segue</title>
 </head>
 <body>
 <center>
-<h1>SitesDB</h1>
-<h2>SitesDB is temporarilly offline for upgrades.<br>Please check back in a few minutes.</h2>
+<h1>Segue</h1>
+<h2>Segue is temporarilly offline for upgrades.<br>Please check back in a few minutes.</h2>
 
 
 </center>

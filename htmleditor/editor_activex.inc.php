@@ -302,7 +302,7 @@ function editor_action(button_id) {
     //}
     
     if (cmdID.toLowerCase() == 'insertfilebrowser'){
-      showModalDialog(_editor_url + "../filebrowser.php?",  "resizable: no; help: no; status: no; scroll: no; ");
+      showModalDialog(_editor_url + "../filebrowser.php?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
     }
 
     // insert image

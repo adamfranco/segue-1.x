@@ -1,18 +1,18 @@
 <? include("login_css.inc.php"); ?>
 
-<title>SitesDB Login</title>
+<title>Segue Login</title>
 
 <body bgcolor="#006699" link="#FFCC00" vlink="#FFCC00" alink="#FFFFFF" background="images/bg01.gif">
 <div align="center">
 <table width="700" border="0" cellpadding="0" cellspacing="0">
     <tr> 
       <td background="images/seal02bg.jpg" valign="top"> 
-        <p align="center">SitesDB!!! WOOOOOOO!</p>
+        <p align="center">Segue!!! WOOOOOOO!</p>
         <BR>
         <table border=0 align=center width=500>
           <tr> 
             <td>
-              <p>Welcome to SitesDB! Please enter your login information below and press the 
+              <p>Welcome to Segue! Please enter your login information below and press the 
                 &quot;CONTINUE &gt;&gt;&quot; button.</p>
             </td>
           </tr>

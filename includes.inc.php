@@ -1,4 +1,4 @@
-<? // includes for SitesDB scripts
+<? // includes for Segue scripts
 
 include("functions.inc.php");
 include("dbwrapper.inc.php");

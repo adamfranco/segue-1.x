@@ -1,7 +1,7 @@
 <? // default.inc.php
 	// this is a test default script
 
-$pagetitle = "SitesDB";
+$pagetitle = "Segue";
 
 $color = 0;
 $sitesprinted=array();

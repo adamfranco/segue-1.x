@@ -1,3 +1,3 @@
 <? $title = "Other/Old Sites"; ?>
 
-<p>Sites listed under the <b>Other/Old Sites</b> section are either sites for old classes or sites which SitesDB administrators have created for your use.
+<p>Sites listed under the <b>Other/Old Sites</b> section are either sites for old classes or sites which Segue administrators have created for your use.

@@ -1,7 +1,7 @@
 <? // previewtheme.inc.php
 // allows users to preview the theme
 
-$pagetitle = "SitesDB > Theme Preview > ".$possible_themes[$theme];
+$pagetitle = "Segue > Theme Preview > ".$possible_themes[$theme];
 
 add_link(topnav,"Section #1","#",'',"noid");
 add_link(topnav,"Section #2","#",'',"noid");

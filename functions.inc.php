@@ -136,7 +136,7 @@ function deleteuserfile($fileid) {
 	$a = db_fetch_assoc($r);
 	$a[name] = urldecode($a[name]);
 	$file_path = $uploaddir."/".$a[site_id]."/".$a[name];
-//	$file_path = "../sitesdb_userfiles/afranco/close2.gif";
+//	$file_path = "../segue_userfiles/afranco/close2.gif";
 //	print "file = \"$file_path\" <br>";
 	if (file_exists($file_path)) {
 //		$exists = file_exists($file_path);

@@ -1,6 +1,6 @@
 <? $title = "Editors/Permissions"; ?>
 
-<p>The ability to assign editors and permissions to your site is one of the most powerful features of SitesDB.
+<p>The ability to assign editors and permissions to your site is one of the most powerful features of Segue.
 
 <p>Any editors you add will see your site under their sites list. This, however, does not mean that they can edit your site, at least not yet. As site owner, you can specify which editors can do what to your site, on any level.
 

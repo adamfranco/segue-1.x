@@ -21,7 +21,7 @@ $ldapserver = "tiger.middlebury.edu";
 $ldap_voadmin_user = "fjones";
 $ldap_voadmin_pass = "lk87df";
 
-// SitesDB full URI
+// Segue full URI
 $_full_uri = "http://et.middlebury.edu/sitesdb";
 
 // folder where themes are kept

@@ -12,7 +12,7 @@ ob_end_clean();
 
 ?>
 <HTML>
-<head><title>SitesDB Help: <?echo $title?></title>
+<head><title>Segue Help: <?echo $title?></title>
 <?/*include("css.php");*/?>
 <style type='text/css'>
 .title {

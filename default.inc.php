@@ -49,7 +49,7 @@ if ($_loggedin) {
 						if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>");
 						else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
 						
-					//check webcourses databases to see if course website was created in course folders (instead of SitesDB)
+					//check webcourses databases to see if course website was created in course folders (instead of Segue)
 					} else if ($course_site = coursefoldersite($cl)) {					
 						$course_url = urldecode($course_site['url']);
 						$title = urldecode($course_site['title']);
@@ -84,7 +84,7 @@ if ($_loggedin) {
 						if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>");
 						else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
 						
-					//check webcourses databases to see if course website was created in course folders (instead of SitesDB)
+					//check webcourses databases to see if course website was created in course folders (instead of Segue)
 					} else if ($course_site = coursefoldersite($cl)) {					
 						$course_url = urldecode($course_site['url']);
 						$title = urldecode($course_site['title']);
