@@ -143,7 +143,7 @@ function getuserclasses($user,$time="all") {
 		if (!$classes[$class_code]) {
 			if ($time == "now" && ($a[class_year] == date('Y') && $a[class_semester] == $semester)) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
-			} else if ($time == "past" && (($a[class_year] < date('Y') || semorder($a[class_semester]) < semorder($semester)))) {
+			} else if ($time == "past" && ($a[class_year] < date('Y') || ($a[class_year] == date('Y') && semorder($a[class_semester]) < semorder($semester)))) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 			} else if ($time == "future" && (($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y')))) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
