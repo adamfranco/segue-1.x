@@ -243,7 +243,7 @@ if ($_loggedin) {
         		}
         	}
         	$sites = $sites2;        	
-        
+
 			$slots2 = array();
 	        foreach ($slots as  $s) {
         		$slotObj = new slot($s);
@@ -261,7 +261,7 @@ if ($_loggedin) {
         
         $sites = array_merge($slots,$sites);
         $sites = removePrinted($sites);
-        
+
         if (count($sites)) {
                 printc("<tr><td class='inlineth' colspan=2>Other Sites".helplink("othersites","What are these?")."</td></tr>");
                 foreach ($sites as $s)
@@ -394,7 +394,9 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
         
         $isgroup = ($classlist = group::getClassesFromName($name))?1:0;
         $exists = $obj->fetchFromDB();
+/*      print "<pre>"; */
 /*      print_r($obj); */
+/*      print "</pre>"; */
 
         $namelink = ($exists)?"$PHP_SELF?$sid&action=site&site=$name":"$PHP_SELF?$sid&action=add_site&sitename=$name";
         $namelink2 = ($exists)?"$PHP_SELF?$sid&action=viewsite&site=$name":"$PHP_SELF?$sid&action=add_site&sitename=$name";
@@ -459,7 +461,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
                 
                 if (!$ed) {
                         printc(" <a href='$PHP_SELF?$sid&action=delete_site&name=$name'>delete</a> | ");
-                        printc(" <a href='$PHP_SELF?$sid&action=edit_site&edit_site=$name'>settings</a> | ");
+                        printc(" <a href='$PHP_SELF?$sid&action=edit_site&sitename=$name'>settings</a> | ");
                         printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>permissions</a>");
                         
                 } else {

@@ -130,7 +130,7 @@ class slot {
 			$a = db_fetch_assoc($r);
 			$owner_id = $a[user_id];
 			
-			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$this->site.",FK_assocsite=".$this->assocSite."";
+			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$this->site.",FK_assocsite='".$this->assocSite."'";
 			print $query;
 			db_query($query);
 			echo mysql_error();
@@ -145,12 +145,11 @@ class slot {
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);
 			$owner_id = $a[user_id];
-			$query = "SELECT slot_id FROM slot WHERE FK_owner=$owner_id";
-			echo $query."<br>";
-		}
-		else {
+			$query = "SELECT slot_id, slot_name FROM slot WHERE FK_owner=$owner_id";
+			/* echo $query."<br>"; */
+		} else {
 			$query = "SELECT slot_id, slot_name FROM slot";
-			echo $query;
+	/* 		echo $query; */
 		}
 		$r = db_query($query);
 		
