@@ -36,8 +36,6 @@ require_once("permissions.inc.php");
 require_once("htmleditor/editor.inc.php");
 
 
-//output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // now, we need to check if the site people are trying to view needs authentication or not
 // if so, we have to display a page that tells people they need to log in

@@ -283,8 +283,6 @@ if (!$theme) {
 	$themesettings = $defaultthemesettings;
 }
 
-//output a meta tag
-//print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // decode themesettings
 if ($themesettings) $themesettings = decode_array($themesettings);
