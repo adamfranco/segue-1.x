@@ -281,13 +281,13 @@ if (db_num_rows($r)) {
 
 <?
 // debug output -- handy :)
-print "<pre>";
-print "request:\n";
-print_r($_REQUEST);
-print "\n\n";
-print "session:\n";
-print_r($_SESSION);
-print "\n\n";
+/* print "<pre>"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
 
 /*
  if (is_object($thisPage)) { 
@@ -304,4 +304,4 @@ print "\n\n";
  	print_r($thisSite); 
  } */
  
-print "</pre>";
+/* print "</pre>"; */

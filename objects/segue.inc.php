@@ -484,7 +484,7 @@ FROM
 
 	function outputDateForm() {
 		global $months, $days, $months_values;
-		print_r($_SESSION[settings][activatedate]);
+	//	print_r($_SESSION[settings][activatedate]);
 		printc("<input type=hidden name='setformdates' value=1>");
 		printc("<table>");
 		printc("<tr><td align=right>");
