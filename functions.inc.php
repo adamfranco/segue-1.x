@@ -119,11 +119,20 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		/* print "unlink: $unlink"; */
 	}
 	
+	if (!is_writeable($userdir)) {
+		print "Can not write to '".$userdir."'. Please contact your system administrator to fix this problem.";
+		return "ERROR";
+	}
+	if (file_exists($userdir."/".$name) && !is_writeable($userdir."/".$name)) {
+		print "Can not write to '".$userdir."/".$name."'. Please contact your system administrator to fix this problem.";
+		return "ERROR";
+	}
+	
 	if ($allreadyuploaded) {
 		$r = copy($file[tmp_name],"$userdir/".$name);
 	} else {
 /* 		print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>"; */
-		$r=move_uploaded_file($file['tmp_name'],"$userdir/".$name);
+		$r=move_uploaded_file($file['tmp_name'],$userdir."/".$name);
 	}
 	if (!$r) {
 		print "Upload file error!<br>";
