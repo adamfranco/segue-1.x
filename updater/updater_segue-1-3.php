@@ -797,7 +797,7 @@ WHERE
 	FK_site = ".$a[FK_site]." AND
 	FK_createdby = ".$a[FK_createdby]." AND
 	media_tag = '".$a[media_tag]."' AND
-	media_location = '".$a[media_location];
+	media_location = '".$a[media_location]."'";
 
 	$r1 = db_query($query);
 	
@@ -864,7 +864,7 @@ WHERE
 	FK_site = ".$a[FK_site]." AND
 	FK_createdby = ".$a[FK_createdby]." AND
 	media_tag = '".$a[media_tag]."' AND
-	media_location = '".$a[media_location];
+	media_location = '".$a[media_location]."'";
 
 	$r1 = db_query($query);
 	
@@ -934,7 +934,7 @@ WHERE
 	FK_site = ".$a[FK_site]." AND
 	FK_createdby = ".$a[FK_createdby]." AND
 	media_tag = '".$a[media_tag]."' AND
-	media_location = '".$a[media_location];
+	media_location = '".$a[media_location]."'";
 
 	$r1 = db_query($query);
 	
