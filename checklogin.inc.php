@@ -15,7 +15,7 @@ if (session_is_registered("luser")) {
 	}
 }
 
-
+//
 // Let's check if there's an existing session - if so, destroy it.
 if (session_is_registered("coursesdb")) {
   session_unset();
