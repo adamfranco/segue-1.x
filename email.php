@@ -312,7 +312,7 @@ Participants<br><br>
 			
 			<form action="<? echo $PHP_SELF ?>" method=post name=emailform>
 			<table width=100%>
-			<tr><td align=right>support:</td><td><? echo $supported ?></td><td align=right></td></tr>
+<!-- 			<tr><td align=right>support:</td><td><? echo $supported ?></td><td align=right></td></tr> -->
 			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
 			<tr><td align=right>From:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Cc:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
@@ -348,7 +348,7 @@ Participants<br><br>
 			print "<tr><td>Cc:</td><td>".$_SESSION['afname']."</td></tr>\n";
 			print "<tr><td>Subject:</td><td>".$subject."</td></tr>\n";
 			print "<tr><td></td><td>".$body."</td></tr>\n";
-/* 			print "<tr><td></td><td>".$headers."</td></tr>\n";  //debug */
+			print "<tr><td></td><td>".$headers."</td></tr>\n";  //debug
 			print "</table>\n";
 			print "</div>\n";
 			//mail($to,$subject,$body,"From: $from");

@@ -37,7 +37,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//print $shorttext;
 	
 	printc("<div style='font-size:10px; color:#D00'>");
-	printc("<br>Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode.<br>");
+	printc("<br>Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode.  ");
 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
 	printc("</div>");
 
@@ -60,6 +60,19 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		around the html tags.</div>");
 	}
 
+	if ($supported == 1) {
+		if (!$_SESSION[settings][editor]) $_SESSION[settings][editor] = 'htmlarea';
+		//printpre($_SESSION[settings][editor]);
+		if ($isWinIE) {
+			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
+			printc("We recommend you chose HTMLarea for the greatest cross-platform compatibility.</div>");
+			printc("<div align=right>Current Editor: <select name=editor>");
+			printc("<option onClick='document.addform.submit()' value=htmlarea".(($_SESSION[settings][editor]=='htmlarea')?" selected":"").">HTMLarea");
+			printc("<option onClick='document.addform.submit()' value=activex".(($_SESSION[settings][editor]=='activex')?" selected":"").">Active-X");
+			printc("</select></div>");
+			//printc("<input type=button value='Update' onClick='document.addform.submit()'>\n");						
+		}	
+	}
 
 	include("htmleditor/editor.inc.php");
 		

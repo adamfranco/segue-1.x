@@ -11,9 +11,11 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 	
 	//chose editor based on browser and platfrom
 	if ($winIEVersion > 5.5) {
-		if ($context=="story") {	
+		if ($context=="story" && $_SESSION[settings][editor]=='activex') {	
 			include("htmleditor/editor_activex.inc.php");
 			editor_activex($textarea,$cols,$rows,$text);
+		} else if ($context=="story" && $_SESSION[settings][editor]=='htmlarea') {
+			editor_htmlarea($textarea,$text,$context);
 		} else if  ($context=="discuss") {
 			editor_htmlarea($textarea,$text,$context);
 		}	

@@ -11,6 +11,8 @@
 //
 // $Id$
 
+
+
 if (typeof _editor_url == "string") {
 	// Leave exactly one backslash at the end of _editor_url
 	_editor_url = _editor_url.replace(/\x2f*$/, '/');

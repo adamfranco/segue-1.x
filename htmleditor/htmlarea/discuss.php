@@ -18,20 +18,6 @@
 </script>
 <!-- <script type="text/javascript" src="../htmlarea.js"></script> -->
 <script type="text/javascript" src="<? echo $cfg[full_uri] ?>/htmleditor/htmlarea/htmlarea.js"></script>
-
-<!-- <style type="text/css"> -->
-<!-- html, body { -->
-<!-- font-family: Verdana,sans-serif; -->
-<!-- background-color: #fea; -->
-<!-- color: #000; -->
-<!-- } */ -->
-<!-- a:link, a:visited { color: #00f; } -->
-<!-- a:hover { color: #048; } -->
-<!-- a:active { color: #f00; } -->
-
-<!-- textarea { background-color: #fff; border: 1px solid 00f; } -->
-<!-- </style> -->
-
 <script type="text/javascript">
 var editor = null;
 

@@ -18,6 +18,8 @@
 /* 	return; */
 /* } */
 
+
+
 if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	// if we have already started editing...
 
@@ -57,6 +59,9 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 		if ($_SESSION[settings][add]) {
 			$_SESSION[storyObj]->setPermissions($thisPage->getPermissions());
 		}
+	}
+	if ($_REQUEST[editor]) {
+		$_SESSION[settings][editor] = $_REQUEST[editor];
 	}
 }
 
