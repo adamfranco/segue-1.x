@@ -528,7 +528,8 @@ class discussion {
 	function _commithttpdata() {
 		global $sid,$error;
 		global $mailposts;
-
+		
+		//include("htmleditor/editor.inc.php");
 		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
 			$site = $_REQUEST['site'];
 			$action = $_REQUEST['action'];
@@ -690,7 +691,10 @@ class discussion {
 		 ******************************************************************************/
 
 		if ($t != 'rate') {			
-			printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>\n");
+			//printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>\n");
+			include("htmleditor/editor.inc.php");
+			printc ("<td class=content$p>\n");
+			printc(addeditor ("content",10,20,$c,"discuss"));
 		} else {
 			printc ("<td>".spchars($c)."<br><br>\n");
 			printc ("<input type=hidden name=content value='".spchars($c)."'>\n");
@@ -867,31 +871,39 @@ class discussion {
 		$site =& new site($_REQUEST[site]);
 		$siteowneremail = $site->owneremail;
 		$sitetitle = $site->title;
-		//$story =& new story($_REQUEST[story]);
-		//$story = $storyObj->getfield(shorttext);
+		
+		$pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$sectionObj);
+		$pagetitle = $pageObj->getField('title');		
+		$storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$pageObj);
+		$storytext = $storyObj->getField('shorttext');
 		
 		// send an email to the siteowner
+		$html = 1;
 		
 		$to = $siteowneremail;
-		$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
-		$subject = $sitetitle." Discussion: ".$_REQUEST['subject'];
-
-		$html = 0;
 		if ($html == 1) {
-			$body = $sitetitle."<br>\n";
-			$body .= "subject: ".$_REQUEST['subject']."<br>\n";
-			$body .= "author: ".$_SESSION['afname']."<br>\n";
+			$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\nContent-Type: text/html\n";
+		} else {
+			$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
+		}
+		$discussurl = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
+
+		if ($html == 1) {
+			$body = "There has been a discussion posting from the following Segue site:<br>\n";			
+			$body .= "<a href='".$_full_uri.$discussurl."'>".$sitetitle." > ".$pagetitle."</a><br><br>\n";			
+			$body .= "<table cellpadding=0 cellspacing=0 border=0>";
+			$body .= "<tr><td>subject: </td><td>".$_REQUEST['subject']."</td></tr>\n";
+			$body .= "<tr><td>author: </td><td>".$_SESSION['afname']."</td></tr></table><br>\n";
 			$body .= $_REQUEST['content']."<br><br>\n";
-			$body .= "See:<br>";
-			$discussurl = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
-			$body .= "<a href='".$_full_uri.$discussurl."'>".$_full_uri.$discussurl."</a><br><br>\n";			
+			$body .= "For complete discussion, see:<br>";
+			$body .= "<a href='".$_full_uri.$discussurl."'>".$sitetitle." > ".$pagetitle."</a><br><br>\n";			
 		} else {
 			$body = "site: ".$sitetitle."\n";
 			//$body .= "topic: ".$this->story."\n";	
 			$body .= "subject: ".$_REQUEST['subject']."\n";		
 			$body .= "author: ".$_SESSION['afname']."\n";
 			$body .= $_REQUEST['content']."\n\n";
-			$body .= "See:\n";
+			$body .= "For complete discussion, see:\n";
 			$discussurl2 = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
 			$body .= $_full_uri.$discussurl2."\n";
 		}

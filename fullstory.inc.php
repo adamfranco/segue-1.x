@@ -92,21 +92,21 @@ if ($storyObj->getField("type") == 'file') {
 .dheader {
 	font-size: 14px;
 	border-bottom: 1px solid #000;
-	background: #b5b5b5;
+	background: #EAEAEA;
 	padding-left: 5px;
 	padding-top: 5px;
 }
 
 .dheader2 {
 	border-bottom: 1px solid #000;
-	background: #b5b5b5;
+	background: #EAEAEA;
 	padding-right: 5px;
 	padding-top: 5px;
 }
 
 .dheader3 {
 	border-top: 0px solid #000;
-	background: #b5b5b5;
+	background: #EAEAEA;
 	padding-left: 5px;
 	padding-right: 5px;
 }
@@ -119,6 +119,7 @@ if ($storyObj->getField("type") == 'file') {
 /******************************************************************************
  * print out shory and discussion (if any)
  ******************************************************************************/
+// include("htmleditor/editor.inc.php");
 if ($storyObj->getField("discuss")) $titleExtra = " Discussion";
 
 printc("<table width=100% id='maintable' cellspacing=1>\n");
@@ -222,7 +223,7 @@ if ($storyObj->getField("discuss")) {
 	$ds->_fetchchildren();
 	
 /******************************************************************************
- * set dicussion options
+ * set discussion options
  ******************************************************************************/
 	
 	$ds->opt("showcontent",true);

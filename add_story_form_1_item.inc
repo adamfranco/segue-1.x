@@ -103,10 +103,22 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	// removed active-x editor code to editor_activex.php
 	// editor.inc.php determines browser/platform and choses appropriate editor
 	//print $shorttext;
+	
 	printc("<div style='font-size:10px; color:#D00'>");
 	printc("<br>Note: Links to other pages in this site must use the address displayed in the preview site mode not the edit mode.<br>");
 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
 	printc("</div>");
+
+	//sniffer determines browser and os
+	//sniffer included in editor.inc.php
+	//include("sniffer.inc.php");
+	$uagent = $_SERVER["HTTP_USER_AGENT"];
+	$isSafari = (ereg("Safari",$uagent) || ereg("safari",$uagent));	
+	if ($isSafari) {
+		printc("<br>Looks like you are using Safari. Currently this browser does not have support for a browser-based WYSIWYG HTML editor. If you want a built-in HTML editor, we recommend you use Mozilla 1.3 or greater.");
+		printc("<div style='font-size:10px; color:#999'>($uagent)</div>");
+	}
+
 	include("htmleditor/editor.inc.php");
 		
 	printc("<br>");
@@ -117,12 +129,10 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//	print out text areas with editor (determined by addeditor function)
 	//  addeditor function (defined in editor.inc.php)
 	//  addeditor function variables (textarea, cols, rows, text)
-	printc(addeditor ("shorttext",80,16,$_SESSION[storyObj]->getField("shorttext")));
+	printc(addeditor ("shorttext",60,20,$_SESSION[storyObj]->getField("shorttext")));
 	printc("</td></tr></table>");
-
-	//sniffer determines browser and os
-	include("sniffer.inc.php");
-	if ($browser_os == "pcie5+") {
+	
+	if (!$isSafari) {
 		printc("<input type=hidden name='texttype' value='html'>");
 	} else {
 		printc("<div align=right>");

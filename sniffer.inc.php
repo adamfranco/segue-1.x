@@ -3,6 +3,7 @@
 	$uagent = $_SERVER["HTTP_USER_AGENT"];
 //	print $uagent;
 	$isMac = (ereg("mac",$uagent) || ereg("Mac",$uagent));
+	$isSafari = (ereg("Safari",$uagent) || ereg("safari",$uagent));
 //	print "<br>isMac = $isMac";
 	$uagent = explode("; ",$uagent);
 	$uagent = explode(" ",$uagent[1]);
@@ -14,6 +15,8 @@
 		$browser_os = "pcie4";
 	} else if ($bname == "MSIE" && ($isMac)) {
 		$browser_os = "macie";
+	} else if ($isSafari) {
+		$browser_os = "macsafari";
 	} else {
 		$browser_os = "mac";
 	}
