@@ -1423,13 +1423,14 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		if (!$noperms) {
 			if ($this->fetched_forever_and_ever && get_class($this)=="site") {
 				// check if our IP is in inst_ips
-				$good=0;
+				global $cfg;
+				$ipgood=0;
 				$ip = $_SERVER[REMOTE_ADDR];
 				if (is_array($cfg[inst_ips]))
 					foreach ($cfg[inst_ips] as $i)
-						if (ereg("^$i",$ip)) $good=1;
+						if (ereg("^$i",$ip)) $ipgood=1;
 
-				if ($good) $institute = true;
+				if ($ipgood || $_SESSION[auser]) $institute = true;
 				else $institute = false;
 
 				$canview = ($this->canview[everyone] || $this->canview[$user] || (($institute) ? $this->canview[institute] : false));
