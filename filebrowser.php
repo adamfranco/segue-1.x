@@ -458,14 +458,15 @@ if (db_num_rows($r)) {
 	while ($a=db_fetch_assoc($r)) { 
 		$a[name] = urldecode($a[name]); 
 		$a[size] = convertfilesize($a[size]); 
-		 
+		
+		$url = $uploadurl."/".$a[site_id]."/".rawurlencode($a[name]); 
 		if ($a[type] == 'image') { 
 			$img_path = $uploadurl."/".$a[site_id]."/".$a[name]; 
+			$thumb_size = get_sizes($url,'50');
 		} else { 
-			$img_path = "images/file.gif"; 
-		} 
-		$url = $uploadurl."/".$a[site_id]."/".rawurlencode($a[name]); 
-		$thumb_size = get_sizes($url,'50'); 
+			$img_path = "images/file.gif";
+			$thumb_size = get_sizes($img_path,'50');
+		}  
 //		$img_size = get_size($img_path); 
 		$img_size = get_size($url); 
 		 
