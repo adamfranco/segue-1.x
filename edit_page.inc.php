@@ -103,7 +103,7 @@ if ($settings) {
 		$settings[archiveby] = "none";
 		
 		if ($settings[add]) {
-			print "<p> deleting settings[permissions]....</p>";
+			//print "<p> deleting settings[permissions]....</p>";
 			//$settings[permissions] = "";
 			$settings[permissions] = decode_array(db_get_value("sections","permissions","id=$settings[section]"));
 		}
@@ -113,6 +113,7 @@ if ($settings) {
 if (!$settings && !$error) {
 	// create the settings array with default values. $settings must be passed along with each link.
 	// The array will be saved on clicking a save button.
+	$editors = db_get_value("sites","editors","name='$site'");
 	session_register("settings");
 	$settings = array(
 		"site_owner" => $site_owner,
@@ -132,7 +133,7 @@ if (!$settings && !$error) {
 		"deactivateday" => "00",
 		"deactivatedate" => 0,
 		"active"  => 1,
-		"editors" => "",
+		"editors" => $editors,
 		"permissions" => "",
 		"ediscussion" => 1,
 		"type" => "page",
@@ -228,7 +229,7 @@ if ($save) {
 			$settings[permissions] = decode_array(db_get_value("sections","permissions","id=$settings[section]"));
 		
 		// make sure that the permissions array represents all of the editors (giving them either permission (1) or not (0))
-		$settings[editors] = db_get_value("sites","editors","name='$settings[site]'");
+		//$settings[editors] = db_get_value("sites","editors","name='$settings[site]'");
 		if ($settings[editors]) {
 			$edlist = explode(",",$settings[editors]);
 			foreach ($edlist as $e) {
@@ -257,12 +258,17 @@ if ($save) {
 			$pages = encode_array($pages);
 			$query = "update sections set pages='$pages' where id=$settings[section]";
 			db_query($query);
-			log_entry("add_page","$auser added page id $newid to $settings[site]");
+			log_entry("add_page","$auser added page id $newid to site $settings[site]");
 		}
 		if ($settings[edit]) {
-			log_entry("edit_page","$auser edited page id $settings[page] in $settings[site]");
+			log_entry("edit_page","$auser edited page id $settings[page] in site $settings[site]");
 			$newid=$settings[page];
 		}
+		
+		// add or remove any changes to the site editor list.
+		$query = "update sites set editors='$settings[editors]' where  name='$settings[site]'";
+		db_query($query);
+		print "$query <br>";
 		
 		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]".(($settings[type]=='page')?"&page=$newid":""));
 		

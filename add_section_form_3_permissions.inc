@@ -16,6 +16,9 @@ printc("<input type=hidden name=site value='$settings[site]'>");
 //printc("<input type=hidden name=page value=$settings[page]>");
 //if ($edit) printc("<input type=hidden name=edit_page value=$settings[page]>");
 printc("<input type=hidden name=action value='$action'>");
+printc("<input type=hidden name=edaction>");
+printc("<input type=hidden name=edname>");
+printc("<input type=hidden name=editors value=$settings[editors]>");
 
 //printc("<input type=hidden name=mode value=$mode>");
 printc("<input type=hidden name=typeswitch value=0>");
@@ -36,7 +39,8 @@ printc("</td></tr></table>");
 
 
 if ($settings[type]=='section') {
-	printc("<div class=title style='font-size: 14px'>Permissions (for editing page content)</div>");
+	printc("<div class=title style='font-size: 14px'>Permissions (for editing this section)".helplink("editors")." &nbsp; - &nbsp; <i>Optional</i></div>");
+	printc("<div class=desc>Here you can designate people for whom you wish to give editing access to this section. No access is given unless an add/edit/delete box is checked.</div>");
 
 	printc("<div class=leftmargin>");
 	
@@ -65,6 +69,7 @@ if ($settings[type]=='section') {
 			foreach ($edlist as $e) {
 				printc("<tr><td class=td$color align=center>");
 				if ($settings[edit]) printc("<input type=checkbox name='copydownpermissions[]' value='$e' ".(($settings[copydownpermissions] && in_array($e,$settings[copydownpermissions]))?" checked":"")."></td><td class=td$color>");
+				else printc(" </td><td class=td$color>");
 				printc(ldapfname($e)." ($e)</td>");
 				
 				for ($i = 0; $i<3; $i++) {
@@ -127,8 +132,6 @@ if ($settings[type]=='section') {
 			
 	printc("</div>");
 }
-
-printc("<input type=hidden name=editors value=$settings[editors]>");
 
 printc("<br><br>");
 

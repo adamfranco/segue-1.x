@@ -10,7 +10,7 @@
 //add_link(leftnav,'','',"$variables");
 //print $variables."<br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
 //print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
-print "editors=$editors<br>";
+//print "editors=$editors<br>";
 //------------------------------------
 
 // first check if we are allowed to edit this site at all
@@ -75,7 +75,7 @@ if ($settings) {
 	if ($settings[step] == 3 && !$link) $settings[ediscussion] = $ediscussion;
 	if ($settings[step] == 3 && !$link) $settings[locked] = $locked;
 //	if ($settings[step] == 1 && !$link) $settings[recursiveenable] = $recursiveenable;
-//	if ($copydownpermissions != "") $settings[copydownpermissions] = $copydownpermissions;
+	if ($settings[step] == 3 && !$link) $settings[copydownpermissions] = $copydownpermissions;
 	if ($settings[step] == 4 && !$link) $settings[showcreator] = $showcreator;
 	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
 	if ($archiveby) $settings[archiveby] = $archiveby;
@@ -229,7 +229,7 @@ if ($save) {
 			$settings[permissions] = decode_array(db_get_value("sites","permissions","name='$settings[site]'"));
 		
 		// make sure that the permissions array represents all of the editors (giving them either permission (1) or not (0))
-		$settings[editors] = db_get_value("sites","editors","name='$settings[site]'");
+		// $settings[editors] = db_get_value("sites","editors","name='$settings[site]'"); // taken care of durring initialization
 		if ($settings[editors]) {
 			$edlist = explode(",",$settings[editors]);
 			foreach ($edlist as $e) {
@@ -248,24 +248,30 @@ if ($save) {
 		$query .= "url='$settings[url]', type='$settings[type]', title='$settings[title]', locked=$settings[locked], activatedate='$settings[activatedate]', deactivatedate='$settings[deactivatedate]', active=$settings[active], permissions='$settings[permissions]'";
 		db_query($query.$where);
 		print "$query$where<BR>";
-		//print mysql_error();
+		print mysql_error();
 		
 		// add the new section id to the sites table
 		if ($settings[add]) {
 			$newid = lastid();
+			print "newid = $newid <br>";
 			$sections = decode_array(db_get_value("sites","sections","name='$settings[site]'"));
 			array_push($sections,$newid);
 			$sections = encode_array($sections);
 			$query = "update sites set sections='$sections' where name='$settings[site]'";
 			db_query($query);
+			print "$query <br>";
 			log_entry("add_section","$auser added section id $newid to site $settings[site]");
 		}
 		if ($settings[edit]) {
 			log_entry("edit_section","$auser edited section id $settings[section] in site $settings[site]");
 			$newid=$settings[section];
 		}
+
+		// add or remove any changes to the site editor list.
+		$query = "update sites set editors='$settings[editors]' where  name='$settings[site]'";
+		db_query($query);
 		
-/*		// do the recursive update of active flag and such... .... ugh
+		// do the recursive update of active flag and such... .... ugh
 		$settings[permissions] = decode_array($settings[permissions]);
 		if ($settings[edit] && ($settings[recursiveenable] || count($settings[copydownpermissions]))) {
 			// recursively change the $active or $permissions field for all parts of the site
@@ -286,7 +292,7 @@ if ($save) {
 			}
 			
 		}
-*/		
+		
 		header("Location: index.php?$sid&action=viewsite&site=$settings[site]".(($settings[type]=='section')?"&section=$newid":""));
 		
 	} else {
@@ -341,11 +347,11 @@ if ($settings[step] == 3) {
 
 
 // ---  variables for debugging ---
-foreach ($settings as $n => $v) {
-	$variables .= "$n = $v <br>";	
-}
+//foreach ($settings as $n => $v) {
+//	$variables .= "$n = $v <br>";	
+//}
 //add_link(leftnav,'','',"$variables");
-print $variables;
+//print $variables;
 //------------------------------------
 
 // End of New Code
