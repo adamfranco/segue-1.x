@@ -15,7 +15,16 @@ include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-$orderby = " order by editedtimestamp desc";
+if ($clear) {
+	$type = "";
+	$user = "";
+	$site = "";
+	$title = "";
+}
+
+if (!isset($order)) $order = "editedtimestamp desc";
+$orderby = " order by $order";
+
 $w = array();
 if ($type) $w[]="type='$type'";
 if ($user) $w[]="addedby like '%$user%'";
@@ -108,7 +117,7 @@ input,select {
 	<td colspan=8>
 		<table width='100%'>
 		<tr><td>
-		<form action=<?echo "$PHP_SELF?$sid"?> method=get>
+		<form action=<?echo "$PHP_SELF?$sid"?> method=post>
 		<?
 		// $r1 = db_query("select distinct type from sites order by type asc");
 		?>
@@ -127,6 +136,7 @@ input,select {
 			title: <input type=text name=title size=15 value='<?echo $title?>'>
 			user: <input type=text name=user size=15 value='<?echo $user?>'>
 			<input type=submit value='go'>
+			<input type=submit name='clear' value='clear'>
 		<? } ?>
 		</form>
 		</td>

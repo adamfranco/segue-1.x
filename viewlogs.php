@@ -15,10 +15,22 @@ include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-$orderby = " order by timestamp asc";
+if ($clear) {
+	$type = "";
+	$user = "";
+	$site = "";
+	$_auser = "";
+	$_luser = "";
+}
+
+if (!isset($order)) $order = "timestamp asc";
+$orderby = " order by $order";
+
 $w = array();
 if ($type) $w[]="type='$type'";
 if ($user) $w[]="content like '%$user%'";
+if ($_luser) $w[]="luser='$_luser'";
+if ($_auser) $w[]="auser='$_auser'";
 if ($ltype != 'admin') {
 	$w[]="site like '%$site%'";
 } else {
@@ -31,7 +43,8 @@ if (count($w)) $where = " where ".implode(" and ",$w);
 
 $numlogs=db_num_rows(db_query("select * from logs$where"));
 
-if (!isset($lowerlimit)) $lowerlimit = $numlogs-30;
+if (!isset($lowerlimit) && $order == 'timestamp asc') $lowerlimit = $numlogs-30;
+if (!isset($lowerlimit) && $order != 'timestamp asc') $lowerlimit = 0;
 if ($lowerlimit < 0) $lowerlimit = 0;
 
 $limit = " limit $lowerlimit,30";
@@ -94,6 +107,30 @@ input,select {
 
 </style>
 
+<script lang="JavaScript">
+
+function selectAUser(user) {
+	f = document.searchform;
+	f._auser.value=user;
+	f._luser.value="";
+	f.submit();
+}
+
+function selectLUser(user) {
+	f = document.searchform;
+	f._luser.value=user;
+	f._auser.value="";
+	f.submit();
+}
+
+function changeOrder(order) {
+	f = document.searchform;
+	f.order.value=order;
+	f.submit();
+}
+
+</script>
+
 <table width='100%'>
 <tr><td width=50%>
 	<? print $content; ?>
@@ -112,7 +149,7 @@ input,select {
 	<td colspan=6>
 		<table width='100%'>
 		<tr><td>
-		<form action=<?echo "$PHP_SELF?$sid"?> method=get>
+		<form action=<?echo "$PHP_SELF?$sid"?> method=post name='searchform'>
 		<?
 		if ($ltype != 'admin') {
 			print "<input type=hidden name=site value='$site'>";
@@ -136,6 +173,10 @@ input,select {
 			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?>
 		<? } ?>	
 		<input type=submit value='go'>
+		<input type=submit name='clear' value='clear'>
+		<input type=hidden name='order' value='<? echo $order ?>'>
+		<input type=hidden name='_auser' value='<? echo $_auser ?>'>
+		<input type=hidden name='_luser' value='<? echo $_luser ?>'>
 		</form>
 		</td>
 		<td align=right>
@@ -151,9 +192,9 @@ input,select {
 		print "$curr of $tpages ";
 //		print "$prev $lowerlimit $next ";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&hideadmin=$hideadmin&site=$site\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&hideadmin=$hideadmin&site=$site\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
 		?>
 		</td>
 		</tr>
@@ -161,12 +202,56 @@ input,select {
 	</td>
 </tr>
 <tr>
-	<th>time</th>
-	<th>type</th>
-	<th>luser</th>
-	<th>auser</th>
-	<th>site</th>
-	<th>text</th>
+
+<?
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='timestamp asc') print "timestamp desc";
+	else print "timestamp asc";
+	print "')\" style='color: #000'>Time";
+	if ($order =='timestamp asc') print " &or;";
+	if ($order =='timestamp desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='type asc') print "type desc";
+	else print "type asc";
+	print "')\" style='color: #000'>Type";
+	if ($order =='type asc') print " &or;";
+	if ($order =='type desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='luser asc') print "luser desc";
+	else print "luser asc";
+	print "')\" style='color: #000'>luser";
+	if ($order =='luser asc') print " &or;";
+	if ($order =='luser desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='auser asc') print "auser desc";
+	else print "auser asc";
+	print "')\" style='color: #000'>auser";
+	if ($order =='auser asc') print " &or;";
+	if ($order =='auser desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='site asc') print "site desc";
+	else print "site asc";
+	print "')\" style='color: #000'>Site";
+	if ($order =='site asc') print " &or;";
+	if ($order =='site desc') print " &and;";	
+	print "</a></th>";
+
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='content asc') print "content desc";
+	else print "content asc";
+	print "')\" style='color: #000'>Text";
+	if ($order =='content asc') print " &or;";
+	if ($order =='content desc') print " &and;";	
+	print "</a></th>";
+?>
 </tr>
 <?
 $color = 0;
@@ -206,7 +291,7 @@ if (db_num_rows($r)) {
 			else
 				print "00C";
 		print "'>$a[luser]</span></td>";
-*/		print "<td class=td$color>$a[luser]</td>";
+*/		print "<td class=td$color><a href=# onClick=\"selectLUser('".$a[luser]."')\"  style='color: #000;'>$a[luser]</a></td>";
 /*		print "<td class=td$color><span style='color: #";
 			if (strstr("add_site, delete_site, classgroups",$a[type])) 
 				print "F90";
@@ -215,7 +300,7 @@ if (db_num_rows($r)) {
 			else
 				print "00C";
 		print "'>$a[auser]</span></td>";
-*/		print "<td class=td$color>$a[auser]</td>";
+*/		print "<td class=td$color><a href=# onClick=\"selectAUser('".$a[auser]."')\"  style='color: #000;'>$a[auser]</a></td>";
 		print "<td class=td$color>";
 			if ($a[site]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[site]\"'>";
 			print "$a[site]";
@@ -230,7 +315,7 @@ if (db_num_rows($r)) {
 		$color = 1-$color;
 	}
 } else {
-	print "<tr><td colspan=3>No log entries.</td></tr>";
+	print "<tr><td colspan=6>No log entries.</td></tr>";
 }
 ?>
 </table><BR>

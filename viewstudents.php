@@ -20,9 +20,17 @@ $site_type = $siteinfo[type];
 if ($site_type =="class") {
 	//print "<div align=center>Students in $site</div>";
 }
+if ($clear) {
+	$type = "";
+	$user = "";
+	$site = "";
+	$title = "";
+}
 
-//$orderby = " order by editedtimestamp desc";
-//$w = array();
+if (!isset($order)) $order = "fname asc";
+$orderby = " order by $order";
+
+$w = array();
 //if ($type) $w[]="type='$type'";
 //if ($site) $w[]="site='$name'";
 if ($user) $w[]="uname like '%$user%'";
@@ -30,7 +38,7 @@ if ($site) $w[]="name like '%$site%'";
 //if ($title) $w[]="title like '%$title%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
-$numlogs=db_num_rows(db_query("select * from sites$where"));
+$numlogs=db_num_rows(db_query("select * from classes$where"));
 
 if (!isset($lowerlimit)) $lowerlimit = 0;
 if ($lowerlimit < 0) $lowerlimit = 0;
@@ -38,9 +46,9 @@ if ($lowerlimit < 0) $lowerlimit = 0;
 
 $limit = " limit $lowerlimit,30";
 
-//$query = "select * from sites$where$orderby$limit";
+$query = "select * from classes$where$orderby$limit";
 
-$query = "select * from classes$where$limit";
+//$query = "select * from classes$where$limit";
 //print $query;
 
 $r = db_query($query);
@@ -99,6 +107,34 @@ input,select {
 
 </style>
 
+
+
+</head>
+
+<script lang="JavaScript">
+
+function selectClass(name) {
+	f = document.searchform;
+	f.site.value=name;
+	f.submit();
+}
+
+function selectUser(user) {
+	f = document.searchform;
+	f.user.value=user;
+	f.submit();
+}
+
+function changeOrder(order) {
+	f = document.searchform;
+	f.order.value=order;
+//	f.test.value="Working";
+	f.submit();
+}
+
+</script>
+<?// print "test = $test"; ?>
+
 <table width='100%'>
 <tr><td width=50%>
 	<? print $content; ?>
@@ -116,7 +152,7 @@ input,select {
 	<td colspan=8>
 		<table width='100%'>
 		<tr><td>
-		<form action=<?echo "$PHP_SELF?$sid"?> method=get>
+		<form action=<?echo "$PHP_SELF?$sid"?> name='searchform' method=post>
 		<?
 		// $r1 = db_query("select distinct type from sites order by type asc");
 		?>
@@ -130,10 +166,12 @@ input,select {
 		} else {
 		?>
 			<!-- </select> -->
-			site: <input type=text name=site size=15 value='<?echo $site?>'>
+			site: <input type=text name='site' size=15 value='<?echo $site?>'>
 			<!--title: <input type=text name=title size=15 value='<?echo $title?>'>-->
 			user: <input type=text name=user size=15 value='<?echo $user?>'>
 			<input type=submit value='go'>
+			<input type=submit name='clear' value='clear'>
+			<input type=hidden name='order' value='<? echo $order ?>'>
 		<? } ?>
 		</form>
 		</td>
@@ -149,9 +187,9 @@ input,select {
 		print "$curr of $tpages ";
 //		print "$prev $lowerlimit $next ";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&title=$title&site=$site\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
 		?>
 		</td>
 		</tr>
@@ -159,14 +197,39 @@ input,select {
 	</td>
 </tr>
 <tr>
-	<th>Name</th> 
-	<th>User Name</th>
-	<th>Site</th>
-	<th>Type</th>
-	<!--<th>view</th>
-	<th>theme</th>
-	<th>title</th>
-	<th>owner</th>-->
+<?
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='fname asc') print "fname desc";
+	else print "fname asc";
+	print "')\" style='color: #000'>Name";
+	if ($order =='fname asc') print " &or;";
+	if ($order =='fname desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='uname asc') print "uname desc";
+	else print "uname asc";
+	print "')\" style='color: #000'>User Name";
+	if ($order =='uname asc') print " &or;";
+	if ($order =='uname desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='name asc') print "name desc";
+	else print "name asc";
+	print "')\" style='color: #000'>Site";
+	if ($order =='name asc') print " &or;";
+	if ($order =='name desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='type asc') print "type desc";
+	else print "type asc";
+	print "')\" style='color: #000'>Type";
+	if ($order =='type asc') print " &or;";
+	if ($order =='type desc') print " &and;";	
+	print "</a></th>";
+?>
 </tr>
 <?
 $color = 0;
@@ -185,9 +248,9 @@ if (db_num_rows($r)) {
 			//print "</nobr>";
 			//print "</a>";
 		//print "</td>";
-		print "<td class=td$color>$a[fname]</td>";
+		print "<td class=td$color><a href=# onClick=\"selectUser('".$a[uname]."')\"  style='color: #000;'>$a[fname]</a></td>";
 		print "<td class=td$color>$a[uname]</td>";
-		print "<td class=td$color>$a[name]</td>";
+		print "<td class=td$color><a href=# onClick=\"selectClass('".$a[name]."')\"  style='color: #000;'>$a[name]</a></td>";
 		print "<td class=td$color>$a[type]</td>";
 		
 		/*print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
@@ -210,7 +273,7 @@ if (db_num_rows($r)) {
 		$color = 1-$color;
 	}
 } else {
-	print "<tr><td colspan=3>No log entries.</td></tr>";
+	print "<tr><td colspan=4>No log entries.</td></tr>";
 }
 ?>
 </table><BR>
