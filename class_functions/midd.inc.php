@@ -1,5 +1,8 @@
 <? /* $Id$ */
 
+// include the common class functions
+require_once("class_functions/common.inc.php");
+
 $_isclass_cache = array();
 function isclass ($class) {
 	global $auser,$_isclass_cache;
@@ -261,7 +264,7 @@ define("LDAP_EXACT",0);
 define("LDAP_LASTNAME",0);
 define("LDAP_FIRSTNAME",1);
 
-function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0) {
+function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0,$extra=false) {
 	$name = strtolower($name);
 	global $ldap_voadmin_pass,$ldap_voadmin_user,$ldapserver;
 	$ldap_user = "cn=$ldap_voadmin_user,cn=midd";
@@ -273,6 +276,7 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 	$r = ldap_bind($c,$ldap_user,$ldap_pass);
 	if ($r) {
 		$return = array("uid","cn");
+		if ($extra) { $return[]="mail"; $return[]="memberof"; }
 		$base_dn = "ou=Midd,o=MC";
 //		$filter = "cn=*$name*";
 		if ($type == LDAP_USER) $filter = "uid=$wc$name$wc";
@@ -300,7 +304,20 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 						$fname = $vars[2] . ", " . $vars[0] . " " . $vars[1]; // for Gabriel B. Schine names
 				}
 //				$res[$i]['cn'][0] = $fname;
-				$usernames[strtolower($uid)] = $fname;
+				if ($extra) {
+					// we must find out if they are a professor or a student.
+					$areprof = false;
+					if (is_array($res[0]["memberof"])) {
+						foreach ($res[0]["memberof"] as $item) {
+							if (eregi("All_Staff",$item) || eregi("All_Faculty",$item)) {
+								$areprof=true;
+							}
+						}
+					}
+					$userType = ($areprof)?"prof":"stud";
+					$usernames[strtolower($uid)] = array($fname,$res[$i]['mail'][0],$userType);
+				}
+				else $usernames[strtolower($uid)] = $fname;
 			}
 		}
 	}

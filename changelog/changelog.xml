@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<changelog name="Segue ChangeLog">
+	<version number="1.0.0 rc1">
+		<new author='gabe'>
+			Added new config option: $cfg[domain] -- the cookie domain for session info. Allows session info to cross sites if they are running the same instance of segue.
+		</new>
+		<new author='gabe'>Discussion links now displayed with statistics info.</new>
+		<change author='gabe'>By-line for default page now has a link to a "credits" page with more info about the authors.</change>
+		<change>ChangeLog is now held in XML format &amp; converted with XSL!</change>
+		<change author='gabe'>"Powered by Segue" logo now takes you to the Segue page.</change>
+	</version>
+	<version number="1.0.0 beta1" date="2003-07-11">
+		<change>Permissions can now be assigned to link type sections and pages and image and file type stories.</change>
+		<fix>Headings and dividers are now properly displayed when not logged in.</fix>
+		<important author="adam">
+			DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to "000".
+		</important>
+		<fix author="gabe">
+			When integrated with an LDAP server, Segue now correctly synchronizes the user and class database tables when adding users/groups as editors who have not yet logged in/been added to the local tables.
+		</fix>
+		<change>Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.</change>
+		<change author="gabe">View/add slots interface: a used slot now displays a "-" under the delete column instead of non-linked "delete" text for clarity.</change>
+	</version>
+	<version number="1.0.0 alpha3" date="2003-06-08">
+		<new author="adam">Owners of class sites can now easily add members of their class as an editor.</new>
+		<change author="adam">Activation/Deactivation Date form now has valid day options.</change>
+		<change author="adam">When an admin is acting as another person, they can only see what that person would see.</change>
+		<fix author="gabe">The "default" page now appropriately shows sites of which a group member is owner.</fix>
+		<fix author="adam">Move/Copy now shows sites properly when opened on first page load.</fix>
+		<change>More debug output has been removed.</change>
+	</version>
+	<version number="1.0.0 alpha2" date="2003-06-07">
+		<change author="gabe">Removed debug output.</change>
+	</version>
+	<version number="1.0.0 alpha" date="2003-06-06">
+		<new>First official release.</new>
+	</version>
+	<authors>
+		<name short="gabe">Gabe Schine</name>
+		<name short="adam">Adam Franco</name>
+		<name short="dobo">Dobo Radichkov</name>
+		<name short="max">Max Ovsjanikov</name>
+		<name short="alex">Alex Chapin</name>
+	</authors>
+</changelog>

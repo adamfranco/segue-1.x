@@ -245,5 +245,5 @@ $text .= helplink("index");
 
 $text .= "</tr></table></div>";
 
-$text .= "<br><div align=right><img src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></div>";
+$text .= "<br><div align=right><a href='http://segue.sourceforge.net' target='_blank'><img border=0 src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></a></div>";
 $sitefooter = $sitefooter . $text;

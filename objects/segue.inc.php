@@ -1260,7 +1260,7 @@ FROM
 					$r = db_query($query);
 					if (!db_num_rows($r)) {
 						echo $query."<br>";
-						fatalerror("updatePermissionsDB() :: could not find an ID to associate with editor: '$editor'!!!");
+						die("updatePermissionsDB() :: could not find an ID to associate with editor: '$editor'!!!");
 					}
 					
 					$arr = db_fetch_assoc($r);

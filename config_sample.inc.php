@@ -31,6 +31,14 @@
 	$cfg[inst_ips] = array();					// array("192.168.","10.0.0.")
 	
 	/******************************************************************************
+	 * domain - The domain under which Segue runs. This is useful if you have multiple
+	 * 			instances of segue running under different subdomains and you want
+	 * 			them to share authentication informatin. This field is used for
+	 * 			setting the cookie domain for session data. 
+	 ******************************************************************************/
+	$cfg[domain] = "";					// "mydomain.com"
+	
+	/******************************************************************************
 	 * uploaddir - the local folder where userfiles are kept
 	 * uploadurl - the URL equivalent of the above folder
 	 ******************************************************************************/
