@@ -176,11 +176,15 @@ if (count($usernames)) {
 </form>
 
 <?
+
+$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
+
 $query = "
 	SELECT
 		user_id,
 		user_fname,
-		user_uname
+		user_uname,
+		user_type
 	FROM
 		ugroup_user
 			INNER JOIN
@@ -189,6 +193,8 @@ $query = "
 		FK_user = user_id
 	WHERE
 		FK_ugroup = $ugroup_id
+	ORDER BY
+		user_type DESC, user_uname
 ";
 $r = db_query($query);
 ?>
@@ -204,10 +210,11 @@ $r = db_query($query);
 while ($a = db_fetch_assoc($r)) {
 	print "<tr>";
 		print "<td align=center>";
-			print "<input type=button name='use' value='remove' onClick=\"delStudent('".$a[user_id]."','".$a[user_fname]." (".$a[user_uname].")')\">";
+			if ($owner_id != $a[user_id])
+				print "<input type=button name='use' value='remove' onClick=\"delStudent('".$a[user_id]."','".$a[user_fname]." (".$a[user_uname].")')\">";
 		print "</td>";
 		print "<td>";
-			print $a[user_fname]." (".$a[user_uname].")";
+			print $a[user_fname]." (".$a[user_uname].") - ".$a[user_type]."";
 		print "</td>";
 	print "</tr>";
 }

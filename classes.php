@@ -285,7 +285,7 @@ function doUserForm($a,$p='',$e=0) {
 			</select>
 			</td>
 			<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>
-			<td><input type=text name='owner' size=8 value="<?=$a['classowner_uname']?>" readonly> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
+			<td><input type=text name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
 			<td><?=$a[classgroup_name]?></td>
 			<td align=center>
 			<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
