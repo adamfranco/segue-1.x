@@ -12,8 +12,7 @@ function horizontal_nav($navtype,$topnav,$extra,$navlink="navlink",$navlinka="na
 		print makelink($item,$samepage, " class='navlink' ");		
 		if ($next != $totalnav) print " | ";		
 		$next=$next+1;
-	}	
-	//print "</div>";
+	}
 	print $extra;
 	print "</div>";
 }

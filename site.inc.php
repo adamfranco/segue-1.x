@@ -65,48 +65,8 @@ $section=$thisSection->id;
 $page=$thisPage->id;
 $thisSite->fetchDown();			// just in case we haven't already
 
-$i=0;
-if ($thisSite->sections) {
-	foreach ($thisSite->sections as $s=>$o) {
-		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
-			if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=site";
-			if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
-			$extra = '';
-			$i++;
-			add_link(topnav,$o->getField("title"),$link,$extra,$s,$target);
-			add_link(topnav2,$o->getField("title"),$link,$extra,$s,$target);
-		}
-	}
-}
-// next, if we have a section, build a list of leftnav items
-if ($thisSection) {
-	$thisSection->fetchDown();	//just in case...
-	$i = 0;
-	if ($thisSection->pages) {
-		foreach ($thisSection->pages as $p=>$o) {
-			$extra = '';
-			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
-				if ($o->getField("type") == 'page') {
-					add_link(leftnav,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
-					add_link(leftnav2,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
-				}
-				if ($o->getField("type") == 'url') {
-					add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
-					add_link(leftnav2,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
-				}
-				if ($o->getField("type") == 'heading') {
-					add_link(leftnav,$o->getField("title"),'',$extra);
-					add_link(leftnav2,$o->getField("title"),'',$extra);
-				}
-				if ($o->getField("type") == 'divider') {
-					add_link(leftnav,'','',$extra);
-					add_link(leftnav2,'','',$extra);
-				}
-				$i++;
-			}
-		}
-	}
-}
+// build the navbars
+include("output_modules/".$thisSite->getField("type")."/navbars.inc.php");
 
 if ($thisPage) {
 	$thisPage->fetchDown();
@@ -166,6 +126,6 @@ if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
 	$u = "$PHP_SELF?$sid&action=viewsite&site=$site";
 	if ($section) $u .= "&section=$section";
 	if ($page) $u .= "&page=$page";
-	$text .= "<br> <div align=right><input type=submit class='button' value='edit this site' onClick=\"window.location='$u&$sid'\"></div>";
+	$text .= " <div align=right><input type=submit value='edit this site' onClick=\"window.location='$u&$sid'\"></div>";
 	$sitefooter = $sitefooter . $text;
 }

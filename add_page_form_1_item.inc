@@ -85,6 +85,32 @@ if ($_SESSION[pageObj]->getField("type") !='divider') {
 	printc("</div>");
 }
 
+/*   enter author's name for publication site */
+if ($thisSite->getField("type") == 'publication') {
+	printc("<div class=leftmargin>");
+	printc("Author: <input type=text name=url value='".$_SESSION[pageObj]->getField("url")."' size=25>");
+	$authors = $thisSite->getAllValues("page","url");
+	$nauthors = array();
+	foreach ($authors as $auth) {
+		if (ereg("http",$auth)) continue;
+		$parts = explode(" ",$auth);
+		$nauthors[$auth] = (ereg(",",$auth))?$parts[0]:$parts[1];
+	}
+	asort($nauthors);
+	$list = '';
+	foreach (array_keys($nauthors) as $auth) {
+		$list .= "<option>$auth\n";
+	}
+	if ($list != '') {
+		printc(" <select name=authortemp onChange='document.addform.url.value = document.addform.authortemp.value;'>");
+		printc("<option value=''>Choose...\n");
+		printc($list);
+		printc("</select>");
+	}
+	printc("</div>");
+}
+	
+
 if ($_SESSION[pageObj]->getField("type")=='url') {	
 	printc("<div class=leftmargin>");
 	printc("URL: <input type=text name=url value='".$_SESSION[pageObj]->getField("url")."' size=50>");

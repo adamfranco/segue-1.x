@@ -161,7 +161,8 @@ printerr();
 
 $t = $action;
 if ($t != 'site') $t = 'viewsite';
-if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]' class='navlink'>".$thisSection->getField("title")."</a>";
+if ($thisSite) $st = ($thisSite->getField("type")=='publication')?'listarticles':$t;
+if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&action=$st&site=$_REQUEST[site]&section=$_REQUEST[section]' class='navlink'>".$thisSection->getField("title")."</a>";
 if ($thisPage) $pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]' class='navlink'>".$thisPage->getField("title")."</a>";
 if ($thisSite) {
 	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]' class='navlink'>".$thisSite->getField("title")."</a>";
@@ -169,7 +170,6 @@ if ($thisSite) {
 }
 $nav .= $sn.$pn;
 if ($nav) {
-	//$siteheader = $siteheader . "<div align=left style='margin-bottom: 5px; margin-left: 10px'>$nav</div>";
 	$sitecrumbs = "<div align=left style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
 }
 
@@ -206,25 +206,25 @@ if (!ini_get("register_globals")) {
 }
 
 // debug output -- handy :)
-print "<pre>";
-print "session:\n";
-print_r($_SESSION);
-print "\n\n";
-print "request:\n";
-print_r($_REQUEST);
-if (is_object($thisPage)) {
-	print "\n\n";
-	print "thisPage:\n";
-	print_r($thisPage);
-} else if (is_object($thisSection)) {
-	print "\n\n";
-	print "thisSection:\n";
-	print_r($thisSection);
-} else if (is_object($thisSite)) {
-	print "\n\n";
-	print "thisSite:\n";
-	print_r($thisSite);
-}
-print "</pre>";
+/* print "<pre>"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* if (is_object($thisPage)) { */
+/* 	print "\n\n"; */
+/* 	print "thisPage:\n"; */
+/* 	print_r($thisPage); */
+/* } else if (is_object($thisSection)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSection:\n"; */
+/* 	print_r($thisSection); */
+/* } else if (is_object($thisSite)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSite:\n"; */
+/* 	print_r($thisSite); */
+/* } */
+/* print "</pre>"; */
 
 ?>

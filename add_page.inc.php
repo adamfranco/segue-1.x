@@ -55,7 +55,7 @@ if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 	//---- If switching type, take values to defaults ----
 	if ($_REQUEST[typeswitch]) {
 		$_SESSION[pageObj]->init(1);		// init values... force form date variables
-		
+		if ($thisSite->getField("type") == 'publication') $_SESSION[pageObj]->setField("url","");	
 		if ($_SESSION[settings][add]) {
 			//print "<p> deleting settings[permissions]....</p>";
 			//$_SESSION[settings][permissions] = "";
@@ -93,23 +93,14 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 	}
 	
 	if ($_SESSION[settings][add]) {
-/* 		print "setting permissions"; */
 		$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 	}
 	
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[pageObj]->fetchFromDB($_REQUEST[edit_page]);
 		$_SESSION[pageObj]->buildPermissionsArray();
-/* 		$a = db_get_line("pages","id=$_SESSION[settings][page]"); */
-/* 		foreach ($a as $n=>$v) $_SESSION[settings][$n]=$v; */
-/* 		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$_SESSION[settings][activatedate]); */
-/* 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$_SESSION[settings][deactivatedate]); */
-/* 		$_SESSION[settings][activatemonth]-=1; */
-/* 		$_SESSION[settings][deactivatemonth]-=1; */
-/* 		$_SESSION[settings][activatedate]=($_SESSION[settings][activatedate]=='0000-00-00')?0:1; */
-/* 		$_SESSION[settings][deactivatedate]=($_SESSION[settings][deactivatedate]=='0000-00-00')?0:1; */
-/* 		$_SESSION[settings][permissions] = decode_array($_SESSION[settings][permissions]); */
 	}
+	if ($thisSite->getField("type") == 'publication') $_SESSION[pageObj]->setField("url","");
 	$_SESSION[pageObj]->initFormDates();
 }
 
