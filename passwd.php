@@ -156,29 +156,6 @@ if ($_REQUEST[action] == "newpassword") {
 		$obj->sendemail();
 		$visitor_id = lastid();
 		
-		$valid = 0;
-		foreach ($_auth_mods as $_auth) {
-		$func = "_valid_".$_auth;
-			//print "<BR>AUTH: trying ".$_auth ."..."; //debug
-			if ($x = $func($name,"",1)) {
-				$valid = 1;
-				break;
-			}
-		}
-		if ($valid) {
-			$_SESSION[luser] = $x[user];
-			$_SESSION[lemail] = $x[email];
-			$_SESSION[lfname] = $x[fullname];
-			$_SESSION[ltype] = $x[type];
-			$_SESSION[lid] = $x[id];
-			$_SESSION[lmethod] = $x[method];
-			$_SESSION[auser] = $x[user];
-			$_SESSION[aemail] = $x[email];
-			$_SESSION[afname] = $x[fullname];
-			$_SESSION[atype] = $x[type];
-			$_SESSION[aid] = $x[id];
-			$_SESSION[amethod] = $x[method];
-		}
 		$message = "Thank you for registering. Your user account information has been emailed to you.  Use this information to log into Segue.<br><br>";
 		$message .= "<div align=center><input type=button value='Return' onClick='refreshParent()'></div><br>";
 
@@ -249,7 +226,12 @@ function refreshParent() {
 
 </script>
 </head>
-<body onLoad="document.passform.oldpass.focus()">
+<?
+if ($_SESSION[auser] && $auth)
+	print "<body onLoad='refreshParent()'>";
+else
+	print "<body onLoad='document.passform.oldpass.focus()'>";
+?>
 <form action="<? echo $PHP_SELF ?>" method=post name="passform">
 <table cellspacing=1 width='100%'>
 <tr><th colspan=2>
@@ -278,21 +260,31 @@ print "<br><div align=center>";
 if ($_REQUEST[action] == "reset" || $reset) {
 	print "Forgot your password?";
 } else {
-	print "<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>";
+	if ($_SESSION['auser'])
+		print "<span style='color: #aaa'>Forgot your password?</span>";
+	else
+		print "<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>";
 }
-if ($cfg[auth_register_on] == TRUE && isset($_SESSION[auser]) == FALSE) {
+if ($cfg[auth_register_on] == TRUE) {
 	if ($_REQUEST[action] == "register" || $newuser) {
 		print " | Register";
 	} else {
-		print " | <a href=passwd.php?$sid&action=register&email=$email>Register</a>";
+		if ($_SESSION['auser'])
+			print " | <span style='color: #aaa'>Register</span>";
+		else
+			print " | <a href=passwd.php?$sid&action=register&email=$email>Register</a>";
 	}
 }
 
 if ($_REQUEST[action] == "login" || $auth) {
 	print " | Login";
 } else {
-	print " | <a href=passwd.php?$sid&action=login>Login</a>";
+	if ($_SESSION['auser'])
+		print " | <span style='color: #aaa'>Login</span>";
+	else
+		print " | <a href=passwd.php?$sid&action=login>Login</a>";
 } 
+
 if ($_REQUEST[action] == "change" || $change) {
 	print " | Change your password";
 } else {
@@ -352,7 +344,7 @@ if ($_REQUEST[action] == "change" || $change) {
  * Log in UI
  ******************************************************************************/
 
-} else if ($_REQUEST[action] == "login" || $auth) {
+} else if (($_REQUEST[action] == "login" && !$_SESSION['auser']) || $auth) {
 	print "<tr><td colspan=2 align=left> Please enter your username and password. <br><br>";
 	print "</td><tr><td> User Name: </td>";
 	print "<td><input type=text name='uname' size=30 value=''></td>";
@@ -377,7 +369,8 @@ if ($_REQUEST[action] == "change" || $change) {
 	print "<td><input type=text name='uname' size=30 value='".$_REQUEST['uname']."'></td>";
 	print "<tr><td>Email Address:</td>";
 	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'> </td>";
-	print"<tr><td colspan=2 align=center><input type=submit value='Register'></td></tr>";
+	if (!$newuser || $error == TRUE)
+		print"<tr><td colspan=2 align=center><input type=submit value='Register'></td></tr>";
 	print"<input type=hidden name='action' value='newuser'>";
 	print"<input type=hidden name='newuser' value='1'>";
 

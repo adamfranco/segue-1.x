@@ -355,8 +355,7 @@
 						"template2"=>"Standard Course Site",
 						"template3"=>"Brief Course Site",
 						"template4"=>"Advanced: Single Section",
-						"template5"=>"Advanced: Blank",
-						"template6"=>"Weblog"
+						"template5"=>"Advanced: Blank"
 						);
 						
 	/******************************************************************************
