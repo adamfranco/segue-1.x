@@ -134,7 +134,7 @@ if ($upload) {
 	"; 
 			
 			
-	print "$query <br>"; 
+//	print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	

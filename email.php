@@ -70,9 +70,9 @@ if ($_REQUEST['findall']) {
 	$userid = $_SESSION['aid'];
 }
 
+// if full name and not username (ie clicking full name to review...)
 if ($_REQUEST['userfname'] && !$_REQUEST['useruname']) {
 	$userfname = urldecode($_REQUEST['userfname']);
-//} else {
 	$userfname = db_get_value ("user", "user_fname", "user_id = $userid");
 	$useruname = db_get_value ("user", "user_uname", "user_id = $userid");
 }
@@ -112,10 +112,11 @@ if ($_REQUEST['findall']) {
 } else if ($action != "user") {
 	$where = "story_id = $storyid";	
 } else if ($userid && $action == "user") {
-	$where .= "user_id = $userid";
+	$where = "user_id = $userid";
 }
 
-if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action != "list" && $action != "email") {
+//if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action != "list" && $action != "email") {
+if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action == "review") {
 	$where .= " AND user_id = $userid";
 }
 
@@ -126,6 +127,7 @@ if ($_REQUEST['userid'] && !$_REQUEST['findall'] && $action != "list" && $action
 if ($action == "review" || $action == "user") {
 	$select = "user_id, user_fname, user_email, discussion_rate, discussion_tstamp, discussion_id, discussion_subject, story_id, page_id, page_title, story_text_short, section_id, site_id, slot_name";
 	if (!isset($order)) $order = "discussion_tstamp ASC";
+// action = list, email
 } else {
 	$select = "DISTINCT user_id, user_fname, user_uname, user_email";
 	$order = "user_fname ASC";	
@@ -207,7 +209,7 @@ if ($action == "review" || $action == "user") {
 		
 	//printpre($_REQUEST);
 	//printpre("where: ".$where);	
-	printpre($query);
+	//printpre($query);
 	//printpre($curraction);
 	$r = db_query($query);
 	
@@ -245,24 +247,37 @@ function changeOrder(order) {
  ******************************************************************************/
 
 if ($_SESSION['ltype']=='admin') {
-	print "<table width=100%  class='bg'><tr><td class='bg'>
-	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
-	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
-	</td><td align=right class='bg'>
-	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
-	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
-	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
-	<a href='update.php?$sid&site=$site'>segue updates</a>
-	</td></tr></table>";
+	print "<table width=100%  class='bg'>";
+	print "<tr><td class='bg'>";
+	print "Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>";
+	print " | <a href='viewlogs.php?$sid&site=$site'>users</a>";
+	print "</td><td align=right class='bg'>";
+	print "<a href='users.php?$sid&site=$site'>add/edit users</a> | ";
+	print "<a href='classes.php?$sid&site=$site'>add/edit classes</a> | ";
+	print "<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> | ";
+	print "<a href='update.php?$sid&site=$site'>segue updates</a>";
+	print "</td></tr>";
+	print "</table>";
 }
 
 /******************************************************************************
  * Links: Roster | Participation | Logs | Your Posts
  ******************************************************************************/
 
-print "<div align=right>";
+print "<table width=100%  class='bg'>";
+
+// for admins print out participation select and where and order by sql
+print "<tr><td class='bg'>";
+if ($_SESSION['ltype']=='admin') {
+	print $action.": ";
+	print "WHERE ".$where." ORDER BY ";
+	print $order;
+}
+print "</td>";
+
+print "<td class='bg' align=right>";
 // roster
-if (isclass($_REQUEST[site])) print "<a href=add_students.php?$sid&name=$site>Roster</a> |";
+if (isclass($_REQUEST[site])) print "<a href=add_students.php?$sid&name=$site>Rosters</a> |";
 
 // participation (not link when coming from home)
 if ($_REQUEST[from] != "home") {
@@ -270,18 +285,19 @@ if ($_REQUEST[from] != "home") {
 		print " <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	} else {
 		print " Participation";
-	}
-	
+	}	
 	// logs (not link when coming from home)
 	print " | <a href='viewlogs.php?$sid&site=$site'>Logs</a> |";
 }
+
 // your posts
 if ($action == "user") {
 	print " Your Posts";
 } else {
 	print " <a href='email.php?$sid&siteid=$siteid&site=$site&action=user'>Your Posts</a>";
 }
-print "</div><br>";
+print "</td></tr>";
+print "</table><br>";
 ?>
 
 <?=$content?>
@@ -298,6 +314,7 @@ print "</div><br>";
 		<input type=hidden name='siteid' value='<? echo $siteid ?>'>
 		<input type=hidden name='site' value='<? echo $site ?>'>
 		<input type=hidden name='userid' value='<? echo $userid ?>'>
+		<input type=hidden name='from' value='<? echo $from ?>'>
 		<input type=hidden name='userfname' value='<? echo urlencode($userfname) ?>'>
 
 <!-- 		<input type=submit name='search' value='Find'> -->
@@ -353,7 +370,7 @@ print "</div><br>";
 		//print "Total participants found: ".$numparticipants;
 		
 		/******************************************************************************
-		 * Navigation List | Email participants in discussion or site
+		 * Navigation Email | List | Review participants in discussion or site
 		 ******************************************************************************/
 		//print "<form action=$PHP_SELF method=post name=emailform>";
 		print "<table><tr><td ><div style='font-size: 12px'>";
@@ -362,7 +379,7 @@ print "</div><br>";
 		if ($curraction == "list") {
 			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
 			print "List | ";
-			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers&order=$order>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&action=review&$getvariables&order=$order>Review</a> - ";
 			print $numparticipants." participants";
 		
 		// reviews posts by a given user to a given site/discussion/assessment
@@ -399,7 +416,7 @@ print "</div><br>";
 		} else if ($curraction == 'email') {
 			print "Email | ";
 			print "<a href=$PHP_SELF?$sid&action=list&$getvariables&order=user_fname>List</a> | ";
-			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&action=review&$getvariables>Review</a> - ";
 			print $numparticipants." participants";
 		
 		// sends email to all participants in email list	
@@ -635,7 +652,10 @@ print "</div><br>";
 				$fullstory_link = $_full_uri."/index.php?action=site&site=".$a['slot_name']."&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id'];
 				$dicuss_link = $_full_uri."/index.php?action=site&site=".$a['slot_name']."&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id']."#".$a['discussion_id'];
 				$shory_text_all = strip_tags(urldecode($a['story_text_short']));
-				$shory_text = substr($shory_text_all,0,25)."...";
+				$shory_text = substr($shory_text_all,0,15)."...";
+				$discussion_subject_all = urldecode($a['discussion_subject']);
+				$discussion_subject = substr($discussion_subject_all,0,15)."...";
+				
 		
 				/******************************************************************************
 				 * Print Participants (depends on curraction
@@ -658,7 +678,7 @@ print "</div><br>";
 						print "<td class=td$color><a href='#' onClick='opener.window.location=\"$_full_uri/index.php?action=site&site=".$a['slot_name']."\"'>".$a['slot_name']."</a></td>";
 					}
 					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$page_link\"'>".$a['page_title']."</a> > <a href='#' onClick='opener.window.location=\"$fullstory_link\"'>".$shory_text."</a></td>";
-					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".urldecode($a['discussion_subject'])."</a></td>";
+					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_subject."</a></td>";
 					print "<td class=td$color>".$a['discussion_rate']."</td>";
 					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
 				} else {

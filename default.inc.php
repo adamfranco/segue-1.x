@@ -82,6 +82,7 @@ if ($_loggedin) {
 	/******************************************************************************
 	 * List sites
 	 ******************************************************************************/
+	printc("<div align=right><a href=email.php?$sid&action=user&from=home onClick='doWindow(\"email\",700,500)' target='email'>Your Posts</a></div>");
 	 
 	 // Sort the classes
 	$classes = sortClasses($classes);
@@ -96,58 +97,63 @@ if ($_loggedin) {
 		if ($_SESSION[atype]=='stud') {
 			printc("<table width=100%>");
 			
+			//loop through all classes in list
 			foreach ($_class_list_titles as $var=>$t) {
 
 				if (count($$var)) {
-					//print out current classes
+
 					printc("<tr>");
 					printc("<td valign=top>");
-					
+
 					/******************************************************************************
-					 * expand/collapse option for previous sites listing
-					 ******************************************************************************/
-								
-					if ($t == "Previous Semester") {
+					 * expand/collapse link for previous sites listing
+					 ******************************************************************************/		
+					if ($t == "Previous Semesters") {
+						
 						if ($_SESSION[expand_pastclasses] == 0) {
 							printc("<div class=title><a href=$PHP_SELF?expand_pastclasses=1>+</a> $t</div>");
 							//printc("<a href=$PHP_SELF?expand_pastclasses=1>show</a>");
 						} else {
 							printc("<div class=title><a href=$PHP_SELF?expand_pastclasses=0>-</a> $t</div>");
 						}
+						
+					// if not previous, then must be current classes...	
 					} else {
 						printc("<div class=title>$t</div>");
 					}
 					
-					//print class list
-					//printclasses($classes);
-					
-									
-					printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
-					$c=0;
-
-					foreach (array_keys($$var) as $cl) {
-						if ($_SESSION[expand_pastclasses] == 0 && $t == "Previous Semester") {
+					/******************************************************************************
+					 * expand/collapse link for previous sites listing
+					 ******************************************************************************/		
+					if ($_SESSION[expand_pastclasses] == 0 && $t == "Previous Semesters") {
+						// do nothing
+					} else {																			
+						printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
+						$c=0;
+						
+						// get all classes
+						foreach (array_keys($$var) as $cl) {	
+								printc("<tr><td class=td$c width= 150>$cl</td>");
+								$site =& new site($cl);
+		
+								if (($gr = inclassgroup($cl)) || ($site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true))) {
+									if ($gr) { $site =& new site($gr); $site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true); }
+									if ($site->canview()) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$site->name."'>".$site->getField("title")."</a></td>");
+									else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
+									//check webcourses databases to see if course website was created in course folders (instead of Segue)
+								} else if ($course_site = coursefoldersite($cl)) {					  
+									$course_url = urldecode($course_site['url']);
+									$title = urldecode($course_site['title']);
+									printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>");
+									db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+								} else printc("<td style='color: #999' class=td$c>not created</td>");
+								printc("</tr>");
+								$c = 1-$c;
 							
-						} else {
-							printc("<tr><td class=td$c width= 150>$cl</td>");
-							$site =& new site($cl);
-	
-							if (($gr = inclassgroup($cl)) || ($site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true))) {
-								if ($gr) { $site =& new site($gr); $site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true); }
-								if ($site->canview()) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$site->name."'>".$site->getField("title")."</a></td>");
-								else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
-								//check webcourses databases to see if course website was created in course folders (instead of Segue)
-							} else if ($course_site = coursefoldersite($cl)) {					  
-								$course_url = urldecode($course_site['url']);
-								$title = urldecode($course_site['title']);
-								printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>");
-								db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-							} else printc("<td style='color: #999' class=td$c>not created</td>");
-							printc("</tr>");
-							$c = 1-$c;
-						}
+						}					
+						printc("</tr></table>");
 					}
-					printc("</tr></table>");
+					
 					printc("</td>");
 					printc("</tr>");
 				}
@@ -184,7 +190,6 @@ if ($_loggedin) {
 
 	}
 	
-	printc("<div align=right><a href=email.php?$sid&action=user&from=home onClick='doWindow(\"email\",700,500)' target='email'>Your Posts</a></div>");
 
 	printc("<div class='title'>Sites".helplink("sites")."</div>");
 	
