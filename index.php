@@ -135,7 +135,7 @@ if ($_REQUEST[section]) {
 }
 if ($_REQUEST[page]) {
 //	$thisPage =& new page($thisSite->name,$thisSection->id,$_REQUEST[page],&$thisSection);
-	$thisPage =& $thisSite->sections[$_REQUEST[section]]->page[$_REQUEST[page]];
+	$thisPage =& $thisSite->sections[$_REQUEST[section]]->pages[$_REQUEST[page]];
 //	$thisPage->fetchFromDB();
 //	$thisPage->buildPermissionsArray();
 }
@@ -218,7 +218,7 @@ print "<pre>";
 /* print_r($_SESSION); */
 /* print "\n\n"; */
 
-//print_r($thisSite);
+//if ($thisPage) print_r($thisPage);
 
 /*
  if (is_object($thisPage)) { 
