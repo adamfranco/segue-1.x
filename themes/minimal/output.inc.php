@@ -39,7 +39,8 @@ include("themes/common/header.inc.php"); ?>
 <tr>
 <td class=header align=center>
 
-<?/* ------------------------------------------- */
+<?
+/* ------------------------------------------- */
 /* -------------- STATUS BAR ----------------- */
 /* ------------------------------------------- */
 include("themes/common/status.inc.php"); ?>

@@ -2,6 +2,16 @@
 // set the $sid var for easy use
 $sid = SID;
 
+// what network are we on (ie, Middlebury College "midd", or Kenyon "kenyon")
+$_network = "midd";
+
+/* ------------------------- AUTHENTICATION MODULES --------------------- */
+/* ---------------------------------------------------------------------- */
+/* enter in the order or preference the different authentication systems you
+	want to use															  */
+	/* CHOICES: db, pam, ldap											  */
+$_auth_mods = array("ldap","db");
+
 // what kind of error reporting do we want? (how cluttered do we want our site to be?)
 //error_reporting(0);				// none
 //error_reporting(E_ERROR);		// only fatal errors
@@ -11,22 +21,20 @@ error_reporting(E_ERROR | E_WARNING);	// more errors
 // NOTE: the last two options here enable so much error reporting that they will
 // seriously screw up MOTS's functionality with HTML forms. Just don't use them.
 
-// these are our database variables
+/* -------------------------- DB AUTHENTICATION	------------------------- */
 $dbhost = "badger.middlebury.edu"; 
 $dbuser = "sitesdb"; 
 $dbpass = "sitesdb#%&"; 
 $dbdb = "sitesdb"; 
+/* ---------------------------------------------------------------------- */
 
-/* $dbhost = "sqlserver.middlebury.edu"; */
-/* $dbuser = "coursesdb"; */
-/* $dbpass = "coursesdb#%&"; */
-/* $dbdb = "coursesdb"; */
 
-// LDAP settings
-$useldap = 1;	// Set to 1 if you want to use ldap, 0 otherwise
+/* ------------------------ LDAP AUTHENTICATION	------------------------- */
+//$useldap = 1;	// Set to 1 if you want to use ldap, 0 otherwise
 $ldapserver = "tiger.middlebury.edu";
 $ldap_voadmin_user = "fjones";
 $ldap_voadmin_pass = "lk87df";
+/* ---------------------------------------------------------------------- */
 
 
 // SitesDB full URI

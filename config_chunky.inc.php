@@ -2,41 +2,50 @@
 // set the $sid var for easy use
 $sid = SID;
 
-// what kind of error reporting do we want? (how cluttered do we want our site to be?)
-//error_reporting(0);				// none
-//error_reporting(E_ERROR);		// only fatal errors
-error_reporting(E_ERROR | E_WARNING);	// more errors
-//error_reporting(E_ERROR | E_WARNING | E_NOTICE); 		// lots of errors
-//error_reporting(E_ALL);			// all errors !!
-// NOTE: the last two options here enable so much error reporting that they will
-// seriously screw up MOTS's functionality with HTML forms. Just don't use them.
+// what network are we on (ie, Middlebury College "midd", or Kenyon "kenyon")
+$_network = "kenyon";
 
-// these are our database variables
+/* ------------------------- AUTHENTICATION MODULES --------------------- */
+/* ---------------------------------------------------------------------- */
+/* enter in the order or preference the different authentication systems you
+	want to use															  */
+	/* CHOICES: db, pam, ldap											  */
+$_auth_mods = array("pam","db");
+
+/* -------------------------- DB AUTHENTICATION	------------------------- */
 $dbhost = "localhost";
 $dbuser = "root";
 $dbpass = "x33dm1m";
 $dbdb = "sitesdb";
+/* ---------------------------------------------------------------------- */
 
-/* $dbhost = "sqlserver.middlebury.edu"; */
-/* $dbuser = "coursesdb"; */
-/* $dbpass = "coursesdb#%&"; */
-/* $dbdb = "coursesdb"; */
-
-// LDAP settings
-$useldap = 1;	// Set to 1 if you want to use ldap, 0 otherwise
+/* ------------------------ LDAP AUTHENTICATION	------------------------- */
+//$useldap = 1;	// Set to 1 if you want to use ldap, 0 otherwise
 $ldapserver = "tiger.middlebury.edu";
 $ldap_voadmin_user = "fjones";
 $ldap_voadmin_pass = "lk87df";
+/* ---------------------------------------------------------------------- */
 
+/* ------------------------ PAM AUTHENTICATION -------------------------- */
+$pam_email_suffix = "kenyon.edu";
+/* ---------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------- */
+/* ---------- SUPPLEMENTAL INFO ----------------------------------------- */
+$supdbhost = "parabola.kenyon.edu";
+$supdbuser = "circleguest";
+$supdbpass = '';
+$supdbdb = "kcdir";
+/* ---------------------------------------------------------------------- */
 
 // SitesDB full URI
-$_full_uri = "http://etdev.middlebury.edu/sitesdb";
+$_full_uri = "http://chunky.kenyon.edu/sitesdb";
 
 // folder where themes are kept
 $themesdir = "themes";
 
 //folder for data uploads (images and files)
-$uploaddir = "/web/sitesdb_userfiles";
+$uploaddir = "/www/sitesdb_userfiles";
 $uploadurl = "/sitesdb_userfiles";
 
 // Theme for login/default pages
@@ -78,4 +87,13 @@ $_templates = array("template0"=>"Default",
 					"template2"=>"Standard Course Site",
 					"template3"=>"Brief Course Site");
 
+
+// what kind of error reporting do we want? (how cluttered do we want our site to be?)
+//error_reporting(0);				// none
+error_reporting(E_ERROR);		// only fatal errors
+//error_reporting(E_ERROR | E_WARNING);	// more errors
+//error_reporting(E_ERROR | E_WARNING | E_NOTICE); 		// lots of errors
+//error_reporting(E_ALL);			// all errors !!
+// NOTE: the last two options here enable so much error reporting that they will
+// seriously screw up MOTS's functionality with HTML forms. Just don't use them.
 ?>

@@ -4,7 +4,31 @@
 ob_start();		// start the output buffer so we can use headers if needed
 session_start();// start the session manager :) -- important, as we just learned
 
-if (ereg("^login",$QUERY_STRING)) {
+if (!ini_get("register_globals")) {
+	print "AAAAAAAAAAAAAH!!!<BR><BR>";
+	print "<b>SUPER DUPER ERROR!</b><BR>";
+	print "This script can only be run with <b>register_globals</b> turned <b>On</b> in the php configuration!<BR>";
+	print "You must turn this on before anything will work correctly. Maybe someday we'll re-write it. Maybe.";
+}
+
+/* if (!ini_get("register_globals")) { */
+/* 	if ($HTTP_POST_VARS) { */
+/* 		foreach ($HTTP_POST_VARS as $n=>$v) */
+/* 			$$n = $v; */
+/* 	} */
+/* 	if ($HTTP_GET_VARS) { */
+/* 		foreach ($HTTP_GET_VARS as $n=>$v) */
+/* 			$$n = $v; */
+/* 	} */
+/* 	if ($HTTP_SESSION_VARS) { */
+/* 		foreach ($HTTP_SESSION_VARS as $n=>$v) $$n = $v; */
+/* 	} */
+/* 	if ($_SESSION) { */
+/* 		foreach ($_SESSION as $n=>$v) $$n = $v; */
+/* 	} */
+/* } */
+
+if (ereg("^login",getenv("QUERY_STRING"))) {
 	if (session_id()) {
 		session_unset();
 		session_destroy();
@@ -46,6 +70,11 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 // --- this functionality will be handled by authentication.inc.php
 include("authentication.inc.php");
 
+// include the appropriate class functions for this network (stored in $_network)
+$_f = "class_functions/" . $_network . ".inc.php";
+if (file_exists($_f)) include($_f);
+else include("class_functions/empty.inc.php");
+
 // if we are logged in, get a list of classes the user has
 // but only if login method was LDAP.. otherwise don't waste the time
 $classes=array();
@@ -55,9 +84,12 @@ $oldsites=array();
 
 if ($_loggedin) {
 
+	// below if statement should be changed to check a config variable that states
+	// if classes should be check, and what routine to use to get that
 	$classes=getuserclasses($auser,"now");
 	$oldclasses=getuserclasses($auser,"past");
 	$futureclasses=getuserclasses($auser,"future");
+
 	
 	// get other sites they have added, but which aren't in the classes list
 	if (db_num_rows($r = db_query("select * from sites where addedby='$auser'"))) {

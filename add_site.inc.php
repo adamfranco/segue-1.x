@@ -1,6 +1,5 @@
 <? // add_site.inc.php -- add a site (passed $name)
 
-
 if ($settings) {
 	// if we have already started editing...
 
@@ -55,7 +54,7 @@ if ($settings) {
 	if ($copyheader) $settings[footer] = $settings[header];
 }
 
-if (!$settings) {
+if (!session_is_registered("settings")) {
 	// create the settings array with default values. $settings must be passed along with each link.
 	// The array will be saved on clicking a save button.
 	session_register("settings");
@@ -117,16 +116,17 @@ if (!$settings) {
 	}
 }
 
-
 if ($prevbutton) $settings[step] = $settings[step] - 1;
 if ($nextbutton) $settings[step] = $settings[step] + 1; 
 if ($step != "") $settings[step] = $step;
+
 
 // error checking
 if (($settings[step] != 1) && (!$settings[title] || $settings[title] == '')) {
 	error("You must enter a site title.");
 	$settings[step] = 1;
 }
+
 
 if ($settings[add]) $pagetitle="Add Site";
 if ($settings[edit]) $pagetitle="Edit Site";
