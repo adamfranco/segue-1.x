@@ -548,7 +548,7 @@ class discussion {
 				
 		$p = ($t=='reply')?" style='padding-left: 15px'":'';
 		
-		printc ("\n<form action='".$_full_uri."index.php?$sid&action=site&".$this->getinfo."#".$this->id."' method=post name=postform>\n");
+		printc ("\n<form action='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."#".$this->id."' method=post name=postform>\n");
 		printc ("<tr><td$p><b>$d</b></td></tr>\n");
 		printc ("<tr><td$p>\n");
 		printc ("<table width=100%  cellspacing=0px>\n");
@@ -665,7 +665,7 @@ class discussion {
 
 			if (!$this->id) return false;
 			//printc ("\n<tr><td class=dheader3>");			
-			$s = "<a href='".$_full_uri."index.php?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>\n";
+			$s = "<a href='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>\n";
 		//	printc ("</form>");
 	//		$s = $this->subject;
 	
@@ -681,16 +681,16 @@ class discussion {
 			// collect possible actions to current post (rely | del | edit | rate)
 			$b = array();
 			if ($cr) 
-				$b[] = "<a href='".$_full_uri."index.php?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>\n";
+				$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>\n";
 				
 			if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) 
-				$b[] = "| <a href='".$_full_uri."index.php?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'>delete</a>\n";
+				$b[] = "| <a href='".$_full_uri."/index.php?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'>delete</a>\n";
 				
 			if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-				$b[] = " | <a href='".$_full_uri."index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'>edit</a>\n";
+				$b[] = " | <a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'>edit</a>\n";
 				
 			if ($o) 
-				$ratelink = "<a href='".$_full_uri."index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>\n";
+				$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>\n";
 				
 			if ($a != "" || count($b)) {
 				$c = '';
@@ -765,8 +765,8 @@ class discussion {
 			$body .= "author: ".$_SESSION['afname']."<br>\n";
 			$body .= $_REQUEST['content']."<br><br>\n";
 			$body .= "See:<br>";
-			$discussurl = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
-			$body .= "<a href='".$_full_uri.$discussurl2."'>".$_full_uri.$discussurl2."</a><br><br>\n";			
+			$discussurl = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."";
+			$body .= "<a href='".$_full_uri.$discussurl."'>".$_full_uri.$discussurl."</a><br><br>\n";			
 		} else {
 			$body = "site: ".$sitetitle."\n";
 			//$body .= "topic: ".$this->story."\n";	
@@ -774,8 +774,8 @@ class discussion {
 			$body .= "author: ".$_SESSION['afname']."\n";
 			$body .= $_REQUEST['content']."\n\n";
 			$body .= "See:\n";
-			$discussurl2 = "index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
-			$body .= $_full_uri."/".$discussurl2."\n";
+			$discussurl2 = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
+			$body .= $_full_uri.$discussurl2."\n";
 		}
 		
 		// send it!
