@@ -594,3 +594,14 @@ function handlestoryorder($stories,$order) {
 	return $stories;
 }
 
+function printpre($array, $return=FALSE) {
+	$string = "\n<pre>";
+	$string .= print_r($array, TRUE);
+	$string .= "\n</pre>";
+	
+	if ($return)
+		return $string;
+	else
+		print $string;
+}
+
