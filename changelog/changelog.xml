@@ -6,6 +6,11 @@
 			Added an RSS Feed content type that allows the inclusion of RSS feeds into
 			a Segue site.
 		</new>
+		<fix author="adam">
+			Re-wrote the canview() and hasPermission() functions. They are now
+			more understandable and commented, as well as having less redundency.
+			Also, they now support the visitor user-type.
+		</fix>
 	</version>
 	<version number="1.2.3" date="2004-08-04">
 		<fix author='alex'>
