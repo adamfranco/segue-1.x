@@ -209,8 +209,8 @@ if ($_loggedin) {
 				array_push($sites,$n);
 			else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
 				array_push($sites,$n);
-			else
-				array_push($sites,$n);
+/* 			else */
+/* 				array_push($sites,$n); */
 		}
 	}
 	
