@@ -384,14 +384,14 @@ SET
 	FK_updatedby = ".$_SESSION[aid]."
 ";
 			db_query($query);
-			$a[] = "FK_media=".mysql_insert_id();
+			$a[] = "FK_media=".lastid();
 		}
 		
 
 		$query = "INSERT INTO section SET ".implode(",",$a);
 		db_query($query);
 		
-		$this->id = mysql_insert_id();
+		$this->id = lastid();
 		
 //		$this->fetchUp(1);
 

@@ -82,7 +82,7 @@ FROM
 			$query = "INSERT INTO classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
 //			echo $query."<br>";
 			$r = db_query($query);
-    		$this->id = mysql_insert_id();
+    		$this->id = lastid();
 		}
 		// else just update it
 		else {

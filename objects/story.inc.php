@@ -310,7 +310,7 @@ class story extends segue {
 					story_text_type AS texttype, 
 					story_text_short AS shorttext,
 					story_text_long AS longertext,
-					media_tag AS url
+					media_tag AS url,
 					user_createdby.user_uname AS addedby, 
 					user_updatedby.user_uname AS editedby, 
 					slot_name as site_id,
@@ -479,14 +479,14 @@ SET
 	FK_updatedby = ".$_SESSION[aid]."
 ";
 			db_query($query);
-			$a[] = "FK_media=".mysql_insert_id();
+			$a[] = "FK_media=".lastid();
 		}
 
 		$query = "INSERT INTO story SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
 		db_query($query);
 		
-		$this->id = mysql_insert_id();
+		$this->id = lastid();
 		
 		$this->fetchUp();
 /* 		$this->owningPageObj->addStory($this->id); */

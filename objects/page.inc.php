@@ -470,14 +470,14 @@ SET
 	FK_updatedby = ".$_SESSION[aid]."
 ";
 			db_query($query);
-			$a[] = "FK_media=".mysql_insert_id();
+			$a[] = "FK_media=".lastid();
 		}
 
 		$query = "INSERT INTO page SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
 		db_query($query);
 		
-		$this->id = mysql_insert_id();
+		$this->id = lastid();
 		
 		$this->fetchUp();
 /* 		$this->owningSectionObj->addPage($this->id); */

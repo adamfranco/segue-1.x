@@ -935,7 +935,7 @@ ORDER BY
 		$query = "INSERT INTO site SET ".implode(",",$a).";";
 /*  		print "<BR>query = $query<BR>"; */
 		db_query($query);
-		$this->id = mysql_insert_id();
+		$this->id = lastid();
 		
 /* 		print "<H1>ID = ".$this->id."</H1>"; */
 		
