@@ -9,7 +9,6 @@ include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-$ugroup_id = $_REQUEST[ugroup_id];
 
 if (isset($_REQUEST[name])) {
 	//printpre($name);
@@ -17,9 +16,14 @@ if (isset($_REQUEST[name])) {
 	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_external_id'");
 	$_REQUEST[ugroup_id] = $ugroup_id;
 	//printpre($ugroup_id);
-	$students = getclassstudents($class_external_id);
+	$participants = getclassstudents($class_external_id);
 	//printpre($class_external_id);
-	//printpre($students);
+	//printpre($participants);
+
+} else {
+	$ugroup_id = $_REQUEST[ugroup_id];
+	$class_external_id = db_get_value("class","class_external_id","FK_ugroup = $ugroup_id");
+	$participants = getclassstudents($class_external_id);
 
 }
 
@@ -28,6 +32,7 @@ if ($_REQUEST[n]) {
 	//include("config.inc.php");
 	//include("functions.inc.php");
 	$usernames=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
+	$participants=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
 }
 
 // sort alphabetically
@@ -35,6 +40,12 @@ if (count($usernames)) {
 	asort($usernames);
 	reset($usernames);
 }
+if (count($participants)) {
+	asort($participants);
+	reset($participants);
+}
+
+
 
 if ($action == "add" && $addstudent) {
 	// make sure the user is in the db
@@ -229,7 +240,7 @@ $r = db_query($query);
 
 while ($a = db_fetch_assoc($r)) {
 
-	$logged_students[] = $a[user_uname];
+	$logged_participants[] = $a[user_uname];
 	print "<tr>";
 		print "<td align=center>";
 			if ($owner_id != $a[user_id])
@@ -248,16 +259,17 @@ while ($a = db_fetch_assoc($r)) {
  * need to check if these students are in the fetched array above...
  ******************************************************************************/
 
-foreach ($students as $student) {
-
-	if (!in_array($student, $logged_students)) {
+foreach (array_keys($participants) as $key) {
+	//printpre($participants[$key][uname]);
+	
+	if (!in_array($participants[$key][uname], $logged_participants)) {
 		print "<tr>";
 			print "<td align=center>";
 				//if ($owner_id != $a[user_id])
 				//	print "<input type=button name='use' value='remove' onClick=\"delStudent('".$a[user_id]."','".$a[user_fname]." (".$a[user_uname].")')\">";
 			print "</td>";
 			print "<td>";
-				print $student;
+				print $participants[$key][fname]." (".$participants[$key][uname].") - ".$participants[$key][type];
 			print "</td>";
 		print "</tr>";
 	}

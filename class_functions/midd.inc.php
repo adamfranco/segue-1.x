@@ -82,7 +82,6 @@ function getclassstudents($class_id) {
 		 * search ldap with search dn and filter, get results, close ldap connection
 		 * results will be list of members of group within a class within a semester
 		 ******************************************************************************/
-
 		$sr = ldap_search($c,$classSearchDN,$classSearchFilter,$return);
 		$res = ldap_get_entries($c,$sr);
 		if ($res['count']) {
@@ -127,30 +126,47 @@ function getclassstudents($class_id) {
 						//$searchFilter = "(".$cfg[ldap_username_attribute]."=".$name.")";
 						
 						$userSearchFilter = "(".$nextmember.")";
-						//printpre ("userSearchFilter: ".$userSearchFilter);
+						$userSearchFilter = eregi_replace("(,)\s?".$userSearchDN,"", $userSearchFilter);
 						
 						// search ldap with filter set to full name...
+						//$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
+						//print "<hr>";
+						//printpre("$sr2 = ldap_search($c :: $userSearchDN :: $userSearchFilter :: $return2);");
+						//printpre($return2);
 						$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
-						$res2 = ldap_get_entries($c,$sr2);	
+						$res2 = ldap_get_entries($c,$sr2);
+						//printpre($res2);
 						$res2[0] = array_change_key_case($res2[0], CASE_LOWER);
 						//printpre($res2);
 						$num = ldap_count_entries($c,$sr);
 						ldap_close($c);
-						
+						$participant = array();
 						if ($num) {							
-							$studentname = $res2[0][strtolower($cfg[ldap_fullname_attribute])][0];
+							$participant[fname] = $res2[0][strtolower($cfg[ldap_fullname_attribute])][0];
+							$participant[uname] = $res2[0][strtolower($cfg[ldap_username_attribute])][0];
+							
+							if (is_array($res2[0][strtolower($cfg[ldap_group_attribute])])) {
+							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
+								foreach ($res2[0][strtolower($cfg[ldap_group_attribute])] as $item) {
+									if (eregi($isProfSearchString,$item)) {
+										$areprof=1;
+									}
+								}
+							}
+							$participant[type] = ($areprof)?"prof":"stud";
+
 							//$student[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
 							//printpre("found ".$studentname);
 						}	
 					}			
 					
-					$students[]= $nextmember;					
+					$participants[]= $participant;					
 				}
 			//printpre($students);	
 			}
 	
 		}
-		return $students;
+		return $participants;
 	}
 }
 
