@@ -293,6 +293,18 @@ function allSitesSlots ($user,$existingSites) {
 	foreach ($classes as $n => $v) $allclasses[] = $n;
 	foreach ($futureclasses as $n => $v) $allclasses[] = $n;
 	$allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf,$slots));
+	
+	$allGroups = group::getGroupsOwnedBy($user);
+	$sitesInGroups = array();
+	foreach ($allGroups as $n=>$g) {
+		$sitesInGroups = array_unique(array_merge($sitesInGroups,group::getClassesFromName($g)));
+	}
+	foreach ($allsites as $n=>$site) {
+		if (!in_array($site,$sitesInGroups)) $allsites2[] = $site;
+	}
+	$allsites = array_merge($allsites2,$allGroups);
+	asort($allsites);
+	
 /*      print "<pre>"; print_r($allclasses); print "</pre>"; */
 	if ($existingSites) {
 		$sites = array();

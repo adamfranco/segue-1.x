@@ -729,7 +729,7 @@ class segue {
 				db_query("delete from permissions where user='$e' and site='$site'");
 			}
 			foreach ($this->editorsToDeleteInScope as $e) {
-				print "<br>delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id";
+/* 				print "<br>delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id"; */
 				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");
 			}
 		}
