@@ -2,8 +2,9 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.0.0 rc2">
+		<fix author='adam' ref='784526' reftype='bug'>Fixed upload of PHP files bug.</fix>
 		<important>DB CHANGE: The 'slot' table has a new column: 'slot_uploadlimit', which is an INT(10), corresponding to the number of bytes of the quota.</important>
-		<new author='adam' ref='777065' reftype="fr">Media Library quota can be adjusted on a per-site basis through the slot database table.</new>
+		<new author='adam' ref='777065' reftype="fr">Media Library quota can be adjusted on a per-site basis through the slot database table. Add Slot interface upgraded too.</new>
 		<fix author='gabe' ref='771969' reftype="bug">Upon logout, the session, instead of being completely destroyed, only unsets Segue-specific variables. The previous functionality was also killing other apps running under the same session.</fix>
 	</version>
 	<version number="1.0.0 rc1" date="2003-07-14">

@@ -103,7 +103,7 @@ printerr();
 <? include("themes/common/logs_css.inc.php"); ?>
 </head>
 <body onLoad="document.addform.uname.focus()">
-<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | add/edit users | <a href='classes.php?$sid'>add/edit classes</a></div>":""?>
+<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | add/edit users | <a href='classes.php?$sid'>add/edit classes</a> | <a href='add_slot.php?$sid'>add/edit slots</a></div>":""?>
 
 <?=$content?>
 
@@ -119,6 +119,8 @@ printerr();
 			<th>type</th>
 			<th>options</th>
 			</tr>
+			
+			<? if ($curraction != 'edit') { doUserForm($_REQUEST); } ?>
 			
 			<? // now output all the users
 			while ($a = db_fetch_assoc($r)) {
@@ -141,7 +143,6 @@ printerr();
 			}
 			?>
 			
-			<? if ($curraction != 'edit') { doUserForm($_REQUEST); } ?>
 			
 		</table>
 	</td>

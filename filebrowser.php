@@ -80,6 +80,13 @@ if ($upload) {
 //	print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
+	
+	// Check for *.php *.php3 etc. files and prevent upload
+	$isPHP = FALSE;
+	if (ereg("\.php[0-9]?$",$filename)) 
+		$isPHP = TRUE;
+	
+	// Check to see if the name is used.
 	$nameUsed = 0; 
 	while ($a = db_fetch_assoc($r)) { 
 		if ($a[media_tag] == $filename) {
@@ -111,6 +118,8 @@ if ($upload) {
 		$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
+	} else if ($isPHP) { 
+		$upload_results = "<li>PHP scripts are not allowed. File, $filename, was not uploaded."; 
 	} else { 
 		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID"; 

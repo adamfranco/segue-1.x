@@ -116,6 +116,41 @@ class slot {
 		$query = "DELETE FROM slot WHERE slot_id=".$this->id;
 		db_query($query);
 	}
+
+	function updateDB() {
+		global $error;
+		if (!$this->id) error("Slot is missing an ID");
+		if (!ereg("^([0-9a-zA-Z_.-]{0,})$",$this->name)) error("Your slot name is invalid. It may only contain alphanumeric characters, '-', '_' and '.'");
+		if (!$error) {
+		
+			// get id for owner of slot
+			$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
+/* 			echo $query."<br>"; */
+			$r = db_query($query);
+			if (!db_num_rows($r)) return false;
+			$a = db_fetch_assoc($r);
+			$owner_id = $a[user_id];			
+			
+			if ($this->site)
+				$site = "'".$this->site."'";
+			else
+				$site = "NULL";
+			if ($this->assocSite) {
+				// get id for assoc_site of slot
+				$query = "SELECT slot_id FROM slot WHERE slot_name = '".$this->assocSite."'";
+/* 				echo $query."<br>"; */
+				$r = db_query($query);
+				$a = db_fetch_assoc($r);
+				$assocSite = $a[slot_id];
+			} else
+				$assocSite = "NULL";
+			
+			$query = "UPDATE slot SET FK_owner= $owner_id, FK_assocsite=".$assocSite.",slot_uploadlimit=".$this->uploadlimit." WHERE slot_id=".$this->id;
+/* 			print $query; */
+			db_query($query);
+			echo mysql_error();
+		}
+	}
 	
 	function insertDB() {
 		global $error;
@@ -145,7 +180,7 @@ class slot {
 			} else
 				$assocSite = "NULL";
 			
-			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite=".$assocSite;
+			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite=".$assocSite.",slot_uploadlimit=".$this->uploadlimit;
 /* 			print $query; */
 			db_query($query);
 			echo mysql_error();

@@ -208,7 +208,7 @@ include("themes/common/header.inc.php");
 </head>
 <body onLoad="document.addform.external_id.focus()">
 
-<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | <a href='users.php?$sid'>add/edit users</a> | add/edit classes</div>":""?>
+<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | <a href='users.php?$sid'>add/edit users</a> | add/edit classes | <a href='add_slot.php?$sid'>add/edit slots</a></div>":""?>
 
 <?=$content?>
 
@@ -230,6 +230,8 @@ include("themes/common/header.inc.php");
 			<th>group</th>
 			<th>options</th>
 			</tr>
+			
+			<? if ($curraction != 'edit') { doUserForm($_REQUEST); } ?>
 			
 			<? // now output all the users
 			while ($a = db_fetch_assoc($r)) {
@@ -257,8 +259,6 @@ include("themes/common/header.inc.php");
 				}
 			}
 			?>
-			
-			<? if ($curraction != 'edit') { doUserForm($_REQUEST); } ?>
 			
 		</table>
 	</td>
