@@ -340,14 +340,8 @@ ORDER BY
 /* 			} */			
 		}
 		
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
 		// update permissions
-//		$this->updatePermissionsDB();
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
+		$this->updatePermissionsDB();
 
 		// add log entry
 /* 		log_entry("edit_section",$this->owning_site,$this->id,"","$_SESSION[auser] edited section id ".$this->id." in site ".$this->owning_site); */

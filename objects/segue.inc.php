@@ -229,6 +229,8 @@ FROM
 /* 			print "<pre>--$field---\n"; */
 /* 			print_r ($this->_datafields[$field][1]); */
 /* 			print "</pre>"; */
+			echo "<br>HERE: ".$field."<br>";
+
 			$query = "
 				SELECT 
 					".implode(",",$this->_datafields[$field][1])."
@@ -1126,19 +1128,64 @@ FROM
 //			print_r($n);
 
 			foreach ($n as $editor) {
-				$p = $this->permissions[$editor];
+				$p2 = $this->permissions[$editor];
 //				print_r($p);
-				// convert this to a "'a','v',..." format
-				$p_str = "";
-				if ($p[ADD]) $p_str.="a,";
-				if ($p[EDIT]) $p_str.="e,";
-				if ($p[DELETE]) $p_str.="d,";
-				if ($p[VIEW]) $p_str.="v,";
-				if ($p[DISCUSS]) $p_str.="di,";
+
+				// now get the permissions for the parent object. We need to do this so that we can determine whether
+				// the child permissions have simply inherited the parent permissions, or they have added something new.
 				
-				if ($p_str) $p_str = substr($p_str, 0, strlen($p_str)-1); // strip last comma from the end of a string 
-//				echo "'".$p_str."'<br>";
+				// if a section object, get permissions for the site
+				if ($scope == "section")
+					$p1 = $this->owningSiteObj->permissions[$editor];
+				// if a page object, get permissions for the parent section
+				else if ($scope == "page")
+					$p1 = $this->owningSectionObj->permissions[$editor];
+				// if a story object, get permissions for the parent page
+				else if ($scope == "story")
+					$p1 = $this->owningPageObj->permissions[$editor];
+					
+				// note that if a certain permission is set in $p1, it is impossible that the same permission is not set in $p2 (because $p2 inherits $p1's permissions)
+				// thus, there are 3 possibilities:
+				// 1) $p1 - SET,   $p2 - SET   
+				// 2) $p1 - UNSET, $p2 - SET
+				// 3) $p1 - UNSET, $p2 - UNSET
+
+				// now, put the inherited permissions in $p_inherit and the new permissions in $p_new
+				$p_inherit = array();
+				$p_new = array();
+				if ($scope != "site") {
+					foreach ($p1 as $key => $value)
+						// in case 1) and 3) $p2 inherits $p1's permission
+						if ($p1[$key] || (!$p1[$key] && !$p2[$key])) {
+							$p_inherit[$key] = 1;
+							$p_new[$key] = 0;
+						}
+						// in case 2), $p2 adds a new permission
+						else {
+							$p_inherit[$key] = 0;
+							$p_new[$key] = 1;
+						}
+				}
+				// if a site object
+				else {
+					$p_new = $p2; // everything is new
+					foreach ($p2 as $key => $value)
+						$p_inherit[$key] = 0; // nothing is inherited					
+				}
+
+				// convert $p_new to a "'a','v',..." format.
+				$p_new_str = "";
+				if ($p_new[ADD]) $p_new_str.="a,";
+				if ($p_new[EDIT]) $p_new_str.="e,";
+				if ($p_new[DELETE]) $p_new_str.="d,";
+				if ($p_new[VIEW]) $p_new_str.="v,";
+				if ($p_new[DISCUSS]) $p_new_str.="di,";
 				
+				if ($p_new_str) $p_new_str = substr($p_new_str, 0, strlen($p_new_str)-1); // strip last comma from the end of a string 
+//				echo "'".$p_new_str."'<br>";
+				
+
+
 				// find the id and type of this editor
 				if ($editor == 'everyone' || $editor == 'institute') {
 					$ed_type = $editor;
@@ -1211,10 +1258,10 @@ WHERE
 				if (db_num_rows($r_perm)) {
 					$a = db_fetch_assoc($r_perm);
 					// if we are changing the permissions, update the db
-					if ($p_str) {
+					if ($p_new_str) {
 						// if the object is a site, then it's easy - just set the permissions for the site
 						if ($scope == "site") {
-							$query = "UPDATE permission SET permission_value='$p_str' WHERE permission_id = ".$a[permission_id];
+							$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
 							echo $query."<br>";
 							db_query($query);					
 						}
@@ -1226,7 +1273,7 @@ WHERE
 					}
 				}
 				// if permission entry does not exist in the permission table
-				else if ($p_str) {
+				else if ($p_new_str) {
 					// need to insert permissions
 					if (!db_num_rows($r_perm)) {
 						// first insert in permission table
@@ -1234,7 +1281,7 @@ WHERE
 INSERT
 INTO permission
 	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
-VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_str')
+VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 ";
 //						echo $query."<br>";
 						db_query($query);

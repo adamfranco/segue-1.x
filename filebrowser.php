@@ -39,7 +39,6 @@ $query = "
 		media_tag,
 		media_id,
 		media_size,
-		date_format(media_updated_tstamp, '%M %e, %Y') AS media_updated_tstamp,
 		media_type,
 		slot_name
 	FROM 
@@ -63,7 +62,6 @@ if ($upload) {
 			media_tag,
 			media_id,
 			media_size,
-			date_format(media_updated_tstamp, '%M %e, %Y') AS media_updated_tstamp,
 			media_type,
 			slot_name,
 			user_fname,
@@ -128,7 +126,6 @@ $query = "
 		media_tag,
 		media_id,
 		media_size,
-		date_format(media_updated_tstamp, '%M %e, %Y') AS media_updated_tstamp,
 		media_type,
 		slot_name,
 		user_fname,
@@ -196,7 +193,7 @@ $query = "
 		media_tag,
 		media_id,
 		media_size,
-		date_format(media_updated_tstamp, '%M %e, %Y') AS media_updated_tstamp,
+		date_format(media_updated_tstamp, '%M %e, %Y %k:%i') AS media_updated_tstamp_text,
 		media_type,
 		slot_name,
 		user_fname,
@@ -538,7 +535,7 @@ if (1) {
 	print "<th><a href=# onClick=\"changeOrder('"; 
 	if ($order =='media_updated_tstamp asc') print "media_updated_tstamp desc"; 
 	else print "media_updated_tstamp asc"; 
-	print "')\" style='color: #000'>Date Created"; 
+	print "')\" style='color: #000'>Date Modified"; 
 	if ($order =='media_updated_tstamp asc') print " &or;"; 
 	if ($order =='media_updated_tstamp desc') print " &and;";	 
 	print "</a></th>"; 
@@ -635,7 +632,7 @@ if (db_num_rows($r)) {
  
 		print "<td class=td$color><nobr>"; 
 			if (strncmp($today, $a[media_updated_tstamp], 8) == 0 || strncmp($yesterday, $a[media_updated_tstamp], 8) == 0) print "<b>"; 
-			print $a[media_updated_tstamp]; 
+			print $a[media_updated_tstamp_text]; 
 			if (strncmp($today, $a[media_updated_tstamp], 8) == 0 || strncmp($yesterday, $a[media_updated_tstamp], 8) == 0) print "</b>"; 
 		print "</nobr></td>"; 
 		 

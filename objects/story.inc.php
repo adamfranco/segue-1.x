@@ -397,14 +397,8 @@ ORDER BY
 			}
 		}
 		
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
 		// update permissions
-//		$this->updatePermissionsDB();
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
+		$this->updatePermissionsDB();
 		
 		// add log entry, now handled elsewhere
 /* 		log_entry("edit_story",$this->owning_site,$this->owning_section,$this->owning_page,"$_SESSION[auser] edited content id ".$this->id." in site ".$this->owning_site); */
