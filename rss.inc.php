@@ -162,7 +162,7 @@ if ($error) {
 			// 
 			print "</description>\n";
 			
-			print "\t\t<lastBuildDate>".date("D M j, Y G:i:s T")."</lastBuildDate>\n";
+			print "\t\t<lastBuildDate>".date("D, j M Y G:i:s T")."</lastBuildDate>\n";
 			print "\t\t<generator>Segue RSS Generator</generator>\n";
 			
 		// handle archiving -- monthly, weekly, etc
@@ -194,7 +194,7 @@ if ($error) {
 					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink."</guid>\n";
 					
 					print "\t\t\t<pubDate>";
-					print timestamp2usdate($o->getField("addedtimestamp"));
+					print date("D, j M Y G:i:s T", strtotime(timestamp2usdate($o->getField("addedtimestamp"))));
 					print "</pubDate>\n";
 					
 					print "\t\t\t<author>";
