@@ -173,15 +173,23 @@ if ($upload) {
 	} else if (($_FILES[file][size] + $totalsize) > $dirlimit) {
 		$upload_results = "<li>There is not enough room in your directory for $filename."; 
 	} else if ($overwrite && $nameUsed) {
-		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0); 
-		$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
+		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0);
+		if ($newID && $newID != 'ERROR') {
+			$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
+		} else {
+			$upload_results = "<li>An error occurred when trying to upload ".$filename.". Please try again.";
+		}
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
 	} else if ($isPHP) { 
 		$upload_results = "<li>PHP scripts are not allowed. File, $filename, was not uploaded."; 
 	} else { 
-		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0); 
-		$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
+		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0);
+		if ($newID && $newID != 'ERROR') {
+			$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
+		} else {
+			$upload_results = "<li>An error occurred when trying to upload ".$filename.". Please try again.";
+		}
 	}	 
 } 
 
