@@ -323,9 +323,7 @@ class page extends segue {
 		$origsite = $this->owning_site;
 		$origid = $this->id;
 		if ($newsite) $this->owning_site = $newsite;
-		if ($newsection) {
-			$this->owning_section = $newsection;
-		}
+		if ($newsection) $this->owning_section = $newsection;
 
 		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
 		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_section);
