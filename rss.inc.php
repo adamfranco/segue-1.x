@@ -107,38 +107,35 @@ if ($error) {
 	if (!$thisPage || !$thisPage->canview()) {
 		print "\t\t<title>Error</title>\n";
 		ob_start();
-		if ($error)
-			print $errorString;
-		else {
-			print "You may not view this RSS Feed. This may be due to any of the following reasons:<br />";
-			print "<ul>";
-			if ($thisSite->site_does_not_exist) {
-				print "<li>This feed does not exist. ";
-				if (
-					$_SESSION[auser] == slot::getOwner($thisSite->name)
-						|| (
-							$allowpersonalsites 
-							&& $_SESSION[atype] != 'visitor'
-							&& $thisSite->name == $_SESSION[auser]
-						)
-					) 
-				{
-					print "<br /><a href='$PHP_SELF?$sid&action=add_site&sitename=".$thisSite->name."'>Create Site</a>";
-				}
-				print "</li>";
-			} else if (!$thisPage) {
-				print "<li>Requested page object doesn't exist.</li>";
-				
-			} else {
-				if (!$_SESSION[auser]) {
-					print "<li>You are not logged in.</li>";
-					print "<li>You are not on a computer within $cfg[inst_name]</li>";
-				}
-				print "<li>The feed has not been activated by the owner.</li>";
-				print "<li>You are not part of a set of specific users or groups allowed to view this feed.</li>";
+		print "You may not view this RSS Feed. This may be due to any of the following reasons:<br />";
+		print "<ul>";
+		if ($thisSite->site_does_not_exist) {
+			print "<li>This feed does not exist. ";
+			if (
+				$_SESSION[auser] == slot::getOwner($thisSite->name)
+					|| (
+						$allowpersonalsites 
+						&& $_SESSION[atype] != 'visitor'
+						&& $thisSite->name == $_SESSION[auser]
+					)
+				) 
+			{
+				print "<br /><a href='$PHP_SELF?$sid&action=add_site&sitename=".$thisSite->name."'>Create Site</a>";
 			}
-			print "</ul>";
+			print "</li>";
+		} else if (!$thisPage) {
+			print "<li>Requested page object doesn't exist.</li>";
+			
+		} else {
+			printpre($_SESSION);
+			if (!$_SESSION[auser]) {
+				print "<li>You are not logged in.</li>";
+				print "<li>You are not on a computer within $cfg[inst_name]</li>";
+			}
+			print "<li>The feed has not been activated by the owner.</li>";
+			print "<li>You are not part of a set of specific users or groups allowed to view this feed.</li>";
 		}
+		print "</ul>";
 		
 		$description = htmlspecialchars(ob_get_contents());
 		ob_end_clean();
