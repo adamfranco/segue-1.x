@@ -38,6 +38,8 @@ if (!is_object($_SESSION[origSiteObj])) {
 	
 	$_SESSION[type] = $_REQUEST[type];
 	
+	$_SESSION[sites] = array();
+	
 /******************************************************************************
  * Make sure that the user try to move, has permission to delete the origional
  ******************************************************************************/
@@ -525,7 +527,7 @@ print "</tr>";
 /* 	print "thisSite:\n"; */
 /* 	print_r($thisSite); */
 /* } */
-print "</pre>";
+/* print "</pre>"; */
 ?>
 </body>
 </html>
