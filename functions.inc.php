@@ -246,6 +246,62 @@ function deleteComplete($file) {
 	}
 }
 
+function deletePath($path) {
+	// posted by georg@spieleflut.de on PHP.net 24-Dec-2001 10:28
+	// This function will completely delete even a non-empty directory.
+	chmod($path,0777);
+	if (is_dir($path)) {
+		$handle = opendir($path);
+ 		while($filename = readdir($handle)) {
+  			if ($filename != "." && $filename != "..") {
+  				deletePath($path."/".$filename);
+  			}
+ 		}
+		closedir($handle);
+ 		rmdir($path);
+	} else {
+		unlink($path);
+	}
+}
+
+
+function dir_copy ($from_path, $to_path)
+{
+	// posted by dallask at sbcglobal dot net 21-Oct-2002 10:14
+	// on PHP.net
+	// Recursively copies a directory.
+   $this_path = getcwd();
+   if(!is_dir($to_path))
+   {    mkdir($to_path, 0775);
+   }
+  
+   if (is_dir($from_path))
+   {
+       chdir($from_path);
+       $handle=opendir('.');
+       while (($file = readdir($handle))!==false)
+       {
+           if (($file != ".") && ($file != ".."))
+           {
+               if (is_dir($file))
+               {
+                   chdir($this_path);
+                   dir_copy ($from_path.$file."/", $to_path.$file."/");
+                   chdir($this_path);
+                   chdir($from_path);
+               }
+               if (is_file($file))
+               {
+                   chdir($this_path);
+                   copy($from_path.$file, $to_path.$file);
+                   chdir($from_path);
+               }
+           }
+       }
+       closedir($handle);
+   }
+   chdir($this_path);
+}
 
 function decode_array($string) {
 	$array = array();

@@ -1,0 +1,535 @@
+<html>
+<head></head>
+<link rel="stylesheet" href="docstyles.css" />
+<body bgcolor="#FFE394">
+<br /><br />
+<center>
+<div class="classDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Class DOMIT_Document</td>
+					</tr>
+					<tr>
+						<td class="regular">A class representing the DOM Document.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>isPublic? </b>yes<br /><b>isAbstract? </b>no</p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Inheritance tree: </b></p><p><center><a href="DOMIT_Node.html">DOMIT_Node</a><br /><span class="branch">|</span><br /><a href="DOMIT_Document.html">DOMIT_Document</a></center></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Known subclasses: </b></p><p>None</p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Source file: </b>xml_domit_parser.php</p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Includes: </b>xml_domit_utilities.php,xml_domit_getelementsbypath.php,xml_domit_nodemaps.php</p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="constructorDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Constructor</td>
+					</tr>
+					<tr>
+						<td class="regular">Initializes DOMIT_Document variables and those of the superclass.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">DOMIT_Document()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>isPublic? </b>no</p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicConstantsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Constants</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateConstantsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Constants</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicFieldsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Fields</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">xmlDeclaration</td>
+					</tr>
+					<tr>
+						<td class="regular">A string representing the xml declaration of the document. Note that this value must be manually assigned; neither the SAXY nor the Expat parsers process xml declarations.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Type: </b>String</p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">doctype</td>
+					</tr>
+					<tr>
+						<td class="regular">A string representing the document type of the document. Note that this value must be manually assigned; neither the SAXY nor the Expat parsers process document types.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Type: </b>String</p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">documentElement</td>
+					</tr>
+					<tr>
+						<td class="regular">A reference to the root element of the DOMIT_Document. Null if unassigned.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Type: </b><a href="DOMIT_Element.html">DOMIT_Element</a></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">parser</td>
+					</tr>
+					<tr>
+						<td class="regular">Contains the name of the parser used to create the DOMIT_Document, either &quot;SAXY&quot; or &quot;EXPAT&quot;. If the document is empty, an empty string will be returned.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Type: </b>String</p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateFieldsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Fields</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="publicMethodsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Public Methods</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">appendChild</td>
+					</tr>
+					<tr>
+						<td class="regular">Adds the specified node as the documentElement.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">appendChild(&amp;$child)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p><a href="DOMIT_Node.html">DOMIT_Node</a> <span class="parameter">child</span> - The node that is to be appended as documentElement. Only a single node can serve as documentElement, so an existing documentElement node will be overwritten.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_Node.html">DOMIT_Node</a> - The appended documentElement node.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The documentElement of a tree is assigned using appendChild:</p><p><span class="code">$mydoc-&gt;appendChild($elementNode);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">createElement</td>
+					</tr>
+					<tr>
+						<td class="regular">Creates a new instance of a DOMIT_Element.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">createElement($name)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">name</span> - The tagName of the DOMIT_Element to be created.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_Element.html">DOMIT_Element</a> - The newly created DOMIT_Element.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>A new DOMIT_Element can be created in the following manner:</p><p><span class="code">$myBook = $xmldoc-&gt;createElement(&quot;book&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">createTextNode</td>
+					</tr>
+					<tr>
+						<td class="regular">Creates a new instance of a DOMIT_TextNode.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">createTextNode($text)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">text</span> - The text of the DOMIT_TextNode to be created.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_TextNode.html">DOMIT_TextNode</a> - The newly created DOMIT_TextNode.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>A new DOMIT_TextNode can be created in the following manner:</p><p><span class="code">$myBookCritique = $xmldoc-&gt;createTextNode(&quot;A really good read.&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">createCDATASection</td>
+					</tr>
+					<tr>
+						<td class="regular">Creates a new instance of a DOMIT_CDATASection.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">createCDATASection($text)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">text</span> - The text of the DOMIT_CDATASection to be created.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_CDATASection.html">DOMIT_CDATASection</a> - The newly created DOMIT_CDATASection.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>A new DOMIT_CDataSection can be created in the following manner:</p><p><span class="code">$curseWord = $xmldoc-&gt;createCDATASection(&quot;&amp;*^%$#@&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getElementsByTagName</td>
+					</tr>
+					<tr>
+						<td class="regular">Generates an DOMIT_NodeList of DOMIT_Elements with the specified $tagName that are present in the document.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">&amp;getElementsByTagName($tagName)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">tagName</span> - The tag name of the DOMIT_Elements to be searched for, or &quot;*&quot; if all elements are to be returned.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_NodeList.html">DOMIT_NodeList</a> - The DOMIT_NodeList of found DOMIT_Elements.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>Here, all elements named &quot;poem&quot; that fall under the $poems node are returned as a DOMIT_NodeList:</p><p><span class="code">$poems =&amp; $library-&gt;getElementsByTagName(&quot;poem&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">parseXML</td>
+					</tr>
+					<tr>
+						<td class="regular">Parses the xml string provided into a hierarchy of DOMIT_Nodes under the current DOMIT_Document. Either the Expat extension or the included SAXY_Parser class can be specified to perform the parsing.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">parseXML($xmlText, $useSAXY = true)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">xmlText</span> - The xml text to be parsed.</p>
+<p>boolean <span class="parameter">useSAXY</span> - false (or omitted) if the Expat parser is to be used, true if SAXY is used. Note that since SAXY is not a C extension as is Expat, there is no question as to its availability. It is also slightly faster than Expat, although possibly not as robust.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The xml string will be parsed using the SAXY parser:</p><p><span class="code">$xmldoc-&gt;parseXML(&quot;&lt;book&gt;&lt;title&gt;Using DOMIT!&lt;/title&gt;&lt;author&gt;John Heinstein&lt;/author&gt;&lt;/book&gt;&quot;, true);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">loadXML</td>
+					</tr>
+					<tr>
+						<td class="regular">Parses the xml string located at the specified url or local file. Either the Expat extension or the included SAXY_Parser class can be specified to perform the parsing.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">loadXML($fileName, $useSAXY = true)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">fileName</span> - The file name (url or local file) containing the xml to be parsed.</p>
+<p>boolean <span class="parameter">useSAXY</span> - false (or omitted) if the Expat parser is to be used, true if SAXY is used. Note that since SAXY is not a C extension as is Expat, there is no question as to its availability. It is also slightly faster than Expat, although possibly not as robust.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>boolean - True if the xml parsed properly.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The xml string in file myFile.xml will be parsed using the SAXY parser:</p><p><span class="code">$xmldoc-&gt;loadXML(&quot;http://www.someurl.com/myFile.xml&quot;, true);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getTextFromFile</td>
+					</tr>
+					<tr>
+						<td class="regular">Gets the text located at the specified url or local file.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">getTextFromFile($filename)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">fileName</span> - The file name (url or local file) containing the text to be retrieved.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - The text contained in the specified file.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The string in file myFile.txt will be retrieved:</p><p><span class="code">$myText = $xmldoc-&gt;getTextFromFile(&quot;http://www.someurl.com/myFile.txt&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">saveXML</td>
+					</tr>
+					<tr>
+						<td class="regular">Saves the current DOM document as XML text at the specified location.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">saveXML($fileName)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">fileName</span> - The file name (url or local file) to which the XML is to be saved.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>boolean - True if the file is saved properly.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The current document will be saved as myFile.xml:</p><p><span class="code">$success = $xmldoc-&gt;saveXML(&quot;http://www.someurl.com/myFile.xml&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">saveTextToFile</td>
+					</tr>
+					<tr>
+						<td class="regular">Saves the specified text located to the specified url or local file.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">saveTextToFile($fileName, $text)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">fileName</span> - The file name (url or local file) where the specified text is to be written.</p>
+<p>String <span class="parameter">text</span> - The text to be written to the specified file name.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>boolean - True if the save is successful.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The specified string will be saved as myFile.txt:</p><p><span class="code">$success = $xmldoc-&gt;saveTextToFile(&quot;../myFile.txt&quot;, &quot;This is a test&quot;);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">parsedBy</td>
+					</tr>
+					<tr>
+						<td class="regular">Returns the name of the parser used to create the document, either &quot;SAXY&quot; or &quot;EXPAT&quot;.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">parsedBy()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - The name of the parser used to create the document, either &quot;SAXY&quot; or &quot;EXPAT&quot;. An empty string is returned if the document is empty.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>The name of the parser is returned:</p><p><span class="code">$myParser = $xmldoc-&gt;parsedBy();</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getNodesByNodeType</td>
+					</tr>
+					<tr>
+						<td class="regular">Allows you to search the document tree for nodes of a specific type, returning the found nodes in a DOMIT_NodeList.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">&amp;getNodesByNodeType($type, &amp;$contextNode)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>int <span class="parameter">type</span> - A DOMIT! constant referring to the node type, one of: DOMIT_DOCUMENT_NODE (9), DOMIT_ELEMENT_NODE (1), DOMIT_TEXT_NODE (3), DOMIT_CDATA_SECTION_NODE (4).</p>
+<p><a href="DOMIT_Node.html">DOMIT_Node</a> <span class="parameter">contextNode</span> - An element or document node from which the search should begin.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_NodeList.html">DOMIT_NodeList</a> - A DOMIT_NodeList containing the found nodes.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>All elements in the document will be returned.</p><p><span class="code">$allElements =&amp; $xmldoc-&gt;getNodesByNodeType(DOMIT_ELEMENT_NODE, $xmldoc);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getNodesByNodeValue</td>
+					</tr>
+					<tr>
+						<td class="regular">Allows you to search the document tree for nodes of a specific value, returning the found nodes in a DOMIT_NodeList.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">&amp;getNodesByNodeValue($value, &amp;$contextNode)</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Parameters:</b></p>
+<p>String <span class="parameter">value</span> - The text to search for in any text/cdata nodes that are encountered.</p>
+<p><a href="DOMIT_Node.html">DOMIT_Node</a> <span class="parameter">contextNode</span> - An element or document node from which the search should begin.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>array - A DOMIT_NodeList containing the found nodes.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>All text nodes in the document containing the string &quot;Richard Thompson&quot; will be returned.</p><p><span class="code">$textNodes =&amp; $cdCollectionDoc-&gt;getNodesByNodeValue(&quot;Richard Thompson&quot;, $cdCollectionDoc);</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">getText</td>
+					</tr>
+					<tr>
+						<td class="regular">Returns the text contained in all DOMIT_TextNodes and DOMIT_CDataSections that are children of the specified starting node</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">getText()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>All text and cdata nodes in the document will be concatenated and returned.</p><p><span class="code">$allDocmentText = $xmldoc-&gt;getText();</span></p></td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">toString</td>
+					</tr>
+					<tr>
+						<td class="regular">Generates an unformatted (single line, no whitespace) string representation of the document and all children.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">toString()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p>String - An unformatted (single line, no whitespace) string representation of the document and all children.</p>
+</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Example: </b>
+</p><p>An unformatted string representation of the xml document will be printed here:</p><p><span class="code">echo (htmlentities($myDoc-&gt;toString());</span></p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<br /><br /><br />
+<div class="privateMethodsDescription">
+	<table class="outer" border="0" cellspacing="0" cellpadding="0" width="440" bgcolor="#000000">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="8">
+					<tr>
+						<td class="sectionHeader">Private Methods</td>
+					</tr>
+					<tr>
+						<td class="subsectionHeader">createClone</td>
+					</tr>
+					<tr>
+						<td class="regular">Used by cloneNode() to generate a new instance of a DOMIT_Document containing the same data as the original.</td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Signature: </b><span class="code">&amp;createClone()</span></p></td>
+					</tr>
+					<tr>
+						<td class="regular"><p><b>Returns:</b></p>
+<p><a href="DOMIT_Document.html">DOMIT_Document</a> - A new DOMIT_Document</p>
+</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+<br />
+<p class="docblurb">Documentation generated by <b>ClassyDoc</b>, using the <b>DOMIT!</b> and <b>SAXY</b> parsers.<br />
+Please visit <a href="http://www.engageinteractive.com" target="_child">Engage Interactive</a> to download free copies.</p>
+<br />
+</center>
+</body>
+</html>

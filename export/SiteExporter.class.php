@@ -66,10 +66,10 @@ class SiteExporter {
 		
 		$this->_buffer .= '
 '.$tabs.'<site';
-		$this->_buffer .= ' name="'.urlencode($site->getField('name')).'"';
-		$this->_buffer .= ' owner="'.urlencode(slot::getOwner($site->getField('name'))).'"';
-		$this->_buffer .= ' title="'.urlencode($site->getField('title')).'"';
-		$this->_buffer .= ' type="'.urlencode($site->getField('type')).'"';
+		$this->_buffer .= ' name="'.($site->getField('name')).'"';
+		$this->_buffer .= ' owner="'.(slot::getOwner($site->getField('name'))).'"';
+		$this->_buffer .= ' title="'.addslashes($site->getField('title')).'"';
+		$this->_buffer .= ' type="'.($site->getField('type')).'"';
 		$this->_buffer .= '>';
 		
 		foreach ($site->sections as $key => $val) {
@@ -100,7 +100,7 @@ class SiteExporter {
 		$this->_buffer .= '
 '.$tabs.'<section';
 //		$this->_buffer .= ' id="'.$section->getField('id').'"';
-		$this->_buffer .= ' title="'.urlencode($section->getField('title')).'"';
+		$this->_buffer .= ' title="'.addslashes($section->getField('title')).'"';
 		$this->_buffer .= ' creator="'.$section->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$section->getField('addedtimestamp').'"';
 		$this->_buffer .= ' last_editor="'.$section->getField('editedby').'"';
@@ -135,7 +135,7 @@ class SiteExporter {
 '.$tabs.'<page';
 //		$this->_buffer .= ' id="'.$page->getField('id').'"';
 //		$this->_buffer .= ' addedby="'.$page->getField('addedby').'"';
-		$this->_buffer .= ' title="'.urlencode($page->getField('title')).'"';
+		$this->_buffer .= ' title="'.addslashes($page->getField('title')).'"';
 		$this->_buffer .= ' creator="'.$page->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$page->getField('addedtimestamp').'"';
 		$this->_buffer .= ' last_editor="'.$page->getField('editedby').'"';
@@ -170,7 +170,7 @@ class SiteExporter {
 '.$tabs.'<story';
 //		$this->_buffer .= ' id="'.$story->getField('id').'"';
 //		$this->_buffer .= ' addedby="'.$story->getField('addedby').'"';
-		$this->_buffer .= ' title="'.urlencode($story->getField('title')).'"';
+		$this->_buffer .= ' title="'.addslashes($story->getField('title')).'"';
 		$this->_buffer .= ' creator="'.$story->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$story->getField('addedtimestamp').'"';
 		$this->_buffer .= ' last_editor="'.$story->getField('editedby').'"';
@@ -199,15 +199,15 @@ class SiteExporter {
 		
 		$this->_buffer .= '
 '.$tabs.'<link';
-		$this->_buffer .= ' title="'.urlencode($link->getField('title')).'"';
-		$this->_buffer .= ' url="'.urlencode($link->getField('url')).'"';
+		$this->_buffer .= ' title="'.addslashes($link->getField('title')).'"';
+		$this->_buffer .= ' url="'.($link->getField('url')).'"';
 		$this->_buffer .= ' creator="'.$link->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$link->getField('addedtimestamp').'"';
 		$this->_buffer .= ' last_editor="'.$link->getField('editedby').'"';
 		$this->_buffer .= ' last_edit_date="'.$link->getField('editedtimestamp').'"';
 		$this->_buffer .= '>';
 		$this->_buffer .= '
-'.$this->_getTabs($indent+1).urlencode($link->getField('shorttext'));
+'.$this->_getTabs($indent+1).($link->getField('shorttext'));
 		$this->_buffer .='
 '.$tabs.'</link>';
 	}
@@ -223,7 +223,7 @@ class SiteExporter {
 		
 		$this->_buffer .= '
 '.$tabs.'<heading';
-		$this->_buffer .= ' title="'.urlencode($heading->getField('title')).'"';
+		$this->_buffer .= ' title="'.addslashes($heading->getField('title')).'"';
 		$this->_buffer .= ' creator="'.$heading->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$heading->getField('addedtimestamp').'"';
 		$this->_buffer .= ' last_editor="'.$heading->getField('editedby').'"';
@@ -245,7 +245,7 @@ class SiteExporter {
 		
 		$this->_buffer .= '
 '.$tabs.'<divider';
-		$this->_buffer .= ' title="'.urlencode($divider->getField('title')).'"';
+		$this->_buffer .= ' title="'.addslashes($divider->getField('title')).'"';
 				$this->_buffer .= ' creator="'.$divider->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$divider->getField('addedtimestamp').'"';
 		$this->_buffer .= ' last_editor="'.$divider->getField('editedby').'"';
@@ -270,7 +270,7 @@ class SiteExporter {
 			$this->_buffer .= ' type="'.$type.'"';
 			$this->_buffer .= '>
 ';
-			$this->_buffer .= $this->_getTabs($indent+1).urlencode($story->getField($type.'text'));
+			$this->_buffer .= $this->_getTabs($indent+1).($story->getField($type.'text'));
 			$this->_buffer .='
 '.$tabs.'</content>';
 		}
@@ -287,8 +287,8 @@ class SiteExporter {
 		
 		$this->_buffer .= '
 '.$tabs.'<file';
-		$this->_buffer .= ' title="'.urlencode($story->getField('title')).'"';
-		$filename = db_get_value("media","media_tag","media_id=".$story->getField("longertext"));
+		$this->_buffer .= ' title="'.addslashes($story->getField('title')).'"';
+		$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext"))));
 		$this->_buffer .= ' url="'.$filename.'"';
 		$this->_buffer .= ' creator="'.$story->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$story->getField('addedtimestamp').'"';
@@ -297,7 +297,7 @@ class SiteExporter {
 		$this->_buffer .= '>';
 		if ($story->getField('shorttext')) {
 			$this->_buffer .= '
-'.$this->_getTabs($indent+1).urlencode($story->getField('shorttext')).'
+'.$this->_getTabs($indent+1).($story->getField('shorttext')).'
 ';
 		}
 		$this->_buffer .= $tabs.'</file>';
@@ -314,8 +314,8 @@ class SiteExporter {
 		
 		$this->_buffer .= '
 '.$tabs.'<image';
-		$this->_buffer .= ' title="'.urlencode($story->getField('title')).'"';
-		$filename = db_get_value("media","media_tag","media_id=".$story->getField("longertext"));
+		$this->_buffer .= ' title="'.addslashes($story->getField('title')).'"';
+		$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext"))));
 		$this->_buffer .= ' url="'.$filename.'"';
 		$this->_buffer .= ' creator="'.$story->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$story->getField('addedtimestamp').'"';
@@ -324,7 +324,7 @@ class SiteExporter {
 		$this->_buffer .= '>';
 		if ($story->getField('shorttext')) {
 			$this->_buffer .= '
-'.$this->_getTabs($indent+1).urlencode($story->getField('shorttext')).'
+'.$this->_getTabs($indent+1).($story->getField('shorttext')).'
 ';
 		}
 		$this->_buffer .= $tabs.'</image>';
@@ -341,8 +341,8 @@ class SiteExporter {
 		
 		$this->_buffer .= '
 '.$tabs.'<link';
-		$this->_buffer .= ' title="'.urlencode($story->getField('title')).'"';
-		$this->_buffer .= ' url="'.urlencode($story->getField('url')).'"';
+		$this->_buffer .= ' title="'.addslashes($story->getField('title')).'"';
+		$this->_buffer .= ' url="'.($story->getField('url')).'"';
 		$this->_buffer .= '>';
 		$this->_buffer .= ' creator="'.$story->getField('addedby').'"';
 		$this->_buffer .= ' creation_date="'.$story->getField('addedtimestamp').'"';
@@ -350,7 +350,7 @@ class SiteExporter {
 		$this->_buffer .= ' last_edit_date="'.$story->getField('editedtimestamp').'"';
 		if ($story->getField('shorttext')) {
 			$this->_buffer .= '
-'.$this->_getTabs($indent+1).urlencode($story->getField('shorttext')).'
+'.$this->_getTabs($indent+1).($story->getField('shorttext')).'
 ';
 		}
 		$this->_buffer .= $tabs.'</link>';

@@ -1,6 +1,11 @@
 <?
 
-require_once('SiteExporter.class.php');
+require_once('DomitSiteExporter.class.php');
+
+require_once('domit/xml_domit_getelementsbypath.php');
+require_once('domit/xml_domit_nodemaps.php');
+require_once('domit/xml_domit_parser.php');
+require_once('domit/xml_domit_utilities.php');
 
 require_once('../config.inc.php');
 require_once('../dbwrapper.inc.php');
@@ -28,14 +33,17 @@ $site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
 $imagepath = $uploaddir.$sitename.'/';
 
 // Get the XML for the site
-$siteExporter =& new SiteExporter();
+$siteExporter =& new DomitSiteExporter();
 $siteXML =& $siteExporter->export($site);
+
+//print_r($siteExporter);
 
 // make a temporary directory for the site contents
 if (file_exists($exportpath.'tmp'))
 	deletePath($exportpath.'tmp');
 mkdir ($exportpath.'tmp');
-$siteDir = $exportpath.'tmp/'.$sitename.'_'.date('YmdHis').'/';
+//$siteDir = $exportpath.'tmp/'.$sitename.'_'.date('YmdHis').'/';
+$siteDir = $exportpath.'tmp/'.$sitename.'/';
 mkdir ($siteDir);
 
 // Copy the Media Files to the sitedir.
@@ -43,6 +51,8 @@ dir_copy( $imagepath, $siteDir.'media/');
 
 // Save the XML to a file.
 $xmlFile = $siteDir.'site.xml';
+
+
 if (!$handle = fopen($xmlFile, 'a')) {
 	 echo "Cannot open file ($xmlFile)";
 	 exit;
@@ -55,5 +65,7 @@ if (!fwrite($handle, $siteXML)) {
 }
 
 fclose($handle);
+//$siteExporter->saveXML($xmlFile);
+//print $siteXML;
 
 exit(0);
