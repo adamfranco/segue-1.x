@@ -49,9 +49,11 @@ while ($a = db_fetch_assoc($r)) {
 		print $query."<br>";		
 		db_query($query);
 		
-		$dir = $uploaddir."/".$site_id;
-		print "$dir<br>";
-		delete_complete($dir);
+		if ($site_id && $site_id != "" && $site_id != "." && $site_id != ".." && $site_id != " ") {
+			$dir = $uploaddir."/".$site_id;
+			print "$dir<br>";
+			delete_complete($dir);
+		}
 
 		print "<br>";
 }
