@@ -7,7 +7,6 @@ $message = '';
 ob_start();
 session_start();
 
-
 // include all necessary files
 include("includes.inc.php");
 
@@ -17,6 +16,8 @@ include("includes.inc.php");
 /* 	exit; */
 /* } */
 //printpre($_REQUEST);
+
+
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 /******************************************************************************
@@ -25,6 +26,11 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 if ($_REQUEST['action']) {
 	$curraction = $_REQUEST['action'];
 	$action = $_REQUEST['action'];
+} 
+
+if ($_REQUEST['email']) {
+	$curraction = 'email';
+	$action = 'email';
 } 
 
 /******************************************************************************
@@ -258,6 +264,43 @@ function changeOrder(order) {
 	f.submit();
 }
 
+function doWindow(name,width,height) {
+	var win = window.open("",name,"toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,resizable=yes,copyhistory=no,width="+width+",height="+height);
+	win.focus();
+}
+
+function sendWindow(name,width,height,url) {
+	var win = window.open("",name,"toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,resizable=yes,copyhistory=no,width="+width+",height="+height);
+	win.document.location=url;
+	win.focus();
+}
+
+function checkAll() {
+	field = document.forms[0].elements['editors[]'];
+	for (i = 0; i < field.length; i++)
+		field[i].checked = true ;
+}
+
+function uncheckAll() {
+	field = document.forms[0].elements['editors[]'];
+	for (i = 0; i < field.length; i++)
+		field[i].checked = false ;
+}
+
+function doFieldChange(user,scope,site,section,page,story,field,what) {
+	f = document.addform;
+	f.fieldchange.value = 1;
+	f.puser.value = user;
+	f.pscope.value = scope;
+	f.psite.value = site;
+	f.psection.value = section;
+	f.ppage.value = page;
+	f.pstory.value = story;
+	f.pfield.value = field;
+	f.pwhat.value = what;
+	f.submit();
+}
+
 </script>
 
 </head>
@@ -394,10 +437,8 @@ print "</table><br />";
  * sent email confirmation
  ******************************************************************************/
 
-	} //else {
-		//$numusers = db_num_rows($r);
-		//print "Total participants found: ".$numparticipants;
-		
+	} 
+	
 		/******************************************************************************
 		 * Navigation Email | List | Review participants in discussion or site
 		 ******************************************************************************/
@@ -476,13 +517,36 @@ print "</table><br />";
 				print ">site";
 			}
 			print "</select>";
-			print "<input type=submit name='update' value='Update'>";			
+			print "<input type=submit name='update' value='Update'>";
+			print "</td></tr>";
 			
+
+			
+			/******************************************************************************
+			 * Buttons:
+			 * check all/uncheck all buttons, check class only
+			 * add checked to roster, email checked participants
+			 ******************************************************************************/
+			 
+			
+			$buttons = "<tr>";
+			$buttons .= "<td align='left' colspan=2>";
+			$buttons .= "<input type=button name='checkall' value='Check All' onClick='checkAll()'> ";
+			$buttons .= "<input type=button name='uncheckall' value='Uncheck All' onClick='uncheckAll()'> ";
+			$buttons .= "<input type=button name='checkclass' value='Check Class Only' onClick=\"sendWindow('addeditor',400,250,'add_editor.php?$sid')\"> ";
+			$buttons .= "<input type=button name='addtoclass' value='Add Checked to Roster' onClick=\"sendWindow('addeditor',400,250,'add_editor.php?$sid')\"> ";
+			//$edlist = $_SESSION[obj]->getEditors();
+			//$buttons .= (($className && !in_array($className,$edlist))?"<div><a href='#' onClick='addClassEditor();'>Add students in ".$className."</a></div>":"");
+			//$buttons .= "</th><th align='right'>";
+			$buttons .= "<input type=submit name='email' value='Email Checked Participants-&gt;'>";
+			$buttons .= "</td></tr>";
+			if ($action != 'email') print $buttons;
+
 		} 
 		
 		?>
-		</form>
-		</div></td></tr></table>	
+		
+		</div></table>	
 		
 		<?
 		/******************************************************************************
@@ -492,9 +556,18 @@ print "</table><br />";
 		if ($curraction == 'email') {
 			
 			$emaillist = array();
-			while ($a2 = db_fetch_assoc($r)) {
-				array_push($emaillist, $a2['user_email']);	
+//			while ($a2 = db_fetch_assoc($r)) {
+//				array_push($emaillist, $a2['user_email']);	
+//			}
+
+			foreach ($_REQUEST[editors] as $editor) {
+				$editor_email = db_get_value("user","user_email", "user_id =".$editor);
+				$editor_fname = db_get_value("user","user_fname", "user_id =".$editor);
+				$editor_femail = $editor_fname."<".$editor_email.">";
+				array_push($emaillist, $editor_femail);
+				$emaillist = array_unique($emaillist);
 			}
+			
 						
 			$to = implode(", ", $emaillist);
 						
@@ -585,6 +658,7 @@ print "</table><br />";
 	?>
 	<table width='100%'>
 		<tr>
+		<th>edit</th>
 		<!-- <th>full name</th> -->
 		
 		<?
@@ -632,8 +706,20 @@ print "</table><br />";
 		 * Print out stats and links
 		 ******************************************************************************/
 		 	$color = 0;
+		 	
+/******************************************************************************
+ * 		 	$editors = array();
+			while ($a2 = db_fetch_assoc($r)) {
+				array_push($editors, $a2['user_id']);	
+			}
+
+ ******************************************************************************/
+
+
 			while ($a = db_fetch_assoc($r)) {
 			
+				$e = $a['user_id'];
+				//printpre($e);
 				/******************************************************************************
 				 * If listing participants, get # of posts and avg. rating
 				 ******************************************************************************/
@@ -693,15 +779,17 @@ print "</table><br />";
 				 * User: participant name, site, page > topic, discussion subject, rating, time
 				 * List: participant name, email, # of posts, average rating
 				 ******************************************************************************/
-
+				
 				print "<tr>";
 				
 				if ($curraction == 'review'  || $curraction == 'user') {
 					// user full name
 					if ($curraction == 'user') {
 					//	print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
+						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' checked></td>";
 						print "<td class=td$color>".$a['user_fname']." (".$a['user_uname'].")</td>";
 					} else {
+						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' checked></td>";
 						print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
 					}
 					//site links
@@ -712,7 +800,9 @@ print "</table><br />";
 					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_subject."</a></td>";
 					print "<td class=td$color>".$a['discussion_rate']."</td>";
 					print "<td class=td$color><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
+				//list
 				} else {
+					print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' checked></td>";
 					print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
 					print "<td class=td$color>".$a['user_email']."</td>";
 					print "<td class=td$color>".$postcount."</td>";
@@ -732,7 +822,10 @@ print "</table><br />";
 				if (is_array($students)) {
 					foreach (array_keys($students) as $key) {
 							if (!in_array($students[$key][uname], $logged_participants)) {
+								$e = $students[$key]['id'];
+								//printpre ($e);
 								print "<tr>";
+								print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e'  checked></td>";
 								print "<td class=td$color>".$students[$key][fname]."</td>";
 								print "<td class=td$color>".$students[$key][email]."</td>";
 								print "<td class=td$color>0</td>";
@@ -745,11 +838,15 @@ print "</table><br />";
 
 		?>
 	</table>	
+	<? print $buttons; ?>
 </td></tr>
-</table>
+</form></table>
 
 <br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
+
+printpre($_REQUEST);
+//printpre($emaillist);
 
 ?>
