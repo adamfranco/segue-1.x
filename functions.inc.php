@@ -118,6 +118,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	}
 	if (!$r) {
 		print "Upload file error!<br>";
+		log_entry("media_error","File upload attempt by $auser in site $site failed.",$site);
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
@@ -127,6 +128,8 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		print mysql_error()."<br>";
 		
 		$media_id = $replace_id;
+		
+		log_entry("media_update","$auser updated file: $name, id: $media_id, in site $site",$site);
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
@@ -136,6 +139,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 //		print mysql_error()."<br>";
 		
 		$media_id = lastid();
+		log_entry("media_upload","$auser uploaded file: $name, id: $media_id, to site $site",$site);
 		return $media_id;
 	}
 }
@@ -182,10 +186,13 @@ function deleteuserfile($fileid) {
 		if ($success) {
 			$query = "DELETE FROM media WHERE id='$fileid' LIMIT 1";
 			db_query($query);
+			log_entry("media_delete","$auser deleted file: ".$a[name].", id: $fileid, from site ".$a[site_id],$a[site_id]);
 		} else {
+			log_entry("media_error","Delete failed of file: ".$a[name].", id: $fileid, from site ".$a[site_id]." by $auser",$a[site_id]);
 			error("File could not be Deleted");
 		}
 	} else {
+		log_entry("media_error","Delete failed of file: ".$a[name].", id: $fileid, from site ".$a[site_id]." by $auser. File does not exist. Removed entry.",$a[site_id]);
 		error("File does not exist. Its Entry was deleted");
 		$query = "DELETE FROM media WHERE id='$fileid' LIMIT 1";
 		db_query($query);
