@@ -93,18 +93,18 @@ class section extends segue {
 		if ($id) $this->id = $id;
 		$this->tobefetched=1;
 		$this->id = $this->getField("id");
-		if ($this->id) {
-			$query = "select * from sections where id=".$this->id." limit 1";
-			$this->data = db_fetch_assoc(db_query($query));
-			if (is_array($this->data)) {
-				$this->fetched = 1;
-				$this->buildPermissionsArray();
-				
-				$this->data[pages] = decode_array($this->data[pages]);
-				
-				return true;
-			}
-		}
+/* 		if ($this->id) { */
+/* 			$query = "select * from sections where id=".$this->id." limit 1"; */
+/* 			$this->data = db_fetch_assoc(db_query($query)); */
+/* 			if (is_array($this->data)) { */
+/* 				$this->fetched = 1; */
+/* 				$this->buildPermissionsArray(); */
+/* 				 */
+/* 				$this->data[pages] = decode_array($this->data[pages]); */
+/* 				 */
+/* 				return true; */
+/* 			} */
+/* 		} */
 		if ($force && $this->id) {
 			foreach ($this->_allfields as $f) $this->getField($f);
 		}	

@@ -87,15 +87,6 @@ class site extends segue {
 		return $this->id;
 	}
 	
-/* 	function copySite ($newName, $clearPermissions=0) { */
-/* 		$this->fetchDown(1); */
-/* 		print "<pre>"; print_r($this); print "</pre>"; */
-/* 		$this->setSiteNameDown($newName); */
-/* 		if ($clearPermissions) $this->clearPermissions(); */
-/* 		print "<pre>"; print_r($this); print "</pre>"; */
-/* 		$this->updateDB(1); */
-/* 	} */
-	
 	function applyTemplate ($template) {
 		$templateObj = new site($template);
 		$templateObj->fetchDown(1);
@@ -112,7 +103,10 @@ class site extends segue {
 		return 1;
 	}
 	
-	function copySite($newName) {
+/******************************************************************************
+ * copySite - clearPermissions currently has no effect. All permissions are cleared.
+ ******************************************************************************/
+	function copySite($newName, $clearPermissions=1) {
 		$newSiteObj = $this;
 		$newSiteObj->setSiteName($newName, 1);
 		$newSiteObj->insertDB(1,1);
@@ -151,6 +145,7 @@ class site extends segue {
 		$query = "insert into sites set ".implode(",",$a);
 /* 		print "<BR>query = $query<BR>"; */
 		db_query($query);
+		$this->id = mysql_insert_id();
 		
 		// add new permissions entry.. force update
 		$this->updatePermissionsDB(1);
@@ -196,7 +191,9 @@ class site extends segue {
 			$o->delete();
 		}
 		
+/* 		print "<pre>this: "; print_r($this); print "</pre>"; */
 		$this->clearPermissions();
+/* 		print "<pre>this: "; print_r($this); print "</pre>"; */
 		$this->updatePermissionsDB();
 	}
 	

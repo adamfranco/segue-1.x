@@ -546,7 +546,7 @@ class segue {
 	}
 	
 	function clearPermissions() {
-		$this->editorsToDelete = array_unique(array_merge(array_keys($this->permissions),$this->editors));
+		$this->editorsToDeleteInScope = array_unique(array_merge(array_keys($this->permissions),$this->editors));
 		$this->editors = array();
 		$this->permissions = array();
 		$this->changedpermissions = 1;
@@ -611,10 +611,10 @@ class segue {
 		$r = db_query($query);
 		while ($a=db_fetch_assoc($r)) {
 			$this->permissions[strtolower($a[user])] = array( permissions::ADD()=>$a[a], 
-												permissions::EDIT()=>$a[e], 
-												permissions::DELETE()=>$a[d], 
-												permissions::VIEW()=>$a[v], 
-												permissions::DISCUSS()=>$a[di]);
+				permissions::EDIT()=>$a[e], 
+				permissions::DELETE()=>$a[d], 
+				permissions::VIEW()=>$a[v], 
+				permissions::DISCUSS()=>$a[di]);
 		}
 		// build editors array
 		$query = "select * from permissions where site='$site'";
@@ -729,7 +729,7 @@ class segue {
 				db_query("delete from permissions where user='$e' and site='$site'");
 			}
 			foreach ($this->editorsToDeleteInScope as $e) {
-/* 				print "delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id"; */
+				print "<br>delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id";
 				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");
 			}
 		}

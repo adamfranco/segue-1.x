@@ -15,6 +15,7 @@ if ($copysite && $newname && $origname) {
 /*      print "Move: $origname to $newname  <br> <pre>"; */
 /*      print_r($origSite); */
 /*      print "</pre>"; */
+        /* $origSite->copySite($newname,$clearpermissions); */
         $origSite->copySite($newname);
 }
 
@@ -228,11 +229,23 @@ if ($_loggedin) {
  * copy site bar
  ******************************************************************************/
         printc("<tr><td class='inlineth'><form action=$PHP_SELF?$sid method=post name='copyform'><table width=100%><tr><td>");
-        printc("Copy Site: ");
-        printSiteMenu($_SESSION[auser],1);
-        printc(" to ");
-        printSiteMenu($_SESSION[auser],0);
-        printc(" <input type=submit name='copysite' value='Copy'></form>");
+        
+        $allExistingSites = allSitesSlots($_SESSION[auser],1);
+        $allExistingSlots = allSitesSlots($_SESSION[auser],0);
+        
+        if (count($allExistingSites) && count($allExistingSlots)) {
+			printc("Copy Site: ");
+			printc("<select name='origname'>");
+			printOptions($allExistingSites);
+			printc("</select>");
+			printc(" to ");
+			printc("<select name='newname'>");
+			printOptions($allExistingSlots);
+			printc("</select>");
+/* 			printc(" Clear Permissions: <input type=checkbox name='clearpermissions' value='1' checked>"); */
+			printc(" <input type=submit name='copysite' value='Copy' class='button'></form>");
+        }
+        
         printc("</td><td align=right>");
         if ($_SESSION[ltype]=='admin') printc("<a href='$PHP_SELF?$sid&action=add_site'>add new site</a>");
         printc("</td></tr></table></td></tr>");
@@ -258,41 +271,48 @@ if ($_loggedin) {
  * functions
  ******************************************************************************/
 
-function printSiteMenu($user,$existingSites) {
-        global $classes, $futureclasses;
-        $allsites = array();
-        $allsites[] = $user;
-        $sitesOwnerOf = segue::getAllSites($user);
-        $slots = slot::getAllSlots($user);
-        $sitesEditorOf = array();
-        $esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor($user));
-        foreach ($esites as $o) {
-                if ($o->hasPermission("add and edit and delete",$user)) $sitesEditorOf[] = $o->name;
-        }
-        $allclasses = array();
-        foreach ($classes as $n => $v) $allclasses[] = $n;
-        foreach ($futureclasses as $n => $v) $allclasses[] = $n;
-        $allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf,$slots));
+function printOptions($siteArray) {
+	foreach ($siteArray as $n=>$site) {
+		$siteObj = new site($site);
+		printc("<option value='$site'>$site\n");
+	}
+}
+
+function allSitesSlots ($user,$existingSites) {
+	global $classes, $futureclasses;
+	$allsites = array();
+	$allsites[] = $user;
+	$sitesOwnerOf = segue::getAllSites($user);
+	$slots = slot::getAllSlots($user);
+	$sitesEditorOf = array();
+	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor($user));
+	foreach ($esites as $o) {
+			if ($o->hasPermission("add and edit and delete",$user)) $sitesEditorOf[] = $o->name;
+	}
+	$allclasses = array();
+	foreach ($classes as $n => $v) $allclasses[] = $n;
+	foreach ($futureclasses as $n => $v) $allclasses[] = $n;
+	$allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf,$slots));
 /*      print "<pre>"; print_r($allclasses); print "</pre>"; */
-        if ($existingSites) {
-                printc("<select name='origname'>");
-                foreach ($allsites as $n=>$site) {
-                        $siteObj = new site($site);
-                        $exists = $siteObj->fetchFromDB();
-                        if ($exists)
-                                printc("<option value='$site'>$site\n");
-                }
-                printc("</select>");
-        } else {
-                printc("<select name='newname'>");
-                foreach ($allsites as $n=>$site) {
-                        $siteObj = new site($site);
-                        $exists = $siteObj->fetchFromDB();
-                        if (!$exists)
-                                printc("<option value='$site'>$site\n");
-                }
-                printc("</select>");
-        }
+	if ($existingSites) {
+		$sites = array();
+		foreach ($allsites as $n=>$site) {
+			$siteObj = new site($site);
+			$exists = $siteObj->fetchFromDB();
+			if ($exists)
+				$sites[] = $site;
+		}
+		return $sites;
+	} else {
+		$slots = array();
+		foreach ($allsites as $n=>$site) {
+			$siteObj = new site($site);
+			$exists = $siteObj->fetchFromDB();
+			if (!$exists)
+				$slots[] = $site;
+		}
+		return $slots;
+	}
 }
 
 function removePrinted($sites) {

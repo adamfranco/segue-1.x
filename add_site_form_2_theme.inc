@@ -42,7 +42,7 @@ function doPreviewWin(theme, from) {
 		var preview = window.open("index.php?action=site&site=sample&nostatus=1&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
 	}
 //	document.addform.previewhandle.value = preview;
-	preview.focus();
+//	preview.focus();
 }
 
 function doTemplateWin() {
@@ -66,8 +66,9 @@ function doThemeSettings() {
 	var theme = "<? print $_SESSION[siteObj]->getField("theme"); ?>";
 	var themesettings = document.addform.themesettings.value;
 	var site = "<? print $_SESSION[siteObj]->getField("name"); ?>";
-	var themesettings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=500");
+	var settings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=500");
 //	document.addform.themesettingshandle.value = themesettings;
+	settings.focus();
 }
 
 </script>
