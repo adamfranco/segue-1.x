@@ -157,7 +157,7 @@ if ($_loggedin) {
 			printc("</th></tr>");
 			printc("<tr><th colspan=7 align=left>");
 			printc("<div style='padding-left: 10px; font-size: 10px;'>By adding sites to a group you can consolidate multiple class sites into one entity. This is useful if you teach multiple sections of the same class and want to work on only one site for those classes/sections. Check the boxes next to the classes you would like to add, and either type in a new group name or choose an existing one.");
-			if ($havegroups) printc("<div class=desc><a href='edit_groups.php?$sid' target='groupeditor' onClick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a></div>");
+			if ($havegroups) printc("<div class=desc><a href='edit_groups.php?$sid' target='groupor' onClick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a></div>");
 			printc("</th></tr>");
 				
 		}
@@ -311,8 +311,8 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 		
 		printc("<div align=right>");
 				
+		printc(" <a href='$PHP_SELF?$sid&action=viewsite&site=$name'>edit</a> | ");
 		if (!$ed) {
-			printc(" <a href='$PHP_SELF?$sid&action=viewsite&site=$name'>edit</a> | ");
 			printc(" <a href='$PHP_SELF?$sid&action=delete_site&name=$name'>delete</a> | ");
 			printc(" <a href='$PHP_SELF?$sid&action=edit_site&edit_site=$name'>settings</a> | ");
 			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>permissions</a>");
