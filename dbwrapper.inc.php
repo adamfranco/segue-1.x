@@ -212,9 +212,9 @@ function db_query ($query, $cid=-1) {
 	if ($debug) {
 	 	// The $debug variable is set at the top of this script	
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-		echo "<br>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res;
+		echo "<br><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res."</b>";
 	}
-	echo mysql_error();
+	echo "<b>".mysql_error()."</b>";
     return $res;
   } else if ($db_type == "oracle") {
     $stmt = OCIParse($cid, $query) or ocidie ("db_query: could not query the server with $query");

@@ -68,7 +68,11 @@ do {
 			$thisSection->fetchDown();
 		}
 		if ($_REQUEST[reorder] == 'section' && $thisSite->hasPermission("edit")) {
+			echo "<pre>";
+			print_r($thisSite->getField("sections"));
 			$thisSite->setField("sections",reorder($thisSite->getField("sections"), $_REQUEST[id],$_REQUEST[direction]));
+			print_r($thisSite->getField("sections"));
+			print_r($thisSite);
 			$thisSite->updateDB();
 			$thisSite->fetcheddown=0;
 			$thisSite->fetchDown();

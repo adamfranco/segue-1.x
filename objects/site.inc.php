@@ -151,7 +151,7 @@ class site extends segue {
 		$this->data[header] = "";
 		$this->data[footer] = "";
 		$this->data[sections] = array();
-		
+//		$this->data[sections][] = 'FUCKFUCKFUCK';
 	}
 	
 	// ************************************************************************************************
@@ -247,6 +247,8 @@ FROM
 		db_query($query);
 	
 		// create the object hierarchy
+
+		$this->data = array();
 		
 		$query = "SELECT site_id, section_id FROM t_sections ORDER BY section_order";
 		$r = db_query($query);
@@ -255,8 +257,9 @@ FROM
 				$section =& new section($this->name,$a[section_id],&$this);
 				$this->sections[$a[section_id]]  =& $section;
 				$this->data[sections][]  = $a[section_id];
+				$this->fetched[sections] = 1;
 			}
-
+		
 		$query = "SELECT site_id, section_id, page_id FROM t_pages ORDER BY	page_order";
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r))
@@ -265,6 +268,7 @@ FROM
 				$page =& new page($this->name,$a[section_id],$a[page_id],&$section);
 				$section->pages[$a[page_id]]  =& $page;
 				$section->data[pages][]  = $a[page_id];
+				$section->fetched[pages]  = 1;
 			}
 
 		$query = "SELECT site_id, section_id, page_id, story_id FROM t_stories ORDER BY	story_order";
@@ -276,11 +280,10 @@ FROM
 				$story =& new story($this->name,$a[section_id],$a[page_id],$a[story_id],&$page);
 				$page->stories[$a[story_id]]  =& $story;
 				$page->data[stories][]  = $a[story_id];
+				$page->fetched[stories]  = 1;
 			}
 		
 		// first, fetch the site
-		$this->tobefetched=1;
-		$this->data = array();
 		$query = "
 SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 		site_active AS active, site_listed AS listed, site_theme AS theme, site_themesettings AS themesettings,

@@ -229,7 +229,7 @@ FROM
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		if (ereg("^l-",$field)) 
 			return $this->data[$field];
-		if (!$this->fetched[$field] && $this->id) {	// we haven't allready gotten this data
+		if ($this->tobefetched && !$this->fetched[$field] && $this->id) {	// we haven't allready gotten this data
 													// and this object is in the database.
 /* 			print "<pre>--$field---\n"; */
 /* 			print_r ($this->_datafields[$field][1]); */

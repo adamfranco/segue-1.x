@@ -383,6 +383,31 @@ ORDER BY
 			
 			// Urls are now stored in the media table
 			if ($this->changed[url]) {
+				// Urls are now stored in the media table
+				// get id of media item
+				$query = "
+SELECT
+	FK_media
+FROM
+	page
+WHERE
+	page_id = ".$this->id;
+
+				$a = db_fetch_assoc(db_query($query));
+				$media_id = $a[FK_media];
+							
+				$query = "
+UPDATE
+	media
+SET
+	media_tag = '".$this->data[url]."',
+	FK_updatedby = ".$_SESSION[aid]."
+WHERE
+	media_id = $media_id
+";
+
+				db_query($query);
+
 				 
 			}
 			

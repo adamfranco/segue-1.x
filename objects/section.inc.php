@@ -308,15 +308,39 @@ ORDER BY
 			$query = "UPDATE section SET ".implode(",",$a)." WHERE section_id=".$this->id;
 /* 			print "<pre>Section->UpdateDB: $query<br>"; */
 			db_query($query);
+			
 /* 			print mysql_error()."<br>"; */
 /* 			print_r($this->data['pages']); */
 /* 			print "</pre>"; */
 			
 			// the hard step: update the fields in the JOIN tables
 			
-			// Urls are now stored in the media table
 			if ($this->changed[url]) {
-				 
+				// Urls are now stored in the media table
+				// get id of media item
+				$query = "
+SELECT
+	FK_media
+FROM
+	section
+WHERE
+	section_id = ".$this->id;
+
+				$a = db_fetch_assoc(db_query($query));
+				$media_id = $a[FK_media];
+							
+				$query = "
+UPDATE
+	media
+SET
+	media_tag = '".$this->data[url]."',
+	FK_updatedby = ".$_SESSION[aid]."
+WHERE
+	media_id = $media_id
+";
+
+				db_query($query);
+
 			}
 						
 /* 			// now update all the page ids in the children, if the latter have changed */
@@ -435,6 +459,8 @@ SET
 /* 		print "</pre>"; */
 		
 //		if ($this->id && ($all || $this->changed[sections])) { //I belive we may always need to fix the order.
+
+		
 		if ($this->id) {
 			$orderkeys = array_keys($this->owningSiteObj->getField("sections"),$this->id);
 			$a[] = "section_order=".$orderkeys[0];
