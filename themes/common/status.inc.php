@@ -31,7 +31,7 @@ print "<script language=\"JavaScript\" src=\"themes/common/overlib.js\"></script
 
 
 if (!$_REQUEST[nostatus]) {
-	print "<form action='http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']."?$sid' method='post'>";
+	print "<form action='$PHP_SELF?$sid' method='post'>";
 	print "<div class='headerbox small' align=center>";
 	
 	if ($_loggedin) {	//we're already logged in
