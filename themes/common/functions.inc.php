@@ -2,7 +2,6 @@
 // output functions
 
 function horizontal_nav($navtype,$topnav,$extra,$navlink="navlink",$navlinka="navlink a") {
-	print "here";
 	$totalnav = count($topnav);
 	$next=1;
 	print "<div class='sectionnav'>";
