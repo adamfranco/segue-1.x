@@ -21,9 +21,9 @@ $themesettings -- existing theme settings
  
 /* ------ debug ------- */ 
 // $themesettings = $HTTP_GET_VARS['themesettings'];  
-// print "$themesettings<br>";  
-// print_r(unserialize(stripslashes($themesettings)))."<br>";  
-// print "$theme - $updatemethod - $site"."<br>";  
+// print "$themesettings<br />";  
+// print_r(unserialize(stripslashes($themesettings)))."<br />";  
+// print "$theme - $updatemethod - $site"."<br />";  
  
 $themesettings = unserialize(stripslashes(($themesettings))); 
 $filename = "$themesdir/$theme/themesettings.inc.php";
@@ -58,7 +58,7 @@ if ($submitted) {
 	printc("<input type=hidden name='site' value='$site'>"); 
 	printc("<input type=hidden name='theme' value='$theme'>"); 
 	printc($settings_form); 
-	printc("<div align=right>");
+	printc("<div align='right'>");
 //	printc("<input type=submit value='Update' class=button>
 	printc("<input type=button value='Close' class=button onclick=\"closeAll()\"></div>"); 
 	 
@@ -68,7 +68,10 @@ if ($submitted) {
  
 ?> 
  
-<head> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script lang='JavaScript'> 
  
 function closeAll() {
@@ -123,7 +126,7 @@ select {font-size: 10px; }
 <title>Theme Settings</title> 
 </head> 
  
-<body<?echo $onLoad?> marginheight=0 marginwidth=0 leftmargin=0 rightmargin=0 topmargin=0 bottommargin=0> 
+<body<?echo $onLoad?> style='margin: 0px'> 
 <div class=title>Theme Settings</div> 
  
 <div class=content> 

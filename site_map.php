@@ -14,8 +14,10 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 $siteObj =& new site($site);
 $siteObj->fetchDown();
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Site Map - <? echo $siteObj->getField("title") ?></title>
 
 <style type='text/css'>
@@ -110,11 +112,11 @@ if ($sections) {
 	print "<tr><td class=td$color colspan=4>No sections in this site.</td></tr>";
 }
 
-print "</table><BR>";
+print "</table><br />";
 
 ?>
 
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <? 
 /******************************************************************************

@@ -11,8 +11,10 @@ include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Editor Access</title>
 
 <style type='text/css'>
@@ -96,9 +98,9 @@ if ($auser == $site_owner) {
 	print "<tr>";
 		print "<th>Section</th>";
 		foreach($editors as $editor) {
-			print "<td align=center  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
-			print "<td align=center style='background-color: #bbb;'>Edit</td>";
-			print "<td align=center style='background-color: #bbb;'>Del</td>";
+			print "<td align='center'  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
+			print "<td align='center' style='background-color: #bbb;'>Edit</td>";
+			print "<td align='center' style='background-color: #bbb;'>Del</td>";
 		}
 	print "</tr>";
 	
@@ -124,7 +126,7 @@ if ($auser == $site_owner) {
 			}
 		}
 		for ($i=0;$i<3;$i++) {
-			print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+			print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 			print ($permissions[$user][$i])?"X":"&nbsp;";
 			print "</td>";
 		}
@@ -141,11 +143,11 @@ if ($auser == $site_owner) {
 			if ($seca[type]=='section') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec\"'>";
 			print "$seca[title]";
 			if ($seca[type]=='section') print "</a>";
-	//		print "<br><pre>";print_r($secp);print "</pre>";
+	//		print "<br /><pre>";print_r($secp);print "</pre>";
 			print "</td>";
 			foreach($editors as $user) {
 				for ($i=0;$i<3;$i++) {
-					print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+					print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 					print ($seca[type]!='url' && $secp[$user][$i])?"X":"&nbsp;";
 					print "</td>";
 				}
@@ -165,7 +167,7 @@ if ($auser == $site_owner) {
 				if ($pa[type]=='page') print "</a>";
 				foreach($editors as $user) {
 					for ($i=0;$i<3;$i++) {
-						print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+						print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 						print ($pa[type]!='url' && $pp[$user][$i])?"X":"&nbsp;";
 						print "</td>";
 					}
@@ -183,12 +185,12 @@ if ($auser == $site_owner) {
 					/*if ($sa[type]=='story')*/ print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec&page=$p\"'>";
 					print "$j. &nbsp; $sa[title]";
 					/*if ($sa[type]=='story')*/ print "</a>";
-	//				print "<br><pre>";print_r($sp);print "</pre>";
+	//				print "<br /><pre>";print_r($sp);print "</pre>";
 					print "</td>";					
 					foreach($editors as $user) {
-						print "<td class=td$color align=center".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
+						print "<td class=td$color align='center'".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
 						for ($i=1;$i<3;$i++) {
-							print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+							print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 							print ($sa[type]!='url' && $sp[$user][$i])?"X":"&nbsp;";
 							print "</td>";
 						}
@@ -203,7 +205,7 @@ if ($auser == $site_owner) {
 		print "<tr><td class=td$color colspan=4>No sections in this site.</td></tr>";
 	}
 
-	print "</table><BR>";
+	print "</table><br />";
 } else { 
 	$total_columns = 4;
 	print "<table cellspacing=1 width='100%'>";
@@ -223,9 +225,9 @@ if ($auser == $site_owner) {
 	print "<tr>";
 		print "<th>Section</th>";
 //		foreach($editors as $editor) {
-			print "<td align=center  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
-			print "<td align=center style='background-color: #bbb;'>Edit</td>";
-			print "<td align=center style='background-color: #bbb;'>Del</td>";
+			print "<td align='center'  style='border-left: 2px solid #fff; background-color: #bbb; '>Add</td>";
+			print "<td align='center' style='background-color: #bbb;'>Edit</td>";
+			print "<td align='center' style='background-color: #bbb;'>Del</td>";
 //		}
 	print "</tr>";
 	
@@ -251,7 +253,7 @@ if ($auser == $site_owner) {
 			}
 		}
 		for ($i=0;$i<3;$i++) {
-			print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+			print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 			print ($permissions[$user][$i])?"X":"&nbsp;";
 			print "</td>";
 		}
@@ -268,11 +270,11 @@ if ($auser == $site_owner) {
 			if ($seca[type]=='section') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec\"'>";
 			print "$seca[title]";
 			if ($seca[type]=='section') print "</a>";
-	//		print "<br><pre>";print_r($secp);print "</pre>";
+	//		print "<br /><pre>";print_r($secp);print "</pre>";
 			print "</td>";
 //			foreach($editors as $user) {
 				for ($i=0;$i<3;$i++) {
-					print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+					print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 					print ($seca[type]!='url' && $secp[$user][$i])?"X":"&nbsp;";
 					print "</td>";
 				}
@@ -292,7 +294,7 @@ if ($auser == $site_owner) {
 				if ($pa[type]=='page') print "</a>";
 //				foreach($editors as $user) {
 					for ($i=0;$i<3;$i++) {
-						print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+						print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 						print ($pa[type]!='url' && $pp[$user][$i])?"X":"&nbsp;";
 						print "</td>";
 					}
@@ -310,12 +312,12 @@ if ($auser == $site_owner) {
 					/*if ($sa[type]=='story')*/ print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec&page=$p\"'>";
 					print "$j. &nbsp; $sa[title]";
 					/*if ($sa[type]=='story')*/ print "</a>";
-	//				print "<br><pre>";print_r($sp);print "</pre>";
+	//				print "<br /><pre>";print_r($sp);print "</pre>";
 					print "</td>";					
 //					foreach($editors as $user) {
-						print "<td class=td$color align=center".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
+						print "<td class=td$color align='center'".((1)?"  style='border-left: 2px solid #fff;'":"").">n/a</td>";
 						for ($i=1;$i<3;$i++) {
-							print "<td class=td$color align=center".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
+							print "<td class=td$color align='center'".(($i==0)?"  style='border-left: 2px solid #fff;'":"").">";
 							print ($sa[type]!='url' && $sp[$user][$i])?"X":"&nbsp;";
 							print "</td>";
 						}
@@ -329,8 +331,8 @@ if ($auser == $site_owner) {
 	} else {
 		print "<tr><td class=td$color colspan=4>No sections in this site.</td></tr>";
 	}
-	print "</table><BR>";
+	print "</table><br />";
 }
 ?>
 
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

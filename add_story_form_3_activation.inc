@@ -18,11 +18,11 @@ else  printc("<div class=title>Edit Content on Page \"".$thisPage->getField("tit
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -33,7 +33,7 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 
 	$_SESSION[storyObj]->outputDateForm();
 /* 	printc("<table>"); */
-/* 	printc("<tr><td align=right>"); */
+/* 	printc("<tr><td align='right'>"); */
 /* 	printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>"); */
 /* 	for ($i=1;$i<=31;$i++) { */
 /* 		printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n"); */
@@ -52,7 +52,7 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 /* 	 */
 /* 	printc("</td></tr>"); */
 /* 	 */
-/* 	printc("<tr><td align=right>"); */
+/* 	printc("<tr><td align='right'>"); */
 /* 	printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>"); */
 /* 	for ($i=1;$i<=31;$i++) { */
 /* 		printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n"); */
@@ -68,22 +68,22 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 /* 	} */
 /* 	printc("</select>"); */
 /* 	 */
-/* 	printc("</tr></td></table>"); */
+/* 	printc("</td></tr></table>"); */
 
-//	printc("<br><div class=desc>To prevent the page from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
+//	printc("<br /><div class=desc>To prevent the page from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
 
 //	printc("<input type=radio name=active value=1 " . (($_SESSION[settings][active])?" checked":"") . "> Enabled | ");
-//	printc("<input type=radio name=active value=0 " . (($_SESSION[settings][active])?"":" checked") . "> Disabled <br>");
+//	printc("<input type=radio name=active value=0 " . (($_SESSION[settings][active])?"":" checked") . "> Disabled <br />");
 
-	printc("<br><br><div class=title style='font-size: 14px'>Category</div>");
-	printc("Category: <input type=text name=newcategory size=20 value='".$_SESSION[settings][newcategory]."'> <select name=category onChange='document.storyform.newcategory.value = document.storyform.category.value'>");
+	printc("<br /><br /><div class=title style='font-size: 14px'>Category</div>");
+	printc("Category: <input type='text' name=newcategory size=20 value='".$_SESSION[settings][newcategory]."'> <select name=category onChange='document.storyform.newcategory.value = document.storyform.category.value'>");
 	printc("<option value=''".(($_SESSION[storyObj]->getField("category")=='')?" selected":"").">none");
 	foreach ($_SESSION[settings][categories] as $c) {
 		printc("<option value='$c'".(($_SESSION[storyObj]->getField("category")==$c)?" selected":"").">$c");
 	}
 	printc("</select>");
 	
-printc("<br><br>");
+printc("<br /><br />");
 
 
 printc("</form>");

@@ -7,8 +7,6 @@ $message = '';
 ob_start();
 session_start();
 
-//output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 /* // debug output -- handy :) */
 /* print "<pre>"; */
@@ -280,8 +278,10 @@ printerr();
 
 ?>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Classes</title>
 <? 
 include("themes/common/logs_css.inc.php"); 
@@ -302,7 +302,7 @@ if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
 	 | <a href='viewusers.php?$sid&site=$site'>users</a>
-	</td><td align=right class='bg'>
+	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	  add/edit classes | 
 	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
@@ -311,11 +311,11 @@ if ($_SESSION['ltype']=='admin') {
 }
 
 if ($site) {
-	print "<div align=right>";
+	print "<div align='right'>";
 	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
 	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
 	print " | Logs";
-	print "</div><br>";
+	print "</div><br />";
 }
 
 
@@ -328,9 +328,9 @@ if ($site) {
 	<table cellspacing=1 width='100%'>
 		<tr><td>
 			<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-			Code: <input type=text name='class_external_id' size=10 value='<?echo $class_external_id?>'> 
-			Name: <input type=text name='class_name' size=10 value='<?echo $class_name?>'>
-			Dept: <input type=text name='class_dept' size=3 value='<?echo $class_dept?>'>
+			Code: <input type='text' name='class_external_id' size=10 value='<?echo $class_external_id?>'> 
+			Name: <input type='text' name='class_name' size=10 value='<?echo $class_name?>'>
+			Dept: <input type='text' name='class_dept' size=3 value='<?echo $class_dept?>'>
 			Semester:
 			<select name=semester>
 				<option<?=($semester=='any')?" selected":""?> value='any'>Any</option>
@@ -342,12 +342,12 @@ if ($site) {
 					}
 				?>
 			</select>
-			Year: <input type=text name='class_year' size=5 value='<?echo $class_year?>'>
-			Owner: <input type=text name='class_owner' size=7 value='<?echo $class_owner?>'>
+			Year: <input type='text' name='class_year' size=5 value='<?echo $class_year?>'>
+			Owner: <input type='text' name='class_owner' size=7 value='<?echo $class_owner?>'>
 			<input type=submit name='search' value='Find'>
 			<input type=submit name='findall' value='Find All'>
 			</td>
-			<td align=right>
+			<td align='right'>
 			<?
 			$tpages = ceil($numclasses/30);
 			$curr = ceil(($lowerlimit+30)/30);
@@ -404,7 +404,7 @@ if ($site) {
 			} else if ($r) {					
 				while ($a = db_fetch_assoc($r)) {					
 						print "<tr>";
-						print "<td align=center>".$a['class_id']."</td>";
+						print "<td align='center'>".$a['class_id']."</td>";
 						print "<td>".generateCourseCode($a['class_id'])."</td>";
 						print "<td>".$a['class_external_id']."</td>";
 						print "<td>".$a['class_name']."</td>";
@@ -415,7 +415,7 @@ if ($site) {
 						print "<td>".$a['class_year']."</td>";
 						print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
 						print "<td>".$a['classgroup_name']."</td>";
-						print "<td align=center><nobr>";
+						print "<td align='center'><nobr>";
 						print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>del</a> | \n";
 						print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>edit</a> | \n";
 						print "<a href=\"Javascript:sendWindow('addstudents',500,350,'add_students.php?$sid&ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
@@ -430,8 +430,8 @@ if ($site) {
 </tr>
 </table>
 
-<BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<br />
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
 function doClassForm($a,$p='',$e=0) {
 	global $cfg;
@@ -440,11 +440,11 @@ function doClassForm($a,$p='',$e=0) {
 		<tr>
 		<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
   		<td><?=($e)?generateCourseCode($a[$p.'id']):""?></td>
-		<td><input type=text name='external_id' size=10 value="<?=$a[$p.'external_id']?>"></td>
-		<td><input type=text name='name' size=20 value="<?=$a[$p.'name']?>"></td>
-		<td><input type=text name='department' size=3 value="<?=$a[$p.'department']?>"></td>
-		<td><input type=text name='number' size=3 value="<?=$a[$p.'number']?>"></td>
-		<td><input type=text name='section' size=1 value="<?=$a[$p.'section']?>"></td>
+		<td><input type='text' name='external_id' size=10 value="<?=$a[$p.'external_id']?>"></td>
+		<td><input type='text' name='name' size=20 value="<?=$a[$p.'name']?>"></td>
+		<td><input type='text' name='department' size=3 value="<?=$a[$p.'department']?>"></td>
+		<td><input type='text' name='number' size=3 value="<?=$a[$p.'number']?>"></td>
+		<td><input type='text' name='section' size=1 value="<?=$a[$p.'section']?>"></td>
 		<td><select name=semester>
 		<?
 		foreach (array_keys($cfg['semesters']) as $semesterKey) {
@@ -455,10 +455,10 @@ function doClassForm($a,$p='',$e=0) {
 		?>
 		</select>
 		</td>
-		<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>
-		<td><input type=text name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
+		<td><input type='text' name='year' size=4 value="<?=$a[$p.'year']?>"></td>
+		<td><input type='text' name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
 		<td><?=$a[classgroup_name]?></td>
-		<td align=center>
+		<td align='center'>
 		<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
 		<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
 		<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add class"?></a>

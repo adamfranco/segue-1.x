@@ -18,11 +18,11 @@ else  printc("<div class=title>Edit Item \"".$_SESSION[pageObj]->getField("title
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 /* 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n"); */
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -46,15 +46,15 @@ if ($_SESSION[pageObj]->getField("type")=='page') {
 		printc("<option value='category'".(($_SESSION[pageObj]->getField("storyorder")=='category')?" selected":"").">Category");
 		printc("<option value='titleasc'".(($_SESSION[pageObj]->getField("storyorder")=='titleasc')?" selected":"").">Title Ascending");
 		printc("<option value='titledesc'".(($_SESSION[pageObj]->getField("storyorder")=='titledesc')?" selected":"").">Title Descending");
-	printc("</select><br><br>");
+	printc("</select><br /><br />");
 	
-	printc("Show horizontal rule: <input type=checkbox name='showhr' value=1". (($_SESSION[pageObj]->getField("showhr"))?" checked":"") . "><br>");
+	printc("Show horizontal rule: <input type=checkbox name='showhr' value=1". (($_SESSION[pageObj]->getField("showhr"))?" checked":"") . "><br />");
 	printc("<div class=desc>By checking the above box, a horizontal rule will be placed between content blocks.</div>");
 		
-	printc("Show added/edited by <i>username</i> for content: <input type=checkbox name='showcreator' value=1". (($_SESSION[pageObj]->getField("showcreator"))?" checked":"") . "><BR>");
+	printc("Show added/edited by <i>username</i> for content: <input type=checkbox name='showcreator' value=1". (($_SESSION[pageObj]->getField("showcreator"))?" checked":"") . "><br />");
 	printc("<div class=desc>By checking the above box, the usernames of the people that added or edited the content on this page will be displayed along with the story text.</div>");
 		
-	printc("Show added/edited timestamp: <input type=checkbox name='showdate' value=1". (($_SESSION[pageObj]->getField("showdate"))?" checked":"") . "><br>");
+	printc("Show added/edited timestamp: <input type=checkbox name='showdate' value=1". (($_SESSION[pageObj]->getField("showdate"))?" checked":"") . "><br />");
 	printc("<div class=desc>By checking the above box, the date and time content was added (and edited, if that be the case), will be displayed along with the story text.</div>");
 	
 	printc("Archive content on this site by: ");
@@ -63,13 +63,13 @@ if ($_SESSION[pageObj]->getField("type")=='page') {
 	foreach ($l as $n=>$v) {
 		printc("<option value='$n'".(($_SESSION[pageObj]->getField("archiveby")==$n)?" selected":"").">$v\n");
 	}
-	printc("</select><br>");
+	printc("</select><br />");
 	printc("<div class=desc>You can organize the content in this site by week added, month added, or year added. This is useful for journal-like pages, where content is long and added often.</div>");
 			
 	printc("</div>");
 }
 
-printc("<br><br>");
+printc("<br /><br />");
 
 
 printc("</form>");

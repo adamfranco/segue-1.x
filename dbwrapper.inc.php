@@ -82,7 +82,7 @@ db_error();
 
 // check if we are already loaded
 if (isset($_db_wrapper)) {
-  /* if ($debug) print "We're already loaded -- skipping load process.<BR>\n"; */
+  /* if ($debug) print "We're already loaded -- skipping load process.<br />\n"; */
   return;
 }
 
@@ -95,7 +95,7 @@ $db_type = strtolower($db_type);
 
 // Print out some debug info
 if ($debug && $printAllQueries) {
-  print "dbwrapper.php: Starting.<BR>";
+  print "dbwrapper.php: Starting.<br />";
 }
 
 // these functions requires dbhost, dbuser, dbpass, and dbdb to be set
@@ -151,10 +151,10 @@ function db_connect ($host_db, $username, $password, $db='', $port=0) {
   global $_connect_id;
   global $db_type; global $debug;
   if ($debug) {
-/*     print "<br><br>db_connect: starting function with arguments:<br>"; */
+/*     print "<br /><br />db_connect: starting function with arguments:<br />"; */
 /*     print "host_db = $host_db, username = $username, password = $password"; */
-/*     print ", db = $db, port = $port<br>"; */
-/*     print "db_connect: db_type = $db_type<br>"; */
+/*     print ", db = $db, port = $port<br />"; */
+/*     print "db_connect: db_type = $db_type<br />"; */
   }
   if ($db_type == "mysql") {
     if ($port != 0) $host_db .= ":$port";
@@ -207,7 +207,7 @@ function db_query ($query, $cid=-1) {
 	if ($debug && $printAllQueries) {
 		// The $debug variable is set at the top of this script
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-		echo "\n\n<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".printpre($query, TRUE);
+		echo "\n\n<br /><br />QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".printpre($query, TRUE);
 	}
 	if ($cid==-1) 
 		$cid = $_connect_id;
@@ -216,7 +216,7 @@ function db_query ($query, $cid=-1) {
 	if ($debug && $printAllQueries) {
 		// The $debug variable is set at the top of this script	
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-		echo "\n\n<br><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$res."</b>";
+		echo "\n\n<br /><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$res."</b>";
 	}
 	if (mysql_error() && $debug)
 		printError(mysql_error());
@@ -237,7 +237,6 @@ function db_fetch_assoc($res) {
 	  		printError("db_fetch_assoc(): Resource, '$res', is not a valid resource.");
   			return FALSE;
   		} else {
-  			print "\n<br>db_fetch_assoc(): Resource, '$res', is not a valid resource. Enable debug mode for backtrace.";
 			return FALSE;
   		}
   }

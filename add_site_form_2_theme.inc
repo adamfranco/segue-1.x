@@ -78,11 +78,11 @@ printc("<input type=hidden name='step'>");
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	if ($_SESSION[settings][edit]) printc("<input type=submit name=save value='Save Changes'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -92,7 +92,7 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 
 if ($_SESSION[settings][add]) printc("<div class=title>Add Site</div>");
 if ($_SESSION[settings][edit]) printc("<div class=title>Edit Site</div>");
-printc("<br>");
+printc("<br />");
 
 printc("<div class=desc>Set your browser to allow pop ups from this page in order to properly edit Segue themes.</div>");
 // --- title ---
@@ -100,19 +100,19 @@ printc("<div class=title>4. Appearance: &nbsp;Select a Theme".helplink("theme","
 
 
 // --- form contents ---
-printc("<table width=100% cellspacing=0px>");
-printc("<tr><td> </td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Click on image to preview</td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Name</td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Select a theme to<br>edit its settings</td></tr>");
+printc("<table width=100% cellspacing='0px'>");
+printc("<tr><td> </td><td valign=bottom align='center' style='border-bottom: 0px solid #aaa; color: #aaa;'>Click on image to preview</td><td valign=bottom align='center' style='border-bottom: 0px solid #aaa; color: #aaa;'>Name</td><td valign=bottom align='center' style='border-bottom: 0px solid #aaa; color: #aaa;'>Select a theme to<br />edit its settings</td></tr>");
 
 $i=0;
 foreach ($possible_themes as $themename=>$longname) {
-	printc("<tr><td align=center><a name='row$i'>");
+	printc("<tr><td align='center'><a name='row$i'>");
 	printc("<input type=radio name=theme value='$themename' ".(($_SESSION[siteObj]->getField("theme")==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
-	printc("<td align=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
-	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
+	printc("<td align='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
+	printc("<td align='center' valign='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br /><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
 	if ($_SESSION[siteObj]->getField("theme")==$themename)
-		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'><div style='font-size: 9px;'>(disable popup window blocker)".helplink("theme","?")."</div></td>");
+		printc("<td align='center' valign='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'><div style='font-size: 9px;'>(disable popup window blocker)".helplink("theme","?")."</div></td>");
 	else 
-		printc("<td align=center valign=top style='border-top: 1px solid #aaa;'> &nbsp; </td>");
+		printc("<td align='center' valign=top style='border-top: 1px solid #aaa;'> &nbsp; </td>");
 	printc("</tr>");
 	$i++;
 }
@@ -122,19 +122,19 @@ printc("<input type=hidden name=themesettingshandle value='".$themesettingshandl
 printc("<input type=hidden name=previewhandle value='".$previewhandle."'>");
 
 printc("</table>");
-printc("<br>");
-printc("<br>");
+printc("<br />");
+printc("<br />");
 
 printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");
 
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	if ($_SESSION[settings][edit]) printc("<input type=submit name=save value='Save Changes'>\n");
 printc("</td></tr></table>");
 

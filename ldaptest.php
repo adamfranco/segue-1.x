@@ -1,4 +1,5 @@
 <? /* $Id$ */ ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <title>LDAP test</title>
@@ -24,13 +25,13 @@ if ($userid) {
 	echo "<h3>LDAP query test for: $userid</h3>";
 	echo "Connecting ...";
 	$ds=ldap_connect("jaguar.middlebury.edu");  // must be a valid LDAP server!
-	echo "connect result is ".$ds."<br>";
+	echo "connect result is ".$ds."<br />";
 
 	if ($ds) { 
 	    echo "Binding ..."; 
 	    $r=ldap_bind($ds,"cn=fjones,cn=midd","lk87df");
 	//    $r=ldap_bind($ds);
-	    echo "Bind result is ".$r."<br>";
+	    echo "Bind result is ".$r."<br />";
 
 	    echo "Searching for (uid=$userid) ...";
 	    // Search uid
@@ -41,13 +42,13 @@ if ($userid) {
 	    $sr=ldap_search($ds,"ou=Midd,o=MC", "uid=$userid",$ret);
 	//    $sr=ldap_search($ds,"ou=Midd,o=MC", "memberOf=*all*",$ret);
 	//    $sr=ldap_search($ds,"ou=Midd,o=MC", "cn=all faculty,objectClass=groupOfNames",$ret);
-	    echo "Search result is ".$sr."<br>";
+	    echo "Search result is ".$sr."<br />";
 
 	    if (!$sr) {print ldap_error($ds);}
 
-	    echo "Number of entires returned is ".ldap_count_entries($ds,$sr)."<br>";
+	    echo "Number of entires returned is ".ldap_count_entries($ds,$sr)."<br />";
 
-	    echo "Getting entries ...<br>";
+	    echo "Getting entries ...<br />";
 	    $info = ldap_get_entries($ds, $sr);
 	    echo "Data for ".$info["count"]." items returned:<p>";
 

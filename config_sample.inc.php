@@ -257,8 +257,8 @@
 		$cfg[auth_reset_on] = $auth_reset_on = TRUE;		// displays password reset link
 		$cfg[auth_register_on] = $auth_register_on = TRUE;	// displays visitor registration link
 		$cfg[auth_help_on] = $auth_help_on = TRUE;			// displays custom authentication help info
-		$cfg[auth_help] .= $auth_help .= "Users should manage their user accounts at:";
-		$cfg[auth_help] .= $auth_help .= " <a href=http://www/mydomain.com/help/users>User Accounts</a>";	
+		$cfg[auth_help] .= "Users should manage their user accounts at:";
+		$cfg[auth_help] .= " <a href=http://www/mydomain.com/help/users>User Accounts</a>";	
 
 	
 	/******************************************************************************
@@ -355,8 +355,7 @@
 						"template2"=>"Standard Course Site",
 						"template3"=>"Brief Course Site",
 						"template4"=>"Advanced: Single Section",
-						"template5"=>"Advanced: Blank",
-						"template6"=>"Weblog"
+						"template5"=>"Advanced: Blank"
 						);
 						
 	/******************************************************************************

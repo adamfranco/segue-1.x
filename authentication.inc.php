@@ -41,7 +41,7 @@ if (!$_loggedin) {
 	}
 	if (!$_loggedin) { // if we still have no login
 		
-		if ($loginerror) error("The username and password pair you entered is not valid. Please try again.<BR>");
+		if ($loginerror) error("The username and password pair you entered is not valid. Please try again.<br />");
 		if ($_REQUEST[action]) $try = $_REQUEST[action];
 		if ($action) $try = $action;
 		else $try = trim($_SERVER['SCRIPT_NAME'],"/");
@@ -64,7 +64,7 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 	// we have two choices in this function. either the user has already logged in
 	// or we have to check for them
 	if ($alreadyloggedin) {	
-//		print "lmethod: $lmethod - $luser<BR>";
+//		print "lmethod: $lmethod - $luser<br />";
 		if (!$_SESSION[lmethod]) {
 			error("An unknown error happened during authentication. Please <a href='index.php?login'>logout</a> and try again. Ignore the error(s) below.");
 			return 0;
@@ -83,13 +83,13 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 
 		foreach ($_auth_mods as $_auth) {
 			$func = "_valid_".$_auth;
-//			print "<BR>AUTH: trying ".$_auth ."..."; //debug
+//			print "<br />AUTH: trying ".$_auth ."..."; //debug
 			if ($x = $func($user,$pass)) {
 				$valid = 1;
 				break;
 			}
 		}
-//		print "<BR>$valid<BR>";
+//		print "<br />$valid<br />";
 //		print_r($x);
 		
 		if ($valid) {	// register all of the needed variables
@@ -167,7 +167,7 @@ function _auth_check_db($x,$add_to_db=0) {
 			
 			// the query could fail if a user with that username is already in the database, but:
 			if (!$r) return 0;
-			//echo $query."<br>";
+			//echo $query."<br />";
 			// if (!$r) error occured;
 			$x[id] = lastid();
 			return $x;

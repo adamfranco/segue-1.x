@@ -19,11 +19,11 @@ else  printc("<div class=title>Edit Content on Page \"".$thisPage->getField("tit
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 /* 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n"); */
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -39,10 +39,10 @@ $discussemail = $_SESSION[storyObj]->getField("discussemail");
 $discusslabel = $_SESSION[storyObj]->getField("discusslabel");
 $discussdisplay = $_SESSION[storyObj]->getField("discussdisplay");
 $discussauthor = $_SESSION[storyObj]->getField("discussauthor");
-printc("<table cellpadding=3 cellspacing=0>");
+printc("<table cellpadding=3 cellspacing='0'>");
 printc("<tr>");
 printc("<td valign=top><input type=checkbox value='1' name=discuss".(($discuss == 1)?" checked":"")."></td>");
-printc ("<td valign=top><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'><tr><td><b>Enable</b> discussion/assessment: Check this to allow this content to be the subject of discussion or assessment</td></tr></table></td>");
+printc ("<td valign=top><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'><tr><td><b>Enable</b> discussion/assessment: Check this to allow this content to be the subject of discussion or assessment</td></tr></table></td>");
 printc("<td valign=top><input type=checkbox value='1' name=discussemail".(($discussemail == 1)?" checked":"")."></td>");
 printc ("<td valign=top><b>Email</b> all posts: Check this to receive an email of every post.</td>");
 printc("</tr><tr>");
@@ -58,10 +58,10 @@ printc("<td valign=top><b>Discussion:</b> Participants can read and respond to e
 printc("<td valign=top><input type=radio value='2' name=discussdisplay".(($discussdisplay == 2)?" checked":"")."></td>");
 printc("<td valign=top><b>Assessment:</b> Participants will <b>not</b> be able to read each other's posts (assessment posts can be made available for discussion after assessment is completed). </td>");
 printc("</tr>");
-printc("</table><br>");
+printc("</table><br />");
 printc("Specify discussion/assessment link label:");
 printc("<div class=desc>(This is the label for the link that participants use to access discussion/assessment)</div>");
-printc("<table width=100% cellpadding=3 cellspacing=0 style='border: 1px solid gray'>");
+printc("<table width=100% cellpadding=3 cellspacing='0' style='border: 1px solid gray'>");
 printc("<tr>");
 printc("<td valign=top><input type=radio value='Discuss' name=discusslabel".(($discusslabel == "Discuss" || !$discusslabel)?" checked":"")."> Discuss</td>");
 printc("<td valign=top><input type=radio value='Assess' name=discusslabel".(($discusslabel == "Assess")?" checked":"")."> Assess</td>");
@@ -69,9 +69,9 @@ printc("<td valign=top><input type=radio value='Comment' name=discusslabel".(($d
 printc("<td valign=top><input type=radio value='Review' name=discusslabel".(($discusslabel == "Review")?" checked":"")."> Review</td>");
 printc("<td valign=top><input type=radio value='Register' name=discusslabel".(($discusslabel == "Register")?" checked":"")."> Register</td>");
 //printc("</tr><tr>");
-//printc("<td valign=top colspan=5><input type=radio value='1' name=label".(($label == "Other")?" checked":"")."> Other <input type=textfield value='' name=label></td>");
+//printc("<td valign=top colspan=5><input type=radio value='1' name=label".(($label == "Other")?" checked":"")."> Other <input type='text'field value='' name=label></td>");
 //printc("</tr>");
-printc("</table><br>");
+printc("</table><br />");
 
 //printpre($_SESSION);
 
@@ -89,9 +89,9 @@ printc("<div class=desc>(Giving everyone permission will require participants to
 permissions::outputForm($_SESSION[storyObj],1,$canAddEditors);
 
 printc("</div>");
-printc("<br>");
+printc("<br />");
 
-printc("<br><br>");
+printc("<br /><br />");
 
 
 printc("</form>");

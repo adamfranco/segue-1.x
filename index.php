@@ -25,9 +25,9 @@ if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
 //      print "checking vhosts...";
         // we are getting the following information: host, site, full_uri, show_statusbar
         $currentHost = $_SERVER["SERVER_NAME"];
-//      print " current host is '$currentHost'<br>";
+//      print " current host is '$currentHost'<br />";
         foreach ($cfg["vhosts"] as $vhost) {
-//              print "checking config host ".$vhost["host"]."<br>";
+//              print "checking config host ".$vhost["host"]."<br />";
                 if ($vhost["host"] == $currentHost) {
                         if ($vhost["show_status"] == false) 
                         	$_REQUEST["nostatus"] = "1";
@@ -195,7 +195,7 @@ if ($_REQUEST[site]) {						// we are in a site
 	if (!isset($theme)) $theme = $thisSite->getField("theme");
 	if (!isset($themesettings)) $themesettings = $thisSite->getField("themesettings");
 
-	$siteheader = "<div align=center style='margin-bottom: 3px'>";
+	$siteheader = "<div align='center' style='margin-bottom: 3px'>";
 	
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
@@ -266,7 +266,7 @@ if ($thisSite) {
 }
 $nav .= $sn.$pn;
 if ($nav) {
-	$sitecrumbs = "<div align=left style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
+	$sitecrumbs = "<div align='left' style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
 }
 
 // Load non-pervasive theme for "program" actions
@@ -283,8 +283,6 @@ if (!$theme) {
 	$themesettings = $defaultthemesettings;
 }
 
-//output a meta tag
-//print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // decode themesettings
 if ($themesettings) $themesettings = decode_array($themesettings);

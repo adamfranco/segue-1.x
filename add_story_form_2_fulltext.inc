@@ -18,11 +18,11 @@ else  printc("<div class=title>Edit Content on Page \"".$thisPage->getField("tit
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -38,23 +38,23 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
  	* NOTE: this Media Library link is NOT the same as in the Image/File Block UI
  	******************************************************************************/
 	
-	printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+	printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 	printc("<tr><td colspan=2>");
 	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
 	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
-	printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
+	printc(" <input type='text' name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
 	printc(" (media file URL)");
 	printc("</div></td></tr>");
 	printc("<tr><td>");
-	printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
+	printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br />2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
 	printc("</td></tr>");
 	printc("</table></div>");
 		
-/* 	printc("<table width= 80% cellpadding=3 cellspacing=0>"); */
+/* 	printc("<table width= 80% cellpadding=3 cellspacing='0'>"); */
 /* 	printc("<tr><td>"); */
 /* 	printc("<div style='font-size:10px; color:#D00'>"); */
 /* 	printc("Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. "); */
-/* 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>"); */
+/* 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br />"); */
 /* 	printc("</div>"); */
 /* 	printc("</td></tr>"); */
 /* 	printc("</table>"); */
@@ -74,7 +74,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	 ******************************************************************************/
 
 	if ($supported == 0) {
-		printc("<br><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
+		printc("<br /><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
 		if ($isWin) {
 			printc("We recommend you use either <a href=http://www.microsoft.com/windows/ie/ target=new_window>Internet Explorer or greater</a> 
 			or <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a>.");
@@ -92,7 +92,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		if ($isWinIE) {
 			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
 			printc("We recommend you chose HTMLarea for the greatest cross-platform compatibility.</div>");
-			printc("<div align=right>Current Editor: <select name=editor onChange='document.addform.submit()'>");
+			printc("<div align='right'>Current Editor: <select name=editor onChange='document.addform.submit()'>");
 			printc("<option value=htmlarea".(($_SESSION[settings][editor]=='htmlarea')?" selected":"").">HTMLarea");
 			printc("<option value=activex".(($_SESSION[settings][editor]=='activex')?" selected":"").">Active-X");
 			printc("</select></div>");
@@ -112,12 +112,12 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	 *  addeditor function variables (textarea, cols, rows, text)
 	 ******************************************************************************/
 		
-	printc("<br><table width= 80% cellpadding=3 cellspacing=0 style='border: 1px solid grey'>");
+	printc("<br /><table width= 80% cellpadding=3 cellspacing='0' style='border: 1px solid grey'>");
 	printc("<tr><td>");
 
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	printc("Extended Content (Optional):".helplink('msword'));
-	printc("<br>");
+	printc("<br />");
 		
 	if ($_SESSION[settings][editorinitstate] == "text" && $supported == 1) {
 		$text = htmlbr($_SESSION[storyObj]->getField("longertext"));
@@ -153,19 +153,19 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	if ($supported == 1) {
 		printc("<input type=hidden name='texttype' value='html'>");
 	} else {
-		printc("<div align=right>");
+		printc("<div align='right'>");
 		printc("What type of text did you enter?");
 	//	printc (" <select name=texttype>");
 	//	printc("<option value=text".(($_SESSION[settings][texttype]=='text')?" selected":"").">Plain text");
 	//	printc("<option value=html".(($_SESSION[settings][texttype]=='html')?" selected":"").">Preformatted HTML");
 	//	printc("</select>");
-		printc("<input type=textarea disabled value='".(($_SESSION[storyObj]->getField("texttype")=='text')?" Plain text":" Preformatted HTML")."'>");
+		printc("<input type='text'area disabled value='".(($_SESSION[storyObj]->getField("texttype")=='text')?" Plain text":" Preformatted HTML")."'>");
 		printc("</div>");
-		printc("<div class=desc align=right>Change this option on the previous screen.</div>");
+		printc("<div class=desc align='right'>Change this option on the previous screen.</div>");
 	}
 }
 
-if ($_SESSION[storyObj]->getField("type") != 'story') printc("<br><br>");
+if ($_SESSION[storyObj]->getField("type") != 'story') printc("<br /><br />");
 
 printc("</form>");
 

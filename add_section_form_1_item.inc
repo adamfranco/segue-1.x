@@ -18,10 +18,10 @@ else  printc("<div class=title>Edit Item \"".$_SESSION[sectionObj]->getField("ti
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -37,7 +37,7 @@ printc("Type:".helplink("pagetypes"));
 
 
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
-else printc("<br><br>");
+else printc("<br /><br />");
 
 
 if ($_SESSION[settings][add] || $_SESSION[sectionObj]->getField("type") == 'section') {
@@ -66,8 +66,8 @@ if ($_SESSION[sectionObj]->getField("type")=='section') {
 }
 
 printc("<div class=leftmargin>");
-printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[sectionObj]->getField("title"))."'>");
-printc("</div><br>");
+printc("Title: <input type='text' size=35 name=title value='".spchars($_SESSION[sectionObj]->getField("title"))."'>");
+printc("</div><br />");
 
 if ($_SESSION[sectionObj]->getField("type")=='link') {	
 
@@ -80,11 +80,11 @@ if ($_SESSION[sectionObj]->getField("type")=='link') {
 	$url = convertTagsToInteralLinks($_SESSION[settings][site], $url);
 
 	printc("<div class=leftmargin>");
-	printc("URL: <input type=text name=url value='".$url."' size=50>");
+	printc("URL: <input type='text' name=url value='".$url."' size=50>");
 	printc("</div>");
 }
 
-printc("<br><br>");
+printc("<br /><br />");
 
 printc("</form>");
 

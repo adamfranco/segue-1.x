@@ -15,7 +15,7 @@ $urls = array(
 
 // -------------------------------------------------------------------
 add_link(leftnav,"Home","index.php?$sid","","");
-add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
+add_link(leftnav,"Personal Site List<br />","index.php?$sid&action=list","","");
 add_link(leftnav,"Links");
 foreach ($urls as $t=>$u)
 	add_link(leftnav,$t,"http://".$u,'','',"_blank");
@@ -54,13 +54,13 @@ printc("<tr>");
 		printc("<tr><td>");
 		printc("<form action=$PHP_SELF?$sid method=get>");
 		
-//		printc("site: <input type=text name=name size=15 value='$name'>");
-		printc("title: <input type=text name=title size=15 value='$title'>");
-		printc("owner: <input type=text name=user size=15 value='$user'>");
+//		printc("site: <input type='text' name=name size=15 value='$name'>");
+		printc("title: <input type='text' name=title size=15 value='$title'>");
+		printc("owner: <input type='text' name=user size=15 value='$user'>");
 		printc("<input type=submit value='go'>");
 		printc("</form>");
 		printc("</td>");
-		printc("<td align=right>");
+		printc("<td align='right'>");
 		
 		$tpages = ceil($numlogs/30);
 		$curr = ceil(($lowerlimit+30)/30);
@@ -113,8 +113,8 @@ if (db_num_rows($r)) {
 	printc("<tr><td colspan=3>No sites listed</td></tr>");
 }
 
-printc("</table><BR>");
+printc("</table><br />");
 
 
 
-$sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gabe@schine.net'>Gabriel Schine</a>, <a href='mailto:achapin@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>,  and <a href='mailto:afranco@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a></div>";
+$sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gabe@schine.net'>Gabriel Schine</a>, <a href='mailto:achapin@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>,  and <a href='mailto:afranco@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a></div>";

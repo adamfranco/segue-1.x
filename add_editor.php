@@ -24,8 +24,10 @@ if (count($usernames)) {
 /* print "</pre>"; */
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Add Editors</title>
 
 <script lang='JavaScript'>
@@ -92,7 +94,7 @@ input {
 	<th>Username</th>
 </tr>
 <tr>
-	<td align=center>
+	<td align='center'>
 	<? 
 		if ($_SESSION[ltype]=='admin') 
 			print "<input type=button name='use' value='add' onClick='addEditor(document.lookup.n.value)'>"; 
@@ -101,7 +103,7 @@ input {
 	?>
 	</td>
 	<td>
-		Name: <input type=text name='n' size=20 value='<?echo $_REQUEST[n]?>'> 
+		Name: <input type='text' name='n' size=20 value='<?echo $_REQUEST[n]?>'> 
 	</td>
 	<td>
 		<input type=submit value='find'>
@@ -115,7 +117,7 @@ if (count($usernames)) {
 		if (!ereg("[a-z]",$u)) next;
 		$u = strtolower($u);
 		print "<tr>";
-		print "<td align=center><input type=button name='use' value='add' onClick='addEditor(\"$u\")'></td>";
+		print "<td align='center'><input type=button name='use' value='add' onClick='addEditor(\"$u\")'></td>";
 		print "<td>$f</td><td>$u</td>";
 		print "</tr>";
 		$c++;
@@ -128,7 +130,7 @@ if (count($usernames)) {
 
 <input type=hidden name="comingfrom" value="<? echo $_REQUEST[comingfrom] ?>">
 </form>
-<div align=right>
+<div align='right'>
 <!-- <input type=button value='Add Editor' onClick='addEditor()'> -->
 <input type=button value='Done' onClick='window.close()'></div>
 

@@ -18,11 +18,11 @@ else  printc("<div class=title>Edit Content on Page \"".$thisPage->getField("tit
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 /* 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n"); */
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -39,7 +39,7 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 printc("Type:".helplink("storytypes"));
 
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
-else printc("<br><br>");
+else printc("<br /><br />");
 
 
 if ($_SESSION[settings][add] || $_SESSION[storyObj]->getField("type") == 'story') {
@@ -104,12 +104,12 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
  ******************************************************************************/
 
 //printc("<div class=leftmargin>");
-printc("<br><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+printc("<br /><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 
 
 if ($_SESSION[storyObj]->getField("type")!='rss') {
 	printc("<tr>");
-	printc("<td>Title:</td><td><input type=text size=50 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
+	printc("<td>Title:</td><td><input type='text' size=50 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
 	if ($_SESSION[storyObj]->getField("type") == 'file') {
 		printc(" <span style='font-size:10px; color: #D00'> *required</span>");
 	} else {
@@ -119,7 +119,7 @@ if ($_SESSION[storyObj]->getField("type")!='rss') {
 		
 } else if ($_SESSION[storyObj]->getField("type")=='rss') {	
 	printc("<tr>");
-	printc("<td>URL:</td><td><input type=text name=url value='".$_SESSION[storyObj]->getField("url")."' size=75></td>");
+	printc("<td>URL:</td><td><input type='text' name=url value='".$_SESSION[storyObj]->getField("url")."' size=75></td>");
 	printc("</tr>");
 	
 }
@@ -137,7 +137,7 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 
 
 	printc("<tr>");
-	printc("<td>URL:<td><input type=text name=url value='".$url."' size=75></td>");
+	printc("<td>URL:<td><input type='text' name=url value='".$url."' size=75></td>");
 
 }
 
@@ -158,15 +158,15 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
  	* NOTE: this Media Library link is NOT the same as in the Image/File Block UI
  	******************************************************************************/
 	
-	printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+	printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 	printc("<tr><td colspan=2>");
 	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
 	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
-	printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
+	printc(" <input type='text' name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
 	printc(" (media file URL)");
 	printc("</div></td></tr>");
 	printc("<tr><td>");
-	printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
+	printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br />2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
 	printc("</td></tr>");
 	printc("</table></div>");
 }
@@ -177,20 +177,20 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 
 if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->getField("type") == 'file') {
 
-	printc("<br><div class=leftmargin><table cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+	printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 	printc("<tr><td colspan=2>");
 	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
 	printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
 	printc("<input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'>");	
-	printc(" <input type=text class='textfield' small name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=75 readonly>");
+	printc(" <input type='text' class='textfield' small name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=75 readonly>");
 
 	printc("</td></tr>");
 	printc("<tr><td>");
 	if ($_SESSION[storyObj]->getField("type")=='image') {	
-		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for image files. <br>");
+		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for image files. <br />");
  		printc("2. Accepted types here GIF, JPEG (JPG), and PNG. (chose <b>File for Download</b> to create links to other types of files)</div>");
  	} else {
-		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br>");
+		printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br />");
  		printc("(2. All File types accepted. (chose <b>Image</b> to display images inline)</div>"); 	
  	}
 	printc("</td></tr>");
@@ -207,7 +207,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	 * Internal linking: note to users...
 	 ******************************************************************************/
 	printc ("\n<br />");
-	printc("<table width= 80% cellpadding=3 cellspacing=0 style='border: 1px solid grey'>");
+	printc("<table width= 80% cellpadding=3 cellspacing='0' style='border: 1px solid grey'>");
 	printc("<tr><td>");
 	if ($_SESSION[storyObj]->getField("type")=='story') {
 		printc("Content (or Abstract):".helplink('msword'));
@@ -234,7 +234,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	 ******************************************************************************/
 
 	if ($supported == 0) {
-		printc("<br><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
+		printc("<br /><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
 		if ($isWin) {
 			printc("We recommend you use either <a href=http://www.mozilla.org/download.html target=new_window>Mozilla 1.3 or greater</a> or
 			<a href=http://www.microsoft.com/windows/ie/ target=new_window>Internet Explorer or greater</a>.");
@@ -252,7 +252,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 		if ($isWinIE) {
 			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
 			printc("We recommend you chose HTMLarea for the greatest cross-platform compatibility.</div>");
-			printc("<div align=right>Current Editor: <select name=editor onChange='document.addform.submit()'>");
+			printc("<div align='right'>Current Editor: <select name=editor onChange='document.addform.submit()'>");
 			printc("<option value=htmlarea".(($_SESSION[settings][editor]=='htmlarea')?" selected":"").">HTMLarea");
 			printc("<option value=activex".(($_SESSION[settings][editor]=='activex')?" selected":"").">Active-X");
 			printc("</select></div>");
@@ -274,7 +274,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 		
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	
-	//printc("<br>");
+	//printc("<br />");
 			
 	$text = $_SESSION[storyObj]->getField("shorttext");
 	
@@ -284,7 +284,11 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	 ******************************************************************************/
 	$text = convertTagsToInteralLinks($_SESSION[settings][site], $text);
 	
-	
+	// If they had been editing as plain-text, but are now using the editor,
+	// convert the line-breaks to <br /> tags.
+	if ($_SESSION[storyObj]->getField("texttype")=='text' && $supported)
+		$text = htmlbr($text);
+		
 	// replace internal links in edit mode (action=viewsite)
 	// with internal links in non-edit mode (action=site)
 	//$action_viewsite = "action=viewsite";
@@ -301,7 +305,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	if ($supported == 1) {
 		printc("<input type=hidden name='texttype' value='html'>");
 	} else {
-		printc("<div align=right>");
+		printc("<div align='right'>");
 		printc("What type of text did you enter? <select name=texttype>");
 		printc("<option value=text".(($_SESSION[storyObj]->getField("texttype")=='text')?" selected":"").">Plain text");
 		printc("<option value=html".(($_SESSION[storyObj]->getField("texttype")=='html')?" selected":"").">Preformatted HTML");
@@ -314,15 +318,15 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	printc("</table>");
 }
 
- printc("<br>");
+ printc("<br />");
 
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 /* 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n"); */
 	printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");

@@ -5,9 +5,6 @@ $content = '';
 ob_start(); 
 session_start(); 
  
-//output a meta tag 
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
- 
 // include all necessary files 
 include("includes.inc.php"); 
 include("sniffer.inc.php");
@@ -134,7 +131,7 @@ if ($upload) {
 	"; 
 			
 			
-//	print "$query <br>"; 
+//	print "$query <br />"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	
@@ -313,8 +310,10 @@ $query = "
 $r = db_query($query); 
  
 ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html> 
-<head> 
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>File Browser</title> 
  
 <style type='text/css'> 
@@ -528,7 +527,7 @@ function changePage(lolim) {
 					$percentfree = 100-$percentused;
 					$space = $dirlimit_B - $totalsize;
 					$space = convertfilesize($space);
-					print "<table cellspacing=0 cellpadding=0 align=right>";
+					print "<table cellspacing='0' cellpadding='0' align='right'>";
 					print "<tr><td class='sizebox1'>Total media allowed: </td><td class='sizebox2'> $dirlimit</td></tr>";
 					print "<tr><td class='sizebox1'>Total size of your media: </td><td class='sizebox2'> $dirtotal</td></tr>";
 					print "<tr><td class='sizebox1'>Space available: </td><td class='sizebox2' style='border-top: 1px solid #000'> $space</td></tr>";
@@ -540,7 +539,7 @@ function changePage(lolim) {
 					else
 						print "<td style='background-color: #F00; height: 5px;' width=$percentused%> </td><td style='background-color: #00C;' width=$percentfree%> </td>";
 					print "</tr></table></td></tr>";
-					print "</table><br>";
+					print "</table><br />";
 					?>
 				</td>
 				</tr> 
@@ -584,11 +583,11 @@ if (1) {
 		<? 
 		if ($ltype == 'admin') { 
 		?> 
-			filename: <input type=text name=name size=15 value='<?echo $name?>'> 
-			site: <input type=text name=site size=10 value='<?echo $site?>'> 
-			user: <input type=text name=user size=10 value='<?echo $user?>'> 
+			filename: <input type='text' name=name size=15 value='<?echo $name?>'> 
+			site: <input type='text' name=site size=10 value='<?echo $site?>'> 
+			user: <input type='text' name=user size=10 value='<?echo $user?>'> 
 		<? } else { ?> 
-			filename: <input type=text name=name size=10 value='<?echo $name?>'> 
+			filename: <input type='text' name=name size=10 value='<?echo $name?>'> 
 			<input type=hidden name=site value='<?echo $site?>'>
 		<? } ?> 
 		<input type=submit value='search'> 
@@ -601,7 +600,7 @@ if (1) {
 		<input type=hidden name='lowerlimit' value=0>
 		</form> 
 		</td> 
-		<td align=right> 
+		<td align='right'> 
 		 
 		<? 
 		$tpages = ceil($numrows/$numperpage); 
@@ -823,7 +822,7 @@ if (db_num_rows($r)) {
 } 
 ?> 
  
-</table><BR> 
+</table><br /> 
  
 <form action='filebrowser.php' name='deleteform' method=post> 
 <input type=hidden name='filetodelete'> 
@@ -836,7 +835,7 @@ if (db_num_rows($r)) {
 <input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
 </form> 
  
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div> 
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div> 
 
 <?
 

@@ -26,16 +26,16 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	}
 	if ($_REQUEST[viewpermissions] == "class") {
 		if (isgroup($_SESSION[settings][className])) {
-//			print "<br>".$_SESSION[siteObj]->getField("name")."is a classgroup";
+//			print "<br />".$_SESSION[siteObj]->getField("name")."is a classgroup";
 			$classes = group::getClassesFromName($_SESSION[settings][className]);
-//			print "<br>Classes contained:<pre>"; print_r($classes); print "</pre>";
+//			print "<br />Classes contained:<pre>"; print_r($classes); print "</pre>";
 			foreach ($classes as $class) {
 				if (!$_SESSION[siteObj]->isEditor($class)) {
 					$_SESSION[siteObj]->addEditor($class);
-//					print "<br>Adding $class as editor";
+//					print "<br />Adding $class as editor";
 				}
 				$_SESSION[siteObj]->setUserPermissionDown("view",$class,"1");
-//				print "<br>Setting 1 view permission for $class";
+//				print "<br />Setting 1 view permission for $class";
 			}		
 		} else {
 			if (!$_SESSION[siteObj]->isEditor($_SESSION[settings][className])) {
@@ -166,7 +166,7 @@ if ($_REQUEST[cancel]) {
 if ($_REQUEST[save]) {
 	if (!$error) { // save it to the database
 		
-		print "<BR><BR>".$_SESSION[settings][sitename]."<BR><BR>";
+		print "<br /><br />".$_SESSION[settings][sitename]."<br /><br />";
 		
 		/******************************************************************************
 		 * replace media library urls with $mediapath/$sitename/filename
@@ -225,7 +225,7 @@ if ($_REQUEST[save]) {
 		}
 		
 	} else {
-		printc ("<br>There was an error");
+		printc ("<br />There was an error");
 	}
 	
 }
@@ -238,7 +238,7 @@ else if ($_SESSION[settings][edit] && $_SESSION[settings][step] == 3) $_SESSION[
 
 // ------- print out the add form -------
 // --- The Navigation Links for the sidebar ---
-$leftlinks = "________________<br><table>";
+$leftlinks = "________________<br /><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "<span class=editnote>&rArr;</span>";
 $leftlinks .= "</td><td>";
@@ -273,7 +273,7 @@ $leftlinks .= "</td><td>";
 if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 5) $leftlinks .= "<a href='#' onClick=\"submitFormLink(5)\">";
 $leftlinks .= "Custom Footer";
 if ($_SESSION[settings][step] != 5 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
-$leftlinks .= "</td></tr></table>________________<br><a href=$PHP_SELF?$sid&action=add_site&cancel=1>Cancel</a>";
+$leftlinks .= "</td></tr></table>________________<br /><a href=$PHP_SELF?$sid&action=add_site&cancel=1>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
 

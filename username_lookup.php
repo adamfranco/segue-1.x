@@ -7,8 +7,6 @@ $message = '';
 ob_start();
 session_start();
 
-//output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 
 // include all necessary files
@@ -30,8 +28,10 @@ if (count($usernames)) {
 /* print "</pre>"; */
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <body onLoad="document.searchform.name.focus()">
 
 <title>Username Lookup</title>
@@ -47,7 +47,7 @@ if (count($usernames)) {
 <tr>
 	<td colspan=3>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		Name: <input type=text name='name' size=20 value='<?echo $name?>'> <input type=submit value='Find'>
+		Name: <input type='text' name='name' size=20 value='<?echo $name?>'> <input type=submit value='Find'>
 		</form>
 		<? if (!$usernames) print "No matching names found. Enter a name or part of a name above."; ?>
 	</td>
@@ -64,7 +64,7 @@ if (count($usernames)) {
 		if (!$u || $u=='') next;
 		if (!ereg("[a-z]",$u)) next;
 		print "<tr>";
-		print "<td align=center>$c</td><td>$f</td><td>$u</td>";
+		print "<td align='center'>$c</td><td>$f</td><td>$u</td>";
 		print "</tr>";
 		$c++;
 	}
@@ -74,5 +74,5 @@ if (count($usernames)) {
 ?>
 </table>
 </td></tr></table>
-<BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<br />
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

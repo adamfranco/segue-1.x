@@ -18,8 +18,6 @@ include("objects/objects.inc.php");
 ob_start();
 session_start();
 
-//output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // include all necessary files
 include("includes.inc.php");
@@ -33,13 +31,13 @@ if ($_SESSION['ltype'] != 'admin') {
 	exit();
 }
 
-  print "Add Slot Repair Script<br>";
+  print "Add Slot Repair Script<br />";
   print "All slots whose uploadlimit = default set in config.inc.php should have their ";
-  print "slot_uploadlimit = 'NULL'<br><br>";
-  print "This scripts searches the slots table for all records where:<br>";
-  print "slot_uploadlimit = $userdirlimit<br>";
-  print "and updates these records so that slot_uploadlimit = 'NULL'<br><br>";
-  print "For more information, see: <a href=https://sourceforge.net/tracker/index.php?func=detail&aid=874014&group_id=82171&atid=565234 target=new_window>Segue bug tracker [ 874014 ] Media Library size issue</a><br><br>";
+  print "slot_uploadlimit = 'NULL'<br /><br />";
+  print "This scripts searches the slots table for all records where:<br />";
+  print "slot_uploadlimit = $userdirlimit<br />";
+  print "and updates these records so that slot_uploadlimit = 'NULL'<br /><br />";
+  print "For more information, see: <a href=https://sourceforge.net/tracker/index.php?func=detail&aid=874014&group_id=82171&atid=565234 target=new_window>Segue bug tracker [ 874014 ] Media Library size issue</a><br /><br />";
 
 
 if ($_REQUEST['Update']) {
@@ -124,7 +122,7 @@ print "<hr>";
 <th>owner</th>
 <th>type</th>
 <th>assoc site</th>
-<th colspan=2>uploadlimit<br>(Default = <? print $default_uploadlimit ?> Bytes)</th>
+<th colspan=2>uploadlimit<br />(Default = <? print $default_uploadlimit ?> Bytes)</th>
 </tr>
 <?
 $count = 0;	
@@ -144,12 +142,12 @@ while ($a = db_fetch_assoc($r)) {
 		
 		print "<tr>";
 		print "<td>Yes</td>";
-		print "<td align=center>".$a['id']."</td>";
+		print "<td align='center'>".$a['id']."</td>";
 		print "<td>".$a['name']."</td>";
 		print "<td>".$a['owner']."</td>";
 		print "<td>".$a['type']."</td>";
 		print "<td>".$a['assocsite_name']."</td>";
-		print "<td align=center>set to 'NULL'</td>";
+		print "<td align='center'>set to 'NULL'</td>";
 		print "<td></td>";
 		print "<tr>";		
 	}

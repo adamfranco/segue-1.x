@@ -18,11 +18,11 @@ else printc("<div class=title>Edit Item \"".$_SESSION[pageObj]->getField("title"
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=button value='Cancel' onClick='cancelForm()'>\n");
-printc("</td><td width=50% align=right>");
+printc("</td><td width=50% align='right'>");
 /* 	printc("<input type=button value='&larr; Previous' onClick='submitPrevButton()'>\n"); */
 	if ($_SESSION[pageObj]->getField("type") == 'page' || $_SESSION[pageObj]->getField("type") == 'link') printc("<input type=button value='Continue &rarr;' onClick='submitNextButton()'>\n");
 printc("</td></tr><tr><td>");
-printc("</td><td align=right>");
+printc("</td><td align='right'>");
 	printc("<input type=submit name=save value='Save Now'>\n");
 printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
@@ -37,7 +37,7 @@ printc("Type:".helplink("pagetypes"));
  ******************************************************************************/
 
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
-else printc("<br><br>");
+else printc("<br /><br />");
 
 
 if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'page') {
@@ -88,14 +88,14 @@ if ($_SESSION[pageObj]->getField("type")=='page') {
 
 if ($_SESSION[pageObj]->getField("type") !='divider') {
 	printc("<div class=leftmargin>");
-	printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[pageObj]->getField("title"))."'>");
+	printc("Title: <input type='text' size=35 name=title value='".spchars($_SESSION[pageObj]->getField("title"))."'>");
 	printc("</div>");
 }
 
 /*   enter author's name for publication site */
 if ($thisSite->getField("type") == 'publication') {
 	printc("<div class=leftmargin>");
-	printc("Author: <input type=text name=url value='".$_SESSION[pageObj]->getField("url")."' size=25>");
+	printc("Author: <input type='text' name=url value='".$_SESSION[pageObj]->getField("url")."' size=25>");
 	$authors = $thisSite->getAllValues("page","url");
 	$nauthors = array();
 	foreach ($authors as $auth) {
@@ -136,12 +136,12 @@ if ($_SESSION[pageObj]->getField("type")=='link') {
 	//$url = eregi_replace($action_viewsite, $action_site, $url);
 
 	printc("<div class=leftmargin>");
-	printc("URL: <input type=text name=url value='".$url."' size=50>");
+	printc("URL: <input type='text' name=url value='".$url."' size=50>");
 	printc("</div>");
 }
 
 
-printc("<br><br>");
+printc("<br /><br />");
 
 printc("</form>");
 

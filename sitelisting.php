@@ -10,8 +10,6 @@ $numPerPage = 30;
 ob_start();
 session_start();
 
-//output a meta tag
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // include all necessary files
 include("includes.inc.php");
@@ -47,7 +45,6 @@ if (count($w)) {
 	$where = " where ".implode(" and ",$w);
 	$where2 = " where ".implode(" and ",array_merge($w,$wExtra));
 }
-
 $query = "
 	SELECT 
 		COUNT(*) AS log_count
@@ -62,6 +59,24 @@ $query = "
 			ON
 		FK_owner = user_id	
 	$where";
+$r=db_query($query); 
+$a = db_fetch_assoc($r);
+$totalNumSites = $a[log_count];
+
+$query = "
+	SELECT 
+		COUNT(*) AS log_count
+	FROM 
+		slot
+			INNER JOIN
+		site
+			ON
+		FK_site = site_id
+			INNER JOIN
+		user
+			ON
+		FK_owner = user_id	
+	$where2";
 $r=db_query($query); 
 $a = db_fetch_assoc($r);
 $numSites = $a[log_count];
@@ -98,8 +113,10 @@ $r = db_query($query);
 //print $query;
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Segue: Public Site Listing</title>
 
 <? include("themes/common/logs_css.inc.php"); ?>
@@ -117,13 +134,14 @@ function changeOrder(order) {
 <table width='100%' class='bg'>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<div align=center style='font-size: 14px;'><b><? echo $cfg[inst_name] ?> Segue</b></div><br>
-	<div align=left style='font-size: 10px;'>
-	Listed here are all the publically accessible sites created in 
-	<? echo $cfg[inst_name] ?> Segue sorted by those that have been most recently updated.
+	<div align='center' style='font-size: 14px;'><b><? echo $cfg[inst_name] ?> Segue</b></div><br />
+	<div align='left' style='font-size: 10px;'>
+	Included here are all <b>class</b> sites and any other sites that requested to be included in this public listing of
+	<? echo $cfg[inst_name] ?> Segue. These are sorted by those that have been most recently updated.<br />
+	<i>(Note: not all sites listed here are viewable to all users)</i>
 	</div>
-	<br>
-	<? print "Total active public Segue sites: ".$numSites ?>
+	<br />
+	<? print "Total active listed Segue sites: ".$totalNumSites ?>
 
 
 </td></tr>
@@ -147,9 +165,9 @@ function changeOrder(order) {
 		if (true) {
 		?>
 			<!-- </select> -->
-			site: <input type=text name=site size=10 value='<?echo $site?>'>
-			title: <input type=text name=title size=10 value='<?echo $title?>'>
-			user: <input type=text name=user size=10 value='<?echo $user?>'>
+			site: <input type='text' name=site size=10 value='<?echo $site?>'>
+			title: <input type='text' name=title size=10 value='<?echo $title?>'>
+			user: <input type='text' name=user size=10 value='<?echo $user?>'>
 			<!--
 			type: <select name=type>
 				<option<?=($type=='%')?" selected":""?>>all
@@ -165,7 +183,7 @@ function changeOrder(order) {
 		<? } ?>
 		</form>
 		</td>
-		<td align=right>
+		<td align='right'>
 		<?
 		$tpages = ceil($numSites/$numPerPage);
 		$curr = ceil(($lowerlimit+$numPerPage)/$numPerPage);
@@ -175,7 +193,7 @@ function changeOrder(order) {
 		if ($next >= $numSites) $next = $numSites-$numPerPage;
 		if ($next < 0) $next = 0;
 		print "$curr of $tpages ";
-//		print "$prev $lowerlimit $next ";
+// 		print "(Prev: $prev LL: $lowerlimit Next: $next )";
 		if ($prev != $lowerlimit)
 			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
@@ -291,8 +309,8 @@ if (db_num_rows($r)) {
 	print "<tr><td colspan=5>No sites found based on above criteria.</td></tr>";
 }
 ?>
-</table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+</table><br />
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 
 <?
 // debug output -- handy :)

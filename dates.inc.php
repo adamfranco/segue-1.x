@@ -90,18 +90,18 @@ function indaterange($date1, $date2) {
 		ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $date1, $regs);
 //		print "m: ".$regs[2]." d: ".$regs[3]." y: ".$regs[1];
 		$unix1=mktime(0,0,0,$regs[2],$regs[3],$regs[1]);
-//		print "<BR>time1: $unix1<BR>";
-//		print strftime("%D",$unix1)."<BR>";
+//		print "<br />time1: $unix1<br />";
+//		print strftime("%D",$unix1)."<br />";
 	} else $unix1=0;
 	
 	if (real_date($date2)) {
 		ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $date2, $regs);
 //		print "m: ".$regs[2]." d: ".$regs[3]." y: ".$regs[1];
 		$unix2=mktime(23,59,59,$regs[2],$regs[3],$regs[1]);
-//		print "<BR>time1: $unix2<BR>";
-//		print strftime("%D",$unix2)."<BR>";
+//		print "<br />time1: $unix2<br />";
+//		print strftime("%D",$unix2)."<br />";
 	} else $unix2=0;
-//	print "ctime: ".time()."<BR>";
+//	print "ctime: ".time()."<br />";
 	$ctime = time();
 
 	return (($unix1==0 || $unix1<=$ctime) && ($unix2==0 || $unix2>=$ctime));

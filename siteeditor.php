@@ -16,8 +16,10 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 $sitea=db_get_line("sites","name='$site'");
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>SiteMap</title>
 
 <style type='text/css'>
@@ -117,9 +119,9 @@ if (count($sections)) {
 		print "<tr>";
 		print "<td>$sa[title]</td>";
 		print "<td>$sa[type]</td>";
-		print "<td align=center>".(($sa[active])?"yes":"no")."</td>";
-		print "<td align=center>".(($sa[locked])?"yes":"no")."</td>";
-		print "<td align=center>";
+		print "<td align='center'>".(($sa[active])?"yes":"no")."</td>";
+		print "<td align='center'>".(($sa[locked])?"yes":"no")."</td>";
+		print "<td align='center'>";
 		if ($sa[type]=='section') print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s\"'>[view]</a>";
 		print "</td>";
 		print "</tr>";
@@ -154,9 +156,9 @@ if (count($sections)) {
 			print "<tr>";
 			print "<td class=pad><li>$pa[title]</td>";
 			print "<td>$pa[type]</td>";
-			print "<td align=center>".(($sa[active])?"yes":"no")."</td>";
-			print "<td align=center>".(($pa[locked])?"yes":"no")."</td>";
-			print "<td align=center>";
+			print "<td align='center'>".(($sa[active])?"yes":"no")."</td>";
+			print "<td align='center'>".(($pa[locked])?"yes":"no")."</td>";
+			print "<td align='center'>";
 			if ($pa[type]=='page') print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s&page=$p\"'>[view]</a>";
 			print "</td>";
 			print "</tr>";
@@ -181,6 +183,6 @@ if (count($sections)) {
 	print "<tr><td colspan=5>No sections.</td></tr>";
 }
 ?>
-</table><BR>
+</table><br />
 A = active, L = locked
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>

@@ -24,9 +24,9 @@ print "<input type=hidden name=site value='".$_SESSION[obj]->getField("name")."'
 
 print "<table cellspacing=1 width='100%'>";
 print "<tr>";
-print "<td align=center colspan=$totalcolumns style='text-size: 25; font-weight: bold'>Permissions";
+print "<td align='center' colspan=$totalcolumns style='text-size: 25; font-weight: bold'>Permissions";
 
-print "<div align=right style='padding: 5px;'>";
+print "<div align='right' style='padding: 5px;'>";
 print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
 if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
 print "</div>";
@@ -40,9 +40,9 @@ print "</tr>";
  ******************************************************************************/
 $buttons = "<tr>";
 $c = $totalcolumns - 1;
-$buttons .= "<td align=left style='font-weight: bold'>";
+$buttons .= "<td align='left' style='font-weight: bold'>";
 if ($isOwner) $buttons .= "<input type=submit name='chooseeditors' value='<- Choose Editors'> ";
-$buttons .= "</td><td align=left colspan=$c>";
+$buttons .= "</td><td align='left' colspan=$c>";
 $buttons .= "L = Locked; v = View; a = Add; e = Edit; d = Delete; ".helplink("editors","help");
 $buttons .= "</td></tr>";
 print $buttons;
@@ -64,7 +64,7 @@ print "</tr>";
 /******************************************************************************
  * print out column headers for each editor
  ******************************************************************************/
-print "<tr><td id='collabel'> &nbsp; </td><td align=center class='lockedcol' style='background-color: #dbb'>L</td>";
+print "<tr><td id='collabel'> &nbsp; </td><td align='center' class='lockedcol' style='background-color: #dbb'>L</td>";
 foreach ($_SESSION[editors] as $e) {
 	print "<td class='viewcol' id='collabel' style='background-color: #bdb'>v</td>";
 	print "<td id='collabel'>a</td>";
@@ -114,9 +114,9 @@ if ($sections) {
 print $buttons;
 
 print "<tr>";
-print "<td align=center colspan=$totalcolumns style='text-size: 25; font-weight: bold'>";
+print "<td align='center' colspan=$totalcolumns style='text-size: 25; font-weight: bold'>";
 
-print "<div align=right style='padding: 5px;'>";
+print "<div align='right' style='padding: 5px;'>";
 print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
 if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
 print "</div>";
@@ -160,7 +160,7 @@ function doEditorLine(&$o) {
 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->id.",0";
 	if ($class == 'story')
 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->owning_page.",".$o->id;
-	print "<td align=center class='lockedcol' style='background-color: $bgColorL' width=18>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onClick=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\" ".((!$isOwner)?"disabled":"").">":"&nbsp;")."</td>";
+	print "<td align='center' class='lockedcol' style='background-color: $bgColorL' width=18>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onClick=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\" ".((!$isOwner)?"disabled":"").">":"&nbsp;")."</td>";
 	
 	$type = $o->getField("type");
 	
@@ -177,9 +177,9 @@ function doEditorLine(&$o) {
 			if ($class=='story' && $v == 'add') $skip = 1;
 			if ($type != 'story' && $type != 'page' && $type != 'section' && $class != 'site' && $v == 'add') $skip=1;
 			if ($skip) {
-				print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">&nbsp;</td>";
+				print "<td width=18 align='center'".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">&nbsp;</td>";
 			} else {
-				print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onClick=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l%$e%$v") || !$isOwner)?"disabled":"")."></td>";
+				print "<td width=18 align='center'".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onClick=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l%$e%$v") || !$isOwner)?"disabled":"")."></td>";
 			}
 		}
 	}

@@ -70,7 +70,7 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 }
 
 if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
-	//print "Making a new settings array<br>";
+	//print "Making a new settings array<br />";
 	// create the settings array with default values. $_SESSION[settings] must be passed along with each link.
 	// The array will be saved on clicking a save button.
 	$_SESSION[settings] = array(
@@ -296,7 +296,7 @@ if ($_REQUEST[save]) {
 
 // ------- print out the add form -------
 // --- The Navigation Links for the sidebar ---
-$leftlinks = "_________________<br><table>";
+$leftlinks = "_________________<br /><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
@@ -335,7 +335,7 @@ if (true) {
 	$leftlinks .= "</td></tr>";
 }
 
-$leftlinks .= "</table>_________________<br><a href=$PHP_SELF?$sid&action=add_story&cancel=1>Cancel</a>";
+$leftlinks .= "</table>_________________<br /><a href=$PHP_SELF?$sid&action=add_story&cancel=1>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
 
@@ -355,11 +355,11 @@ if ($_SESSION[settings][step] == 4) {
 // ---  variables for debugging ---
 /* $vars = $_SESSION[settings]; */
 /* ksort($vars); */
-/* $variables .= "<br>----------------------<br>"; */
+/* $variables .= "<br />----------------------<br />"; */
 /* foreach ($vars as $n => $v) { */
-/* 	$variables .= "$n = $v <br>";	 */
+/* 	$variables .= "$n = $v <br />";	 */
 /* } */
-/* if ($_SESSION[settings][file]) foreach ($_SESSION[settings][file] as $n => $v) $variables .= "<br>$n - $v"; */
+/* if ($_SESSION[settings][file]) foreach ($_SESSION[settings][file] as $n => $v) $variables .= "<br />$n - $v"; */
 //add_link(leftnav,'','',"$variables");
 //printc("$variables");
 //------------------------------------

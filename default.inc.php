@@ -18,11 +18,11 @@ if (isset($_REQUEST[expand_pastclasses])) {
  * public site listing link
  ******************************************************************************/
 $leftnav_extra .= <<< END
-<br/>
-<table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
+
+<table width="100%" height="100%" border=0 cellpadding='0' cellspacing='0'>
 	<tr>
 		<td height="100%" valign="bottom" style="font-weight: bolder">
-		<a href='sitelisting.php?$sid' onClick='doWindow("listing",600,500)' target='listing'>Public Sites</a>
+		<a href='sitelisting.php?$sid' onClick='doWindow("listing",600,500)' target='listing'>Site Listing</a>
 		</td>
 	</tr>
 </table>
@@ -34,7 +34,7 @@ END;
 if ($copysite && $newname && $origname) {
 	$origSite =& new site($origname);
 	$origSite->fetchDown(1);
-/*	print "Move: $origname to $newname  <br> <pre>"; */
+/*	print "Move: $origname to $newname  <br /> <pre>"; */
 /*	print_r($origSite); */
 /*	print "</pre>"; */
 /* $origSite->copySite($newname,$clearpermissions); */
@@ -83,7 +83,7 @@ if ($_loggedin) {
 	/******************************************************************************
 	 * List sites
 	 ******************************************************************************/
-	printc("<div align=right><a href=email.php?$sid&action=user&from=home onClick='doWindow(\"email\",700,500)' target='email'>Your Posts</a></div>");
+	printc("<div align='right'><a href=email.php?$sid&action=user&from=home onClick='doWindow(\"email\",700,500)' target='email'>Your Posts</a></div>");
 	 
 	 // Sort the classes
 	$classes = sortClasses($classes);
@@ -139,7 +139,7 @@ if ($_loggedin) {
 		
 								if (($gr = inclassgroup($cl)) || ($site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true))) {
 									if ($gr) { $site =& new site($gr); $site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true); }
-									if ($site->canview()) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$site->name."'>".$site->getField("title")."</a></td>");
+									if ($site->canview()) printc("<td align='left' class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$site->name."'>".$site->getField("title")."</a></td>");
 									else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
 									//check webcourses databases to see if course website was created in course folders (instead of Segue)
 								} else if ($course_site = coursefoldersite($cl)) {					  
@@ -207,11 +207,11 @@ if ($_loggedin) {
 			if ($_SESSION[atype] == 'visitor') {
 				printc("Welcome to Segue.  You have a visitor account that was created when you registered with Segue.  ");
 				printc("This account will allow you to post to any public discussions ");
-				printc("and view all publically accessible sites.<br><br>");
+				printc("and view all publically accessible sites.<br /><br />");
 			} else if ($_SESSION[atype] == 'guest') {
 				printc("Welcome to Segue.  You have been given a guest account.  ");
 				printc("This account will allow you to view sites and post to discussions/assessments");
-				printc("that are limited to users in the ".$cfg[inst_name]." community.<br><br>");
+				printc("that are limited to users in the ".$cfg[inst_name]." community.<br /><br />");
 			} else {
 				printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
 				printSiteLine(new site($_SESSION[auser]));
@@ -248,7 +248,7 @@ if ($_loggedin) {
 			}
 			
 			//info/interface for groups
-			printc("<tr><th colspan=2 align=right>add checked sites to group: <input type=text name=newgroup size=10 class=textfield>");
+			printc("<tr><th colspan=2 align='right'>add checked sites to group: <input type='text' name=newgroup size=10 class=textfield>");
 			$havegroups = count(($grs = group::getGroupsOwnedBy($_SESSION[auser])));
 			if ($havegroups) {
 				printc(" <select name='groupname' onChange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
@@ -260,7 +260,7 @@ if ($_loggedin) {
 			}
 			printc(" <input type=submit class=button value='add'>");
 			printc("</th></tr>");
-			printc("<tr><th colspan=2 align=left>");
+			printc("<tr><th colspan=2 align='left'>");
 			printc("<div style='padding-left: 10px; font-size: 10px;'>By adding sites to a group you can consolidate multiple class sites into one entity. This is useful if you teach multiple sections of the same class and want to work on only one site for those classes/sections. Check the boxes next to the classes you would like to add, and either type in a new group name or choose an existing one.");
 			if ($havegroups) printc("<div class=desc><a href='edit_groups.php?$sid' target='groupeditor' onClick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a></div>");
 			printc("</th></tr>");
@@ -396,14 +396,14 @@ if ($_loggedin) {
 			printc(" <input type=submit name='copysite' value='Copy' class='button'></form>");
 	}
 	
-	printc("</td><td align=right>");
+	printc("</td><td align='right'>");
 	if ($_SESSION[amethod] =='db' || $_SESSION[lmethod]=='db') printc("<a href='passwd.php?$sid&action=change' target='password' onClick='doWindow(\"password\",400,300)'>change password</a>");	
 	printc("</td></tr></table></td></tr>");
 	
 	printc("</table>");
 } else {
 	//add_link(leftnav,"Home","index.php?$sid","","");
-	//add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
+	//add_link(leftnav,"Personal Site List<br />","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
 	foreach ($defaultlinks as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
@@ -534,7 +534,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 		if ($obj->canview("anyuser")) $active = "<span class=green>active</span>";
 		else $active = "<span class=red>(inactive)</span>";
 	}
-	printc("<table width=100% cellpadding=0 cellspacing=0><tr><td align=left>");
+	printc("<table width=100% cellpadding='0' cellspacing='0'><tr><td align='left'>");
 	
 	if ($isclass && ((!$exists && (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name))) || ($exists && $_SESSION[auser] == slot::getOwner($obj->name)))) {
 		// if:
@@ -546,7 +546,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	
 	printc("$name - ");	
 	
-	//printc("<td align=right style='font-size: 11px; color: #777;'>");
+	//printc("<td align='right' style='font-size: 11px; color: #777;'>");
 	if ($exists) {
 		printc("<span style ='font-size:14px;'><a href='$namelink'>".$obj->getField("title")."</a></span>");
 	} else if (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name)) {
@@ -564,7 +564,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	
 	}
 	
-	printc("</td><td align=right>");
+	printc("</td><td align='right'>");
 	printc((($active)?"[$active]":""));
 	printc("</td></tr></table>");
 	//printc("<div style='padding-left: 20px;'>");
@@ -572,7 +572,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	
 	if ($isgroup) {
 		$list = implode(", ",$classlist);
-		printc("<div style='padding-left: 20px; font-size: 10px;'>this is a group and contains the following classes: <b>$list</b><br></div>");
+		printc("<div style='padding-left: 20px; font-size: 10px;'>this is a group and contains the following classes: <b>$list</b><br /></div>");
 		$sitesprinted = array_merge($sitesprinted,$classlist);
 	}
 	if ($exists) {
@@ -581,7 +581,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 		$added = timestamp2usdate($obj->getField("addedtimestamp"));
 		$edited = $obj->getField("editedtimestamp");
 		$editedby = $obj->getField("editedby");
-		printc("<div style='padding-left: 20px; font-size: 10px;'>added by $addedby on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"")."<br></div>");
+		printc("<div style='padding-left: 20px; font-size: 10px;'>added by $addedby on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"")."<br /></div>");
 		
 		if ($obj->getField("activatedate") != '0000-00-00' || $obj->getField("deactivatedate") != '0000-00-00') {
 			printc("<div style='padding-left: 20px; font-size: 10px;'>available: ");
@@ -595,12 +595,12 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 			printc("</div>");
 		}
 
-		printc("<div align=left>");
+		printc("<div align='left'>");
 	
 		$addr = "$_full_uri/sites/$name";
-		printc("<div style='padding-left: 20px; font-size: 12px;'>URL: <a href='$addr' target='_blank'>$addr</a><br></div></div>");
+		printc("<div style='padding-left: 20px; font-size: 12px;'>URL: <a href='$addr' target='_blank'>$addr</a><br /></div></div>");
 		
-		printc("<div align=right>");
+		printc("<div align='right'>");
 		
 		if ($_SESSION[auser] == slot::getOwner($obj->name) || $obj->isEditor($_SESSION[auser])) {
 			// if the user is an editor or the owner			
@@ -638,9 +638,9 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	$color=1-$color;
 }
 
-//$sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gschineATmiddleburyDOTedu'>Gabriel Schine</a>, <a href='mailto:achapinATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>, <a href='mailto:afrancoATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a> and <a href='mailto:dradichkATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Dobo Radichkov</a></div>";
+//$sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gschineATmiddleburyDOTedu'>Gabriel Schine</a>, <a href='mailto:achapinATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>, <a href='mailto:afrancoATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a> and <a href='mailto:dradichkATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Dobo Radichkov</a></div>";
 $_version = file_get_contents("version.txt");
-$sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>Segue v.$_version &copy;2004, Middlebury College: <a href='credits.php' target='credits' onClick='doWindow(\"credits\",400,300);'>credits</a></div>";?>
+$sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>Segue v.$_version &copy;2004, Middlebury College: <a href='credits.php' target='credits' onClick='doWindow(\"credits\",400,300);'>credits</a></div>";?>
 
 
 

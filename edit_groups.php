@@ -63,8 +63,10 @@ $query = "
 $r = db_query($query);
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Edit Groups</title>
 
 <style type='text/css'>
@@ -129,7 +131,7 @@ if ($numGroups) {
 		print "<td>";
 		print "$a[classgroup_name]";
 		print "</td>";
-		print "<td align=center>";
+		print "<td align='center'>";
 		print "<a href='$PHP_SELF?$sid&del=group&group=$a[classgroup_id]'>[del]</a>";
 		print "</td>";
 		
@@ -150,7 +152,7 @@ if ($numGroups) {
 			print "<td style='padding-left: 20px'>";
 			print "-&gt; ".generateCourseCode($b[class_id])."</a>";
 			print "</td>";
-			print "<td align=center>";
+			print "<td align='center'>";
 			print "<a href='$PHP_SELF?$sid&del=class&group=$a[classgroup_id]&class=$b[class_id]'>[remove]</a>";
 			print "</td>";
 			print "</tr>";
@@ -160,5 +162,5 @@ if ($numGroups) {
 	print "<tr><td colspan=2>No class groups.</td></tr>";
 }
 ?>
-</table><BR>
-<div align=right><input type=button value='Close Window' onClick='window.close()'></div>
+</table><br />
+<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
