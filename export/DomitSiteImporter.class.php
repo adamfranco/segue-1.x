@@ -135,7 +135,7 @@ class DomitSiteImporter {
 		/*********************************************************
 		 * Add all the editors
 		 *********************************************************/
-		 	$editors = array();
+		 	$editors = array('everyone','institute');
 		 
 		 	// Editors
 			$agentList =& $this->_document->getElementsByTagName('agent');
@@ -723,20 +723,32 @@ class DomitSiteImporter {
 		// Activate Date
 		$activate_dateList =& $activationElement->getElementsByPath("activate_date");
 		$activate_dateElement =& $activate_dateList->item(0);
-		if ($activate_dateList->getLength() != 1) {
-			print "\nRequired 'activate_date' element is missing!";
+		if ($activate_dateList->getLength() > 1) {
+			print "\nInvalid number of 'activate_date' elements!";
 			return FALSE;
 		}
-		$partObj->setField('activatedate', trim($activate_dateElement->getText()));
+		if ($activate_dateElement)
+			$partObj->setField('activatedate', trim($activate_dateElement->getText()));
 		
 		// Deactivate Date
 		$deactivate_dateList =& $activationElement->getElementsByPath("deactivate_date");
 		$deactivate_dateElement =& $deactivate_dateList->item(0);
-		if ($deactivate_dateList->getLength() != 1) {
-			print "\nRequired 'deactivate_date' element is missing!";
+		if ($deactivate_dateList->getLength() > 1) {
+			print "\nInvalid number of 'deactivate_date' elements!";
 			return FALSE;
 		}
-		$partObj->setField('deactivatedate', trim($deactivate_dateElement->getText()));
+		if ($deactivate_dateElement)
+			$partObj->setField('deactivatedate', trim($deactivate_dateElement->getText()));
+		
+		// Deactivate Date
+		$manual_activationList =& $activationElement->getElementsByPath("manual_activation");
+		$manual_activationElement =& $manual_activationList->item(0);
+		if ($manual_activationList->getLength() > 1) {
+			print "\nInvalid number of 'manual_activation' elements!";
+			return FALSE;
+		}
+		if ($manual_activationElement && $manual_activationElement->getText() == 'INACTIVE')
+			$partObj->setField('active', 0);
 		
 		return TRUE;
 	}

@@ -657,16 +657,20 @@ class DomitSiteExporter {
 	function addTheme(& $site, & $siteElement) {
 		
 		// If we have a theme add it
-		if ($site->getField('themesettings')) {
+		if ($site->getField('theme')) {
 			$themeElement =& $this->_document->createElement('theme');
 			$siteElement->appendChild($themeElement);
+
+			$element =& $this->_document->createElement('name');
+			$themeElement->appendChild($element);
+			$element->appendChild($this->_document->createTextNode($site->getField('theme')));
 			
 			// if we have themesettings, add them
 			if ($themesettings = $site->getField('themesettings')) {
 				$settingsArray = unserialize(urldecode($themesettings));
 				
 				$settingsParts = array(
-						'name' => 'theme',
+						
 						'color_scheme' => 'colorscheme',
 						'background_color' => 'bgcolor',
 						'border_style' => 'borderstyle',
