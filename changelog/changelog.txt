@@ -9,6 +9,8 @@ v. 1.3.0 (the future)
 	**** IMPORTANT *** Change: Various changes in Segue necessitate that you upgrade to a new config file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make several changes to Segue's database and file-storage structure. (Adam Franco)
 		
 		
+	* Bug Fix: Sites now only appear once in the 'Copy Site' bar. (Adam Franco)
+		
 	* Change: Everyone and institute permissions are now not dropped on site-copy. As well, when creating a group from an existing site, the permissions are now retained. (Adam Franco)
 		
 	* Bug Fix: #1036482 LDAP users are now syched with the database when they are given permissions. (Adam Franco)

@@ -8,6 +8,9 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		<fix author='adam'>
+			Sites now only appear once in the 'Copy Site' bar.
+		</fix>
 		<change author='adam'>
 			Everyone and institute permissions are now not dropped on site-copy.
 			As well, when creating a group from an existing site, the permissions are 

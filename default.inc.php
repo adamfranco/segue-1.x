@@ -376,8 +376,8 @@ if ($_loggedin) {
 	
 // ******************************* THESE TWO
 	$allExistingSitesSlots = allSitesSlots($_SESSION[auser]);
-	$allExistingSites = $allExistingSitesSlots[0];
-	$allExistingSlots = $allExistingSitesSlots[1];
+	$allExistingSites = array_unique($allExistingSitesSlots[0]);
+	$allExistingSlots = array_unique($allExistingSitesSlots[1]);
 // ******************************* THESE TWO
 	
 	if (count($allExistingSites) && count($allExistingSlots)) {
