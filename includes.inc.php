@@ -27,12 +27,13 @@ if (!ini_get("register_globals")) {
 
 include("functions.inc.php");
 require_once("config.inc.php");
-include("dbwrapper.inc.php");
-include("error.inc.php");
-include("themes/themeslist.inc.php");
-include("dates.inc.php");
-include("help/include.inc.php");
-include("permissions.inc.php");
+require_once("dbwrapper.inc.php");
+require_once("error.inc.php");
+require_once("themes/themeslist.inc.php");
+require_once("dates.inc.php");
+require_once("help/include.inc.php");
+require_once("permissions.inc.php");
+require_once("htmleditor/editor.inc.php");
 
 
 //output a meta tag
@@ -44,7 +45,7 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 // - other pages will only require users to be authenticated if the site creator has specified it like that
 // - other pages can be either authenticated or not
 // --- this functionality will be handled by authentication.inc.php
-include("authentication.inc.php");
+require_once("authentication.inc.php");
 
 // include the appropriate class functions for this network (stored in $_network)
 $_f = "class_functions/" . $_network . ".inc.php";

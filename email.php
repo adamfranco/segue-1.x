@@ -484,7 +484,7 @@ print "</div><br>";
 			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
 			<tr><td></td><td align=left>
 			<?
-			include("htmleditor/editor.inc.php");
+			require_once("htmleditor/editor.inc.php");
 			include("sniffer.inc.php");
 			addeditor ("body",60,20,$text,"discuss"); 
 			print $content;

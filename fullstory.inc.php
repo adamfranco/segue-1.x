@@ -127,7 +127,7 @@ if ($storyObj->getField("type") == 'file') {
 /******************************************************************************
  * print out shory and discussion (if any)
  ******************************************************************************/
-// include("htmleditor/editor.inc.php");
+// require_once("htmleditor/editor.inc.php");
 if ($storyObj->getField("discuss")) $titleExtra = " Discussion";
 
 printc("<table width=100% id='maintable' cellspacing=1>\n");

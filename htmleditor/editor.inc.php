@@ -31,6 +31,32 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 	//return $editorType;
 }
 
+/**
+ * Clean the editor text to remove/convert line-returns.
+ * 
+ * @param string $text The text to convert
+ * @return string
+ * @access public
+ * @date 9/15/04
+ */
+function cleanEditorText ($text) {
+	// If we are using a plain text-field convert any linereturns to <br /> tags
+	// Make sure that we have the content formatted correctly.
+		
+	include ("sniffer.inc.php");
+	// If we just have a text box, replace new lines with <br> tags
+	if (!$supported) {
+		$text = htmlbr($text);
+	}
+	// This is a hack, but HTMLAREA adds a \n at the begining of the text.
+	// Let remove it instead of wading through all of the htmlarea code.
+	else {
+		$text = preg_replace("/$\n/", "", $text);
+	}
+}
+
+
+
 /******************************************************************************
  * replaces textarea with HTMLarea WYSISYG 
  * if $context is story includes full menu

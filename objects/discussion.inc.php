@@ -531,7 +531,7 @@ class discussion {
 		global $sid,$error,$_full_uri;
 		global $mailposts, $cfg;
 		
-		//include("htmleditor/editor.inc.php");
+		//require_once("htmleditor/editor.inc.php");
 		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
 			$site = $_REQUEST['site'];
 			$action = $_REQUEST['action'];
@@ -633,17 +633,8 @@ class discussion {
 				$d = & new discussion($_REQUEST['story']);
 				$d->subject = $_REQUEST['subject'];
 				
-				// Make sure that we have the content formatted correctly.
-				include ("sniffer.inc.php");
-				// If we are using a WYSIWYG editor, just take the content
-				// straight from that
-				if ($supported) {
-					$d->content = $_REQUEST['content'];
-				}
-				// If we just have a text box, replace new lines with <br> tags
-				else {
-					$d->content = htmlbr($_REQUEST['content']);
-				}
+				// Lets pass the cleaning of editor text off to the editor.
+				$d->content = cleanEditorText($_REQUEST['content']);
 					
 				if ($a=='reply') {
 					$d->parentid = $_REQUEST['replyto'];
@@ -795,7 +786,7 @@ class discussion {
 
 		if ($t != 'rate' && $_SESSION[auser]) {			
 			//printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>\n");
-			include("htmleditor/editor.inc.php");
+			require_once("htmleditor/editor.inc.php");
 			include("sniffer.inc.php");
 			printc ("<td class=content$p>\n");
 			addeditor ("content",60,20,$c,"discuss");

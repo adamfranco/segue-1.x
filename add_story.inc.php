@@ -233,13 +233,8 @@ if ($_REQUEST[save]) {
 			$action_site = "action=site";			
 			$text = eregi_replace($action_viewsite, $action_site, $text);
 			
-			 // Also, if we are using a plain text-field convert any linereturns to <br /> tags
-			 // Make sure that we have the content formatted correctly.
-			include ("sniffer.inc.php");
-			// If we just have a text box, replace new lines with <br> tags
-			if (!$supported) {
-				$text = htmlbr($text);
-			}
+			// Lets pass the cleaning of editor text off to the editor.
+			$text = cleanEditorText($text);
 			
 			// save general mediapath and internal_linkpath to object			
 			$_SESSION[storyObj]->setField("shorttext",$text);
@@ -279,8 +274,7 @@ if ($_REQUEST[save]) {
 		 * if the longertext field = <br />,then set field to ''
 		 ******************************************************************************/
  
-		if (trim($_SESSION[storyObj]->getField("longertext")) == "<br />")
-			$_SESSION[storyObj]->setField("longertext",'');
+		$_SESSION[storyObj]->setField("longertext", cleanEditorText($_SESSION[storyObj]->getField("longertext")));
 		
 		// check make sure the owner is the current user if they are changing permissions
 /* 		if ($site_owner != $_SESSION[auser]) { */

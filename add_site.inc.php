@@ -177,14 +177,9 @@ if ($_REQUEST[save]) {
 		 $mod_header = eregi_replace($specfic_mediapath, $general_mediapath, $mod_header);
 		 $mod_footer = eregi_replace($specfic_mediapath, $general_mediapath, $mod_footer);
 		 
-		 // Also, if we are using a plain text-field convert any linereturns to <br /> tags
-		 // Make sure that we have the content formatted correctly.
-		include ("sniffer.inc.php");
-		// If we just have a text box, replace new lines with <br> tags
-		if (!$supported) {
-			$mod_header = htmlbr($mod_header);
-			$mod_footer = htmlbr($mod_footer);
-		}
+		// Lets pass the cleaning of editor text off to the editor.
+		$mod_header = cleanEditorText($mod_header);
+		$mod_footer = cleanEditorText($mod_footer);
 		 
 		 $_SESSION[siteObj]->setField("header",$mod_header);
 		 $_SESSION[siteObj]->setField("footer",$mod_footer);

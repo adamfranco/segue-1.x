@@ -8,6 +8,12 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		<fix author='adam'>
+			HTMLAREA and plaintext box editing now behavies better with respect to
+			line returns. HTMLArea submissions now have the first line return removed
+			to prevent them from accumulating. Plain textarea line returns are converted
+			to &lt;br /&gt; tags.
+		</fix>
 		<change author='adam'>
 			Discussions now display 'cancel' buttons when in post or rate modes.
 		</change>

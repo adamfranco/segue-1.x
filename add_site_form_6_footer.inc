@@ -59,7 +59,7 @@ printc("</table></div><br><br>");
 //	print out text areas with editor (determined by addeditor function)
 //  addeditor function (defined in editor.inc.php)
 //  addeditor function variables (textarea, cols, rows, text)
-include("htmleditor/editor.inc.php");
+require_once("htmleditor/editor.inc.php");
 
 /******************************************************************************
  * replace general media library urls (i.e. $mediapath/$sitename/filename)

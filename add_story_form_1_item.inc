@@ -277,7 +277,7 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
  	* Include HTML Editor code
 	 ******************************************************************************/
 	
-	include("htmleditor/editor.inc.php");
+	require_once("htmleditor/editor.inc.php");
 	
 	/******************************************************************************
 	 * 	print out text areas with editor (determined by addeditor function)
