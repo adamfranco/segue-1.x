@@ -8,6 +8,11 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		<fix author='adam'>
+			Segue now checks that it can write to a site directory before attempting 
+			to copy media to it and prints out an informative message if it can't
+			instead of failing with confusing errors.
+		</fix>
 		<fix author='adam' ref='879877' reftype='bug'>
 			Removed repeating titles for stories in the sitemap.
 		</fix>
