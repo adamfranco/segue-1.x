@@ -315,8 +315,25 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 	while ($a = db_fetch_assoc($r)) {
 		$db_users[$a[user_uname]] = $a[user_fname];
 	}
-	$usernames = array_merge($db_users,$usernames);	
 
+/******************************************************************************
+ * 	add in the ugroups
+ ******************************************************************************/
+	$query = "
+		SELECT
+			ugroup_name
+		FROM
+			ugroup
+		WHERE
+			ugroup_name LIKE '%$name%'
+	";
+		$r = db_query($query);
+	$ugroups = array();
+	while ($a = db_fetch_assoc($r)) {
+		$ugroups[$a[ugroup_name]] = $a[ugroup_name]." (Group)";
+	}
+	
+	$usernames = array_merge($db_users,$usernames,$ugroups);	
 	
 	if ($lc && $usernames) {
 		foreach ($usernames as $u=>$f)
