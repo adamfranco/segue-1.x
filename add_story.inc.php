@@ -11,6 +11,22 @@
 //print $variables."<br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
 //print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
 //print "site = $site<br>section = $section<br>page=$page<br>";
+
+//if (!isset($test) && type='file') $test=1;
+//else $test=0;
+//if (1) $testFile = $_FILES['file'];
+print "\$_FILES['file']['name'] = '";
+print $_FILES['file']['name'];
+print "'<br> \$_FILES['file'] = ";
+print $_FILES['file'];
+print "<br>\$_FILES['file']['type'] = ";
+print $_FILES['file']['type'];
+//print "<br>\$testFile = ";
+//print $testFile;
+//print "<br>\$testFile['name'] = ";
+//print $testFile['name'];
+//if (1) foreach ($testFile as $n => $v) print "<br> $n $v";
+
 //------------------------------------
 
 // first check if we are allowed to edit this site at all
@@ -80,7 +96,8 @@ if ($settings) {
 //	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
 //	if ($archiveby) $settings[archiveby] = $archiveby;
 	if ($url) $settings[url] = $url;
-	if ($file) $settings[file] = $file;
+	if ($filename) $settings[filename] = $filename;
+	if ($filename) $settings[file] = $_FILES[$filename];
 	if ($texttype) $settings[texttype] = $texttype;
 	if ($settings[step] == 5 && !$link) $settings[discuss] = $discuss;
 	if ($settings[step] == 5 && !$link) $settings[discusspermissions] = $discusspermissions;
@@ -434,8 +451,10 @@ foreach ($vars as $n => $v) {
 //add_link(leftnav,'','',"$variables");
 printc("$variables");
 $count = count($_FILES);
-printc("<br>Files = $_FILES  & count = $count");
+printc("<br>Files = $_FILES  <br> count(\$_FILES) = $count");
 foreach ($_FILES as $n => $v) printc ("<br>- $v");
+print "<br>\$_FILES['file'] == ".$_FILES['file'];
+print "<br>\$_FILES['file']['name'] == ".$_FILES['file']['name'];
 //------------------------------------
 
 // End of New Code

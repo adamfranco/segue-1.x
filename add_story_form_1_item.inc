@@ -127,7 +127,7 @@ if ($settings[type] == 'image' || $settings[type] == 'file') {
 	if ($settings[edit]) printc("New ");
 	if ($settings[type] == 'image') printc("Image: ");
 	else printc("File: ");
-	printc("<input type=file name=file value='$settings[file] class=textfield>");
+	printc("<input type=file name=file class=textfield>");
 	if ($settings[type]=='image') printc("<div class=desc>Select the image you would like to use by clicking the 'Browse...' button above. Accepted image types are GIF, JPEG and PNG.</div>");
 	else printc("<div class=desc>Select the file you would like to make available by clicking the 'Browse...' button above.</div>");
 	printc("<br>");
@@ -137,6 +137,8 @@ if ($settings[type] == 'image' || $settings[type] == 'file') {
 	printc("<textarea name=shorttext class=textarea rows=4 cols=80>".spchars($settings[shorttext])."</textarea>");
 	
 }
+
+printc ("<input type=submit value='Submit'>");
 
 if ($settings[type] != 'story') printc("<br><br>");
 

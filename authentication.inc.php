@@ -59,16 +59,16 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 	global $lmethod,$lid,$luser,$lpass,$lfname,$lemail,$ltype;
 	global $auser,$aemail,$afname,$atype,$aid;
 	global $_auth_mods;
-	
+		
 	// we have two choices in this function. either the user has already logged in
 	// or we have to check for them
-	if ($alreadyloggedin) {
+	if ($alreadyloggedin) {	
 //		print "lmethod: $lmethod - $luser<BR>";
-		$func = "_valid_".$lmethod;
-		if ($func($user,$pass))
+		$func = "_valid_".$lmethod;		
+		if ($func($user,$pass))		
 			return 1;		// ok, they passed the test
 		else
-			return 0;
+			return 0;			
 	} else {
 		$valid=0;
 		
@@ -130,7 +130,7 @@ function _auth_check_db($x,$add_to_db=0) {
 	global $dbuser,$dbhost,$dbpass,$dbdb;
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 	$query = "select * from users where uname='".$x[user]."' and status='".$x[method]."'";
-	$r = db_query($query);
+	$r = db_query($query);	
 	if (db_num_rows($r)) {		// they have an entry already -- pull down their info
 		$a = db_fetch_assoc($r);
 		$x[fullname] = $a[fname];

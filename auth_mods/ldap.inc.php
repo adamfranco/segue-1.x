@@ -10,7 +10,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 	$c = ldap_connect($ldapserver);
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
 	//$r=ldap_bind($c,"cn=gschine,cn=Recipients,ou=MIDD,o=MC","");  //debug
-	
+		
 	if ($r) { // they're good!
 		// pull down their info
 		$return = array("uid","cn","mail","extension-attribute-1","memberOf");
@@ -53,9 +53,11 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		$x[fullname] = $results[0]["cn"][0];
 		$x[email] = $results[0]["mail"][0];
 		// are they prof?
-		foreach ($results[0]["memberof"] as $item) {
-			if (eregi("all_faculty",$item)) {
-				$areprof=1;
+		if (is_array($results[0]["memberof"])) {
+			foreach ($results[0]["memberof"] as $item) {
+				if (eregi("all_faculty",$item)) {
+					$areprof=1;
+				}
 			}
 		}
 		$x[type] = ($areprof)?"prof":"stud";
@@ -64,11 +66,11 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 			$fname = $vars[1] . " " . $vars[0];
 			$x[fullname] = $fname;
 		}
-		
+								
 		// now check if they're in the database, add if necessary, and get id
-		$x = _auth_check_db($x,1);
+		$x = _auth_check_db($x,1);		
 		return $x;
-		
+				
 	}
 	return 0;
 }
