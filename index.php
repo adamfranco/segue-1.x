@@ -192,7 +192,7 @@ if ($_REQUEST[site]) {						// we are in a site
 	$mod_header = $thisSite->getField("header");
 	$mod_footer = $thisSite->getField("footer");
 	$specfic_mediapath = $cfg[uploadurl]."/".$_REQUEST[site];
-	$general_mediapath = "mediapath";
+	$general_mediapath = "\[\]mediapath\]\]";
 	$mod_header = eregi_replace($general_mediapath, $specfic_mediapath, $mod_header);
 	$mod_footer = eregi_replace($general_mediapath, $specfic_mediapath, $mod_footer);
 	

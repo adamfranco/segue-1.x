@@ -173,7 +173,7 @@ if ($_REQUEST[save]) {
 		 $mod_header = $_SESSION[siteObj]->getField("header",$_REQUEST[header]);
 		 $mod_footer = $_SESSION[siteObj]->getField("footer",$_REQUEST[footer]);
 		 $specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][sitename];
-		 $general_mediapath = "mediapath";
+		 $general_mediapath = "\[\]mediapath\]\]";
 		 $mod_header = eregi_replace($specfic_mediapath, $general_mediapath, $mod_header);
 		 $mod_footer = eregi_replace($specfic_mediapath, $general_mediapath, $mod_footer);
 		 $_SESSION[siteObj]->setField("header",$mod_header);

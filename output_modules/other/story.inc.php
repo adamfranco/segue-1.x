@@ -6,12 +6,19 @@ $st = $o->getField("shorttext");
 
 /******************************************************************************
  * replace general media library urls (i.e. $mediapath/$sitename/filename)
+ * replace general with specific
  ******************************************************************************/
 //printpre($site);
 //$specfic_mediapath = "http://segue.middlebury.edu";
 $specfic_mediapath = $cfg[uploadurl]."/".$site;
-$general_mediapath = "mediapath";
+$general_mediapath = "\[\]mediapath\]\]";
 $st = eregi_replace($general_mediapath, $specfic_mediapath, $st);
+
+// replace internal link urls with constant [[linkpath]]
+$specfic_internal_linkpath = $cfg[full_uri];
+$general_internal_linkpath = "\[\]linkpath\]\]";
+$st = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $st);
+
 if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
 printc("<table cellspacing=0 cellpadding=0 width=100%><tr><td>");
 printc(stripslashes($st));

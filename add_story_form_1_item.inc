@@ -250,10 +250,22 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
+	 * replace general with specific
 	 ******************************************************************************/
 	$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
-	$general_mediapath = "mediapath";
+	$general_mediapath = "\[\]mediapath\]\]";
 	$text = eregi_replace($general_mediapath, $specfic_mediapath, $text);
+
+	// replace internal link urls with constant [[linkpath]]
+	$specfic_internal_linkpath = $cfg[full_uri];
+	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$text = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $text);
+	
+	// replace internal links in edit mode (action=viewsite)
+	// with internal links in non-edit mode (action=site)
+	$action_viewsite = "action=viewsite";
+	$action_site = "action=site";			
+	$text = eregi_replace($action_viewsite, $action_site, $text);
 
 	printc(addeditor ("shorttext",60,20,$text));
 	printc("</td></tr></table>");

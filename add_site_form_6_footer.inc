@@ -66,7 +66,7 @@ include("htmleditor/editor.inc.php");
  ******************************************************************************/
 $mod_footer = $_SESSION[siteObj]->getField("footer");
 $specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][sitename];
-$general_mediapath = "mediapath";
+$general_mediapath = "\[\]mediapath\]\]";
 $mod_footer = eregi_replace($general_mediapath, $specfic_mediapath, $mod_footer);
 
 printc(addeditor("footer",60,8,$mod_footer));

@@ -212,10 +212,24 @@ if ($_REQUEST[save]) {
 		if ($_SESSION[storyObj]->getField("type") == "story") {
 			
 			$text = $_SESSION[storyObj]->getField("shorttext");
-			//$specfic_mediapath = "http://segue.middlebury.edu";
+			// replace upload url path with constant [[mediapath]]
 			$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
-			$general_mediapath = "mediapath";
+			$general_mediapath = "\[\]mediapath\]\]";
 			$text = eregi_replace($specfic_mediapath, $general_mediapath, $text);
+			
+			// replace internal link urls with constant [[linkpath]]
+			$specfic_internal_linkpath = $cfg[full_uri];
+			$general_internal_linkpath = "\[\]linkpath\]\]";
+			$text = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $text);
+			
+			// replace internal links in edit mode (action=viewsite)
+			// with internal links in non-edit mode (action=site)
+			$action_viewsite = "action=viewsite";
+			$action_site = "action=site";			
+			$text = eregi_replace($action_viewsite, $action_site, $text);
+			
+			
+			
 			$_SESSION[storyObj]->setField("shorttext",$text);
 		}
 		
