@@ -196,6 +196,9 @@ class story extends segue {
 		$this->changed[discussions] = 1;
 	}
 	
+/******************************************************************************
+ * doesn't seem to acctually delete discussions! look into this!!!!!!
+ ******************************************************************************/
 	function delDiscussion($id) {
 		if (!$this->getField("discussions")) return;
 		$d = array();
@@ -215,6 +218,9 @@ class story extends segue {
 			$parentObj->delStory($this->id);
 			$parentObj->updateDB();
 		} else {
+			/******************************************************************************
+			 * should probably delete discussions too! Look into this!!!!
+			 ******************************************************************************/
 			$query = "delete from stories where id=".$this->id;
 			db_query($query);
 			
@@ -271,14 +277,31 @@ class story extends segue {
 			$this->parseMediaTextForDB("shorttext");
 			$this->parseMediaTextForDB("longertext");
 			$a = $this->createSQLArray();
-			$a[] = "editedby='$_SESSION[auser]'";
-			$a[] = "editedtimestamp = NOW()";
-			$query = "update stories set ".implode(",",$a)." where id=".$this->id;
+			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
+//			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
+			$query = "UPDATE page SET ".implode(",",$a)." WHERE page_id=".$this->id;
+			print "<pre>Page->UpdateDB: $query<br>";
 			db_query($query);
+			print mysql_error()."<br>";
+			print_r($this->data['stories']);
+			print "</pre>";
+			
+			// the hard step: update the fields in the JOIN tables
+			
+			// Urls are now stored in the media table
+			if ($this->changed[url]) {
+				 
+			}
 		}
 		
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
 		// update permissions
-		$this->updatePermissionsDB();
+//		$this->updatePermissionsDB();
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
 		
 		// add log entry, now handled elsewhere
 /* 		log_entry("edit_story",$this->owning_site,$this->owning_section,$this->owning_page,"$_SESSION[auser] edited content id ".$this->id." in site ".$this->owning_site); */
@@ -291,10 +314,11 @@ class story extends segue {
 		$origid = $this->id;
 		if ($newsite) $this->owning_site = $newsite;
 		if ($newsection) $this->owning_section = $newsection;
-		if ($newpage) {
-			$this->owning_page = $newpage;
-			$this->owningPageObj = new Page($newsite,$newsection,$newpage);
-		}
+		if ($newpage) $this->owning_page = $newpage;
+		
+		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
+		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section);
+		if (!isset($this->owningPageObj)) $this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
 		
 		// if moving to a new site, copy the media
 		if ($origsite != $this->owning_site && $down) {
@@ -312,22 +336,24 @@ class story extends segue {
 		
 		$this->parseMediaTextForDB("shorttext");
 		$this->parseMediaTextForDB("longertext");
+		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
-			$a[] = "addedby='$_SESSION[auser]'";
-			$a[] = "addedtimestamp = NOW()";
+			$a[] = $this->_datafields[addedby][1][0]."=".$_SESSION[aid];
+			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
 		} else {
-			$a[] = "addedby='".$this->getField("addedby")."'";
-			$a[] = "addedtimestamp='".$this->getField("addedtimestamp")."'";
+			$a[] = $this->_datafields[addedby][1][0]."=".$this->getField('addeby');
+			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
-		$query = "insert into stories set ".implode(",",$a);
+
+		$query = "INSERT INTO stories SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
 		
 		$this->fetchUp();
-		$this->owningPageObj->addStory($this->id);
+/* 		$this->owningPageObj->addStory($this->id); */
 		if ($removeOrigional) $this->owningPageObj->delStory($origid,0);
 		$this->owningPageObj->updateDB();
 		
@@ -347,22 +373,36 @@ class story extends segue {
 	function createSQLArray($all=0) {
 		$d = $this->data;
 		$a = array();
+
+		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
+		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'";
+		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section);
+		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->getField("id")."'";
+		if (!isset($this->owningPageObj)) $this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
+		if ($all) $a[] = $this->_datafields[page_id][1][0]."='".$this->owningPageObj->getField("id")."'";
 		
-		if ($all || $this->changed[title]) $a[] = "title='".addslashes($d[title])."'";
-		if ($all) $a[] = "site_id='".$this->owning_site."'";
-		if ($all) $a[] = "section_id=".$this->owning_section;
-		if ($all) $a[] = "page_id=".$this->owning_page;
-		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
-		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
-		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
-		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
-		if ($all || $this->changed[discuss]) $a[] = "discuss=".(($d[discuss])?1:0);
-		if ($all || $this->changed[texttype]) $a[] = "texttype='$d[texttype]'";
-		if ($all || $this->changed[category]) $a[] = "category='$d[category]'";
-		if ($all || $this->changed[shorttext]) $a[] = "shorttext='".urlencode($d[shorttext])."'";
-		if ($all || $this->changed[longertext]) $a[] = "longertext='".urlencode($d[longertext])."'";
-		if ($all || $this->changed[locked]) $a[] = "locked=".(($d[locked])?1:0);
-		if ($all || $this->changed[discussions]) $a[] = "discussions='".encode_array($d[discussions])."'";
+//		if ($this->id && ($all || $this->changed[pages])) { //I belive we may always need to fix the order.
+		if ($this->id) {
+			$orderkeys = array_keys($this->owningPageObj->getField("stories"),$this->id);
+			$a[] = "story_order=".$orderkeys[0];
+		} else {
+			$a[] = "story_order=".count($this->owningPageObj->getField("stories"));
+		}
+		
+		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
+		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
+		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
+		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
+//		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
+//		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
+		if ($all || $this->changed[discuss]) $a[] = $this->_datafields[discuss][1][0]."='".(($d[discuss])?1:0)."'";
+		if ($all || $this->changed[texttype]) $a[] = $this->_datafields[texttype][1][0]."='$d[texttype]'";
+		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='$d[category]'";
+		if ($all || $this->changed[shorttext]) $a[] = $this->_datafields[shorttext][1][0]."='".urlencode($d[shorttext])."'";
+		if ($all || $this->changed[longertext]) $a[] = $this->_datafields[longertext][1][0]."='".urlencode($d[longertext])."'";
+//		if ($all || $this->changed[discussions]) $a[] = "discussions='".encode_array($d[discussions])."'";
 		
 		return $a;
 	}

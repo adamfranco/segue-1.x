@@ -394,7 +394,7 @@ class page extends segue {
 		if ($all || $this->changed[showcreator]) $a[] = $this->_datafields[showcreator][1][0]."='".(($d[showcreator])?1:0)."'";
 		if ($all || $this->changed[showdate]) $a[] = $this->_datafields[showdate][1][0]."='".(($d[showdate])?1:0)."'";
 		if ($all || $this->changed[showhr]) $a[] = $this->_datafields[showhr][1][0]."='".(($d[showhr])?1:0)."'";
-		if ($all || $this->changed[storyorder]) $a[] = $this->_datafields[storyorder][1][0]."='$d[storyorder]'";
+//		if ($all || $this->changed[storyorder]) $a[] = $this->_datafields[storyorder][1][0]."='$d[storyorder]'";
 		
 		return $a;
 	}
