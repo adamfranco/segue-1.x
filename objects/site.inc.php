@@ -238,20 +238,27 @@ class site extends segue {
 
 		// the hard step: update the fields in the JOIN tables
 
-			// first update 'title' in the slot table
+			// first update 'slot_name' in the slot table, if the latter has changed
 			if ($this->changed[name]) {
 				$new_name = $this->data[name];
 				$query = "UPDATE slot SET slot_name = '$new_name' WHERE FK_site=".$this->id;
 				db_query($query);
 			}
 
-			// now update all the section ids in the children
+			// now update all the section ids in the children, if the latter have changed
 			if ($this->changed[sections]) {
-			// FILL IN!
+				// first, a precautionary step: reset the parent of every section that used to have this site object as the parent
+				// we do this, because we might have removed a certain section from the array of sections of a site object
+				$query = "UPDATE section SET FK_site=0 WHERE FK_site=".$this->id;
+				db_query($query);
+				
+				// now, update all sections
+				foreach ($this->data['sections'] as $v) {
+					$query = "UPDATE section SET FK_site=".$this->id." WHERE section_id=".$v;
+					db_query($query);
+				}
+				
 			}
-
-//		if ($all || $this->changed[sections]) $a[] = "$this->_datafields[sections][1][0]='".encode_array($d[sections])."'";
-
 		}
 		
 
@@ -279,21 +286,36 @@ class site extends segue {
 	
 	function insertDB($down=0,$copysite=0) {
 		$a = $this->createSQLArray(1);
-		$a[] = "addedby='$_SESSION[auser]'";
-		$a[] = "addedtimestamp=NOW()";
-		$a[] = "name='".$this->name."'";
-		$query = "insert into sites set ".implode(",",$a);
-/* 		print "<BR>query = $query<BR>"; */
+		$a[] = $this->_datafields[addedby][1][0]."=".$_SESSION[aid];
+		$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
+
+		// insert into the site table
+		$query = "INSERT INTO site SET ".implode(",",$a);
+ 		print "<BR>query = $query<BR>";
 		db_query($query);
 		$this->id = mysql_insert_id();
 		
+		// in order to insert a site, the active user must own a slot
+		// update the name for that slot
+		$query = "UPDATE slot SET slot_name = '".$this->data[name]."', FK_site = ".$this->id." WHERE FK_owner = ".$_SESSION[aid];
+		echo $query."<br>";
+		db_query($query);
+		
+		// the sections haven't been created yet, so we don't have to insert data[sections] for now
+
 		// add new permissions entry.. force update
-		$this->updatePermissionsDB(1);
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+//		$this->updatePermissionsDB(1);
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
 		
 		// add log entry
 /* 		log_entry("add_site",$this->name,"","","$_SESSION[auser] added ".$this->name); */
 		
-		// insert down
+		// insert down (insert sections)
 		if ($down && $this->fetcheddown && $this->sections) {
 			foreach ($this->sections as $i=>$o) $o->insertDB(1,$this->name,$copysite);
 		}

@@ -41,6 +41,8 @@ SELECT site_id
 	FROM slot INNER JOIN site
 		ON FK_site = site_id AND slot_name='$site'
 ";
+
+		echo $query."<br>";
 		if (db_num_rows(db_query($query))) return 1;
 		return 0;
 	}
@@ -87,6 +89,7 @@ FROM
 			AND
 		user_uname = '$user'
 ";
+
 		if (db_num_rows($r = db_query($query)))
 			while ($a = db_fetch_assoc($r)) {
 					$sites[] = $a[slot_name];
@@ -128,9 +131,12 @@ FROM
 		// now, if a user is a member of any groups, get all sites for which those groups are editors
 		$query = "
 			SELECT
-				site_id
+				slot_name
 			FROM
+				slot
+					INNER JOIN
 				site
+					ON slot.FK_site = site_id
 					INNER JOIN 
 				site_editors ON (
 					site_id = FK_site 
@@ -228,7 +234,7 @@ FROM
 					".$this->_datafields[$field][2]."
 			";
 			
-			print "-----------beginning---------<br><pre>".$query; 
+			print "-----------beginning---------$field<br><pre>".$query; 
 	
 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 			$r = db_query($query);
@@ -267,8 +273,8 @@ FROM
 				} else {
 					$valarray[$key] = $val;
 				}
-				print "<br>key = $key \nval = $val \nvalarray =\n";
-				print_r($valarray);
+				//print "<br>key = $key \nval = $val \nvalarray =\n";
+				//print_r($valarray);
 			}
 			
 			if (count($valarray) == 1)
@@ -278,8 +284,8 @@ FROM
 			$this->fetched[$field] = 1;
 		}
 		
-		print_r($valarray);
-		print "</pre>----------end------------<br>";
+		//print_r($valarray);
+		print "</pre>----------end------------$field<br>";
 		return $this->data[$field];
 	}
 	
