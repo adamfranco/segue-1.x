@@ -70,7 +70,7 @@ class discussion {
 		discussion
 	WHERE
 		FK_story=".$this->storyid.
-		(($this->id)?" and LK_parent=".$this->id:"");
+		(($this->id)?" and FK_parent=".$this->id:"");
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
 		return $a['count'];
@@ -85,7 +85,7 @@ class discussion {
 	function fetchchildren() { $this->_fetchchildren(); }
 	
 	function _parseDBline($a) {
-		$_f = array("discussion_subject"=>"subject","LK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname");
+		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname");
 		foreach ($_f as $f=>$v) {
 			if ($a[$f]) $this->$v = $a[$f];
 		}
@@ -98,7 +98,7 @@ class discussion {
 		
 		$query = "
 	SELECT
-		discussion_tstamp,discussion_content,discussion_subject,user_uname,user_fname,FK_story,FK_author,LK_parent
+		discussion_tstamp,discussion_content,discussion_subject,user_uname,user_fname,FK_story,FK_author,FK_parent
 	FROM
 		discussion
 		INNER JOIN
@@ -122,7 +122,7 @@ class discussion {
 		
 		$query = "
 	SELECT
-		LK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,FK_story,discussion_order,user_uname,user_fname
+		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,FK_story,discussion_order,user_uname,user_fname
 	FROM
 		discussion
 		INNER JOIN
@@ -132,7 +132,7 @@ class discussion {
 	WHERE
 		FK_story = ".$this->storyid.
 		// check if we're not top-level - if !flat disc, fetch all children, otherwise fetch all discussions
-		(($this->flat)?"":" and LK_parent<=>".(($this->id)?$this->id:"NULL"))
+		(($this->flat)?"":" and FK_parent<=>".(($this->id)?$this->id:"NULL"))
 		."
 	ORDER BY
 		discussion_order ASC";
@@ -186,7 +186,7 @@ class discussion {
 	
 	function _generateSQLdata() {
 		$query = "FK_author=".$this->authorid;
-		if ($this->parentid) $query .= ",LK_parent=".$this->parentid;
+		if ($this->parentid) $query .= ",FK_parent=".$this->parentid;
 		$query .= ",discussion_content='".urlencode(stripslashes($this->content))."'";
 		$query .= ",discussion_subject='".urlencode(stripslashes($this->subject))."'";
 		$query .= ",FK_story=".$this->storyid;
