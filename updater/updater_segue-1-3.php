@@ -24,7 +24,7 @@ $query = "
 		  class_id int(10) unsigned NOT NULL auto_increment,
 		  class_external_id varchar(255) default NULL,
 		  class_department varchar(255) default NULL,
-		  class_number int(11) NOT NULL default '0',
+		  class_number varchar(15) NOT NULL default '000',
 		  class_section varchar(25) default NULL,
 		  class_name varchar(255) NOT NULL default '',
 		  FK_owner int(10) unsigned default NULL,

@@ -1257,9 +1257,11 @@ FROM
 					$ed_type = 'user';
 					// need to fetch the id from the user table
 					$query = "SELECT user_id FROM user WHERE user_uname = '$editor'";
-//					echo $query."<br>";
 					$r = db_query($query);
-					if (!db_num_rows($r)) fatalerror("updatePermissionsDB() :: could not find an ID to associate with editor: '$editor'!!!");
+					if (!db_num_rows($r)) {
+						echo $query."<br>";
+						fatalerror("updatePermissionsDB() :: could not find an ID to associate with editor: '$editor'!!!");
+					}
 					
 					$arr = db_fetch_assoc($r);
 					$ed_id = $arr['user_id'];

@@ -16,7 +16,7 @@ class ugroup {
 			WHERE
 				ugroup_name='$name'
 		";
-		echo $query;
+//		echo $query;
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
