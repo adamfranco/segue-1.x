@@ -1,7 +1,7 @@
 <?
 
-require_once('SiteExporter.class.php');
-require_once('../objects/discussion.inc.php');
+require_once(dirname(__FILE__).'/SiteExporter.class.php');
+require_once(dirname(__FILE__).'/../objects/discussion.inc.php');
 
 /**
  * This class exports a Segue Site to a string in a specified format.

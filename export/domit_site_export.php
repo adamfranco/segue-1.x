@@ -1,22 +1,22 @@
 <?
 
-require_once('DomitSiteExporter.class.php');
+require_once(dirname(__FILE__).'/DomitSiteExporter.class.php');
 
-require_once('domit/xml_domit_getelementsbypath.php');
-require_once('domit/xml_domit_nodemaps.php');
-require_once('domit/xml_domit_parser.php');
-require_once('domit/xml_domit_utilities.php');
+require_once(dirname(__FILE__).'/domit/xml_domit_getelementsbypath.php');
+require_once(dirname(__FILE__).'/domit/xml_domit_nodemaps.php');
+require_once(dirname(__FILE__).'/domit/xml_domit_parser.php');
+require_once(dirname(__FILE__).'/domit/xml_domit_utilities.php');
 
-require_once('../config.inc.php');
-require_once('../dbwrapper.inc.php');
-require_once('../functions.inc.php');
-require_once('../objects/slot.inc.php');
-require_once('../objects/segue.inc.php');
-require_once('../objects/site.inc.php');
-require_once('../objects/section.inc.php');
-require_once('../objects/page.inc.php');
-require_once('../objects/story.inc.php');
-require_once('../permissions.inc.php');
+require_once(dirname(__FILE__).'/../config.inc.php');
+require_once(dirname(__FILE__).'/../dbwrapper.inc.php');
+require_once(dirname(__FILE__).'/../functions.inc.php');
+require_once(dirname(__FILE__).'/../objects/slot.inc.php');
+require_once(dirname(__FILE__).'/../objects/segue.inc.php');
+require_once(dirname(__FILE__).'/../objects/site.inc.php');
+require_once(dirname(__FILE__).'/../objects/section.inc.php');
+require_once(dirname(__FILE__).'/../objects/page.inc.php');
+require_once(dirname(__FILE__).'/../objects/story.inc.php');
+require_once(dirname(__FILE__).'/../permissions.inc.php');
 
 // print help if requested/needed
 if ($argc != 3 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) {
