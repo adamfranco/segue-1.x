@@ -57,7 +57,7 @@ if (get_class($thisPage) == 'page')
 	$page=$thisPage->id;
 else if ($thisPage
 	|| ($_REQUEST['page'] 
-		&& !in_array($_REQUEST['page'], $thisSection->getField('pages'))) 
+		&& !in_array($_REQUEST['page'], $thisSection->getField('pages'))))
 {
 	unset($thisPage);
 	error("The requested page does not exist. Please update your link.");

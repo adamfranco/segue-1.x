@@ -9,7 +9,9 @@ v. 1.3.0 (the future)
 	**** IMPORTANT *** Change: Various changes in Segue necessitate that you upgrade to a new config file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make several changes to Segue's database and file-storage structure. (Adam Franco)
 		
 		
-	* New feature: When copying a site, links internal to that site (such as links in a content block that point to another page in the site) are now updated to point to the appropriate place in the new version of the site. (Adam Franco)
+	* Bug Fix: Segue now prints a nice error instructing the user to update thier links if a bad link tries to get a non-existant section or page and creates a corrupted section or page object. (Adam Franco)
+		
+	* New feature: When copying a site, section, or page, links internal to that part (such as links in a content block that point to another page in the site or section) are now updated to point to the appropriate place in the new version of the part. (Adam Franco)
 		
 	* Bug Fix: When editing slots, information about whether the slot was in use not or not is now accurate. (Alex Chapin)
 		
