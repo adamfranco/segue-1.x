@@ -165,7 +165,6 @@ if ($error) {
 			print "\t\t<lastBuildDate>".date("D M j, Y G:i:s T")."</lastBuildDate>\n";
 			print "\t\t<generator>Segue RSS Generator</generator>\n";
 			
-		$i=0;
 		// handle archiving -- monthly, weekly, etc
 		$thisPage->handleStoryArchive();
 	
@@ -177,7 +176,11 @@ if ($error) {
  ******************************************************************************/
 		
 		if ($thisPage->stories) {
+			$i=0;
 			foreach ($thisPage->data[stories] as $s) {
+				if ($i > 10)
+					break;
+					
 				$o =& $thisPage->stories[$s];
 				
 				//printc("<table><tr><td>";
