@@ -29,9 +29,13 @@ function mkfilesize($filename) {
 }
 
 function copyuserfile($id,$file) {
-	global $uploaddir, $auser, $site;
-	if (!$file[name]) return 0;
-	$userdir = "$uploaddir/$site";
+	global $uploaddir, $auser, $site, $settings;
+	if (!$file[name]) {
+		print "No File";
+		return 0;
+	}
+	if ($site) $userdir = "$uploaddir/$site";
+	else $userdir = "$uploaddir/$settings[site]";
 	$fdir = "$userdir/$id";
 	print "$userdir - $fdir<br>";
 	if (!is_dir($userdir)) { mkdir($userdir,0777); chmod($userdir,0775); }
