@@ -1157,11 +1157,11 @@ FROM
 				else if ($scope == "story")
 					$p1 = $this->owningPageObj->permissions[$editor];
 					
-				// note that if a certain permission is set in $p1, it is impossible that the same permission is not set in $p2 (because $p2 inherits $p1's permissions)
-				// thus, there are 3 possibilities:
-				// 1) $p1 - SET,   $p2 - SET   
-				// 2) $p1 - UNSET, $p2 - SET
-				// 3) $p1 - UNSET, $p2 - UNSET
+					// note that if a certain permission is set in $p1, it is impossible that the same permission is not set in $p2 (because $p2 inherits $p1's permissions)
+					// thus, there are 3 possibilities:
+					// 1) $p1 - SET,   $p2 - SET   
+					// 2) $p1 - UNSET, $p2 - SET
+					// 3) $p1 - UNSET, $p2 - UNSET
 
 				// now, put the inherited permissions in $p_inherit and the new permissions in $p_new
 				$p_inherit = array();

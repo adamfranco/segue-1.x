@@ -420,7 +420,7 @@ ORDER BY
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->stories) {
-				foreach ($this->stories as $i=>$o) $this->stories[$i]->updateDB(1);
+				foreach (array_keys($this->stories) as $k=>$i) $this->stories[$i]->updateDB(1);
 			}
 		}
 		return true;
@@ -477,7 +477,7 @@ ORDER BY
 		
 		// insert down
 		if ($down && $this->fetcheddown && $this->stories) {
-			foreach ($this->stories as $i=>$o) {
+			foreach (array_keys($this->stories) as $k=>$i) {
 				$this->stories[$i]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 				$this->stories[$i]->insertDB(1,$this->owning_site,$this->owning_section,$this->id,1,$keepaddedby);
 			}

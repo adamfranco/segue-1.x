@@ -190,7 +190,7 @@ CREATE TEMPORARY TABLE t_stories(
 	KEY story_id (story_id)
 ) TYPE=MyISAM
 SELECT
-	site_id, section_id, page_id, story_id
+	site_id, section_id, page_id, story_id, section_order, page_order, story_order
 FROM
 	site
 		LEFT JOIN
@@ -201,36 +201,7 @@ FROM
 	story ON FK_page = page_id
 WHERE
 	site_id = ".$this->id." 
-ORDER BY
-	section_order, page_order, story_order
 ";		
-		db_query($query);
-
-		// all sites for this site, i.e. just this site
-		$query = "
-CREATE TEMPORARY TABLE t_sites (
-	UNIQUE uniq (site_id),
-	KEY site_id (site_id)
-)
-SELECT
-	DISTINCT site_id
-FROM
-	t_stories
-";
-		db_query($query);
-
-		// all sections for this site
-		$query = "
-CREATE TEMPORARY TABLE t_sections (
-	UNIQUE uniq (site_id, section_id),
-	KEY site_id (site_id),
-	KEY section_id (section_id)
-)
-SELECT
-	DISTINCT site_id, section_id
-FROM
-	t_stories
-";
 		db_query($query);
 
 		// all pages for this site
@@ -242,16 +213,42 @@ CREATE TEMPORARY TABLE t_pages (
 	KEY page_id (page_id)
 )
 SELECT
-	DISTINCT site_id, section_id, page_id
+	DISTINCT site_id, section_id, page_id, section_order, page_order
 FROM
 	t_stories
 ";		
 		db_query($query);
-	
+
+		// all sections for this site
+		$query = "
+CREATE TEMPORARY TABLE t_sections (
+	UNIQUE uniq (site_id, section_id),
+	KEY site_id (site_id),
+	KEY section_id (section_id)
+)
+SELECT
+	DISTINCT site_id, section_id, section_order
+FROM
+	t_pages
+";
+		db_query($query);
+
+		// all sites for this site, i.e. just this site
+		$query = "
+CREATE TEMPORARY TABLE t_sites (
+	UNIQUE uniq (site_id),
+	KEY site_id (site_id)
+)
+SELECT
+	DISTINCT site_id
+FROM
+	t_sections
+";
+		db_query($query);
 	
 		// create the object hierarchy
 		
-		$query = "SELECT site_id, section_id FROM t_sections";
+		$query = "SELECT site_id, section_id FROM t_sections ORDER BY section_order";
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r))
 			if ($a[section_id] != null) {
@@ -260,7 +257,7 @@ FROM
 				$this->data[sections][]  = $a[section_id];
 			}
 
-		$query = "SELECT site_id, section_id, page_id FROM t_pages";
+		$query = "SELECT site_id, section_id, page_id FROM t_pages ORDER BY	page_order";
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r))
 			if ($a[section_id] != null && $a[page_id] != null)  {
@@ -268,9 +265,9 @@ FROM
 				$page =& new page($this->name,$a[section_id],$a[page_id],&$section);
 				$section->pages[$a[page_id]]  =& $page;
 				$section->data[pages][]  = $a[page_id];
-		}
+			}
 
-		$query = "SELECT site_id, section_id, page_id, story_id FROM t_stories";
+		$query = "SELECT site_id, section_id, page_id, story_id FROM t_stories ORDER BY	story_order";
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r))
 			if ($a[section_id] != null && $a[page_id] != null && $a[story_id] != null)  {
@@ -279,7 +276,7 @@ FROM
 				$story =& new story($this->name,$a[section_id],$a[page_id],$a[story_id],&$page);
 				$page->stories[$a[story_id]]  =& $story;
 				$page->data[stories][]  = $a[story_id];
-		}
+			}
 		
 		// first, fetch the site
 		$this->tobefetched=1;
@@ -302,7 +299,7 @@ FROM
 		ON FK_updatedby = user_updatedby.user_id
 		INNER JOIN
 	slot
-		ON site.site_id = FK_site
+		ON site.site_id = slot.FK_site
 ";
 		
 		$r = db_query($query);
@@ -332,13 +329,10 @@ SELECT
 	section_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
 	section_created_tstamp AS addedtimestamp,
-	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id,
 	media_tag AS url
 FROM 
 	t_sections
-		INNER JOIN
-	slot
-		ON t_sections.site_id = slot.FK_site
 		INNER JOIN
 	section
 		ON t_sections.section_id = section.section_id
@@ -383,13 +377,10 @@ SELECT
 	page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
 	page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
 	page_ediscussion AS ediscussion,
-	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id, media_tag AS url
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id, media_tag AS url
 FROM 
 	t_pages
 		INNER JOIN 
-	slot
-		ON t_pages.site_id = slot.FK_site
-		INNER JOIN
 	page
 		ON t_pages.page_id = page.page_id
 		INNER JOIN
@@ -435,13 +426,10 @@ SELECT
 	story_active AS active, story_locked AS locked, story_updated_tstamp AS editedtimestamp, story_created_tstamp AS addedtimestamp,
 	story_discussable AS discuss, story_category AS category, story_text_type AS texttype, story_text_short AS shorttext,
 	story_text_long AS longertext,
-	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id,
 	media_tag AS url
 FROM
 	t_stories
-		INNER JOIN
-	slot
-		ON t_stories.site_id = slot.FK_site
 		INNER JOIN
 	story
 		ON t_stories.story_id = story.story_id
@@ -918,7 +906,7 @@ ORDER BY
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->sections) {
-				foreach ($this->sections as $i=>$o) $this->sections[$i]->updateDB(1);
+				foreach (array_keys($this->sections) as $k=>$i) $this->sections[$i]->updateDB(1);
 			}
 		}
 		return 1;
@@ -961,7 +949,7 @@ ORDER BY
 		
 		// insert down (insert sections)
 		if ($down && $this->fetcheddown && $this->sections) {
-			foreach ($this->sections as $i=>$o) {
+			foreach (array_keys($this->sections) as $k=>$i) {
 				$this->sections[$id]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 				$this->sections[$id]->insertDB(1,$this->name,$copysite);
 			}
