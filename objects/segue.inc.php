@@ -224,6 +224,8 @@ FROM
  ******************************************************************************/
 	function getField ($field) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
+		if (ereg("^l-",$field)) 
+			return $this->data[$field];
 		if (!$this->fetched[$field] && $this->id) {	// we haven't allready gotten this data
 													// and this object is in the database.
 /* 			print "<pre>--$field---\n"; */
@@ -1182,9 +1184,6 @@ FROM
 				if ($p_new[DISCUSS]) $p_new_str.="di,";
 				
 				if ($p_new_str) $p_new_str = substr($p_new_str, 0, strlen($p_new_str)-1); // strip last comma from the end of a string 
-//				echo "'".$p_new_str."'<br>";
-				
-
 
 				// find the id and type of this editor
 				if ($editor == 'everyone' || $editor == 'institute') {
@@ -1201,6 +1200,7 @@ FROM
 					$ed_id = $arr['user_id'];
 				}
 
+				echo "<br><br><b>***** New permissions in $scope #$id with editor $editor: '".$p_new_str."'</b><br>";
 //				echo "EID: $ed_id; ETYPE: $ed_type <br>";
 				
 
@@ -1259,12 +1259,9 @@ WHERE
 					$a = db_fetch_assoc($r_perm);
 					// if we are changing the permissions, update the db
 					if ($p_new_str) {
-						// if the object is a site, then it's easy - just set the permissions for the site
-						if ($scope == "site") {
-							$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
-							echo $query."<br>";
-							db_query($query);					
-						}
+						$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
+						echo $query."<br>";
+						db_query($query);					
 					}
 					// if we are clearing the permissions, delete the entry from the db
 					else {

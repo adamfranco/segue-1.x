@@ -70,8 +70,8 @@ if ($story->getField("type") == 'story') {
 	if ($story->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);
 }
 if ($story->getField("type") == 'image') {
-	$filename = urldecode(db_get_value("media","name","id=".$story->getField("longertext")));
-	$dir = db_get_value("media","site_id","id=".$story->getField("longertext"));
+	$filename = urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext")));
+	$dir = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=".$story->getField("longertext"));
 	$imagepath = "$uploadurl/$dir/$filename";
 	$fulltext = "<div style='text-align: center'><br><img src='$imagepath' border=0></div>";
 /* 	if ($story->getField("title")) $fulltext .= "<tr><td align=center><b>".spchars($story->getField("title"))."</b></td></tr>"; */

@@ -273,7 +273,7 @@ ORDER BY
 		$templateObj->fetchDown(1);	
 		/* print "<pre>"; print_r($this); print_r($templateObj); print "</pre>"; */
 		foreach ($templateObj->sections as $i=>$o) 
-			$o->copyObj($this);
+			$o->copyObj(&$this);
 	}
 	
 	function setSiteName($name, $copySite=0) {
@@ -374,13 +374,7 @@ ORDER BY
 		// the sections haven't been created yet, so we don't have to insert data[sections] for now
 
 		// add new permissions entry.. force update
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
 		$this->updatePermissionsDB(1);
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
-// REVISE THIS =================================================================
 		
 		// add log entry
 /* 		log_entry("add_site",$this->name,"","","$_SESSION[auser] added ".$this->name); */

@@ -155,8 +155,8 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 
 function copy_media($id,$newsitename) {
 	global $uploaddir;
-	$oldsitename = db_get_value("media","site_id","id=$id");
-	$file_name = db_get_value("media","name","id=$id");
+	$oldsitename = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=$id");
+	$file_name = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=$id");
 	$sourcedir  = "$uploaddir/$oldsitename";
 	$destdir = "$uploaddir/$newsitename";
 	$old_file_path = $sourcedir."/".$file_name;
@@ -166,7 +166,7 @@ function copy_media($id,$newsitename) {
 		chmod($destdir,0775); 
 	}
 	if (file_exists($new_file_path)) {
-		$newid = db_get_value("media","id","site_id='$newsitename' && name='$file_name'");
+		$newid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='$newsitename' && media_tag='$file_name'");
 	} else {
 		$file = array();
 		$file[name] = $file_name;

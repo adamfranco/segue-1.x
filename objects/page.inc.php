@@ -445,7 +445,7 @@ ORDER BY
 /* 		print_r ($this->owningSectionObj); */
 /* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
 		
-		$this->fetchUp();
+		$this->fetchUp(1);
 
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {

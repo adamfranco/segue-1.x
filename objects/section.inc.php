@@ -363,7 +363,7 @@ ORDER BY
 			unset($this->owningSiteObj);
 		}
 		
-		$this->fetchUp();
+		$this->fetchUp(1);
 				
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {

@@ -3,15 +3,15 @@
 include("includes.inc.php");
 db_connect($dbhost, $dbuser, $dbpass, $dbdb); 
 
-$query = "select * from media order by addedtimestamp";
+$query = "select * from media INNER JOIN slot ON media.FK_site = slot.FK_site INNER JOIN user ON media.FK_createdby = user_id order by media_updated_tstamp";
 $r = db_query($query);
 $count = $missing = 0;
 print "<table>";
 while ($a = db_fetch_assoc($r)) {
 	/* print "<br>file_exists: ".$uploaddir."/".$a[site_id]."/".$a[name]."<br>"; */
-	if (file_exists($uploaddir."/".$a[site_id]."/".$a[name])) {
+	if (file_exists($uploaddir."/".$a[slot_name]."/".$a[media_tag])) {
 	} else {
-		print "<tr><td>File missing!</td><td><b>Date:</b> ".$a[addedtimestamp]."</td><td><b>addedby:</b> ".$a[addedby]."</td><td><b>Site:</b> ".$a[site_id]."</td><td><b>Name:</b> ".$a[name]."</td></tr>";
+		print "<tr><td>File missing!</td><td><b>Date:</b> ".$a[media_updated_tstamp]."</td><td><b>addedby:</b> ".$a[user_uname]."</td><td><b>Site:</b> ".$a[slot_name]."</td><td><b>Name:</b> ".$a[media_tag]."</td></tr>";
 		$missing++;
 	}
 	$count++;

@@ -422,7 +422,7 @@ ORDER BY
 			unset($this->owningPageObj);
 		}
 		
-		$this->fetchUp();
+		$this->fetchUp(1);
 				
 		// if moving to a new site, copy the media
 		if ($origsite != $this->owning_site && $down) {
