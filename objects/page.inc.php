@@ -175,7 +175,7 @@ class page extends segue {
 	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
-			$parentObj = new section ($this->owning_site,$this->owning_section);
+			$parentObj = new section($this->owning_site,$this->owning_section);
 			$parentObj->fetchDown();
 			$parentObj->delPage($this->id);
 			$parentObj->updateDB();
@@ -224,8 +224,10 @@ class page extends segue {
 		if (!$this->fetchedup) {
 			$this->owningSiteObj = new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB();
+//			$this->owningSiteObj->buildPermissionsArray(1);
 			$this->owningSectionObj = new section($this->owning_site,$this->owning_section);
 			$this->owningSectionObj->fetchFromDB();
+//			$this->owningSectionObj->buildPermissionsArray(1);
 			$this->fetchedup = 1;
 		}
 	}

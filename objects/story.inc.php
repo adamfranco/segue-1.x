@@ -212,7 +212,7 @@ class story extends segue {
 	function delete($deleteFromParent=0) {	// delete from db
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
-			$parentObj = new page ($this->owning_site,$this->owning_section,$this->owning_page);
+			$parentObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
 			$parentObj->fetchDown();
 			/* print "<br>delStory - ".$this->id."<br>"; */
 			$parentObj->delStory($this->id);
@@ -238,10 +238,13 @@ class story extends segue {
 		if (!$this->fetchedup) {
 			$this->owningSiteObj = new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB();
+//			$this->owningSiteObj->buildPermissionsArray(1);
 			$this->owningSectionObj = new section($this->owning_site,$this->owning_section);
 			$this->owningSectionObj->fetchFromDB();
+//			$this->owningSectionObj->buildPermissionsArray(1);
 			$this->owningPageObj = new page($this->owning_site,$this->owning_section,$this->owning_page);
 			$this->owningPageObj->fetchFromDB();
+//			$this->owningPageObj->buildPermissionsArray(1);
 			$this->fetchedup = 1;
 		}
 	}

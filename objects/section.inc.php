@@ -153,6 +153,7 @@ class section extends segue {
 /* 			print "<br>Fetching Up<br>"; */
 			$this->owningSiteObj = new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB(1);
+//			$this->owningSiteObj->buildPermissionsArray(1);
 			$this->fetchedup = 1;
 		}
 	}

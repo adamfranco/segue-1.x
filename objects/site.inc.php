@@ -157,10 +157,9 @@ class site extends segue {
 	}
 	
 	function fetchUp() {
-		if (get_class($this) == 'site') $this->owningSiteObj = &$this;
-		else {
-			$this->owningSiteObj = new site($this->owning_site);
-			$this->owningSiteObj->fetchFromDB();
+		if (!$this->fetchedup) {
+			$this->owningSiteObj = &$this;
+			$this->fetchedup = 1;
 		}
 	}
 	
