@@ -59,17 +59,23 @@ include("templates/descriptions.inc");
 printc ("<table width=100% cellspacing=0>");
 $i=0;
 foreach ($_templates as $template=>$tname) {
-	printc("<tr>");
-	printc("<td align=center valign=top><a name='row$i'><input type=radio name=template value=$template".(($_SESSION[settings][template]==$template)?" checked":"")." onClick=\"selectRow('$i')\"></td>");
-	printc("<td width=25% valign=top style='border-top: 1px solid #aaa;'><b>$tname</b></td>");
 
-	printc("<td valign=top align=right style='border-top: 1px solid #aaa;'><input type=button class='small' value='Preview This Template' onClick='doTemplateWin(\"$template\")'></td>");
-	printc("</tr>\n");
-	printc("<tr>");
-	printc("<td> &nbsp; </td>");
-	printc("<td valign=top colspan=2 style='padding-left: 20px; padding-right: 20px; padding-bottom: 15px;'>".(($descriptions[$template])?"$descriptions[$template]":"No description availible")."</td>");
-	printc("</tr>");
-	$i++;
+	// Get the site object and detrmine if it is active.
+	$templateSite =& new site($template);
+	$templateSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true);
+	if ($templateSite->canView()) {
+		printc("<tr>");
+		printc("<td align=center valign=top><a name='row$i'><input type=radio name=template value=$template".(($_SESSION[settings][template]==$template)?" checked":"")." onClick=\"selectRow('$i')\"></td>");
+		printc("<td width=25% valign=top style='border-top: 1px solid #aaa;'><b>$tname</b></td>");
+	
+		printc("<td valign=top align=right style='border-top: 1px solid #aaa;'><input type=button class='small' value='Preview This Template' onClick='doTemplateWin(\"$template\")'></td>");
+		printc("</tr>\n");
+		printc("<tr>");
+		printc("<td> &nbsp; </td>");
+		printc("<td valign=top colspan=2 style='padding-left: 20px; padding-right: 20px; padding-bottom: 15px;'>".(($descriptions[$template])?"$descriptions[$template]":"No description availible")."</td>");
+		printc("</tr>");
+		$i++;
+	}
 }
 /*printc("<tr>");
 	printc("<td valign=top><input type=radio name=template value=''".(($_SESSION[settings][template]=='')?" checked":"")."></td>");
