@@ -52,6 +52,12 @@
 	$cfg[userdirlimit] = $userdirlimit = 5242880;
 	
 	/******************************************************************************
+	 * logexpiration - the number of days to keep segue log entries before they are 
+	 *					deleted.
+	 ******************************************************************************/
+	$cfg[logexpiration] = 150;
+	
+	/******************************************************************************
 	 * 		Content for the Login Screen
 	 * defaulttitle - the title of the page (default, Segue)
 	 * defaultmessage - the message to be displayed. can contain HTML

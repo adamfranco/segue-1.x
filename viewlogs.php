@@ -16,6 +16,24 @@ include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
+// Clean the old entries from the logs if we have not done so yet
+if ($cfg[logexpiration] && !$_SESSION['__logs_cleaned']) {
+	$removalTStamp = strtotime($cfg[logexpiration].' days ago');
+	$date = date('Ymd000000', $removalTStamp);
+	
+	if ($removalTStamp && $date) {
+//		print "Removing logs with timestamp less than $date";
+		$query = 
+			"DELETE FROM
+				log
+			WHERE
+				log_tstamp < $date
+			";
+		db_query($query);	
+		$_SESSION['__logs_cleaned'] = TRUE;
+	}
+} 
+
 //if ($_REQUEST[order]) $order = $_REQUEST[order];
 $order = $_REQUEST[order];
 $enddate = $_REQUEST[enddate];

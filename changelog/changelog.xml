@@ -8,6 +8,10 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
+		<new author='adam'>
+			When viewing the logs screen, old logs are cleaned out as per a
+			configurable number of days.
+		</new>
 		<fix author='adam'>
 			Sites associated with a class and class sites now can properly
 			add the class as an editor.
