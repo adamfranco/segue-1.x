@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
-	<version number="1.0.0 rc1">
+	<version number="1.0.0 rc1" date="2003-07-14">
 		<new author='gabe'>
 			Added new config option: $cfg[domain] -- the cookie domain for session info. Allows session info to cross sites if they are running the same instance of segue.
 		</new>

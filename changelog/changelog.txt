@@ -3,7 +3,7 @@
 Name: Segue ChangeLog
 
 
-v. 1.0.0 rc1
+v. 1.0.0 rc1 (2003-07-14)
 ----------------------------------------------------
 		
 	* New feature: Added new config option: $cfg[domain] -- the cookie domain for session info. Allows session info to cross sites if they are running the same instance of segue. (Gabe Schine)
