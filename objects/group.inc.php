@@ -11,7 +11,7 @@ class group {
 		// find if this classgroup exists in the db, if yes, get the id
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 		$q = "SELECT classgroup_id FROM classgroup WHERE classgroup_name = '$name'";
-		echo $q."<br>";
+/* 		echo $q."<br>"; */
 		$r = db_query($q);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
@@ -108,7 +108,7 @@ FROM
 	
 	function exists($name) {
 		$query = "SELECT classgroup_id FROM classgroup WHERE classgroup_name='$name'";
-		echo $query."<br>";
+/* 		echo $query."<br>"; */
 		if (db_num_rows(db_query($query))) return true;
 		return false;
 	}
