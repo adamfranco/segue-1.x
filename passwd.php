@@ -10,45 +10,50 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // include all necessary files
 include("includes.inc.php");
-//printpre ($_SESSION);
+//printpre ($_REQUEST);
 
 if ($_REQUEST[reset] == "reset") $reset = $_REQUEST[reset];
 //if ($_REQUEST[email]) $email = $_REQUEST[email];
 //if ($_REQUEST[uname]) $uname = $_REQUEST[uname];
 
 if ($_REQUEST[action] == "newpassword") {
+	$authtype = db_get_value("user","user_authtype","user_uname = '$_SESSION[auser]'");
 	$db_pass = db_get_value("user","user_pass","user_uname = '$_SESSION[auser]'");
-	$origPassValid = !strcmp($_REQUEST[oldpass],$db_pass);
-	if ($origPassValid) {
-		$oldpass = $_REQUEST[oldpass];
-		$passwordsMatch = !strcmp($_REQUEST[newpass1],$_REQUEST[newpass2]);
-		if ($passwordsMatch) {
-			$validLength = ereg(".{8,200}",$_REQUEST[newpass1]);
-			if ($validLength) {
-				$validChars = !ereg("[\'\"]",$_REQUEST[newpass1]);
-				if ($validChars) {
-					$passwordGood = 1;
-					$query = "UPDATE user SET user_pass='$_REQUEST[newpass1]' where user_uname='$_SESSION[auser]'";
-					db_query($query);
+	if ($authtype != "db") {
+		$message = "<div align=center>This password cannot be reset here.</div>";
+	} else {
+		$origPassValid = !strcmp($_REQUEST[oldpass],$db_pass);
+		if ($origPassValid) {
+			$oldpass = $_REQUEST[oldpass];
+			$passwordsMatch = !strcmp($_REQUEST[newpass1],$_REQUEST[newpass2]);
+			if ($passwordsMatch) {
+				$validLength = ereg(".{8,200}",$_REQUEST[newpass1]);
+				if ($validLength) {
+					$validChars = !ereg("[\'\"]",$_REQUEST[newpass1]);
+					if ($validChars) {
+						$passwordGood = 1;
+						$query = "UPDATE user SET user_pass='$_REQUEST[newpass1]' where user_uname='$_SESSION[auser]'";
+						db_query($query);
+					} else {
+						unset($newpass1);
+						unset($newpass2);
+						$message = "<div align=center>New password contains prohibited characters</div>";
+					}
 				} else {
 					unset($newpass1);
 					unset($newpass2);
-					$message = "<div align=center>New password contains prohibited characters</div>";
+					$message = "<div align=center>New password is not between 8 and 200 characters</div>";
 				}
 			} else {
 				unset($newpass1);
 				unset($newpass2);
-				$message = "<div align=center>New password is not between 8 and 200 characters</div>";
+				$message = "<div align=center>New passwords don't match</div>";
 			}
 		} else {
-			unset($newpass1);
-			unset($newpass2);
-			$message = "<div align=center>New passwords don't match</div>";
-		}
-	} else {
-		unset($oldpass);
-		$message = "<div align=center>Your old password is invalid</div>";
-	}
+			unset($oldpass);
+			$message = "<div align=center>Your old password is invalid</div>";
+		} // end origPassValid
+	}// end authtype
 	
 	if ($passwordGood) {
 		$message = "<div align=center>Your password has been changed<br><br></div>";
@@ -79,7 +84,7 @@ if ($_REQUEST[action] == "newpassword") {
 	}
 	
 	$id = db_get_value("user","user_id","user_email='$email'");
-	$authtype = db_get_value("user", "user_authtype", "user_id = $id");
+	if ($id) $authtype = db_get_value("user", "user_authtype", "user_id = $id");
 	if ($id && $authtype != "db") {
 		$error=TRUE;
 		$message = "<div align=left>This user account is not authenticated by Segue and so you cannot reset this account's password here.<br></div>";
@@ -168,11 +173,11 @@ if ($_REQUEST[action] == "newpassword") {
 		$_SESSION[atype] = $x[type];
 		$_SESSION[aid] = $x[id];
 		$_SESSION[amethod] = $x[method];
-		$message = "<div align=left>Your login information was correct. Use Return button below to complete authentication<br><br></div>";
+		$message = "<div align=left>Your login information was correct. Use the Return button below to complete authentication.<br><br></div>";
 		$message .= "<div align=center><input type=button value='Return' onClick='refreshParent()'></div>";
 	} else {
 		$message = "<div align=left>Your password/username was incorrect.";
-		$message .= " (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>).</div>";
+		//$message .= " (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>).</div>";
 	}
 
 }
@@ -218,6 +223,7 @@ function refreshParent() {
 <?
 
 if ($_REQUEST[action] == "change" || $change) {
+	print "<tr><td colspan=2 align=left> Chose a new password below. (not all users can change their passwords here)<br><br>";
 	print "<tr><td> User Name: </td>";
 	print "<td><input type=text name='uname' size=30 value='".$_SESSION['auser']."' readonly></td>"; 
 	print "</tr>";
@@ -240,9 +246,11 @@ if ($_REQUEST[action] == "change" || $change) {
 	print"<tr>";
 	print"<td colspan=2><span style='color: #a00'>* Must be 8-200 characters long and not contain any of the following: \" '</span></td>";
 	print"</tr>";
-	print"<tr><td colspan=2 align=center><input type=submit value='Change password'></td></tr>";
+	print"<tr><td colspan=2 align=center><input type=submit value='Change password'><br><br>";
 	print"<input type=hidden name='action' value='newpassword'>";
 	print"<input type=hidden name='change' value='1'>";
+	print" <a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a> | ";
+	print" <a href=passwd.php?$sid&action=login&email=$email>Log in.</a></td></tr>";
 
 } else if ($_REQUEST[action] == "login" || $auth) {
 	print "<tr><td colspan=2 align=center> Please enter your username and password. <br></td>";
@@ -250,8 +258,9 @@ if ($_REQUEST[action] == "change" || $change) {
 	print "<td><input type=text name='uname' size=30 value=''></td>";
 	print "<tr><td>Password:</td>";
 	print"<td><input type=password name='password' size=30 value=''> </td>";
-	print"<tr><td colspan=2 align=center><input type=submit value='Log In'><br>";
-	print" (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>)</td></tr>";
+	print"<tr><td colspan=2 align=center><input type=submit value='Log In'><br><br>";
+	print" <a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a> | ";
+	print" <a href=passwd.php?$sid&action=change&email=$email>Change your password.</a></td></tr>";
 	print"<input type=hidden name='action' value='auth'>";
 	print"<input type=hidden name='auth' value='1'>";
 
@@ -267,12 +276,15 @@ if ($_REQUEST[action] == "change" || $change) {
 	print"<input type=hidden name='action' value='newuser'>";
 	print"<input type=hidden name='newuser' value='1'>";
 } else if ($_REQUEST[action] == "reset" || $reset) {
-	print "<tr><td colspan=2 align=center> Please enter your email address and a password will be sent to you.<br><br></td>";
+	print "<tr><td colspan=2 align=left> Please enter your email address and a password will be sent to you. (not all users can reset their passwords here)<br><br></td>";
 	print "<tr><td>Email Address:</td>";
 	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'></td></tr>";
-	print"<tr><td colspan=2 align=center><input type=submit name='submit' value='Send new password'></td></tr>";
+	print"<tr><td colspan=2 align=center><input type=submit name='submit' value='Send new password'><br><br>";
 	print"<input type=hidden name='action' value='send'>";
 	print"<input type=hidden name='reset' value='1'>";
+	print" <a href=passwd.php?$sid&action=change&email=$email>Change your password</a> | ";
+	print" <a href=passwd.php?$sid&action=login&email=$email>Log in</a></td></tr>";
+
 }
 print "</td></tr>";
 print "<tr><td colspan=2>"; 

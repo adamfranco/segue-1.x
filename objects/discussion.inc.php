@@ -743,15 +743,19 @@ class discussion {
 				printc ("<a href='passwd.php?action=register' target='password' onClick='doWindow(\"password\",400,300)'>Register</a> | ");
 				printc ("<a href='passwd.php?action=reset' target='password' onClick='doWindow(\"password\",400,300)'>Forget your password?</a></div>");
 				printc ("</td></tr>");
-			}			
-			printc ("<tr><td>Subject:</td><td><input type=text size=50 name=subject value='".spchars($s)."'></td></tr>\n");
-		//	printc ("<tr><td></td><td></td></tr>\n");
+			}
+			
+			if ($_SESSION[auser]) {			
+				printc ("<tr><td>Subject:</td><td><input type=text size=50 name=subject value='".spchars($s)."'></td></tr>\n");
+			//	printc ("<tr><td></td><td></td></tr>\n");
+				
+			}
 			printc ("</table>\n");
 		}
 		printc ("</td><td align=right>\n");
 		
 		// if not rate, print edit, update or post
-		if ($t != 'rate') {
+		if ($t != 'rate' && $_SESSION[auser]) {
 			printc("<input type=submit class='button small' value='$b'>\n");
 			printc("<a href='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."#".$this->id."'><input type=button class='button small' value='cancel'></a>\n");
 		}
@@ -765,7 +769,7 @@ class discussion {
 		 * print out editor here... (if editing post or adding new or not rating)
 		 ******************************************************************************/
 
-		if ($t != 'rate') {			
+		if ($t != 'rate' && $_SESSION[auser]) {			
 			//printc ("<td class=content$p><textarea name=content rows=10 cols=60>".spchars($c)."</textarea>\n");
 			include("htmleditor/editor.inc.php");
 			include("sniffer.inc.php");
