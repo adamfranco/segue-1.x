@@ -241,10 +241,10 @@ function CarpSetCache($cachefile,$cachefunction=1) {
 function CarpCacheFilter($url,$cachefile) { CarpCacheShow($url,$cachefile,0); }
 function CarpFilter($url,$cachefile) { CarpShow($url,$cachefile,0); }
 
-function CarpCacheShow($url,$cachefile='',$showit=1) {
+function CarpCacheShow($url,$cachefile='',$showit=1, $user='everyone') {
 	global $carpconf;
-	CarpCache($url,$autocache=md5($url.$cachefile),2);
-	CarpShow(call_user_func($carpconf['cachefunctions'][2]).$autocache,'',$showit);
+	CarpCache($url,$autocache=md5($url.$user),2);
+	CarpShow(call_user_func($carpconf['cachefunctions'][2]).$autocache,$cachefile,$showit);
 }
 
 function CarpShow($url,$cachefile='',$showit=1) {
