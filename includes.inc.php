@@ -7,8 +7,8 @@ if (!ini_get("register_globals")) {
 }
 
 include("functions.inc.php");
-include("dbwrapper.inc.php");
 include("config.inc.php");
+include("dbwrapper.inc.php");
 include("error.inc.php");
 include("themes/themeslist.inc.php");
 include("dates.inc.php");

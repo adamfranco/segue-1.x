@@ -140,7 +140,7 @@ if ($_REQUEST[save]) {
 	// error checking
 	if ($_SESSION[pageObj]->getField("type")!='divider' && (!$_SESSION[pageObj]->getField("title") || $_SESSION[pageObj]->getField("title")==''))
 		error("You must enter a title.");
-	if ($_SESSION[pageObj]->getField("type")=='url' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[pageObj]->getField("url")=='' || $_SESSION[pageObj]->getField("url")=='http://'))
+	if ($_SESSION[pageObj]->getField("type")=='link' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[pageObj]->getField("url")=='' || $_SESSION[pageObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 		
 	if (!$error) { // save it to the database
@@ -199,7 +199,7 @@ $leftlinks .= "Item";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
 
-if ($_SESSION[pageObj]->getField("type") == "page" || $_SESSION[pageObj]->getField("type") == "url") {
+if ($_SESSION[pageObj]->getField("type") == "page" || $_SESSION[pageObj]->getField("type") == "link") {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";

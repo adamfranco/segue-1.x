@@ -44,7 +44,7 @@ class page extends segue {
 		),
 		"type" => array(
 			"page",
-			array("page_type"),
+			array("page_display_type"),
 			"page_id"
 		),
 		"title" => array(
@@ -89,7 +89,7 @@ class page extends segue {
 		),
 		"url" => array(
 			"page
-				INNER JOIN
+				LEFT JOIN
 			media
 				ON FK_media = media_id",
 			array("media_tag"),
@@ -288,7 +288,7 @@ class page extends segue {
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
 SELECT  
-	page_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	page_display_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	page_active AS active, page_story_order AS storyorder, page_show_creator AS showcreator, 
 	page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
 	page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
@@ -367,7 +367,7 @@ ORDER BY
 
 	}
 	
-	function updateDB($down=0) {
+	function updateDB($down=0, $force=0) {
 		if (count($this->changed)) {
 			$a = $this->createSQLArray();
 			$a[] = "FK_updatedby=".$_SESSION[aid];
@@ -412,7 +412,7 @@ ORDER BY
 		}
 		
 		// update permissions
-		$this->updatePermissionsDB();
+		$this->updatePermissionsDB($force);
 
 		// add log entry
 /* 		log_entry("edit_section",$this->owning_site,$this->id,"","$_SESSION[auser] edited section id ".$this->id." in site ".$this->owning_site); */
@@ -420,7 +420,7 @@ ORDER BY
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->stories) {
-				foreach (array_keys($this->stories) as $k=>$i) $this->stories[$i]->updateDB(1);
+				foreach (array_keys($this->stories) as $k=>$i) $this->stories[$i]->updateDB($down, $force);
 			}
 		}
 		return true;
@@ -456,6 +456,22 @@ ORDER BY
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
 		$a[] = "FK_updatedby=".$_SESSION[aid];
+
+		// insert media (url)
+		if ($this->data[url]) {
+			$query = "
+INSERT
+INTO media
+SET
+	FK_site = ".$this->owningSiteObj->id.",
+	FK_createdby = ".$_SESSION[aid].",
+	media_tag = '".$this->data[url]."',
+	media_location = 'remote',
+	FK_updatedby = ".$_SESSION[aid]."
+";
+			db_query($query);
+			$a[] = "FK_media=".mysql_insert_id();
+		}
 
 		$query = "INSERT INTO page SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
@@ -611,14 +627,21 @@ ORDER BY
 		}
 		$txtstart = date("n/j/y",$start);
 		$txtend = date("n/j/y",$end);
+		
+		print "start $start, end: $end<BR>";
+		
 		$this->fetchDown();
 		foreach ($this->stories as $s=>$o) {
 			$added = $o->getField("addedtimestamp");
-			ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})",$added,$regs);
+//			print $added."<br>";
+			
+			ereg ("([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})",$added,$regs);
+//			print_r($regs);
 			$year = (integer)$regs[1];
 			$month = (integer)$regs[2];
 			$day = (integer)$regs[3];
 			$t = mktime(0,0,0,$month,$day,$year);
+			print $t."<br>";
 	// 			$week = date("W",$t-(date("w",$t)*86400)); 
 	//
 	// 			if ($startyear == $year && $startweek == $week) 
@@ -630,13 +653,14 @@ ORDER BY
 		
 		}
 	// 	print_r($newstories); 
-		arsort($newstories,SORT_NUMERIC);
+	//	arsort($newstories,SORT_NUMERIC);
 	// 	print_r($newstories);
 		$this->setField("stories",array_keys($newstories));
 		$a = array();
-		foreach ($this->getField("stories") as $s)
-			$a[$s] = $this->stories[$s];
-		$this->stories = $a;
+		foreach (array_keys($newstories) as $s)
+			$a[$s] = &$this->stories[$s];
+
+		$this->stories = &$a;
 /* 		$this->fetcheddown=0;$this->fetchDown(); */
 		printc("<b>Content ranging from $txtstart to $txtend.</b><br><BR>");
 	}

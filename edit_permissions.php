@@ -7,7 +7,6 @@
  * The second screen is for the editing of the permissions for selected editors
  ******************************************************************************/
 
-
 require("objects/objects.inc.php");
 
 ob_start();
@@ -35,8 +34,7 @@ if ($_REQUEST[site] && isset($_SESSION[obj])) {
 if (!is_object($_SESSION[obj])) {
 	$_SESSION[obj] =& new site($_REQUEST[site]);
 /* 	$_SESSION[obj] =& new site('gabe'); */
-	$_SESSION[obj]->fetchDown();
-	$_SESSION[obj]->buildPermissionsArray(0,1);
+	$_SESSION[obj]->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,1);
 	$_SESSION[obj]->spiderDownLockedFlag();
 }
 
@@ -67,6 +65,10 @@ if ($_REQUEST[savechanges]) {
 	if ($isOwner) {
 		/* print "<pre>"; print_r($_SESSION[obj]); print "</pre>"; */
 		$_SESSION[obj]->updateDB(1);
+//		print_r($_SESSION[obj]->editorsToDelete);
+		$_SESSION[obj]->deletePendingEditors();
+//		echo "<pre>";
+//		print_r($_SESSION[obj]);
 		unset($_SESSION[obj],$_SESSION[editors]);
 		Header("Location: close.php");
 	}
@@ -149,6 +151,7 @@ if ($isOwner) {
 			$perm = $regs[1];
 			$theObj->setUserPermissionDown($perm,$puser,$pwhat);
 			$theObj->setFieldDown("l-$puser-$perm",$pwhat);
+			echo "l-$puser-$perm: ".$pwhat;
 			if ($pwhat ==1) $theObj->setField("l-$puser-$perm",(1-$pwhat));
 		}
 	}

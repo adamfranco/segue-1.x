@@ -50,7 +50,7 @@ class story extends segue {
 		),
 		"type" => array(
 			"story",
-			array("story_type"),
+			array("story_display_type"),
 			"story_id"
 		),
 		"title" => array(
@@ -73,15 +73,12 @@ class story extends segue {
 			array("story_active"),
 			"story_id"
 		),
-		
-		"??????" => array(
-			"story",
-			array("story_order"),
-			"story_id"
-		),
 		"url" => array(
-			"story",
-			array("story_text_long"),
+			"story
+				LEFT JOIN
+			media
+				ON FK_media = media_id",
+			array("media_tag"),
 			"story_id"
 		),
 		"locked" => array(
@@ -300,7 +297,7 @@ class story extends segue {
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
 				SELECT  
-					story_type AS type, 
+					story_display_type AS type, 
 					story_title AS title, 
 					DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, 
 					DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
@@ -313,7 +310,7 @@ class story extends segue {
 					story_text_type AS texttype, 
 					story_text_short AS shorttext,
 					story_text_long AS longertext,
-					story_text_long AS url,
+					media_tag AS url
 					user_createdby.user_uname AS addedby, 
 					user_updatedby.user_uname AS editedby, 
 					slot_name as site_id,
@@ -340,7 +337,7 @@ class story extends segue {
 					 slot
 						ON site.site_id = slot.FK_site
 						LEFT JOIN
-					media
+					 media
 						ON story.FK_media = media_id
 				WHERE story_id = ".$this->id;
 
@@ -393,7 +390,7 @@ class story extends segue {
 		return $this->id;
 	}
 	
-	function updateDB($down=0) {
+	function updateDB($down=0, $force=0) {
 		if ($this->changed) {
 			$this->parseMediaTextForDB("shorttext");
 			$this->parseMediaTextForDB("longertext");
@@ -416,7 +413,7 @@ class story extends segue {
 		}
 		
 		// update permissions
-		$this->updatePermissionsDB();
+		$this->updatePermissionsDB($force);
 		
 		// add log entry, now handled elsewhere
 /* 		log_entry("edit_story",$this->owning_site,$this->owning_section,$this->owning_page,"$_SESSION[auser] edited content id ".$this->id." in site ".$this->owning_site); */
@@ -456,8 +453,8 @@ class story extends segue {
 			}
 		}
 		
-		$this->parseMediaTextForDB("shorttext");
-		$this->parseMediaTextForDB("longertext");
+//		$this->parseMediaTextForDB("shorttext");
+//		$this->parseMediaTextForDB("longertext");
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
@@ -468,6 +465,22 @@ class story extends segue {
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
 		$a[] = "FK_updatedby=".$_SESSION[aid];
+
+		// insert media (url)
+		if ($this->data[url]) {
+			$query = "
+INSERT
+INTO media
+SET
+	FK_site = ".$this->owningSiteObj->id.",
+	FK_createdby = ".$_SESSION[aid].",
+	media_tag = '".$this->data[url]."',
+	media_location = 'remote',
+	FK_updatedby = ".$_SESSION[aid]."
+";
+			db_query($query);
+			$a[] = "FK_media=".mysql_insert_id();
+		}
 
 		$query = "INSERT INTO story SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
@@ -524,7 +537,7 @@ class story extends segue {
 		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
 		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
 //		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
-		if (($all && $this->data[url]) || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
+//		if (($all && $this->data[url]) || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
 		if ($all || $this->changed[discuss]) $a[] = $this->_datafields[discuss][1][0]."='".(($d[discuss])?1:0)."'";
 		if ($all || $this->changed[texttype]) $a[] = $this->_datafields[texttype][1][0]."='$d[texttype]'";
 		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='$d[category]'";

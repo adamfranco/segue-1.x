@@ -30,7 +30,7 @@ class section extends segue {
 		),
 		"type" => array(
 			"section",
-			array("section_type"),
+			array("section_display_type"),
 			"section_id"
 		),
 		"title" => array(
@@ -53,15 +53,10 @@ class section extends segue {
 			array("section_active"),
 			"section_id"
 		),		
-		"??????" => array(
-			"section",
-			array("section_order"),
-			"section_id"
-		),
 		"url" => array(
 			"section
-				INNER JOIN
-			media
+				LEFT JOIN
+			 media
 				ON FK_media = media_id",
 			array("media_tag"),
 			"section_id"
@@ -232,7 +227,7 @@ class section extends segue {
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
 SELECT  
-	section_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
 	section_created_tstamp AS addedtimestamp,
 	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
@@ -305,7 +300,7 @@ ORDER BY
 
 	}
 	
-	function updateDB($down=0) {
+	function updateDB($down=0, $force=0) {
 		if (count($this->changed)) {
 			$a = $this->createSQLArray();
 			$a[] = "FK_updatedby=".$_SESSION[aid];
@@ -341,7 +336,7 @@ ORDER BY
 		}
 		
 		// update permissions
-		$this->updatePermissionsDB();
+		$this->updatePermissionsDB($force);
 
 		// add log entry
 /* 		log_entry("edit_section",$this->owning_site,$this->id,"","$_SESSION[auser] edited section id ".$this->id." in site ".$this->owning_site); */
@@ -349,7 +344,7 @@ ORDER BY
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->pages) {
-				foreach (array_keys($this->pages) as $k=>$i) $this->pages[$i]->updateDB(1);
+				foreach (array_keys($this->pages) as $k=>$i) $this->pages[$i]->updateDB($down, $force);
 			}
 		}
 		return true;
@@ -365,6 +360,7 @@ ORDER BY
 		
 		$this->fetchUp(1);
 				
+
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "FK_createdby=".$_SESSION[aid];
@@ -374,6 +370,23 @@ ORDER BY
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
 		$a[] = "FK_updatedby=".$_SESSION[aid];
+
+		// insert media (url)
+		if ($this->data[url]) {
+			$query = "
+INSERT
+INTO media
+SET
+	FK_site = ".$this->owningSiteObj->id.",
+	FK_createdby = ".$_SESSION[aid].",
+	media_tag = '".$this->data[url]."',
+	media_location = 'remote',
+	FK_updatedby = ".$_SESSION[aid]."
+";
+			db_query($query);
+			$a[] = "FK_media=".mysql_insert_id();
+		}
+		
 
 		$query = "INSERT INTO section SET ".implode(",",$a);
 		db_query($query);

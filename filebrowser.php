@@ -36,18 +36,17 @@ if (count($w)) $where = " WHERE ".implode(" and ",$w);
 
 $query = "
 	SELECT 
-		media_tag,
 		media_id,
-		media_size,
+		media_tag,
 		media_type,
+		media_size,
 		slot_name
 	FROM 
 		media
 			INNER JOIN
 		slot
-			ON
-		media.FK_site = slot.FK_site		
-	$where
+			ON media.FK_site = slot.FK_site		
+	$where AND media_location = 'local'
 "; 
 $r = db_query($query); 
 
@@ -70,14 +69,12 @@ if ($upload) {
 			media
 				INNER JOIN
 			slot
-				ON
-			media.FK_site = slot.FK_site
+				ON media.FK_site = slot.FK_site
 				INNER JOIN
 			user
-				ON
-			media.FK_createdby = user_id
+				ON media.FK_createdby = user_id
 		WHERE
-			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'"; 
+			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."' AND media_location = 'local'"; 
 //	print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
@@ -137,13 +134,11 @@ $query = "
 		media
 			INNER JOIN
 		slot
-			ON
-		media.FK_site = slot.FK_site
+			ON media.FK_site = slot.FK_site
 			INNER JOIN
 		user
-			ON
-		media.FK_createdby = user_id
-	$where
+			ON media.FK_createdby = user_id
+	$where AND media_location = 'local'
 "; 
 $r = db_query($query); 
 
@@ -166,20 +161,18 @@ if ($name) $w[]="media_tag LIKE '%$name%'";
  
 if (count($w)) $where = " WHERE ".implode(" AND ",$w); 
  
-$r=db_query("
-	SELECT 
-		COUNT(*) AS media_count
+$query = "	SELECT 
+		COUNT(media_id) AS media_count
 	FROM 
 		media
 			INNER JOIN
 		slot
-			ON
-		media.FK_site = slot.FK_site
+			ON media.FK_site = slot.FK_site
 			INNER JOIN
 		user
-			ON
-		media.FK_createdby = user_id
-	$where"); 
+			ON media.FK_createdby = user_id
+	$where AND media_location = 'local'";
+$r=db_query($query); 
 $a = db_fetch_assoc($r);
 $numrows = $a[media_count];
 $numperpage = 20; 
@@ -201,18 +194,15 @@ $query = "
 		slot_name,
 		user_fname,
 		user_uname
-
 	FROM 
 		media
 			INNER JOIN
 		slot
-			ON
-		media.FK_site = slot.FK_site
+			ON media.FK_site = slot.FK_site
 			INNER JOIN
 		user
-			ON
-		media.FK_createdby = user_id
-	$where
+			ON media.FK_createdby = user_id
+	$where AND media_location = 'local'
 	$orderby
 	$limit
 "; 
@@ -363,7 +353,7 @@ function changePage(lolim) {
 					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
 					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
-						print "<input type=file name='file' class=textfield style='color: #FFF'>";
+						print "<input type=file name='file' class=textfield style='color: #000'>";
 						print "<input type=submit value='Upload'>";
 					} else {
 						print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";
@@ -375,9 +365,9 @@ function changePage(lolim) {
 					<?
 					$dirtotal = convertfilesize($totalsize);
 					if ($all) {
-						$res = db_query("SELECT COUNT(*) FROM site");
+						$res = db_query("SELECT COUNT(site_id) AS num_sites FROM site");
 						$b = db_fetch_assoc($res);
-						$dirlimit_B = $b['COUNT(*)']*$userdirlimit;
+						$dirlimit_B = $b['num_sites']*$userdirlimit;
 					} else
 						$dirlimit_B = $userdirlimit;
 					$dirlimit = convertfilesize($dirlimit_B);

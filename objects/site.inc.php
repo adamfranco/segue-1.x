@@ -326,7 +326,7 @@ FROM
 		$query = "
 SELECT  
 	section.section_id AS section_id,
-	section_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
 	section_created_tstamp AS addedtimestamp,
 	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id,
@@ -372,7 +372,7 @@ FROM
 		$query = "
 SELECT
 	t_pages.section_id AS section_id, page.page_id AS page_id, 
-	page_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	page_display_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	page_active AS active, page_story_order AS storyorder, page_show_creator AS showcreator, 
 	page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
 	page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
@@ -424,7 +424,7 @@ SELECT
 	t_stories.section_id AS section_id, 
 	t_stories.page_id AS page_id, 
 	story.story_id AS story_id,
-	story_type AS type, 
+	story_display_type AS type, 
 	story_title AS title, 
 	DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, 
 	DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
@@ -437,7 +437,7 @@ SELECT
 	story_text_type AS texttype, 
 	story_text_short AS shorttext,
 	story_text_long AS longertext,
-	story_text_long AS url,
+	media_tag AS url,
 	user_createdby.user_uname AS addedby, 
 	user_updatedby.user_uname AS editedby, 
 	'".$this->name."' as site_id
@@ -875,7 +875,7 @@ ORDER BY
 		$newSiteObj->insertDB(1,1);
 	}
 	
-	function updateDB($down=0) {
+	function updateDB($down=0, $force=0) {
 		if (count($this->changed)) {
 		// the easy step: update the fields in the table
 			$a = $this->createSQLArray();
@@ -911,7 +911,7 @@ ORDER BY
 /* 			} */
 		}
 		// now update the permissions
-		$this->updatePermissionsDB();
+		$this->updatePermissionsDB($force);
 		
 		// add log entry
 /* 		log_entry("edit_site",$this->name,"","","$_SESSION[auser] edited ".$this->name); */
@@ -919,7 +919,7 @@ ORDER BY
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->sections) {
-				foreach (array_keys($this->sections) as $k=>$i) $this->sections[$i]->updateDB(1);
+				foreach (array_keys($this->sections) as $k=>$i) $this->sections[$i]->updateDB($down, $force);
 			}
 		}
 		return 1;

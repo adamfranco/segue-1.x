@@ -16,13 +16,6 @@
 /*--------------------------------------------------------------------------------------*/
 /* --------------------------	GLOBALS ---------------------------------------------	*/
 /*--------------------------------------------------------------------------------------*/
-// $db_type: set this variable to the type of db you will be connecting to.
-//		possible values: "oracle", "mysql"    (values are case-insensitive)
-$db_type = "MySQL";
-
-// $debug: set this to 1 if you would like all debug output to be printed to the browser.
-//		possible values: 1, 0
-$debug = 0;
 
 /*--------------------------------------------------------------------------------------*/
 /* --------------------------  /end GLOBALS ----------------------------------------	*/

@@ -27,7 +27,7 @@ printc("<input type=hidden value='0' name='cancel'>");
 printc("<input type=hidden value='0' name='prevbutton'>");
 printc("<input type=hidden value='0' name='nextbutton'>");
 
-if ($_SESSION[pageObj]->getField("type")=='url' || $_SESSION[pageObj]->getField("type")=='page') {
+if ($_SESSION[pageObj]->getField("type")=='link' || $_SESSION[pageObj]->getField("type")=='page') {
 	printc("<div class=title style='font-size: 14px'>Activation & Availability ".helplink("daterange")."</div>");
 
 	$_SESSION[pageObj]->outputDateForm();

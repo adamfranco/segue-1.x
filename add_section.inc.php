@@ -30,7 +30,7 @@ if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-	if ($_REQUEST[type]) $_SESSION[sectionObj]->setField("type",$_REQUEST[type]);
+		if ($_REQUEST[type]) $_SESSION[sectionObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1) $_SESSION[sectionObj]->setField("title",$_REQUEST[title]);
 	// handle de/activate dates
 	$_SESSION[sectionObj]->handleFormDates();
@@ -125,7 +125,7 @@ if ($_REQUEST[save]) {
 	// error checking
 	if ($_SESSION[sectionObj]->getField("type")=='section' && (!$_SESSION[sectionObj]->getField("title") || $_SESSION[sectionObj]->getField("title")==''))
 		error("You must enter a section title.");
-	if ($_SESSION[sectionObj]->getField("type")=='url' && (!$_SESSION[sectionObj]->getField("url") || $_SESSION[sectionObj]->getField("url")=='' || $_SESSION[sectionObj]->getField("url")=='http://'))
+	if ($_SESSION[sectionObj]->getField("type")=='link' && (!$_SESSION[sectionObj]->getField("url") || $_SESSION[sectionObj]->getField("url")=='' || $_SESSION[sectionObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 	
 	if (!$error) { // save it to the database			
@@ -200,7 +200,7 @@ $leftlinks .= "Item";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
 
-if ($_SESSION[sectionObj]->getField("type") == "section" || $_SESSION[sectionObj]->getField("type") == "url") {
+if ($_SESSION[sectionObj]->getField("type") == "section" || $_SESSION[sectionObj]->getField("type") == "link") {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";

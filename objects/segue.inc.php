@@ -30,7 +30,7 @@ class segue {
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 	var $_tables = array("site"=>"sites","section"=>"sections","page"=>"pages","story"=>"stories"); // used for getField
 
-	var $_encode = array("title","header","footer","shorttext","longertext","discussions");
+	var $_encode = array("title","header","footer","shorttext","longertext","discussions","url");
 	var $_parse = array("header","footer","shorttext","longertext");
 
 /******************************************************************************
@@ -693,10 +693,12 @@ WHERE
 		if (!in_array($e,$this->editors)) {
 			$this->editors[]=$e;
 			$this->setUserPermissions($e);
+			$this->changedpermissions = 1;
 		}
 	}
 
 	function delEditor($e) {
+		$class=get_class($this);
 		if ($e == 'institute' || $e == 'everyone') return false;
 		if (in_array($e,$this->editors)) {
 			$n = array();
@@ -704,9 +706,17 @@ WHERE
 				if ($v != $e) $n[]=$v;
 			}
 			$this->editors = $n;
-			unset($this->permissions[$e]);
+			$this->setFieldDown("l-$e-add",0);
+			$this->setFieldDown("l-$e-edit",0);
+			$this->setFieldDown("l-$e-delete",0);
+			$this->setFieldDown("l-$e-view",0);
+			$this->setFieldDown("l-$e-discuss",0);
+			$this->setUserPermissionDown("ADD",$e,0);
+			$this->setUserPermissionDown("VIEW",$e,0);
+			$this->setUserPermissionDown("EDIT",$e,0);
+			$this->setUserPermissionDown("DELETE",$e,0);
+			$this->setUserPermissionDown("DISCUSS",$e,0);
 			$this->editorsToDelete[] = $e;
-			$this->changedpermissions = 1;
 		}
 	}
 	
@@ -739,9 +749,8 @@ WHERE
 /* 		} */
 /* 	} */
 	
-	function clearPermissions() {
+	function clearPermissions($editor = '') {
 /* 		print "Editors: <pre>"; print_r($this->getEditors()); print "</pre>"; */
-		$this->editorsToDeleteInScope = array_unique(array_merge(array_keys($this->permissions),$this->getEditors()));
 /* 		print "To Delete: <pre>"; print_r($this->editorsToDeleteInScope); print "</pre>"; */
 		$this->editors = array();
 		$this->permissions = array();
@@ -762,10 +771,14 @@ WHERE
 		$ar = $this->_object_arrays[$class];
 		$p = strtoupper($perm);
 		$c = permissions::$p();
-		$this->permissions[$user][$c] = $val;
-		$this->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
+		if ($this->permissions[$user][$c] != $val) {
+			$this->permissions[$user][$c] = $val;
+			$this->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
 														// hasPermission doesn't get a fscked up
+			$this->changedpermissions=1;
+		}
 		
+
 /* 		if ($class == "site") $n = 0; */
 /* 		else if ($class == "section")$n =4; */
 /* 		else if ($class == "page")$n = 8; */
@@ -780,11 +793,10 @@ WHERE
 /* 		print $this->permissions[$user][$c]; */
 /* 		print "<pre>"; print_r($this->permissions[$user]); print "</pre>"; */
 		
-		$this->changedpermissions=1;
 		if ($ar) {
 			$a = &$this->$ar;
 			if ($a) {
-				foreach ($a as $i=>$o) {
+				foreach (array_keys($a) as $k=>$i) {
 					$a[$i]->setUserPermissionDown($perm,$user,$val);
 					$a[$i]->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
 																	// hasPermission doesn't get a fscked up
@@ -1136,12 +1148,21 @@ FROM
 			$id = $this->id;
 			$site = $this->owning_site;
 
-			$n = array_unique(array_merge($this->editors,array_keys($this->permissions)));
+			$n = array_unique(array_merge($this->editors,$this->editorsToDelete,array_keys($this->permissions)));
 			
 //			print_r($n);
 
 			foreach ($n as $editor) {
 				$p2 = $this->permissions[$editor];
+				if (!is_array($p2)) {
+					echo "p2: ************************** BE CAREFULL!!!! ********************************<BR>";
+					$p2 = array();
+					$p2[ADD] = 0;
+					$p2[EDIT] = 0;
+					$p2[DELETE] = 0;
+					$p2[VIEW] = 0;
+					$p2[DISCUSS] = 0;
+				}
 //				print_r($p);
 
 				// now get the permissions for the parent object. We need to do this so that we can determine whether
@@ -1156,6 +1177,17 @@ FROM
 				// if a story object, get permissions for the parent page
 				else if ($scope == "story")
 					$p1 = $this->owningPageObj->permissions[$editor];
+					
+				if (!is_array($p1) && $scope != 'site') {
+					echo "p1: ************************** BE CAREFULL!!!! ********************************<BR>";
+					$p1 = array();
+					$p1[ADD] = 0;
+					$p1[EDIT] = 0;
+					$p1[DELETE] = 0;
+					$p1[VIEW] = 0;
+					$p1[DISCUSS] = 0;
+				}
+					
 					
 					// note that if a certain permission is set in $p1, it is impossible that the same permission is not set in $p2 (because $p2 inherits $p1's permissions)
 					// thus, there are 3 possibilities:
@@ -1283,45 +1315,46 @@ WHERE
 				// if permission entry does not exist in the permission table
 				else if ($p_new_str) {
 					// need to insert permissions
-					if (!db_num_rows($r_perm)) {
-						// first insert in permission table
-						$query = "
+					$query = "
 INSERT
 INTO permission
 	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
 VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 ";
 //						echo $query."<br>";
-						db_query($query);
-					}
-
+					db_query($query);
 				}
-
 			}
+		}
+	}
+	
+/******************************************************************************
+ * deletePendingEditors() - takes care of editors in editorsToDelete and
+ * 		editorsToDeleteInScope. 
+ * 	THIS FUNCTION MUST BE CALLED AFTER updatePermissionsDB()!!!
+ ******************************************************************************/
 
-
-			// if user wants to delete editors, remove their permissions from permission and site_editors
+	function deletePendingEditors() {
+			// if user wants to delete editors, remove their permissions from site_editors
 			foreach ($this->editorsToDelete as $e) {
 					$query = "SELECT user_id FROM user WHERE user_uname = '$e'";
 					$r = db_query($query);
 					$arr = db_fetch_assoc($r);
 					$ed_id = $arr['user_id'];
 					if ($ed_id) {
-						echo $query = "DELETE FROM site_editors WHERE FK_editor = $ed_id";
-						$r = db_query($query);
-						echo $query = "DELETE FROM permission WHERE FK_editor = $ed_id";
+						$query = "DELETE FROM site_editors WHERE FK_editor = $ed_id AND site_editors_type = 'user' AND FK_site = ".$this->id;
 						$r = db_query($query);
 					}
 			}
-			
+			$this->editorsToDelete = array();
 			
 			/*
 			foreach ($this->editorsToDeleteInScope as $e) {
 				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");
 			}
 			*/
-		}
 	}
+
 
 /******************************************************************************
  * canview - checks if part is active & within date range. if so, forwards
