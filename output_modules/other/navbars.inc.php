@@ -8,7 +8,20 @@ if ($thisSite->sections) {
 		$o = &$thisSite->sections[$s];
 		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 			if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=$action";
-			if ($o->getField("type") == 'link') { $link = $o->getField("url"); $target="_self";}
+			
+			if ($o->getField("type") == 'link') { 
+				$url = $o->getField("url");				
+				/******************************************************************************
+				 * replace general media library urls (i.e. $mediapath/$sitename/filename)
+				 * replace general with specific
+				 ******************************************************************************/
+				// replace general [[linkpath]] with specific link path (i.e. $full_uri)
+				$specfic_internal_linkpath = $cfg[full_uri];
+				$general_internal_linkpath = "\[\]linkpath\]\]";
+				$url = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $url);
+				
+				$link = $url; $target="_self";
+			}
 			$extra = '';
 			if ($action == 'viewsite' && (($section == $s) || ($o->getField("type") == 'link'))) {
 				if ($thisSite->hasPermission("edit")) {
@@ -52,8 +65,19 @@ if ($thisSection) {
 					add_link(leftnav2,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=$action",$extra,$p);
 				}
 				if ($o->getField("type") == 'link') {
-					add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p);
-					add_link(leftnav2,$o->getField("title"),$o->getField("url"),$extra,$p);
+					$url = $o->getField("url");
+					
+					/******************************************************************************
+					 * replace general media library urls (i.e. $mediapath/$sitename/filename)
+					 * replace general with specific
+					 ******************************************************************************/
+					// replace general [[linkpath]] with specific link path (i.e. $full_uri)
+					$specfic_internal_linkpath = $cfg[full_uri];
+					$general_internal_linkpath = "\[\]linkpath\]\]";
+					$url = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $url);
+				
+					add_link(leftnav,$o->getField("title"),$url,$extra,$p);
+					add_link(leftnav2,$o->getField("title"),$url,$extra,$p);
 				}
 				if ($o->getField("type") == 'heading') {
 					add_link(leftnav,$o->getField("title"),'',$extra);

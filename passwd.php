@@ -12,6 +12,7 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 include("includes.inc.php");
 
 if ($_REQUEST[reset]) $reset = $_REQUEST[reset];
+if ($_REQUEST[email]) $email = $_REQUEST[email];
 
 if ($_REQUEST[action] == "change") {
 	$db_pass = db_get_value("user","user_pass","user_uname = '$_SESSION[auser]'");

@@ -183,12 +183,15 @@ if ($_loggedin) {
 			error("Your group name is invalid. It may only contain alphanumeric characters, '_', '-', and be under 21 characters. No spaces, punctuation, etc.");
 
 	}
+	
+	printc("<div align=right><a href=email.php?$sid&action=user&from=home onClick='doWindow(\"email\",700,500)' target='email'>Your Posts</a></div>");
 
 	printc("<div class='title'>Sites".helplink("sites")."</div>");
 	
 	printc("<form name=groupform action='$PHP_SELF?$sid&action=default' method=post>");
 	
 	printc("<table width=100%>");
+	
 
 	if ($allowpersonalsites) {
 		// print out the personal site

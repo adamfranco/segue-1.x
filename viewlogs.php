@@ -180,8 +180,8 @@ if ($_SESSION['ltype']=='admin') {
 	</td></tr></table>";
 }
 if ($site) {
-	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
-	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
+	if (isclass($site)) print "<a href=add_students.php?$sid&name=$site>Roster</a> |";
+	print " <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&order=user_fname&scope=site'>Participation</a>";
 	print " | Logs";
 }
 

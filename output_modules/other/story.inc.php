@@ -14,7 +14,7 @@ $specfic_mediapath = $cfg[uploadurl]."/".$site;
 $general_mediapath = "\[\]mediapath\]\]";
 $st = eregi_replace($general_mediapath, $specfic_mediapath, $st);
 
-// replace internal link urls with constant [[linkpath]]
+// replace constant [[linkpath]] with specific link path (i.e. $full_uri)
 $specfic_internal_linkpath = $cfg[full_uri];
 $general_internal_linkpath = "\[\]linkpath\]\]";
 $st = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $st);

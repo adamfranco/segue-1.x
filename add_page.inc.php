@@ -147,6 +147,33 @@ if ($_REQUEST[save]) {
 		
 /* 		// check make sure the owner is the current user if they are changing permissions */
 /* 		if ($site_owner != $_SESSION[auser]) */
+
+		/******************************************************************************
+		 * Link page types: replace specific url with general url ($linkpath)
+		 ******************************************************************************/
+
+		if ($_SESSION[pageObj]->getField("type")=='link') {
+		
+			$url = $_SESSION[pageObj]->getField("url");
+			// replace internal link urls with constant [[linkpath]]
+			$specfic_internal_linkpath = $cfg[full_uri];
+			$general_internal_linkpath = "\[\]linkpath\]\]";
+			$url = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $url);
+			
+			// replace internal links to edit mode (action=viewsite)
+			// with internal links to non-edit mode (action=site)
+			$action_viewsite = "action=viewsite";
+			$action_site = "action=site";			
+			$url = eregi_replace($action_viewsite, $action_site, $url);	
+			
+			// save general internal_linkpath to object	
+			$_SESSION[pageObj]->setField("url",$url);
+		
+		}
+
+		/******************************************************************************
+		 * Save: calls insertDB and updateDB functions
+		 ******************************************************************************/
 		
 		if ($_SESSION[settings][edit]) { 
 			$_SESSION[pageObj]->updateDB();

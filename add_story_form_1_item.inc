@@ -125,8 +125,21 @@ if ($_SESSION[storyObj]->getField("type")!='rss') {
 }
 
 if ($_SESSION[storyObj]->getField("type")=='link') {
+
+	/******************************************************************************
+	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
+	 * replace general with specific
+	 ******************************************************************************/
+	 
+	$url = $_SESSION[storyObj]->getField("url");
+	
+	// replace internal link urls with constant [[linkpath]]
+	$specfic_internal_linkpath = $cfg[full_uri];
+	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$text = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $text);
+
 	printc("<tr>");
-	printc("<td>URL:<td><input type=text name=url value='".$_SESSION[storyObj]->getField("url")."' size=75></td>");
+	printc("<td>URL:<td><input type=text name=url value='".$url."' size=75></td>");
 
 }
 
@@ -294,9 +307,9 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	
 	// replace internal links in edit mode (action=viewsite)
 	// with internal links in non-edit mode (action=site)
-	$action_viewsite = "action=viewsite";
-	$action_site = "action=site";			
-	$text = eregi_replace($action_viewsite, $action_site, $text);
+	//$action_viewsite = "action=viewsite";
+	//$action_site = "action=site";			
+	//$text = eregi_replace($action_viewsite, $action_site, $text);
 
 	printc(addeditor ("shorttext",60,20,$text));
 	printc("</td></tr></table>");

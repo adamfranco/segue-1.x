@@ -31,6 +31,11 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 
 printc("Type:".helplink("pagetypes"));
 
+/******************************************************************************
+ * Content Type Radio Buttons
+ ******************************************************************************/
+
+
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
 else printc("<br><br>");
 
@@ -47,6 +52,10 @@ if ($_SESSION[settings][add] || $_SESSION[sectionObj]->getField("type") == 'link
 	printc(" Link/URL</b>".(($_SESSION[sectionObj]->getField("type")=='link')?" - allows you to enter an internet address (such as http://www.middlebury.edu/yourpage/) to allows users to click on to look at a different website. Links will open in a new window, allowing people to continue browsing your site.":"")."</div>");
 }
 
+/******************************************************************************
+ * Content Type instructions
+ ******************************************************************************/
+
 if ($_SESSION[sectionObj]->getField("type")=='link') {
 	printc("<div class=title>URL</div>");
 	printc("<div class=desc>Enter a title and URL for your link.</div>");
@@ -61,8 +70,20 @@ printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[se
 printc("</div><br>");
 
 if ($_SESSION[sectionObj]->getField("type")=='link') {	
+
+	$url = $_SESSION[sectionObj]->getField("url");
+
+	/******************************************************************************
+	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
+	 * replace general with specific
+	 ******************************************************************************/
+	// replace internal link urls with constant [[linkpath]]
+	$specfic_internal_linkpath = $cfg[full_uri];
+	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$url = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $url);
+
 	printc("<div class=leftmargin>");
-	printc("URL: <input type=text name=url value='".$_SESSION[sectionObj]->getField("url")."' size=50>");
+	printc("URL: <input type=text name=url value='".$url."' size=50>");
 	printc("</div>");
 }
 

@@ -32,6 +32,10 @@ printc("<input type=hidden value='0' name='nextbutton'>");
 
 printc("Type:".helplink("pagetypes"));
 
+/******************************************************************************
+ * Content Type Radio Buttons
+ ******************************************************************************/
+
 if ($_SESSION[settings][add]) printc("<div class=desc>Please choose what type of content you would like to add. The choices are:</div>");
 else printc("<br><br>");
 
@@ -60,6 +64,9 @@ if ($_SESSION[settings][add] || $_SESSION[pageObj]->getField("type") == 'divider
 	printc(" Divider</b>".(($_SESSION[pageObj]->getField("type")=='divider')?" - will put some sort of dividing space between items in your navigation list. This may just be some white space, or a thin line, depending on what theme you chose for your site.":"")."</div>");
 }
 
+/******************************************************************************
+ * Content Type instructions
+ ******************************************************************************/
 
 if ($_SESSION[pageObj]->getField("type")=='divider') {
 	printc("<div class=title>Divider</div>");
@@ -112,8 +119,26 @@ if ($thisSite->getField("type") == 'publication') {
 	
 
 if ($_SESSION[pageObj]->getField("type")=='link') {	
+
+	$url = $_SESSION[pageObj]->getField("url");
+
+	/******************************************************************************
+	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
+	 * replace general with specific
+	 ******************************************************************************/
+	// replace internal link urls with constant [[linkpath]]
+	$specfic_internal_linkpath = $cfg[full_uri];
+	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$url = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $url);
+	
+	// replace internal links in edit mode (action=viewsite)
+	// with internal links in non-edit mode (action=site)
+	//$action_viewsite = "action=viewsite";
+	//$action_site = "action=site";			
+	//$url = eregi_replace($action_viewsite, $action_site, $url);
+
 	printc("<div class=leftmargin>");
-	printc("URL: <input type=text name=url value='".$_SESSION[pageObj]->getField("url")."' size=50>");
+	printc("URL: <input type=text name=url value='".$url."' size=50>");
 	printc("</div>");
 }
 

@@ -734,7 +734,8 @@ class discussion {
 			 ******************************************************************************/
 
 			if (!$_SESSION[auser]) {
-				printc ("<tr><td  colspan = 2><div style='font-size: 9px'>If you part of the ".$cfg[inst_name]." community, please log in at top of page before posting.</div></td></tr>\n");
+				printc ("<tr><td  colspan = 2><div style='font-size: 9px'>If you part of the ".$cfg[inst_name]);
+				printc (" community or have posted to a public forum here and received a visitor user account, please log in at top of page <b><a href=# title='forget your password, see below'>before</a></b> posting.</div></td></tr>\n");
 				printc ("<tr><td>Full Name:</td><td><input type=text size=50 name=visitor_name value='".$_REQUEST['visitor_name']."'></td></tr>\n");
 				printc ("<tr><td>Email:</td><td><div style='font-size: 9px'><input type=text size=25 name=visitor_email value='".$_REQUEST['visitor_email']."'>\n");
 				printc ("(<a href='passwd.php?reset=1' target='password' onClick='doWindow(\"password\",400,300)'>forget your password?</a>)</div>");

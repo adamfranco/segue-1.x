@@ -130,6 +130,29 @@ if ($_REQUEST[save]) {
 	
 	if (!$error) { // save it to the database			
 		
+		/******************************************************************************
+		 * Link section types: replace specific url with general url ($linkpath)
+		 ******************************************************************************/
+
+		if ($_SESSION[sectionObj]->getField("type")=='link') {
+		
+			$url = $_SESSION[sectionObj]->getField("url");
+			// replace internal link urls with constant [[linkpath]]
+			$specfic_internal_linkpath = $cfg[full_uri];
+			$general_internal_linkpath = "\[\]linkpath\]\]";
+			$url = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $url);
+			
+			// replace internal links to edit mode (action=viewsite)
+			// with internal links to non-edit mode (action=site)
+			$action_viewsite = "action=viewsite";
+			$action_site = "action=site";			
+			$url = eregi_replace($action_viewsite, $action_site, $url);	
+			
+			// save general internal_linkpath to object	
+			$_SESSION[sectionObj]->setField("url",$url);
+		
+		}
+
 		// add the new section id to the sites table
 		if ($_SESSION[settings][add]) {
 			$_SESSION[sectionObj]->setPermissions($thisSite->getPermissions());

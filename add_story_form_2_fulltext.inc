@@ -63,11 +63,19 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("</td></tr>");
 	printc("</table>");
 
-	//sniffer determines browser and os
-	//sniffer included in editor.inc.php
+	/******************************************************************************
+	 * 	Sniff determines browser and os
+	 *  (sniffer included in editor.inc.php...)
+	 ******************************************************************************/
+
 	include("sniffer.inc.php");
 	//$uagent = $_SERVER["HTTP_USER_AGENT"];
 	//printc("<div style='font-size:10px; color:#999'>($uagent)</div>");
+
+	/******************************************************************************
+	 * HTML Editor: check for supported browsers
+	 * browser recommendations note
+	 ******************************************************************************/
 
 	if ($supported == 0) {
 		printc("<br><div style='font-size:10px;'>Looks like you are using a browser that does not support a built-in HTML editor.  ");
@@ -96,30 +104,56 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		}	
 	}
 
+	/******************************************************************************
+ 	* Include HTML Editor code
+	 ******************************************************************************/
+
 	include("htmleditor/editor.inc.php");
+	
+	/******************************************************************************
+	 * 	print out text areas with editor (determined by addeditor function)
+	 *  addeditor function (defined in editor.inc.php)
+	 *  addeditor function variables (textarea, cols, rows, text)
+	 ******************************************************************************/
 		
 	printc("<br>");
 	printc("<table width=80%><tr><td style='padding-left: 15px'>");
 	printc("Extended Content (Optional):");
 	printc("<br>");
-	
-		//	print out text areas with editor (determined by addeditor function)
-	//  addeditor function (defined in editor.inc.php)
-	//  addeditor function variables (textarea, cols, rows, text)
-	
+		
 	if ($_SESSION[settings][editorinitstate] == "text" && $supported == 1) {
 		$text = htmlbr($_SESSION[storyObj]->getField("longertext"));
 		$_SESSION[settings][editorinitstate] = "html";
 	} else {
 		$text = $_SESSION[storyObj]->getField("longertext");
 	}
-	//printpre($_SESSION[settings]);
-		
-	//	print out text areas with editor (determined by addeditor function)
-	//  addeditor function (defined in editor.inc.php)
-	//  addeditor function variables (textarea, cols, rows, text)
+
+	/******************************************************************************
+	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
+	 * replace general with specific
+	 ******************************************************************************/
+	$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
+	$general_mediapath = "\[\]mediapath\]\]";
+	$text = eregi_replace($general_mediapath, $specfic_mediapath, $text);
+
+	// replace internal link urls with constant [[linkpath]]
+	$specfic_internal_linkpath = $cfg[full_uri];
+	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$text = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $text);
+	
+	// replace internal links in edit mode (action=viewsite)
+	// with internal links in non-edit mode (action=site)
+	$action_viewsite = "action=viewsite";
+	$action_site = "action=site";			
+	$text = eregi_replace($action_viewsite, $action_site, $text);
+
 	printc(addeditor ("longertext",60,26,$text));
 	printc("</td></tr></table>");
+	
+	/******************************************************************************
+	 * Text fields text type: html or text
+	 ******************************************************************************/
+
 
 	//sniffer determines browser and os
 	if ($supported == 1) {

@@ -206,12 +206,13 @@ if ($_REQUEST[save]) {
 		
 		/******************************************************************************
 		 * replace media library urls with $mediapath/$sitename/filename
-		 * replace specific url with general url
+		 * replace specific url with general url ($linkpath)
 		 ******************************************************************************/
 
 		if ($_SESSION[storyObj]->getField("type") == "story") {
-			
+
 			$text = $_SESSION[storyObj]->getField("shorttext");
+			
 			// replace upload url path with constant [[mediapath]]
 			$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
 			$general_mediapath = "\[\]mediapath\]\]";
@@ -222,16 +223,40 @@ if ($_REQUEST[save]) {
 			$general_internal_linkpath = "\[\]linkpath\]\]";
 			$text = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $text);
 			
-			// replace internal links in edit mode (action=viewsite)
-			// with internal links in non-edit mode (action=site)
+			// replace internal links to edit mode (action=viewsite)
+			// with internal links to non-edit mode (action=site)
 			$action_viewsite = "action=viewsite";
 			$action_site = "action=site";			
 			$text = eregi_replace($action_viewsite, $action_site, $text);
 			
-			
-			
+			// save general mediapath and internal_linkpath to object			
 			$_SESSION[storyObj]->setField("shorttext",$text);
 		}
+		
+		/******************************************************************************
+		 * replace media library urls with $mediapath/$sitename/filename
+		 * replace specific url with general url ($linkpath)
+		 ******************************************************************************/
+
+		if ($_SESSION[storyObj]->getField("type") == "link") {
+			
+			$url = $_SESSION[storyObj]->getField("url");
+			
+			// replace internal link urls with constant [[linkpath]]
+			$specfic_internal_linkpath = $cfg[full_uri];
+			$general_internal_linkpath = "\[\]linkpath\]\]";
+			$url = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $url);
+			
+			// replace internal links to edit mode (action=viewsite)
+			// with internal links to non-edit mode (action=site)
+			$action_viewsite = "action=viewsite";
+			$action_site = "action=site";			
+			$url = eregi_replace($action_viewsite, $action_site, $url);
+			
+			// save general mediapath and internal_linkpath to object			
+			$_SESSION[storyObj]->setField("url",$url);
+		}
+		
 		
 		/******************************************************************************
 		 * if the longertext field = <br />,then set field to ''
