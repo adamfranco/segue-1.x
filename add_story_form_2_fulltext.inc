@@ -48,16 +48,21 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc(addeditor ("longertext",80,16,$_SESSION[storyObj]->getField("longertext")));
 	printc("</td></tr></table>");
 
-	printc("<div align=right>");
-	printc("What type of text did you enter?");
-//	printc (" <select name=texttype>");
-//	printc("<option value=text".(($_SESSION[settings][texttype]=='text')?" selected":"").">Plain text");
-//	printc("<option value=html".(($_SESSION[settings][texttype]=='html')?" selected":"").">Preformatted HTML");
-//	printc("</select>");
-	printc("<input type=textarea disabled value='".(($_SESSION[storyObj]->getField("texttype")=='text')?" Plain text":" Preformatted HTML")."'>");
-	printc("</div>");
-	printc("<div class=desc align=right>Change this option on the previous screen.</div>");
-	//	end modification 1 - 11.1.02 - achapin
+	//sniffer determines browser and os
+	include("sniffer.inc.php");
+	if ($browser_os == "pcie5+") {
+		printc("<input type=hidden name='texttype' value='html'>");
+	} else {
+		printc("<div align=right>");
+		printc("What type of text did you enter?");
+	//	printc (" <select name=texttype>");
+	//	printc("<option value=text".(($_SESSION[settings][texttype]=='text')?" selected":"").">Plain text");
+	//	printc("<option value=html".(($_SESSION[settings][texttype]=='html')?" selected":"").">Preformatted HTML");
+	//	printc("</select>");
+		printc("<input type=textarea disabled value='".(($_SESSION[storyObj]->getField("texttype")=='text')?" Plain text":" Preformatted HTML")."'>");
+		printc("</div>");
+		printc("<div class=desc align=right>Change this option on the previous screen.</div>");
+	}
 }
 
 if ($_SESSION[storyObj]->getField("type") != 'story') printc("<br><br>");

@@ -255,7 +255,7 @@ function changeOrder(order) {
 					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
 					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
-						print "<input type=file name='file' class=textfield>";
+						print "<input type=file name='file' class=textfield style='color: #FFF'>";
 						print "<input type=submit value='Upload'>";
 					} else {
 						print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";

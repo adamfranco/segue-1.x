@@ -116,14 +116,19 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc(addeditor ("shorttext",80,16,$_SESSION[storyObj]->getField("shorttext")));
 	printc("</td></tr></table>");
 
-	printc("<div align=right>");
-	printc("What type of text did you enter? <select name=texttype>");
-	printc("<option value=text".(($_SESSION[storyObj]->getField("texttype")=='text')?" selected":"").">Plain text");
-	printc("<option value=html".(($_SESSION[storyObj]->getField("texttype")=='html')?" selected":"").">Preformatted HTML");
-	printc("</select>");
-	printc("</div>");
-	printc("<div class=desc style>If you choose \"Preformatted HTML\" Segue will not convert newline characters to the HTML equivalent: &lt;br&gt;. If you are unsure, select <b>Plain text</b>.</div>");
-
+	//sniffer determines browser and os
+	include("sniffer.inc.php");
+	if ($browser_os == "pcie5+") {
+		printc("<input type=hidden name='texttype' value='html'>");
+	} else {
+		printc("<div align=right>");
+		printc("What type of text did you enter? <select name=texttype>");
+		printc("<option value=text".(($_SESSION[storyObj]->getField("texttype")=='text')?" selected":"").">Plain text");
+		printc("<option value=html".(($_SESSION[storyObj]->getField("texttype")=='html')?" selected":"").">Preformatted HTML");
+		printc("</select>");
+		printc("</div>");
+		printc("<div class=desc style>If you choose \"Preformatted HTML\" Segue will not convert newline characters to the HTML equivalent: &lt;br&gt;. If you are unsure, select <b>Plain text</b>.</div>");
+	}
 	//	end modification 1 - 11.1.02 - achapin
 }
 
