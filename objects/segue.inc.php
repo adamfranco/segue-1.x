@@ -153,11 +153,11 @@ FROM
 					INNER JOIN
 				ugroup_user ON ugroup_id = FK_ugroup
 					INNER JOIN
-				user ON FK_user = user_id";
+				user ON FK_user = user_id AND user_uname='$user'";
 		$r = db_query($query);
 		if (db_num_rows($r))
 			while ($a = db_fetch_assoc($r)) {
-				$ar[] = $a[site_id];
+				$ar[] = $a[slot_name];
 			}
 			
 		// the two queries will return unique values, but their union could have non-unique entries.
@@ -850,7 +850,7 @@ WHERE
 		if ($scope == 'site') {
 		$query = "
 SELECT
-	user_uname as editor, site_editors_type as editor_type,
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
 	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
@@ -864,6 +864,9 @@ FROM
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
 		LEFT JOIN
 	permission ON
 		site_id  = FK_scope_id
@@ -880,7 +883,7 @@ FROM
 		else if ($scope == 'section') {
 		$query = "
 SELECT
-	user_uname as editor, site_editors_type as editor_type,
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
 	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
@@ -897,6 +900,9 @@ FROM
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
 		LEFT JOIN
 	permission as p1 ON
 		site_id  = p1.FK_scope_id
@@ -922,7 +928,7 @@ FROM
 		else if ($scope == 'page') {
 		$query = "
 SELECT
-	user_uname as editor, site_editors_type as editor_type,
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
 	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
@@ -942,6 +948,9 @@ FROM
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
 		LEFT JOIN
 	permission as p1 ON
 		site_id  = p1.FK_scope_id
@@ -976,7 +985,7 @@ FROM
 		else if ($scope == 'story') {
 		$query = "
 SELECT
-	user_uname as editor, site_editors_type as editor_type,
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
 	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0) | IFNULL(p4.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
@@ -999,6 +1008,9 @@ FROM
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
 		LEFT JOIN
 	permission as p1 ON
 		site_id  = p1.FK_scope_id
@@ -1065,13 +1077,16 @@ FROM
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
 			if ($row[editor_type]=='user')
 				$t_editor = $row[editor];
+			else if ($row[editor_type]=='ugroup')
+				$t_editor = $row[editor2];
 			else
 				$t_editor = $row[editor_type];
 			
 //			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 
 			// set the permissions for this editor
-			$this->permissions[strtolower($t_editor)] = array(
+//			$this->permissions[strtolower($t_editor)] = array(
+			$this->permissions[$t_editor] = array(
 				permissions::ADD()=>$a[a], 
 				permissions::EDIT()=>$a[e], 
 				permissions::DELETE()=>$a[d], 
@@ -1080,7 +1095,8 @@ FROM
 			);
 			
 			// now add the editor to the editor array
-			$this->editors[]=strtolower($t_editor);
+//			$this->editors[]=strtolower($t_editor);
+			$this->editors[]=$t_editor;
 		}
 		
 //		print_r($this->permissions);

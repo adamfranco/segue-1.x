@@ -489,7 +489,7 @@ FROM
 		
 		$query = "
 SELECT
-	user_uname as editor, site_editors_type as editor_type,
+	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
 	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	t_sites
@@ -497,10 +497,13 @@ FROM
 	site_editors ON
 		site_id = FK_site
 			AND
-		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
+		(site_editors_type = 'ugroup' OR site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
 		LEFT JOIN
 	user
 		ON site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup
+		ON site_editors.FK_editor = ugroup_id
 		LEFT JOIN
 	permission ON
 		site_id  = FK_scope_id
@@ -531,6 +534,8 @@ FROM
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
 			if ($row[editor_type]=='user')
 				$t_editor = $row[editor];
+			else if ($row[editor_type]=='ugroup')
+				$t_editor = $row[editor2];
 			else
 				$t_editor = $row[editor_type];
 			
@@ -560,7 +565,7 @@ FROM
 		
 		$query = "
 SELECT
-	section_id, user_uname as editor, site_editors_type as editor_type,
+	section_id, user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
 	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	t_sections
@@ -572,6 +577,9 @@ FROM
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
 		INNER JOIN
 	permission ON
 		section_id  = FK_scope_id
@@ -600,6 +608,8 @@ FROM
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
 			if ($row[editor_type]=='user')
 				$t_editor = $row[editor];
+			else if ($row[editor_type]=='ugroup')
+				$t_editor = $row[editor2];
 			else
 				$t_editor = $row[editor_type];
 			
@@ -620,7 +630,7 @@ FROM
 
 		$query = "
 SELECT
-	section_id, page_id, user_uname as editor, site_editors_type as editor_type,
+	section_id, page_id, user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
 	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	t_pages
@@ -632,6 +642,9 @@ FROM
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
 		INNER JOIN
 	permission ON
 		page_id  = FK_scope_id
@@ -662,6 +675,8 @@ FROM
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
 			if ($row[editor_type]=='user')
 				$t_editor = $row[editor];
+			else if ($row[editor_type]=='ugroup')
+				$t_editor = $row[editor2];
 			else
 				$t_editor = $row[editor_type];
 			
@@ -685,7 +700,7 @@ FROM
 
 		$query = "
 SELECT
-	section_id, page_id, story_id, user_uname as editor, site_editors_type as editor_type,
+	section_id, page_id, story_id, user_uname as editor, ugroup_name as editor2,  site_editors_type as editor_type,
 	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	t_stories
@@ -697,6 +712,9 @@ FROM
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
+		LEFT JOIN
+	ugroup ON
+		site_editors.FK_editor = ugroup_id
 		INNER JOIN
 	permission ON
 		story_id = FK_scope_id
@@ -725,6 +743,8 @@ FROM
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
 			if ($row[editor_type]=='user')
 				$t_editor = $row[editor];
+			else if ($row[editor_type]=='ugroup')
+				$t_editor = $row[editor2];
 			else
 				$t_editor = $row[editor_type];
 			
