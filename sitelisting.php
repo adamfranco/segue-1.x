@@ -5,6 +5,7 @@
 include("objects/objects.inc.php");
 
 $content = '';
+$numPerPage = 30;
 
 ob_start();
 session_start();
@@ -68,8 +69,7 @@ $numSites = $a[log_count];
 if (!isset($lowerlimit)) $lowerlimit = 0;
 if ($lowerlimit < 0) $lowerlimit = 0;
 
-
-$limit = " limit $lowerlimit,30";
+$limit = " limit $lowerlimit,$numPerPage";
 
 $query = "
 	SELECT 
@@ -94,7 +94,6 @@ $query = "
 	$where2$orderby$limit";
 
 $r = db_query($query);
-$numlogs = db_num_rows($r);
 
 //print $query;
 
@@ -118,7 +117,6 @@ function changeOrder(order) {
 <table width='100%' class='bg'>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<? //print $numlogs . " | " . $query; ?>
 	<? print "Total Active Segue Sites: ".$numSites ?>
 
 
@@ -163,12 +161,12 @@ function changeOrder(order) {
 		</td>
 		<td align=right>
 		<?
-		$tpages = ceil($numlogs/30);
-		$curr = ceil(($lowerlimit+30)/30);
-		$prev = $lowerlimit-30;
+		$tpages = ceil($numSites/$numPerPage);
+		$curr = ceil(($lowerlimit+$numPerPage)/$numPerPage);
+		$prev = $lowerlimit-$numPerPage;
 		if ($prev < 0) $prev = 0;
-		$next = $lowerlimit+30;
-		if ($next >= $numlogs) $next = $numlogs-30;
+		$next = $lowerlimit+$numPerPage;
+		if ($next >= $numSites) $next = $numSites-$numPerPage;
 		if ($next < 0) $next = 0;
 		print "$curr of $tpages ";
 //		print "$prev $lowerlimit $next ";

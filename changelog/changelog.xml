@@ -2,6 +2,9 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.3.0" date="the future">
+		<fix author='adam'>
+			Public Site Listing now prints next/previous links to additional pages.
+		</fix>
 		<new author='adam'>
 			Added error-printing functions to print out backtraces neatly.
 		</new>
