@@ -7,24 +7,63 @@ class group {
 	var $id=0;
 	
 	function group($name,$owner='',$classes='') {
-		$this->owner=$owner;
+		global $dbuser, $dbpass, $dbdb, $dbhost;
+		// find if this classgroup exists in the db, if yes, get the id
+		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+		$q = "SELECT classgroup_id FROM classgroup WHERE classgroup_name = '$name'";
+		echo $q."<br>";
+		$r = db_query($q);
+		if (db_num_rows($r)) {
+			$a = db_fetch_assoc($r);
+			$this->id = $a[classgroup_id];
+		}
+		else $this->id = 0;
 		$this->name=$name;
+		$this->owner=$owner;
 		if ($classes!='') $this->classes=$classes;
 	}
 	
 	function fetchFromDB() {
-		$query = "select * from classgroups where name='".$this->name."'";
-		if ($this->owner) $query .= " and owner='".$this->owner."'";
+		$query = "
+SELECT
+	classgroup_id as id, classgroup_name as name
+FROM classgroup WHERE classgroup_id=".$this->id;
+		echo $query."<br>";
+			
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
 			$this->id=$a[id];
-			$this->classes=explode(',',$a[classes]);
-			if (!$this->owner) $this->owner = $a[owner];
-			return true;
+		} else return false;
+		
+		$query = "
+SELECT
+	user_uname
+FROM
+	classgroup
+		INNER JOIN
+	user ON FK_owner = user_id AND classgroup_id = ".$this->id;
+		echo $query."<br>";
+
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			$a = db_fetch_assoc($r);
+			$this->owner=$a[user_uname];
+		} else return false;
+			
+		$query = "SELECT class_code FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_id=".$this->id;
+		echo $query."<br>";
+
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			$this->classes=array();
+			while ($a = db_fetch_assoc($r))
+				$this->classes[] = $a[class_code];
 		} else return false;
 	}
 	
+	
+	// UPDATE THIS FUNCTION	
 	function updateDB() {
 		if ($this->exists($this->name)) {
 			$query = "update classgroups set name='".$this->name."',owner='".$this->owner."'";
@@ -39,34 +78,47 @@ class group {
 	}
 	
 	function exists($name) {
-		$query = "select * from classgroups where name='$name'";
+		$query = "SELECT * FROM classgroup WHERE classgroup_name='$name'";
+		echo $query."<br>";
 		if (db_num_rows(db_query($query))) return true;
 		return false;
 	}
 	
 	function getClassesFromName($name) {
 		if (group::exists($name)) {
-			$query = "select * from classgroups where name='$name'";
-			$a = db_fetch_assoc(db_query($query));
-			$classes = explode(',',$a[classes]);
+			$query = "SELECT class_code FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_name='$name'";
+			echo $query."<br>";
+			$r = db_query($query);
+			$classes = array();
+			while ($a = db_fetch_assoc($r))
+				$classes[] = $a[class_code];
 			return $classes;
 		}
 		return false;
 	}
 	
 	function getNameFromClass($class) {
-		$query = "select * from classgroups where classes LIKE '%$class%'";
+		$query = "SELECT classgroup_name FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND class_code = '$class'";
+		echo $query."<br>";
 		$r = db_query($query);
-		if (db_num_rows($r)) {$a = db_fetch_assoc($r); return $a[name]; }
+		if (db_num_rows($r)) {
+			$a = db_fetch_assoc($r);
+			return $a[classgroup_name]; 
+		}
 		return false;
 	}
 	
-	function getGroupsOwnedBy($user) {
-		$query = "select * from classgroups where owner='$user'";
+	function getGroupsOwnedBy($owner) {
+		$query = "SELECT * FROM user WHERE user_uname = '".$owner."'";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		$owner_id = $a[user_id];
+
+		$query = "SELECT classgroup_name FROM classgroup WHERE FK_owner=$owner_id";
 		$a = array();
 		$r = db_query($query);
 		while ($x = db_fetch_assoc($r)) {
-			$a[] = $x[name];
+			$a[] = $x[classgroup_name];
 		}
 		return $a;
 	}
@@ -105,6 +157,6 @@ class group {
 	}
 	
 	function delete() {
-		db_query("delete from classgroups where name='".$this->name."' and owner='".$this->owner."'");
+		db_query("DELETE FROM classgroup WHERE classgroup_name='".$this->name."'");
 	}	
 }
