@@ -229,7 +229,7 @@ FROM
 /* 			print "<pre>--$field---\n"; */
 /* 			print_r ($this->_datafields[$field][1]); */
 /* 			print "</pre>"; */
-			echo "<br>HERE: ".$field."<br>";
+			//echo "<br>HERE: ".$field."<br>";
 
 			$query = "
 				SELECT 

@@ -237,8 +237,8 @@ class page extends segue {
 		}
 	}
 	
-	function fetchUp() {
-		if (!$this->fetchedup) {
+	function fetchUp($full = 0) {
+		if (!$this->fetchedup || $full) {
 			$this->owningSiteObj =& new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB();
 //			$this->owningSiteObj->buildPermissionsArray(1);
