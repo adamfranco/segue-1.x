@@ -139,6 +139,15 @@ $cfg[defaultlinks] = $defaultlinks = array(
 	"Middlebury College"=>"www.middlebury.edu"
 );
 
+/******************************************************************************
+ * Semester definitions
+ ******************************************************************************/
+
+$_semesters = array("f"=>"Fall",
+					"w"=>"J-term",
+					"s"=>"Spring",
+					"l"=>"LS"
+);
 
 /******************************************************************************
  * 	YOU DO NOT NEED TO EDIT BELOW THIS LINE.... but you may
