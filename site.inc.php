@@ -66,32 +66,35 @@ $page=$thisPage->id;
 $thisSite->fetchDown();			// just in case we haven't already
 
 $i=0;
-foreach ($thisSite->sections as $s=>$o) {
-	if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
-		if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=site";
-		if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
-		$extra = '';
-		$i++;
-		add_link(topnav,$o->getField("title"),$link,$extra,$s,$target);
+if ($thisSite->sections) {
+	foreach ($thisSite->sections as $s=>$o) {
+		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
+			if ($o->getField("type") == 'section') $link = "$PHPSELF?$sid&site=$site&section=$s&action=site";
+			if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
+			$extra = '';
+			$i++;
+			add_link(topnav,$o->getField("title"),$link,$extra,$s,$target);
+		}
 	}
 }
-
 // next, if we have a section, build a list of leftnav items
 if ($thisSection) {
 	$thisSection->fetchDown();	//just in case...
 	$i = 0;
-	foreach ($thisSection->pages as $p=>$o) {
-		$extra = '';
-		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
-			if ($o->getField("type") == 'page')
-				add_link(leftnav,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
-			if ($o->getField("type") == 'url')
-				add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
-			if ($o->getField("type") == 'heading')
-				add_link(leftnav,$o->getField("title"),'',$extra);
-			if ($o->getField("type") == 'divider')
-				add_link(leftnav,'','',$extra);
-			$i++;
+	if ($thisSection->pages) {
+		foreach ($thisSection->pages as $p=>$o) {
+			$extra = '';
+			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
+				if ($o->getField("type") == 'page')
+					add_link(leftnav,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
+				if ($o->getField("type") == 'url')
+					add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
+				if ($o->getField("type") == 'heading')
+					add_link(leftnav,$o->getField("title"),'',$extra);
+				if ($o->getField("type") == 'divider')
+					add_link(leftnav,'','',$extra);
+				$i++;
+			}
 		}
 	}
 }
@@ -108,41 +111,43 @@ if ($thisPage) {
 /* 	if ($pageinfo[storyorder] != 'custom' && $pageinfo[storyorder] != '') */
 /* 		$stories = handlestoryorder($stories,$pageinfo[storyorder]); */
 	
-	foreach ($thisPage->stories as $s=>$o) {
-	
-		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {		
-			if (($thisPage->getField("showcreator") || $thisPage->getField("showdate") || $thisPage->getField("showhr")) && $i!=0) 
-				printc("<hr size='1' noshade style='margin-top: 10px'>");
-			if ($o->getField("category")) {
-				printc("<div class=contentinfo id=contentinfo2 align=right>");
-				printc("Category: <b>".spchars($o->getField("category"))."</b>");
-				printc("</div>");
-			}
-					
-			printc("<div style='margin-bottom: 10px'>");
-			
-			$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
-			//print $incfile; // debug
-			include($incfile);
-
-			if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
-				printc("<div class=contentinfo align=right>");
-				$added = datetime2usdate($o->getField("addedtimestamp"));
-				printc("added");
-				if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
-				if ($thisPage->getField("showdate")) printc(" on $added");
-				if ($o->getField("editedby")) {
-					printc(", edited");
-					if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedby"));
-					if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
+	if ($thisPage->stories) {
+		foreach ($thisPage->stories as $s=>$o) {
+		
+			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {		
+				if (($thisPage->getField("showcreator") || $thisPage->getField("showdate") || $thisPage->getField("showhr")) && $i!=0) 
+					printc("<hr size='1' noshade style='margin-top: 10px'>");
+				if ($o->getField("category")) {
+					printc("<div class=contentinfo id=contentinfo2 align=right>");
+					printc("Category: <b>".spchars($o->getField("category"))."</b>");
+					printc("</div>");
 				}
+						
+				printc("<div style='margin-bottom: 10px'>");
+				
+				$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
+				//print $incfile; // debug
+				include($incfile);
+	
+				if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
+					printc("<div class=contentinfo align=right>");
+					$added = datetime2usdate($o->getField("addedtimestamp"));
+					printc("added");
+					if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
+					if ($thisPage->getField("showdate")) printc(" on $added");
+					if ($o->getField("editedby")) {
+						printc(", edited");
+						if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedby"));
+						if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
+					}
+					printc("</div>");
+					//printc("<hr size='1' noshade><br>");
+				}
+	
 				printc("</div>");
-				//printc("<hr size='1' noshade><br>");
 			}
-
-			printc("</div>");
+			$i++;
 		}
-		$i++;
 	}
 }
 
