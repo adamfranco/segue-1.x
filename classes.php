@@ -280,7 +280,15 @@ include("themes/common/header.inc.php");
 <!-- <body onLoad="document.addform.external_id.focus()"> -->
 <body onLoad="document.searchform.name.focus()">
 
-<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | <a href='users.php?$sid'>add/edit users</a> | add/edit classes | <a href='add_slot.php?$sid'>add/edit slots</a></div>":""?>
+<?=($_SESSION['ltype']=='admin')?
+	"<div align=right>
+		<a href='username_lookup.php?$sid'>user lookup</a> | 
+		<a href='users.php?$sid'>add/edit users</a> | 
+		add/edit classes | 
+		<a href='add_slot.php?$sid'>add/edit slots</a> |
+		<a href='update.php?$sid'>segue updates</a>
+	</div>"
+:""?>
 
 <?=$content?>
 

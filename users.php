@@ -173,7 +173,15 @@ printerr();
 <!-- <body onLoad="document.addform.uname.focus()">  -->
 <body onLoad="document.searchform.name.focus()">
 
-<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | add/edit users | <a href='classes.php?$sid'>add/edit classes</a> | <a href='add_slot.php?$sid'>add/edit slots</a></div>":""?>
+<?=($_SESSION['ltype']=='admin')?
+	"<div align=right>
+		<a href='username_lookup.php?$sid'>user lookup</a> | 
+		add/edit users | 
+		<a href='classes.php?$sid'>add/edit classes</a> | 
+		<a href='add_slot.php?$sid'>add/edit slots</a> |
+		<a href='update.php?$sid'>segue updates</a>
+	</div>"
+:""?>
 
 <?=$content?>
 

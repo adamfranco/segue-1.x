@@ -132,7 +132,15 @@ include("themes/common/header.inc.php");
 <!-- <body onLoad="document.addform.<?=($curraction == 'edit')?"owner":"name"?>.focus()"> -->
 <body onLoad="document.searchform.name.focus()">
 
-<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | <a href='users.php?$sid'>add/edit users</a> | <a href='classes.php?$sid'>add/edit classes</a> | add/edit slots</div>":""?>
+<?=($_SESSION['ltype']=='admin')?
+	"<div align=right>
+		<a href='username_lookup.php?$sid'>user lookup</a> | 
+		<a href='users.php?$sid'>add/edit users</a> | 
+		<a href='classes.php?$sid'>add/edit classes</a> | 
+		add/edit slots |
+		<a href='update.php?$sid'>segue updates</a>
+	</div>"
+:""?>
 
 <?=$content?>
 

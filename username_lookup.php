@@ -38,7 +38,15 @@ if (count($usernames)) {
 
 <? include("themes/common/logs_css.inc.php"); ?>
 
-<?=($_SESSION['ltype']=='admin')?"<div align=right>user lookup | <a href='users.php?$sid'>add/edit users</a> | <a href='classes.php?$sid'>add/edit classes</a> | <a href='add_slot.php?$sid'>add/edit slots</a></div>":""?>
+<?=($_SESSION['ltype']=='admin')?
+	"<div align=right>
+		user lookup | 
+		<a href='users.php?$sid'>add/edit users</a> | 
+		<a href='classes.php?$sid'>add/edit classes</a> | 
+		<a href='add_slot.php?$sid'>add/edit slots</a> |
+		<a href='update.php?$sid'>segue updates</a>
+	</div>"
+:""?>
 
 <table cellspacing=1 width='100%' id='maintable'>
 <tr><td>
