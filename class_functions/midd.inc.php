@@ -12,6 +12,8 @@ function isclass ($class) {
 }
 
 function getuserclasses($user,$time="all") {
+	print "time=$time";
+
 	$user = strtolower($user);
 	global $ldap_voadmin_user, $ldap_voadmin_pass,$ldapserver;
 	$ldap_user = "cn=$ldap_voadmin_user,cn=midd";
@@ -42,18 +44,26 @@ function getuserclasses($user,$time="all") {
 					if (ereg("cn=([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2})",$p,$r)) {
 //						print "goood!";
 						$semester = currentsemester ();
+						print "<pre>";
+						print_r($r);
+						print "</pre>";
 						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
 							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];					
 							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 							$user_id = db_get_value("user","user_id","user_uname = '$user'");
 							$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='$class'");
-							$classinfo = db_get_line("class","class_code='$class'");
+							$classinfo = db_get_line("class","
+										class_department='$r[1]' AND
+										class_number='$r[2]' AND
+										class_section='$r[3]' AND
+										class_semester='$sem' AND
+										class_year='20$r[5]'");
 							
 /* 							print "<pre>"; */
 /* 							print "user_id=$user_id"; */
+							$sem = $classes[$class][sem];
+							$year = $classes[$class][year];
 							if (!$ugroup_id) {
-								$sem = $classes[$class][sem];
-								$year = $classes[$class][year];
 															
 								$query = "
 									INSERT INTO
@@ -73,12 +83,15 @@ function getuserclasses($user,$time="all") {
 									INSERT INTO
 										class
 									SET
-										class_code='$class',
+										class_external_id='$class',
+										class_department='$r[1]',
+										class_number='$r[2]',
+										class_section='$r[3]',
+										class_semester='$sem',
+										class_year='20$r[5]',
 										class_name='',
 										FK_owner=NULL,
-										FK_ugroup=$ugroup_id,
-										class_semester = '$sem', 
-										class_year = $year
+										FK_ugroup=$ugroup_id
 								";
 								db_query($query);
 							}
@@ -102,14 +115,79 @@ function getuserclasses($user,$time="all") {
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						} else if ($time == "future" && ($r[5] == date('y') && semorder($r[4]) > semorder($semester)) || ($r[5] > date('y'))) {
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
-						} else if ($time == "all")
+						} else if ($time == "all") {
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
+						}
 					}
 				}
 			}
 		}
 	}
+	// add in the DB classes
+	$query = "
+		SELECT
+			class_department,
+			class_number,
+			class_section,
+			class_semester,
+			class_year
+		FROM
+			user
+				INNER JOIN
+			ugroup_user
+				ON
+			user_id = FK_user
+				INNER JOIN
+			class
+				ON
+			class.FK_ugroup = ugroup_user.FK_ugroup
+		WHERE
+			user_uname = '$user'
+	";
+	
+/* 	print "<pre>"; print_r($classes); print "</pre>";	 */
 	return $classes;
+}
+
+function generateCourseCode($id) {
+	$query = "
+		SELECT
+			class_department,
+			class_number,
+			class_section,
+			class_semester,
+			class_year
+		FROM
+			class
+		WHERE
+			class_id = $id
+	";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$code = $a[class_department].$a[class_number].$a[class_section]."-".$a[class_semester].substr($a[class_year],2);
+	return $code;
+}
+
+function generateCodeFromData($dept,$number,$section,$semester,$year,$ext_id="",$owner="") {
+	$code = $dept.$number.$section."-".$semester.substr($year,2);
+	return $code;
+}
+
+function generateTermsFromCode($code) {
+	$department = substr($code,0,2);
+	$number = substr($code,2,3);
+	$section = substr($code,5,1);
+	$semester = substr($code,7,1);
+	$year = "20".substr($code,8,2);
+	
+	$terms = "
+		class_department='$department' AND
+		class_number='$number' AND
+		class_section='$section' AND
+		class_semester='$semester' AND
+		class_year='$year'
+	";
+	return $terms;
 }
 
 //This function checks for non-Segue sites (those in web courses database created in course folders)

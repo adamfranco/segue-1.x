@@ -1,7 +1,7 @@
 <? /* $Id$ */
 
 class course {
-	var $id,$code,$name,$semester,$year,$owner,$ugroup,$classgroup;
+	var $id,$code,$external_id,$name,$department,$number,$section,$semester,$year,$owner,$ugroup,$classgroup;
 	
 	function course() {
 		$this->semester = 'f';
@@ -15,12 +15,16 @@ class course {
 	function _fetch() {
 		$query = "
 			SELECT
-				class_code,
+				class_id,
+				class_external_id,
+				class_department,
+				class_number,
+				class_section,
+				class_semester,
+				class_year,
 				class_name,
 				FK_owner,
 				FK_ugroup,
-				class_semester,
-				class_year,
 				FK_classgroup
 			FROM
 				class
@@ -30,8 +34,12 @@ class course {
 			$a = db_fetch_assoc($r);
 		} else return false;
 		
-		$this->code = $a['class_code'];
+		$this->code = generateCourseCode($a['class_id']);
+		$this->external_id = $a['class_external_id'];
 		$this->name = $a['class_name'];
+		$this->department = $a['class_department'];
+		$this->number = $a['class_number'];
+		$this->section = $a['class_section'];
 		$this->semester = $a['class_semester'];
 		$this->year = $a['class_year'];
 		$this->owner = $a['FK_owner'];
@@ -40,8 +48,11 @@ class course {
 	}
 	
 	function _insert() {
-		$data = "class_code='".$this->code."'";
+		$data = "class_external_id='".$this->external_id."'";
 		$data .= ",class_name='".$this->name."'";
+		$data .= ",class_department='".$this->department."'";
+		$data .= ",class_number='".$this->number."'";
+		$data .= ",class_section='".$this->section."'";
 		$data .= ",class_semester='".$this->semester."'";
 		$data .= ",class_year='".$this->year."'";
 		$data .= ",FK_owner='".$this->owner."'";
@@ -77,7 +88,7 @@ class course {
 			FROM
 				class
 			WHERE
-				class_code='$c'";
+				".generateTermsFromCode($c);
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
 		if ($a['count'] != 0) return true;

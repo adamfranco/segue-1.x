@@ -390,11 +390,11 @@ function isgroup ($group) {
 	$r = db_query($query);
 	if (db_num_rows($r)) {
 		$a = db_fetch_assoc($r);
-		$query = "SELECT class_code FROM class INNER JOIN classgroup ON classgroup_id = ".$a[classgroup_id];
+		$query = "SELECT class_id FROM class INNER JOIN classgroup ON classgroup_id = ".$a[classgroup_id];
 		$r = db_query($query);
 		$temp_c = array();
 		while ($a = db_fetch_assoc($r))
-			$temp_c[] = $a[class_code];
+			$temp_c[] = generateCourseCode($a[class_id]);
 		$_isgroup_cache[$group] = true;
 		return $temp_c;
 	}
@@ -412,7 +412,7 @@ function currentsemester () {
 	}elseif (($currmonth>1)&&($currmonth<6)){
 	$semester='s';
 	}elseif (($currmonth>5)&&($currmonth<9)){
-	$semester='ls';
+	$semester='l';
 	}else{
 	$semester='f';
 	}
@@ -422,7 +422,7 @@ function currentsemester () {
 function semorder($semester) {
 	if ($semester == "w") $order = 1;
 	else if ($semester == "s") $order = 2;
-	else if ($semester == "ls")	$order = 3;
+	else if ($semester == "l")	$order = 3;
 	else if ($semester == "f") $order = 4;
 	return $order;
 }
@@ -434,7 +434,7 @@ SELECT
 FROM
 	classgroup
 		INNER JOIN
-	class ON classgroup_id = FK_classgroup AND class_code = '$class'
+	class ON classgroup_id = FK_classgroup AND ".generateTermsFromCode($class)."
 ";
 	$r = db_query($query);
 	if (db_num_rows($r)) { $a = db_fetch_assoc($r); return $a[classgruop_name]; }

@@ -9,6 +9,16 @@ session_start();
 //output a meta tag
 print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
+/* // debug output -- handy :) */
+/* print "<pre>"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
+/* print "</pre>"; */
+
 // include all necessary files
 include("includes.inc.php");
 
@@ -35,52 +45,62 @@ if ($curraction == 'del') {
 // if they want to add a class...
 if ($curraction == 'add') {
 	// check for errors first
-	if (course::courseExists($_REQUEST['code'])) error("A class with that code already exists.");
-	if (!$_REQUEST['code']) error("You must enter a code.");
+	if (course::courseExists(generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year']))) error("A class with that code already exists.");
+	if (!$_REQUEST['department']) error("You must enter a department.");
+	if (!$_REQUEST['number']) error("You must enter a number.");
+	if (!$_REQUEST['semester']) error("You must enter a semester.");
 	if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 	// all good
 	if (!$error) {
-		$owner_id = db_get_value("user","user_id","user_uname='$_REQUEST['owner']'");
+		$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
 		
 		$query = "
 			INSERT INTO
 				ugroup
 			SET
-				ugroup_name = '$_REQUEST[code]',
+				ugroup_name = '".generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'])."',
 				ugroup_type = 'class'
 		";
 		db_query($query);
 		$ugroup_id = lastid();
 		
 		$obj = &new course();
-		$obj->code = $_REQUEST['code'];
-		$obj->name = $_REQUEST['name'];
+		$obj->external_id = $_REQUEST['external_id'];
+		$obj->department = $_REQUEST['department'];
+		$obj->number = $_REQUEST['number'];
+		$obj->section = $_REQUEST['section'];
 		$obj->semester = $_REQUEST['semester'];
 		$obj->year = $_REQUEST['year'];
+		$obj->name = $_REQUEST['name'];
 		$obj->owner = $owner_id;
 		$obj->ugroup = $ugroup_id;
 //		$obj->classgroup = $_REQUEST['classgroup'];
 		$obj->insertDB();
 		
-		unset($_REQUEST['code'],$_REQUEST['name'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
-		$message = "Class '".$obj->code."' added successfully.";
+		unset($_REQUEST['external_id'],$_REQUEST['name'],$_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
+		$message = "Class '".generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'])."' added successfully.";
 	}
 }
 
 // if they're editing a course
 if ($curraction == 'edit') {
 	if ($_REQUEST['commit']==1) {
-		if (!$_REQUEST['code']) error("You must enter a code.");
+		if (!$_REQUEST['department']) error("You must enter a department.");
+		if (!$_REQUEST['number']) error("You must enter a number.");
+		if (!$_REQUEST['semester']) error("You must enter a semester.");
 		if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 		if (!$error) {
 			$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
 			
 			$obj = &new course();
 			$obj->fetchCourseID($_REQUEST['id']);
-			$obj->code = $_REQUEST['code'];
-			$obj->name = $_REQUEST['name'];
+			$obj->external_id = $_REQUEST['external_id'];
+			$obj->department = $_REQUEST['department'];
+			$obj->number = $_REQUEST['number'];
+			$obj->section = $_REQUEST['section'];
 			$obj->semester = $_REQUEST['semester'];
 			$obj->year = $_REQUEST['year'];
+			$obj->name = $_REQUEST['name'];
 			$obj->owner = $owner_id;
 	//		$obj->ugroup = $ugroup_id;
 	//		$obj->classgroup = $_REQUEST['classgroup'];
@@ -90,13 +110,13 @@ if ($curraction == 'edit') {
 				UPDATE
 					ugroup
 				SET
-					ugroup_name='$_REQUEST[code]'
+					ugroup_name='".generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'])."'
 				WHERE
 					ugroup_id='".$obj->ugroup."'
 			";
 			db_query($query);
 			
-			unset($_REQUEST['code'],$_REQUEST['name'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
+			unset($_REQUEST['external_id'],$_REQUEST['name'],$_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
 			$message = "Course '".$obj->code."' updated successfully.";
 		}
 	}
@@ -118,8 +138,11 @@ if ($curraction == 'edit') {
 $query = "
 	SELECT
 		class_id,
-		class_code,
+		class_external_id,
 		class_name,
+		class_department,
+		class_number,
+		class_section,
 		class_semester,
 		class_year,
 		classowner.user_id AS classowner_id,
@@ -143,7 +166,7 @@ $query = "
 			ON
 		FK_ugroup = ugroup_id
 	ORDER BY
-		class_year DESC, class_code ASC";
+		class_year DESC, class_department ASC, class_number ASC, class_section ASC";
 
 $r = db_query($query);
 
@@ -171,7 +194,11 @@ include("themes/common/header.inc.php");
 			<tr>
 			<th>id</th>
 			<th>code</th>
+			<th>external id</th>
 			<th>name</th>
+			<th>department</th>
+			<th>number</th>
+			<th>section</th>
 			<th>semester</th>
 			<th>year</th>
 			<th>owner</th>
@@ -186,8 +213,12 @@ include("themes/common/header.inc.php");
 				else {
 					print "<tr>";
 					print "<td align=center>".$a['class_id']."</td>";
-					print "<td>".$a['class_code']."</td>";
+					print "<td>".generateCourseCode($a['class_id'])."</td>";
+					print "<td>".$a['class_external_id']."</td>";
 					print "<td>".$a['class_name']."</td>";
+					print "<td>".$a['class_department']."</td>";
+					print "<td>".$a['class_number']."</td>";
+					print "<td>".$a['class_section']."</td>";
 					print "<td>".$_semesters[$a['class_semester']]."</td>";
 					print "<td>".$a['class_year']."</td>";
 					print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
@@ -218,8 +249,12 @@ function doUserForm($a,$p='',$e=0) {
 			<form method='post' name='addform'>
 			<tr>
 			<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-			<td><input type=text name='code' size=10 value="<?=$a[$p.'code']?>"></td>
+			<td><?=($e)?generateCourseCode($a['class_id']):""?></td>
+			<td><input type=text name='external_id' size=10 value="<?=$a[$p.'external_id']?>"></td>
 			<td><input type=text name='name' size=20 value="<?=$a[$p.'name']?>"></td>
+			<td><input type=text name='department' size=3 value="<?=$a[$p.'department']?>"></td>
+			<td><input type=text name='number' size=3 value="<?=$a[$p.'number']?>"></td>
+			<td><input type=text name='section' size=1 value="<?=$a[$p.'section']?>"></td>
 			<td><select name=semester>
 				<option<?=($a[$p.'semester']=='f')?" selected":""?> value='f'><?=$_semesters[f]?>
 				<option<?=($a[$p.'semester']=='w')?" selected":""?> value='w'><?=$_semesters[w]?>
@@ -239,4 +274,14 @@ function doUserForm($a,$p='',$e=0) {
 			</form>
 	<?
 }
+
+/* // debug output -- handy :) */
+/* print "<pre>"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
+/* print "</pre>"; */
 ?>

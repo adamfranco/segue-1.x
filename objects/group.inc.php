@@ -54,14 +54,14 @@ FROM
 		} else return false;
 			
 		// get classes for that group<br>
-		$query = "SELECT class_code FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_id=".$this->id;
+		$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_id=".$this->id;
 		echo $query."<br>";
 
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$this->classes=array();
 			while ($a = db_fetch_assoc($r))
-				$this->classes[] = $a[class_code];
+				$this->classes[] = generateCourseCode($a[class_id]);
 		} else return false;
 	}
 	
@@ -99,10 +99,20 @@ FROM
 		
 		// then, set new forign key		
 		if (count($this->classes)>0) {
-			$classes = "'".implode("','",$this->classes)."'";
-			$query = "UPDATE class SET FK_classgroup = ".$this->id." WHERE class_code IN ($classes)";
-			echo $query."<br>";
-			$r = db_query($query);
+//			$classes = "'".implode("','",$this->classes)."'";
+//			$query = "UPDATE class SET FK_classgroup = ".$this->id." WHERE class_code IN ($classes)";
+			foreach ($this->classes as $class_code) {
+				$query = "
+					UPDATE
+						class
+					SET
+						FK_classgroup = ".$this->id."
+					WHERE
+						".generateTermsFromCode($class_code)."
+				";		
+				echo $query."<br>";
+				$r = db_query($query);
+			}
 		}
 	}
 	
@@ -115,19 +125,19 @@ FROM
 	
 	function getClassesFromName($name) {
 		if (group::exists($name)) {
-			$query = "SELECT class_code FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_name='$name'";
+			$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_name='$name'";
 			echo $query."<br>";
 			$r = db_query($query);
 			$classes = array();
 			while ($a = db_fetch_assoc($r))
-				$classes[] = $a[class_code];
+				$classes[] = generateCourseCode($a[class_id]);
 			return $classes;
 		}
 		return false;
 	}
 	
 	function getNameFromClass($class) {
-		$query = "SELECT classgroup_name FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND class_code = '$class'";
+		$query = "SELECT classgroup_name FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND ".generateTermsFromCode($class);
 		echo $query."<br>";
 		$r = db_query($query);
 		if (db_num_rows($r)) {

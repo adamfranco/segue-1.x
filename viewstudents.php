@@ -42,12 +42,16 @@ if ($_REQUEST[user]) $w[]="user2.user_uname like '%$user%'";
 if ($_REQUEST[site]) {
 	$isgroup = ($classlist = group::getClassesFromName($_REQUEST[site]))?1:0;
 	if ($isgroup) {
-		$arg = "(class_code='";
-		$arg .= implode("' or class_code='",$classlist);
-		$arg .= "')";
+		$class_terms = array();
+		foreach ($classlist as $code) {
+			$terms[] = "(".generateTermsFromCode($code).")";
+		}
+		$arg = "(";
+		$arg .= implode(" OR ",$classlist);
+		$arg .= ")";
 		$w[]=$arg;
 	} else {
-		$w[]="class_code like '%$site%'";
+//		$w[]="class_code like '%$site%'";
 	}
 }
 //if ($title) $w[]="title like '%$title%'";
@@ -88,7 +92,7 @@ $query = "
 	SELECT
 		user2.user_fname AS fname,
 		user2.user_uname AS uname,
-		class.class_code AS name,
+		class.class_id AS id,
 		user2.user_type AS type
 	FROM
 		class
@@ -263,7 +267,7 @@ if (db_num_rows($r)) {
         //print "</td>";
         print "<td class=td$color><a href=# onClick=\"selectUser('".$a[uname]."')\"  style='color: #000;'>$a[fname]</a></td>";
         print "<td class=td$color>$a[uname]</td>";
-        print "<td class=td$color><a href=# onClick=\"selectClass('".$a[name]."')\"  style='color: #000;'>$a[name]</a></td>";
+        print "<td class=td$color><a href=# onClick=\"selectClass('".generateCourseCode($a[id])."')\"  style='color: #000;'>".generateCourseCode($a[id])."</a></td>";
         print "<td class=td$color>$a[type]</td>";
         
         /*print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
