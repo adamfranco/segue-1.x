@@ -9,7 +9,7 @@ print "$site_owner is the owner. should be ". db_get_value("sites","addedby","na
 if (in_array($delete_story,$stories) && permission($auser,PAGE,DELETE,$page)) {
 	$a = db_get_line("stories","id=$delete_story");
 	if ($a[type] != 'story') {
-		deleteuserfile($delete_story,urldecode($a[longertext]));
+//		deleteuserfile($delete_story,urldecode($a[longertext]));
 	}
 	$query = "delete from stories where id=$delete_story";
 	db_query($query);
