@@ -9,7 +9,7 @@ $sitesprinted=array();
 /******************************************************************************
  * handle site copy
  ******************************************************************************/
-if ($copysite) {
+if ($copysite && $newname && $origname) {
 	$origSite = new site($origname);
 	$origSite->fetchDown(1);
 /* 	print "Move: $origname to $newname  <br> <pre>"; */
@@ -348,7 +348,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 	
 	if ($isgroup) {
 		$list = implode(", ",$classlist);
- 		printc("<div style='padding-left: 20px; font-size: 10px;'>  this is a group and contains the following classes: <b>$list</b><br></div>");
+ 		printc("<div style='padding-left: 20px; font-size: 10px;'>
 	}
 	if ($exists) {
 		$addedby = $obj->getField("addedby");
@@ -356,7 +356,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 		$added = datetime2usdate($obj->getField("addedtimestamp"));
 		$edited = $obj->getField("editedtimestamp");
 		$editedby = $obj->getField("editedby");
-		printc("<div style='padding-left: 20px; font-size: 10px;'>  added by $addedby on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"")."<br></div>");
+		printc("<div style='padding-left: 20px; font-size: 10px;'>
 		
 		if ($obj->getField("activatedate") != '0000-00-00' || $obj->getField("deactivatedate") != '0000-00-00') {
 			printc("<div style='padding-left: 20px; font-size: 10px;'>available: ");
@@ -373,7 +373,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 		printc("<div align=left>");
 	
 		$addr = "$_full_uri/sites/$name";
-		printc("<div style='padding-left: 20px; font-size: 12px;'>  URL: <a href='$addr' target='_blank'>$addr</a><br></div></div>");
+		printc("<div style='padding-left: 20px; font-size: 12px;'>
 		
 		printc("<div align=right>");
 				
