@@ -4,10 +4,6 @@
 
 //var theme = document.addform.theme.value;
 
-function submitForm() {
-	document.addform.submit();	
-}
-
 function selectTheme(row) {
 	document.addform.themesettings.value = "";
 	if (row > 1) {
@@ -76,6 +72,7 @@ function doThemeSettings() {
 <? // add_site_form_2_theme.inc -- the form that people use to add/edit a site
 
 printc("<form action='$PHP_SELF?$sid&action=".(($_SESSION[settings][add])?"add_site":"edit_site")."' method=post name=addform>");
+printc("<input type=hidden name='step'>");
 
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");

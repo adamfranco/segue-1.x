@@ -22,9 +22,12 @@ function typeChange() {
 }
 
 function submitForm() {
-//	document.forms[0].submit();
-//	document.forms['addform'].submit();
-	document.addform.submit();	// IE for Mac does not like this reference.
+	document.addform.submit();
+}
+
+function submitFormLink(step) {
+	document.addform.step.value = step;
+	document.addform.submit();
 }
 
 function delEditor(n) {

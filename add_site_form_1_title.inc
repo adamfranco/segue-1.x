@@ -1,17 +1,7 @@
-<script lang="JavaScript">
-
-function submitForm() {
-//	document.forms[0].submit();
-//	document.forms['addform'].submit();
-	document.addform.submit();	// IE for Mac does not like this reference.
-}
-
-</script>
-
-
 <? // add_site_form_1_title.inc -- the form that people use to add/edit a site
 
 printc("<form action='$PHP_SELF?$sid&action=".(($_SESSION[settings][add])?"add_site":"edit_site")."' method=post name=addform>");
+printc("<input type=hidden name='step'>");
 
 printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");
 printc("<table width=100%><tr><td width=50%>");

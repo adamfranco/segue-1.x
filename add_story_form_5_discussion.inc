@@ -1,6 +1,7 @@
 <? /* $Id$ */
 
 printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
+printc("<input type=hidden name='step'>");
 
 //printc("<input type=hidden name=site value='$_SESSION[settings][site]'>");
 //printc("<input type=hidden name=section value=$_SESSION[settings][section]>");

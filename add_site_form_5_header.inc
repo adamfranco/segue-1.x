@@ -1,10 +1,5 @@
 <? /* $Id$ */ ?>
 <script lang="JavaScript">
-//var theme = document.addform.theme.value;
-
-function submitForm() {
-	document.addform.submit();	
-}
 
 function doHeaderFooterWin() {	
 // This is not currently implemented. It is just an attempt at printing a preview.  
@@ -25,6 +20,7 @@ function doHeaderFooterWin() {
 <? // add_site_form_5_header.inc -- the form that people use to add/edit a site
 
 printc("<form action='$PHP_SELF?$sid&action=".(($_SESSION[settings][add])?"add_site":"edit_site")."' method=post name=addform>");
+printc("<input type=hidden name='step'>");
 
 // --- buttons ---
 printc("<table width=100%><tr><td width=50%>");

@@ -2,10 +2,6 @@
 <script lang="JavaScript">
 //var theme = document.addform.theme.value;
 
-function submitForm() {
-	document.addform.submit();	
-}
-
 function selectRow(row) {
 	if (row > 1) {
 		action = document.addform.action;

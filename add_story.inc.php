@@ -189,7 +189,7 @@ $leftlinks = "_________________<br><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=1&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href='#' onClick=\"submitFormLink(1)\">";
 $leftlinks .= "Content";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
@@ -198,7 +198,7 @@ if ($_SESSION[storyObj]->getField("type") == "story") {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=2&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href='#' onClick=\"submitFormLink(2)\">";
 	$leftlinks .= "Extended Content";
 	if ($_SESSION[settings][step] != 2) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
@@ -208,29 +208,19 @@ if (1) {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 3) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=3&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href='#' onClick=\"submitFormLink(3)\">";
 	$leftlinks .= "Activation & Category";
 	if ($_SESSION[settings][step] != 3) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-if ($_SESSION[auser] == $site_owner) {
+if ($_SESSION[storyObj]->getField("type") == "story" && ($thisPage->getField("ediscussion") || $_SESSION[auser] == $site_owner)) {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=4&link=1 onClick=\"submitForm()\">";
-	$leftlinks .= "Permissions";
-	if ($_SESSION[settings][step] != 4) $leftlinks .= "</a>";
-	$leftlinks .= "</td></tr>";
-}
-
-if ($_SESSION[storyObj]->getField("type") == "story" && ($thisPage->getField("ediscussion") || $_SESSION[auser] == $site_owner)) {
-	$leftlinks .= "<tr><td>";
-	if ($_SESSION[settings][step] == 5) $leftlinks .= "&rArr; ";
-	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=5&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href='#' onClick=\"submitFormLink(4)\">";
 	$leftlinks .= "Discussion";
-	if ($_SESSION[settings][step] != 5) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 4) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
@@ -248,9 +238,6 @@ if ($_SESSION[settings][step] == 3) {
 	include("add_story_form_3_activation.inc");
 }
 if ($_SESSION[settings][step] == 4) {
-	include("add_story_form_4_permissions.inc");
-}
-if ($_SESSION[settings][step] == 5) {
 	include("add_story_form_5_discussion.inc");
 }
 

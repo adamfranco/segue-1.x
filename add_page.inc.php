@@ -197,7 +197,7 @@ $leftlinks = "_________________<br><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_page&step=1&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href='#' onClick=\"submitFormLink(1)\">";
 $leftlinks .= "Item";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
@@ -206,29 +206,19 @@ if ($_SESSION[pageObj]->getField("type") == "page" || $_SESSION[pageObj]->getFie
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_page&step=2&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href='#' onClick=\"submitFormLink(2)\">";
 	$leftlinks .= "Activation";
 	if ($_SESSION[settings][step] != 2) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-if ($_SESSION[pageObj]->getField("type") == "page" && $_SESSION[auser] == $site_owner) {
+if ($_SESSION[pageObj]->getField("type") == "page") {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 3) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_page&step=3&link=1 onClick=\"submitForm()\">";
-	$leftlinks .= "Editing Permissions";
-	if ($_SESSION[settings][step] != 3) $leftlinks .= "</a>";
-	$leftlinks .= "</td></tr>";
-}
-
-if ($_SESSION[pageObj]->getField("type") == "page") {
-	$leftlinks .= "<tr><td>";
-	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
-	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_page&step=4&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href='#' onClick=\"submitFormLink(3)\">";
 	$leftlinks .= "Display Options";
-	if ($_SESSION[settings][step] != 4) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
@@ -243,9 +233,6 @@ if ($_SESSION[settings][step] == 2) {
 	include("add_page_form_2_activation.inc");
 }
 if ($_SESSION[settings][step] == 3) {
-	include("add_page_form_3_permissions.inc");
-}
-if ($_SESSION[settings][step] == 4) {
 	include("add_page_form_4_show.inc");
 }
 

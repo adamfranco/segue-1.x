@@ -84,7 +84,7 @@ if (!$error) {
 	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] - 1;
 	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] + 1; 
 }
-if ($_REQUEST[step] != "") $_SESSION[settings][step] = $_REQUEST[step];
+if ($_REQUEST[step] != "" && $_REQUEST[step]) $_SESSION[settings][step] = $_REQUEST[step];
 
 
 if ($_SESSION[settings][add]) $pagetitle="Add Site";
@@ -170,44 +170,37 @@ $leftlinks = "________________<br><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "<span class=editnote>&rArr;</span>";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=1&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 1) $leftlinks .= "<a href='#' onClick=\"submitFormLink(1)\">";
 $leftlinks .= "Title & Availability";
 if ($_SESSION[settings][step] != 1 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 2) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=2&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 2) $leftlinks .= "<a href='#' onClick=\"submitFormLink(2)\">";
 $leftlinks .= "Appearance";
 if ($_SESSION[settings][step] != 2 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 if ($_SESSION[settings][add]) $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 3 && $_SESSION[settings][add]) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=3&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 3) $leftlinks .= "<a href='#' onClick=\"submitFormLink(3)\">";
 if ($_SESSION[settings][add]) $leftlinks .= "Template";
 if ($_SESSION[settings][step] != 3 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 4) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=4&link=1 onClick=\"submitForm()\">";
-$leftlinks .= "Editing Permissions";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 4) $leftlinks .= "<a href='#' onClick=\"submitFormLink(4)\">";
+$leftlinks .= "Custom Header";
 if ($_SESSION[settings][step] != 4 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 5) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=5&link=1 onClick=\"submitForm()\">";
-$leftlinks .= "Custom Header";
-if ($_SESSION[settings][step] != 5 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
-
-$leftlinks .= "</td></tr><tr><td>";
-if ($_SESSION[settings][step] == 6) $leftlinks .= "<span class=editnote>&rArr;</span> ";
-$leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 6) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=6&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 5) $leftlinks .= "<a href='#' onClick=\"submitFormLink(5)\">";
 $leftlinks .= "Custom Footer";
-if ($_SESSION[settings][step] != 6 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
+if ($_SESSION[settings][step] != 5 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr></table>________________<br><a href=$PHP_SELF?$sid&action=add_site&cancel=1>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
@@ -222,13 +215,8 @@ if ($_SESSION[settings][step] == 3) {
 	if ($_SESSION[settings][add]) include("add_site_form_3_template.inc");
 }
 if ($_SESSION[settings][step] == 4) {
-	include("add_site_form_4_permissions.inc");
-}
-if ($_SESSION[settings][step] == 5) {
 	include("add_site_form_5_header.inc");
 }
-if ($_SESSION[settings][step] == 6) {
+if ($_SESSION[settings][step] == 5) {
 	include("add_site_form_6_footer.inc");	
 }
-
-

@@ -195,7 +195,7 @@ $leftlinks = "_________________<br><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_section&step=1&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href='#' onClick=\"submitFormLink(1)\">";
 $leftlinks .= "Item";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
@@ -204,19 +204,9 @@ if ($_SESSION[sectionObj]->getField("type") == "section" || $_SESSION[sectionObj
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_section&step=2&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href='#' onClick=\"submitFormLink(2)\">";
 	$leftlinks .= "Activation";
 	if ($_SESSION[settings][step] != 2) $leftlinks .= "</a>";
-	$leftlinks .= "</td></tr>";
-}
-
-if ($_SESSION[sectionObj]->getField("type")== "section" && $_SESSION[auser] == $site_owner) {
-	$leftlinks .= "<tr><td>";
-	if ($_SESSION[settings][step] == 3) $leftlinks .= "&rArr; ";
-	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_section&step=3&link=1 onClick=\"submitForm()\">";
-	$leftlinks .= "Editing Permissions";
-	if ($_SESSION[settings][step] != 3) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
@@ -229,9 +219,6 @@ if ($_SESSION[settings][step] == 1) {
 }
 if ($_SESSION[settings][step] == 2) {
 	include("add_section_form_2_activation.inc");
-}
-if ($_SESSION[settings][step] == 3) {
-	include("add_section_form_3_permissions.inc");
 }
 
 // End of New Code
