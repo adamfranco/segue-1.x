@@ -145,7 +145,7 @@ do {
 	if ($thisPage) {
 		$thisPage->fetchDown();
 		if ($thisPage->hasPermissionDown("view"))
-			printc("<b>".$thisPage->getField("title")."</b>");
+			printc("<div class='title'>".$thisPage->getField("title")."</div>");
 			
 		$i=0;
 		// handle archiving -- monthly, weekly, etc
