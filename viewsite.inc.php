@@ -93,8 +93,14 @@ $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$env
 $i=0;
 if ($thisSite->sections) {
 	foreach ($thisSite->sections as $id=>$s) {
-		if ($s->getField("type") == 'section') $link = "$PHP_SELF?$sid&site=$site&section=$id&action=viewsite";
-		if ($s->getField("type") == 'url') { $link = $s->getField("url"); $target="_blank";}
+		if ($s->getField("type") == 'section') {
+			$link = "$PHP_SELF?$sid&site=$site&section=$id&action=viewsite";
+			$target = "";
+		}
+		if ($s->getField("type") == 'url') { 
+			$link = $s->getField("url"); 
+			$target="_blank";
+		}
 		$extra = '';
 		if (($section == $id) || ($s->getField("type") == 'url')) {
 			if ($thisSite->hasPermission("edit")) {
