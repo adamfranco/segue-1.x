@@ -80,7 +80,9 @@ input {
 }
 
 </style>
+<body onload="document.lookup.n.focus()">
 <form action="<? echo $PHP_SELF ?>" method=get name='lookup'>
+
 <table cellspacing=1 width='100%'>
 
 <tr>
@@ -123,7 +125,7 @@ if (count($usernames)) {
 ?>
 </table>
 
-<input type=hidden name="comingfrom" value="<? echo $comingfrom ?>">
+<input type=hidden name="comingfrom" value="<? echo $_REQUEST[comingfrom] ?>">
 </form>
 <div align=right>
 <!-- <input type=button value='Add Editor' onClick='addEditor()'> -->
@@ -132,11 +134,11 @@ if (count($usernames)) {
 <?
 
 // debug output -- handy :)
-/* print "<pre>"; */
-/* print "request:\n"; */
-/* print_r($_REQUEST); */
+print "<pre>";
+print "request:\n";
+print_r($_REQUEST);
 /* print "\n\n"; */
 /* print "session:\n"; */
 /* print_r($_SESSION); */
 /* print "\n\n";  */
-/* print "</pre>"; */
+print "</pre>";
