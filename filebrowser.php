@@ -41,10 +41,10 @@ if ($upload) {
 	$query = "select * from media where site_id='".(($site)?"$site":"$settings[site]")."'"; 
 //	print "$query <br>"; 
 	$r = db_query($query); 
-	$filename = $_FILES[file][name]; 
+	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	$nameUsed = 0; 
 	while ($a = db_fetch_assoc($r)) { 
-		if ($a[name] == $_FILES['file']['name']) $nameUsed = 1; 
+		if ($a[name] == $filename) $nameUsed = 1; 
 	} 
 	if ($_FILES['file']['tmp_name'] == 'none') { 
 		$upload_results = "<li>No file selected"; 

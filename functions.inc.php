@@ -83,7 +83,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	
 	$userdir = "$uploaddir/$site";
 	
-	$name = $file['name'];
+	$name = ereg_replace("[\x27\x22]",'',stripslashes(trim($file['name'])));
 	$extn = explode(".",$name);
 	$last = count($extn)-1;
 	$extn = strtolower($extn[$last]);
@@ -105,16 +105,16 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		chmod($userdir,0775); 
 	}
 	if ($allreadyuploaded) {
-		$r = copy($file[tmp_name],"$userdir/".$file[name]);
+		$r = copy($file[tmp_name],"$userdir/".$name);
 	} else {
 //		print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>";
-		$r=move_uploaded_file($file['tmp_name'],"$userdir/".$file['name']);
+		$r=move_uploaded_file($file['tmp_name'],"$userdir/".$name);
 	}
 	if (!$r) {
 		print "Upload file error!<br>";
 		return "ERROR";
 	} else if ($replace) {
-		$size = filesize($userdir."/".$file['name']);
+		$size = filesize($userdir."/".$name);
 		$query = "update media set addedtimestamp=NOW(),addedby='$auser',size='$size' where id='$replace_id'";
 		print $query."<br>";
 		db_query($query);
@@ -123,8 +123,8 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		$media_id = $replace_id;
 		return $media_id;
 	} else {
-		$size = filesize($userdir."/".$file['name']);
-		$query = "insert into media set name='$file[name]',site_id='$site',addedtimestamp=NOW(),addedby='$auser',type='$type',size='$size'";
+		$size = filesize($userdir."/".$name);
+		$query = "insert into media set name='$name',site_id='$site',addedtimestamp=NOW(),addedby='$auser',type='$type',size='$size'";
 //		print $query."<br>";
 		db_query($query);
 //		print mysql_error()."<br>";
