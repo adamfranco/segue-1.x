@@ -127,6 +127,8 @@ function _auth_check_db($x,$add_to_db=0) {
 	// check to see if the user is already in the db... if not, add their info (if add_to_db is set)
 	// $x is an array that contains user info
 	// $x[user] and $x[method] must be set
+	global $dbuser,$dbhost,$dbpass,$dbdb;
+	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 	$query = "select * from users where uname='".$x[user]."' and status='".$x[method]."'";
 	$r = db_query($query);
 	if (db_num_rows($r)) {		// they have an entry already -- pull down their info

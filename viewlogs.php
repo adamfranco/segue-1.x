@@ -8,16 +8,8 @@ session_start();
 //output a meta tag
 print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
-include("functions.inc.php");
-include("dbwrapper.inc.php");
-include("config.inc.php");
-include("error.inc.php");
-include("themes/themeslist.inc.php");
-include("dates.inc.php");
-
-include("authentication.inc.php");
-
-include("permissions.inc.php");
+// include all necessary files
+include("includes.inc.php");
 
 //if ($ltype != 'admin') exit;
 

@@ -6,16 +6,8 @@ $content = '';
 ob_start();
 session_start();
 
-include("functions.inc.php");
-include("dbwrapper.inc.php");
-include("config.inc.php");
-include("error.inc.php");
-include("themes/themeslist.inc.php");
-include("dates.inc.php");
-
-include("authentication.inc.php");
-
-include("permissions.inc.php");
+// include all necessary files
+include("includes.inc.php");
 
 include("$themesdir/common/header.inc.php");
 

@@ -10,7 +10,7 @@ function _valid_pam($name,$pass,$admin_auser=0) {
 		$x[user] = $name;
 		$x[pass] = $pass;
 		$x[type] = "stud";
-		$x[email] = $name . $pam_email_suffix;
+		$x[email] = $name . '@' . $pam_email_suffix;
 		$x[method] = 'pam';
 		if ($_network == 'kenyon') {	
 			db_connect($supdbhost, $supdbuser, $supdbpass, $supdbdb);
