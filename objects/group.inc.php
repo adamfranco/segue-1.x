@@ -63,6 +63,8 @@ FROM
 			while ($a = db_fetch_assoc($r))
 				$this->classes[] = generateCourseCode($a[class_id]);
 		} else return false;
+		
+		return true;
 	}
 	
 	function updateDB() {

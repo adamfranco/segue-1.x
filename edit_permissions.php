@@ -81,7 +81,14 @@ if ($_REQUEST[savechanges]) {
  * Editor Actions:
  ******************************************************************************/
 if ($isOwner && $_REQUEST[edaction] == 'add') {
-	$_SESSION[obj]->addEditor($_REQUEST[edname]);
+	if (isgroup($_REQUEST[edname])) {
+		$classes = group::getClassesFromName($_REQUEST[edname]);
+		foreach ($classes as $class) {
+			$_SESSION[obj]->addEditor($class);
+		}
+	} else {
+		$_SESSION[obj]->addEditor($_REQUEST[edname]);
+	}
 }
 
 if ($isOwner && $_REQUEST[edaction] == 'del') {

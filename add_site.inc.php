@@ -25,12 +25,26 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 		$_SESSION[settings][viewpermissions] = "";
 	}
 	if ($_REQUEST[viewpermissions] == "class") {
-		if (!$_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name"))) {
-			$_SESSION[siteObj]->addEditor($_SESSION[siteObj]->getField("name"));
+		if (isgroup($_SESSION[siteObj]->getField("name"))) {
+//			print "<br>".$_SESSION[siteObj]->getField("name")."is a classgroup";
+			$classes = group::getClassesFromName($_SESSION[siteObj]->getField("name"));
+//			print "<br>Classes contained:<pre>"; print_r($classes); print "</pre>";
+			foreach ($classes as $class) {
+				if (!$_SESSION[siteObj]->isEditor($class)) {
+					$_SESSION[siteObj]->addEditor($class);
+//					print "<br>Adding $class as editor";
+				}
+				$_SESSION[siteObj]->setUserPermissionDown("view",$class,"1");
+//				print "<br>Setting 1 view permission for $class";
+			}		
+		} else {
+			if (!$_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name"))) {
+				$_SESSION[siteObj]->addEditor($_SESSION[siteObj]->getField("name"));
+			}
+			$_SESSION[siteObj]->setUserPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1");
 		}
 		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","0");
 		$_SESSION[siteObj]->setUserPermissionDown("view","institute","0");
-		$_SESSION[siteObj]->setUserPermissionDown("view",$_SESSION[siteObj]->getField("name"),"1");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
