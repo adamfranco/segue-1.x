@@ -99,11 +99,11 @@ printerr();
 
 <html>
 <head>
-<title>Users</title>
+<title>Classes</title>
 <? include("themes/common/logs_css.inc.php"); ?>
 </head>
 
-<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | add/edit users | <a href='classes.php?$sid'>add/edit classes</a></div>":""?>
+<?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | <a href='users.php?$sid'>add/edit users</a> | add/edit classes</div>":""?>
 
 <?=$content?>
 

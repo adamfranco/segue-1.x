@@ -42,17 +42,58 @@ function getuserclasses($user,$time="all") {
 						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
 							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];					
 							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
+							$user_id = db_get_value("user","user_id","user_uname = '$user'");
+							$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='$class'");
 							$classinfo = db_get_line("class","class_code='$class'");
-							if (!$classinfo) {
-								$query = "SELECT user_id FROM user WHERE user_uname = '$user'";
-								$r = db_query($query);
-								$a = db_fetch_assoc($r);
-								$user_id = $a[user_id];
+							
+/* 							print "<pre>"; */
+/* 							print "user_id=$user_id"; */
+							if (!$ugroup_id) {
 								$sem = $classes[$class][sem];
 								$year = $classes[$class][year];
-								$query = "insert into class set class_code='$class', FK_owner=$user_id, class_semester = '$sem', class_year = $year";
+															
+								$query = "
+									INSERT INTO
+										ugroup
+									SET
+										ugroup_name = '$class',
+										ugroup_type = 'class'
+								";
 								db_query($query);
-							}	
+								$ugroup_id = lastid();
+							}
+							
+/* 							print "classinfo"; */
+/* 							print_r($classinfo); */
+							if (!$classinfo) {		
+								$query = "
+									INSERT INTO
+										class
+									SET
+										class_code='$class',
+										class_name='',
+										FK_owner=NULL,
+										FK_ugroup=$ugroup_id,
+										class_semester = '$sem', 
+										class_year = $year
+								";
+								db_query($query);
+							}
+							
+							$ugroup_userinfo = db_get_line("ugroup_user","FK_ugroup=$ugroup_id AND FK_user=$user_id");
+/* 							print "ugroup_userinfo"; */
+/* 							print_r($ugroup_userinfo); */
+/* 							print "</pre>"; */
+							if (!$ugroup_userinfo) {
+								$query = "
+									INSERT INTO
+										ugroup_user
+									SET
+										FK_ugroup = $ugroup_id,
+										FK_user = $user_id
+								";
+								db_query($query);
+							}
 							
 						} else if ($time == "past" && ($r[5] < date('y') || semorder($r[4]) < semorder($semester))) {
 							$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
