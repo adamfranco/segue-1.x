@@ -114,7 +114,7 @@ if ($_REQUEST[n]) {
 if (isset($_REQUEST[name])) {
 	//printpre($name);
 	$class_external_id = $_REQUEST[name];
-	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_external_id'");
+	$ugroup_id = getClassUGroupId($class_external_id);
 	$site = $class_external_id;
 	$_REQUEST[ugroup_id] = $ugroup_id;
 	$participants = getclassstudents($class_external_id);

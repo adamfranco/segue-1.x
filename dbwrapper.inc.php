@@ -237,7 +237,6 @@ function db_fetch_assoc($res) {
 	  		printError("db_fetch_assoc(): Resource, '$res', is not a valid resource.");
   			return FALSE;
   		} else {
-  			print "\n<br />db_fetch_assoc(): Resource, '$res', is not a valid resource. Enable debug mode for backtrace.";
 			return FALSE;
   		}
   }

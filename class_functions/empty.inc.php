@@ -27,14 +27,15 @@ function isclass ($class) {
  ******************************************************************************/
 
 function getclassstudents($class_id) {
-	global $cfg;
+	global $cfg, $debug;
 	
 	/******************************************************************************
 	 * DB Class info: queries ugroup_user table for all users who are part
 	 * of the $class_id group
  	******************************************************************************/
 
-	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_id'");
+	$ugroup_id = getClassUGroupId($class_id);
+		
 	$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
 	$db_participants = array();
 	$external_memberlist_participants = array();

@@ -36,7 +36,8 @@ function getclassstudents($class_id) {
 	 * of the $class_id group
  	******************************************************************************/
 
-	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_id'");
+	$ugroup_id = getClassUGroupId($class_id);
+		
 	$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
 	$db_participants = array();
 	$external_memberlist_participants = array();
