@@ -228,7 +228,7 @@ function doUserForm($a,$p='',$e=0) {
 			<td align=center>
 			<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
 			<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-			<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add class"?></a>
+			<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add class"?></a> | <a href='classes.php'>cancel</a>
 			</td>
 			</tr>
 			</form>

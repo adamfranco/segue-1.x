@@ -132,9 +132,9 @@ printerr();
 					print "<td>".$a['user_email']."</td>";
 					print "<td>".$a['user_type']."</td>";
 					print "<td align=center><nobr>";
-					print "<a href='users.php?$sid&action=del&id=".$a['user_id']."'>[del]</a>\n";
-					print "<a href='users.php?$sid&action=edit&id=".$a['user_id']."'>[edit]</a>\n";
-					print "<a href='users.php?$sid&action=resetpw&id=".$a['user_id']."'>[reset pwd]</a>\n";
+					print "<a href='users.php?$sid&action=del&id=".$a['user_id']."'>del</a> | \n";
+					print "<a href='users.php?$sid&action=edit&id=".$a['user_id']."'>edit</a> | \n";
+					print "<a href='users.php?$sid&action=resetpw&id=".$a['user_id']."'>reset pwd</a>\n";
 					print "</nobr></td>";
 					print "</tr>";
 				}
@@ -169,7 +169,7 @@ function doUserForm($a,$p='',$e=0) {
 			<td align=center>
 			<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
 			<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-			<a href='#' onClick='document.addform.submit()'>[<?=($e)?"update":"add user"?>]</a>
+			<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add user"?></a> | <a href='users.php'>cancel</a>
 			</td>
 			</tr>
 			</form>
