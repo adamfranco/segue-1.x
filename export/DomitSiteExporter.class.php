@@ -29,29 +29,35 @@ class DomitSiteExporter {
 		$this->_document =& new DOMIT_Document();
 		$this->_document->xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" '.'?'.'>';
 		$doctype = "<!DOCTYPE site [";
-		$doctype .= "\n\t<!ELEMENT site (title,permissions,(section|navlink)*)>";
+		$doctype .= "\n\t<!ELEMENT site (title,history,permissions,(section|navlink)*)>";
 		$doctype .= "\n\t<!ATTLIST site id CDATA #REQUIRED owner CDATA #REQUIRED type (system|class|personal|other) #REQUIRED>";
  		
- 		$doctype .= "\n\t<!ELEMENT section (title,permissions,(page|navlink|heading|divider)*)>";
-		$doctype .= "\n\t<!ELEMENT page (title,permissions,(story|link|image|file)*)>";
-		$doctype .= "\n\t<!ELEMENT story (title,permissions,shorttext,longtext?,discussion?)>";
-		$doctype .= "\n\t<!ELEMENT navlink (title,permissions,url)>";
-		$doctype .= "\n\t<!ELEMENT heading (title,permissions)>";
-		$doctype .= "\n\t<!ELEMENT divider (permissions)>";
-		$doctype .= "\n\t<!ELEMENT link (title,permissions,description,url)>";
-		$doctype .= "\n\t<!ELEMENT image (title,permissions,description,(filename|url))>";
-		$doctype .= "\n\t<!ELEMENT file (title,permissions,description,(filename|url))>";
+ 		$doctype .= "\n\t<!ELEMENT section (title,history,permissions,(page|navlink|heading|divider)*)>";
+		$doctype .= "\n\t<!ELEMENT page (title,history,permissions,(story|link|image|file)*)>";
+		$doctype .= "\n\t<!ELEMENT story (title,history,permissions,shorttext,longtext?,discussion?)>";
+		$doctype .= "\n\t<!ELEMENT navlink (title,history,permissions,url)>";
+		$doctype .= "\n\t<!ELEMENT heading (title,history,permissions)>";
+		$doctype .= "\n\t<!ELEMENT divider (history,permissions)>";
+		$doctype .= "\n\t<!ELEMENT link (title,history,permissions,description,url)>";
+		$doctype .= "\n\t<!ELEMENT image (title,history,permissions,description,(filename|url))>";
+		$doctype .= "\n\t<!ELEMENT file (title,history,permissions,description,(filename|url))>";
 		
 		$doctype .= "\n\t<!ELEMENT discussion (discussion_node*)>";
 		$doctype .= "\n\t<!ELEMENT discussion_node (creator,created_time,title,text,(discussion_node*))>";
 		
-		$doctype .= "\n\t<!ELEMENT permissions EMPTY>";
-//		$doctype .= "\n\t<!ELEMENT permissions (creator,created_time,last_editor,last_edited_time,view_permission,add_permission,edit_permission,delete_permission,discuss_permission)>";
+		$doctype .= "\n\t<!ELEMENT history (creator,created_time,last_editor,last_edited_time)>";
+		$doctype .= "\n\t<!ELEMENT created_time (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT last_edited_time (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT creator (#PCDATA)>";
+		$doctype .= "\n\t<!ELEMENT last_editor (#PCDATA)>";
+		
+		$doctype .= "\n\t<!ELEMENT permissions ((view_permission)?,(add_permission)?,(edit_permission)?,(delete_permission)?,(discuss_permission)?)>";
 		$doctype .= "\n\t<!ELEMENT view_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT add_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT edit_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT delete_permission (agent*)>";
 		$doctype .= "\n\t<!ELEMENT discuss_permission (agent*)>";
+		$doctype .= "\n\t<!ELEMENT agent (#PCDATA)>";
 		
 		$doctype .= "\n\t<!ELEMENT title (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT text (#PCDATA)>";
@@ -60,13 +66,6 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ELEMENT filename (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT url (#PCDATA)>";
 		$doctype .= "\n\t<!ELEMENT description (#PCDATA)>";
-		
-		$doctype .= "\n\t<!ELEMENT created_time (#PCDATA)>";
-		$doctype .= "\n\t<!ELEMENT last_edited_time (#PCDATA)>";
-		
-		$doctype .= "\n\t<!ELEMENT agent (#PCDATA)>";
-		$doctype .= "\n\t<!ELEMENT creator (#PCDATA)>";
-		$doctype .= "\n\t<!ELEMENT last_editor (#PCDATA)>";
 		
 		$doctype .= "\n]>";
 		
@@ -87,6 +86,9 @@ class DomitSiteExporter {
 	 * @param integer $indent The indent level of the object
 	 */
 	function addSite(& $site) {
+		// Add flags for when to add permissions rows
+		$site->spiderDownLockedFlag();	
+		
 		$siteElement =& $this->_document->createElement('site');
 		$this->_document->appendChild($siteElement);
 		
@@ -99,6 +101,11 @@ class DomitSiteExporter {
 		$title =& $this->_document->createElement('title');
 		$siteElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($site->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$siteElement->appendChild($history);
+		$this->gethistory($site, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -127,9 +134,15 @@ class DomitSiteExporter {
 		$sectionElement =& $this->_document->createElement('section');
 		$siteElement->appendChild($sectionElement);
 		
+		// title
 		$title =& $this->_document->createElement('title');
 		$sectionElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($section->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$sectionElement->appendChild($history);
+		$this->gethistory($section, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -158,9 +171,15 @@ class DomitSiteExporter {
 		$pageElement =& $this->_document->createElement('page');
 		$sectionElement->appendChild($pageElement);
 		
+		// title
 		$title =& $this->_document->createElement('title');
 		$pageElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($page->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$pageElement->appendChild($history);
+		$this->gethistory($page, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -190,9 +209,15 @@ class DomitSiteExporter {
 		$storyElement =& $this->_document->createElement('story');
 		$pageElement->appendChild($storyElement);
 		
+		// title
 		$title =& $this->_document->createElement('title');
 		$storyElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$storyElement->appendChild($history);
+		$this->gethistory($story, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -222,9 +247,15 @@ class DomitSiteExporter {
 		$linkElement =& $this->_document->createElement('navlink');
 		$parentElement->appendChild($linkElement);
 		
+		// title
 		$title =& $this->_document->createElement('title');
 		$linkElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($link->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$linkElement->appendChild($history);
+		$this->gethistory($link, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -247,9 +278,15 @@ class DomitSiteExporter {
 		$headingElement =& $this->_document->createElement('heading');
 		$parentElement->appendChild($headingElement);
 		
+		// title
 		$title =& $this->_document->createElement('title');
 		$headingElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($heading->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$headingElement->appendChild($history);
+		$this->gethistory($heading, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -266,6 +303,11 @@ class DomitSiteExporter {
 	function addDivider(& $divider, & $parentElement) {
 		$dividerElement =& $this->_document->createElement('divider');
 		$parentElement->appendChild($dividerElement);
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$dividerElement->appendChild($history);
+		$this->gethistory($divider, $history);
 	
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -283,9 +325,15 @@ class DomitSiteExporter {
 		$storyElement =& $this->_document->createElement('file');
 		$pageElement->appendChild($storyElement);
 		
+		// title
 		$title =& $this->_document->createElement('title');
 		$storyElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$storyElement->appendChild($history);
+		$this->gethistory($story, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -315,9 +363,15 @@ class DomitSiteExporter {
 		$storyElement =& $this->_document->createElement('image');
 		$pageElement->appendChild($storyElement);
 		
+		// title
 		$title =& $this->_document->createElement('title');
 		$storyElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$storyElement->appendChild($history);
+		$this->gethistory($story, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -347,9 +401,15 @@ class DomitSiteExporter {
 		$storyElement =& $this->_document->createElement('link');
 		$pageElement->appendChild($storyElement);
 		
+		// title
 		$title =& $this->_document->createElement('title');
 		$storyElement->appendChild($title);
 		$title->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('title'))));
+		
+		// history
+		$history =& $this->_document->createElement('history');
+		$storyElement->appendChild($history);
+		$this->gethistory($story, $history);
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
@@ -369,8 +429,75 @@ class DomitSiteExporter {
 		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($filename)));
 	}
 	
+	function getHistory(& $obj, &$historyElement) {
+		// Creator
+		$creator =& $this->_document->createElement('creator');
+		$historyElement->appendChild($creator);
+		$creator->appendChild($this->_document->createTextNode($obj->getField('addedby')));
+		
+		// Created timestamp
+		$created_time =& $this->_document->createElement('created_time');
+		$historyElement->appendChild($created_time);
+		$created_time->appendChild($this->_document->createTextNode($obj->getField('addedtimestamp')));
+		
+		// Last Editor
+		$last_editor =& $this->_document->createElement('last_editor');
+		$historyElement->appendChild($last_editor);
+		$last_editor->appendChild($this->_document->createTextNode($obj->getField('editedby')));
+		
+		// Last Edited timestamp
+		$edited_time =& $this->_document->createElement('last_edited_time');
+		$historyElement->appendChild($edited_time);
+		$edited_time->appendChild($this->_document->createTextNode($obj->getField('editedtimestamp')));
+	}
+	
 	function getPermissions(& $obj, &$permissionsElement) {
 		
+		// get all the editors
+		$obj->buildPermissionsArray();
+		$permissions = $obj->getPermissions();
+// 		print "\npermissions:";
+// 		print_r($permissions);
+		
+		$hasView = $this->addPermissions($obj, $permissionsElement, 'view', $permissions);
+		$hasAdd = $this->addPermissions($obj, $permissionsElement, 'add', $permissions);
+		$hasEdit = $this->addPermissions($obj, $permissionsElement, 'edit', $permissions);
+		$hasDelete = $this->addPermissions($obj, $permissionsElement, 'delete', $permissions);
+		$hasDiscuss = $this->addPermissions($obj, $permissionsElement, 'discuss', $permissions);
+		
+		if ($hasView | $hasAdd | $hasEdit | $hasDelete | $hasDiscuss)
+			$hasAny = TRUE;
+		else
+			$hasAny = FALSE;
+		
+		return $hasAny;
+	}
+	
+	function hasPermission($permissionArray, $agent, $type) {
+		$permTypes = array('add'=>0, 'edit'=>1, 'delete'=>2, 'view'=>3, 'discuss'=>4);
+		return $permissionArray[$agent][$permTypes[$type]];
+	
+	}
+	
+	function addPermissions(& $obj, & $permissionsElement, $type, $permissionsArray) {
+		//add agents/groups of type
+		$hasPerms = FALSE;
+		$element =& $this->_document->createElement($type.'_permission');
+		
+		foreach ($permissionsArray as $editorName => $array) {
+			// if they have permission here, create an entry for them.
+			if ($this->hasPermission($permissions, $editorName, $type) && !$obj->getField("l%$editorName%".$type)) {
+				$agent =& $this->_document->createElement('agent');
+				$agent->appendChild($this->_document->createTextNode($editorName));
+				$element->appendChild($agent);
+				$hasPerms = TRUE;
+			}
+		}
+		
+		if ($hasPerms)
+			$permissionsElement->appendChild($element);
+		
+		return $hasPerms;
 	}
 	
 }

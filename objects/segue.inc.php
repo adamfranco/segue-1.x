@@ -1470,7 +1470,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
 
-		if (!is_array($allclasses)) $allclasses = getuserclasses($user,"all");
+		if (!$useronly && !is_array($allclasses)) $allclasses = getuserclasses($user,"all");
 		
 		/* Debuging stuff */
 /* 		$class = get_class($this); */
