@@ -3,6 +3,11 @@
 Name: Segue ChangeLog
 
 
+v. 1.0.0 rc2
+----------------------------------------------------
+		
+	* Bug Fix: (771969) Upon logout, the session, instead of being completely destroyed, only unsets Segue-specific variables. The previous functionality was also killing other apps running under the same session. (Gabe Schine)
+	
 v. 1.0.0 rc1 (2003-07-14)
 ----------------------------------------------------
 		

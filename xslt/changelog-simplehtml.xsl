@@ -30,10 +30,16 @@
 -->
 <xsl:template match="fix">
 	<li /> Bug Fix:
-	<xsl:if test="@ref">
-		&lt;a href=&quot;http://sourceforge.net/tracker/index.php?func=detail&aid=<xsl:value-of select="@ref" />&group_id=82171&atid=565234&quot;&gt;log&lt;/a&gt;
-	</xsl:if>
 	<xsl:call-template name="entry" />
+	<xsl:if test="@ref">
+		view log: 
+		<a>
+			<xsl:attribute name="href">
+				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=<xsl:value-of select="@ref" />&amp;group_id=82171&amp;atid=565234
+			</xsl:attribute>
+			<xsl:value-of select="@ref" />
+		</a>
+	</xsl:if>
 </xsl:template>
 
 <!--
@@ -43,6 +49,15 @@
 -->
 <xsl:template match="change">
 	<li /> Change: <xsl:call-template name="entry" />
+	<xsl:if test="@ref">
+		view log: 
+		<a>
+			<xsl:attribute name="href">
+				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=<xsl:value-of select="@ref" />&amp;group_id=82171&amp;atid=565234
+			</xsl:attribute>
+			<xsl:value-of select="@ref" />
+		</a>
+	</xsl:if>
 </xsl:template>
 
 <!--
@@ -52,6 +67,15 @@
 -->
 <xsl:template match="new">
 	<li /> New feature: <xsl:call-template name="entry" />
+	<xsl:if test="@ref">
+		view log: 
+		<a>
+			<xsl:attribute name="href">
+				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=<xsl:value-of select="@ref" />&amp;group_id=82171&amp;atid=565237
+			</xsl:attribute>
+			<xsl:value-of select="@ref" />
+		</a>
+	</xsl:if>
 </xsl:template>
 
 <!--
@@ -61,6 +85,15 @@
 -->
 <xsl:template match="important">
 	<li /> <span style='color: red'>*** IMPORTANT ***</span> Change: <xsl:call-template name="entry" />
+	<xsl:if test="@ref">
+		view log: 
+		<a>
+			<xsl:attribute name="href">
+				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=<xsl:value-of select="@ref" />&amp;group_id=82171&amp;atid=565237
+			</xsl:attribute>
+			<xsl:value-of select="@ref" />
+		</a>
+	</xsl:if>
 </xsl:template>
 
 <!--

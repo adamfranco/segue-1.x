@@ -1,5 +1,11 @@
 
 <div style="font-family: Verdana; font-size: 12px;"><b>Segue ChangeLog</b><br/><br/>
+        v. 1.0.0 rc2<br/><hr/><ul>
+		<li/> Bug Fix:
+	Upon logout, the session, instead of being completely destroyed, only unsets Segue-specific variables. The previous functionality was also killing other apps running under the same session. (<i>Gabe Schine</i>)
+		view log: 
+		<a href="&#10;				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=771969&amp;group_id=82171&amp;atid=565234&#10;			">771969</a>
+	</ul><br/>
         v. 1.0.0 rc1 (2003-07-14)<br/><hr/><ul>
 		<li/> New feature: 
 			Added new config option: $cfg[domain] -- the cookie domain for session info. Allows session info to cross sites if they are running the same instance of segue.
@@ -11,11 +17,13 @@
 	</ul><br/>
         v. 1.0.0 beta1 (2003-07-11)<br/><hr/><ul>
 		<li/> Change: Permissions can now be assigned to link type sections and pages and image and file type stories.
-		<li/> Bug Fix: Headings and dividers are now properly displayed when not logged in.
+		<li/> Bug Fix:
+	Headings and dividers are now properly displayed when not logged in.
 		<li/><span style="color: red">*** IMPORTANT ***</span> Change: 
 			DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to &quot;000&quot;.
 		 (<i>Adam Franco</i>)
-		<li/> Bug Fix: 
+		<li/> Bug Fix:
+	
 			When integrated with an LDAP server, Segue now correctly synchronizes the user and class database tables when adding users/groups as editors who have not yet logged in/been added to the local tables.
 		 (<i>Gabe Schine</i>)
 		<li/> Change: Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.
@@ -25,8 +33,10 @@
 		<li/> New feature: Owners of class sites can now easily add members of their class as an editor. (<i>Adam Franco</i>)
 		<li/> Change: Activation/Deactivation Date form now has valid day options. (<i>Adam Franco</i>)
 		<li/> Change: When an admin is acting as another person, they can only see what that person would see. (<i>Adam Franco</i>)
-		<li/> Bug Fix: The &quot;default&quot; page now appropriately shows sites of which a group member is owner. (<i>Gabe Schine</i>)
-		<li/> Bug Fix: Move/Copy now shows sites properly when opened on first page load. (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	The &quot;default&quot; page now appropriately shows sites of which a group member is owner. (<i>Gabe Schine</i>)
+		<li/> Bug Fix:
+	Move/Copy now shows sites properly when opened on first page load. (<i>Adam Franco</i>)
 		<li/> Change: More debug output has been removed.
 	</ul><br/>
         v. 1.0.0 alpha2 (2003-06-07)<br/><hr/><ul>
