@@ -6,6 +6,8 @@ Name: Segue ChangeLog
 v. 1.0.3 (Not Yet Released)
 ----------------------------------------------------
 		
+	* Change: #804005 Editors of sections can now enable discussions for that section and select which (of the already availible editors) can post to it. (Adam Franco)
+		
 	* Bug Fix: #803899 Co-Teaching profs now don't see site creation, grouping, or editing links if they are not the owner for a site. They see editing links as apropriate if they are editors. (Adam Franco)
 		
 	* Bug Fix: #803894 User's Full Names containing apostrophes now don't throw errors when adding to the user table. (Adam Franco)
