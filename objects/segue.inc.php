@@ -1180,7 +1180,7 @@ FROM
 
 			$n = array_unique(array_merge($this->editors,$this->editorsToDelete,array_keys($this->permissions)));
 			
-//			print_r($n);
+//			printpre($n);
 
 			foreach ($n as $editor) {
 				$p2 = $this->permissions[$editor];
@@ -1286,7 +1286,12 @@ FROM
 				
 
 				// if this is a site object, see if the editor is in the site_editors table
-				if ($scope == "site") {
+				if ($scope == "site")
+					$site_id = $id;
+				else
+					$site_id = $this->owningSiteObj->id;
+					
+					
 					$query = "
 SELECT
 	FK_editor
@@ -1295,7 +1300,7 @@ FROM
 WHERE
 	FK_editor <=> $ed_id AND
 	site_editors_type = '$ed_type' AND
-	FK_site = $id
+	FK_site = $site_id
 ";
 //					echo $query."<br>";
 					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
@@ -1306,14 +1311,14 @@ INSERT
 INTO site_editors
 	(FK_site, FK_editor, site_editors_type)
 VALUES
-	($id, $ed_id, '$ed_type')
+	($site_id, $ed_id, '$ed_type')
 ";					
 
 //					echo $query."<br>";
 						db_query($query);
 					}
 					
-				}
+
 
 
 				// now that we have all the information pertaining to this user, check if the permission entry is already present
