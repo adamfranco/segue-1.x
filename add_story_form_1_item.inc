@@ -284,7 +284,11 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	 ******************************************************************************/
 	$text = convertTagsToInteralLinks($_SESSION[settings][site], $text);
 	
-	
+	// If they had been editing as plain-text, but are now using the editor,
+	// convert the line-breaks to <br> tags.
+	if ($_SESSION[storyObj]->getField("texttype")=='text' && $supported)
+		$text = htmlbr($text);
+		
 	// replace internal links in edit mode (action=viewsite)
 	// with internal links in non-edit mode (action=site)
 	//$action_viewsite = "action=viewsite";
