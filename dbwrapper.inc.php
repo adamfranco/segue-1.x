@@ -160,11 +160,11 @@ function db_connect ($host_db, $username, $password, $db='', $port=0) {
     $cid = mysql_pconnect($host_db,$username,$password) OR die("db_connect: Could not connect to host $host_db: " . mysql_error());
     $_connect_id = $cid;		// save the cid var for later use
     // now that we have a good connection, let's set the database to use
-    mysql_select_db($db) or die ("db_connect: Could not select database $db: " . mysql_error());
+    mysql_select_db($db) or die (" db_connect: Could not select database $db: " . mysql_error()."\n".printpre(debug_backtrace(),TRUE));
     return $cid; // done
   } else if ($db_type == "oracle") {
     $cid = OCILogon($username, $password, $host_db) or
-		ocidie("db_connect: Could not connect to database $host_db");
+		ocidie("db_connect: Could not connect to database $host_db"."\n".printpre(debug_backtrace(),TRUE));
     $_connect_id = $cid;		// save the cid var for later use
     return $cid; // done
   }
@@ -173,11 +173,11 @@ function db_connect ($host_db, $username, $password, $db='', $port=0) {
 function db_error() {
   global $db_type;
   if ($db_type == "mysql") {
-    print mysql_error();
+    print mysql_error()."\n".printpre(debug_backtrace(),TRUE);
   }
   if ($db_type == "oracle") {
     $a = OCIError();
-    print $a['message'];
+    print $a['message']."\n".printpre(debug_backtrace(),TRUE);
   }
 }
 
@@ -215,7 +215,7 @@ function db_query ($query, $cid=-1) {
 		echo "\n\n<br><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$res."</b>";
 	}
  	if (mysql_error() && $debug)
- 		echo "\n<b>".mysql_error()."</b>";
+ 		echo "\n<b>".mysql_error()."</b>"."\n".printpre(debug_backtrace(),TRUE);
     return $res;
   } else if ($db_type == "oracle") {
     $stmt = OCIParse($cid, $query) or ocidie ("db_query: could not query the server with $query");
