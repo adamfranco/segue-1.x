@@ -3,6 +3,7 @@
 class discussion {
 	var $storyid,$parentid,$id;
 	var $storyObj;
+	var $detail;
 //	var $author = array("id"=>0,"uname"=>"","fname"=>"");
 	var $authorid=0,$authoruname,$authorfname;
 	
@@ -75,6 +76,10 @@ class discussion {
 		db_query($query);
 		// done;
 	}
+
+/******************************************************************************
+ * stats on # of posts, last post, timestamp, etc.
+ ******************************************************************************/
 	
 	function generateStatistics($story) {
 		if (is_object($story)) $storyid = $story->id;
@@ -280,6 +285,11 @@ class discussion {
 		return $query;
 	}
 	
+/******************************************************************************
+ * outputs new post link and calls _output function
+ ******************************************************************************/
+
+	
 	function outputAll($cr=false,$o=false,$top=false) {
 		global $sid,$content;
 		// debug
@@ -291,18 +301,18 @@ class discussion {
 			if ($cr) {
 				// just in case...
 				$this->_commithttpdata();
-				print "<tr><td>";
+				printc ("<tr><td>");
 				printerr2();
-				print "</td></tr>";
+				printc ("</td></tr>");
 				
-				if ($_REQUEST['action'] == 'newpost') {
+				if ($_REQUEST['discuss'] == 'newpost') {
 					$this->_outputform('newpost');
 				} else {
 					$newpostbar='';
 					$newpostbar.="<tr><td align=right>";
-					$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=newpost'>[new post]</a>";
+					$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>[new post]</a>";
 					$newpostbar.="</td></tr>";
-					print $newpostbar;
+					printc ($newpostbar);
 				}
 			}
 		}
@@ -310,15 +320,19 @@ class discussion {
 		
 		if ($this->id) $this->_output($cr,$o);
 		$this->_outputChildren($cr,$o,(($top)?$this->opt:NULL));
-		if ($this->numchildren) print $newpostbar;
+		if ($this->numchildren) printc ($newpostbar);
 	}
+	
+/******************************************************************************
+ * 
+ ******************************************************************************/
 	
 	function _outputChildren($cr,$o,$opt=NULL) {
 		$this->_fetchchildren();
 		if ($this->numchildren) {
 			if (is_array($opt)) $p = 0;
 			else $p = 10;
-			print "<tr><td><table width=100% style='padding-left:".$p."px'>";
+			printc ("<tr><td><table width=100% style='padding-left:".$p."px'>");
 			for ($i=0;$i<$this->numchildren;$i++) {
 				if (is_array($opt)) $this->children[$i]->opt($opt);
 				if ($this->opt("useoptforchildren")) $this->children[$i]->opt($this->opt);
@@ -326,21 +340,30 @@ class discussion {
 				if ($this->flat) $this->children[$i]->_output($cr,$o);
 				else $this->children[$i]->outputAll($cr,$o);
 			}
-			print "</table></td></tr>";
+			printc ("</table></td></tr>");
 		}
 	}
 	
+	
+/******************************************************************************
+ * outputs discussion table
+ ******************************************************************************/
+	
 	function output($canreply=false,$owner=false) {
 		// print a small table that will house the discussion
-		print "<table width=100%>";
+		printc ("<table width=100%>");
 		$this->_output($canreply,$owner);
-		print "</table>";
+		printc ("</table>");
 	}
+
+/******************************************************************************
+ * commits data from posting form
+ ******************************************************************************/
 	
 	function _commithttpdata() {
 		global $error;
 		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
-			$a = $_REQUEST['action'];
+			$a = $_REQUEST['discuss'];
 			if (!$_REQUEST['subject']) error("You must enter a subject.");
 			if (!$_REQUEST['content']) error("You must enter some text to post.");
 			if ($error) { unset($_REQUEST['commit']); return false; }
@@ -361,9 +384,14 @@ class discussion {
 				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
 				$d->insert();
 			}
-			unset($_REQUEST['action'],$_REQUEST['commit']);
+			unset($_REQUEST['discuss'],$_REQUEST['commit']);
 		}
 	}
+	
+/******************************************************************************
+ * outputs posting form (new post, edit, reply)
+ ******************************************************************************/
+
 	
 	function _outputform($t) { // outputs a post form of type $t (newpost,edit,reply)
 		global $sid,$error;
@@ -387,25 +415,32 @@ class discussion {
 			else $s = $_REQUEST['subject'];
 		}
 		$p = ($t=='reply')?" style='padding-left: 15px'":'';
-		print "<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>";
-		print "<tr><td$p><b>$d</b></td></tr>";
-		print "<tr><td$p>";
-		print "<table width=100%><tr><td align=left>";
-		print "Subject: <input type=text size=50 name=subject value='".spchars($s)."'>";
-		print "</td><td align=right class=info><a href='#' onClick='document.postform.submit()'>[$b]</a></td></tr></table>";
-		print "</td></tr>";
-		print "<tr><td class=content$p>";
-		print "<textarea name=content rows=4 cols=80>".spchars($c)."</textarea>";
-		print "<input type=hidden name=action value='".$_REQUEST['action']."'>";
-		print "<input type=hidden name=commit value=1>";
-		if ($t=='edit') print "<input type=hidden name=id value=".$_REQUEST['id'].">";
-		if ($t=='reply') print "<input type=hidden name=replyto value=".$_REQUEST['replyto'].">";
-		if ($_SESSION['aid']) print "<br>You will be able to edit your post as long as no-one replies to it.";
-		else print "<br>Once submitted, you will not be able to modify your post.";
-		print "</td></tr>";
-		print "</form>";
+		//
+		printc ("<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
+		printc ("<tr><td$p><b>$d</b></td></tr>");
+		printc ("<tr><td$p>");
+		printc ("<table width=100%><tr><td align=left>");
+		printc ("Subject: <input type=text size=50 name=subject value='".spchars($s)."'>");
+		printc ("</td><td align=right class=info><a href='#' onClick='document.postform.submit()'>[$b]</a></td></tr></table>");
+		printc ("</td></tr>");
+		printc ("<tr><td class=content$p>");
+		printc ("<textarea name=content rows=4 cols=80>".spchars($c)."</textarea>");
+		//changed from action to discuss
+		printc ("<input type=hidden name=discuss value='".$_REQUEST['discuss']."'>");
+		//added fullstory action for posting form
+		printc ("<input type=hidden name=action value='".$_REQUEST['action']."'>");
+		printc ("<input type=hidden name=commit value=1>");
+		if ($t=='edit') printc ("<input type=hidden name=id value=".$_REQUEST['id'].">");
+		if ($t=='reply') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">");
+		if ($_SESSION['aid']) printc ("<br>You will be able to edit your post as long as no-one replies to it.");
+		else printc ("<br>Once submitted, you will not be able to modify your post.");
+		printc ("</td></tr>");
+		printc ("</form>");
 	}
 		
+/******************************************************************************
+ * determines what kind of output to do (edit, del) and what to display
+ ******************************************************************************/
 	
 	function _output($cr,$o) {
 		global $sid,$error;
@@ -413,12 +448,12 @@ class discussion {
 		// check to see if we have any info to commit
 		$this->_commithttpdata();
 		
-		if ($_REQUEST['action'] == 'edit' && $_REQUEST['id'] == $this->id) {
+		if ($_REQUEST['discuss'] == 'edit' && $_REQUEST['id'] == $this->id) {
 			$this->_outputform('edit');
 			return true;
 		}
 		
-		if ($_REQUEST['action'] == 'del' && $_REQUEST['id'] == $this->id) {
+		if ($_REQUEST['discuss'] == 'del' && $_REQUEST['id'] == $this->id) {
 			$this->_del();
 			return true;
 		}
@@ -427,7 +462,7 @@ class discussion {
 		
 		// output the html and stuff
 		if (!$this->id) return false;
-		print "<tr><td>";
+		printc ("<tr><td>");
 		$s = "<a href='$script?$sid&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>";
 //		$s = $this->subject;
 
@@ -435,27 +470,30 @@ class discussion {
 		if ($this->opt("showauthor")) $a[] = $this->authorfname;
 		if ($this->opt("showtstamp")) $a[] = timestamp2usdate($this->tstamp);
 		$b = array();
-		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=reply#".$this->id."' class=info>[reply]</a>";
-		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=del&id=".$this->id."' class=info>[del]</a>";
+		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."' class=info>[reply]</a>";
+		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=fullstory&discuss=del&id=".$this->id."' class=info>[del]</a>";
 		if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=edit#".$this->id."' class=info>[edit]</a>";
+			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."' class=info>[edit]</a>";
 		if (count($a) || count($b)) {
 			$c = '';
 			if (count($a)) $c .= "(".implode(" - ",$a).") ";
 			if (count($b)) $c .= implode(" ",$b);
-			print "<table width=100%><tr><td align=left class=subject>$s</td><td align=right class=info>$c</td></tr></table>";
+			/******************************************************************************
+			 * Actual discussion posting content
+			 ******************************************************************************/
+			printc ("<table width=100%><tr><td align=left class=subject>$s</td><td align=right class=info>$c</td></tr></table>");
 		} else
-			print $s;
+			printc ($s);
 		
 		// now output the content
 		if ($this->opt("showcontent")) {
-			print "<tr><td class=content>";
-			print htmlbr($this->content);
-			print "</td></tr>";
+			printc ("<tr><td class=content>");
+			printc (htmlbr($this->content));
+			printc ("</td></tr>");
 		}
 		// done
 		
 		// now check if we're replying to this post
-		if ($_REQUEST['action'] == 'reply' && $_REQUEST['replyto'] == $this->id) $this->_outputform('reply');
+		if ($_REQUEST['discuss'] == 'reply' && $_REQUEST['replyto'] == $this->id) $this->_outputform('reply');
 	}
 }

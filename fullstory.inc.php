@@ -1,15 +1,15 @@
 <? /* $Id$ */
 
-require("objects/objects.inc.php");
+//require("objects/objects.inc.php");
 $content = '';
 
-ob_start();
-session_start();
+//ob_start();
+//session_start();
 
 // include all necessary files
-include("includes.inc.php");
+//include("includes.inc.php");
 
-include("$themesdir/common/header.inc.php");
+//include("$themesdir/common/header.inc.php");
 
 if (($tmp = $_REQUEST['flat_discussion'])) {
 	$_SESSION['flat_discussion'] = ($tmp=='true')?true:false;
@@ -20,7 +20,8 @@ $partialstatus = 1;$site =& new site($_REQUEST[site]);
 $section =& new section($_REQUEST[site],$_REQUEST[section], &$site);
 $page =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$section);
 $story =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$page);
-$getinfo = "site=".$site->name."&section=".$section->id."&page=".$page->id."&story=".$story->id;
+$getinfo = "site=".$site->name."&section=".$section->id."&page=".$page->id."&story=".$story->id."&detail=".$story->id;
+
 
 $story->fetchFromDB();
 $story->owningSiteObj->fetchFromDB();
@@ -53,10 +54,10 @@ if ($story->getField("type") == 'file') {
 }
 
 ?>
-<html>
+<!--<html>
 <head>
 <title>Full Content/Discussion</title>
-<? include("themes/common/logs_css.inc.php"); ?>
+<? include("themes/common/logs_css.inc.php"); ?>-->
 <style type="text/css">
 
 th { font-size: 12px; }
@@ -72,27 +73,44 @@ th.info { color: #888; }
 }
 
 </style>
-</head>
+<!--</head>
 
-<body>
-<table width=100% id="maintable" cellspacing=1>
-<tr><td>
-	<table cellspacing=1 width=100%>
-		<? if ($fulltext) print "<tr><th align=left>".(($story->getField("title"))?spchars($story->getField("title")):"&nbsp;")."</th></tr><tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>"; ?>
-		<?
+<body>-->
+<?
+/******************************************************************************
+ * print out shory and discussion (if any)
+ ******************************************************************************/
+
+printc("<table width=100% id='maintable' cellspacing=1>");
+printc("<tr><td>");
+	printc("<table cellspacing=1 width=100%>");
+		 if ($fulltext) {
+		 	printc("<tr><td align=left><b>".(($story->getField('title'))?spchars($story->getField('title')):'&nbsp;')."</b></td></tr>");
+		 	printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>");
+		 	printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>");
+		}
 		
 		// output discussions?
-		if ($story->getField("discuss")) {
-			print "<tr>";
-			print "<th align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><th align=left>Discussion</th>";
-			print "<th align=right class=info>";
+		if ($story->getField("discuss")) {			
+ 			printc("<th align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><th align=left>Discussion</th>");
+			printc("<th align=right class=info>");
 			$f = $_SESSION['flat_discussion'];
-			print ((!$f)?"<a class=info href='fullstory.php?$sid&$getinfo&flat_discussion=true'>":"")."flat".((!$f)?"</a>":"");
-			print " | ";
-			print (($f)?"<a class=info href='fullstory.php?$sid&$getinfo&flat_discussion=false'>":"")."threaded".(($f)?"</a>":"");
-			print "</th></tr></table>";
-			print "</th>";
-			print "</tr>";
+			if (!$f) {
+				//need to change href to index??
+				printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=true'>flat</a>");
+			} else {
+				printc("flat");
+			}
+			printc(" | ");
+			if ($f) {
+				//need to change href to index
+				printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=false'>threaded</a>)");
+			} else {
+				printc("threaded");
+			}
+			printc("</th></tr></table>");
+			printc("</th>");
+			printc("</tr>");
 			
 			
 			$ds = & new discussion(&$story);
@@ -105,14 +123,17 @@ th.info { color: #888; }
 			$ds->opt("useoptforchildren",true);
 			$ds->getinfo = $getinfo;
 			
+			// outputAll is a function in discussion.inc.php object
 			$ds->outputAll($story->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true);
-			if (!$ds->count()) print "<tr><td>There have been no posts to this discussion.</td></tr>";
+			if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
 		}
 		
-		?>
-	</table>
 
-</tr></td>
-</table>
-<BR><BR>
-<div align=right><input type=button value="Close Window" onClick="window.close()"></div>
+	printc("</table>");
+
+printc("</tr></td>");
+printc("</table>");
+printc("<BR><BR>");
+
+?>
+<!--<div align=right><input type=button value="Close Window" onClick="window.close()"></div>-->

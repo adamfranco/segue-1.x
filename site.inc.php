@@ -98,44 +98,62 @@ do {
 		$thisPage->handleStoryOrder();
 	/* 	if ($pageinfo[storyorder] != 'custom' && $pageinfo[storyorder] != '') */
 	/* 		$stories = handlestoryorder($stories,$pageinfo[storyorder]); */
+
+/******************************************************************************
+ * If page has stories then print them
+ ******************************************************************************/
 		
 		if ($thisPage->stories) {
-			foreach ($thisPage->data[stories] as $s) {
-				$o =& $thisPage->stories[$s];
-				if ($o->canview()) {		
-					if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
-						printc("<hr size='1' noshade style='margin-top: 5px'>");
-					if ($o->getField("category")) {
-						printc("<div class=contentinfo id=contentinfo2 align=right>");
-						printc("Category: <b>".spchars($o->getField("category"))."</b>");
-						printc("</div>");
-					}
-							
-					printc("<div style='margin-bottom: 10px'>");
+			//if detail then print only story detail with full/discussion
+			if ($detail) {
+				$o =& $thisPage->stories[$detail];
+				include("fullstory.inc.php");
+			
+			//if not detail, then print all stories
+			} else {
+			
+				foreach ($thisPage->data[stories] as $s) {
+					$o =& $thisPage->stories[$s];
 					
-					$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
-//					print $incfile; // debug
-					include($incfile);
-		
-					if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
-						printc("<div class=contentinfo align=right>");
-						$added = timestamp2usdate($o->getField("addedtimestamp"));
-						printc("added");
-						if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
-						if ($thisPage->getField("showdate")) printc(" on $added");
-						if ($o->getField("editedby")) {
-							printc(", edited");
-							if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedby"));
-							if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
+	
+					if ($o->canview()) {		
+						if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
+							printc("<hr size='1' noshade style='margin-top: 5px'>");
+							//printc($detail);
+						if ($o->getField("category")) {
+							printc("<div class=contentinfo id=contentinfo2 align=right>");
+							printc("Category: <b>".spchars($o->getField("category"))."</b>");
+							printc("</div>");
 						}
+								
+						printc("<div style='margin-bottom: 10px'>");
+	
+						$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
+	//					print $incfile; // debug
+						include($incfile);
+				
+						if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {
+							printc("<div class=contentinfo align=right>");
+							$added = timestamp2usdate($o->getField("addedtimestamp"));
+							printc("added");
+							if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("addedby"));
+							if ($thisPage->getField("showdate")) printc(" on $added");
+							if ($o->getField("editedby")) {
+								printc(", edited");
+								if ($thisPage->getField("showcreator")) printc(" by ".$o->getField("editedby"));
+								if ($thisPage->getField("showdate")) printc(" on ".timestamp2usdate($o->getField("editedtimestamp")));
+							}
+							printc("</div>");
+							
+							//printc("<hr size='1' noshade><br>");
+						}
+	
+			
 						printc("</div>");
-						//printc("<hr size='1' noshade><br>");
 					}
-		
-					printc("</div>");
-				}
-				$i++;
-			}
+					$i++;
+				} //end foreach stories
+			} //end detail conditional
 		}
 	}
 } while(0);
