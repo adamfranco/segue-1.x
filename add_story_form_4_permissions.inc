@@ -36,13 +36,13 @@ printc("</td></tr></table>");
 
 
 
-	printc("<div class=title style='font-size: 14px'>Permissions (for editing page content)".helplink("editors")." &nbsp; - &nbsp; <i>Optional</i></div>");
-	printc("<div class=desc>Here you can designate people for whom you wish to give editing access to this page. No access is given unless an add/edit/delete box is checked.</div>");
+/* 	printc("<div class=title style='font-size: 14px'>Permissions (for editing page content)".helplink("editors")." &nbsp; - &nbsp; <i>Optional</i></div>"); */
+/* 	printc("<div class=desc>Here you can designate people for whom you wish to give editing access to this page. No access is given unless an add/edit/delete box is checked.</div>"); */
 
 	printc("<div class=leftmargin>");
 	
 	// output permissions table
-	permissions::outputForm($_SESSION[storyObj]);	
+	//permissions::outputForm($_SESSION[storyObj]);	
 	
 //	printc("<br>Allow editor discussion enabling: <input type=checkbox name='ediscussion'". (($_SESSION[settings][ediscussion])?" checked":"")."><br>");
 //	printc("<div class=desc>The above checkbox dictates if editors will be allowed to activate or deactivate discussion on specific content in this page.</div>");

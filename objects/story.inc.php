@@ -144,7 +144,7 @@ class story extends segue {
 		if ($newpage) $this->owning_page = $newpage;
 		
 		// if moving to a new site, copy the media
-		if ($origsite != $newsite && $down) {
+		if ($origsite != $this->owning_site && $down) {
 			$images = array();
 			if ($this->getField("type") == "image" || $this->getField("type") == "file") {
 				$media_id = $this->getField("longertext");
@@ -168,7 +168,7 @@ class story extends segue {
 			$a[] = "addedtimestamp=".$this->getField("addedtimestamp");
 		}
 		$query = "insert into stories set ".implode(",",$a);
-/* 		print $query; //debug */
+		print $query; //debug
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
@@ -190,7 +190,7 @@ class story extends segue {
 		return true;
 	}
 	
-	function createSQLArray() {
+	function createSQLArray($all=0) {
 		$d = $this->data;
 		$a = array();
 		
@@ -200,16 +200,15 @@ class story extends segue {
 		if ($all) $a[] = "page_id=".$this->owning_page;
 		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
 		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
-		if ($all || $this->changed[active]) $a[] = "active=".(($d[active])?1:0);
 		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
 		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
-		if ($all || $this->changed[discuss]) $a[] = "discuss=$d[discuss]";
+		if ($all || $this->changed[discuss]) $a[] = "discuss=".(($d[discuss])?1:0);
 		if ($all || $this->changed[texttype]) $a[] = "texttype='$d[texttype]'";
 		if ($all || $this->changed[category]) $a[] = "category='$d[category]'";
 		if ($all || $this->changed[shorttext]) $a[] = "shorttext='".urlencode($d[shorttext])."'";
 		if ($all || $this->changed[longertext]) $a[] = "longertext='".urlencode($d[longertext])."'";
-		if ($all || $this->changed[locked]) $a[] = "locked=$d[locked]";
-		if ($all || $this->changed[discussions]) $a[] = "locked='".encode_array($d[discussions])."'";
+		if ($all || $this->changed[locked]) $a[] = "locked=".(($d[locked])?1:0);
+		if ($all || $this->changed[discussions]) $a[] = "discussions='".encode_array($d[discussions])."'";
 		
 		return $a;
 	}

@@ -59,6 +59,23 @@ class page extends segue {
 		$this->updatePermissionsDB();
 	}
 	
+	function addStory($id) {
+		if (!is_array($this->getField("stories"))) $this->data[stories] = array();
+		array_push($this->data["stories"],$id);
+		$this->changed[stories]=1;
+	}
+	
+	function delStory($id) {
+		$d = array();
+		foreach ($this->getField("stories") as $s) {
+			if ($s != $id) $d[]=$s;
+		}
+		$this->data[stories] = $d;
+		$this->changed[stories]=1;
+		$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
+		$story->delete();
+	}
+	
 	function fetchUp() {
 		if (!$this->fetchedup) {
 			$this->owningSiteObj = new site($this->owning_site);

@@ -30,7 +30,7 @@ class permissions {
 	function outputForm(&$o,$d=0) {
 		global $cfg;
 		$sitename = $o->owning_site;
-		if (!$o->builtPermissions) $o->buildPermissionsArray();
+		if ($_SESSION[settings][edit] && !$o->builtPermissions) $o->buildPermissionsArray();
 	
 		// ---- Editor actions ----
 		if ($_REQUEST[edaction] == 'add') {
@@ -55,17 +55,18 @@ class permissions {
 			print "</script>";
 		}
 		
+		$a = array(0=>4,1=>1);
+		
 		printc("<style type='text/css'>th, .td0, .td1 {font-size: 10px;}</style>");
 		printc("<table width=100% style='border: 1px solid gray'>");
-		printc("<tr><th rowspan=2>Copy Down<br>Permissions</th><th width=50%>name</th><th colspan=".($d+4)." width=30%>permissions</th><th>del</th></tr>");
-		printc("<tr><th>&nbsp;</th><th>add</th><th>edit</th><th>delete</th><th>view</th>".(($d)?"<th>discuss</th>":"")."<th>&nbsp;</th></tr>");
+		printc("<tr><th width=50%>name</th>	<th colspan=".($a[$d])." width=30%>permissions</th><th>del</th></tr>");
+		printc("<tr><th>&nbsp;</th>".(($d)?"<th>discuss</th>":"<th>add</th><th>edit</th><th>delete</th><th>view</th>")."<th>&nbsp;</th></tr>");
 		if (($edlist = $o->getEditors())) {
 			$permissions = $o->getPermissions();
 			if (count($edlist)) {
 				$color = 0;
 				foreach ($edlist as $e) {
-					printc("<tr><td class=td$color align=center>");
-					/*if ($_SESSION[settings][edit])*/ printc("<input type=checkbox name='copydownpermissions[]' value='$e' ".(($_SESSION[settings][copydownpermissions] && in_array($e,$_SESSION[settings][copydownpermissions]))?" checked":"")."></td><td class=td$color>");
+					printc("<tr><td class=td$color align=left>");
 					if ($e == "everyone")
 						printc("Everyone (will override other entries)</td>");
 					else if ($e == "institute")
@@ -73,13 +74,21 @@ class permissions {
 					else
 						printc(ldapfname($e)." ($e)</td>");
 					
-					for ($i = 0; $i<($d+4); $i++) {
-						printc("<td class=td$color align=center>");
-						if (($e == 'everyone' || $e == 'institute') && $i!=3) printc("&nbsp;");
-						else printc("<input type=checkbox name='permissions[$e][$i]' value=1".(($permissions[$e][$i])?" checked":"").">");
-						printc("</td>");
+					for ($i = 0; $i<5; $i++) {
+						$skip = 0;$nob=0;
+						if ($d && $i<4) $skip = 1;
+						if (!$d && $i==4) $skip = 1;
+						if (!$d && (($e == 'everyone' || $e == 'institute') && $i!=3)) $nob=1;
+						if (!$skip) {
+							printc("<td class=td$color align=center>");
+							if ($nob) printc("&nbsp;");
+							else printc("<input type=checkbox name='permissions[$e][$i]' value=1".(($permissions[$e][$i])?" checked":"").">");
+							printc("</td>");
+						}
+						if ($skip || $nob) {
+							printc("<input type=hidden name='permissions[$e][$i]' value=".$permissions[$e][$i].">");
+						}
 					}
-					if (!$d) printc("<input type=hidden name='permissions[$e][".permissions::DISCUSS()."]' value=".$permissions[$e][permissions::DISCUSS()].">");
 					
 					printc("</td>");
 					printc("<td class=td$color align=center>");
@@ -90,8 +99,8 @@ class permissions {
 				}
 				
 			}
-		} else printc("<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=".($d+6).">no editors added</td></tr>");
-		printc("<tr><th colspan=".($d+6).">".((isclass($sitename))?"<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
+		} else printc("<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=".($a[$d]+1).">no editors added</td></tr>");
+		printc("<tr><th colspan=".($a[$d]+1).">".((isclass($sitename))?"<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
 		printc("</table>");
 		
 		if ($_SESSION[settings][edit]) printc("<a href='editor_access.php?$sid&site=".$sitename."' onClick='doWindow(\"permissions\",600,400)' target='permissions'>Permissions as of last save</a>");

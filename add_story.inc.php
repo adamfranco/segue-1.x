@@ -28,7 +28,7 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
 	$_SESSION[storyObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[storyObj]->setField("active",$_REQUEST[active]);
-	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setPermissions($_REQUEST[permissions]);
+	if ($_SESSION[settings][step] == 5 && !$_REQUEST[link]) $_SESSION[storyObj]->setPermissions($_REQUEST[permissions]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("locked",$_REQUEST[locked]);
 	if ($_REQUEST[url]) $_SESSION[storyObj]->setField("url",$_REQUEST[url]);
 	if ($_REQUEST[texttype]) $_SESSION[storyObj]->setField("texttype",$_REQUEST[texttype]);
@@ -45,7 +45,7 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][libraryfileid] = $_REQUEST[libraryfileid];
 
 	//---- If switching type, take values to defaults ----
-	if ($typeswitch) {
+	if ($_REQUEST[typeswitch]) {
 		$_SESSION[settings][ediscussion] = $thisPage->getField("ediscussion");
 		$_SESSION[settings][libraryfilename] = "";
 		$_SESSION[settings][libraryfileid] = "";
@@ -58,7 +58,7 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 }
 
 if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
-//	print "Making a new settings array<br>";
+	//print "Making a new settings array<br>";
 	// create the settings array with default values. $_SESSION[settings] must be passed along with each link.
 	// The array will be saved on clicking a save button.
 	$_SESSION[settings] = array(
@@ -88,6 +88,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 	}
 	
 	if ($_SESSION[settings][add]) {
+		//print "ooga";
 		$_SESSION[storyObj]->setPermissions($thisPage->getPermissions());
 	}
 	
@@ -129,14 +130,14 @@ if ($_REQUEST[cancel]) {
 	$site = $thisSite->name;
 	print "cancelling...";
 	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
-	else header("Location: index.php?$sid");
+	else header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
 }
 
 if ($_REQUEST[save]) {
-	$error = 0;
+//	$error = 0;
 	// error checking
 	if ($_SESSION[storyObj]->getField("type")=='story' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))==''))
-			error ("You must enter some story content.");
+		error ("You must enter some story content.");
 	if ($_SESSION[storyObj]->getField("type")=='link' && (!$_SESSION[storyObj]->getField("url") || $_SESSION[storyObj]->getField("url")=='' || $_SESSION[storyObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 	if ($_SESSION[storyObj]->getField("type")=='file' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
@@ -154,10 +155,10 @@ if ($_REQUEST[save]) {
 		}
 		
 		// check make sure the owner is the current user if they are changing permissions
-		if ($site_owner != $_SESSION[auser]) {
-			if ($_SESSION[settings][edit]) $_SESSION[storyObj]->buildPermissionsArray();
-			else $_SESSION[storyObj]->setPermissions($thisPage->getPermissions());
-		}
+/* 		if ($site_owner != $_SESSION[auser]) { */
+/* 			if ($_SESSION[settings][edit]) $_SESSION[storyObj]->buildPermissionsArray(); */
+/* 			else $_SESSION[storyObj]->setPermissions($thisPage->getPermissions()); */
+/* 		} */
 
 		if ($_SESSION[settings][add]) $_SESSION[storyObj]->insertDB();
 		if ($_SESSION[settings][edit]) $_SESSION[storyObj]->updateDB();
@@ -217,11 +218,11 @@ if ($_SESSION[auser] == $site_owner) {
 	$leftlinks .= "</td></tr>";
 }
 
-if ($_SESSION[settings][type] == "story" && ($_SESSION[settings][ediscussion] || $auser == $_SESSION[settings][site_owner])) {
+if ($_SESSION[storyObj]->getField("type") == "story" && ($thisPage->getField("ediscussion") || $_SESSION[auser] == $site_owner)) {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 5) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&step=5&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_story&step=5&link=1 onClick=\"submitForm()\">";
 	$leftlinks .= "Discussion";
 	if ($_SESSION[settings][step] != 5) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
@@ -248,13 +249,13 @@ if ($_SESSION[settings][step] == 5) {
 }
 
 // ---  variables for debugging ---
-$vars = $_SESSION[settings];
-ksort($vars);
-$variables .= "<br>----------------------<br>";
-foreach ($vars as $n => $v) {
-	$variables .= "$n = $v <br>";	
-}
-if ($_SESSION[settings][file]) foreach ($_SESSION[settings][file] as $n => $v) $variables .= "<br>$n - $v";
+/* $vars = $_SESSION[settings]; */
+/* ksort($vars); */
+/* $variables .= "<br>----------------------<br>"; */
+/* foreach ($vars as $n => $v) { */
+/* 	$variables .= "$n = $v <br>";	 */
+/* } */
+/* if ($_SESSION[settings][file]) foreach ($_SESSION[settings][file] as $n => $v) $variables .= "<br>$n - $v"; */
 //add_link(leftnav,'','',"$variables");
 //printc("$variables");
 //------------------------------------
