@@ -45,9 +45,9 @@ function initEditor() {
 	  "fontsize", "space",
 	  "formatblock", "space",
 	  "bold", "italic", "underline", "strikethrough", "separator",
-	  "subscript", "superscript"],
+	  "subscript", "superscript","copy", "cut", "paste"],
 	
-	["copy", "cut", "paste", "space", "undo", "redo", "lefttoright", "righttoleft", "separator",
+	["justifyleft", "justifycenter", "justifyright", "justifyfull", "separator", "space", "undo", "redo", "lefttoright", "righttoleft", "separator",
 	"insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
 	"forecolor", "hilitecolor", "separator",
 	"inserthorizontalrule", "createlink", "insertimage", "inserttable", "htmlmode", "separator",

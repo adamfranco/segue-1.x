@@ -21,29 +21,41 @@ if ($_SESSION['ltype'] != 'admin') {
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 // what's the action?
-$curraction = $_REQUEST['action'];
+if ($_REQUEST['action']) $curraction = $_REQUEST['action'];
 $scope = $_REQUEST['scope'];
 $sql = $_REQUEST['sql'];
 $query_custom = $_REQUEST['newquery'];
+
+if ($_REQUEST['order']) $order = $_REQUEST['order'];
+if (!isset($order)) $order = "discussion_tstamp DESC";
+$orderby = " ORDER BY $order";
+
+if ($_REQUEST['userfname']) $userfname = urldecode($_REQUEST['userfname']);
+if ($_REQUEST['userid']) $userid = $_REQUEST['userid'];
+
+$storyid = $_REQUEST['storyid'];
+$siteid = $_REQUEST['siteid'];
 
 /******************************************************************************
  * get search variables and create query
  ******************************************************************************/
 		
-$storyid = $_REQUEST['storyid'];
-$siteid = $_REQUEST['siteid'];
 if ($scope == "site") {
 	$where = "site_id = $siteid";
 } else {
 	$where = "story_id = $storyid";	
 }
 
+if ($userid) {
+	$where .= " AND user_id = $userid";
+}
+
+
 if ($action == "review") {
 	$select = "user_id, user_fname, user_email, discussion_rate, discussion_tstamp, discussion_id, discussion_subject, story_id, page_id, page_title, story_text_short, section_id, site_id";
 } else {
-	$select = "DISTINCT user_fname, user_email";	
+	$select = "DISTINCT user_id, user_fname, user_email";	
 }
-
 
 
 /******************************************************************************
@@ -53,7 +65,7 @@ if ($action == "review") {
  if (!$query_custom || $query_custom) {	
 	$query = "
 	SELECT 
-		DISTINCT user_fname, user_email
+		DISTINCT user_id, user_fname, user_email
 	FROM 
 		discussion
 	INNER JOIN story ON FK_story = story_id
@@ -84,11 +96,11 @@ if ($action == "review") {
 	INNER JOIN site ON FK_site = site_id
 	INNER JOIN user ON FK_author = user_id
 	WHERE 
-		$where $limit
+		$where $orderby $limit
 	";		
 	$r = db_query($query);
 } else {
-	$query = $query_custom;
+	//$query = $query_custom;
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
 	$numparticipants = db_num_rows($r);
@@ -102,6 +114,17 @@ printerr();
 <head>
 <title>Participants</title>
 <? include("themes/common/logs_css.inc.php"); ?>
+
+<script lang="JavaScript">
+
+function changeOrder(order) {
+	f = document.searchform;
+	f.order.value=order;
+	f.submit();
+}
+
+</script>
+
 </head>
 <!-- <body onLoad="document.addform.uname.focus()">  -->
 <body onLoad="document.searchform.name.focus()">
@@ -130,11 +153,27 @@ Participants<br><br>
 	<table cellspacing=1 width='100%'>
 	<tr><td>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
+		<input type=hidden name='order' value='<? echo $order ?>'>
+		<input type=hidden name='action' value='<? echo $action ?>'>
+		<input type=hidden name='storyid' value='<? echo $storyid ?>'>
+		<input type=hidden name='siteid' value='<? echo $siteid ?>'>
+		<input type=hidden name='site' value='<? echo $site ?>'>
+		<input type=hidden name='userid' value='<? echo $userid ?>'>
+		<input type=hidden name='userfname' value='<? echo urlencode($userfname) ?>'>
+
 <!-- 		<input type=submit name='search' value='Find'> -->
 <!-- 		<input type=submit name='findall' value='Find All'> -->
 		</td>
 		<td align=right>
 		<?
+		
+		$getvariables = "storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&order=$order";
+		if ($userid) {
+			$userfname = urlencode($userfname);
+			$getusers = "&userid=$userid&userfname=$userfname";
+		}
+
+
 		$tpages = ceil($numparticipants/$range);
 		$curr = ceil(($lowerlimit+$range)/$range);
 		$prev = $lowerlimit-$range;
@@ -145,18 +184,18 @@ Participants<br><br>
 		print "$curr of $tpages ";
 	//	print "(prev=$prev lowerlimit=$lowerlimit next=$next )";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&authtype=$authtype&name=$name&order=$order\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&authtype=$authtype&name=$name&order=$order\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables\"'>\n";
 		?>
 
-		</form>
+<!-- 		</form> -->
 	
 	</td></tr>
 	</table>
 	
 	<? if (!db_num_rows($r)) {
-		print "No matching names found";
+		print "No participants found. Try extending the scope to all participants in the site";
 		
 /******************************************************************************
  * depending on action print out either:
@@ -165,35 +204,41 @@ Participants<br><br>
  * sent email confirmation
  ******************************************************************************/
 
-	} else {
+	} //else {
 		//$numusers = db_num_rows($r);
 		//print "Total participants found: ".$numparticipants;
 		
 		/******************************************************************************
 		 * Navigation List | Email participants in discussion or site
 		 ******************************************************************************/
-		print "<form action=$PHP_SELF method=post name=emailform>";
+		//print "<form action=$PHP_SELF method=post name=emailform>";
 		print "<table><tr><td><div style='font-size: 12px'>";
+		//$getvariables = "storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&order=$order&";
 		if ($curraction == "list") {
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=email>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
 			print "List | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=review>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers>Review</a> - ";
 			print $numparticipants." participants";
 		} else if ($curraction == 'review') {
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=email>Email</a> | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=list>List</a> | ";
+
+			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=list&$getvariables>List</a> | ";
 			print "Review - ";
-			print $numparticipants." participants";
+			if ($userid) {
+				print urldecode($userfname);
+			} else {
+				print $numparticipants." participants";
+			}
 			
 		} else if ($curraction == 'email') {
 			print "Email | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=list>List</a> | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=review>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&action=list&$getvariables>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&&action=review$getvariables$getusers>Review</a> - ";
 			print $numparticipants." participants";
 		} else if ($curraction == 'send') {
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=email>Email</a> | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=list>List</a> | ";
-			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&scope=$scope&action=review>Review</a> - ";
+			print "<a href=$PHP_SELF?$sid&action=email&$getvariables$getusers>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=list&$getvariables>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&action=review&$getvariables$getusers>Review</a> - ";
 			print $numparticipants." participants";
 		}
 				
@@ -203,10 +248,6 @@ Participants<br><br>
 		<option<?=($scope=='discussion')?" selected":""?>>discussion
 		<option<?=($scope=='site')?" selected":""?>>site
 		</select>
-		<input type=hidden name='action' value='<? echo $action ?>'>
-		<input type=hidden name='storyid' value='<? echo $storyid ?>'>
-		<input type=hidden name='siteid' value='<? echo $siteid ?>'>
-		<input type=hidden name='site' value='<? echo $site ?>'>
 		<input type=submit name='update' value='Update'>
 		
 		<? 
@@ -240,7 +281,7 @@ Participants<br><br>
 			}
 			$to = "";
 			foreach ($emaillist as $address) {
-				$to .= $address.",";
+				$to .= $address.", ";
 			}
 			$to = rtrim($to, ",");
 			$html = 1;
@@ -260,8 +301,7 @@ Participants<br><br>
 			<tr><td align=right>To:</td><td><? echo $to ?></td><td align=right></td></tr>
 			<tr><td align=right>From:</td><td><? echo $_SESSION['afname'] ?></td><td align=right></td></tr>
 			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
-			<tr><td></td><td align=left><textarea name=body cols=60 rows=20 align=left>
-			<? echo //$text ?>
+			<tr><td></td><td align=left><textarea name=body cols=60 rows=20>
 			</textarea>
 			</td><td><td align=right></td></tr>
 			</table>
@@ -293,54 +333,99 @@ Participants<br><br>
 			$r = db_query($query);
 			exit();
 		}
-	} 	
+	// } 	
 	?>
 	<table width='100%'>
 		<tr>
-		<th>full name</th>
+		<!-- <th>full name</th> -->
+		
 		<?
+		print "<th><a href=# onClick=\"changeOrder('";
+		if ($order =='user_fname desc') print "user_fname asc";
+		else print "user_fname desc";
+		print "')\">Participant Name";
+		if ($order =='user_fname asc') print " &or;";
+		if ($order =='user_fname desc') print " &and;";	
+		print "</a></th>";
+
+
 		if ($curraction == 'review') {
 			print "<th>Page > Topic</th>";
 			print "<th>discussion_subject</th>";
-			print "<th>discussion_rate</th>";
-			print "<th>discussion_tstamp</th>"; 
+/* 			print "<th>discussion_rate</th>"; */
+/* 			print "<th>discussion_tstamp</th>"; */
+			 			
+			print "<th><a href=# onClick=\"changeOrder('";
+			if ($order =='discussion_rate asc') print "discussion_rate desc";
+			else print "discussion_rate asc";
+			print "')\">Rating/Grade";
+			if ($order =='discussion_rate asc') print " &or;";
+			if ($order =='discussion_rate desc') print " &and;";	
+			print "</a></th>";
+			
+			print "<th><a href=# onClick=\"changeOrder('";
+			if ($order =='discussion_tstamp asc') print "discussion_tstamp desc";
+			else print "discussion_tstamp asc";
+			print "')\">Date Time";
+			if ($order =='discussion_tstamp asc') print " &or;";
+			if ($order =='discussion_tstamp desc') print " &and;";	
+			print "</a></th>";
+			
 		} else {
 			print "<th>Email</th>";
+			print "<th># of Posts</th>";
+			print "<th>Avg. Rating/Grade</th>";
 		}
 		?>
 		</tr>		
 		<? 
 			while ($a = db_fetch_assoc($r)) {
-/* 				$query2 = " */
-/* 				SELECT  */
-/* 					user_id, discussion_rate, discussion_tstamp */
-/* 				FROM  */
-/* 					discussion */
-/* 				INNER JOIN story ON FK_story = story_id */
-/* 				INNER JOIN page ON FK_page = page_id */
-/* 				INNER JOIN section ON FK_section = section_id */
-/* 				INNER JOIN site ON FK_site = site_id */
-/* 				INNER JOIN user ON FK_author = user_id */
-/* 				WHERE  */
-/* 					user_id = ".$a['user_id']". AND story_id = $storyid */
-/* 				";		 */
-/* 				$r2 = db_query($query2); */
-/* 				$a2 = db_fetch_assoc($r2); */
-/* 				$postcount = db_num_rows($r2); */
+				$userid = $a[user_id];
+				$query2 = "
+				SELECT 
+					user_id, user_email, discussion_rate, discussion_tstamp
+				FROM 
+					discussion
+				INNER JOIN story ON FK_story = story_id
+				INNER JOIN page ON FK_page = page_id
+				INNER JOIN section ON FK_section = section_id
+				INNER JOIN site ON FK_site = site_id
+				INNER JOIN user ON FK_author = user_id
+				WHERE 
+					$where AND user_id = $userid $orderby $limit
+				";		
+				$r2 = db_query($query2);
+				//$a2 = db_fetch_assoc($r2);
+				$postcount = db_num_rows($r2);
+				$rating_sum = 0;
+				if ($postcount == 1) {
+					$avg_rating = $a2['discussion_rate'];
+				} else {
+					while ($a2 = db_fetch_assoc($r2)) {
+						$rating_sum = $rating_sum + $a2['discussion_rate'];
+					}
+					$avg_rating = round($rating_sum/$postcount, 1);
+				}
+				
+				
 				$discussion_date = $a['discussion_tstamp'];
 				$discussion_date = timestamp2usdate($discussion_date);
 				$dicuss_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id']."#".$a['discussion_id'];
 				$shory_text_all = urldecode($a['story_text_short']);
 				$shory_text = substr($shory_text_all,0,25)."...";
 				print "<tr>";
-				print "<td>".$a['user_fname']."</td>";
+				
 				if ($curraction == 'review') {
+					print "<td>".$a['user_fname']."</td>";
 					print "<td>".$a['page_title']." > ".$shory_text."</td>";
 					print "<td>".urldecode($a['discussion_subject'])."</td>";
 					print "<td>".$a['discussion_rate']."</td>";
 					print "<td><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
 				} else {
+					print "<td><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
 					print "<td>".$a['user_email']."</td>";
+					print "<td>".$postcount."</td>";
+					print "<td>".$avg_rating."</td>";
 				}
 								
 				print "</tr>";
@@ -353,64 +438,5 @@ Participants<br><br>
 <BR>
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div>
 <?
-
-function email($emaillist=0) {
-	global $sid,$error;
-	global $_full_uri;
-	
-	//$script = $_SERVER['SCRIPT_NAME'];
-/* 		$site =& new site($_REQUEST[site]); */
-/* 		$siteowneremail = $site->owneremail; */
-/* 		$siteownerfname = $site->ownerfname; */
-/* 		$sitetitle = $site->title; */
-/* 		 */
-/* 		$pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$sectionObj); */
-/* 		$pagetitle = $pageObj->getField('title');		 */
-/* 		$storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$pageObj); */
-/* 		$storytext = $storyObj->getField('shorttext'); */
-	
-	// send an email to the siteowner
-	$html = 1;
-	$emaillist = array();
-	
-	
-	if ($emaillist!=0) {
-		$to = $siteownerfname."<".$siteowneremail.">\n";
-		//$to = $siteowneremail;
-		if ($html == 1) {
-			$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\nContent-Type: text/html\n";
-		} else {
-			$from = $_SESSION['afname']."<".$_SESSION['aemail'].">\n";
-		}
-		$discussurl = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
-
-		if ($html == 1) {
-			$body = $siteownerfname.", There has been a discussion posting from the following Segue site:<br>\n";			
-			$body .= "<a href='".$_full_uri.$discussurl."'>".$sitetitle." > ".$pagetitle."</a><br><br>\n";			
-			$body .= "<table cellpadding=0 cellspacing=0 border=0>";
-			$body .= "<tr><td>subject: </td><td>".$_REQUEST['subject']."</td></tr>\n";
-			$body .= "<tr><td>author: </td><td>".$_SESSION['afname']."</td></tr></table><br>\n";
-			$body .= $_REQUEST['content']."<br><br>\n";
-			$body .= "For complete discussion, see:<br>";
-			$body .= "<a href='".$_full_uri.$discussurl."'>".$sitetitle." > ".$pagetitle."</a><br><br>\n";			
-		} else {
-			$body = "site: ".$sitetitle."\n";
-			//$body .= "topic: ".$this->story."\n";	
-			$body .= "subject: ".$_REQUEST['subject']."\n";		
-			$body .= "author: ".$_SESSION['afname']."\n";
-			$body .= $_REQUEST['content']."\n\n";
-			$body .= "For complete discussion, see:\n";
-			$discussurl2 = "/index.php?$sid&action=site&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&story=".$_REQUEST['story']."&detail=".$_REQUEST['detail']."#".$newid;
-			$body .= $_full_uri.$discussurl2."\n";
-		}
-	} else {
-		$from = $siteowneremail;
-	
-	
-	}
-	
-	// send it!
-	mail($to,$subject,$body,"From: $from");
-}
 
 ?>
