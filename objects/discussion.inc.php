@@ -696,8 +696,8 @@ class discussion {
 			printc ("<td class=content$p>\n");
 			printc(addeditor ("content",60,20,$c,"discuss"));
 		} else {
-			printc ("<td>".spchars($c)."<br><br>\n");
-			printc ("<input type=hidden name=content value='".spchars($c)."'>\n");
+			printc ("<td>".$c."<br><br>\n");
+			printc ("<input type=hidden name=content value='".$c."'>\n");
 		}
 		
 		/******************************************************************************

@@ -38,13 +38,13 @@ var editor = null;
 function initEditor() {
 	/*   editor = new HTMLArea("ta"); */  
 	var config = new HTMLArea.Config();
-	config.width = "400px";
+	config.width = "auto";
 	config.height = "300px";
 	
 	config.toolbar = [
 	["createlink", "bold", "italic", "underline","justifyleft", "justifycenter", "justifyright", "justifyfull", "separator",
 	"insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
-	"forecolor","undo", "redo","htmlmode","lefttoright", "righttoleft", "separator" ]];
+	"forecolor","undo", "redo","htmlmode","lefttoright", "righttoleft", "separator"]];
 
 	  
 	editor = new HTMLArea("<? echo $textarea ?>", config);

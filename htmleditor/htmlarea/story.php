@@ -37,7 +37,7 @@ var editor = null;
 function initEditor() {
 /*   editor = new HTMLArea("ta"); */  
 	var config = new HTMLArea.Config();
-	config.width = "500px";
+	config.width = "auto";
 	config.height = "300px";
 	
 	config.toolbar = [
