@@ -207,7 +207,7 @@ if ($action == "review" || $action == "user") {
 		
 	//printpre($_REQUEST);
 	//printpre("where: ".$where);	
-	//printpre($action);
+	printpre($query);
 	//printpre($curraction);
 	$r = db_query($query);
 	
