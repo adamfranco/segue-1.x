@@ -133,18 +133,18 @@ function getclassstudents($class_id) {
 						$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
 						$res2 = ldap_get_entries($c,$sr2);	
 						$res2[0] = array_change_key_case($res2[0], CASE_LOWER);
-						printpre($res2);
+						//printpre($res2);
 						$num = ldap_count_entries($c,$sr);
 						ldap_close($c);
 						
 						if ($num) {							
 							$studentname = $res2[0][strtolower($cfg[ldap_fullname_attribute])][0];
 							//$student[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
-							printpre("found ".$studentname);
+							//printpre("found ".$studentname);
 						}	
 					}			
 					
-					$students[]= $studentname;					
+					$students[]= $nextmember;					
 				}
 			//printpre($students);	
 			}
