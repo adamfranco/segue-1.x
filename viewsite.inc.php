@@ -181,7 +181,7 @@ $text .= "<br><div align=right><table style='border-top: 1px solid #000; border-
 $text .= "<td valign=top align=left>";
 
 if ($thisSite->hasPermission("edit")) 
-$text .= "<input type=button class='button' value='Edit Site Settings' onClick=\"window.location='index.php?$sid&action=edit_site&edit_site=$site&comingFrom=viewsite'\">";
+$text .= "<input type=button class='button' value='Edit Site Settings' onClick=\"window.location='index.php?$sid&action=edit_site&sitename=$site&comingFrom=viewsite'\">";
 else $text .= "&nbsp; ";
 
 $text .= "</td>";

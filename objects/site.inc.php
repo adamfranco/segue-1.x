@@ -211,8 +211,14 @@ FROM
 		ON site_id = FK_site
 WHERE site_id = ".$this->id;
 
+/* 			print "<pre>"; */
+/* 			print_r ($this); */
+/* 			print "</pre>"; */
+			print "\$query=<br>$query<br>";
 			$r = db_query($query);
+			print "\$r=".$r."<br>";
 			$a = db_fetch_assoc($r);
+			print "\$a=$a";
 			array_change_key_case($a); // make all keys lower case
 			// for each field returned by the query
 			foreach ($a as $field => $value)
@@ -289,7 +295,7 @@ ORDER BY
 		if (count($this->changed)) {
 		// the easy step: update the fields in the table
 			$a = $this->createSQLArray();
-			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
+			$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
 			$query = "UPDATE site SET ".implode(",",$a)." WHERE site_id=".$this->id;
  			print "site->updateDB: $query<BR>";
@@ -346,18 +352,25 @@ ORDER BY
 	
 	function insertDB($down=0,$copysite=0) {
 		$a = $this->createSQLArray(1);
-		$a[] = $this->_datafields[addedby][1][0]."=".$_SESSION[aid];
+		$a[] = "FK_createdby=".$_SESSION[aid];
 		$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
 
 		// insert into the site table
-		$query = "INSERT INTO site SET ".implode(",",$a);
+		$query = "INSERT INTO site SET ".implode(",",$a).";";
  		print "<BR>query = $query<BR>";
 		db_query($query);
 		$this->id = mysql_insert_id();
 		
 		// in order to insert a site, the active user must own a slot
 		// update the name for that slot
-		$query = "UPDATE slot SET slot_name = '".$this->data[name]."', FK_site = ".$this->id." WHERE FK_owner = ".$_SESSION[aid];
+		if (slot::exists($this->data[name])) {
+			$query = "UPDATE slot";
+			$where = " WHERE FK_owner = ".$_SESSION[aid];
+		} else {
+			$query = "INSERT INTO slot";
+			$where = "";
+		}
+		$query .= " SET slot_name = '".$this->data[name]."',".$this->_datafields[type][1][0]."='".$this->data[type]."', FK_site = ".$this->id.$where;
 		echo $query."<br>";
 		db_query($query);
 		
@@ -434,7 +447,7 @@ ORDER BY
 		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='$d[active]'";
-		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
+//		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
 		if ($all || $this->changed[theme]) $a[] = $this->_datafields[theme][1][0]."='$d[theme]'";
 		if ($all || $this->changed[themesettings]) $a[] = $this->_datafields[themesettings][1][0]."='$d[themesettings]'";
 		if ($all || $this->changed[header]) $a[] = $this->_datafields[header][1][0]."='".urlencode($d[header])."'";
