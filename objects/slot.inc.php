@@ -217,7 +217,7 @@ class slot {
 		return $allSlots;
 	}
 	
-	function getAllSlotsInfo($slot_owner="",$slot_name="",$slot_id="",$slot_type="") {
+	function getAllSlotsInfo($slot_owner="",$slot_name="",$slot_id="",$slot_type="",$slot_use="") {
 		$allSlots = array();
 		
 		
@@ -226,6 +226,10 @@ class slot {
 			if ($slot_owner) $where .= " AND user.user_uname LIKE '%$slot_owner%'";
 			if ($slot_id) $where .= " AND slot.slot_id=$slot_id";
 			if ($slot_type != "all"  && !$slot_id) $where .= " AND slot.slot_type = '$slot_type'";
+			if ($slot_use != "all"  && !$slot_id) {
+				if ($slot_use == "yes") $where .= " AND slot.FK_site IS NOT NULL";
+				if ($slot_use == "no") $where .= " AND slot.FK_site IS NULL";
+			}
 
 				$query = "
 					SELECT 

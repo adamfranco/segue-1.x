@@ -97,7 +97,8 @@ if ($findall) {
 /******************************************************************************
  * query database only if search has been made
  ******************************************************************************/
-
+ 
+//$id is set when user is edited
  if ($id) {	
 	$query = "
 	SELECT
@@ -111,17 +112,37 @@ if ($findall) {
 	ORDER BY
 		user_uname ASC";
 	$r = db_query($query);
-	
+
+//users can be searched by name or type	
 } else if ($name || $type) {
 	$where = "user_uname LIKE '%'";	
 	if ($name) $where = "(user_uname LIKE '%$name%' OR user_fname LIKE '%$name%')";
 	
-	$name = '%';
+	//$name = '%';
 	if ($type == "Any") {
 		$where .= " AND user_type LIKE '%'";
 	} else if ($type) {
 		$where .= " AND user_type = '$type'";
 	}
+	
+	$query = "
+	SELECT
+		COUNT(*) AS user_count
+	FROM
+		user
+	WHERE
+		user_authtype='db'
+	AND
+		$where";
+		
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$numusers = $a[user_count];
+	
+	if (!isset($lowerlimit)) $lowerlimit = 0;
+	if ($lowerlimit < 0) $lowerlimit = 0;
+	$limit = " LIMIT $lowerlimit,30";
+
 	
 	$query = "
 	SELECT
@@ -133,7 +154,9 @@ if ($findall) {
 	AND
 		$where
 	ORDER BY
-		user_uname ASC";
+		user_uname ASC
+	$limit";
+	
 	$r = db_query($query);
 }
 
@@ -158,7 +181,7 @@ printerr();
 <tr><td>
 
 	<table cellspacing=1 width='100%'>
-	<tr><td colspan=3>
+	<tr><td>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
 		Name: <input type=text name='name' size=20 value='<?echo $name?>'> 
 		Type:
@@ -172,10 +195,37 @@ printerr();
 		<input type=submit name='search' value='Find'>
 		<input type=submit name='findall' value='Find All'>
 		(Segue database users only)
+		</td>
+		<td align=right>
+		<?
+		$tpages = ceil($numusers/30);
+		$curr = ceil(($lowerlimit+30)/30);
+		$prev = $lowerlimit-30;
+		if ($prev < 0) $prev = 0;
+		$next = $lowerlimit+30;
+		if ($next >= $numusers) $next = $numusers-30;
+		if ($next < 0) $next = 0;
+		print "$curr of $tpages ";
+//		print "$prev $lowerlimit $next ";
+		if ($prev != $lowerlimit)
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&name=$name&order=$order\"'>\n";
+		if ($next != $lowerlimit && $next > $lowerlimit)
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&name=$name&order=$order\"'>\n";
+		?>
+
 		</form>
-		<? if (!db_num_rows($r)) print "No matching names found"; ?>
+	
 	</td></tr>
 	</table>
+	
+	<? if (!db_num_rows($r)) {
+		print "No matching names found";
+	} else {
+		//$numusers = db_num_rows($r);
+		print "Total users found: ".$numusers;
+	} 
+	
+	?>
 		
 	<table width='100%'>
 		<tr>
@@ -193,7 +243,8 @@ printerr();
 			doUserForm($a,'user_',1);
 		
 		// output found users				
-		} else if ($name || $id) {		
+		} else if ($name || $id) {	
+				
 			while ($a = db_fetch_assoc($r)) {
 				print "<tr>";
 				print "<td align=center>".$a['user_id']."</td>";
@@ -202,9 +253,9 @@ printerr();
 				print "<td>".$a['user_email']."</td>";
 				print "<td>".$a['user_type']."</td>";
 				print "<td align=center><nobr>";
-				print "<a href='users.php?$sid&action=del&id=".$a['user_id']."&delname=".$a['user_uname']."'>del</a> | \n";
-				print "<a href='users.php?$sid&action=edit&id=".$a['user_id']."'>edit</a> | \n";
-				print "<a href='users.php?$sid&action=resetpw&id=".$a['user_id']."'>reset pwd</a>\n";
+				print "<a href='users.php?$sid&name=$name&type=$type&action=del&id=".$a['user_id']."&delname=".$a['user_uname']."'>del</a> | \n";
+				print "<a href='users.php?$sid&name=$name&type=$type&action=edit&id=".$a['user_id']."'>edit</a> | \n";
+				print "<a href='users.php?$sid&name=$name&type=$type&action=resetpw&id=".$a['user_id']."'>reset pwd</a>\n";
 				print "</nobr></td>";
 				print "</tr>";
 			}

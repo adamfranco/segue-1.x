@@ -193,8 +193,38 @@ if ($findall) {
 /******************************************************************************
  * query database only if search has been made
  ******************************************************************************/
+ 
 
 if ($class_external_id || $class_name || $class_dept ||	$semester || $class_year || $class_owner) {
+	$query = "
+		SELECT
+			COUNT(*) AS class_count
+		FROM
+			class
+				LEFT JOIN
+			user AS classowner
+				ON
+			class.FK_owner = user_id
+				LEFT JOIN
+			classgroup
+				ON
+			FK_classgroup = classgroup_id
+				LEFT JOIN
+			ugroup
+				ON
+			FK_ugroup = ugroup_id
+		WHERE
+			$where";		
+		
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$numclasses = $a[class_count];
+	
+	if (!isset($lowerlimit)) $lowerlimit = 0;
+	if ($lowerlimit < 0) $lowerlimit = 0;
+	
+	$limit = " LIMIT $lowerlimit,30";
+
 	$query = "
 		SELECT
 			class_id,
@@ -228,7 +258,9 @@ if ($class_external_id || $class_name || $class_dept ||	$semester || $class_year
 		WHERE
 			$where
 		ORDER BY
-			class_year DESC, class_department ASC, class_number ASC, class_section ASC";
+			class_year DESC, class_department ASC, class_number ASC, class_section ASC
+		$limit";
+			
 	
 	$r = db_query($query);
 }
@@ -255,7 +287,7 @@ include("themes/common/header.inc.php");
 <table cellspacing=1 width='100%' id='maintable'>
 <tr><td>
 	<table cellspacing=1 width='100%'>
-		<tr><td colspan=3>
+		<tr><td>
 			<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
 			Code: <input type=text name='class_external_id' size=10 value='<?echo $class_external_id?>'> 
 			Name: <input type=text name='class_name' size=10 value='<?echo $class_name?>'>
@@ -272,10 +304,35 @@ include("themes/common/header.inc.php");
 			Owner: <input type=text name='class_owner' size=7 value='<?echo $class_owner?>'>
 			<input type=submit name='search' value='Find'>
 			<input type=submit name='findall' value='Find All'>
+			</td>
+			<td align=right>
+			<?
+			$tpages = ceil($numclasses/30);
+			$curr = ceil(($lowerlimit+30)/30);
+			$prev = $lowerlimit-30;
+			if ($prev < 0) $prev = 0;
+			$next = $lowerlimit+30;
+			if ($next >= $numclasses) $next = $numclasses-30;
+			if ($next < 0) $next = 0;
+			print "$curr of $tpages ";
+	//		print "$prev $lowerlimit $next ";
+			if ($prev != $lowerlimit)
+				print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&class_external_id=$class_external_id&class_name=$class_name&class_dept=$class_dept&semester=$semester&order=$order&class_year=$class_year&class_owner=$class_owner\"'>\n";
+			if ($next != $lowerlimit && $next > $lowerlimit)
+				print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&class_external_id=$class_external_id&class_name=$class_name&class_dept=$class_dept&semester=$semester&order=$order&class_year=$class_year&class_owner=$class_owner\"'>\n";
+			?>
 			</form>
-			<? if (!db_num_rows($r)) print "No matching classes found"; ?>
+
 		</td></tr>
 		</table>
+		<? 
+		if (!db_num_rows($r)) {
+			 print "No matching classes found"; 
+		} else {
+			//$numclasses = db_num_rows($r);
+			print "Total classes found: ".$numclasses;
+		}	 				 
+		?>
 	
 		<table width='100%'>
 			<tr>

@@ -105,15 +105,16 @@ $slot_owner = $_REQUEST['slot_owner'];
 $slot_name = $_REQUEST['slot_name'];
 $slot_id = $_REQUEST['id'];
 $slot_type = $_REQUEST['slot_type'];
-//$use = $_REQUEST['use'];
+$slot_use = $_REQUEST['slot_use'];
 
 if ($findall) {
 	$slot_name = '%'; 
 	$slot_owner = "";
 	$slot_type = "all";
+	$slot_use = "all";
 }
 
-$allSlots = slot::getAllSlotsInfo($slot_owner,$slot_name,$slot_id,$slot_type);
+$allSlots = slot::getAllSlotsInfo($slot_owner,$slot_name,$slot_id,$slot_type, $slot_use);
 
 
 printerr();
@@ -150,17 +151,27 @@ include("themes/common/header.inc.php");
 				<option<?=($slot_type=='personal')?" selected":""?>>personal
 				<option<?=($slot_type=='system')?" selected":""?>>system
 		</select>
-		<!--In Use: <select name=use>
-				<option<?=($use=='')?" selected":""?>>all
-				<option<?=($use=='class')?" selected":""?>>yes
-				<option<?=($use=='other')?" selected":""?>>no
-		</select>-->
+		In Use: <select name=slot_use>
+				<option<?=($slot_use=='all')?" selected":""?>>all
+				<option<?=($slot_use=='yes')?" selected":""?>>yes
+				<option<?=($slot_use=='no')?" selected":""?>>no
+		</select>
 		<input type=submit name='search' value='Find'>
 		<input type=submit name='findall' value='Find All'>
 		</form>
-		<? if (!$allSlots) print "No matching slots found"; ?>
 	</td></tr>
 	</table>
+		<? if (!$allSlots) {
+			print "No matching slots found";
+		} else {
+			$numslots = count($allSlots);
+			print "Total slots found: ".$numslots;
+			print "<br>Slot naming conventions:";
+			print "<br>student class project slots = course_code-student_username  e.g. al201a-f03-msmith";
+			print "<br>student class project slots = course_code-student_username  e.g. al201a-f03-msmith";		
+		} 
+			
+		?>
 
 		<table width='100%'>
 			<tr>
@@ -209,7 +220,7 @@ include("themes/common/header.inc.php");
 					print "<td align=center><nobr>";
 					if (!$slot[FK_site])
 						print "<a href='add_slot.php?$sid&action=del&id=".$slot['id']."'>del</a> | \n";
-					print "<a href='add_slot.php?$sid&action=edit&id=".$slot['id']."'>edit</a>\n";
+					print "<a href='add_slot.php?$sid&slot_type=$slot_type&slot_name=$slot_name&slot_owner=$slot_owner&slot_use=$slot_use&action=edit&id=".$slot['id']."'>edit</a>\n";
 					print "</nobr></td>";
 					print "</tr>";
 				}
