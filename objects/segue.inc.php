@@ -1267,7 +1267,7 @@ WHERE
 					if ($p_new_str) {
 						$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
 						echo $query."<br>";
-						db_query($query);					
+						db_query($query);
 					}
 					// if we are clearing the permissions, delete the entry from the db
 					else {
@@ -1296,7 +1296,6 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 
 
 			// if user wants to delete editors, remove their permissions from permission and site_editors
-			/*
 			foreach ($this->editorsToDelete as $e) {
 					$query = "SELECT user_id FROM user WHERE user_uname = '$e'";
 					$r = db_query($query);
@@ -1309,7 +1308,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 						$r = db_query($query);
 					}
 			}
-			*/
+			
 			
 			/*
 			foreach ($this->editorsToDeleteInScope as $e) {
@@ -1352,6 +1351,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 				
 		if (!$this->builtPermissions && $this->id) 
 			$this->buildPermissionsArray();
+
 		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
@@ -1366,7 +1366,9 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		$owner = $this->owningSiteObj->getField('addedby');
 		if (strtolower($user) == strtolower($owner)) 
 			return true;
-		
+			
+//		echo "Id: ".$this->id.", Scope: ".get_class($this).", Title: ".$this->data[title]."<br>";
+
 		$_a = array('add','edit','delete','view','discuss');
 		
 		// check if $perms is malformed
@@ -1467,6 +1469,6 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			if ($good) $toCheck[]=strtolower($u);
 		}
 /* 		print_r($toCheck); */
-		return $toCheck;
+		return $toCheck; 
 	}
 }

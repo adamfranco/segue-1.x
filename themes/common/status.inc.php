@@ -46,8 +46,8 @@ if (!$_REQUEST[nostatus]) {
 				print " | <a href='viewsites.php?$sid&site=$site' target='sites' onClick='doWindow(\"sites\",600,600)' class='navlink'>logs</a>";
 			}
 			if ($_SESSION[ltype]=='admin') {
-				print " | <a href='username_lookup.php' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>users</a>";
-/* 				print " | <a href='add_slot.php' onClick='doWindow(\"slots\",375,300)' target='slots' class='navlink'>slots</a>"; */
+				print " | <a href='username_lookup.php' onClick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>user lkup</a>";
+				print " | <a href='users.php' onClick='doWindow(\"users\",400,500)' target='users' class='navlink'>users</a>";
 				print " | change active user: <input type='text' name='changeauser' size=10 class='textfield small'> <input type='submit' class='button small' value='GO'>";
 			}	
 			

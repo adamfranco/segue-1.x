@@ -51,8 +51,8 @@ do {
 			foreach ($thisSite->sections as $s=>$o) {
 //				$o->buildPermissionsArray();
 //				print_r($o);
-				print "<br>hasPermission: ".$o->hasPermissionDown("add or edit or delete");
-				print "<br>Canview: ".$o->canview();
+//				print "<br>hasPermission: ".$o->hasPermissionDown("add or edit or delete");
+//				print "<br>Canview: ".$o->canview();
 //				print_r($o->permissions);
 				if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { 
 					$thisSection = &$thisSite->sections[$s]; 

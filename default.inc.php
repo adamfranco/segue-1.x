@@ -444,7 +444,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
                 
                 if ($obj->getField("activatedate") != '0000-00-00' || $obj->getField("deactivatedate") != '0000-00-00') {
                         printc("<div style='padding-left: 20px; font-size: 10px;'>available: ");
-                        printc(txtdaterange($a[activatedate],$a[deactivatedate]));
+                        printc(txtdaterange($obj->getField("activatedate"),$obj->getField("deactivatedate")));
 /*                      if ($viewpermissions != 'anyone') { */
 /*                              printc(" to "); */
 /*                              if ($viewpermissions == 'midd') printc("$cfg[inst_name] users"); */
