@@ -37,7 +37,7 @@ if ($curraction == 'add') {
 	// check for errors first
 	if (course::courseExists($_REQUEST['code'])) error("A class with that code already exists.");
 	if (!$_REQUEST['code']) error("You must enter a code.");
-	if (!$_REQUEST['year']) error("You must enter a valid 4-digit year.");
+	if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 	// all good
 	if (!$error) {
 		$query = "
@@ -69,7 +69,7 @@ if ($curraction == 'add') {
 if ($curraction == 'edit') {
 	if ($_REQUEST['commit']==1) {
 		if (!$_REQUEST['code']) error("You must enter a code.");
-		if (!$_REQUEST['year']) error("You must enter a valid 4-digit year.");
+		if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 		if (!$error) {
 			$obj = &new course();
 			$obj->fetchCourseID($_REQUEST['id']);
