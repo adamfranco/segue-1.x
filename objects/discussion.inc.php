@@ -363,6 +363,7 @@ class discussion {
 	function _commithttpdata() {
 		global $error;
 		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
+			$site = $_REQUEST['site'];
 			$a = $_REQUEST['discuss'];
 			if (!$_REQUEST['subject']) error("You must enter a subject.");
 			if (!$_REQUEST['content']) error("You must enter some text to post.");
@@ -374,13 +375,20 @@ class discussion {
 				$d->subject = $_REQUEST['subject'];
 				$d->content = $_REQUEST['content'];
 				$d->update();
+				//log_entry("discussion","$_SESSION[auser] edited story ".$_REQUEST['story']." discussion post id ".$_REQUEST['id']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
+
 				unset($d);
 			}
 			if ($a=='reply'||$a=='newpost') {
 				$d = & new discussion($_REQUEST['story']);
 				$d->subject = $_REQUEST['subject'];
 				$d->content = $_REQUEST['content'];
-				if ($a=='reply') $d->parentid = $_REQUEST['replyto'];
+				if ($a=='reply') {
+					$d->parentid = $_REQUEST['replyto'];
+					//log_entry("discussion","$_SESSION[auser] replied to story ".$_REQUEST['story']." discussion post id ".$_REQUEST['replyto']." in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");					
+				} else {
+					//log_entry("discussion","$_SESSION[auser] posted to story ".$_REQUEST['story']." discussion in site ".$_REQUEST['site'],$_REQUEST['site'],$_REQUEST['story'],"story");				
+				}
 				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
 				$d->insert();
 			}
@@ -429,6 +437,8 @@ class discussion {
 		printc ("<input type=hidden name=discuss value='".$_REQUEST['discuss']."'>");
 		//added fullstory action for posting form
 		printc ("<input type=hidden name=action value='".$_REQUEST['action']."'>");
+		//added site variable for discussion logging
+		printc ("<input type=hidden name=site value='".$_REQUEST['site']."'>");		
 		printc ("<input type=hidden name=commit value=1>");
 		if ($t=='edit') printc ("<input type=hidden name=id value=".$_REQUEST['id'].">");
 		if ($t=='reply') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">");
