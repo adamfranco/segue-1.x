@@ -90,7 +90,9 @@ function getclassstudents($class_id) {
 	$participants = $external_memberlist_participants;
 	 
 	foreach (array_keys($db_participants) as $key) {
-		if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
+		if (!is_array($external_memberlist_participant_unames) ||
+			!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) 
+		{
 			$participants[] = $db_participants[$key];
 		}			
 	}
