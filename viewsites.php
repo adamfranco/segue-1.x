@@ -64,8 +64,16 @@ th, td {
 }
 
 th { 
-	background-color: #ccc; 
+	background-color: #bbb; 
 	font-variant: small-caps;
+}
+
+.td1 { 
+	background-color: #ccc; 
+}
+
+.td0 { 
+	background-color: #ddd; 
 }
 
 body { 
@@ -139,22 +147,25 @@ input,select {
 	<th>owner</th>
 </tr>
 <?
+$color = 0;
+
 if (db_num_rows($r)) {
 	while ($a=db_fetch_assoc($r)) {
 		print "<tr>";
-		print "<td><nobr>";
+		print "<td class=td$color><nobr>";
 		print timestamp2usdate($a[editedtimestamp],1);
 		print "</nobr></td>";
 		print "<td>$a[name]</td>";
-		print "<td>";
+		print "<td class=td$color>";
 		print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
 		print "$a[title]";
 		print "</a>";
 		print "</td>";
-		print "<td>";
+		print "<td> class=td$color";
 		print "$a[addedby]";
 		print "</td>";
 		print "</tr>";
+		$color = 1-$color;
 	}
 } else {
 	print "<tr><td colspan=3>No log entries.</td></tr>";
