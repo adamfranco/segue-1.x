@@ -80,10 +80,23 @@ if ($curraction == 'resetpw') {
 		$message = "A random password has been generated for '".$obj->uname."' and an email has been sent to them.";
 	}
 }
+
+/******************************************************************************
+ * get search variables and query only if search form has been submitted
+ ******************************************************************************/
 		
 $name = $_REQUEST['name'];
 $id = $_REQUEST['id'];
-if ($findall) $name = '%';
+$type = $_REQUEST['type'];
+
+if ($findall) {
+	$name = '%';
+	$type = "Any";
+}
+
+/******************************************************************************
+ * query database only if search has been made
+ ******************************************************************************/
 
  if ($id) {	
 	$query = "
@@ -99,7 +112,17 @@ if ($findall) $name = '%';
 		user_uname ASC";
 	$r = db_query($query);
 	
-} else if ($name) {
+} else if ($name || $type) {
+	$where = "user_uname LIKE '%'";	
+	if ($name) $where = "(user_uname LIKE '%$name%' OR user_fname LIKE '%$name%')";
+	
+	$name = '%';
+	if ($type == "Any") {
+		$where .= " AND user_type LIKE '%'";
+	} else if ($type) {
+		$where .= " AND user_type = '$type'";
+	}
+	
 	$query = "
 	SELECT
 		user_id,user_uname,user_fname,user_email,user_type
@@ -108,9 +131,7 @@ if ($findall) $name = '%';
 	WHERE
 		user_authtype='db'
 	AND
-		user_uname LIKE '%$name%'
-	OR
-		user_fname LIKE '%$name%'
+		$where
 	ORDER BY
 		user_uname ASC";
 	$r = db_query($query);
@@ -140,6 +161,14 @@ printerr();
 	<tr><td colspan=3>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
 		Name: <input type=text name='name' size=20 value='<?echo $name?>'> 
+		Type:
+		<select name=type>
+		<option<?=($type=='Any')?" selected":""?>>Any
+		<option<?=($type=='stud')?" selected":""?>>stud
+		<option<?=($type=='prof')?" selected":""?>>prof
+		<option<?=($type=='staff')?" selected":""?>>staff
+		<option<?=($type=='admin')?" selected":""?>>admin
+		</select>
 		<input type=submit name='search' value='Find'>
 		<input type=submit name='findall' value='Find All'>
 		(Segue database users only)

@@ -24,6 +24,8 @@ if ($clear) {
 	$user = "";
 	$site = "";
 	$title = "";
+	//$type = "%";
+	//$active = "%";
 }
 
 if ($_REQUEST[order]) $order = $_REQUEST[order];
@@ -31,11 +33,12 @@ if (!isset($order)) $order = "editedtimestamp DESC";
 $orderby = " ORDER BY $order";
 
 $w = array();
-if ($_REQUEST[type]) $w[]="slot_type='$type'";
+//if ($_REQUEST[type]) $w[]="slot_type like '%$type%'";
 if ($_REQUEST[user]) $w[]="user_uname like '%$user%'";
 //if ($site) $w[]="site like '%$name%'";
 if ($_REQUEST[site]) $w[]="slot_name like '%$site%'";
 if ($_REQUEST[title]) $w[]="site_title like '%$title%'";
+//if ($_REQUEST[active]) $w[]="site_active like '%$active%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
 $query = "
@@ -112,7 +115,8 @@ function changeOrder(order) {
 </td></tr>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<? print $numlogs . " | " . $query; ?>
+	<? //print $numlogs . " | " . $query; ?>
+	<? print "Total Segue Sites:".$numlogs ?>
 
 
 </td></tr>
@@ -138,9 +142,23 @@ function changeOrder(order) {
 		} else {
 		?>
 			<!-- </select> -->
-			site: <input type=text name=site size=15 value='<?echo $site?>'>
-			title: <input type=text name=title size=15 value='<?echo $title?>'>
-			user: <input type=text name=user size=15 value='<?echo $user?>'>
+			site: <input type=text name=site size=10 value='<?echo $site?>'>
+			title: <input type=text name=title size=10 value='<?echo $title?>'>
+			user: <input type=text name=user size=10 value='<?echo $user?>'>
+			<!--
+			type: <select name=type>
+				<option<?=($type=='%')?" selected":""?>>all
+				<option<?=($type=='class')?" selected":""?>>class
+				<option<?=($type=='other')?" selected":""?>>other
+				<option<?=($type=='personal')?" selected":""?>>personal
+				<option<?=($type=='system')?" selected":""?>>system
+				</select>
+			active: <select name=active>
+				<option<?=($active=='%')?" selected":""?>>Choose
+				<option<?=($active=='active')?" selected":""?>>active
+				<option<?=($active=='inactive')?" selected":""?>>inactive
+				</select>
+			-->
 			<input type=submit value='go'>
 			<input type=submit name='clear' value='clear'>
 			<input type=hidden name='order' value='<? echo $order ?>'>

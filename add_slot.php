@@ -97,6 +97,10 @@ if ($curraction == 'edit') {
 	}
 }
 
+/******************************************************************************
+ * get search variables and call getAllSlotsInfo function from slots object
+ ******************************************************************************/
+
 $slot_owner = $_REQUEST['slot_owner'];
 $slot_name = $_REQUEST['slot_name'];
 $slot_id = $_REQUEST['id'];
@@ -106,7 +110,6 @@ if ($slot_name) $slot_type = "";
 
 if ($slot_id) {
 	$slot_owner = "";
-	//$slot_name = "%";
 	$allSlots = slot::getAllSlotsInfo($slot_owner,$slot_name,$slot_id,$slot_type);
 } else {
 	$allSlots = slot::getAllSlotsInfo($slot_owner,$slot_name,$slot_id,$slot_type);

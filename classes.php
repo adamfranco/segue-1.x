@@ -157,42 +157,81 @@ if ($curraction == 'edit') {
 /* 		$message = "A random password has been generated for '".$obj->uname."' and an email has been sent to them."; */
 /* 	} */
 /* } */
-		
-		
-$query = "
-	SELECT
-		class_id,
-		class_external_id,
-		class_name,
-		class_department,
-		class_number,
-		class_section,
-		class_semester,
-		class_year,
-		classowner.user_id AS classowner_id,
-		classowner.user_uname AS classowner_uname,
-		classowner.user_fname AS classowner_fname,
-		classgroup_id,
-		classgroup_name,
-		ugroup_id
-	FROM
-		class
-			LEFT JOIN
-		user AS classowner
-			ON
-		class.FK_owner = user_id
-			LEFT JOIN
-		classgroup
-			ON
-		FK_classgroup = classgroup_id
-			LEFT JOIN
-		ugroup
-			ON
-		FK_ugroup = ugroup_id
-	ORDER BY
-		class_year DESC, class_department ASC, class_number ASC, class_section ASC";
 
-$r = db_query($query);
+/******************************************************************************
+ * get search variables and create query
+ ******************************************************************************/
+
+$class_external_id = $_REQUEST['class_external_id'];
+$class_name = $_REQUEST['class_name'];
+$class_dept = $_REQUEST['class_dept'];
+$semester = $_REQUEST['semester'];
+
+$where = "class_external_id LIKE '%'";
+		
+if ($class_external_id) $where = "class_external_id LIKE '$class_external_id%'";
+if ($class_name) $where .= " AND class_name LIKE '%$class_name%'";
+if ($class_dept) $where .= " AND class_department LIKE '$class_dept%'";
+if ($semester == "any") {
+	$where .= " AND class_semester LIKE '%'";
+} else if ($semester) {
+	$where .= " AND class_semester = '$semester'";
+}
+if ($class_year) $where .= " AND class_year LIKE '$class_year%'";
+if ($class_owner) $where .= " AND (classowner.user_uname LIKE '%$class_owner%' OR classowner.user_fname LIKE '%$class_owner%')";
+
+if ($findall) {
+	$class_external_id = "%";
+	$class_name = "";
+	$class_dept = "";
+	$semester = "any";
+	$class_year = "";
+	$class_owner = "";
+	$where = "class_external_id LIKE '%'";
+}
+
+/******************************************************************************
+ * query database only if search has been made
+ ******************************************************************************/
+
+if ($class_external_id || $class_name || $class_dept ||	$semester || $class_year || $class_owner) {
+	$query = "
+		SELECT
+			class_id,
+			class_external_id,
+			class_name,
+			class_department,
+			class_number,
+			class_section,
+			class_semester,
+			class_year,
+			classowner.user_id AS classowner_id,
+			classowner.user_uname AS classowner_uname,
+			classowner.user_fname AS classowner_fname,
+			classgroup_id,
+			classgroup_name,
+			ugroup_id
+		FROM
+			class
+				LEFT JOIN
+			user AS classowner
+				ON
+			class.FK_owner = user_id
+				LEFT JOIN
+			classgroup
+				ON
+			FK_classgroup = classgroup_id
+				LEFT JOIN
+			ugroup
+				ON
+			FK_ugroup = ugroup_id
+		WHERE
+			$where
+		ORDER BY
+			class_year DESC, class_department ASC, class_number ASC, class_section ASC";
+	
+	$r = db_query($query);
+}
 
 printerr();
 
@@ -206,7 +245,8 @@ include("themes/common/logs_css.inc.php");
 include("themes/common/header.inc.php");
 ?>
 </head>
-<body onLoad="document.addform.external_id.focus()">
+<!-- <body onLoad="document.addform.external_id.focus()"> -->
+<body onLoad="document.searchform.name.focus()">
 
 <?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | <a href='users.php?$sid'>add/edit users</a> | add/edit classes | <a href='add_slot.php?$sid'>add/edit slots</a></div>":""?>
 
@@ -217,12 +257,21 @@ include("themes/common/header.inc.php");
 	<table cellspacing=1 width='100%'>
 		<tr><td colspan=3>
 			<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-			<b>Class</B>
-			ID: <input type=text name='id' size=10 value='<?echo $name?>'> 
-			Name: <input type=text name='name' size=20 value='<?echo $name?>'>
+			Code: <input type=text name='class_external_id' size=10 value='<?echo $class_external_id?>'> 
+			Name: <input type=text name='class_name' size=10 value='<?echo $class_name?>'>
+			Dept: <input type=text name='class_dept' size=3 value='<?echo $class_dept?>'>
+			Semester:
+			<select name=semester>
+				<option<?=($semester=='any')?" selected":""?> value='any'>Any
+				<option<?=($semester=='f')?" selected":""?> value='f'><?=$_semesters[f]?>
+				<option<?=($semester=='w')?" selected":""?> value='w'><?=$_semesters[w]?>
+				<option<?=($semester=='s')?" selected":""?> value='s'><?=$_semesters[s]?>
+				<option<?=($semester=='l')?" selected":""?> value='l'><?=$_semesters[l]?>
+			</select>
+			Year: <input type=text name='class_year' size=5 value='<?echo $class_year?>'>
+			Owner: <input type=text name='class_owner' size=7 value='<?echo $class_owner?>'>
 			<input type=submit name='search' value='Find'>
 			<input type=submit name='findall' value='Find All'>
-			(search interface not yet functional)
 			</form>
 			<? if (!db_num_rows($r)) print "No matching classes found"; ?>
 		</td></tr>
@@ -244,33 +293,35 @@ include("themes/common/header.inc.php");
 			<th>options</th>
 			</tr>
 			
-			<? if ($curraction != 'edit') { doUserForm($_REQUEST); } ?>
+			<? if ($curraction != 'edit') { doUserForm($_REQUEST); } 
 			
-			<? // now output all the users
-			while ($a = db_fetch_assoc($r)) {
-				if ($curraction == 'edit' && $_REQUEST['id'] == $a['class_id'])
-					doUserForm($a,'class_',1);
-				else {
-					print "<tr>";
-					print "<td align=center>".$a['class_id']."</td>";
-					print "<td>".generateCourseCode($a['class_id'])."</td>";
-					print "<td>".$a['class_external_id']."</td>";
-					print "<td>".$a['class_name']."</td>";
-					print "<td>".$a['class_department']."</td>";
-					print "<td>".$a['class_number']."</td>";
-					print "<td>".$a['class_section']."</td>";
-					print "<td>".$_semesters[$a['class_semester']]."</td>";
-					print "<td>".$a['class_year']."</td>";
-					print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
-					print "<td>".$a['classgroup_name']."</td>";
-					print "<td align=center><nobr>";
-					print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>del</a> | \n";
-					print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>edit</a> | \n";
-					print "<a href=\"Javascript:sendWindow('addstudents',400,250,'add_students.php?$sid&ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
-					print "</nobr></td>";
-					print "</tr>";
+			if ($curraction == 'edit') {
+				$a = db_fetch_assoc($r);
+				doUserForm($a,'class_',1);
+				
+			 // output found users	
+			} else if ($r) {					
+				while ($a = db_fetch_assoc($r)) {					
+						print "<tr>";
+						print "<td align=center>".$a['class_id']."</td>";
+						print "<td>".generateCourseCode($a['class_id'])."</td>";
+						print "<td>".$a['class_external_id']."</td>";
+						print "<td>".$a['class_name']."</td>";
+						print "<td>".$a['class_department']."</td>";
+						print "<td>".$a['class_number']."</td>";
+						print "<td>".$a['class_section']."</td>";
+						print "<td>".$_semesters[$a['class_semester']]."</td>";
+						print "<td>".$a['class_year']."</td>";
+						print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
+						print "<td>".$a['classgroup_name']."</td>";
+						print "<td align=center><nobr>";
+						print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>del</a> | \n";
+						print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>edit</a> | \n";
+						print "<a href=\"Javascript:sendWindow('addstudents',400,250,'add_students.php?$sid&ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
+						print "</nobr></td>";
+						print "</tr>";
+					}
 				}
-			}
 			?>
 			
 		</table>
