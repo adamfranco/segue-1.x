@@ -16,9 +16,9 @@ class user {
 	
 	function _fetch() {
 		$query = "
-SELECT
-	user_uname,user_fname,user_email,user_type,user_authtype
-FROM user WHERE user_id=".$this->id;
+			SELECT
+				user_uname,user_fname,user_email,user_type,user_authtype
+			FROM user WHERE user_id=".$this->id;
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
@@ -42,14 +42,14 @@ FROM user WHERE user_id=".$this->id;
 		
 		if ($this->id) { // are we updating?
 			$query = "
-UPDATE
-	user
-	SET $data
-	WHERE user_id=".$this->id;
+				UPDATE
+					user
+					SET $data
+					WHERE user_id=".$this->id;
 		} else $query = "
-INSERT
-	INTO user
-	SET $data";
+				INSERT
+					INTO user
+					SET $data";
 		
 //		print $query;
 		return db_query($query);

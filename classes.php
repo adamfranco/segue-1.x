@@ -126,7 +126,8 @@ $query = "
 		classowner.user_uname AS classowner_uname,
 		classowner.user_fname AS classowner_fname,
 		classgroup_id,
-		classgroup_name
+		classgroup_name,
+		ugroup_id
 	FROM
 		class
 			LEFT JOIN
@@ -137,6 +138,10 @@ $query = "
 		classgroup
 			ON
 		FK_classgroup = classgroup_id
+			LEFT JOIN
+		ugroup
+			ON
+		FK_ugroup = ugroup_id
 	ORDER BY
 		class_year DESC, class_code ASC";
 
@@ -190,7 +195,7 @@ include("themes/common/header.inc.php");
 					print "<td align=center><nobr>";
 					print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>del</a> | \n";
 					print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>edit</a> | \n";
-					print "<a href='classes.php?$sid&action=students&id=".$a['class_id']."'>students</a>\n";
+					print "<a href=\"Javascript:sendWindow('addstudents',400,250,'add_students.php?$sid&ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
 					print "</nobr></td>";
 					print "</tr>";
 				}

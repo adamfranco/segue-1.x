@@ -79,7 +79,7 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 
 		foreach ($_auth_mods as $_auth) {
 			$func = "_valid_".$_auth;
-			print "<BR>AUTH: trying ".$_auth ."..."; //debug
+//			print "<BR>AUTH: trying ".$_auth ."..."; //debug
 			if ($x = $func($user,$pass)) {
 				$valid = 1;
 				break;
