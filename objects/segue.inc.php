@@ -859,8 +859,6 @@ FROM
 		site_id = ".$this->id."
 			AND
 		site_id = FK_site
-			AND
-		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
@@ -895,8 +893,6 @@ FROM
 		INNER JOIN
 	site_editors ON
 		site_id = site_editors.FK_site
-			AND
-		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
@@ -943,8 +939,6 @@ FROM
 		INNER JOIN
 	site_editors ON
 		site_id = site_editors.FK_site
-			AND
-		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
@@ -1003,8 +997,6 @@ FROM
 		INNER JOIN
 	site_editors ON
 		site_id = site_editors.FK_site
-			AND
-		(site_editors_type = 'user' OR site_editors_type = 'everyone' OR site_editors_type = 'institute')
 		LEFT JOIN
 	user ON
 		site_editors.FK_editor = user_id
