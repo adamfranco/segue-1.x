@@ -3,7 +3,7 @@
 class site extends segue {
 	var $sections;
 	var $name;
-	var $_allfields = array("title","theme","themesettings","header","footer",
+	var $_allfields = array("name","title","theme","themesettings","header","footer",
 						"addedby","editedby","editedtimestamp","addedtimestamp",
 						"activatedate","deactivatedate","active","sections",
 						"listed","type");
@@ -113,7 +113,8 @@ class site extends segue {
 		// find if a site with this name already exists in the databse, and if yes, get site_id
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-		echo $q = "SELECT site_id FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name'";
+		$q = "SELECT site_id FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name'";
+		// echo $q;
 		$r = db_query($q);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
@@ -226,16 +227,43 @@ class site extends segue {
 	
 	function updateDB($down=0) {
 		if (count($this->changed)) {
+		// the easy step: update the fields in the table
 			$a = $this->createSQLArray();
-			$a[] = "editedby='$_SESSION[auser]'";
-			$a[] = "editedtimestamp=NOW()";
-			$query = "update sites set ".implode(",",$a)." where id=".$this->id." and name='".$this->name."'";
-/* 			print "site->updateDB: $query<BR>"; */
+			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
+//			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
+			$query = "UPDATE site SET ".implode(",",$a)." WHERE site_id=".$this->id;
+ 			print "site->updateDB: $query<BR>";
 			db_query($query);
+			print mysql_error()."<br>";
+
+		// the hard step: update the fields in the JOIN tables
+
+			// first update 'title' in the slot table
+			if ($this->changed[name]) {
+				$new_name = $this->data[name];
+				$query = "UPDATE slot SET slot_name = '$new_name' WHERE FK_site=".$this->id;
+				db_query($query);
+			}
+
+			// now update all the section ids in the children
+			if ($this->changed[sections]) {
+			// FILL IN!
+			}
+
+//		if ($all || $this->changed[sections]) $a[] = "$this->_datafields[sections][1][0]='".encode_array($d[sections])."'";
+
 		}
 		
+
+
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
 		// now update the permissions
 		$this->updatePermissionsDB();
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
+// REVISE THIS =================================================================
 		
 		// add log entry
 /* 		log_entry("edit_site",$this->name,"","","$_SESSION[auser] edited ".$this->name); */
@@ -315,23 +343,21 @@ class site extends segue {
 		$this->parseMediaTextForDB("header");
 		$this->parseMediaTextForDB("footer");	
 
+		
 		$d = $this->data;
 		$a = array();
 		
-		if ($all || $this->changed[title]) $a[] = "title='".addslashes($d[title])."'";
-//		$a[] = "viewpermissions='$d[viewpermissions]'";
-		if ($all || $this->changed[listed]) $a[] = "listed=".(($d[listed])?1:0);
-		if ($all || $this->changed[activatedate]) $a[] = "activatedate='$d[activatedate]'";
-		if ($all || $this->changed[deactivatedate]) $a[] = "deactivatedate='$d[deactivatedate]'";
-		if ($all || $this->changed[active]) $a[] = "active=".(($d[active])?1:0);
-		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
-		if ($all || $this->changed[theme]) $a[] = "theme='$d[theme]'";
-		if ($all || $this->changed[themesettings]) $a[] = "themesettings='$d[themesettings]'";
-/* 		if ($this->changed[editors]) $a[] = "editors='$d[editors]'"; */
-//		$a[] = "permissions='$d[permissions]'";
-		if ($all || $this->changed[header]) $a[] = "header='".urlencode($d[header])."'";
-		if ($all || $this->changed[footer]) $a[] = "footer='".urlencode($d[footer])."'";
-		if ($all || $this->changed[sections]) $a[] = "sections='".encode_array($d[sections])."'";
+		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
+		if ($all || $this->changed[listed]) $a[] = $this->_datafields[listed][1][0]."='$d[listed]'";
+		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = $this->_datafields[deactivatedate][1][0]."='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='$d[active]'";
+		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
+		if ($all || $this->changed[theme]) $a[] = $this->_datafields[theme][1][0]."='$d[theme]'";
+		if ($all || $this->changed[themesettings]) $a[] = $this->_datafields[themesettings][1][0]."='$d[themesettings]'";
+		if ($all || $this->changed[header]) $a[] = $this->_datafields[header][1][0]."='".urlencode($d[header])."'";
+		if ($all || $this->changed[footer]) $a[] = $this->_datafields[footer][1][0]."='".urlencode($d[footer])."'";
+
 		return $a;
 	}
 }
