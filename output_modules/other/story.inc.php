@@ -26,7 +26,7 @@ if ($o->getField("discuss") || $o->getField("longertext")) {
 	$link = "index.php?$sid&action=".$discussAction."&site=$site&section=$section&page=$page&story=".$o->id."&detail=".$o->id;
 	//$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
 	//$link = "<a href='$link'>";
-	if ($o->getField("longertext")) printc("<a href='".$link."'>"." ...more.</a>");
+	if ($o->getField("longertext") && !ereg("^[\n\r]*<br />$", $o->getField("longertext"))) printc("<a href='".$link."'>"." ...more.</a>");
 	
 	printc("<div class=contentinfo align=right>");
 	$l = array();

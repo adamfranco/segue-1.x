@@ -9,6 +9,10 @@
 		</important>
 		
 		<fix author='adam'>
+			'...more.' links now don't print for stories if the extended content 
+			is just a line-return and a line break inserted by the editor.
+		</fix>
+		<fix author='adam'>
 			Sites now only appear once in the 'Copy Site' bar.
 		</fix>
 		<change author='adam'>
