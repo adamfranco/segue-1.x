@@ -151,7 +151,7 @@ class page extends segue {
 	}
 	
 	function init($formdates=0) {
-		$this->pages = array();
+		$this->stories = array();
 		if (!is_array($this->data)) $this->data = array();
 		$this->data[title] = "";
 		$this->data[activatedate] = $this->data[deactivatedate] = "0000-00-00";
@@ -166,6 +166,7 @@ class page extends segue {
 		$this->data[showdate] = 0;
 		$this->data[showhr] = 0;
 		$this->data[archiveby] = "none";
+		$this->data[stories] = array();
 		$this->data[storyorder] = "";
 		if ($this->id) $this->fetchFromDB();
 		if ($formdates) $this->initFormDates();
@@ -231,7 +232,8 @@ class page extends segue {
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown || $full) {
 /* 			print "---->page fetchdown".$this->id." full = $full<BR>"; */
-			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
+			if (!$this->tobefetched || $full) 
+				$this->fetchFromDB(0,$full);
 			foreach ($this->getField("stories") as $s) {
 				$this->stories[$s] = new story($this->owning_site,$this->owning_section,$this->id,$s);
 				$this->stories[$s]->fetchDown($full);

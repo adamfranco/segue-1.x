@@ -234,19 +234,26 @@ FROM
 					".$this->_datafields[$field][2]."
 			";
 			
-//			print "-----------beginning---------$field<br><pre>".$query; 
+/* 			print "-----------beginning---------$field<br><pre>".$query;  */
 	
 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 			$r = db_query($query);
 			
-//			print mysql_error()."<br>Numrows = ".db_num_rows($r);
-//			print "\n\nresult arrays:\n";
+/* 			print mysql_error()."<br>Numrows = ".db_num_rows($r); */
+/* 			print "\n\nresult arrays:\n"; */
 			
-			if (!db_num_rows($r)) return false; // if we get no results
+			if (!db_num_rows($r)) {	// if we get no results
+				if (in_array($field,$this->_object_arrays)) {
+					// return an empty array
+					$this->data[$field] = array();
+				} else {
+					return false;
+				}
+			}
 			
 			$valarray = array();
 			while($a = db_fetch_assoc($r)) {
-//				print_r($a);
+				print_r($a);
 				
 				if (count($this->_datafields[$field][1]) == 1) { 
 					// We just want a single value
@@ -273,8 +280,8 @@ FROM
 				} else {
 					$valarray[$key] = $val;
 				}
-				//print "<br>key = $key \nval = $val \nvalarray =\n";
-				//print_r($valarray);
+/* 				print "<br>key = $key \nval = $val \nvalarray =\n"; */
+				print_r($valarray);
 			}
 			
 			// only object_arrays should really be returning arrays to the data array.
@@ -288,8 +295,8 @@ FROM
 /* 			print_r($valarray); */
 /* 			print "\nInArray: \n$field";  */
 /* 			print_r($_object_arrays); */
-/* 			print ((in_array($field,$_object_arrays))?"TRUE":"FALSE"); */
-//			print "</pre>----------end------------$field<br>";
+/* 			print "<br>Is object?: ".((in_array($field,$this->_object_arrays))?"TRUE":"FALSE"); */
+/* 			print "</pre>----------end------------$field<br>"; */
 		}
 
 		return $this->data[$field];
