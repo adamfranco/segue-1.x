@@ -59,7 +59,7 @@ if (!$allTablesExist) {
 		  class_name varchar(255) NOT NULL default '',
 		  FK_owner int(10) unsigned default NULL,
 		  FK_ugroup int(10) unsigned default NULL,
-		  class_semester enum('w','s','f','l') NOT NULL default 'w',
+		  class_semester varchar(50) NOT NULL default 'w',
 		  class_year year(4) NOT NULL default '0000',
 		  FK_classgroup int(10) unsigned default NULL,
 		  PRIMARY KEY  (class_id),
@@ -276,7 +276,7 @@ if (!$allTablesExist) {
 		  story_discusslabel varchar(128) NULL default '',
 		  story_category varchar(255) NOT NULL default '',
 		  story_text_type enum('text','html') NOT NULL default 'text',
-		  story_display_type enum('story','image','file','link') NOT NULL default 'story',
+		  story_display_type enum('story','image','file','link','rss') NOT NULL default 'story',
 		  FK_media int(10) unsigned default NULL,
 		  story_locked enum('0','1') NOT NULL default '0',
 		  PRIMARY KEY  (story_id),
@@ -536,6 +536,17 @@ if ($a[numslots] == 0) {
 				printpre(mysql_error());
 			}
 	}
+	
+	$path = realpath($cfg[uploaddir]);
+		
+	if (!file_exists($path."/RSScache/")) {
+		mkdir ($path."/RSScache/", 0770);
+	}
+	
+	if (!file_exists($path."/RSScache/autocache/")) {
+		mkdir ($path."/RSScache/autocache/", 0770);
+	}
+	
 	print "\ndone";
 }
 

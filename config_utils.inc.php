@@ -20,6 +20,7 @@ function checkConfig () {
 	$errors = array();
 	
 	$requiredParams = array(
+							"inst_name",
 							"full_uri",
 							"uploaddir",
 							"uploadurl",
@@ -53,6 +54,9 @@ function checkConfig () {
 	
 	if (!in_array("db", $cfg['auth_mods']))
 		$errors[] = "'db' must be one of the 'auth_mods' specified.";
+		
+	if (!is_writable($cfg['uploaddir']))
+		$errors[] = "The upload directory, '".$cfg['uploaddir']."' does not exist or is not writable by the webserver.";
 	
 	
 	// Print out the errors
