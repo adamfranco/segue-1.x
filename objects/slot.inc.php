@@ -122,24 +122,31 @@ class slot {
 		if (segue::siteExists($this->name) || slot::exists($this->name,0)) error("That site name, ".$this->name.", is already in use.");
 		if (!ereg("^([0-9a-zA-Z_.-]{0,})$",$this->name)) error("Your slot name is invalid. It may only contain alphanumeric characters, '-', '_' and '.'");
 		if (!$error) {
+		
 			// get id for owner of slot
 			$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
 /* 			echo $query."<br>"; */
 			$r = db_query($query);
 			if (!db_num_rows($r)) return false;
 			$a = db_fetch_assoc($r);
-			$owner_id = $a[user_id];
+			$owner_id = $a[user_id];			
+			
 			if ($this->site)
 				$site = "'".$this->site."'";
 			else
 				$site = "NULL";
-			if ($this->assocsite)
-				$assocSite = "'".$this->assocsite."'";
-			else
+			if ($this->assocSite) {
+				// get id for assoc_site of slot
+				$query = "SELECT slot_id FROM slot WHERE slot_name = '".$this->assocSite."'";
+/* 				echo $query."<br>"; */
+				$r = db_query($query);
+				$a = db_fetch_assoc($r);
+				$assocSite = $a[slot_id];
+			} else
 				$assocSite = "NULL";
 			
 			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite=".$assocSite;
-			/* print $query; */
+/* 			print $query; */
 			db_query($query);
 			echo mysql_error();
 		}
@@ -176,11 +183,55 @@ class slot {
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);
 			$owner_id = $a[user_id];
-			$query = "SELECT * FROM slot WHERE FK_owner=$owner_id";
+			$query = "
+				SELECT 
+					slot.slot_id,
+					slot.slot_name,
+					user.user_uname,
+					slot.slot_type,
+					assocsite.slot_name AS assocsite_name,
+					slot.FK_site,
+					slot.slot_uploadlimit
+				FROM 
+					slot
+						LEFT JOIN
+					user
+						ON
+							slot.FK_owner = user_id
+						LEFT JOIN
+					slot AS assocsite
+						ON
+							slot.FK_assocsite = assocsite.slot_id
+				WHERE
+					FK_owner=$owner_id
+				ORDER BY
+					slot.slot_name
+			";
 /* 			echo $query; */
 		}
 		else {
-			$query = "SELECT * FROM slot";
+			$query = "
+				SELECT 
+					slot.slot_id,
+					slot.slot_name,
+					user.user_uname,
+					slot.slot_type,
+					assocsite.slot_name AS assocsite_name,
+					slot.FK_site,
+					slot.slot_uploadlimit
+				FROM 
+					slot
+						LEFT JOIN
+					user
+						ON
+							slot.FK_owner = user_id
+						LEFT JOIN
+					slot AS assocsite
+						ON
+							slot.FK_assocsite = assocsite.slot_id
+				ORDER BY
+					slot.slot_name
+			";
 /* 			echo $query; */
 		}
 		$r = db_query($query);
@@ -190,10 +241,11 @@ class slot {
 			$allSlots[$i] = array();
 			$allSlots[$i][id] = $a[slot_id];
 			$allSlots[$i][name] = $a[slot_name];
-			$allSlots[$i][owner] = $a[FK_owner];
+			$allSlots[$i][owner] = $a[user_uname];
 			$allSlots[$i][type] = $a[slot_type];
-			$allSlots[$i][assocsite] = $a[FK_assocsite];
+			$allSlots[$i][assocsite] = $a[assocsite_name];
 			$allSlots[$i][FK_site] = $a[FK_site];
+			$allSlots[$i][uploadlimit] = $a[slot_uploadlimit];
 			$i++;
 		}
 		return $allSlots;

@@ -144,6 +144,7 @@ input,select {
 <th>type</th>
 <th>assocSite</th>
 <th>in use?</th>
+<th>uploadlimit</th>
 </tr>
 
 <?
@@ -157,6 +158,7 @@ foreach ($allSlots as $slot) {
 	print "<td>$slot[type]</td>";
 	print "<td>$slot[assocsite]</td>";
 	print "<td align=center>".(($slot[FK_site])?"<b>YES</b>":"NO")."</td>";
+	print "<td align=center>".(($slot[uploadlimit])?"<b>".$slot[uploadlimit]."B</b>":"Default")."</td>";
 	print "</tr>";
 }
 ?>

@@ -17,7 +17,7 @@ include("objects/objects.inc.php");
 //if ($ltype != 'admin') exit; 
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb); 
- 
+
 if ($delete) { 
 	deleteuserfile($filetodelete); 
 	printerr2(); 
@@ -40,7 +40,8 @@ $query = "
 		media_tag,
 		media_type,
 		media_size,
-		slot_name
+		slot_name,
+		slot_uploadlimit
 	FROM 
 		media
 			INNER JOIN
@@ -64,7 +65,8 @@ if ($upload) {
 			media_type,
 			slot_name,
 			user_fname,
-			user_uname
+			user_uname,
+			slot_uploadlimit
 		FROM 
 			media
 				INNER JOIN
@@ -84,10 +86,25 @@ if ($upload) {
 			$nameUsed = 1;
 			$usedId = $a[media_id];
 		}
-	} 
+	}
+	
+	$q = "
+		SELECT 
+			slot_uploadlimit 
+		FROM 
+			slot 
+		WHERE 
+			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'";
+	$res = db_query($q);
+	$b = db_fetch_assoc($res);
+	if ($b[slot_uploadlimit])
+		$dirlimit = $b[slot_uploadlimit];
+	else
+		$dirlimit = $userdirlimit;
+	
 	if ($_FILES['file']['tmp_name'] == 'none') { 
 		$upload_results = "<li>No file selected"; 
-	} else if (($_FILES[file][size] + $totalsize) > $userdirlimit) {
+	} else if (($_FILES[file][size] + $totalsize) > $dirlimit) {
 		$upload_results = "<li>There is not enough room in your directory for $filename."; 
 	} else if ($overwrite && $nameUsed) {
 		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0); 
@@ -193,7 +210,8 @@ $query = "
 		media_type,
 		slot_name,
 		user_fname,
-		user_uname
+		user_uname,
+		slot_uploadlimit
 	FROM 
 		media
 			INNER JOIN
@@ -368,8 +386,18 @@ function changePage(lolim) {
 						$res = db_query("SELECT COUNT(site_id) AS num_sites FROM site");
 						$b = db_fetch_assoc($res);
 						$dirlimit_B = $b['num_sites']*$userdirlimit;
-					} else
-						$dirlimit_B = $userdirlimit;
+					} else {
+						if ($site) {
+							$q = "SELECT slot_uploadlimit FROM slot WHERE slot_name='$site'";
+							$res = db_query($q);
+							$b = db_fetch_assoc($res);
+							if ($b[slot_uploadlimit])
+								$dirlimit_B = $b[slot_uploadlimit];
+							else
+								$dirlimit_B = $userdirlimit;
+						}else
+							$dirlimit_B = $userdirlimit;
+					}
 					$dirlimit = convertfilesize($dirlimit_B);
 					$percentused = round($totalsize/$dirlimit_B,"4")*100;
 					$percentfree = 100-$percentused;

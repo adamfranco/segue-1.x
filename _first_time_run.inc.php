@@ -243,6 +243,7 @@ if (!$allTablesExist) {
 		  FK_assocsite int(10) unsigned default NULL,
 		  FK_site int(10) unsigned default NULL,
 		  slot_type enum('class','personal','system','other','publication') NOT NULL default 'class',
+		  slot_uploadlimit int(10) unsigned default NULL,
 		  PRIMARY KEY  (slot_id),
 		  UNIQUE KEY FK_site (FK_site),
 		  UNIQUE KEY slot_name (slot_name),
@@ -442,11 +443,11 @@ if ($a[numslots] == 0) {
 		INSERT INTO site_editors VALUES (5, NULL, 'everyone');
 		INSERT INTO site_editors VALUES (5, NULL, 'institute');
 		
-		INSERT INTO slot VALUES (1, 'template0', 1, NULL, 1, 'system');
-		INSERT INTO slot VALUES (2, 'template1', 1, NULL, 4, 'system');
-		INSERT INTO slot VALUES (3, 'template2', 1, NULL, 3, 'system');
-		INSERT INTO slot VALUES (4, 'template3', 1, NULL, 2, 'system');
-		INSERT INTO slot VALUES (5, 'sample', 1, NULL, 5, 'system');
+		INSERT INTO slot VALUES (1, 'template0', 1, NULL, 1, 'system', NULL);
+		INSERT INTO slot VALUES (2, 'template1', 1, NULL, 4, 'system', NULL);
+		INSERT INTO slot VALUES (3, 'template2', 1, NULL, 3, 'system', NULL);
+		INSERT INTO slot VALUES (4, 'template3', 1, NULL, 2, 'system', NULL);
+		INSERT INTO slot VALUES (5, 'sample', 1, NULL, 5, 'system', NULL);
 		
 		INSERT INTO story VALUES (1, 1, 0, 'Welcome to your new site!', 1, 20030529162308, 1, 20030529162257, '%0D%0A-+To+add+another+block+of+text+below+this+text%2C+click+the%0D%0A%22%3Cb%3E%2Badd+content%3C%2Fb%3E%22+button+below.%0D%0A%0D%0A-+To+edit+this+text%2C+click+the+%22%3Cb%3Eedit%3C%2Fb%3E%22+button+below.%0D%0A%0D%0A-+To+add+another+page+or+other+item+to+this+section%2C+click+on+the%0D%0A%22%3Cb%3E%2Badd+item%3C%2Fb%3E%22+button+to+the+left.%0D%0A%0D%0A-+Clicking+on+the+%22%3Cb%3Eedit%3C%2Fb%3E%22+button+next+to+a+page+or+section%0D%0Awill+allow+you+to+rename+it.%0D%0A%0D%0A-+To+add+a+new+section%2C+click+the+%22%3Cb%3E%2Badd+section%3C%2Fb%3E%22+button+above.+', '', '0', 00000000000000, 00000000000000, '0', '', 'text', 'story', 0, '0');
 		INSERT INTO story VALUES (2, 2, 0, 'Sample Content', 1, 20030529162412, 1, 20030529162412, 'This+is+some+sample+content+on+the+Second+Page.', '', '0', 00000000000000, 00000000000000, '0', '', 'text', 'story', 0, '0');
