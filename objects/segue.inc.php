@@ -792,6 +792,8 @@ WHERE
 		$c = permissions::$p();
 		if ($this->permissions[$user][$c] != $val) {
 			$this->permissions[$user][$c] = $val;
+			$this->cachedPermissions["onlyuser".$user.$perm] = $val;	// Update the cached permissions array so that
+														// hasPermission doesn't get a fscked up
 			$this->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
 														// hasPermission doesn't get a fscked up
 			$this->changedpermissions=1;
@@ -817,8 +819,10 @@ WHERE
 			if ($a) {
 				foreach (array_keys($a) as $k=>$i) {
 					$a[$i]->setUserPermissionDown($perm,$user,$val);
+					$a[$i]->cachedPermissions["onlyuser".$user.$perm] = $val;	// Update the cached permissions array so that
+																				// hasPermission doesn't get a fscked up
 					$a[$i]->cachedPermissions[$user.$perm] = $val;	// Update the cached permissions array so that
-																	// hasPermission doesn't get a fscked up
+																				// hasPermission doesn't get a fscked up
 				}
 			}
 		}
@@ -1507,7 +1511,6 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			$allclasses = getuserclasses($user,"all");
 		
 		
-		
 		//****************************************
 		// ----- Return Cached Permissions ------
 		// If we have checked this permission string before and cached it,
@@ -1517,13 +1520,11 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		// This is to prevent the caching of perms for a user with groups, then
 		// getting that cached result when asking only for user permissions.
 		//****************************************
-		
-		if ($useronly && isset($this->cachedPermissions[$user.$perms]))
+		if ($useronly && isset($this->cachedPermissions["onlyuser".$user.$perms]))
 			return $this->cachedPermissions["onlyuser".$user.$perms];
 		
 		if (!$useronly && isset($this->cachedPermissions[$user.$perms]))
 			return $this->cachedPermissions[$user.$perms];
-		
 		
 		//****************************************
 		// ----- New checking of Permissions -----
@@ -1539,7 +1540,6 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		$owner = $this->owningSiteObj->owner;
 		if (strtolower($user) == strtolower($owner)) 
 			return TRUE;
-		
 		
 		// ------ Verify the permissions String ------
 		// Verify that the permissions string is well formed. And return
