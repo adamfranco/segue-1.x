@@ -4,7 +4,7 @@ Left Navigation Column Width:</td><td>
 <select name='nav_width' onChange="document.settings.submit()">
 <?
 foreach ($nav_widths as $s) {
-	print "<option value='$s'".(($nav_width==$s)?" selected":"").">$s\n";
+	print "<option value='$s'".(($nav_width==$s || ((!$nav_width || $nav_width == "") && $s=="150 pixels"))?" selected":"").">$s\n";
 }
 ?>
 </select>
@@ -15,7 +15,7 @@ Section Navigation Text Size:</td><td>
 <select name='sectionnav_size' onChange="document.settings.submit()">
 <?
 foreach ($sectionnav_sizes as $s) {
-	print "<option value='$s'".(($sectionnav_size==$s)?" selected":"").">$s\n";
+	print "<option value='$s'".(($sectionnav_size==$s || ((!$sectionnav_size || $sectionnav_size == "") && $s=="12 pixels"))?" selected":"").">$s\n";
 }
 ?>
 </select>
@@ -26,7 +26,7 @@ Page Navigation Text Size:</td><td>
 <select name='nav_size' onChange="document.settings.submit()">
 <?
 foreach ($nav_sizes as $s) {
-	print "<option value='$s'".(($nav_size==$s)?" selected":"").">$s\n";
+	print "<option value='$s'".(($nav_size==$s || ((!$nav_size || $nav_size == "") && $s=="12 pixels"))?" selected":"").">$s\n";
 }
 ?>
 </select>

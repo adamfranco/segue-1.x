@@ -11,24 +11,26 @@ $_nav_arrange = array(
 );
 
 $_nav_width = array(
-	"150 pixels"=>				"150",
 	"100 pixels"=>				"100",
+	"125 pixels"=>				"125",
+	"150 pixels"=>				"150",
 	"175 pixels"=>				"175",
 	"200 pixels"=>				"200",
+	"225 pixels"=>				"225",
 	"250 pixels"=>				"250",
 	"275 pixels"=>				"275"
 );
 
 $_sectionnav_size = array(
-	"12 pixels"=>				"12",
 	"10 pixels"=>				"10",
+	"12 pixels"=>				"12",
 	"14 pixels"=>				"14",
 	"16 pixels"=>				"16"
 );
 
 $_nav_size = array(
-	"12 pixels"=>				"12",
 	"10 pixels"=>				"10",
+	"12 pixels"=>				"12",
 	"14 pixels"=>				"14",
 	"16 pixels"=>				"16"
 );
