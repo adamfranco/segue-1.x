@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-header("Content-Type: text/xml");
+header("Content-Type: text/xml; charset=utf-8");
 print "<"."?xml version=\"1.0\"?".">\n";
 ?>
 <rss version="2.0">
@@ -217,7 +217,9 @@ if ($error || !$thisPage->canview()) {
 						$description = str_replace("\n", "", $description);
 						$description = str_replace("\r", "", $description);
 						
-						print "<description>".htmlentities($description)."</description>\n";
+						print "<description>";
+						print htmlspecialchars($description, ENT_COMPAT, 'utf-8');
+						print "</description>\n";
 						
 						print "\t\t</item>\n";
 					}
