@@ -200,34 +200,41 @@ function db_query ($query, $cid=-1) {
 	global $_totalQueries;
 	$_totalQueries++;
 	
-  global $db_type; global $debug;
-  global $_connect_id;
-  if ($debug) {
-  	// The $debug variable is set at the top of this script
-	// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-    echo "\n\n<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$query;
-  }
-  if ($cid==-1) $cid = $_connect_id;
-  if ($db_type == "mysql") {
-    $res = mysql_query($query, $cid);
+	global $db_type; global $debug;
+	global $_connect_id;
 	if ($debug) {
-	 	// The $debug variable is set at the top of this script	
+		// The $debug variable is set at the top of this script
+		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
+		echo "\n\n<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$query;
+	}
+	if ($cid==-1) 
+		$cid = $_connect_id;
+	if ($db_type == "mysql") {
+		$res = mysql_query($query, $cid);
+	if ($debug) {
+		// The $debug variable is set at the top of this script	
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
 		echo "\n\n<br><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$res."</b>";
 	}
- 	if (mysql_error() && $debug)
- 		printError(mysql_error());
-    return $res;
-  } else if ($db_type == "oracle") {
-    $stmt = OCIParse($cid, $query) or ocidie ("db_query: could not query the server with $query");
-    OCIExecute($stmt) or ocidie("db_query: could not execute the OCI statement");
-    return $stmt;
-  }
+	if (mysql_error() && $debug)
+		printError(mysql_error());
+		return $res;
+		
+	} else if ($db_type == "oracle") {
+		$stmt = OCIParse($cid, $query) or ocidie ("db_query: could not query the server with $query");
+		OCIExecute($stmt) or ocidie("db_query: could not execute the OCI statement");
+		return $stmt;
+	}
 }
 
 function db_fetch_assoc($res) {
   global $db_type; global $debug;
   
+  if (!is_resource($res)) {
+  		printError("db_fetch_assoc(): Resource, '$res', is not a valid resource.");
+  		return FALSE;
+  	}
+  		
   if ($db_type=="mysql") {
     $ar = mysql_fetch_assoc($res);
     //$ar = mysql_fetch_array($res);
