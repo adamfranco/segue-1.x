@@ -16,10 +16,34 @@ include_once (dirname(__FILE__)."/carprss/carp.php");
  
 ob_start();
 
-if ($_SESSION['auser'])
-	CarpCacheShow($o->getField("url"), $carpconf['cachepath'].".".$_SESSION['auser']);
-else
-	CarpCacheShow($o->getField("url"));
+// If we have an auser, create a cache just for them.
+if ($_SESSION['auser']) {
+	CarpCacheShow($o->getField("url"), '', 1,  $_SESSION['auser']);
+} else {
+
+	// If the user has a valid campus ip-address, then they are a
+	// member of 'institute'.
+	$ipIsInInstitute = FALSE;
+	$ip = $_SERVER[REMOTE_ADDR];
+	// check if our IP is in inst_ips
+	if (is_array($cfg[inst_ips])) {
+		foreach ($cfg[inst_ips] as $i) {
+			if (ereg("^$i",$ip)) 
+				$ipIsInInstitute = TRUE;
+		}
+	}
+	
+	// if we are in the institute IPs, use the institute
+	// cache.
+	if ($ipIsInInstitute) {
+		CarpCacheShow($o->getField("url"), '', 1, 'institute');
+	}
+	// If we aren't logged in or in the institute IPs, just use the
+	// everyone cache.
+	else {
+		CarpCacheShow($o->getField("url"));
+	}
+}
 
 printc (ob_get_contents());
 ob_clean();
