@@ -40,6 +40,8 @@ if ($settings[type]=='page') {
 		printc("<option value='author'".(($settings[storyorder]=='author')?" selected":"").">Author");
 		printc("<option value='editor'".(($settings[storyorder]=='editor')?" selected":"").">Editor");
 		printc("<option value='category'".(($settings[storyorder]=='category')?" selected":"").">Category");
+		printc("<option value='titleasc'".(($settings[storyorder]=='titleasc')?" selected":"").">Title Ascending");
+		printc("<option value='titledesc'".(($settings[storyorder]=='titledesc')?" selected":"").">Title Descending");
 	printc("</select><br><br>");
 	
 	printc("Show horizontal rule: <input type=checkbox name='showhr' value=1". (($settings[showhr])?" checked":"") . "><br>");

@@ -451,13 +451,9 @@ function handlestoryorder($stories,$order) {
 		$added = str_replace("-","",$added);
 		$added = str_replace(" ","",$added);
 
-		if ($order == "addeddesc") 
+		if ($order == "addeddesc" || $order == "addedasc") 
 			$newstories[$s] = $added;
-		else if ($order == "addedasc") 
-			$newstories[$s] = $added;
-		else if ($order == "editeddesc") 
-			$newstories[$s] = $a[editedtimestamp];
-		else if ($order == "editedasc") 
+		else if ($order == "editeddesc" || $order == "editedasc") 
 			$newstories[$s] = $a[editedtimestamp];
 		else if ($order == "author") 
 			$newstories[$s] = $a[addedby];
@@ -465,15 +461,23 @@ function handlestoryorder($stories,$order) {
 			$newstories[$s] = $a[editedby];
 		else if ($order == "category") 
 			$newstories[$s] = $a[category];
+		else if ($order == "titledesc" || $order == "titleasc") 
+			$newstories[$s] = strtolower($a[title]);
 	}
+
+//	print_r($newstories); 
 	
 	if ($order == "addeddesc" || $order == "editeddesc")
 		arsort($newstories,SORT_NUMERIC);
 	else if ($order == "addedasc" || $order == "editedasc")
 		asort($newstories,SORT_NUMERIC);
+	else if ($order == "titledesc")
+		arsort($newstories);
 	else
 		asort($newstories);
-		
+	
+//	print_r($newstories); 
+	
 	$newstories = array_keys($newstories);
 	return $newstories;
 }
