@@ -6,8 +6,8 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 	
 	$ldap_user = "cn=".(($admin_auser)?$ldap_voadmin_user:$name).",cn=Recipients,ou=MIDD,o=MC";
 	$ldap_pass = ($admin_auser)?$ldap_voadmin_pass:$pass;
-//	print "$ldap_user, $ldap_pass<BR>";//debug
-	$c = ldap_connect($ldapserver);
+	// check if we already have an ldap connection... otherwise, open a new one
+	if (!($c = ldap_connect())) $c = ldap_connect($ldapserver);
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
 	//$r=ldap_bind($c,"cn=gschine,cn=Recipients,ou=MIDD,o=MC","");  //debug
 		
@@ -24,7 +24,7 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 //		print "Found $name's entries: ".ldap_count_entries($c,$sr)."<BR>";//debug
 		$numldap = ldap_count_entries($c,$sr);
 		if (!$numldap) return 0; // if we don't have any entries, return false
-		ldap_close($c);
+		//ldap_close($c);
 		
 /* 		// check if they're in the database yet */
 /* 		db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
