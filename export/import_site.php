@@ -29,12 +29,23 @@ to run this script as a user who has permission to
 access the segue media directory or media files will
 not be copied.
 
+This script assumes several things:
+	1. All users specified in the XML file exist in the Segue instance
+	   being imported to.
+	2. All media specified in the "<media>" elements of the XML file exist 
+	   in the <media directory>.
+
+	If the conditions above are not met, then the site will not fully import
+	and this script will throw errors.
+
+	If it is desired to import a site anyway, edit the XML file to remove 
+	references to the non-existant users/media.
+
 Usage:
 
-<?php echo $argv[0]; ?> <apache uid> <apache gid> <xml file path> <media directory>
+	<?php echo $argv[0]; ?> <apache uid> <apache gid> <xml file path> <media directory>
 
-With the --help, -help, -h,
-or -? options, you can get this help.
+With the --help, -help, -h, or -? options, you can get this help.
 
 <?
 } else {
@@ -50,40 +61,8 @@ or -? options, you can get this help.
 	
 	if (!$successfull) {
 		print "\n";
-		print"Failure.... :-( ";
+		print"Failure. Could not fully import site. Please consult the messages above.";
 		print "\n";
-	} else
-		print "\n";
-	
-// 
-// 	// destination for the media files.
-// 	$imagepath = $uploaddir.$sitename.'/';
-// 	
-// 	// make a directory for the site contents
-// 	$siteDir = $exportpath.$sitename.'/';
-// 	if (file_exists($siteDir))
-// 		deletePath($siteDir);
-// 	mkdir ($siteDir);
-// 	
-// 	// Copy the Media Files to the sitedir.
-// 	dir_copy( $imagepath, $siteDir.'media/');
-// 	
-// 	// Save the XML to a file.
-// 	$xmlFile = $siteDir.'site.xml';
-// 	
-// 	
-// 	if (!$handle = fopen($xmlFile, 'a')) {
-// 		 echo "Cannot open file ($xmlFile)";
-// 		 exit;
-// 	}
-// 	
-// 	// Write $somecontent to our opened file.
-// 	if (!fwrite($handle, $siteXML)) {
-// 	   echo "Cannot write to file ($xmlFile)";
-// 	   exit;
-// 	}
-// 	
-// 	fclose($handle);
-
+	}
 }
 exit(0);

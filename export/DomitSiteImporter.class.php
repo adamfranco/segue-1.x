@@ -317,7 +317,7 @@ class DomitSiteImporter {
 			$page->setField( 'type', "link" );
 		
 			// url
-			$urlList =& $sectionElement->getElementsByPath("url");
+			$urlList =& $pageElement->getElementsByPath("url");
 			if ($urlList->getLength() != 1) {
 				print "\nRequired 'url' element is missing!";
 				return FALSE;
@@ -333,9 +333,21 @@ class DomitSiteImporter {
 		if (!$this->setCommonFields($page, $pageElement))
 			return FALSE;
 		
-		// Page display options
-		//@todo
+	// Page display options
+		// Story order
+		$page->setField("storyorder", $pageElement->getAttribute("story_order"));
 		
+		// Show hr
+		$page->setField("showhr",(($pageElement->getAttribute("horizontal_rule") == "TRUE")?1:0));
+		
+		// Show creator
+		$page->setField("showcreator",(($pageElement->getAttribute("show_creator") == "TRUE")?1:0));
+		
+		// Show date
+		$page->setField("showdate",(($pageElement->getAttribute("show_date") == "TRUE")?1:0));
+		
+		// Story archiving
+		$page->setField("archiveby", $pageElement->getAttribute("archiving"));
 	
 	/*********************************************************
 	 * Save

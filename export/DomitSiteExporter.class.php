@@ -43,7 +43,7 @@ class DomitSiteExporter {
 		$doctype .= "\n\t<!ATTLIST site id CDATA #REQUIRED owner CDATA #REQUIRED type (system|class|personal|other) #REQUIRED>";		
  		$doctype .= "\n\t<!ELEMENT section (title,history,(activation?),(permissions?),(page|navlink|heading|divider)*)>";
 		$doctype .= "\n\t<!ELEMENT page (title,history,(activation?),(permissions?),(story|link|image|file)*)>";
-		$doctype .= "\n\t<!ATTLIST page story_order (custom|addeddesc|addedasc|editeddesc|editedasc|author|editor|category|titleasc|titledesc) #REQUIRED horizontal_rule (TRUE|FALSE) #REQUIRED show_creator (TRUE|FALSE) #REQUIRED show_date (TRUE|FALSE) #REQUIRED>";
+		$doctype .= "\n\t<!ATTLIST page story_order (custom|addeddesc|addedasc|editeddesc|editedasc|author|editor|category|titleasc|titledesc) #REQUIRED horizontal_rule (TRUE|FALSE) #REQUIRED show_creator (TRUE|FALSE) #REQUIRED show_date (TRUE|FALSE) #REQUIRED archiving CDATA #REQUIRED>";
 		$doctype .= "\n\t<!ELEMENT story (title,history,(activation?),(permissions?),shorttext,(longtext?),(category?),(discussion?))>";
 		$doctype .= "\n\t<!ELEMENT navlink (title,history,(activation?),(permissions?),url)>";
 		$doctype .= "\n\t<!ELEMENT heading (title,history,(activation?),(permissions?))>";
@@ -209,6 +209,9 @@ class DomitSiteExporter {
 		$pageElement->setAttribute('horizontal_rule', (($page->getField('showhr'))?"TRUE":"FALSE"));
 		$pageElement->setAttribute('show_creator', (($page->getField('showcreator'))?"TRUE":"FALSE"));
 		$pageElement->setAttribute('show_date', (($page->getField('showdate'))?"TRUE":"FALSE"));
+		if (!$archiving = $page->getField('archiveby'))
+			$archiving = "none";
+		$pageElement->setAttribute('archiving', $archiving);
 		
 		foreach ($page->stories as $key => $val) {
   			if ($page->stories[$key]->getField('type') == 'link')
