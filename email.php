@@ -60,7 +60,7 @@ if (isclass($class_id)) {
 		
 if ($scope == "site") {
 	$where = "site_id = $siteid";
-} else
+} else {
 	$where = "story_id = $storyid";	
 }
 
