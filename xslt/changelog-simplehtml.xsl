@@ -29,7 +29,11 @@
 ///////////////////////////////////////////////////////////////////////
 -->
 <xsl:template match="fix">
-	<li /> Bug Fix: <xsl:call-template name="entry" />
+	<li /> Bug Fix:
+	<xsl:if test="@ref">
+		&lt;a href=&quot;http://sourceforge.net/tracker/index.php?func=detail&aid=<xsl:value-of select="@ref" />&group_id=82171&atid=565234&quot;&gt;log&lt;/a&gt;
+	</xsl:if>
+	<xsl:call-template name="entry" />
 </xsl:template>
 
 <!--
