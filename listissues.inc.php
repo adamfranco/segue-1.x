@@ -19,7 +19,6 @@ if ($thisSite) {
 	printc("<table border=0 width=100%>");
 	foreach (array_reverse($thisSite->sections,TRUE) as $s=>$o) {
 		if ($i != $total - 1) {
-			printc("<tr><td class='articleitem bottommargin5' width=50% valign=middle>");
 			$pdfname = $filename = $fileurl = $extra = '';
 			$pdfname = createPdfName($o->getField("title"));
 			$filename = "$uploaddir/".$thisSite->name."/$pdfname";

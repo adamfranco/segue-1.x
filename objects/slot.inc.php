@@ -20,7 +20,7 @@ class slot {
 		$query = "select * from slots where name='$name'";
 		if (db_num_rows(db_query($query)) > 0) return 1;
 		// check the ldap
-		if (ldapfname($name)) return 1;
+		if (!is_string(ldapfname($name))) return 1;
 		return 0;
 	}
 	
