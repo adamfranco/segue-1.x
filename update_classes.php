@@ -56,8 +56,11 @@ while ($a = db_fetch_assoc($ru)) {
 						$year = "20".$r[5];
 						$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 						$classinfo = db_get_line("classes","name='$class'");
+						$userinfo = db_get_line("users","uname='$nextuser'");
+						$usertype = $userinfo[type];
+						$userfname = $userinfo[fname];
 						//if (!$classinfo) {
-							$query = "insert into classes set name='$class', uname='$nextuser', semester='$semester', year='$year'";
+							$query = "insert into classes set name='$class', uname='$nextuser', fname='$userfname', type='$usertype', semester='$semester', year='$year'";
 							print $query."<br>";
 							db_query($query);
 						//}	
