@@ -4,6 +4,11 @@
 $content = '';
 
 //ob_start();
+/******************************************************************************
+ * This script is an adaptation of fullstory.php
+ * this script is included in site.inc.php when detail variable is set
+ ******************************************************************************/
+
 //session_start();
 
 // include all necessary files
@@ -16,42 +21,44 @@ if (($tmp = $_REQUEST['flat_discussion'])) {
 }
 
 
-$partialstatus = 1;$site =& new site($_REQUEST[site]);
-$section =& new section($_REQUEST[site],$_REQUEST[section], &$site);
-$page =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$section);
-$story =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$page);
-$getinfo = "site=".$site->name."&section=".$section->id."&page=".$page->id."&story=".$story->id."&detail=".$story->id;
+$partialstatus = 1;
+$siteObj =& new site($_REQUEST[site]);
+$sectionObj =& new section($_REQUEST[site],$_REQUEST[section], &$siteObj);
+$pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$sectionObj);
+$storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$pageObj);
+$getinfo = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&story=".$storyObj->id."&detail=".$storyObj->id;
 
 
-$story->fetchFromDB();
-$story->owningSiteObj->fetchFromDB();
+$storyObj->fetchFromDB();
+$storyObj->owningSiteObj->fetchFromDB();
 //$site_owner=slot::getOwner($story->owningSiteObj->name);
-$site_owner=$story->owningSiteObj->owner;
+$site_owner=$storyObj->owningSiteObj->owner;
 //print_r($story->owningSiteObj);
 //print $site_owner;
 
 // get the correct shorttext
-if ($story->getField("type") == 'story') {
-	$smalltext = $story->getField("shorttext");
-	$fulltext = $story->getField("longertext");
-	//print "$smalltext - $fulltext";
-	if (!$fulltext || $fulltext=='') $fulltext = $smalltext;
+if ($storyObj->getField("type") == 'story') {
+	$smalltext = $storyObj->getField("shorttext");
+	$fulltext = $storyObj->getField("longertext");
+	$smalltext = stripslashes($smalltext);
 	$fulltext = stripslashes($fulltext);
-	if ($story->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);
+	if ($storyObj->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);	
+	if ($storyObj->getField("texttype") == 'text') $smalltext = htmlbr($smalltext);
 }
-if ($story->getField("type") == 'image') {
-	$filename = urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext")));
-	$dir = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=".$story->getField("longertext"));
+if ($storyObj->getField("type") == 'image') {
+	$filename = urldecode(db_get_value("media","media_tag","media_id=".$storyObj->getField("longertext")));
+	$dir = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=".$storyObj->getField("longertext"));
 	$imagepath = "$uploadurl/$dir/$filename";
 	$fulltext = "<div style='text-align: center'><br><img src='$imagepath' border=0></div>";
 /* 	if ($story->getField("title")) $fulltext .= "<tr><td align=center><b>".spchars($story->getField("title"))."</b></td></tr>"; */
-	if ($story->getField("shorttext")) $fulltext .= "<br>".stripslashes($story->getField("shorttext"));
+	if ($storyObj->getField("shorttext")) $fulltext .= "<br>".stripslashes($storyObj->getField("shorttext"));
 	$fulltext .= "";
 }
-if ($story->getField("type") == 'file') {
+if ($storyObj->getField("type") == 'file') {
 	$fulltext = "<br>";
-	$fulltext .= makedownloadbar($story);
+	$fulltext .= makedownloadbar($storyObj);
 }
+
 
 ?>
 <!--<html>
@@ -70,7 +77,7 @@ th.info { color: #FFFFFF; }
 	border-bottom: 1px solid #000;
 }
 
-.header {
+.dheader {
 	font-size: 14px;
 	border-bottom: 1px solid #000;
 }
@@ -83,56 +90,57 @@ th.info { color: #FFFFFF; }
 /******************************************************************************
  * print out shory and discussion (if any)
  ******************************************************************************/
+if ($storyObj->getField("discuss")) $titleExtra = " Discussion";
 
 printc("<table width=100% id='maintable' cellspacing=1>");
 printc("<tr><td>");
-	printc("<table cellspacing=1 width=100%>");
-		 if ($fulltext) {
-		 	printc("<tr><td align=left><b>".(($story->getField('title'))?spchars($story->getField('title')):'&nbsp;')."</b></td></tr>");
-		 	printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>");
-		 	printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>");
-		}
+printc("<table cellspacing=1 width=100%>");
+printc("<tr><td align=left class=title>".(($pageObj->getField('title'))?spchars($pageObj->getField('title')):'&nbsp;')."</td></tr>");		 
+printc("<tr><td align=left><b>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</b></td></tr>");
+printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>");
+printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>");
+
 		
-		// output discussions?
-		if ($story->getField("discuss")) {			
- 			printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=header>Discussion</td>");
-			printc("<td align=right class=content>");
-			$f = $_SESSION['flat_discussion'];
-			if (!$f) {
-				//need to change href to index??
-				printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=true'>flat</a>");
-			} else {
-				printc("flat");
-			}
-			printc(" | ");
-			if ($f) {
-				//need to change href to index
-				printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=false'>threaded</a>");
-			} else {
-				printc("threaded");
-			}
-			printc("</th></tr></table>");
-			printc("</th>");
-			printc("</tr>");
-			
-			
-			$ds = & new discussion(&$story);
-			if ($f) $ds->flat(); // must be called before _fetchchildren();
-			$ds->_fetchchildren();
-			
-			$ds->opt("showcontent",true);
-			$ds->opt("showauthor",false);
-			$ds->opt("showtstamp",false);
-			$ds->opt("useoptforchildren",true);
-			$ds->getinfo = $getinfo;
-			
-			// outputAll is a function in discussion.inc.php object
-			$ds->outputAll($story->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true);
-			if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
-		}
+// output discussions?
+if ($storyObj->getField("discuss")) {			
+	printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion</td>");
+	printc("<td align=right class=content>");
+	$f = $_SESSION['flat_discussion'];
+	if (!$f) {
+		//need to change href to index??
+		printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=true'>flat</a>");
+	} else {
+		printc("flat");
+	}
+	printc(" | ");
+	if ($f) {
+		//need to change href to index
+		printc("<a class=info href='index.php?$sid&action=site&$getinfo&flat_discussion=false'>threaded</a>");
+	} else {
+		printc("threaded");
+	}
+	printc("</th></tr></table>");
+	printc("</th>");
+	printc("</tr>");
+	
+	
+	$ds = & new discussion(&$story);
+	if ($f) $ds->flat(); // must be called before _fetchchildren();
+	$ds->_fetchchildren();
+	
+	$ds->opt("showcontent",true);
+	$ds->opt("showauthor",false);
+	$ds->opt("showtstamp",false);
+	$ds->opt("useoptforchildren",true);
+	$ds->getinfo = $getinfo;
+	
+	// outputAll is a function in discussion.inc.php object
+	$ds->outputAll($storyObj->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true);
+	if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
+}
 		
 
-	printc("</table>");
+printc("</table>");
 
 printc("</tr></td>");
 printc("</table>");

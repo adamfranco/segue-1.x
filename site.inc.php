@@ -104,7 +104,7 @@ do {
  ******************************************************************************/
 		
 		if ($thisPage->stories) {
-			//if detail then print only story detail with full/discussion
+			//if detail then print only story detail ie full text/discussion
 			if ($detail) {
 				$o =& $thisPage->stories[$detail];
 				include("fullstory.inc.php");

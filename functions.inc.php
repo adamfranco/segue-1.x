@@ -276,10 +276,17 @@ function add_link($array,$name="",$url="",$extra='',$id=0,$target='_self') {
 // $i = single entry of a navbar variable (made with add_link)
 // $samepage = are we on the page this link describes?
 // $e = extra HTML for the link
-function makelink($i,$samepage=0,$e='',$newline=0) {
+// $bold = if on story detail then bold link
+function makelink($i,$samepage=0,$e='',$newline=0,$bold=0) {
 	$s = '';
 	$s=(!$samepage&&$i[url])?"<a href='$i[url]' target='$i[target]'".(($e)?" $e":"").">":"";
-	$s.=$i[name];
+	
+	if (!$bold) {
+		$s.=$i[name];
+	} else {
+		$s.="<b>".$i[name]."</b>";
+	}
+	
 	$s.=(!$samepage&&$i[url])?"</a>":"";
 	$s.=($i[extra])?(($newline)?"<div align=right>":" ").$i[extra].(($newline)?"</div>":""):"";
 	return $s;
