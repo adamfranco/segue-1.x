@@ -374,7 +374,7 @@ ORDER BY
 			$query = "INSERT INTO slot";
 			$where = "";
 		}
-		$query .= " SET slot_name = '".$this->data[name]."',".$this->_datafields[type][1][0]."='".$this->data[type]."', FK_site = ".$this->id.$where;
+		$query .= " SET slot_name = '".$this->data[name]."',FK_owner=".$_SESSION[aid].",slot_type='".$this->data[type]."', FK_site = ".$this->id.$where;
 		echo $query."<br>";
 		db_query($query);
 		

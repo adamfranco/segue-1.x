@@ -207,7 +207,7 @@ function db_query ($query, $cid=-1) {
 //  if ($debug) {
   	// The $debug variable is set at the top of this script
 	// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-    echo "<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$query;
+    //echo "<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$query;
 //  }
   if ($cid==-1) $cid = $_connect_id;
   if ($db_type == "mysql") {
@@ -215,7 +215,7 @@ function db_query ($query, $cid=-1) {
 //	if ($debug) {
 	  	// The $debug variable is set at the top of this script	
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-		echo "<br>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res;
+		//echo "<br>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$res;
 //	}
 	echo mysql_error();
     return $res;
