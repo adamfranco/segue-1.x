@@ -335,8 +335,10 @@ function allSitesSlots ($user,$existingSites) {
 			if ($o->hasPermission("add and edit and delete",$user)) $sitesEditorOf[] = $o->name;
 	}
 	$allclasses = array();
-	foreach ($classes as $n => $v) $allclasses[] = $n;
-	foreach ($futureclasses as $n => $v) $allclasses[] = $n;
+	if ($_SESSION[atype] == 'prof') {
+		foreach ($classes as $n => $v) $allclasses[] = $n;
+		foreach ($futureclasses as $n => $v) $allclasses[] = $n;
+	}
 	$allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf,$slots));
 	
 	$allGroups = group::getGroupsOwnedBy($user);
