@@ -1,5 +1,8 @@
 <? /* $Id$ */
 
+/* print "canview: ".$thisSite->canview()."<br>"; */
+/* print "hasperm: ".$thisSite->hasPermissionDown("add or edit or delete","",0,1)."<br>"; */
+
 // check view permissions
 if (!$thisSite->canview() && !$thisSite->hasPermissionDown("add or edit or delete")) {
 	error("You may not view this site. This may be due to any of the following reasons:<BR><ul><li>The site has not been activated by the owner.<li>You are not on a computer within $cfg[inst_name].<li>You are not logged in.<li>You are not part of a set of specific users or groups allowed to view this site.</ul>");

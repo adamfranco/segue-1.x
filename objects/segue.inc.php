@@ -794,7 +794,7 @@ class segue {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
-		if (!$noperms) return $this->hasPermission("view",$user);
+		if (!$noperms) return $this->hasPermissionDown("view",$user,0,1);
 		return 1;
 	}
 
@@ -880,12 +880,14 @@ class segue {
 		$condition = '$isgood = ('.implode(' || ',$pArray).')?1:0;';
 		eval($condition);
 		$this->cachedPermissions[$user.$perms] = $isgood;	// cache this entry
-//		print $condition;
+/* 		print $this->id." ".$condition."<br>"; */
 		return $isgood;
 	}
 	
-	function hasPermissionDown($perms,$user='',$useronly=0) {
-/* 		if (!$this->fetcheddown) $this->fetchDown(); */
+	function hasPermissionDown($perms,$user='',$useronly=0,$fetch=0) {
+ 		if ($fetch) {
+ 			if (!$this->fetcheddown) $this->fetchDown();
+		}
 				
 		if ($this->hasPermission($perms,$user,$useronly)) {
 			return true;

@@ -71,8 +71,8 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		$_SESSION[siteObj]->setField("type",$slotObj->getField("type"));
 	} else {
 		if (isclass($_REQUEST[sitename])) $_SESSION[siteObj]->setField("type","class");
+		else if (!$_SESSION[siteObj]->getField("type") || $_SESSION[siteObj]->getField("type") == "") $_SESSION[siteObj]->setField("type","personal");
 	}
-	if (!$_SESSION[siteObj]->getField("type") || $_SESSION[siteObj]->getField("type") == "") $_SESSION[siteObj]->setField("type","personal");
 	
 	if ($_REQUEST[action] == 'add_site') {
 		$_SESSION[settings][add]=1;

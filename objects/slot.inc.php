@@ -16,12 +16,14 @@ class slot {
 		$this->id = $id;
 	}
 	
-	function exists($name) {
+	function exists($name,$checkldap=0) {
 		$query = "select * from slots where name='$name'";
 		if (db_num_rows(db_query($query)) > 0) return 1;
 		// check the ldap
 /* 		print "ldapfname '".ldapfname($name)."'"; */
-		if (is_string(ldapfname($name))) return 1;
+		if ($checkldap) {
+			if (is_string(ldapfname($name))) return 1;
+		}
 		return 0;
 	}
 	
@@ -57,7 +59,7 @@ class slot {
 	
 	function insertDB() {
 		global $error;
-		if (segue::siteExists($this->name) || slot::exists($this->name)) error("That site name, ".$this->name.", is already in use.");
+		if (segue::siteExists($this->name) || slot::exists($this->name,1)) error("That site name, ".$this->name.", is already in use.");
 		if (!ereg("^([0-9a-zA-Z_.-]{0,})$",$this->name)) error("Your slot name is invalid. It may only contain alphanumeric characters, '-', '_' and '.'");
 		if (!$error) {
 			$query = "insert into slots set owner='".$this->owner."',name='".$this->name."',type='".$this->type."',assocsite='".$this->assocSite."'";				
