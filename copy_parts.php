@@ -356,7 +356,7 @@ print "<tr>";
 		else print " font-weight: normal;";
 		print "'>";
 		foreach ($_SESSION[sites] as $s=>$v) {
-			$title = $_SESSION[sites][$s]->getField("title");
+			$title = $_SESSION[sites][$s]->getField("name").": ".$_SESSION[sites][$s]->getField("title");
 			$title = segue::cropString($title,25);
 			print "<option value='$s'";
 			print (($siteObj->name == $s)?" selected":"");
