@@ -56,10 +56,9 @@ Edit config.inc.php to match the requirements of your system/institution.
 STEP 4
 -----------------------------------
 In your MySQL server, create a database (we recommend calling it "segue") and a user
-with access to this database.
+with full access to this database.
 
-Execute the SQL code contained in docs/db_structure_mysql.sql on this database to
-set up the tables.
+Tables & other startup information will be inserted automatically.
 
 STEP 5
 -----------------------------------
