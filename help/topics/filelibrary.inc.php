@@ -15,6 +15,6 @@ $title = "Media Library";
 
 <p>To delete media, click the "delete" button at the right side of the row for that media.  WARNING: If this media is used in any part of your site, those parts will not function correctly.
 
-<p>To update media, select media with the same name when browsing, the click "OVERWRITE" to overwrite the file in the Media Library.
+<p>To update media, check "Overwrite" then select media with the same name when browsing to overwrite the file in the Media Library.
 
 <p>To use media, click the "use" button on the left side of the row for that media.
