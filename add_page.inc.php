@@ -264,7 +264,7 @@ if ($save) {
 			$newid=$settings[page];
 		}
 		
-		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]".(($type=='page')?"&page=$newid":""));
+		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]".(($settings[type]=='page')?"&page=$newid":""));
 		
 	} else {
 		$settings[step] = 1;
