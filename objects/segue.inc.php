@@ -108,9 +108,11 @@ class segue {
 		if ($ar) {
 			$a = array();
 			$oa = &$this->$ar;
-			foreach ($oa as $i=>$o) {
-//				print "doing $i in $ar...<BR>";
-				$a = array_merge($a,$oa[$i]->getAllValues($scope,$name));
+			if ($oa) {
+				foreach ($oa as $i=>$o) {
+	//				print "doing $i in $ar...<BR>";
+					$a = array_merge($a,$oa[$i]->getAllValues($scope,$name));
+				}
 			}
 		}
 		return $a;
