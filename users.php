@@ -210,6 +210,7 @@ printerr();
 		<option<?=($type=='prof')?" selected":""?>>prof
 		<option<?=($type=='staff')?" selected":""?>>staff
 		<option<?=($type=='visitor')?" selected":""?>>visitor
+		<option<?=($type=='guest')?" selected":""?>>guest
 		<option<?=($type=='admin')?" selected":""?>>admin
 		</select>
 		<?

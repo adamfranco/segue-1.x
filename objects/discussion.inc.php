@@ -703,6 +703,12 @@ class discussion {
 		} else {
 			printc ("<tr><td align=left>\n");
 			printc ("<table>");
+			
+			/******************************************************************************
+ 			* If public discussion and not logged in
+ 			* add fields for visitor name and email
+			 ******************************************************************************/
+
 			if (!$_SESSION[auser]) {
 				printc ("<tr><td  colspan = 2><div style='font-size: 9px'>If you part of the ".$cfg[inst_name]." community, please log in at top of page before posting.</div></td></tr>\n");
 				printc ("<tr><td>Full Name:</td><td><input type=text size=50 name=visitor_name value='".$_REQUEST['visitor_name']."'></td></tr>\n");
