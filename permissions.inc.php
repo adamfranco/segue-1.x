@@ -27,7 +27,7 @@ class permissions {
 	
 	// for this function to work, the form within which this is called MUST
 	// be named 'addform'
-	function outputForm(&$o,$d=0) {
+	function outputForm(&$o,$d=0,$canAddEditors=true) {
 		global $cfg;
 		$sitename = $o->owning_site;
 		if ($_SESSION[settings][edit] && !$o->builtPermissions) $o->buildPermissionsArray();
@@ -105,7 +105,11 @@ class permissions {
 				
 			}
 		} else printc("<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=".($a[$d]+1).">no editors added</td></tr>");
-		printc("<tr><th colspan=".($a[$d]+1).">".((isclass($sitename) && !in_array($sitename,$edlist))?"<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
+		
+		if ($canAddEditors) {
+			printc("<tr><th colspan=".($a[$d]+1).">".((isclass($sitename) && !in_array($sitename,$edlist))?"<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
+		}
+		
 		printc("</table>");
 		
 //		if ($_SESSION[settings][edit]) printc("<a href='editor_access.php?$sid&site=".$sitename."' onClick='doWindow(\"permissions\",600,400)' target='permissions'>Permissions as of last save</a>");
