@@ -1,4 +1,4 @@
-<? // default class functions -- they do nothing/return null values
+<? /* $Id$ */
 
 
 function isclass ($class) {

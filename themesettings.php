@@ -1,4 +1,4 @@
-<? 
+<? /* $Id$ */
 $content = ''; 
  
 session_start(); 

@@ -1,4 +1,4 @@
-<? // functions.inc.php -- random functions that will be useful
+<? /* $Id$ */
 
 function makedownloadbar($a) {
 	global $site,$uploaddir,$uploadurl;

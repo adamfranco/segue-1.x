@@ -1,4 +1,4 @@
-<? // default.inc.php
+<? /* $Id$ */
 	// this is a test default script
 
 $pagetitle = "Segue";

@@ -1,4 +1,4 @@
-<? // browser/platform sniffer
+<? /* $Id$ */
 
 	global $HTTP_SERVER_VARS;
 	

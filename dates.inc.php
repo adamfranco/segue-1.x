@@ -1,4 +1,4 @@
-<? // some functions for working with dates
+<? /* $Id$ */
 
 function valid_date($date) {
   // first off, if they're blank, return true

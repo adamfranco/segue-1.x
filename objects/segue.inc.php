@@ -1,4 +1,4 @@
-<? // segue common functions for sites, sections, pages, stories
+<? /* $Id$ */
 
 class segue {
 	var $permissions = array("everyone"=>array(3=>1),"institute"=>array(3=>1));
@@ -17,6 +17,8 @@ class segue {
 	var $owning_site; var $owningSiteObj;		// used by all types (including site for compatibility)
 	var $owning_section; var $owningSectionObj;	// only used for pages and stories
 	var $owning_page; var $owningPageObj;		// only used for stories
+	
+	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 	
 	function fetchData() {
 		if ($fetched) return $this->data;
@@ -51,7 +53,7 @@ class segue {
 			$this->editors[]=$e;
 			$this->setUserPermissions($e);
 /* 			print_r($this->permissions); */
-			unset($_REQUEST[permissions]);
+//			unset($_REQUEST[permissions]);
 		}
 	}
 
@@ -83,6 +85,12 @@ class segue {
 			$this->editors = array_unique(array_merge(array_keys($p),$this->editors));	// add new editors from new permissions array
 			$this->changedpermissions = 1;
 		}
+	}
+	
+	function clearPermissions() {
+		$this->editorsToDelete = array_unique(array_merge(array_keys($p),$this->editors));
+		$this->editors = array();
+		$this->permissions = array();
 	}
 	
 	function setUserPermissions($user,$add=0,$edit=0,$del=0,$view=1,$discuss=0) {
@@ -132,6 +140,7 @@ class segue {
 			$this->setUserPermissions("institute",0,0,0,1,0);
 			$this->changedpermissions = 1;
 		}
+		$this->editors = array_unique($this->editors);
 	}
 
 	function updatePermissionsDB($force=0) {
@@ -175,7 +184,7 @@ class segue {
 
 	// this function used for add_??? scripts to handle activate/deactivate dates
 	// automatically... just call the function
-	function handleFormDates($step=1) {
+	function handleFormDates() {
 		// initialize the session vars.. if needed
 		if (!isset($_SESSION[settings][activateyear]) || !isset($_SESSION[settings][deactivateyear])) {
 			$this->initFormDates();
@@ -186,20 +195,64 @@ class segue {
 		if ($_REQUEST[deactivateyear] != "") $_SESSION[settings][deactivateyear] = $_REQUEST[deactivateyear];
 		if ($_REQUEST[deactivatemonth] != "") $_SESSION[settings][deactivatemonth] = $_REQUEST[deactivatemonth];
 		if ($_REQUEST[deactivateday] != "") $_SESSION[settings][deactivateday] = $_REQUEST[deactivateday];
-		if (!$_REQUEST[link] && $_REQUEST[activatedate]) { 
-			$_SESSION[settings][activatedate] = 1;
-			$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
-		} else if ($_SESSION[settings][step] == $step) {
-			$_SESSION[settings][activatedate] = 0;
-			$this->setActivateDate(-1);
+		if ($_REQUEST[setformdates]) {
+			if (/* !$_REQUEST[link] &&  */$_REQUEST[activatedate]) { 
+				$_SESSION[settings][activatedate] = 1;
+				$this->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
+			} else {
+				$_SESSION[settings][activatedate] = 0;
+				$this->setActivateDate(-1);
+			}
+			if (/* !$_REQUEST[link] &&  */$_REQUEST[deactivatedate]) {
+				$_SESSION[settings][deactivatedate] = 1;
+				$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
+			} else {
+				$_SESSION[settings][deactivatedate] = 0;
+				$this->setDeactivateDate(-1);
+			}
 		}
-		if (!$_REQUEST[link] && $_REQUEST[deactivatedate]) {
-			$_SESSION[settings][deactivatedate] = 1;
-			$this->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
-		} else if ($_SESSION[settings][step] == $step) {
-			$_SESSION[settings][deactivatedate] = 0;
-			$this->setDeactivateDate(-1);
+	}
+	
+	function outputDateForm() {
+		global $months;
+		printc("<input type=hidden name='setformdates' value=1>");
+		printc("<table>");
+		printc("<tr><td align=right>");
+		printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>");
+		for ($i=1;$i<=31;$i++) {
+			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
 		}
+		printc("</select>\n");
+		printc("<select name='activatemonth'>");
+		for ($i=0; $i<12; $i++) {
+			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+		}
+		printc("</select>\n<select name='activateyear'>");
+		$curryear = date("Y");
+		for ($i=$curryear; $i <= ($curryear+5); $i++) {
+			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
+		}
+		printc("</select>");
+		
+		printc("</td></tr>");
+		
+		printc("<tr><td align=right>");
+		printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>");
+		for ($i=1;$i<=31;$i++) {
+			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
+		}
+		printc("</select>\n");
+		printc("<select name='deactivatemonth'>");
+		for ($i=0; $i<12; $i++) {
+			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+		}
+		printc("</select>\n<select name='deactivateyear'>");
+		for ($i=$curryear; $i <= ($curryear+5); $i++) {
+			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
+		}
+		printc("</select>");
+		
+		printc("</tr></td></table>");
 	}
 	
 	function initFormDates() {

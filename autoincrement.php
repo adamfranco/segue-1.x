@@ -1,4 +1,4 @@
-<?
+<? /* $Id$ */
 include("dbwrapper.inc.php");
 include("config.inc.php");
 

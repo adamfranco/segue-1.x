@@ -1,3 +1,3 @@
-<? // edit section --> forward to add_section
+<? /* $Id$ */
 
 include("add_section.inc.php");

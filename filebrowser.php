@@ -1,4 +1,4 @@
-<? // filebrowser.php 
+<? /* $Id$ */
  
 $content = ''; 
  

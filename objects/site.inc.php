@@ -1,4 +1,4 @@
-<? // site object
+<? /* $Id$ */
 
 class site extends segue {
 	var $sections;
@@ -23,6 +23,17 @@ class site extends segue {
 		$this->data[header] = "";
 		$this->data[footer] = "";
 		$this->data[sections] = array();
+	}
+	
+	function fetchDown() {
+		if (!$this->fetcheddown) {
+			if (!$this->fetched) $this->fetchFromDB();
+			foreach ($this->data[sections] as $s) {
+				$this->sections[$s] = new section($this->name,$s);
+				$this->sections[$s]->fetchDown();
+			}
+			$this->fetcheddown = 1;
+		}
 	}
 	
 	function fetchFromDB() {
@@ -62,7 +73,7 @@ class site extends segue {
 		return 1;
 	}
 	
-	function updateDB() {
+	function updateDB($down=0) {
 		if ($this->changed) {
 			$a = $this->createSQLArray();
 			$a[] = "editedby='$_SESSION[auser]'";
@@ -71,13 +82,23 @@ class site extends segue {
 			print "site->updateDB: $query<BR>";
 			db_query($query);
 		}
-				
+		
 		// now update the permissions
 		$this->updatePermissionsDB();
+		
+		// add log entry
+		log_entry("edit_site",$this->name,"","","$_SESSION[auser] edited ".$this->name);
+		
+		// update down
+		if ($down) {
+			if ($this->fetcheddown) {
+				foreach ($this->sections as $i=>$o) $o->updateDB(1);
+			}
+		}
 		return 1;
 	}
 	
-	function insertDB() {
+	function insertDB($down=0) {
 		$a = $this->createSQLArray();
 		$a[] = "addedby='$_SESSION[auser]'";
 		$a[] = "addedtimestamp=NOW()";
@@ -88,6 +109,14 @@ class site extends segue {
 		
 		// add new permissions entry.. force update
 		$this->updatePermissionsDB(1);
+		
+		// add log entry
+		log_entry("add_site",$this->name,"","","$_SESSION[auser] added ".$this->name);
+		
+		// insert down
+		if ($down && $this->fetcheddown) {
+			foreach ($this->sections as $i=>$o) $o->insertDB(1,$this->name);
+		}
 		return 1;
 	}
 	
@@ -106,6 +135,21 @@ class site extends segue {
 		$section = new section($this->name,$id);
 		$section->delete();
 		$this->changed = 1;
+	}
+	
+	function delete() {	// delete from db
+		if (!$this->id) return false;
+		$query = "delete from sites where id=".$this->id;
+		db_query($query);
+		
+		// remove sections
+		$this->fetchDown();
+		foreach ($this->sections as $s=>$o) {
+			$o->delete();
+		}
+		
+		$this->clearPermissions();
+		$this->updatePermissionsDB();
 	}
 	
 	function createSQLArray() {

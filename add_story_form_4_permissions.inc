@@ -1,3 +1,4 @@
+<? /* $Id$ */ ?>
 <script lang="JavaScript">
 
 function submitForm() {

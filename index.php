@@ -1,4 +1,4 @@
-<?	// index.php for coursesDB module
+<? /* $Id$ */
 	// this file controls pretty much the entire program, taking input and executing the correct scripts accordingly
 
 // we need to include object files before session_start() or registered
@@ -109,6 +109,15 @@ if ($_REQUEST[site]) {						// we are in a site
 	$sitefooter .= $thisSite->getField("footer");
 	$sitefooter .= "</center>";
 }
+if ($_REQUEST[section]) {
+	$thisSection = new section($thisSite->name,$_REQUEST[section]);
+	$thisSection->fetchFromDB();
+}
+if ($_REQUEST[page]) {
+	$thisPage = new page($thisSite->name,$thisSection->id,$_REQUEST[page]);
+	$thisPage->fetchFromDB();
+}
+
 
 // compatibility:
 if (isset($_REQUEST[action])) $action = $_REQUEST[action];
@@ -133,20 +142,9 @@ printerr();
 
 $t = $action;
 if ($t != 'site') $t = 'viewsite';
-if ($_REQEUST[section]) {
-	$thisSection = new section($thisSite->getField("name"),$_REQUEST[section]);
-	$thisSection->fetchFromDB();
-	$sectioninfo = $thisSection->fetchData();
-	$sn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]'>".$thisSection->getField("title")."</a>";
-}
-if ($_REQUEST[page]) {		// we're viewing a page
-//	$thisPage = new page($thisSite->getField("name"),$thisSection->id,$_REQUEST[page];
-//	$thisPage->fetchFromDB();
-//	$pageinfo = $thisPage->fetchData();
-	$pageinfo = db_get_line("pages","id=$page");
-	$pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$site&section=$section&page=$page'>$pageinfo[title]</a>";
-}
-if ($_REQUEST[site])
+if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]'>".$thisSection->getField("title")."</a>";
+if ($thisPage) $pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]'>".$thisPage->getField("title")."</a>";
+if ($thisSite)
 	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]'>".$thisSite->getField("title")."</a>";
 //	$title = $thisSite->getField("title");
 $nav .= $sn.$pn;
@@ -180,15 +178,13 @@ if (!$theme) {
 if ($themesettings) $themesettings = decode_array($themesettings);
 //print "$themesdir/$theme/";
 
-
-
 //output the HTML
 include("$themesdir/$theme/output.inc.php");
 
 // ------------------
 // if register_globals is off, we have to do some hacking to get things to work:
 if (!ini_get("register_globals")) {
-	foreach (array_keys($_SESSION) as $n) { if ($n != "settings" && $n != "siteObj") $_SESSION[$n] = $$n; }
+	foreach (array_keys($_SESSION) as $n) { if ($n != "settings" && $n != "siteObj" && $n != "sectionObj" && $n != "pageObj" && $n != "storyObj") $_SESSION[$n] = $$n; }
 }
 
 
@@ -199,9 +195,15 @@ print_r($_SESSION);
 print "\n\n";
 print "request:\n";
 print_r($_REQUEST);
-print "\n\n";
-print "thisSite:\n";
-print_r($thisSite);
+if (is_object($thisSection)) {
+	print "\n\n";
+	print "thisSection:\n";
+	print_r($thisSection);
+} else if (is_object($thisSite)) {
+	print "\n\n";
+	print "thisSite:\n";
+	print_r($thisSite);
+}
 print "</pre>";
 
 ?>

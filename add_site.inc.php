@@ -1,4 +1,4 @@
-<? // add_site.inc.php -- add/edit a site (passed $sitename)
+<? /* $Id$ */
 
 if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	// if we have already started editing...
@@ -116,8 +116,6 @@ if ($_REQUEST[save]) {
 		print "<BR><BR>".$_SESSION[settings][sitename]."<BR><BR>";
 		if ($_SESSION[settings][add]) $_SESSION[siteObj]->insertDB();
 		if ($_SESSION[settings][edit]) $_SESSION[siteObj]->updateDB();
-		
-		log_entry($_REQUEST[action],$_SESSION[siteObj]->getField("name"),"","","$auser ".(($_SESSION[settings][edit])?"edited":"added")." ".$_SESSION[siteObj]->getField("name"));
 		
 		/* ----------------------------------------------------- */
 		/*   will have to update this to use object-related site copy functions */

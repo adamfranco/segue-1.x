@@ -1,4 +1,4 @@
-<? // username_lookup.php
+<? /* $Id$ */
 
 if ($name) {
 /* 	include("config.inc.php"); */

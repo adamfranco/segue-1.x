@@ -1,4 +1,4 @@
-
+<? /* $Id$ */ ?>
 <script lang="JavaScript">
 //var theme = document.addform.theme.value;
 

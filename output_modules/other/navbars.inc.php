@@ -1,4 +1,4 @@
-<?
+<? /* $Id$ */
 
 include("output_modules/common.inc.php");
 

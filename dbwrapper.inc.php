@@ -1,4 +1,4 @@
-<?
+<? /* $Id$ */
 
 /*--------------------------------------------------------------------------------------*/
 /* ---------------------------   DB Wrapper ----------------------------------------- 	*/
@@ -218,19 +218,19 @@ function db_fetch_assoc($res) {
   if ($db_type=="mysql") {
     $ar = mysql_fetch_assoc($res);
     //$ar = mysql_fetch_array($res);
-    if ($ar) {
-      foreach ($ar as $name=>$value) 
-        $arn[strtolower($name)] = $arn[strtoupper($name)] = $value;
-    }
-    return $arn;
+/*     if ($ar) { */
+/*       foreach ($ar as $name=>$value)  */
+/*         $arn[strtolower($name)] = $arn[strtoupper($name)] = $value; */
+/*     } */
+    return $ar;
   } else if ($db_type == "oracle") {
     $ar = array();
     OCIFetchInto($res, &$ar, OCI_ASSOC+OCI_RETURN_LOBS);
-    if ($ar) {
-      foreach($ar as $name=>$value)
-        $arn[strtolower($name)] = $arn[strtoupper($name)] = $value;
-    }
-    return $arn;
+/*     if ($ar) { */
+/*       foreach($ar as $name=>$value) */
+/*         $arn[strtolower($name)] = $arn[strtoupper($name)] = $value; */
+/*     } */
+    return $ar;
   }
 }
     

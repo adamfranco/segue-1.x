@@ -1,4 +1,4 @@
-<? // includes for Segue scripts
+<? /* $Id$ */
 
 if (!ini_get("register_globals")) {
 /* 	print "AAAAAAAAAAAAAH!!!<BR><BR>"; */

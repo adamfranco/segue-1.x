@@ -1,4 +1,4 @@
-<? 
+<? /* $Id$ */
 //moves all userfiles from subdirectories to site directory in segue_userfiles
 //renames files by adding incremental number to end of file name
 

@@ -1,4 +1,4 @@
-<? // MOTS - error.php - error handling routines
+<? /* $Id$ */
 
 
 // globals

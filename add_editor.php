@@ -1,4 +1,4 @@
-<? // username_lookup.php
+<? /* $Id$ */
 session_start();
 ob_start();
 

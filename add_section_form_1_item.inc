@@ -1,8 +1,8 @@
-<? // add_site_form.inc -- the form that people use to add/edit a site
+<? /* $Id$ */
 
 printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
 
-printc("<input type=hidden name=site value='".$thisSite->name."'>");
+//printc("<input type=hidden name=site value='".$thisSite->name."'>");
 //printc("<input type=hidden name=section value=$settings[section]>");
 //printc("<input type=hidden name=page value=$settings[page]>");
 //if ($edit) printc("<input type=hidden name=edit_page value=$settings[page]>");

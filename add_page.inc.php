@@ -1,10 +1,10 @@
-<? // add_page.inc.php -- add a page
+<? /* $Id$ */
 
 //--------------------------------------------------------------------------------------------------------
 // Begining of new code
 
 // ---  variables for debugging ---
-//foreach ($settings as $n => $v) {
+//foreach ($_SESSION[settings] as $n => $v) {
 //	$variables .= "$n = $v <br>";	
 //}
 //add_link(leftnav,'','',"$variables");
@@ -14,178 +14,112 @@
 //------------------------------------
 
 // first check if we are allowed to edit this site at all
-if ($auser != $site_owner && $auser != $settings[site_owner] && !is_editor($auser,$site) && !is_editor($auser,$settings[site])) {
-	error("You're not even an editor for this site! Bad person!");
-	return;
-}
-if ($edit && !permission($auser,SECTION,EDIT,$section) && !permission($auser,SECTION,EDIT,$settings[section])) {
-	error("You don't have permission to edit this page. Nice try.");
-	return;
-}
-if ($add && !permission($auser,SECTION,ADD,$section)  && !permission($auser,SECTION,ADD,$settings[section])) {
-	error("You don't have permission to add sections to this site. Nice try.");
-	return;
-}
-if ($edit && !insite($site,$section,$edit_page)) {
-	error("Oh, you're good, but not good enough!");
-	return;
-}
+/* if ($auser != $site_owner && $auser != $_SESSION[settings][site_owner] && !is_editor($auser,$site) && !is_editor($auser,$_SESSION[settings][site])) { */
+/* 	error("You're not even an editor for this site! Bad person!"); */
+/* 	return; */
+/* } */
+/* if ($edit && !permission($auser,SECTION,EDIT,$section) && !permission($auser,SECTION,EDIT,$_SESSION[settings][section])) { */
+/* 	error("You don't have permission to edit this page. Nice try."); */
+/* 	return; */
+/* } */
+/* if ($add && !permission($auser,SECTION,ADD,$section)  && !permission($auser,SECTION,ADD,$_SESSION[settings][section])) { */
+/* 	error("You don't have permission to add sections to this site. Nice try."); */
+/* 	return; */
+/* } */
+/* if ($edit && !insite($site,$section,$edit_page)) { */
+/* 	error("Oh, you're good, but not good enough!"); */
+/* 	return; */
+/* } */
 
-if ($settings) {
+if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 	// if we have already started editing...
 
-	// ---- Editor actions ----
-	if ($edaction == 'add') {
-		if ($settings[editors])
-			$edlist = explode(",",$settings[editors]);
-		else $edlist = array();
-		if (!in_array($edname,$edlist) && $edname != $auser) $edlist[]=$edname;
-		$editors = implode(",",$edlist);
-		if ($edname == $auser) error("You do not need to add yourself as an editor.");
-	}
-	
-	if ($edaction == 'del') {
-		if ($settings[editors])
-			$edlist = explode(",",$settings[editors]);
-		else $edlist = array();
-		$nlist = array();
-		foreach ($edlist as $e) {
-			if ($e != $edname) $nlist[]=$e;
-		}
-		$editors = implode(",",$nlist);
-	}
-
 	// --- Load any new variables into the array ---
-	// Checkboxes need a "if ($settings[step] == 1 && !$link)" tag.
+	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-	if ($type) $settings[type] = $type;
-	if ($settings[step] == 1 && $title != "") $settings[title] = $title;
-	if ($activateyear != "") $settings[activateyear] = $activateyear;
-	if ($activatemonth != "") $settings[activatemonth] = $activatemonth;
-	if ($activateday != "") $settings[activateday] = $activateday;
-	if ($settings[step] == 2 && !$link) $settings[activatedate] = $activatedate;
-	if ($deactivateyear != "") $settings[deactivateyear] = $deactivateyear;
-	if ($deactivatemonth != "") $settings[deactivatemonth] = $deactivatemonth;
-	if ($deactivateday != "") $settings[deactivateday] = $deactivateday;
-	if ($settings[step] == 2 && !$link) $settings[deactivatedate] = $deactivatedate;
-	if ($active != "") $settings[active] = $active;
-	if ($viewpermissions != "") $settings[viewpermissions] = $viewpermissions;
-	if ($settings[step] == 3 && !$link) $settings[editors] = strtolower($editors);
-	if ($settings[step] == 3 && !$link) $settings[permissions] = $permissions;
-	if ($settings[step] == 3 && !$link) $settings[ediscussion] = $ediscussion;
-	if ($settings[step] == 3 && !$link) $settings[locked] = $locked;
-//	if ($settings[step] == 1 && !$link) $settings[recursiveenable] = $recursiveenable;
-	if ($copydownpermissions != "") $settings[copydownpermissions] = $copydownpermissions;
-	if ($settings[step] == 4 && !$link) $settings[showcreator] = $showcreator;
-	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
-	if ($settings[step] == 4 && !$link) $settings[storyorder] = $storyorder;
-	if ($settings[step] == 4 && !$link) $settings[showhr] = $showhr;
-	if ($archiveby) $settings[archiveby] = $archiveby;
-	if ($url) $settings[url] = $url;
+	if ($_REQUEST[type]) $_SESSION[pageObj]->setField("type",$_REQUEST[type]);
+	if ($_REQUEST[title] != "") $_SESSION[pageObj]->setField("title",$_REQUEST[title]);
+	$_SESSION[pageObj]->handleFormDates();	// handle de/activate dates
+	if ($_REQUEST[active] != "") $_SESSION[pageObj]->setField("active",$_REQUEST[active]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("ediscussion",$_REQUEST[ediscussion]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("locked",$_REQUEST[locked]);
+	if ($_REQUEST[copydownpermissions] != "") $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions];
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showcreator",$_REQUEST[showcreator]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showdate",$_REQUEST[showdate]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("storyorder",$_REQUEST[storyorder]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showhr",$_REQUEST[showhr]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setPermissions($_REQUEST[permissions]);
+	if ($_REQUEST[archiveby]) $_SESSION[pageObj]->setField("archiveby",$_REQUEST[archiveby]);
+	if ($_REQUEST[url]) $_SESSION[pageObj]->setField("url",$_REQUEST[url]);
 	
 	//---- If switching type, take values to defaults ----
-	if ($typeswitch) {
-		$settings[title] = "";
-		$settings[url] = "http://";
-		$settings[active] = 1;
-		$settings[activateyear] = "0000";
-		$settings[activatemonth] = "00";
-		$settings[activateday] = "00";
-		$settings[activatedate] = 0;
-		$settings[deactivateyear] = "0000";
-		$settings[deactivatemonth] = "00";
-		$settings[deactivateday] = "00";
-		$settings[deactivatedate] = 0;
-		$settings[active] = 1;
-		$settings[editors] = "";
-		$settings[ediscussion] = 0;
-		$settings[locked] = 0;
-		$settings[showcreator] = 0;
-		$settings[showdate] = 0;
-		$settings[showhr] = 0;
-		$settings[archiveby] = "none";
-		$settings[copydownpermissions] = 0;
-		$settings[storyorder] = "";
+	if ($_REQUEST[typeswitch]) {
+		$_SESSION[pageObj]->init(1);		// init values... force form date variables
 		
-		if ($settings[add]) {
+		if ($_SESSION[settings][add]) {
 			//print "<p> deleting settings[permissions]....</p>";
-			//$settings[permissions] = "";
-			$settings[permissions] = decode_array(db_get_value("sections","permissions","id=$settings[section]"));
+			//$_SESSION[settings][permissions] = "";
+			$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 		}
 	}
 }
 
-if (!$settings && !$error) {
-	// create the settings array with default values. $settings must be passed along with each link.
+if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$error */) {
+	// create the settings array with default values. $_SESSION[settings] must be passed along with each link.
 	// The array will be saved on clicking a save button.
-	$editors = db_get_value("sites","editors","name='$site'");
-	session_register("settings");
-	$settings = array(
+	$_SESSION[settings] = array(
 		"site_owner" => $site_owner,
 		"add" => 0,
 		"edit" => 0,
 		"step" => 1,
-		"site" => $site,
-		"section" => $section,
-		"page" => $edit_page,
-		"title" => "",
-		"activateyear" => "0000",
-		"activatemonth" => "00",
-		"activateday" => "00",
-		"activatedate" => 0,
-		"deactivateyear" => "0000",
-		"deactivatemonth" => "00",
-		"deactivateday" => "00",
-		"deactivatedate" => 0,
-		"active"  => 1,
-		"editors" => $editors,
-		"permissions" => "",
-		"ediscussion" => 1,
-		"type" => "page",
-		"url" => "http://",
-		"commingFrom" => $commingFrom,
-		"storyorder" => ""
+		"site" => $thisSite->name,
+		"section" => $thisSection->id,
+		"commingFrom" => $commingFrom
 	);
+
+	$_SESSION[pageObj] = new page($thisSite->name,$thisSection->id);
 	
-	$settings[pagetitle]=db_get_value("sites","title","name='$site'") . " > " . db_get_value("sections","title","id=$section") . " > ";
+	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > ";
 	
 	if ($action == 'add_page') {
-		$settings[add]=1;
-		$settings[edit]=0;
-		$settings[pagetitle] .= " Add Item";
+		$_SESSION[settings][add]=1;
+		$_SESSION[settings][edit]=0;
+		$_SESSION[settings][pagetitle] .= " Add Item";
 	}	
 	if ($action == 'edit_page') { 
-		$settings[add]=0;
-		$settings[edit]=1;
-		$settings[pagetitle] .= " Edit Item";
+		$_SESSION[settings][add]=0;
+		$_SESSION[settings][edit]=1;
+		$_SESSION[settings][pagetitle] .= " Edit Item";
 	}
 	
-	if ($settings[add]) {
-		$settings[permissions] = decode_array(db_get_value("sections","permissions","id=$section"));
+	if ($_SESSION[settings][add]) {
+		$_SESSION[pageObj]->setPermissions($thisSection->getPermissions);
 	}
 	
-	if ($settings[edit]) {	
-		$a = db_get_line("pages","id=$settings[page]");
-		foreach ($a as $n=>$v) $settings[$n]=$v;
-		list($settings[activateyear],$settings[activatemonth],$settings[activateday]) = explode("-",$settings[activatedate]);
-		list($settings[deactivateyear],$settings[deactivatemonth],$settings[deactivateday]) = explode("-",$settings[deactivatedate]);
-		$settings[activatemonth]-=1;
-		$settings[deactivatemonth]-=1;
-		$settings[activatedate]=($settings[activatedate]=='0000-00-00')?0:1;
-		$settings[deactivatedate]=($settings[deactivatedate]=='0000-00-00')?0:1;
-		$settings[permissions] = decode_array($settings[permissions]);
+	if ($_SESSION[settings][edit]) {
+		$_SESSION[pageObj]->fetchFromDB($_REQUEST[edit_page]);
+/* 		$a = db_get_line("pages","id=$_SESSION[settings][page]"); */
+/* 		foreach ($a as $n=>$v) $_SESSION[settings][$n]=$v; */
+/* 		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$_SESSION[settings][activatedate]); */
+/* 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$_SESSION[settings][deactivatedate]); */
+/* 		$_SESSION[settings][activatemonth]-=1; */
+/* 		$_SESSION[settings][deactivatemonth]-=1; */
+/* 		$_SESSION[settings][activatedate]=($_SESSION[settings][activatedate]=='0000-00-00')?0:1; */
+/* 		$_SESSION[settings][deactivatedate]=($_SESSION[settings][deactivatedate]=='0000-00-00')?0:1; */
+/* 		$_SESSION[settings][permissions] = decode_array($_SESSION[settings][permissions]); */
 	}
+	$_SESSION[pageObj]->initFormDates();
 }
 
-if ($prevbutton) $settings[step] = $settings[step] - 1;
-if ($nextbutton) $settings[step] = $settings[step] + 1; 
-if ($step != "") $settings[step] = $step;
-if ($settings[step] ==3 && $auser != $settings[site_owner]) {
-	if ($prevbutton) $settings[step] = 2;
-	if ($nextbutton) $settings[step] = 4;
+if ($_REQUEST[prevbutton]) $_SESSION[settings][step] -= 1;
+if ($_REQUEST[nextbutton]) $_SESSION[settings][step] += 1; 
+if ($_REQUEST[step] != "") $_SESSION[settings][step] = $_REQUEST[step];
+if ($_SESSION[settings][step] == 3 && $_SESSION[auser] != $site_owner) {
+	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 2;
+	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 4;
 }
 
-$pagetitle=$settings[pagetitle];
+$pagetitle=$_SESSION[settings][pagetitle];
 
 //-----for some reason siteheader and sitefooter keep being define prior to this point on button click. I'm killing them here until their origen is found ----
 $site = "";
@@ -194,120 +128,48 @@ $page = "";
 $siteheader = "";
 $sitefooter = "";
 
-// ---  variables for debugging ---
-//foreach ($settings as $n => $v) {
-//	$variables .= "$n = $v <br>";	
-//}
-//add_link(leftnav,'','',"$variables");
-//print $variables;
-//------------------------------------
-
-if ($cancel) {
-	$commingFrom = $settings[commingFrom];
-	$site = $settings[site];
-	session_unregister("settings");
+if ($_REQUEST[cancel]) {
+	$commingFrom = $_SESSION[settings][commingFrom];
+	$site = $thisSite->name;
+//	session_unregister("settings"); // handled by index.php
 	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
 	else header("Location: index.php?$sid");
 }
 
-if ($save) {
-	$error = 0;
+if ($_REQUEST[save]) {
+/* 	$error = 0; */
 	// error checking
-	if ($settings[type]!='divider' && (!$settings[title] || $settings[title]==''))
-		error("You must enter a header title.");
-	if ($settings[type]=='url' && (!$settings[url] || $settings[url]=='' || $settings[url]=='http://'))
+	if ($_SESSION[pageObj]->getField("type")!='divider' && (!$_SESSION[pageObj]->getField("title") || $_SESSION[pageObj]->getField("title")==''))
+		error("You must enter a title.");
+	if ($_SESSION[pageObj]->getField("type")=='url' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[settings][url]=='' || $_SESSION[pageObj]->getField("url")=='http://'))
 		error("You must enter a URL.");
 		
 	if (!$error) { // save it to the database
-		$addedby=$auser;
-		if ($settings[activatedate]) $settings[activatedate] = $settings[activateyear] . "-" . ($settings[activatemonth]+1) . "-" . $settings[activateday];
-		else $settings[activatedate] = "0000-00-00";
-		if ($settings[deactivatedate]) $settings[deactivatedate] = $settings[deactivateyear] . "-" . ($settings[deactivatemonth]+1) . "-" . $settings[deactivateday];
-		else $settings[deactivatedate] = "0000-00-00";
-		$settings[active] = ($settings[active])?1:0;
-		$settings[locked] = ($settings[locked])?1:0;
-		$settings[showcreator] = ($settings[showcreator])?1:0;
-		$settings[showdate] = ($settings[showdate])?1:0;
-		$settings[showhr] = ($settings[showhr])?1:0;
-		$settings[ediscussion] = ($settings[ediscussion])?1:0;
 		
 		// check make sure the owner is the current user if they are changing permissions
-		if ($settings[site_owner] != $auser)
-			$settings[permissions] = decode_array(db_get_value("sections","permissions","id=$settings[section]"));
+		if ($site_owner != $_REQUEST[auser])
+			$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 		
-		// make sure that the permissions array represents all of the editors (giving them either permission (1) or not (0))
-		//$settings[editors] = db_get_value("sites","editors","name='$settings[site]'");
-		if ($settings[editors]) {
-			$edlist = explode(",",$settings[editors]);
-			foreach ($edlist as $e) {
-				for ($i=0;$i<3;$i++) {
-					$settings[permissions][$e][$i] = ($settings[permissions][$e][$i])?1:0;
-				}
-			}
+		if ($_SESSION[settings][edit]) { 
+			$_SESSION[pageObj]->updateDB();
+/* 			$query = "update pages set editedby='$auser',"; $where = " where id=$_SESSION[settings][page]";  */
 		}
-		
-		$settings[permissions] = encode_array($settings[permissions]);
-		if ($settings[add]) $query = "insert into pages set addedby='$auser',addedtimestamp=NOW(),";
-		$where = '';
-		if ($settings[edit]) { 
-			$query = "update pages set editedby='$auser',"; $where = " where id=$settings[page]"; 
+		if ($_SESSION[settings][add]) {
+			$_SESSION[pageObj]->insertDB();
 		}
-		
-		$chg = array();
-		$chg[] = "site_id='$settings[site]'";
-		$chg[] = "section_id='$settings[section]'";
-		$chg[] = "ediscussion=$settings[ediscussion]";
-		$chg[] = "archiveby='$settings[archiveby]'";
-		$chg[] = "url='$settings[url]'";
-		$chg[] = "type='$settings[type]'";
-		$chg[] = "title='$settings[title]'";
-		$chg[] = "showcreator=$settings[showcreator]";
-		$chg[] = "showdate=$settings[showdate]";
-		$chg[] = "showhr=$settings[showhr]";
-		$chg[] = "locked=$settings[locked]";
-		$chg[] = "activatedate='$settings[activatedate]'";
-		$chg[] = "deactivatedate='$settings[deactivatedate]'";
-		$chg[] = "active=$settings[active]";
-		$chg[] = "permissions='$settings[permissions]'";
-		$chg[] = "storyorder='$settings[storyorder]'";
-		
-		$query .= implode(",",$chg);
-		print $query.$where."<BR>";
-		if (count($chg)) db_query($query.$where);
-		print mysql_error();
-		
-		// add the new section id to the sites table
-		if ($settings[add]) {
-			$newid = lastid();
-			$pages = decode_array(db_get_value("sections","pages","id=$settings[section]"));
-			array_push($pages,$newid);
-			$pages = encode_array($pages);
-			$query = "update sections set pages='$pages' where id=$settings[section]";
-			db_query($query);
-			log_entry("add_page",$settings[site],$settings[section],$newid,"$auser added page id $newid to site $settings[site]");
-		}
-		if ($settings[edit]) {
-			log_entry("edit_page",$settings[site],$settings[section],$settings[page],"$auser edited page id $settings[page] in site $settings[site]");
-			$newid=$settings[page];
-		}
-		
-		// add or remove any changes to the site editor list.
-		$query = "update sites set ".(($settings[type]=="page")?"editors='$settings[editors]',":"")."editedtimestamp=NOW() where  name='$settings[site]'";
-		db_query($query);
-		print "$query <br>";
 		
 		// do the recursive update of active flag and such... .... ugh
-		$settings[permissions] = decode_array($settings[permissions]);
-		if ($settings[edit] && ($settings[recursiveenable] || count($settings[copydownpermissions]))) {
+		$_SESSION[settings][permissions] = decode_array($_SESSION[settings][permissions]);
+		if ($_SESSION[settings][edit] && ($_SESSION[settings][recursiveenable] || count($_SESSION[settings][copydownpermissions]))) {
 			// recursively change the $active or $permissions field for all parts of the site			
-			$stories = decode_array(db_get_value("pages","stories","id=$settings[page]"));
+			$stories = decode_array(db_get_value("pages","stories","id=$_SESSION[settings][page]"));
 			foreach ($stories as $s) {
 				$sa = db_get_line("stories","id=$s");
 				$chg = array();
-				if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active=$settings[active]";
-				if (count($settings[copydownpermissions]) && $auser == $settings[site_owner]) {
+				if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active=$_SESSION[settings][active]";
+				if (count($_SESSION[settings][copydownpermissions]) && $auser == $_SESSION[settings][site_owner]) {
 					$sp = decode_array($sa['permissions']);
-					foreach ($settings[copydownpermissions] as $e) $sp[$e] = $settings[permissions][$e];
+					foreach ($_SESSION[settings][copydownpermissions] as $e) $sp[$e] = $_SESSION[settings][permissions][$e];
 					$sp = encode_array($sp);
 					$chg[] = "permissions='$sp'";
 				}
@@ -317,10 +179,10 @@ if ($save) {
 			}			
 		}
 		
-		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]".(($settings[type]=='page')?"&page=$newid":""));
+		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id.(($_SESSION[pageObj]->getField("type")=='page')?"&page=".$_SESSION[pageObj]->id:""));
 		
 	} else {
-		$settings[step] = 1;
+		$_SESSION[settings][step] = 1;
 	}
 }
 
@@ -328,40 +190,40 @@ if ($save) {
 // --- The Navigation Links for the sidebar ---
 $leftlinks = "_________________<br><table>";
 $leftlinks .= "<tr><td>";
-if ($settings[step] == 1) $leftlinks .= "&rArr; ";
+if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
-if ($settings[step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_page&step=1&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_page&step=1&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Item";
-if ($settings[step] != 1) $leftlinks .= "</a>";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
 
-if ($settings[type] == "page" || $settings[type] == "url") {
+if ($_SESSION[pageObj]->getField("type") == "page" || $_SESSION[pageObj]->getField("type") == "url") {
 	$leftlinks .= "<tr><td>";
-	if ($settings[step] == 2) $leftlinks .= "&rArr; ";
+	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($settings[step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_page&step=2&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_page&step=2&link=1 onClick=\"submitForm()\">";
 	$leftlinks .= "Activation";
-	if ($settings[step] != 2) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-if ($settings[type] == "page" && $auser == $settings[site_owner]) {
+if ($_SESSION[pageObj]->getField("type") == "page" && $_SESSION[auser] == $site_owner) {
 	$leftlinks .= "<tr><td>";
-	if ($settings[step] == 3) $leftlinks .= "&rArr; ";
+	if ($_SESSION[settings][step] == 3) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($settings[step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_page&step=3&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_page&step=3&link=1 onClick=\"submitForm()\">";
 	$leftlinks .= "Editing Permissions";
-	if ($settings[step] != 3) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-if ($settings[type] == "page") {
+if ($_SESSION[pageObj]->getField("type") == "page") {
 	$leftlinks .= "<tr><td>";
-	if ($settings[step] == 4) $leftlinks .= "&rArr; ";
+	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($settings[step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_page&step=4&link=1 onClick=\"submitForm()\">";
+	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($_SESSION[settings][edit])?"edit":"add")."_page&step=4&link=1 onClick=\"submitForm()\">";
 	$leftlinks .= "Display Options";
-	if ($settings[step] != 4) $leftlinks .= "</a>";
+	if ($_SESSION[settings][step] != 4) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
@@ -369,27 +231,18 @@ $leftlinks .= "</table>_________________<br><a href=$PHP_SELF?$sid&action=add_pa
 
 add_link(leftnav,'','',"$leftlinks");
 
-if ($settings[step] == 1) {
+if ($_SESSION[settings][step] == 1) {
 	include("add_page_form_1_item.inc");
 }
-if ($settings[step] == 2) {
+if ($_SESSION[settings][step] == 2) {
 	include("add_page_form_2_activation.inc");
 }
-if ($settings[step] == 3) {
+if ($_SESSION[settings][step] == 3) {
 	include("add_page_form_3_permissions.inc");
 }
-if ($settings[step] == 4) {
+if ($_SESSION[settings][step] == 4) {
 	include("add_page_form_4_show.inc");
 }
-
-
-// ---  variables for debugging ---
-//foreach ($settings as $n => $v) {
-//	$variables .= "$n = $v <br>";	
-//}
-//add_link(leftnav,'','',"$variables");
-//print $variables;
-//------------------------------------
 
 // End of New Code
 //--------------------------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-<? // viewsite.inc.php	-- allows logged in people to view a site
+<? /* $Id$ */
  
 // session variable reset has moved to index.php
 		

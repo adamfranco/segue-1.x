@@ -1,4 +1,4 @@
-<? // class functions for middlebury network
+<? /* $Id$ */
 
 function isclass ($class) {
 	global $auser;

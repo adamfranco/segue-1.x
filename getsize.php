@@ -1,4 +1,4 @@
-<?
+<? /* $Id$ */
 // this script is included in:
 // query.php
 

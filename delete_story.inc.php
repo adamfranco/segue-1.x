@@ -1,4 +1,4 @@
-<? // delete_story.inc.php -- delete a story (wow)
+<? /* $Id$ */
 
 $stories = decode_array(db_get_value("pages","stories","id=$page"));
 

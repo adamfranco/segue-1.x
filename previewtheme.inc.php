@@ -1,4 +1,4 @@
-<? // previewtheme.inc.php
+<? /* $Id$ */
 // allows users to preview the theme
 
 $pagetitle = "Segue > Theme Preview > ".$possible_themes[$theme];

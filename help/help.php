@@ -1,4 +1,4 @@
-<? // help handler
+<? /* $Id$ */
 
 if (!ini_get("register_globals")) $helptopic = $_GET["helptopic"];
 

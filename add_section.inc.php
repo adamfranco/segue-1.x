@@ -1,4 +1,4 @@
-<? // add_section.inc.php -- add a section
+<? /* $Id$ */
 
 //--------------------------------------------------------------------------------------------------------
 // Begining of new code
@@ -33,35 +33,26 @@ if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 	if ($_REQUEST[type]) $_SESSION[sectionObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1 && $_REQUEST[title] != "") $_SESSION[sectionObj]->setField("title",$_REQUEST[title]);
 	// handle de/activate dates
-	$_SESSION[sectionObj]->handleFormDates(2);
+	$_SESSION[sectionObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[sectionObj]->setField("active",$_REQUEST[active]);
-/* 	if ($viewpermissions != "") $_SESSION[settings][viewpermissions] = $viewpermissions; */
-/* 	if ($_SESSION[settings][step] == 3 && !$link) $_SESSION[settings][editors] = strtolower($editors); */
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setPermissions($_REQUEST[permissions]);
-/* 	if ($_SESSION[settings][step] == 3 && !$link) $_SESSION[settings][ediscussion] = $ediscussion; */
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setField("locked",$_REQUEST[locked]);
-//	if ($_SESSION[settings][step] == 1 && !$link) $_SESSION[settings][recursiveenable] = $recursiveenable;
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions];
 	if ($_REQUEST[url]) $_SESSION[sectionObj]->setField("url",$url);
 	
 	//---- If switching type, take values to defaults ----
 	if ($_REQUEST[typeswitch]) {
-		
-//		$_SESSION[sectionObj]->initFormDates(); // reset de/activate dates
 		$_SESSION[sectionObj]->init(1);				// will reset all vars and fetch from db if necessary - and form dates (hence the 1)
 		
 		if ($_SESSION[settings][add]) {
-/* 			$_SESSION[settings][permissions] = decode_array(db_get_value("sections","permissions","id=$_SESSION[settings][section]")); */
 			$_SESSION[sectionObj]->setPermissions($thisSite->getPermissions());
 		}
 	}
 }
 
-if ((!$_SESSION[settings] || !is_object($_SESSION[sectionObj]))/*  && !$error */) {
+if (!is_array($_SESSION[settings]) || !is_object($_SESSION[sectionObj])) {
 	// create the settings array with default values. $_SESSION[settings] must be passed along with each link.
 	// The array will be saved on clicking a save button.
-//	$editors = db_get_value("sites","editors","name='$site'");
-//	session_register("settings");
 	$_SESSION[settings] = array(
 		"site" => $thisSite->name,
 		"add" => 0,
@@ -88,9 +79,6 @@ if ((!$_SESSION[settings] || !is_object($_SESSION[sectionObj]))/*  && !$error */
 	
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[sectionObj]->fetchFromDB($_REQUEST[edit_section]);
-//		$a = $_SESSION[sectionObj]->fetchData();
-//		foreach ($a as $n=>$v) $_SESSION[settings][$n]=$v;
-/* 		$_SESSION[settings][permissions] = decode_array($_SESSION[settings][permissions]); */
 		$_SESSION[settings][pagetitle]= $thisSite->getField("title") . " > " . $_SESSION[sectionObj]->getField("title") . " > Edit Item";
 	}
 	$_SESSION[sectionObj]->initFormDates(); // initialize form date variables
@@ -108,8 +96,8 @@ if (!$error) {
 }
 if ($_REQUEST[step] != "") $_SESSION[settings][step] = $_REQUEST[step];
 if ($_SESSION[settings][step] ==3 && $_SESSION[auser] != $site_owner) {
-	if ($_REQEUST[prevbutton]) $_SESSION[settings][step] = 2;
-	if ($_REQEUST[nextbutton]) $_SESSION[settings][step] = 4;
+	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = 2;
+	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = 4;
 }
 
 $pagetitle=$_SESSION[settings][pagetitle];
@@ -147,13 +135,9 @@ if ($_REQUEST[save]) {
 		// add the new section id to the sites table
 		if ($_SESSION[settings][add]) {
 			$_SESSION[sectionObj]->insertDB();
-			$newid = $_SESSION[sectionObj]->id;
-			log_entry("add_section",$thisSite->name,$newid,"","$auser added section id $newid to site ".$thisSite->name);
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[sectionObj]->updateDB();
-			$newid = $_SESSION[sectionObj]->id;
-			log_entry("edit_section",$thisSite->name,$newid,"","$auser edited section id $newid in site ".$thisSite->name);
 		}
 		
 		// do the recursive update of active flag and such... .... ugh

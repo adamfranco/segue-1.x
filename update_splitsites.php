@@ -1,4 +1,4 @@
-<? 
+<? /* $Id$ */
 //deletes personal or class sites.
 /* To split appart personal and class sites:
 	1. Back up your tables and scripts!

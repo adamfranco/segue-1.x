@@ -1,4 +1,4 @@
-<? // edit_site.inc.php
+<? /* $Id$ */
 // forward to add_site.inc.php
 
 include("add_site.inc.php");

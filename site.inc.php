@@ -1,4 +1,4 @@
-<? // site.inc.php	-- allows logged in people to view a site
+<? /* $Id$ */
 
 $siteinfo = db_get_line("sites","name='$site'");
 $site_owner = $siteinfo[addedby];

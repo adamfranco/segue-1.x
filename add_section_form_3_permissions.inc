@@ -1,4 +1,4 @@
-
+<? /* $Id$ */ ?>
 <script lang="JavaScript">
 
 function submitForm() {
@@ -11,7 +11,7 @@ function submitForm() {
 
 printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
 
-printc("<input type=hidden name=site value='".$thisSite->name."'>");
+//printc("<input type=hidden name=site value='".$thisSite->name."'>");
 //printc("<input type=hidden name=section value=$_SESSION[settings][section]>");
 //printc("<input type=hidden name=page value=$_SESSION[settings][page]>");
 //if ($edit) printc("<input type=hidden name=edit_page value=$_SESSION[settings][page]>");

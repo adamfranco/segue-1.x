@@ -1,4 +1,4 @@
-<? // DB authentication module
+<? /* $Id$ */
 
 function _valid_db($name,$pass,$admin_auser=0) {
 	$name = strtolower($name);

@@ -1,4 +1,4 @@
-<? // viewsites.php ;
+<? /* $Id$ */
 
 $content = '';
 

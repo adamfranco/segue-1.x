@@ -1,4 +1,4 @@
-<? // change_auser.inc.php
+<? /* $Id$ */
 // changes the active user
 
 print "change_auser started with $changeauser...<BR>";

@@ -1,4 +1,4 @@
-<? 
+<? /* $Id$ */
 //adds classes currently in LDAP to class table in Segue
 //this allows for listing of students in a class, adding sites for students that are related to a class
 //maintaining a history of classes in Segue

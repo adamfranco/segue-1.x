@@ -1,4 +1,4 @@
-<?
+<? /* $Id$ */
 // set the $sid var for easy use
 $sid = SID;
 

@@ -1,4 +1,4 @@
-<? // add_site_form.inc -- the form that people use to add/edit a site
+<? /* $Id$ */
 
 printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
 

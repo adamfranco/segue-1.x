@@ -1,4 +1,4 @@
-<? // editor_access.php
+<? /* $Id$ */
 
 $content = '';
 

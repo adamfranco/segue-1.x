@@ -1,4 +1,4 @@
-<? // ldap authentication module
+<? /* $Id$ */
 
 function _valid_ldap($name,$pass,$admin_auser=0) {
 	$name = strtolower($name);

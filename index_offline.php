@@ -1,3 +1,4 @@
+<? /* $Id$ */ ?>
 <!-- index.html for temporarily offline -->
 
 <html>

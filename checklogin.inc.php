@@ -1,4 +1,4 @@
-<? // script to check login information
+<? /* $Id$ */
 
 // the atype, aemail, a**** variables are the "acting user" variables... they define
 // who is acting. for stud and prof, these will match l**** but admins can set them themselves

@@ -1,4 +1,4 @@
-<? // add_site_form.inc -- the form that people use to add/edit a site
+<? /* $Id$ */
 
 printc("<form action='index.php?$sid&action=add_story' method=post name='addform'".(($settings[type] !='story' && $settings[type] != 'url')?" enctype='multipart/form-data'":"").">");
 

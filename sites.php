@@ -1,4 +1,6 @@
-<? ob_start();
+<? /* $Id$ */
+
+ob_start();
 
 include("includes.inc.php");
 

@@ -67,43 +67,8 @@ printc("<br><br><br>");
 printc("<div class=title>2. When is this site available?".helplink("daterange")." &nbsp; - &nbsp; <i>Optional</i></div>");
 //printc("<div class=desc>If you would like this site to be available only during a certain range of dates, enter them below and select the checkbox to the left of that date.</div>");
 
-printc("<table>");
-printc("<tr>");
-printc("<td align=right>");
-printc("Make site available beginning: </td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>");
-for ($i=1;$i<=31;$i++) {
-	printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
-}
-printc("</select>\n");
-printc("<select name='activatemonth'>");
-for ($i=0; $i<12; $i++) {
-	printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
-}
-printc("</select>\n<select name='activateyear'>");
-$curryear = date("Y");
-for ($i=$curryear; $i <= ($curryear+5); $i++) {
-	printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
-}
-printc("</select>");
-printc("</td></tr>");
+$_SESSION[siteObj]->outputDateForm();
 
-printc("<tr>");
-printc("<td align=right>");
-printc("Make site unavailable after: </td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>");
-for ($i=1;$i<=31;$i++) {
-	printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
-}
-printc("</select>\n");
-printc("<select name='deactivatemonth'>");
-for ($i=0; $i<12; $i++) {
-	printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
-}
-printc("</select>\n<select name='deactivateyear'>");
-for ($i=$curryear; $i <= ($curryear+5); $i++) {
-	printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
-}
-printc("</select>");
-printc("</td></tr></table>");
 printc("<br>");
 
 printc("<div class=title>3. Hide my site".helplink("available")."</div>");

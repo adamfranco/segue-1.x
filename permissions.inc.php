@@ -1,4 +1,4 @@
-<? // permissions.inc.php
+<? /* $Id$ */
 	// holds permissions functions and checks for people's permissions in accessing certain pages
 
 define("SITE",0);
