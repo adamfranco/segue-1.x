@@ -122,7 +122,10 @@ FROM
 					site_editors_type = 'user'
 				)
 					INNER JOIN
-				user ON FK_editor = user_id AND user_uname='$user'";
+				user ON FK_editor = user_id AND user_uname='$user'
+			WHERE
+				slot.FK_owner != user_id
+		";
 		$r = db_query($query);
 		$ar = array();
 		if (db_num_rows($r))

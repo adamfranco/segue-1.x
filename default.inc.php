@@ -202,7 +202,10 @@ if ($_loggedin) {
         }
         
         // if they are editors for any sites, they will be in the $sites[] array
-        
+/*         print "<pre>"; */
+/*         print_r($sites); */
+/*         print_r($esites); */
+/*         print "</pre>"; */
         if (count($sites)) {
                 printc("<tr><td class='inlineth' colspan=2>Sites to which you have editor permissions</td></tr>");
                 foreach ($sites as $s) {
