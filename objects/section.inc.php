@@ -397,7 +397,22 @@ WHERE
 
 		// insert media (url)
 		if ($this->data[url]) {
+			// first see, if media item already exists in media table
 			$query = "
+SELECT
+	media_id
+FROM
+	media
+WHERE
+	FK_site = ".$this->owningSiteObj->id." AND
+	FK_createdby = ".$_SESSION[aid]." AND
+	media_tag = '".$this->data[url]."' AND
+	media_location = 'remote'";
+			$r = db_query($query);
+			
+			// if not in media table insert it
+			if (!db_num_rows($r)) {
+				$query = "
 INSERT
 INTO media
 SET
@@ -407,11 +422,16 @@ SET
 	media_location = 'remote',
 	FK_updatedby = ".$_SESSION[aid]."
 ";
-			db_query($query);
-			$a[] = "FK_media=".lastid();
+				db_query($query);
+				$a[] = "FK_media=".lastid();
+			}
+			// if in media table, assign the media id
+			else {
+				$arr = db_fetch_assoc($r);
+				$a[] = "FK_media=".$arr[media_id];
+			}
 		}
 		
-
 		$query = "INSERT INTO section SET ".implode(",",$a);
 		db_query($query);
 		

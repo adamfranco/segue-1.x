@@ -1014,6 +1014,8 @@ ORDER BY
 		db_query($query);
 		$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='site';";
 		db_query($query);
+		$query = "DELETE FROM media WHERE FK_site=".$this->id;
+		db_query($query);
 		$query = " UPDATE slot SET FK_site=NULL WHERE FK_site=".$this->id;
 		db_query($query);
 		
