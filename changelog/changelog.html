@@ -4,74 +4,188 @@
 	h1 {font-size: 18pt;}
 	li {padding-bottom: 3px;}
 	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.0.3</h2><h3>Not Yet Released</h3><ul>
+		<li/> Change:  
+			Two new site templates: &quot;Advanced: Single Section&quot; and 
+			&quot;Advanced: Blank&quot;.
+		 (<i>Alex Chapin</i>)
+		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
+			To create the new templates, log in as an administrator, then enter
+			the url 
+			&quot;http://...your_segue_directory/index.php?action=update_1.0.3&quot;.
+		
+		<li/> Change:  
+			Discussions now appear in-line instead of in a popup window.
+		 (<i>Alex Chapin</i>)
+		<li/> Change:  
+			Admin screens for users, classes, slots, and logs now have improved
+			searching and pagination.
+		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=776452&amp;group_id=82171&amp;atid=565234">
-        			#776452</a> Anonymous/Unauthenticated discussions are now working. (<i>Gabe Schine</i>)
+        			#776452</a> 
+			Anonymous/Unauthenticated discussions are now working.
+		 (<i>Gabe Schine</i>)
+		<li/> Bug Fix:
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=809335&amp;group_id=82171&amp;atid=565234">
+        			#809335</a> 
+			Class groups not listed from members
+		 (<i>Adam Franco</i>)
 		<li/> Change: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=804005&amp;group_id=82171&amp;atid=565237">
-        			#804005</a> Editors of sections can now enable discussions for that section and select which (of the already availible editors) can post to it. (<i>Adam Franco</i>)
+        			#804005</a> 
+			Editors of sections can now enable discussions for that section and
+			select which (of the already availible editors) can post to it.
+		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=803899&amp;group_id=82171&amp;atid=565234">
-        			#803899</a> Co-Teaching profs now don't see site creation, grouping, or editing links if they are not the owner for a site. They see editing links as apropriate if they are editors. (<i>Adam Franco</i>)
+        			#803899</a> 
+			Co-Teaching profs now don't see site creation, grouping, or editing
+			links if they are not the owner for a site. They see editing links
+			as apropriate if they are editors.
+		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=803894&amp;group_id=82171&amp;atid=565234">
-        			#803894</a> User's Full Names containing apostrophes now don't throw errors when adding to the user table. (<i>Adam Franco</i>)
+        			#803894</a> 
+			User's Full Names containing apostrophes now don't throw errors when
+			adding to the user table.
+		 (<i>Adam Franco</i>)
 	</ul><br/><h2>Version 1.0.2</h2><h3>2003-09-08</h3><ul>
 		<li/> Change: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=777065&amp;group_id=82171&amp;atid=565237">
-        			#777065</a> The admin interface has been changed so that slot and their properties can be changed along side the classes and users. Custom upload limits can be set in this slot interface now instead of editing the DB directly. (<i>Adam Franco</i>)
+        			#777065</a> 
+			The admin interface has been changed so that slot and their
+			properties can be changed along side the classes and users. Custom 
+			upload limits can be set in this slot interface now instead of
+			editing the DB directly.
+		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=802499&amp;group_id=82171&amp;atid=565234">
-        			#802499</a> Story problems with the [De]Activate dates have been fixed (<i>Adam Franco</i>)
+        			#802499</a> 
+			Story problems with the [De]Activate dates have been fixed
+		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=795587&amp;group_id=82171&amp;atid=565234">
-        			#795587</a> Problems with the [De]Activate dates have been fixed (<i>Adam Franco</i>)
+        			#795587</a> 
+			Problems with the [De]Activate dates have been fixed
+		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=791954&amp;group_id=82171&amp;atid=565234">
-        			#791954</a> The Move/Copy UI now shows the sitename to differentiate between similarly titled sites. (<i>Adam Franco</i>)
+        			#791954</a> 
+			The Move/Copy UI now shows the sitename to differentiate between
+			similarly titled sites.
+		 (<i>Adam Franco</i>)
 	</ul><br/><h2>Version 1.0.1</h2><h3>2003-08-08</h3><ul>
 		<li/> Bug Fix:
-	 Fixed the numerous bugs that were generated by the change below. (ouch)
-		<li/> Change:  Slots interface: administrators can now edit owner &amp; media library size for existing slots.
+	 
+			Fixed the numerous bugs that were generated by the change below.
+			(ouch)
+		
+		<li/> Change:  
+			Slots interface: administrators can now edit owner &amp; media
+			library size for existing slots.
+		
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=784526&amp;group_id=82171&amp;atid=565234">
-        			#784526</a> Fixed upload of PHP files bug. (<i>Adam Franco</i>)
-		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  DB CHANGE: The 'slot' table has a new column: 'slot_uploadlimit', which is an INT(10), corresponding to the number of bytes of the quota.
+        			#784526</a> 
+			Fixed upload of PHP files bug.
+		 (<i>Adam Franco</i>)
+		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
+			DB CHANGE: The 'slot' table has a new column: 'slot_uploadlimit',
+			which is an INT(10), corresponding to the number of bytes of the
+			quota.
+		
 		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=777065&amp;group_id=82171&amp;atid=565237">
-        			#777065</a> Media Library quota can be adjusted on a per-site basis through the slot database table. Add Slot interface upgraded too. (<i>Adam Franco</i>)
+        			#777065</a> 
+			Media Library quota can be adjusted on a per-site basis through the
+			slot database table. Add Slot interface upgraded too.
+		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=771969&amp;group_id=82171&amp;atid=565234">
-        			#771969</a> Upon logout, the session, instead of being completely destroyed, only unsets Segue-specific variables. The previous functionality was also killing other apps running under the same session. (<i>Gabe Schine</i>)
+        			#771969</a> 
+			Upon logout, the session, instead of being completely destroyed,
+			only unsets Segue-specific variables. The previous functionality was
+
+			also killing other apps running under the same session.
+		 (<i>Gabe Schine</i>)
 	</ul><br/><h2>Version 1.0.0 rc1</h2><h3>2003-07-14</h3><ul>
 		<li/> New feature:  
-			Added new config option: $cfg[domain] -- the cookie domain for session info. Allows session info to cross sites if they are running the same instance of segue.
+			Added new config option: $cfg[domain] -- the cookie domain for
+			session info. Allows session info to cross sites if they are running
+
+			the same instance of segue.
 		 (<i>Gabe Schine</i>)
-		<li/> New feature:  Discussion links now displayed with statistics info. (<i>Gabe Schine</i>)
-		<li/> Change:  By-line for default page now has a link to a &quot;credits&quot; page with more info about the authors. (<i>Gabe Schine</i>)
-		<li/> Change:  ChangeLog is now held in XML format &amp; converted with XSL!
-		<li/> Change:  &quot;Powered by Segue&quot; logo now takes you to the Segue page. (<i>Gabe Schine</i>)
+		<li/> New feature:  
+			Discussion links now displayed with statistics info.
+		 (<i>Gabe Schine</i>)
+		<li/> Change:  
+			By-line for default page now has a link to a &quot;credits&quot; page with
+			more info about the authors.
+		 (<i>Gabe Schine</i>)
+		<li/> Change:  
+			ChangeLog is now held in XML format &amp; converted with XSL!
+		
+		<li/> Change:  
+			&quot;Powered by Segue&quot; logo now takes you to the Segue page.
+		 (<i>Gabe Schine</i>)
 	</ul><br/><h2>Version 1.0.0 beta1</h2><h3>2003-07-11</h3><ul>
-		<li/> Change:  Permissions can now be assigned to link type sections and pages and image and file type stories.
+		<li/> Change:  
+			Permissions can now be assigned to link type sections and pages and
+			image and file type stories.
+		
 		<li/> Bug Fix:
-	 Headings and dividers are now properly displayed when not logged in.
+	 
+			Headings and dividers are now properly displayed when not logged in.
+		
 		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
-			DATABASE CHANGE! The class_number field in the class table should be changed in type from an int(11) to a varchar(15) and the default set to &quot;000&quot;.
+			DATABASE CHANGE! The class_number field in the class table should be
+			changed in type from an int(11) to a varchar(15) and the default set
+
+			to &quot;000&quot;.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			When integrated with an LDAP server, Segue now correctly synchronizes the user and class database tables when adding users/groups as editors who have not yet logged in/been added to the local tables.
+			When integrated with an LDAP server, Segue now correctly
+			synchronizes the user and class database tables when adding 
+			users/groups as editors who have not yet logged in/been added to the
+
+			local tables.
 		 (<i>Gabe Schine</i>)
-		<li/> Change:  Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.
-		<li/> Change:  View/add slots interface: a used slot now displays a &quot;-&quot; under the delete column instead of non-linked &quot;delete&quot; text for clarity. (<i>Gabe Schine</i>)
+		<li/> Change:  
+			Added Dobo Radichkov's name as a main editor on Segue websites &amp;
+			program.
+		
+		<li/> Change:  
+			View/add slots interface: a used slot now displays a &quot;-&quot; under the
+			delete column instead of non-linked &quot;delete&quot; text for clarity.
+		 (<i>Gabe Schine</i>)
 	</ul><br/><h2>Version 1.0.0 alpha3</h2><h3>2003-06-08</h3><ul>
-		<li/> New feature:  Owners of class sites can now easily add members of their class as an editor. (<i>Adam Franco</i>)
-		<li/> Change:  Activation/Deactivation Date form now has valid day options. (<i>Adam Franco</i>)
-		<li/> Change:  When an admin is acting as another person, they can only see what that person would see. (<i>Adam Franco</i>)
+		<li/> New feature:  
+			Owners of class sites can now easily add members of their class as
+			an editor.
+		 (<i>Adam Franco</i>)
+		<li/> Change:  
+			Activation/Deactivation Date form now has valid day options.
+		 (<i>Adam Franco</i>)
+		<li/> Change:  
+			When an admin is acting as another person, they can only see what
+			that person would see.
+		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	 The &quot;default&quot; page now appropriately shows sites of which a group member is owner. (<i>Gabe Schine</i>)
+	 
+			The &quot;default&quot; page now appropriately shows sites of which a group
+			member is owner.
+		 (<i>Gabe Schine</i>)
 		<li/> Bug Fix:
-	 Move/Copy now shows sites properly when opened on first page load. (<i>Adam Franco</i>)
-		<li/> Change:  More debug output has been removed.
+	 
+			Move/Copy now shows sites properly when opened on first page load.
+		 (<i>Adam Franco</i>)
+		<li/> Change:  
+			More debug output has been removed.
+		
 	</ul><br/><h2>Version 1.0.0 alpha2</h2><h3>2003-06-07</h3><ul>
-		<li/> Change:  Removed debug output. (<i>Gabe Schine</i>)
+		<li/> Change:  
+			Removed debug output.
+		 (<i>Gabe Schine</i>)
 	</ul><br/><h2>Version 1.0.0 alpha</h2><h3>2003-06-06</h3><ul>
-		<li/> New feature:  First official release.
+		<li/> New feature:  
+			First official release.
+		
 	</ul><br/></div>

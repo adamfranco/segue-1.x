@@ -6,7 +6,17 @@ Name: Segue ChangeLog
 v. 1.0.3 (Not Yet Released)
 ----------------------------------------------------
 		
+	* Change: Two new site templates: &quot;Advanced: Single Section&quot; and &quot;Advanced: Blank&quot;. (Alex Chapin)
+		
+	**** IMPORTANT *** Change: To create the new templates, log in as an administrator, then enter the url &quot;http://...your_segue_directory/index.php?action=update_1.0.3&quot;.
+		
+	* Change: Discussions now appear in-line instead of in a popup window. (Alex Chapin)
+		
+	* Change: Admin screens for users, classes, slots, and logs now have improved searching and pagination. (Alex Chapin)
+		
 	* Bug Fix: #776452 Anonymous/Unauthenticated discussions are now working. (Gabe Schine)
+		
+	* Bug Fix: #809335 Class groups not listed from members (Adam Franco)
 		
 	* Change: #804005 Editors of sections can now enable discussions for that section and select which (of the already availible editors) can post to it. (Adam Franco)
 		

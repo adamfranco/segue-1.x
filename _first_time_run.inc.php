@@ -401,6 +401,7 @@ if ($a[numslots] == 0) {
 		INSERT INTO page VALUES (54, 15, 0, 'Discussion', 1, 20030530155920, 1, 20030530132052, '1', 00000000000000, 00000000000000, '0', '0', '0', 'page', NULL, 'custom', 'none', '0', '0');
 		INSERT INTO page VALUES (55, 15, 1, 'Collaboration', 1, 20030530161605, 1, 20030530161605, '1', 00000000000000, 00000000000000, '0', '0', '0', 'page', 0, 'custom', 'none', '0', '0');
 		INSERT INTO page VALUES (56, 15, 2, 'File Downloads', 1, 20030530161641, 1, 20030530161641, '1', 00000000000000, 00000000000000, '0', '0', '0', 'page', 0, 'custom', 'none', '0', '0');
+		INSERT INTO page VALUES (57, 16, 0, 'Page One', 1, 20031110161133, 1, 20031110161133, '1', 00000000000000, 00000000000000, '0', '0', '0', 'page', NULL, 'custom', 'none', '0', '0');
 		
 		INSERT INTO permission VALUES (1, NULL, 'everyone', 1, 'site', 'v');
 		INSERT INTO permission VALUES (2, NULL, 'everyone', 2, 'site', 'v');
@@ -409,6 +410,8 @@ if ($a[numslots] == 0) {
 		INSERT INTO permission VALUES (11, NULL, 'everyone', 5, 'site', 'v');
 		INSERT INTO permission VALUES (23, NULL, 'institute', 41, 'story', 'di');
 		INSERT INTO permission VALUES (21, NULL, 'institute', 40, 'story', 'di');
+		INSERT INTO permission VALUES (25, NULL, 'everyone', 7, 'site', 'v');
+		INSERT INTO permission VALUES (26, NULL, 'everyone', 8, 'site', 'v');
 		
 		INSERT INTO section VALUES (1, 1, 0, 'Section One', 1, 20030529161801, 1, 20030529161801, '1', 00000000000000, 00000000000000, '0', 'section', 1);
 		INSERT INTO section VALUES (2, 1, 1, 'Section Two', 1, 20030529161811, 1, 20030529161811, '1', 00000000000000, 00000000000000, '0', 'section', 0);
@@ -425,12 +428,15 @@ if ($a[numslots] == 0) {
 		INSERT INTO section VALUES (13, 4, 4, 'Discussions', 1, 20030530131802, 1, 20030530131802, '1', 00000000000000, 00000000000000, '0', 'section', 0);
 		INSERT INTO section VALUES (14, 5, 0, 'Introduction', 1, 20030530132105, 1, 20030530132052, '1', 00000000000000, 00000000000000, '0', 'section', 3);
 		INSERT INTO section VALUES (15, 5, 1, 'Advanced', 1, 20030530155807, 1, 20030530132052, '1', 00000000000000, 00000000000000, '0', 'section', NULL);
+		INSERT INTO section VALUES (16, 7, 0, 'Section One', 1, 20031110161133, 1, 20031110161133, '1', 00000000000000, 00000000000000, '0', 'section', NULL);
 		
 		INSERT INTO site VALUES (1, 'Simple Site', 'minimal', '', '', '', 1, 20030529161751, 1, 20030529161751, '1', 00000000000000, 00000000000000, '1');
 		INSERT INTO site VALUES (2, 'Brief Course Site', 'minimal', '', '', '', 1, 20030530110850, 1, 20030530110850, '1', 00000000000000, 00000000000000, '1');
 		INSERT INTO site VALUES (3, 'Standard Course Site', 'minimal', '', '', '', 1, 20030530130657, 1, 20030530130657, '1', 00000000000000, 00000000000000, '1');
 		INSERT INTO site VALUES (4, 'Extensive Course Site', 'minimal', '', '', '', 1, 20030530131521, 1, 20030530131521, '1', 00000000000000, 00000000000000, '1');
 		INSERT INTO site VALUES (5, 'Segue Sample Site', 'minimal', '', '', '', 1, 20030530132052, 1, 20030530132052, '1', 00000000000000, 00000000000000, '1');
+		INSERT INTO site VALUES (7, 'Advanced: Single Section', 'minimal', '', '', '', 1, 20031110161133, 1, 20031110161133, '1', 00000000000000, 00000000000000, '');
+		INSERT INTO site VALUES (8, 'Advanced: Blank', 'minimal', '', '', '', 1, 20031110161324, 1, 20031110161324, '1', 00000000000000, 00000000000000, '');
 		
 		INSERT INTO site_editors VALUES (1, NULL, 'everyone');
 		INSERT INTO site_editors VALUES (1, NULL, 'institute');
@@ -442,12 +448,18 @@ if ($a[numslots] == 0) {
 		INSERT INTO site_editors VALUES (4, NULL, 'institute');
 		INSERT INTO site_editors VALUES (5, NULL, 'everyone');
 		INSERT INTO site_editors VALUES (5, NULL, 'institute');
+		INSERT INTO site_editors VALUES (7, NULL, 'everyone');
+		INSERT INTO site_editors VALUES (7, NULL, 'institute');
+		INSERT INTO site_editors VALUES (8, NULL, 'everyone');
+		INSERT INTO site_editors VALUES (8, NULL, 'institute');
 		
 		INSERT INTO slot VALUES (1, 'template0', 1, NULL, 1, 'system', NULL);
 		INSERT INTO slot VALUES (2, 'template1', 1, NULL, 4, 'system', NULL);
 		INSERT INTO slot VALUES (3, 'template2', 1, NULL, 3, 'system', NULL);
 		INSERT INTO slot VALUES (4, 'template3', 1, NULL, 2, 'system', NULL);
 		INSERT INTO slot VALUES (5, 'sample', 1, NULL, 5, 'system', NULL);
+		INSERT INTO slot VALUES (6, 'template4', 1, NULL, 7, 'system', 0);
+		INSERT INTO slot VALUES (7, 'template5', 1, NULL, 8, 'system', 0);
 		
 		INSERT INTO story VALUES (1, 1, 0, 'Welcome to your new site!', 1, 20030529162308, 1, 20030529162257, '%0D%0A-+To+add+another+block+of+text+below+this+text%2C+click+the%0D%0A%22%3Cb%3E%2Badd+content%3C%2Fb%3E%22+button+below.%0D%0A%0D%0A-+To+edit+this+text%2C+click+the+%22%3Cb%3Eedit%3C%2Fb%3E%22+button+below.%0D%0A%0D%0A-+To+add+another+page+or+other+item+to+this+section%2C+click+on+the%0D%0A%22%3Cb%3E%2Badd+item%3C%2Fb%3E%22+button+to+the+left.%0D%0A%0D%0A-+Clicking+on+the+%22%3Cb%3Eedit%3C%2Fb%3E%22+button+next+to+a+page+or+section%0D%0Awill+allow+you+to+rename+it.%0D%0A%0D%0A-+To+add+a+new+section%2C+click+the+%22%3Cb%3E%2Badd+section%3C%2Fb%3E%22+button+above.+', '', '0', 00000000000000, 00000000000000, '0', '', 'text', 'story', 0, '0');
 		INSERT INTO story VALUES (2, 2, 0, 'Sample Content', 1, 20030529162412, 1, 20030529162412, 'This+is+some+sample+content+on+the+Second+Page.', '', '0', 00000000000000, 00000000000000, '0', '', 'text', 'story', 0, '0');
@@ -491,7 +503,8 @@ if ($a[numslots] == 0) {
 		INSERT INTO story VALUES (41, 54, 2, 'Climates', 1, 20030530161012, 1, 20030530161012, 'Wise+men+have+said+that+many+people+prefer+warm+climates%2C+as+opposed+to+the+climate+found+in+Vermont.+Vermont+may+have+its+own+beauty%2C+but+many+don%27t+take+this+into+account.+What+do+you+think+of+this%3F', '', '0', 00000000000000, 00000000000000, '1', '', 'text', 'story', 0, '0');
 		INSERT INTO story VALUES (42, 55, 0, '', 1, 20030530161629, 1, 20030530161629, 'One+of+the+most+advanced+features+of+SitesDB+is+to+allow+site+creators+to+specify+editors+to+their+sites.+Editors+can+be+assigned+permissions+to+add%2C+edit+or+delete+content+from+certain+parts+of+a+site.', '', '0', 00000000000000, 00000000000000, '0', '', 'text', 'story', 0, '0');
 		INSERT INTO story VALUES (43, 56, 0, '', 1, 20030530161756, 1, 20030530161756, '%3Cb%3ESegue%3C%2Fb%3E+also+allows+you+to+upload+files+and+allow+people+to+download+them.+This+is+useful+if+you+have+a+resume+or+syllabus+in+PDF%2C+RTF%2C+or+Word+format%2C+or+some+other+file+format+that+you+would+like+to+allow+visitors+to+download.', '', '0', 00000000000000, 00000000000000, '0', '', 'text', 'story', 0, '0');
-		
+		INSERT INTO story VALUES (44, 57, 0, 'Welcome to your new site!', 1, 20031110161133, 1, 20031110161133, '%0D%0A-+To+add+another+block+of+text+below+this+text%2C+click+the%0D%0A%22%3Cb%3E%2Badd+content%3C%2Fb%3E%22+button+below.%0D%0A%0D%0A-+To+edit+this+text%2C+click+the+%22%3Cb%3Eedit%3C%2Fb%3E%22+button+below.%0D%0A%0D%0A-+To+add+another+page+or+other+item+to+this+section%2C+click+on+the%0D%0A%22%3Cb%3E%2Badd+item%3C%2Fb%3E%22+button+to+the+left.%0D%0A%0D%0A-+Clicking+on+the+%22%3Cb%3Eedit%3C%2Fb%3E%22+button+next+to+a+page+or+section%0D%0Awill+allow+you+to+rename+it.%0D%0A%0D%0A-+To+add+a+new+section%2C+click+the+%22%3Cb%3E%2Badd+section%3C%2Fb%3E%22+button+above.+', '', '0', 00000000000000, 00000000000000, '0', '', 'text', 'story', NULL, '0');
+
 		INSERT INTO discussion VALUES (1, 1, 20030530164042, 'I+Love+It', 'Well%2C+to+be+perfectly+frank%2C+I+love+it.+What+could+one+enjoy+more+than+eating%2C+sleeping%2C+and+having+___%3F', 40, 0, NULL);
 		INSERT INTO discussion VALUES (2, 1, 20030530164121, 'Re%3A+I+Love+It', 'Inevitably%2C+though+life+is+suffering.+We+are+born%2C+which+is+quite+painful%2C+not+knowing+how+to+be%2C+throughout+our+lives+we+experience+pain+in+infinitely+subtle+varieties+resulting+in+sickness+and+before+we+have+fully+grasping+what+it+means+to+be+alive+we+begin+to+die%2C+losing+the+freshness+and+vitality+that+accompanies+new+experiences.', 40, 1, 1);
 		INSERT INTO discussion VALUES (3, 1, 20030530164220, 'Life+Rocks', 'The+key+is+living+within+your+means+so+that+you+have+the+time+and+energy+to+experience+the+joys+of+family+and+comunity%3B+its+the+experiences+that+make+life+great%2C+not+the+objects+and+posessions+that+we+attempt+to+fill+our+lives+with.', 40, 2, NULL);
