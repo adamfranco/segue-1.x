@@ -257,4 +257,6 @@ if ($_SESSION[settings][step] == 4) {
 //add_link(leftnav,'','',"$variables");
 //printc("$variables");
 //------------------------------------
-
+print "<pre>";
+print_r($_SESSION[storyObj]->data);
+print "</pre>";

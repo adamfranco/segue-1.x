@@ -421,13 +421,26 @@ FROM
 		// now, create story objects and fetch them
 		$query = "
 SELECT
-	t_stories.section_id AS section_id, t_stories.page_id AS page_id, story.story_id AS story_id,
-	story_type AS type, story_title AS title, DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
-	story_active AS active, story_locked AS locked, story_updated_tstamp AS editedtimestamp, story_created_tstamp AS addedtimestamp,
-	story_discussable AS discuss, story_category AS category, story_text_type AS texttype, story_text_short AS shorttext,
+	t_stories.section_id AS section_id, 
+	t_stories.page_id AS page_id, 
+	story.story_id AS story_id,
+	story_type AS type, 
+	story_title AS title, 
+	DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, 
+	DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	story_active AS active, 
+	story_locked AS locked, 
+	story_updated_tstamp AS editedtimestamp, 
+	story_created_tstamp AS addedtimestamp,
+	story_discussable AS discuss, 
+	story_category AS category, 
+	story_text_type AS texttype, 
+	story_text_short AS shorttext,
 	story_text_long AS longertext,
-	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id,
-	media_tag AS url
+	story_text_long AS url,
+	user_createdby.user_uname AS addedby, 
+	user_updatedby.user_uname AS editedby, 
+	'".$this->name."' as site_id
 FROM
 	t_stories
 		INNER JOIN
