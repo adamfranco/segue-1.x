@@ -89,8 +89,6 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<div class=desc>Enter the content for your story below. Title and full content are optional. If you enter full content on the next screen, the shorter content (or Abstract) will be displayed on your page with a link to the full content, in a new window.</div>");
 }
 
-
-
 if ($_SESSION[storyObj]->getField("type")!='rss') {
 	printc("<div class=leftmargin>");
 	printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
@@ -121,22 +119,34 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//print $shorttext;
 	
 	/******************************************************************************
- 	* support for inserting media from media library into story
+ 	* Media Library: links to filebrowser.php and returns media urls
+ 	* for copy/paste into editor
  	******************************************************************************/
-
- 	//printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
-	//printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
-	//printc("Get Image: <input type=text name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=25 readonly> <input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'>");
-	//printc("<input type=button name='addimage' value='Add Image' onClick=''> <br><br>");
-
+	
+	printc("<br><table width=95% align = center cellpadding=5 cellspacing=0 style='border: 1px solid gray'>");
+	printc("<tr><td colspan=2><div style='font-size:10px'>");
+	printc("<input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
+	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
+	printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
+	printc("(media file URL)");
+	printc("</div></td></tr>");
+	printc("<tr><td>");
+	printc("<div style='font-size:10px'>1. Browse your Media Library for media files. <br>2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
+	printc("</td></tr>");
+	printc("</table>");
 	/******************************************************************************
 	 * end insert media into story
 	 ******************************************************************************/
+
 	
+	printc("<table width=95% align = center cellpadding=3 cellspacing=0>");
+	printc("<tr><td>");
 	printc("<div style='font-size:10px; color:#D00'>");
-	printc("<br>Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. ");
+	printc("Note: Links to other pages in this site must use the address displayed in the PREVIEW site mode not the EDIT mode. ");
 	printc("To ensure correct link URL's to any page on this site, click Preview this Site button before copying URL.<br>");
 	printc("</div>");
+	printc("</td></tr>");
+	printc("</table>");
 
 	//sniffer determines browser and os
 	//sniffer included in editor.inc.php

@@ -25,6 +25,7 @@ if ($delete) {
 
 $sitelist = array();
 $owner = $_REQUEST[owner];
+$editor = $_REQUEST[editor];
 $site = $_SESSION[settings][site];
 if ($_REQUEST[site]) {
 	$site = $_REQUEST[site];
@@ -361,56 +362,64 @@ input,select {
 
 <? 
 /******************************************************************************
- * Use button action: depends on source and editor?
+ * Use button action:
+ * if source is discuss then values pasted to discussion post form
+ * if source is not discuss, then must be image or text content block
  ******************************************************************************/
  
-if ($source == 'discuss') { ?> 
+//if ($source == 'discuss') { 
+
+?> 
 	function useFileDiscuss(fileID,fileName) { 
 		o = opener.document.postform; 
 		o.libraryfileid.value=fileID; 
 		o.libraryfilename.value=fileName;  
 		window.close(); 
-	}  
-<? } ?> 
+	} 
+	 
+<? 
+//} 
+
+?> 
  
 <? 
 /******************************************************************************
- * if coming from discuss or add story then editor = none
- * $editor variable is passed for future versions of editor which
- * may include an upload UI
+ * if image content block then editor = none and useFile is used
+ * if text content block then editor = html and getUrl is used
  ******************************************************************************/
+?> 
+function useFile(fileID,fileName) { 
+	o = opener.document.addform; 
+	o.libraryfileid.value=fileID; 
+	o.libraryfilename.value=fileName; 
+	o.submit(); 
+	window.close(); 
+} 
+ 
+function getUrl(url,img_url) { 
+	o = opener.document.addform; 
+	o.media_url.value=url; 
+	window.close(); 
+}
 
-if ($editor == 'none') { 
+<?
+// this function may not be needed....
+?> 
+function useFile2(siteName,fileName,fileID) { 
+	opener = window.dialogArguments;
+	var _editor_url = opener._editor_url;
+	var objname     = location.search.substring(1,location.search.length);
+	var config      = opener.document.all[objname].config;
+	var editor_obj  = opener.document.all["_" +objname+  "_editor"];
+	var editdoc     = editor_obj.contentWindow.document;
+	var image 	= '<img src="<?echo $uploadurl ?>/' +siteName+ '/' +fileName+ '" imageID=\"' +fileID+ '\">\n';
+	opener.editor_insertHTML(objname, image);
+	window.close();
+} 
+
+<?
 
 ?> 
-	function useFile(fileID,fileName) { 
-		o = opener.document.addform; 
-		o.libraryfileid.value=fileID; 
-		o.libraryfilename.value=fileName; 
-		o.submit(); 
-		window.close(); 
-	}  
-
-<? } else if ($editor == 'text') { 
-	// if using the non-IE text editor 
-?> 
-
-<? } else { 
-	// if using the activeX editor
-		$site = $site; 
-?> 
-	function useFile(siteName,fileName,fileID) { 
-		opener = window.dialogArguments;
-		var _editor_url = opener._editor_url;
-		var objname     = location.search.substring(1,location.search.length);
-		var config      = opener.document.all[objname].config;
-		var editor_obj  = opener.document.all["_" +objname+  "_editor"];
-		var editdoc     = editor_obj.contentWindow.document;
-  		var image 	= '<img src="<?echo $uploadurl ?>/' +siteName+ '/' +fileName+ '" imageID=\"' +fileID+ '\">\n';
-  		opener.editor_insertHTML(objname, image);
-		window.close();
-	} 
-<? } ?> 
  
 function deleteFile(fileID,fileName) { 
 	if (confirm("Are you sure that you want to delete "+fileName+"? If this file is in use anywhere in your site, it will no longer appear.")) { 
@@ -437,8 +446,8 @@ function changePage(lolim) {
 <!--  
 <table width='100%'> 
 <tr><td style='text-align: left'> 
-	<? print $content; ?> 
-	<? print $numrows . " | " . $query;  
+	<? //print $content; ?> 
+	<? //print $numrows . " | " . $query;  
 	?> 
 </td></tr> 
 </table> --> 
@@ -700,23 +709,43 @@ if (db_num_rows($r)) {
 /* 		$img_size = get_size($url);  */
 		 
 		print "<tr>"; 
- 
-		print "<td class=td$color>";
+		
+		/******************************************************************************
+		 * Media file USE button
+		 * Use button depends on context 
+		 * viewsite: no USE button displayed
+		 * discussion UI: source = discuss
+		 * image content block: editor = none
+		 * text content block: editor = html 
+		 ******************************************************************************/
+ 		
+		print "<td class=td$color>\n";
 			if ($comingfrom != "viewsite") {
+				
+				// for discussions, get media filename and id
 				if ($source == 'discuss') {
-					print "<input type=button name='use' value='use' onClick=\"useFileDiscuss('".$a[media_id]."','".$a[media_tag]."')\">";				
+					print "<input type=button name='use' value='use' onClick=\"useFileDiscuss('".$a[media_id]."','".$a[media_tag]."')\">\n";	
+				
+				// for image content blocks				
 				} else if ($editor == 'none') {
-					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
-                }
-                else if ($editor == 'text') {
-                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
-                }
-                else {
-                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[slot_name]."','".$a[media_tag]."','".$a[media_id]."')\">";
+					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">\n";
+				
+				// for text editors... (not needed?)
+                } else if ($editor == 'text') {
+                        print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">\n";
+                        
+                // for HTML editors get media url, mediatype image url,        
+                } else if ($editor == 'html') {
+                		//printpre($editor);
+                        print "<input type=button name='use' value='use' onClick=\"getUrl('".$url."','".$img_url."')\">\n";
+                        
+                // not sure where this function is called
+                } else {
+                        print "<input type=button name='use' value='use' onClick=\"useFile2('".$a[slot_name]."','".$a[media_tag]."','".$a[media_id]."')\">\n";
                 }   
             } else print " &nbsp; ";
 //			print "<input type=button name='use' value='use' onClick=\"useFile()\">";  
-		print "</td>"; 
+		print "</td>\n"; 
  
 		print "<td class=td$color>"; 
 			if ($a[media_type]=='image') { 
@@ -728,44 +757,44 @@ if (db_num_rows($r)) {
 				print "<a href='$url'>"; 
 			print "<img src='$img_url' height=$thumb_size[y] width=$thumb_size[x] border=0>"; 
 			print "</a>"; 
-		print "</td>"; 
+		print "</td>\n"; 
  
 		print "<td class=td$color>"; 
 			print "$a[media_id]"; 
-		print "</td>"; 
+		print "</td>\n"; 
 		 
 		print "<td class=td$color style='text-align: left'>"; 
 			print "$a[media_tag]"; 
-		print "</td>"; 
+		print "</td>\n"; 
  
 		print "<td class=td$color>"; 
 			print "$a[media_type]"; 
-		print "</td>"; 
+		print "</td>\n"; 
  
 		print "<td class=td$color>"; 
 			print "$a[media_size]"; 
-		print "</td>"; 
+		print "</td>\n"; 
 		 
 		if ($ltype == 'admin') { 
 			print "<td class=td$color>"; 
 			print "$a[slot_name]"; 
-		print "</td>"; 
+		print "</td>\n"; 
 		} 
  
 		print "<td class=td$color><nobr>"; 
 			if (strncmp($today, $a[media_updated_tstamp], 8) == 0 || strncmp($yesterday, $a[media_updated_tstamp], 8) == 0) print "<b>"; 
 			print $a[media_updated_tstamp_text]; 
 			if (strncmp($today, $a[media_updated_tstamp], 8) == 0 || strncmp($yesterday, $a[media_updated_tstamp], 8) == 0) print "</b>"; 
-		print "</nobr></td>"; 
+		print "</nobr></td>\n"; 
 		 
 		print "<td class=td$color>"; 
 			print "$a[user_fname] ($a[user_uname])"; 
-		print "</td>"; 
+		print "</td>\n"; 
 		 
 		print "<td class=td$color>"; 
 			print "<input type=button value='delete' onClick=\"deleteFile('".$a[media_id]."','".$a[media_tag]."')\">";  
 //			print "<input type=button name='delete' value='delete'>";  
-		print "</td>"; 
+		print "</td>\n"; 
  
 		print "</tr>"; 
 		$color = 1-$color; 
