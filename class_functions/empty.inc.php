@@ -6,45 +6,45 @@ function isclass ($class) {
 }
 
 function getuserclasses($user,$time="now") {
+	$classes = array();
+	$semester = currentsemester ();
+
+	// add in the DB classes
 	$query = "
 		SELECT
-			class_code,
-			class_name,
+			class_department,
+			class_number,
+			class_section,
 			class_semester,
-			class_year,
-			owner.user_uname AS owner_uname,
-			owner.user_fname AS owner_fname
+			class_year
 		FROM
 			user
 				INNER JOIN
 			ugroup_user
 				ON
-			user.user_id = ugroup_user.FK_user
+			user_id = FK_user
 				INNER JOIN
 			class
 				ON
 			class.FK_ugroup = ugroup_user.FK_ugroup
-				LEFT JOIN
-			user AS owner
-				ON
-			class.FK_owner = owner.user_id
 		WHERE
-			user.user_uname = '$user'
+			user_uname = '$user'
 	";
 	$r = db_query($query);
-	
-	$classes = array();
-	$semester = currentsemester();
-	
 	while ($a = db_fetch_assoc($r)) {
-		if ($time == "now" && $a[class_year] == date('Y') && $a[class_semester] == $semester) {
-		
-		} else if ($time == "past" && ($a[class_year] < date('Y') || semorder($a[class_semester]) < semorder($semester))) {
-			$classes[$class_code] = array("code"=>"$a[class_code]","sect"=>"","sem"=>$a[class_semester],"year"=>$a[class_year]);
-		} else if ($time == "future" && ($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y'))) {
-			$classes[$a[class_code]] = array("code"=>"$a[class_code]","sect"=>"","sem"=>$a[class_semester],"year"=>$a[class_year]);
-		} else if ($time == "all") {
-			$classes[$a[class_code]] = array("code"=>"$a[class_code]","sect"=>"","sem"=>$a[class_semester],"year"=>$a[class_year]);
+		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
+/* 		print "<pre>"; print_r($a); print "</pre>"; */
+/* 		print $class_code."<br>"; */
+		if (!$classes[$class_code]) {
+			if ($time == "now" && $a[class_year] == date('Y') && $a[class_semester] == $semester) {
+				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+			} else if ($time == "past" && ($a[class_year] < date('Y') || semorder($a[class_semester]) < semorder($semester))) {
+				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+			} else if ($time == "future" && ($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y'))) {
+				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+			} else if ($time == "all") {
+				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+			}
 		}
 	}
 	
