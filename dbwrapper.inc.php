@@ -148,27 +148,42 @@ function db_line_exists($table, $where) {
 }
 
 function db_connect ($host_db, $username, $password, $db='', $port=0) {
-  global $_connect_id;
-  global $db_type; global $debug;
-  if ($debug) {
-/*     print "<br /><br />db_connect: starting function with arguments:<br />"; */
-/*     print "host_db = $host_db, username = $username, password = $password"; */
-/*     print ", db = $db, port = $port<br />"; */
-/*     print "db_connect: db_type = $db_type<br />"; */
-  }
-  if ($db_type == "mysql") {
-    if ($port != 0) $host_db .= ":$port";
-    $cid = mysql_pconnect($host_db,$username,$password) OR die(printError(" db_connect: Could not connect to host $host_db: " . mysql_error()));
-    $_connect_id = $cid;		// save the cid var for later use
-    // now that we have a good connection, let's set the database to use
-    mysql_select_db($db) or die (printError(" db_connect: Could not select database $db: " . mysql_error()));
-    return $cid; // done
-  } else if ($db_type == "oracle") {
-    $cid = OCILogon($username, $password, $host_db) or
-		ocidie(printError("db_connect: Could not connect to database $host_db"));
-    $_connect_id = $cid;		// save the cid var for later use
-    return $cid; // done
-  }
+	global $_connect_id;
+	global $db_type; global $debug;
+
+	if ($db_type == "mysql") {
+		if ($port != 0) 
+			$host_db .= ":$port";
+		
+		// Connect to the database
+		$cid = mysql_pconnect($host_db,$username,$password);
+		
+		if ($errorString = mysql_error()) {
+			if ($debug)
+				die(printError(" db_connect: Could not connect to host $host_db: $errorString"));
+			else
+				die("db_connect: Could not connect to host $host_db. Set \$cfg['debug'] to 1 for more information.");
+		}
+
+		$_connect_id = $cid;		// save the cid var for later use
+		// now that we have a good connection, let's set the database to use
+		mysql_select_db($db);
+		
+		if ($errorString = mysql_error()) {
+			if ($debug)
+				die(printError("db_connect: Could not select database $db: $errorString"));
+			else
+				die("db_connect: Could not select database $db. Set \$cfg['debug'] to 1 for more information.");
+		}
+		
+		return $cid; // done
+		
+	} else if ($db_type == "oracle") {
+		$cid = OCILogon($username, $password, $host_db) or
+			ocidie(printError("db_connect: Could not connect to database $host_db"));
+		$_connect_id = $cid;		// save the cid var for later use
+		return $cid; // done
+	}
 }
 
 function db_error() {

@@ -1000,7 +1000,8 @@ class discussion {
 		}
 		
 		// send it!
-		mail($to,$subject,$body,"From: $from");
+		if (!mail($to,$subject,$body,"From: $from"))
+			print "ERROR: Sending message, '$subject', to '$to' failed.";
 	}
 		
 }
