@@ -93,7 +93,7 @@ if ($isOwner && isclass($_SESSION[obj]->name)) {
 	print "function addClassEditor() {";
 	print "	f = document.addform;";
 	print "	f.edaction.value='add';";
-	print "	f.edname.value='$sitename';";
+	print "	f.edname.value='".$_SESSION[obj]->getField("name")."';";
 	print "	f.submit();";
 	print "}";
 	print "</script>";

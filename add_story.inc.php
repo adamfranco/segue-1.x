@@ -94,6 +94,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 	
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[storyObj]->fetchFromDB($_REQUEST[edit_story]);
+//		$_SESSION[storyObj]->getPermissions();
 /* 		$_SESSION[storyObj]->fetchDown(1); */
 		$_SESSION[storyObj]->buildPermissionsArray();
 		

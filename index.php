@@ -210,12 +210,13 @@ if (!ini_get("register_globals")) {
 }
 
 // debug output -- handy :)
-//print "<pre>";
+/* print "<pre>"; */
 /* print "request:\n"; */
 /* print_r($_REQUEST); */
 /* print "\n\n"; */
 /* print "session:\n"; */
-/* print_r($_SESSION); */
+/* print_r($_SESSION[storyObj]->editors); */
+/* print_r($_SESSION[storyObj]->permissions); */
 /* print "\n\n"; */
 
 //if ($thisPage) print_r($thisPage);
@@ -235,7 +236,7 @@ if (!ini_get("register_globals")) {
  	print_r($thisSite); 
  } */
  
-//print "</pre>";
+/* print "</pre>" */;
 
 
 // debug output -- handy :)

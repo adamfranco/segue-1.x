@@ -204,7 +204,7 @@ if ($_loggedin) {
 	$sites = array();
 	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor());
 	foreach ($esites as $n=>$s) {
-			if (!in_array($n,$sitesprinted) && $s->hasPermissionDown("add or edit or delete")) {
+			if (!in_array($n,$sitesprinted) && $s->hasPermissionDown("add or edit or delete") && $_SESSION[auser] != $s->getField("addedby")) {
 					if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
 							array_push($sites,$n);
 					else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
