@@ -11,13 +11,13 @@ class section extends segue {
 	// the second element is an array of the database fields we will be selecting
 	// the third element is the database field by which we will sort
 	
-
+	var $_datafields = array(
 		"id" => array(
 			"section",
 			array("section_id"),
 			"section_id"
 		),
-		"owning_site" => array(
+		"site_id" => array(
 			"section",
 			array("FK_site"),
 			"section_id"
@@ -46,8 +46,7 @@ class section extends segue {
 			"section",
 			array("section_active"),
 			"section_id"
-		),
-		
+		),		
 		"??????" => array(
 			"section",
 			array("section_order"),
@@ -57,7 +56,7 @@ class section extends segue {
 			"section
 				INNER JOIN
 			media
-				FK_media = media_id",
+				ON FK_media = media_id",
 			array("media_tag"),
 			"section_id"
 		),
@@ -86,12 +85,10 @@ class section extends segue {
 			array("section_created_tstamp"),
 			"section_id"
 		),
-		
-		
 		"pages" => array(
 			"section
 				INNER JOIN
-			pages
+			page
 				ON section_id = FK_section",
 			array("page_id"),
 			"page_order"

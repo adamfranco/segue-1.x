@@ -228,13 +228,13 @@ FROM
 					".$this->_datafields[$field][2]."
 			";
 			
-//			print "-----------beginning---------<br><pre>".$query; 
+			print "-----------beginning---------<br><pre>".$query; 
 	
 			db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 			$r = db_query($query);
 			
-//			print mysql_error()."<br>Numrows = ".db_num_rows($r);
-//			print "\n\nresult arrays:\n";
+			print mysql_error()."<br>Numrows = ".db_num_rows($r);
+			print "\n\nresult arrays:\n";
 			
 			if (!db_num_rows($r)) return false; // if we get no results
 			
@@ -251,20 +251,24 @@ FROM
 					$val = $a[$this->_datafields[$field][1][0]];
 					$key = $a[$this->_datafields[$field][1][1]];
 				}
-				
+
 				// Decode this value if it is a member of _encode
 				if (in_array($field,$this->_encode)) 
 					$val = stripslashes(urldecode($val));
-				if (in_array($field,$this->_parse)) 
-					$val = parseMediaTextForEdit($val);
+
+// UPDATE parseMediaTextForEdit *********************************************************************
+// UPDATE parseMediaTextForEdit *********************************************************************
+// UPDATE parseMediaTextForEdit *********************************************************************
+//				if (in_array($field,$this->_parse)) 
+//					$val = $this->parseMediaTextForEdit($val);
 
 				if (count($this->_datafields[$field][1]) == 1) { 
 					$valarray[] = $val;
 				} else {
 					$valarray[$key] = $val;
 				}
-//				print "<br>key = $key \nval = $val \nvalarray =\n";
-//				print_r($valarray);
+				print "<br>key = $key \nval = $val \nvalarray =\n";
+				print_r($valarray);
 			}
 			
 			if (count($valarray) == 1)
@@ -274,8 +278,8 @@ FROM
 			$this->fetched[$field] = 1;
 		}
 		
-//		print_r($valarray);
-//		print "</pre>----------end------------<br>";
+		print_r($valarray);
+		print "</pre>----------end------------<br>";
 		return $this->data[$field];
 	}
 	
@@ -559,9 +563,9 @@ FROM
 		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->getField($field));
 		$textarray1 = explode("####", $this->getField($field));
 		if (count($textarray1) > 1) {
-			for ($i=1; $i<count($textarray1); $i+=2) {
+			for ($i=1; $i < count($textarray1); $i+=2) {
 				$id = $textarray1[$i];
-				$filename = db_get_value("media","name","id=$id");
+				$filename = db_get_value("media","media_tag","id=$id");
 				$dir = db_get_value("media","site_id","id=$id");
 				$filepath = $uploadurl."/".$dir."/".$filename;
 				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&";

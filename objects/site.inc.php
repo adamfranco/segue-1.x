@@ -27,14 +27,6 @@ class site extends segue {
 			array("slot_name"),
 			"site_id"
 		),
-		"owning_site" => array(
-			"site
-				INNER JOIN
-			slot
-				ON site_id = FK_site",
-			array("slot_name"),
-			"site_id"
-		),
 		"type" => array(
 			"site",
 			array("site_type"),
@@ -85,7 +77,6 @@ class site extends segue {
 			array("site_footer"),
 			"site_id"
 		),
-
 		"editedby" => array(
 			"site",
 			array("FK_updatedby"),
@@ -106,7 +97,6 @@ class site extends segue {
 			array("site_created_tstamp"),
 			"site_id"
 		),
-
 		"sections" => array(
 			"site
 				INNER JOIN
@@ -120,6 +110,16 @@ class site extends segue {
 	
 	
 	function site($name) {
+		// find if a site with this name already exists in the databse, and if yes, get site_id
+		global $dbuser, $dbpass, $dbdb, $dbhost;
+		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
+		echo $q = "SELECT site_id FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name'";
+		$r = db_query($q);
+		if (db_num_rows($r)) {
+			$a = db_fetch_assoc($r);
+			$this->id = $a[site_id];
+		}
+
 		$this->name = $name;
 		$this->owning_site = $name;
 		$this->sections = array();
@@ -192,6 +192,7 @@ class site extends segue {
 /* 			} */
 /* 			print "<pre>allFields: "; print_r($this->_allfields); print "</pre>"; */
 			foreach ($this->_allfields as $f) {
+				echo $f."<br>";
 				$this->getField($f);
 			}
 		}
