@@ -111,6 +111,7 @@ if ($type == 'story') {
 	//	Begin modification 1 - 11.1.02 - achapin
 	// removed active-x editor code to editor_activex.php
 	// editor.inc.php determines browser/platform and choses appropriate editor
+	//print $shorttext;
 	include("htmleditor/editor.inc.php");
 		
 	printc("<br>");
@@ -121,7 +122,7 @@ if ($type == 'story') {
 	//	print out text areas with editor (determined by addeditor function)
 	//  addeditor function (defined in editor.inc.php)
 	//  addeditor function variables (textarea, cols, rows, text)
-	printc(addeditor ("shorttext",80,16,$text));
+	printc(addeditor ("shorttext",80,16,$shorttext));
 	printc("</td></tr></table>");
 		
 	printc("<br>");

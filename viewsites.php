@@ -99,7 +99,7 @@ input,select {
 <? print $numlogs . " | " . $query; ?>
 <table cellspacing=1 width='100%'>
 <tr>
-	<td colspan=6>
+	<td colspan=8>
 		<table width='100%'>
 		<tr><td>
 		<form action=<?echo "$PHP_SELF?$sid"?> method=get>
@@ -145,21 +145,34 @@ input,select {
 	<th>site</th>
 	<th>active</th>
 	<th>type</th>
+	<th>view</th>
+	<th>theme</th>
 	<th>title</th>
 	<th>owner</th>
 </tr>
 <?
 $color = 0;
+$today = date(Ymd);
+$yesterday = date(Ymd)-1;
 
 if (db_num_rows($r)) {
 	while ($a=db_fetch_assoc($r)) {
 		print "<tr>";
 		print "<td class=td$color><nobr>";
+		//print "$yesterday";
+		if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "<b>";
 		print timestamp2usdate($a[editedtimestamp],1);
+		if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "</b>";
 		print "</nobr></td>";
 		print "<td class=td$color>$a[name]</td>";
 		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
 		print "<td class=td$color>$a[type]</td>";
+		print "<td class=td$color><span style='color: #";
+			if ($a[viewpermissions] == 'anyone') print "090";
+			if ($a[viewpermissions] == 'midd') print "FF0";
+			if ($a[viewpermissions] == 'class') print "900";
+		print "'>$a[viewpermissions]</span></td>";
+		print "<td class=td$color>$a[theme]</td>";
 		print "<td class=td$color>";
 		print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
 		print "$a[title]";
