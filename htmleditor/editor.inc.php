@@ -13,13 +13,13 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 	if ($browser_os == "pcie5+") {
 		if ($context=="story") {	
 			include("htmleditor/editor_activex.inc.php");
+			editor_activex($textarea,$cols,$rows,$text);
 		} else if  ($context=="discuss") {
-			include("htmleditor/editor_htmlarea_discuss.inc.php");
+			include("htmlarea/discuss.html");
 		}	
-		editor_activex($textarea,$cols,$rows,$text);
 		
 	} else if ($browser_os != "macsafari") {
-			editor_htmlarea($textarea,$text,$context);
+		editor_htmlarea($textarea,$text,$context);
 	} else {
 		editor_txt($textarea,$cols,$rows,$text);
 	}
