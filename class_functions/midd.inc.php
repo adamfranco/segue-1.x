@@ -175,6 +175,7 @@ function getclassstudents($class_id) {
 						
 						$userSearchFilter = "(".$nextmember.")";
 						$userSearchFilter = eregi_replace("(,)\s?".$userSearchDN,"", $userSearchFilter);
+						$userSearchFilter = str_replace("\\", "", $userSearchFilter);
 						//printpre($userSearchFilter);
 						// search ldap with filter set to full name...
 						//$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
