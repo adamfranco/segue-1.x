@@ -3,7 +3,7 @@
 function isclass ($class) {
 	global $auser;
 	$auser = strtolower($auser);
-	$v = ereg("([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2})",$class);
+	$v = ereg("^(([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2}))$",$class);
 	if (!$v && db_line_exists("classgroups","name='$class'")) $v = 1;
 	return $v;
 }
