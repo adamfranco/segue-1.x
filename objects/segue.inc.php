@@ -44,7 +44,7 @@ SELECT site_id
 		ON FK_site = site_id AND slot_name='$site'
 ";
 
-		echo $query."<br>";
+//		echo $query."<br>";
 		if (db_num_rows(db_query($query))) return 1;
 		return 0;
 	}

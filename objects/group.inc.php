@@ -45,7 +45,7 @@ FROM
 	classgroup
 		INNER JOIN
 	user ON FK_owner = user_id AND classgroup_id = ".$this->id;
-		echo $query."<br>";
+//		echo $query."<br>";
 
 		$r = db_query($query);
 		if (db_num_rows($r)) {
@@ -55,7 +55,7 @@ FROM
 			
 		// get classes for that group<br>
 		$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_id=".$this->id;
-		echo $query."<br>";
+//		echo $query."<br>";
 
 		$r = db_query($query);
 		if (db_num_rows($r)) {
@@ -68,7 +68,7 @@ FROM
 	function updateDB() {
 		// get owner id
 		$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
-		echo $query."<br>";
+//		echo $query."<br>";
 		$r = db_query($query);
 		if (db_num_rows($r)==0) return false;
 		else {
@@ -87,7 +87,7 @@ FROM
 		// else just update it
 		else {
 			$query = "UPDATE classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
-			echo $query."<br>";
+//			echo $query."<br>";
 		}
 
 		// now that the group is in the db, update the foreign key for the classes
