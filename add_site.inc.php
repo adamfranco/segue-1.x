@@ -113,6 +113,7 @@ if (!session_is_registered("settings")) {
 		$settings[copydownpermissions] = decode_array($settings[copydownpermissions]);
 		$settings[header] = urldecode($settings[header]);
 		$settings[footer] = urldecode($settings[footer]);
+		$settings[site_owner] = $settings[addedby];
 	}
 }
 
@@ -222,27 +223,27 @@ if ($save) {
 		if (/*$settings[edit] && */($settings[recursiveenable] || count($settings[copydownpermissions]))) {
 			// recursively change the $active or $permissions field for all parts of the site
 			$sections = decode_array(db_get_value("sites","sections","name='$settings[sitename]'"));
-			foreach ($sections as $s) {
-				$sa = db_get_line("sections","id=$s");
+			foreach ($sections as $sn) {
+				$sna = db_get_line("sections","id=$sn");
 				$chg = array();
 				if ($settings[recursiveenable] && permission($auser,SITE,EDIT,$settings[sitename])) $chg[] = "active=$settings[active]";
-				if (count($settings[copydownpermissions])) {
-					$sp = decode_array($sa['permissions']);
-					foreach ($settings[copydownpermissions] as $e) $sp[$e] = $settings[permissions][$e];
-					print_r($sp);
-					$sp = encode_array($sp);
-					$chg[] = "permissions='$sp'";
+				if (count($settings[copydownpermissions]) && $auser == $settings[site_owner]) {
+					$snp = decode_array($sna['permissions']);
+					foreach ($settings[copydownpermissions] as $e) $snp[$e] = $settings[permissions][$e];
+					print_r($snp);
+					$snp = encode_array($snp);
+					$chg[] = "permissions='$snp'";
 				}
-				$query = "update sections set " . implode(",",$chg) . " where id=$s";
+				$query = "update sections set " . implode(",",$chg) . " where id=$sn";
 				print $query . "<BR>";
 				if (count($chg)) db_query($query);
 				
-				$pages = decode_array($sa['pages']);
+				$pages = decode_array($sna['pages']);
 				foreach ($pages as $p) {
 					$pa = db_get_line("pages","id=$p");
 					$chg = array();
-					if ($settings[recursiveenable] && permission($auser,SECTION,EDIT,$s)) $chg[] = "active=$settings[active]";
-					if (count($settings[copydownpermissions])) {
+					if ($settings[recursiveenable] && permission($auser,SECTION,EDIT,$sn)) $chg[] = "active=$settings[active]";
+					if (count($settings[copydownpermissions]) && $auser == $settings[site_owner]) {
 						$pp = decode_array($pa['permissions']);
 						foreach ($settings[copydownpermissions] as $e) $pp[$e] = $settings[permissions][$e];
 						$pp = encode_array($pp);
@@ -251,6 +252,22 @@ if ($save) {
 					$query = "update pages set " . implode(",",$chg) . " where id=$p";
 					print "--> ".$query . "<BR>";
 					if (count($chg)) db_query($query);
+	
+					$stories = decode_array(db_get_value("pages","stories","id=$p"));
+					foreach ($stories as $s) {
+						$sa = db_get_line("stories","id=$s");
+						$chg = array();
+						if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active=$settings[active]";
+						if (count($settings[copydownpermissions]) && $auser == $settings[site_owner]) {
+							$sp = decode_array($sa['permissions']);
+							foreach ($settings[copydownpermissions] as $e) $sp[$e] = $settings[permissions][$e];
+							$sp = encode_array($sp);
+							$chg[] = "permissions='$sp'";
+						}
+						$query = "update stories set " . implode(",",$chg) . " where id=$s";
+						print "--> ".$query . "<BR>";
+						if (count($chg)) db_query($query);
+					}
 				}
 			}
 		}
@@ -351,13 +368,13 @@ if ($settings[step] == 6) {
 
 
 
-/*
+
 // ---  variables for debugging ---
 $variables = "<br>";
 $variables .= "action = $action <br> auser = $auser <br> settings = $settings<br>";
 foreach ($settings as $n =>$v) {
 	$variables .= "$n = $v <br>";
 }
-printc("$variables");
+//printc("$variables");
 //------------------------------------
-*/
+

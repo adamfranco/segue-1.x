@@ -67,8 +67,8 @@ if ($settings[type]=='page') {
 			$color = 0;
 			foreach ($edlist as $e) {
 				printc("<tr><td class=td$color align=center>");
-			/*	if ($settings[edit]) printc("<input type=checkbox name='copydownpermissions[]' value='$e' ".(($settings[copydownpermissions] && in_array($e,$settings[copydownpermissions]))?" checked":"")."></td><td class=td$color>");
-				else */ printc(" </td><td class=td$color>");
+				if ($settings[edit]) printc("<input type=checkbox name='copydownpermissions[]' value='$e' ".(($settings[copydownpermissions] && in_array($e,$settings[copydownpermissions]))?" checked":"")."></td><td class=td$color>");
+				else printc(" </td><td class=td$color>");
 				printc(ldapfname($e)." ($e)</td>");
 				
 				for ($i = 0; $i<3; $i++) {

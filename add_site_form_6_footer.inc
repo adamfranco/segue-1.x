@@ -42,7 +42,7 @@ printc("<br>");
 //  addeditor function (defined in editor.inc.php)
 //  addeditor function variables (textarea, cols, rows, text)
 include("htmleditor/editor.inc.php");
-printc(addeditor ("footer",60,8,$text));
+printc(addeditor ("footer",60,8,$settings[footer]));
 
 //printc("<textarea name=footer cols=70 rows=8>");
 //$temp = spchars($settings[footer]);

@@ -46,14 +46,16 @@ function copyuserfile($id,$file) {
 }
 
 function deleteuserfile($id,$file) {
-	global $uploaddir, $auser, $site;
+	global $uploaddir, $auser, $site, $settings;
 	if (!$file[name]) return 0;
-	$userdir = "$uploaddir/$site";
+	if ($site) $userdir = "$uploaddir/$site";
+	else $userdir = "$uploaddir/$settings[site]";
 	$fdir = "$userdir/$id";
 	$f = "$fdir/$file";
 //	print "$userdir - $fdir<br>";
 	if (file_exists($f)) unlink($f);
 	if (is_dir($fdir)) rmdir($fdir);
+	print "deleted file $f<br>";
 	return 1;
 }
 

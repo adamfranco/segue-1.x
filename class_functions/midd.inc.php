@@ -113,7 +113,7 @@ define("LDAP_EXACT",0);
 define("LDAP_LASTNAME",0);
 define("LDAP_FIRSTNAME",1);
 
-function ldaplookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0) {
+function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0) {
 	$name = strtolower($name);
 	global $ldap_voadmin_pass,$ldap_voadmin_user,$ldapserver;
 	$ldap_user = "cn=$ldap_voadmin_user,cn=Recipients,ou=Midd,o=MC";

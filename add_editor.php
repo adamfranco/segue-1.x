@@ -4,9 +4,10 @@ ob_start();
 
 
 if ($n) {
-	include("config.inc.php");
-	include("functions.inc.php");
-	$usernames=ldaplookup($n,LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
+	//include("config.inc.php");
+	//include("functions.inc.php");
+	include("includes.inc.php");
+	$usernames=userlookup($n,LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
 }
 
 // sort alphabetically

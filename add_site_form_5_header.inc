@@ -58,7 +58,7 @@ printc("<br>");
 //  addeditor function (defined in editor.inc.php)
 //  addeditor function variables (textarea, cols, rows, text)
 include("htmleditor/editor.inc.php");
-printc(addeditor ("header",60,8,$text));
+printc(addeditor ("header",60,8,$settings[header]));
 
 //printc("<textarea name=header cols=70 rows=8>");
 //$temp = spchars($settings[header]);

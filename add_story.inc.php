@@ -12,21 +12,6 @@
 //print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
 //print "site = $site<br>section = $section<br>page=$page<br>";
 
-//if (!isset($test) && type='file') $test=1;
-//else $test=0;
-//if (1) $testFile = $_FILES['file'];
-print "\$_FILES['file']['name'] = '";
-print $_FILES['file']['name'];
-print "'<br> \$_FILES['file'] = ";
-print $_FILES['file'];
-print "<br>\$_FILES['file']['type'] = ";
-print $_FILES['file']['type'];
-//print "<br>\$testFile = ";
-//print $testFile;
-//print "<br>\$testFile['name'] = ";
-//print $testFile['name'];
-//if (1) foreach ($testFile as $n => $v) print "<br> $n $v";
-
 //------------------------------------
 
 // first check if we are allowed to edit this site at all
@@ -96,8 +81,7 @@ if ($settings) {
 //	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
 //	if ($archiveby) $settings[archiveby] = $archiveby;
 	if ($url) $settings[url] = $url;
-	if ($filename) $settings[filename] = $filename;
-	if ($filename) $settings[file] = $_FILES[$filename];
+	if ($file && $_FILES['file']['tmp_name'] != 'none' && $settings[step] == 1 && !$link) $settings[file] = $_FILES['file'];
 	if ($texttype) $settings[texttype] = $texttype;
 	if ($settings[step] == 5 && !$link) $settings[discuss] = $discuss;
 	if ($settings[step] == 5 && !$link) $settings[discusspermissions] = $discusspermissions;
@@ -126,7 +110,7 @@ if ($settings) {
 		$settings[deactivatedate] = 0;
 		$settings[active] = 1;
 		$settings[editors] = $editors;
-		$settings[ediscussion] = 0;
+		$settings[ediscussion] = db_get_value("pages","ediscussion","id=$settings[page]");
 		$settings[locked] = 0;
 		$settings[showcreator] = 0;
 		$settings[showdate] = 0;
@@ -137,6 +121,7 @@ if ($settings) {
 		$settings[category] = "";
 		$settings[shorttext] = "";
 		$settings[longertext] = "";
+		$settings[file] = "";
 		
 		if ($settings[add]) {
 			//print "<p> deleting settings[permissions]....</p>";
@@ -213,6 +198,7 @@ if (!$settings && !$error) {
 		$settings[permissions] = decode_array($settings[permissions]);
 		$settings[shorttext] = urldecode($settings[shorttext]);
 		$settings[longertext] = urldecode($settings[longertext]);
+		$settings['file']['name'] = $settings[longertext];
 	}
 	
 	$settings[categories]=array();
@@ -220,14 +206,16 @@ if (!$settings && !$error) {
 		while ($a=db_fetch_assoc($r)) {
 			if ($a[category]!='' && insite($settings[site],$settings[section],$settings[page],$a[id])) {
 				$settings[categories][] = $a[category];
-	/* 			$strs = decode_array(db_get_value("pages","stories","id=$settings[page]")); */
-	/* 			print_r($strs); */
-	/* 			print "$a[id] => ".in_array($a[id],$strs)."<BR>"; */
+//	 			$strs = decode_array(db_get_value("pages","stories","id=$settings[page]")); 
+//	 			print_r($strs); 
+//	 			print "$a[id] => ".in_array($a[id],$strs)."<BR>"; 
 				
 			}
 		}
 		sort($settings[categories]);
 	}
+	
+	$settings[ediscussion] = db_get_value("pages","ediscussion","id=$settings[page]");
 }
 
 if ($prevbutton) $settings[step] = $settings[step] - 1;
@@ -274,9 +262,9 @@ if ($save) {
 			error ("You must enter some story content.");
 	if ($settings[type]=='link' && (!$settings[url] || $settings[url]=='' || $settings[url]=='http://'))
 		error("You must enter a URL.");
-	if ($settings[type]=='file' && (!$_FILES['file']['name'] || $_FILES['file']['name'] == '') && $settings[add])
+	if ($settings[type]=='file' && (!$settings['file']['name'] || $settings['file']['name'] == '') && $settings[add])
 		error("You must select a file to upload.");
-	if ($settings[type]=='image' && (!$_FILES['file']['name'] || $_FILES['file']['name'] == '') && $settings[add])
+	if ($settings[type]=='image' && (!$settings['file']['name'] || $settings['file']['name'] == '') && $settings[add])
 		error("You must select an image to upload.");
 		
 		
@@ -294,7 +282,7 @@ if ($save) {
 		
 
 		if ($settings[type] == 'image' || $settings[type] == 'file') {
-			$settings[longertext] = $_FILES['file']['name'];
+			$settings[longertext] = $settings['file']['name'];
 			if ($settings[edit]) {
 				$oldfilename = db_get_value("stories","longertext","id=$settings[story]");
 				if (!$settings[longertext]) {
@@ -311,9 +299,10 @@ if ($save) {
 		
 		
 		// check make sure the owner is the current user if they are changing permissions
-		if ($settings[site_owner] != $auser)
-			$settings[permissions] = decode_array(db_get_value("sections","permissions","id=$settings[section]"));
-		
+		if ($settings[site_owner] != $auser) {
+			if ($settings[edit]) $settings[permissions] = decode_array(db_get_value("stories","permissions","id=$settings[story]"));
+			else $settings[permissions] = decode_array(db_get_value("pages","permissions","id=$settings[page]"));
+		}
 		// make sure that the permissions array represents all of the editors (giving them either permission (1) or not (0))
 		//$settings[editors] = db_get_value("sites","editors","name='$settings[site]'");
 		if ($settings[editors]) {
@@ -340,6 +329,12 @@ if ($save) {
 		// add the new story id to the pages table
 		if ($settings[add]) {
 			$newid = lastid();
+			
+			// move the file to the appropriate upload dir
+                        if ($settings[type] == 'image' || $settings[type] == 'file') {
+				copyuserfile($newid,$settings['file']);
+                        }
+			
 			$stories = decode_array(db_get_value("pages","stories","id=$settings[page]"));
 			array_push($stories,$newid);
 			$stories = encode_array($stories);
@@ -351,7 +346,7 @@ if ($save) {
 			log_entry("edit_page",$settings[site],$settings[section],$settings[page],"$auser edited content id $settings[story] in page $settings[page] of section $settings[section] of site $settings[site]");
 			$newid=$settings[page];
 			if ($settings[type] == 'image' || $settings[type] == 'file') {
-				copyuserfile($settings[story],$_FILES['file']);
+				copyuserfile($settings[story],$settings['file']);
 			}
 		}
 		
@@ -412,7 +407,7 @@ if ($auser == $settings[site_owner]) {
 	$leftlinks .= "</td></tr>";
 }
 
-if ($settings[type] == "story") {
+if ($settings[type] == "story" && ($settings[ediscussion] || $auser == $settings[site_owner])) {
 	$leftlinks .= "<tr><td>";
 	if ($settings[step] == 5) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
@@ -449,13 +444,7 @@ foreach ($vars as $n => $v) {
 	$variables .= "$n = $v <br>";	
 }
 //add_link(leftnav,'','',"$variables");
-printc("$variables");
-$count = count($_FILES);
-printc("<br>Files = $_FILES  <br> count(\$_FILES) = $count");
-foreach ($_FILES as $n => $v) printc ("<br>- $v");
-print "<br>\$_FILES['file'] == ".$_FILES['file'];
-print "<br>\$_FILES['file']['name'] == ".$_FILES['file']['name'];
+//printc("$variables");
+//if ($settings[file]) foreach ($settings[file] as $n => $v) printc ("<br>$n - $v");
 //------------------------------------
 
-// End of New Code
-//--------------------------------------------------------------------------------------------------------

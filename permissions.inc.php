@@ -13,6 +13,132 @@ define("DELETE",2);
 // code..... to be written
 if ($site) $site_owner = db_get_value("sites","addedby","name='$site'");
 
+function has_permissions($user, $this_level,$site,$section,$page,$story) {
+	// gets $user (person trying to edit), $type (SITE, SECTION, PAGE, or STORY)
+	// if $section, $page, or $story is undefined, use "" instead of a value.
+	global $site_owner;
+	
+//	print "<p>\$user = $user <br>\$this_level = $this_level <br>\$site = $site <br>\$section = $section <br>\$page = $page <br>\$story = $story<br>";
+
+	if ($site_owner == $user) return 1;
+
+	$site_permissions = 0;
+	$section_permissions = 0;
+	$page_permissions = 0;
+	$story_permissions = 0;
+	
+	if ($this_level == SITE) {	
+		$a = permission($user, SITE, ADD, $site);
+		$e = permission($user, SITE, EDIT, $site);
+		$d = permission($user, SITE, DELETE, $site);
+		if ($a || $e || $d) $site_permissions = 1;
+		
+		$sections = decode_array(db_get_value("sites","sections","name='$site'"));
+		foreach ($sections as $section) {
+			$a = permission($user, SECTION, ADD, $section);
+			$e = permission($user, SECTION, EDIT, $section);
+			$d = permission($user, SECTION, DELETE, $section);
+			if ($a || $e || $d) $section_permissions = 1;
+				
+			$pages = decode_array(db_get_value("sections","pages","id=$section"));
+			foreach ($pages as $page) {
+				$a = permission($user, PAGE, ADD, $page);
+				$e = permission($user, PAGE, EDIT, $page);
+				$d = permission($user, PAGE, DELETE, $page);
+				if ($a || $e || $d) $page_permissions = 1;
+	
+				$stories = decode_array(db_get_value("pages","stories","id=$page"));
+				foreach ($stories as $story) {
+					$a = permission($user, STORY, ADD, $story);
+					$e = permission($user, STORY, EDIT, $story);
+					$d = permission($user, STORY, DELETE, $story);
+					if ($a || $e || $d) $story_permissions = 1;
+				}
+			}
+		}
+	}
+
+	if ($this_level == SECTION) {
+		$a = permission($user, SITE, ADD, $site);
+		$e = permission($user, SITE, EDIT, $site);
+		$d = permission($user, SITE, DELETE, $site);
+		if ($a || $e || $d) $site_permissions = 1;
+		
+		$a = permission($user, SECTION, ADD, $section);
+		$e = permission($user, SECTION, EDIT, $section);
+		$d = permission($user, SECTION, DELETE, $section);
+		if ($a || $e || $d) $section_permissions = 1;
+				
+		$pages = decode_array(db_get_value("sections","pages","id=$section"));
+		foreach ($pages as $page) {
+			$a = permission($user, PAGE, ADD, $page);
+			$e = permission($user, PAGE, EDIT, $page);
+			$d = permission($user, PAGE, DELETE, $page);
+			if ($a || $e || $d) $page_permissions = 1;
+	
+			$stories = decode_array(db_get_value("pages","stories","id=$page"));
+			foreach ($stories as $story) {
+				$a = permission($user, STORY, ADD, $story);
+				$e = permission($user, STORY, EDIT, $story);
+				$d = permission($user, STORY, DELETE, $story);
+				if ($a || $e || $d) $story_permissions = 1;
+			}
+		}
+	}
+	
+	if ($this_level == PAGE) {
+		$a = permission($user, SITE, ADD, $site);
+		$e = permission($user, SITE, EDIT, $site);
+		$d = permission($user, SITE, DELETE, $site);
+		if ($a || $e || $d) $site_permissions = 1;
+		
+		$a = permission($user, SECTION, ADD, $section);
+		$e = permission($user, SECTION, EDIT, $section);
+		$d = permission($user, SECTION, DELETE, $section);
+		if ($a || $e || $d) $section_permissions = 1;
+				
+		$a = permission($user, PAGE, ADD, $page);
+		$e = permission($user, PAGE, EDIT, $page);
+		$d = permission($user, PAGE, DELETE, $page);
+		if ($a || $e || $d) $page_permissions = 1;
+	
+		$stories = decode_array(db_get_value("pages","stories","id=$page"));
+		foreach ($stories as $story) {
+			$a = permission($user, STORY, ADD, $story);
+			$e = permission($user, STORY, EDIT, $story);
+			$d = permission($user, STORY, DELETE, $story);
+			if ($a || $e || $d) $story_permissions = 1;
+		}
+	}
+
+	if ($this_level == STORY) {
+		$a = permission($user, SITE, ADD, $site);
+		$e = permission($user, SITE, EDIT, $site);
+		$d = permission($user, SITE, DELETE, $site);
+		if ($a || $e || $d) $site_permissions = 1;
+		
+		$a = permission($user, SECTION, ADD, $section);
+		$e = permission($user, SECTION, EDIT, $section);
+		$d = permission($user, SECTION, DELETE, $section);
+		if ($a || $e || $d) $section_permissions = 1;
+				
+		$a = permission($user, PAGE, ADD, $page);
+		$e = permission($user, PAGE, EDIT, $page);
+		$d = permission($user, PAGE, DELETE, $page);
+		if ($a || $e || $d) $page_permissions = 1;
+	
+		$a = permission($user, STORY, ADD, $story);
+		$e = permission($user, STORY, EDIT, $story);
+		$d = permission($user, STORY, DELETE, $story);
+		if ($a || $e || $d) $story_permissions = 1;
+	}
+	
+//	print "\$site_permissions = $site_permissions <br>\$section_permissions = $section_permissions <br>\$page_permissions = $page_permissions <br>\$story_permissions = $story_permissions</p><br>";
+	
+	if ($site_permissions || $section_permissions || $page_permissions || $story_permissions ) return 1;
+	else return 0;
+}
+
 // gets $user (person trying to edit), $type (SITE,SECTION, or PAGE), and $function (ADD,EDIT, or DELETE)
 function permission($user,$type,$function,$id) {
 	$user = strtolower($user);
@@ -30,6 +156,13 @@ function permission($user,$type,$function,$id) {
 		$a = db_get_line("pages","id=$id");
 		$sectiona = db_get_line("sections","id=$section");
 		if ($sectiona[locked]) return 0;
+	}
+	if ($type == STORY) {
+		$a = db_get_line("stories","id=$id");
+		$sectiona = db_get_line("sections","id=$section");
+		if ($sectiona[locked]) return 0;
+		$pagea = db_get_line("pages","id=$page");
+		if ($pagea[locked]) return 0;
 	}
 	
 	

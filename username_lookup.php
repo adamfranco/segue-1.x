@@ -4,7 +4,7 @@ if ($name) {
 /* 	include("config.inc.php"); */
 /* 	include("functions.inc.php"); */
 	include("includes.inc.php");
-	$usernames=ldaplookup($name,LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
+	$usernames=userlookup($name,LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
 }
 
 // sort alphabetically

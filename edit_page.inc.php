@@ -75,7 +75,7 @@ if ($settings) {
 	if ($settings[step] == 3 && !$link) $settings[ediscussion] = $ediscussion;
 	if ($settings[step] == 3 && !$link) $settings[locked] = $locked;
 //	if ($settings[step] == 1 && !$link) $settings[recursiveenable] = $recursiveenable;
-//	if ($copydownpermissions != "") $settings[copydownpermissions] = $copydownpermissions;
+	if ($copydownpermissions != "") $settings[copydownpermissions] = $copydownpermissions;
 	if ($settings[step] == 4 && !$link) $settings[showcreator] = $showcreator;
 	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
 	if ($archiveby) $settings[archiveby] = $archiveby;
@@ -101,6 +101,7 @@ if ($settings) {
 		$settings[showcreator] = 0;
 		$settings[showdate] = 0;
 		$settings[archiveby] = "none";
+		$settings[copydownpermissions] = 0;
 		
 		if ($settings[add]) {
 			//print "<p> deleting settings[permissions]....</p>";
@@ -269,6 +270,27 @@ if ($save) {
 		$query = "update sites set editors='$settings[editors]',editedtimestamp=NOW() where  name='$settings[site]'";
 		db_query($query);
 		print "$query <br>";
+		
+		// do the recursive update of active flag and such... .... ugh
+		$settings[permissions] = decode_array($settings[permissions]);
+		if ($settings[edit] && ($settings[recursiveenable] || count($settings[copydownpermissions]))) {
+			// recursively change the $active or $permissions field for all parts of the site			
+			$stories = decode_array(db_get_value("pages","stories","id=$settings[page]"));
+			foreach ($stories as $s) {
+				$sa = db_get_line("stories","id=$s");
+				$chg = array();
+				if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active=$settings[active]";
+				if (count($settings[copydownpermissions]) && $auser == $settings[site_owner]) {
+					$sp = decode_array($sa['permissions']);
+					foreach ($settings[copydownpermissions] as $e) $sp[$e] = $settings[permissions][$e];
+					$sp = encode_array($sp);
+					$chg[] = "permissions='$sp'";
+				}
+				$query = "update stories set " . implode(",",$chg) . " where id=$s";
+				print "--> ".$query . "<BR>";
+				if (count($chg)) db_query($query);
+			}			
+		}
 		
 		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]".(($settings[type]=='page')?"&page=$newid":""));
 		

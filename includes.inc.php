@@ -8,6 +8,7 @@ include("themes/themeslist.inc.php");
 include("dates.inc.php");
 include("help/include.inc.php");
 
+
 //output a meta tag
 print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 

@@ -198,7 +198,7 @@ $sitefooter = "";
 if ($cancel) {
 	$commingFrom = $settings[commingFrom];
 	$site = $settings[site];	
-	if ($settings[edit]) $section = $settings[section];
+	if ($settings[edit] && $settings[type]=='section') $section = $settings[section];
 	session_unregister("settings");
 	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site".(($section)?"&section=$section":""));
 	else header("Location: index.php?$sid");
@@ -289,6 +289,22 @@ if ($save) {
 				$query = "update pages set " . implode(",",$chg) . " where id=$p";
 				print "--> ".$query . "<BR>";
 				if (count($chg)) db_query($query);
+				
+				$stories = decode_array(db_get_value("pages","stories","id=$p"));
+				foreach ($stories as $s) {
+					$sa = db_get_line("stories","id=$s");
+					$chg = array();
+					if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active=$settings[active]";
+					if (count($settings[copydownpermissions]) && $auser == $settings[site_owner]) {
+						$sp = decode_array($sa['permissions']);
+						foreach ($settings[copydownpermissions] as $e) $sp[$e] = $settings[permissions][$e];
+						$sp = encode_array($sp);
+						$chg[] = "permissions='$sp'";
+					}
+					$query = "update stories set " . implode(",",$chg) . " where id=$s";
+					print "--> ".$query . "<BR>";
+					if (count($chg)) db_query($query);
+				}
 			}
 			
 		}

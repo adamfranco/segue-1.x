@@ -1,6 +1,6 @@
 <? // add_site_form.inc -- the form that people use to add/edit a site
 
-printc("<form action='$PHP_SELF?$sid' method=post name=addform>");
+printc("<form action='index.php?$sid&action=add_story' method=post name=addform".(($settings[type] !='story' && $settings[type] != 'url')?" enctype='multipart/form-data'":"").">");
 
 //printc("<input type=hidden name=site value='$settings[site]'>");
 //printc("<input type=hidden name=section value=$settings[section]>");
@@ -127,6 +127,8 @@ if ($settings[type] == 'image' || $settings[type] == 'file') {
 	if ($settings[edit]) printc("New ");
 	if ($settings[type] == 'image') printc("Image: ");
 	else printc("File: ");
+	$filename = $settings[file][name];
+	if ($settings[file][name]) printc ("<b>\"$filename\" is currently uploaded</b> <div class='desc'>Only select ".(($settings[type] == 'file')?"a file":"an image")." below if you wish to upload a different file.</div> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ");
 	printc("<input type=file name=file class=textfield>");
 	if ($settings[type]=='image') printc("<div class=desc>Select the image you would like to use by clicking the 'Browse...' button above. Accepted image types are GIF, JPEG and PNG.</div>");
 	else printc("<div class=desc>Select the file you would like to make available by clicking the 'Browse...' button above.</div>");
@@ -138,9 +140,7 @@ if ($settings[type] == 'image' || $settings[type] == 'file') {
 	
 }
 
-printc ("<input type=submit value='Submit'>");
-
-if ($settings[type] != 'story') printc("<br><br>");
+//if ($settings[type] != 'story') printc("<br><br>");
 
 printc("</form>");
 

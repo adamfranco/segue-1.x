@@ -71,7 +71,8 @@ printc("</td></tr></table>");
 				else */ printc(" </td><td class=td$color>");
 				printc(ldapfname($e)." ($e)</td>");
 				
-				for ($i = 0; $i<3; $i++) {
+				printc("<td class=td$color align=center> n/a </td>");
+				for ($i = 1; $i<3; $i++) {
 					printc("<td class=td$color align=center>");
 					printc("<input type=checkbox name='permissions[$e][$i]' value=1".(($settings[permissions][$e][$i])?" checked":"").">");
 					printc("</td>");

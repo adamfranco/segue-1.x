@@ -78,11 +78,13 @@ foreach ($sections as $s) {
 			if ($i != 0) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=up&id=$s' class=btnlink title='Move this section to the left'>&larr;</a>";
 			if ($i != count($sections)-1) $extra .= " <a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=section&direction=down&id=$s' class=btnlink title='Move this section to the right'>&rarr;</a>";
 		}
-		$extra .= (permission($auser,SITE,EDIT,$site))?" <a href='$PHPSELF?$sid&$envvars&action=edit_section&edit_section=$s&commingFrom=viewsite' class='btnlink' title='Edit the title and properties of this section'>edit</a>":"";
+		$extra .= (permission($auser,SITE,EDIT,$site))?" <a href='$PHPSELF?$sid&site=$site&section=$s&action=edit_section&edit_section=$s&commingFrom=viewsite' class='btnlink' title='Edit the title and properties of this section'>edit</a>":"";
 		$extra .= (permission($auser,SITE,DELETE,$site))?" <a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHPSELF?$sid&$envvars&action=delete_section&delete_section=$s\")' class='btnlink' title='Delete this section'>del</a>":"";
 	}
 	$i++;
-	add_link(topnav,$a['title'],$link,$extra,$s,$target);
+	if ($a[active] || has_permissions($auser,SECTION,$site,$s,"","")) {
+		add_link(topnav,$a['title'],$link,$extra,$s,$target);
+	}	
 }
 
 // next, if we have a section, build a list of leftnav items
@@ -103,89 +105,96 @@ if ($section) {
 			$extra .= (permission($auser,SECTION,DELETE,$section))?" | <a href='javascript:doconfirm(\"Are you sure you want to permanently delete this item and any data that may be contained within it?\",\"$PHPSELF?$sid&$envvars&action=delete_page&delete_page=$p\")' class='small' title='Delete this page/link/heading/divider'>del</a>":"";
 		}
 		$i++;
-		if ($a[type] == 'page')
-			add_link(leftnav,$a['title'],"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=viewsite",$extra,$p);
-		if ($a[type] == 'url')
-			add_link(leftnav,$a['title']." <img src=globe.gif border=0 align=absmiddle height=15 width=15>",$a['url'],$extra,$p,"_blank");
-		if ($a[type] == 'heading')
-			add_link(leftnav,$a['title'],'',$extra);
-		if ($a[type] == 'divider')
-			add_link(leftnav,'','',"-divider-<br>".$extra);
+		if ($a[active] || has_permissions($auser,PAGE,$site,$section,$p,"")) {
+			if ($a[type] == 'page')
+				add_link(leftnav,$a['title'],"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=viewsite",$extra,$p);
+			if ($a[type] == 'url')
+				add_link(leftnav,$a['title']." <img src=globe.gif border=0 align=absmiddle height=15 width=15>",$a['url'],$extra,$p,"_blank");
+			if ($a[type] == 'heading')
+				add_link(leftnav,$a['title'],'',$extra);
+			if ($a[type] == 'divider')
+				add_link(leftnav,'','',"-divider-<br>".$extra);
+		}
 	}
 	$leftnav_extra = (permission($auser,SECTION,ADD,$section))?"<div align=right><nobr><a href='$PHP_SELF?$sid&site=$site&section=$section&action=add_page&commingFrom=viewsite' class='small' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></nobr></div>":"";
 }
 
 if ($page) {
 /* 	$stories = decode_array(db_get_value("pages","stories","id=$page")); */
-	printc("<div class=title>$pageinfo[title]</div>");
+	if (db_get_value("pages","active","id=$page") || has_permissions($auser,PAGE,$site,$section,$page,"")) {
+		printc("<div class=title>$pageinfo[title]</div>");
+	}
 	$i=0;
 	foreach ($stories as $s) {
 		$a = db_get_line("stories","id=$s");
-		if ($a[type] == 'story' || $a[type]=='') {
-			if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
-			$st = urldecode($a['shorttext']);
-			if ($a[texttype] == 'text') $st = htmlbr($st);
-			if ($a[category]) {
-				printc("<div class=contentinfo align=right>");
-				printc("Category: <b>".spchars($a[category])."</b>");
-				printc("</div>");
-			}
-			printc("<div>" . stripslashes($st) . "</div>");
-			if ($a[discuss] || $a[longertext]) {
-				printc("<div class=contentinfo align=right>");
-				$link = "fullstory.php?$sid&action=fullstory&site=$site&section=$section&page=$page&story=$s";
-				$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
-				$l = array();
-				if ($a[discuss]) $l[] = $link."discussions</a>";
-				if ($a[longertext]) $l[] = $link."full text</a>";
-				printc(implode(" | ",$l));
-				printc("</div>");
-			}
-			if ($pageinfo[showcreator] || $pageinfo[showdate]) {
-				printc("<div class=contentinfo align=right>");
-				$added = datetime2usdate($a[addedtimestamp]);
-				printc("added");
-				if ($pageinfo[showcreator]) printc(" by $a[addedby]");
-				if ($pageinfo[showdate]) printc(" on $added");
-				if ($a[editedby]) {
-					printc(", edited");
-					if ($pageinfo[showcreator]) printc(" by $a[editedby]");
-					if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
+		if ($a[active] || has_permissions($auser,STORY,$site,$section,$page,$s)) {
+		
+			if ($a[type] == 'story' || $a[type]=='') {
+				if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
+				$st = urldecode($a['shorttext']);
+				if ($a[texttype] == 'text') $st = htmlbr($st);
+				if ($a[category]) {
+					printc("<div class=contentinfo align=right>");
+					printc("Category: <b>".spchars($a[category])."</b>");
+					printc("</div>");
 				}
-				printc("</div>");
-				//printc("<hr size='1' noshade><br>");
+				printc("<div>" . stripslashes($st) . "</div>");
+				if ($a[discuss] || $a[longertext]) {
+					printc("<div class=contentinfo align=right>");
+					$link = "fullstory.php?$sid&action=fullstory&site=$site&section=$section&page=$page&story=$s";
+					$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
+					$l = array();
+					if ($a[discuss]) $l[] = $link."discussions</a>";
+					if ($a[longertext]) $l[] = $link."full text</a>";
+					printc(implode(" | ",$l));
+					printc("</div>");
+				}
+				if ($pageinfo[showcreator] || $pageinfo[showdate]) {
+					printc("<div class=contentinfo align=right>");
+					$added = datetime2usdate($a[addedtimestamp]);
+					printc("added");
+					if ($pageinfo[showcreator]) printc(" by $a[addedby]");
+					if ($pageinfo[showdate]) printc(" on $added");
+					if ($a[editedby]) {
+						printc(", edited");
+						if ($pageinfo[showcreator]) printc(" by $a[editedby]");
+						if ($pageinfo[showdate]) printc(" on ".timestamp2usdate($a[editedtimestamp]));
+					}
+					printc("</div>");
+					//printc("<hr size='1' noshade><br>");
+				}
 			}
-		}
-		if ($a[type]=='image') {
-			$imagepath = "$uploadurl/$site/$a[id]/".urldecode($a[longertext]);
-			printc("<table align=center><tr><td align=center><img src='$imagepath' border=0></td></td>");
-			if ($a[title]) printc("<tr><td align=center><b>".spchars($a[title])."</b></td></tr>");
-			if ($a[shorttext]) printc("<tr><td align=left>".stripslashes(urldecode($a[shorttext]))."</td></tr>");
-			printc("</table>");
-		}
-		if ($a[type]=='file') {
-			$t = makedownloadbar($a);
-			printc($t);
-		}
-		if ($a[type]=='link') {
-			if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
-			printc("<div><a href='$a[url]' target='_blank'>$a[url]</a></div>");
-			if ($a[shorttext]) printc("<div class=desc>".stripslashes(urldecode($a[shorttext]))."</div>");
-		}
-		printc("<div align=right>");
-//		$s1=$s2=NULL;
-		$l = array();
-		if (($auser == $site_owner) || (($auser != $site_owner) && !$a[locked])) {
-			if (($pageinfo[archiveby] == '' || $pageinfo[archiveby] == 'none' || !$pageinfo[archiveby]) && permission($auser, PAGE,EDIT,$page)) {
-				if ($i!=0)$l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=up&id=$s' class=small title='Move this Content Bloc********k up'><b>&uarr;</b></a>";
-				if ($i!=count($stories)-1) $l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=down&id=$s' class=small title='Move this Content Block down'><b>&darr;</b></a>";
+			if ($a[type]=='image') {
+				$imagepath = "$uploadurl/$site/$a[id]/".urldecode($a[longertext]);
+				printc("<table align=center><tr><td align=center><img src='$imagepath' border=0></td></td>");
+				if ($a[title]) printc("<tr><td align=center><b>".spchars($a[title])."</b></td></tr>");
+				if ($a[shorttext]) printc("<tr><td align=left>".stripslashes(urldecode($a[shorttext]))."</td></tr>");
+				printc("</table>");
 			}
-			$i++;
-			if (permission($auser,PAGE,EDIT,$page)) $l[]="<a href='$PHP_SELF?$sid&$envvars&action=edit_story&edit_story=$s&commingFrom=viewsite' class='small' title='Edit this Content Block'>edit</a>";
-			if (permission($auser,PAGE,DELETE,$page)) $l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&$envvars&action=delete_story&delete_story=$s\")' class=small title='Delete this Content Block'>delete</a><hr class=block>";
+			if ($a[type]=='file') {
+				$t = makedownloadbar($a);
+				printc($t);
+			}
+			if ($a[type]=='link') {
+				if ($a[title]) printc("<div class=leftmargin><b>".spchars($a[title])."</b></div>");
+				printc("<div><a href='$a[url]' target='_blank'>$a[url]</a></div>");
+				if ($a[shorttext]) printc("<div class=desc>".stripslashes(urldecode($a[shorttext]))."</div>");
+			}
+			printc("<div align=right>");
+//			$s1=$s2=NULL;
+			$l = array();
+			if (($auser == $site_owner) || (($auser != $site_owner) && !$a[locked])) {
+				if (($pageinfo[archiveby] == '' || $pageinfo[archiveby] == 'none' || !$pageinfo[archiveby]) && permission($auser, PAGE,EDIT,$page)) {
+					if ($i!=0)$l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=up&id=$s' class=small title='Move this Content Bloc********k up'><b>&uarr;</b></a>";
+					if ($i!=count($stories)-1) $l[] = "<a href='$PHP_SELF?$sid&$envvars&action=viewsite&reorder=story&direction=down&id=$s' class=small title='Move this Content Block down'><b>&darr;</b></a>";
+				}
+				$i++;
+				if (permission($auser,PAGE,EDIT,$page) || permission($auser,STORY,EDIT,$s)) $l[]="<a href='$PHP_SELF?$sid&$envvars&action=edit_story&edit_story=$s&commingFrom=viewsite' class='small' title='Edit this Content Block'>edit</a>";
+				if (permission($auser,PAGE,DELETE,$page) || permission($auser,STORY,DELETE,$s)) $l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&$envvars&action=delete_story&delete_story=$s\")' class=small title='Delete this Content Block'>delete</a><hr class=block>";
+			}
+			printc(implode(" | ",$l));
+			printc("</div>");
 		}
-		printc(implode(" | ",$l));
-		printc("</div>");
 	}
 	if (permission($auser,PAGE,ADD,$page)) printc("<br><div align=right><a href='$PHP_SELF?$sid&$envvars&action=add_story&commingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 }
@@ -200,6 +209,7 @@ $text .= "<div align=right><table><tr>";
 $text .= "<td><form method=post action='$u&$sid'><input type=submit value='preview this site'></form></td>";
 $text .= "<td><form action='$PHP_SELF?$sid&action=site&site=sample' target='_blank' method=post><input type=submit value='view sample site'></form></td>";
 if (permission($auser,SITE,EDIT,$section)) $text .= "</tr><tr><td><form action='$PHP_SELF?$sid&action=edit_site&edit_site=$site&commingFrom=viewsite' method=post><input type=submit value='edit site settings'></form></td>";
-if (permission($auser,SITE,EDIT,$section)) $text .= "<td><form action='editor_access.php?$sid&site=$site' onClick='doWindow(\"permissions\",600,400)' target='permissions' method=post><input type=submit value='&nbsp; &nbsp;permissions&nbsp; &nbsp;'></form></td>";
+else $text .= "</tr><tr><td> &nbsp; </td>";
+$text .= "<td><form action='editor_access.php?$sid&site=$site' onClick='doWindow(\"permissions\",600,400)' target='permissions' method=post><input type=submit value='&nbsp; &nbsp;permissions&nbsp; &nbsp;'></form></td>";
 $text .= "</tr></table></div>";
 $sitefooter = $sitefooter . $text;
