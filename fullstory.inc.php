@@ -69,10 +69,6 @@ if ($storyObj->getField("type") == 'file') {
 
 .subject { font-weight: bolder; }
 
-.info { color: #888; }
-a.info { color: #a77; }
-th.info { color: #FFFFFF; }
-
 .content {
 	border-bottom: 1px solid #000;
 }
@@ -124,7 +120,7 @@ if ($storyObj->getField("discuss")) {
 	printc("</tr>");
 	
 	
-	$ds = & new discussion(&$story);
+	$ds = & new discussion(&$storyObj);
 	if ($f) $ds->flat(); // must be called before _fetchchildren();
 	$ds->_fetchchildren();
 	
@@ -134,7 +130,7 @@ if ($storyObj->getField("discuss")) {
 	$ds->opt("useoptforchildren",true);
 	$ds->getinfo = $getinfo;
 	
-	// outputAll is a function in discussion.inc.php object
+	// outputAll is a function in objects/discussion.inc.php object
 	$ds->outputAll($storyObj->hasPermission("discuss"),($_SESSION[auser]==$site_owner),true);
 	if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
 }

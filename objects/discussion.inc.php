@@ -421,10 +421,10 @@ class discussion {
 		printc ("<tr><td$p>");
 		printc ("<table width=100%><tr><td align=left>");
 		printc ("Subject: <input type=text size=50 name=subject value='".spchars($s)."'>");
-		printc ("</td><td align=right class=info><a href='#' onClick='document.postform.submit()'>[$b]</a></td></tr></table>");
+		printc ("</td><td align=right><a href='#' onClick='document.postform.submit()'>[$b]</a></td></tr></table>");
 		printc ("</td></tr>");
 		printc ("<tr><td class=content$p>");
-		printc ("<textarea name=content rows=4 cols=80>".spchars($c)."</textarea>");
+		printc ("<textarea name=content rows=6 cols=50>".spchars($c)."</textarea>");
 		//changed from action to discuss
 		printc ("<input type=hidden name=discuss value='".$_REQUEST['discuss']."'>");
 		//added fullstory action for posting form
@@ -470,10 +470,10 @@ class discussion {
 		if ($this->opt("showauthor")) $a[] = $this->authorfname;
 		if ($this->opt("showtstamp")) $a[] = timestamp2usdate($this->tstamp);
 		$b = array();
-		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."' class=info>reply</a>";
-		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."' class=info> | del</a>";
+		if ($cr) $b[] = "<a href='$script?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#".$this->id."'>reply</a>";
+		if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) $b[] = "<a href='$script?$sid".$this->getinfo."&action=site&discuss=del&id=".$this->id."'> | del</a>";
 		if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."' class=info> | edit</a>";
+			$b[] = "<a href='$script?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'> | edit</a>";
 		if (count($a) || count($b)) {
 			$c = '';
 			if (count($a)) $c .= "(".implode(" - ",$a).") ";
@@ -481,7 +481,7 @@ class discussion {
 			/******************************************************************************
 			 * Actual discussion posting content
 			 ******************************************************************************/
-			printc ("<table width=100%><tr><td align=left class=subject>$s</td><td align=right class=info>$c</td></tr></table>");
+			printc ("<table width=100%><tr><td align=left class=subject>$s</td><td align=right>$c</td></tr></table>");
 		} else
 			printc ($s);
 		
