@@ -85,13 +85,13 @@ function changeOrder(order) {
 </script>
 <?// print "test = $test"; ?>
 
-<table width='100%'>
-<td align=right>
+<table width='100%' class='bg'>
+<td align=right class='bg'>
 	<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
 	| <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
 	| Users
 </td></tr>
-<tr><td>
+<tr><td class='bg'>
 	<? print $content; ?>
 	<? print $numlogs . " | " . $query; 
 	?>

@@ -83,14 +83,14 @@ function changeOrder(order) {
 
 </script>
 
-<table width='100%'>
-<td align=right>
+<table width='100%' class='bg'>
+<td align=right class='bg'>
 	Logs
 	| <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
 	| <a href=viewstudents.php?$sid&site=<? echo $site ?>>Users</a>
 
 </td></tr>
-<tr><td>
+<tr><td class='bg'>
 	<? print $content; ?>
 	<? print $numlogs . " | " . $query; ?>
 </td></tr>
