@@ -349,7 +349,7 @@ ORDER BY
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->pages) {
-				foreach ($this->pages as $i=>$o) $o->updateDB(1);
+				foreach ($this->pages as $i=>$o) $this->pages[$i]->updateDB(1);
 			}
 		}
 		return true;
@@ -398,8 +398,8 @@ ORDER BY
 		// insert down
 		if ($down && $this->fetcheddown && $this->pages) {
 			foreach ($this->pages as $i=>$o) {
-				$o->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
-				$o->insertDB(1,$this->owning_site,$this->id,1,$keepaddedby);
+				$this->pages[$i]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
+				$this->pages[$i]->insertDB(1,$this->owning_site,$this->id,1,$keepaddedby);
 			}
 		}
 		return true;

@@ -1461,7 +1461,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		return false;
 	}
 	
-	function returnEditorOverlap($classes) { 
+	function returnEditorOverlap($classes) {
 		$toCheck = array();
 		foreach ($this->editors as $u) {
 			$good=0;

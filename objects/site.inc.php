@@ -918,7 +918,7 @@ ORDER BY
 		// update down
 		if ($down) {
 			if ($this->fetcheddown && $this->sections) {
-				foreach ($this->sections as $i=>$o) $o->updateDB(1);
+				foreach ($this->sections as $i=>$o) $this->sections[$i]->updateDB(1);
 			}
 		}
 		return 1;
@@ -962,8 +962,8 @@ ORDER BY
 		// insert down (insert sections)
 		if ($down && $this->fetcheddown && $this->sections) {
 			foreach ($this->sections as $i=>$o) {
-				$o->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
-				$o->insertDB(1,$this->name,$copysite);
+				$this->sections[$id]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
+				$this->sections[$id]->insertDB(1,$this->name,$copysite);
 			}
 		}
 		return 1;
