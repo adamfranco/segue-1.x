@@ -235,7 +235,7 @@ function doSlotForm($slot,$p='',$e=0) {
 			<? if ($e) { ?>
 				<td align=center><?=(($slot[FK_site])?"<b>YES</b>":"NO")?></td>
 			<? } else { ?>
-				<td> &nbsp; </td>
+				<td>&nbsp;  </td>
 			<? } ?>
 			<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
 			<?=($e)?"<input type=hidden name='id' value='".$slot[$p."id"]."'><input type=hidden name=commit value=1>":""?>

@@ -1,6 +1,9 @@
 <? /* $Id$ */
 
 class site extends segue {
+	var $canview; // an array of editors that can view this site
+				  // (i.e. have view permissions somewhere in the hierarchy)
+	var $owner;
 	var $sections;
 	var $name;
 	var $_allfields = array("name","title","theme","themesettings","header","footer",
@@ -123,14 +126,16 @@ class site extends segue {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 		
-		$q = "SELECT site_id FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name'";
+		$q = "SELECT site_id, user_uname FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name' INNER JOIN user ON user_id = FK_owner";
 		// echo $q;
 		$r = db_query($q);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
 			$this->id = $a[site_id];
-		}
-
+			$this->owner = $a[user_uname];
+		} else
+			$this->site_does_not_exist = true;
+			
 		$this->name = $name;
 		$this->owning_site = $name;
 		$this->owningSiteObj = &$this;
@@ -161,7 +166,10 @@ class site extends segue {
 	// @param $section_id, $page_id If these are specified the function will fetch along them
 	// ************************************************************************************************
 	// ************************************************************************************************
-	function fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_section_id = 0, $_page_id = 0) {
+	function fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_section_id = 0, $_page_id = 0, $quick = false) {
+		if ($this->site_does_not_exist) return false;
+		if ($this->fetched_forever_and_ever) return $this->id;
+	
 		// no $full or $force here, always fetch everything, be strong and stubborn damnit!
 
 		// connect to db and initialize data array
@@ -286,8 +294,9 @@ FROM
 		// first, fetch the site
 		$query = "
 SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
-		site_active AS active, site_listed AS listed, site_theme AS theme, site_themesettings AS themesettings,
-		site_header AS header, site_footer AS footer, site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
+		site_active AS active, site_listed AS listed, ".
+		(($quick) ? "" : "site_theme AS theme, site_themesettings AS themesettings, site_header AS header, site_footer AS footer, ")
+		."site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
 		user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
 FROM 
 	t_sites
@@ -324,17 +333,19 @@ FROM
 			else
 				echo "ERROR: field $field not in _allfields!!!<br>";
 		$this->fetcheddown = 1;
+		$this->fetched_forever_and_ever = 1;
 					
 		// now, create section objects and fetch them
 		$query = "
 SELECT  
-	section.section_id AS section_id,
-	section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	section.section_id AS section_id".
+	(($quick) ? " " : 	
+	", section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
 	section_created_tstamp AS addedtimestamp,
 	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id,
-	media_tag AS url
-FROM 
+	media_tag AS url ")
+."FROM 
 	t_sections
 		INNER JOIN
 	section
@@ -369,19 +380,21 @@ FROM
 				else
 					echo "ERROR: field $field not in _allfields!!!<br>";
 			$section->fetcheddown = 1;
+			$section->fetched_forever_and_ever = 1;
 		}
 
 		// now, create page objects and fetch them
 		$query = "
 SELECT
-	t_pages.section_id AS section_id, page.page_id AS page_id, 
-	page_display_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+	t_pages.section_id AS section_id, page.page_id AS page_id".
+	(($quick) ? " " : 
+	", page_display_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 	page_active AS active, page_story_order AS storyorder, page_show_creator AS showcreator, 
 	page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
 	page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
 	page_ediscussion AS ediscussion,
-	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id, media_tag AS url
-FROM 
+	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id, media_tag AS url ")
+."FROM 
 	t_pages
 		INNER JOIN 
 	page
@@ -419,6 +432,7 @@ FROM
 				else
 					echo "ERROR: field $field not in _allfields!!!<br>";
 			$page->fetcheddown = 1;
+			$page->fetched_forever_and_ever = 1;
 		}
 
 		// now, create story objects and fetch them
@@ -426,8 +440,9 @@ FROM
 SELECT
 	t_stories.section_id AS section_id, 
 	t_stories.page_id AS page_id, 
-	story.story_id AS story_id,
-	story_display_type AS type, 
+	story.story_id AS story_id".
+	(($quick) ? " " : 
+	", story_display_type AS type, 
 	story_title AS title, 
 	DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, 
 	DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
@@ -443,8 +458,8 @@ SELECT
 	media_tag AS url,
 	user_createdby.user_uname AS addedby, 
 	user_updatedby.user_uname AS editedby, 
-	'".$this->name."' as site_id
-FROM
+	'".$this->name."' as site_id ")
+."FROM
 	t_stories
 		INNER JOIN
 	story
@@ -485,6 +500,7 @@ FROM
 				else
 					echo "ERROR: field $field not in _allfields!!!<br>";
 			$story->fetcheddown = 1;
+			$story->fetched_forever_and_ever = 1;
 		}
 		
 		$query = "
@@ -516,6 +532,7 @@ FROM
 
 		$this->editors = array();
 		$this->permissions = array();
+		$this->cachedPermissions = array();
 
 		// for every permisson entry, add it to the permissions array
 		while ($row=db_fetch_assoc($r)) {
@@ -547,6 +564,15 @@ FROM
 				permissions::VIEW()=>$a[v], 
 				permissions::DISCUSS()=>$a[di]
 			);
+			if ($a[v])
+				$this->canview[$t_editor] = 1;
+/*			$this->cachedPermissions = array(
+				$t_editor."ADD"=>$a[a], 
+				$t_editor."EDIT"=>$a[e], 
+				$t_editor."DELETE"=>$a[d], 
+				$t_editor."VIEW"=>$a[v], 
+				$t_editor."DISCUSS"=>$a[di]
+			);*/
 			
 			// now add the editor to the editor array
 			$this->editors[]=$t_editor;
@@ -613,6 +639,8 @@ FROM
 
 			foreach ($a as $key => $value)
 				$this->sections[$row[section_id]]->permissions[$t_editor][$key] = 1;
+			if ($a[permissions::VIEW()] && !$this->canview[$t_editor])
+				$this->canview[$t_editor] = 1;
 		}
 
 		// now, inherit the permissions to the children
@@ -678,6 +706,8 @@ FROM
 
 			foreach ($a as $key => $value)
 				$this->sections[$row[section_id]]->pages[$row[page_id]]->permissions[$t_editor][$key] = 1;
+			if ($a[permissions::VIEW()] && !$this->canview[$t_editor])
+				$this->canview[$t_editor] = 1;
 		}
 
 		// now, inherit the permissions to the children
@@ -746,9 +776,11 @@ FROM
 
 			foreach ($a as $key => $value)
 				$this->sections[$row[section_id]]->pages[$row[page_id]]->stories[$row[story_id]]->permissions[$t_editor][$key] = 1;
+			if ($a[permissions::VIEW()] && !$this->canview[$t_editor])
+				$this->canview[$t_editor] = 1;
 		}
 
-
+		return $this->id;
 	}
 	
 	function fetchDown($full=0) {
@@ -771,6 +803,8 @@ FROM
 	}
 	
 	function fetchFromDB($force=0) {
+		if ($this->site_does_not_exist) return false;
+
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		global $cfg;
 		// take this out when appropriate & replace occurences;
@@ -817,6 +851,10 @@ WHERE site_id = ".$this->id;
 /* 			print "\$query=<br>$query<br>"; */
 			$r = db_query($query);
 /* 			print "\$r=".$r."<br>"; */
+
+			// if the site does not exist in the database
+			if (!db_num_rows($r)) return false;
+
 			$a = db_fetch_assoc($r);
 /* 			print "\$a=$a"; */
 			array_change_key_case($a); // make all keys lower case

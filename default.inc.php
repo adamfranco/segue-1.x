@@ -86,7 +86,7 @@ if ($_loggedin) {
 							if ($gr) { $site =& new site($gr); $site->fetchFromDB(); }
 							if ($site->canview()) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$site->name."'>".$site->getField("title")."</a></td>");
 							else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
-							
+
 						//check webcourses databases to see if course website was created in course folders (instead of Segue)
 						} else if ($course_site = coursefoldersite($cl)) {					  
 							$course_url = urldecode($course_site['url']);
@@ -149,6 +149,7 @@ if ($_loggedin) {
 		}
 	}
 	
+
 	if ($allowclasssites) {	       
 		//class sites for professors (for student see above)
 		if ($_SESSION[atype] == 'prof') {
@@ -202,7 +203,6 @@ if ($_loggedin) {
  * output a list of the user's other sites
  ******************************************************************************/
 
-	
 	$sites = array();
 	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor());
 	foreach ($esites as $n=>$s) {
@@ -229,7 +229,7 @@ if ($_loggedin) {
 	}
 	
 	$sites=array();
-	$esites=segue::buildObjArrayFromSites(segue::getAllSites($_SESSION[auser]));
+	$esites=segue::buildObjArrayFromSites($s); // variable $s was initiated in index.php and is equal to segue::getAllSites($_SESSION[auser])
 	foreach ($esites as $n=>$s) {
 		if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
 			array_push($sites,$n);
@@ -238,7 +238,6 @@ if ($_loggedin) {
 		else
 			array_push($sites,$n);
 	}
-	
 	$slots = slot::getAllSlots($_SESSION[auser]);
 /*	print_r($slots); */
 	
@@ -348,6 +347,7 @@ function allSitesSlots ($user,$existingSites) {
 	global $classes, $futureclasses;
 	$allsites = array();
 	if ($user == slot::getOwner($user) || !slot::exists($user)) $allsites[] = $user;
+
 	$sitesOwnerOf = segue::getAllSites($user);
 	$slots = slot::getAllSlots($user);
 	$sitesEditorOf = array();
@@ -423,7 +423,9 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 	$obj =& new site($name);
 	
 	$isgroup = ($classlist = group::getClassesFromName($name))?1:0;
-	$exists = $obj->fetchFromDB();
+
+	$exists = $obj->fetchFromDB(1);
+	
 /*	print "<pre>"; */
 /*	print_r($obj); */
 /*	print "</pre>"; */
@@ -505,7 +507,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 		
 		printc("<div align=right>");
 		
-		if ($obj->hasPermissionDown("add or edit or delete",$_SESSION[auser],0,1) || $_SESSION[auser] == slot::getOwner($obj->name)) {
+		if ($_SESSION[auser] == slot::getOwner($obj->name) || $obj->isEditor($_SESSION[auser])) {
 			// if the user is an editor or the owner			
 			printc(" <a href='$PHP_SELF?$sid&action=viewsite&site=$name'>edit</a> | ");
 		}

@@ -280,6 +280,6 @@ if (!ini_get("register_globals")) {
 /*  	print_r($thisSection);  */
 /*  }  */
 // print "</pre>"; 
-//print "<p>Total Queries: ".$_totalQueries."</p>";
+print "<p>Total Queries: ".$_totalQueries."</p>";
 
 ?>

@@ -38,7 +38,7 @@ if (!is_object($_SESSION[obj])) {
 	$_SESSION[obj]->spiderDownLockedFlag();
 }
 
-$site_owner = slot::getOwner($_SESSION[obj]->name);
+$site_owner = $_SESSION[obj]->owner;
 
 $isOwner = $isEditor = 1;
 

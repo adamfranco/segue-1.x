@@ -66,7 +66,7 @@ SELECT site_id
 		$a = array();
 		foreach ($sites as $s) {
 			$a[$s] =& new site($s);
-			$a[$s]->fetchFromDB();
+			$a[$s]->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true);
 		}
 		return $a;
 	}
@@ -688,7 +688,7 @@ WHERE
 		if (!$this->builtPermissions && $this->id) $this->buildPermissionsArray();
 		if ($user=='') $user=$_SESSION[auser];
 		$this->fetchUp();
-		$owner = slot::getOwner($this->owningSiteObj->name);
+		$owner = $this->owningSiteObj->owner;
 /* 		print "owner: $owner"; */
 		if (strtolower($user) == strtolower($owner)) return 1;
 		$toCheck = array(strtolower($user));
@@ -1405,12 +1405,36 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 //		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
 //		print "<br>$scope - ".$this->getField("type");
 		$this->fetchUp();
-		if (slot::getOwner($this->owningSiteObj->name) == $user) { return 1;}
+//		if (slot::getOwner($this->owningSiteObj->name) == $user) { return 1;}
+		if ($this->owningSiteObj->owner == $user) { return 1;}
 		if ($scope != 'story' && $this->getField("type") != 'heading') {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
-		if (!$noperms) {return $this->hasPermissionDown("view",$user,0,1); }
+		
+		echo "<pre>\nCANVIEW\n";
+		echo "USER: $user\n";
+		print_r($this->canview);
+		echo "\nCANVIEW </pre>";
+		
+		if (!$noperms) {
+			if ($this->fetched_forever_and_ever) {
+				// check if our IP is in inst_ips
+				$good=0;
+				$ip = $_SERVER[REMOTE_ADDR];
+				if (is_array($cfg[inst_ips]))
+					foreach ($cfg[inst_ips] as $i)
+						if (ereg("^$i",$ip)) $good=1;
+
+				if ($good) $institute = true;
+				else $institute = false;
+
+				return ($this->canview[everyone] || $this->canview[$user] || (($institute) ? $this->canview[institute] : true));
+			}
+			else
+				//exit;
+				return $this->hasPermissionDown("view",$user,0,1); 
+		}
 		return 1;
 	}
 
@@ -1424,23 +1448,26 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		global $allclasses, $_loggedin, $cfg;
 		
 			
-		if (!$this->builtPermissions && $this->id) 
+//		if (!$this->builtPermissions && $this->id) 
 			$this->buildPermissionsArray();
 
 		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
-		
+
 		if (!is_array($allclasses)) $allclasses = getuserclasses($user,"all");
 		
 		/* Debuging stuff */
 /* 		$class = get_class($this); */
 /* 		print "checking $perms for $user on  $class ".$this->id."<br>"; */
 		
+//		echo "Cached Permissions: <pre>";
+//		print_r($this->cachedPermissions);
+		
 		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) 
 			return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
-		$owner = slot::getOwner($this->owningSiteObj->name);
+		$owner = $this->owningSiteObj->owner;
 		
 		if (strtolower($user) == strtolower($owner)) 
 			return true;

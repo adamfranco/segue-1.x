@@ -3,6 +3,7 @@
 <changelog name="Segue ChangeLog">
 	<version number="1.0.3" date="Not Yet Released">
 		<fix author='gabe' ref='776452' reftype='bug'>Anonymous/Unauthenticated discussions are now working.</fix>
+		<fix author='adam' ref='809335' reftype='bug'>Class groups not listed from members</fix>
 		<change author='adam' ref='804005' reftype='fr'>Editors of sections can now enable discussions for that section and select which (of the already availible editors) can post to it.</change>
 		<fix author='adam' ref='803899' reftype='bug'>Co-Teaching profs now don't see site creation, grouping, or editing links if they are not the owner for a site. They see editing links as apropriate if they are editors.</fix>
 		<fix author='adam' ref='803894' reftype='bug'>User's Full Names containing apostrophes now don't throw errors when adding to the user table.</fix>
