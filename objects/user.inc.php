@@ -27,14 +27,14 @@ class user {
 		$this->uname = $a['user_uname'];
 		$this->email = $a['user_email'];
 		$this->type = $a['user_type'];
-		$this->fname = $a['user_fname'];
+		$this->fname = stripslashes($a['user_fname']);
 		$this->authtype = $a['user_authtype'];
 	}
 	
 	function _insert() {
 		if ($this->authtype != 'db') return false; // we only edit db-type users
 		$data = "user_uname='".$this->uname."'";
-		$data .= ",user_fname='".$this->fname."'";
+		$data .= ",user_fname='".addslashes($this->fname)."'";
 		$data .= ",user_email='".$this->email."'";
 		$data .= ",user_type='".$this->type."'";
 		if ($this->randpassgen) $data .= ",user_pass='".$this->pass."'";
