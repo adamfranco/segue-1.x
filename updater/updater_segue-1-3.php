@@ -27,7 +27,7 @@ SELECT
 FROM
 	segue_et.sections
 		INNER JOIN
-	segue_updated.section
+	segue2.section
 		ON id = section_id
 WHERE
 	type = 'url'
@@ -38,7 +38,7 @@ $r = db_query($query);
 while ($a = db_fetch_assoc($r)) {
 	$query = "
 INSERT
-INTO segue_updated.media
+INTO segue2.media
 SET
 	FK_site = ".$a[FK_site].", 
 	FK_createdby = ".$a[FK_createdby].", 
@@ -52,7 +52,7 @@ $media_id = lastid();
 
 	$query = "
 UPDATE
-	segue_updated.section
+	segue2.section
 SET
 	FK_media = $media_id
 WHERE
@@ -73,10 +73,10 @@ SELECT
 FROM
 	segue_et.pages
 		INNER JOIN
-	segue_updated.page
+	segue2.page
 		ON id = page_id
 		INNER JOIN
-	segue_updated.section
+	segue2.section
 		ON FK_section = section.section_id
 WHERE
 	type = 'url'
@@ -87,7 +87,7 @@ $r = db_query($query);
 while ($a = db_fetch_assoc($r)) {
 	$query = "
 INSERT
-INTO segue_updated.media
+INTO segue2.media
 SET
 	FK_site = ".$a[FK_site].", 
 	FK_createdby = ".$a[FK_createdby].", 
@@ -101,7 +101,7 @@ $media_id = lastid();
 
 	$query = "
 UPDATE
-	segue_updated.page
+	segue2.page
 SET
 	FK_media = $media_id
 WHERE
@@ -121,13 +121,13 @@ SELECT
 FROM
 	segue_et.stories
 		INNER JOIN
-	segue_updated.story
+	segue2.story
 		ON id = story_id
 		INNER JOIN
-	segue_updated.page
+	segue2.page
 		ON FK_page = page.page_id
 		INNER JOIN
-	segue_updated.section
+	segue2.section
 		ON FK_section = section.section_id
 WHERE
 	type = 'link'
@@ -138,7 +138,7 @@ $r = db_query($query);
 while ($a = db_fetch_assoc($r)) {
 	$query = "
 INSERT
-INTO segue_updated.media
+INTO segue2.media
 SET
 	FK_site = ".$a[FK_site].", 
 	FK_createdby = ".$a[FK_createdby].", 
@@ -152,7 +152,7 @@ $media_id = lastid();
 
 	$query = "
 UPDATE
-	segue_updated.story
+	segue2.story
 SET
 	FK_media = $media_id
 WHERE
@@ -185,7 +185,7 @@ while ($a = db_fetch_assoc($r)) {
 	foreach ($sections as $section_order => $section_id) {
 		$query = "
 UPDATE
-	segue_updated.section
+	segue2.section
 SET
 	section_order = $section_order
 WHERE
@@ -218,7 +218,7 @@ while ($a = db_fetch_assoc($r)) {
 		
 		$query = "
 UPDATE
-	segue_updated.page
+	segue2.page
 SET
 	page_order = $page_order
 WHERE
@@ -253,7 +253,7 @@ while ($a = db_fetch_assoc($r)) {
 		
 		$query = "
 UPDATE
-	segue_updated.story
+	segue2.story
 SET
 	story_order = $story_order
 WHERE
@@ -268,7 +268,7 @@ WHERE
 // import discussions
 // ************************************************************************************************************************************************
 
-//$query = "DELETE FROM segue_updated.discussion";
+//$query = "DELETE FROM segue2.discussion";
 //db_query($query);
 
 $query = "
@@ -291,14 +291,14 @@ while ($a = db_fetch_assoc($r)) {
 		foreach($discussions as $order => $id) {
 			$query = "
 INSERT
-INTO segue_updated.discussion
+INTO segue2.discussion
 	(FK_author, discussion_tstamp, discussion_subject, discussion_content , FK_story, discussion_order, FK_parent)
 SELECT
 	user_id, discussions.timestamp, '' as subject	, content, ".$a[id]." as story, $order as ord, NULL as parent	
 FROM
 	segue_et.discussions
 		INNER JOIN
-	segue_updated.user
+	segue2.user
 		ON discussions.author = user_uname
 WHERE
 	id = $id
