@@ -31,46 +31,46 @@ function isclass ($class) {
 function getclassstudents($class_id) {
 	global $cfg;
 	
-	/******************************************************************************
-	 * Check if site is a group of classes
- 	******************************************************************************/
-	$classgroup_id = db_get_value("classgroup","classgroup_idÊ","classgroup_name = $class_id");
-	$class_ids = array();
-	
-	if ($classgroup_id) {
-		$query = "
-		SELECT
-			class_external_id Ê		
-		FROM
-			class
-		WHERE
-			FK_classgroup = $classgroup_id
-		";
-		$r = db_query($query);
-		
-		//if (db_num_rows($r)) {
-		//foreach (db_fetch_array($r) as $nextclass) {
-			$class_ids = db_fetch_array($r);
-			//$class_ids = array('sp101a-s05', 'sp101b-s05');
-		//	$class_ids[] = $nextclass;
-		//}
-		//}		
-	} else {
-		$class_ids = array($class_id);
+	$classes = array();
+	$query = "
+	SELECT
+		class_external_id,
+		class.FK_owner AS class_owner_id,
+		classgroup.FK_owner AS classgroup_owner_id
+	FROM 
+		class
+			LEFT JOIN 
+		classgroup ON FK_classgroup = classgroup_id
+	WHERE 
+		classgroup_name = '$class_id'
+		OR class_external_id = '$class_id'
+	";
+
+	$r = db_query($query);
+	while ($resultArray = db_fetch_assoc($r)) {
+		$classes[] = array (
+			'class_owner_id' => $resultArray['class_owner_id'],
+			'classgroup_owner_id' => $resultArray['classgroup_owner_id'],
+			'class_id' => $resultArray['class_external_id']
+		);
 	}
 
-	$class_ids = array('sp101a-s05', 'sp101b-s05');
 	/******************************************************************************
 	 * DB Class info: queries ugroup_user table for all users who are part
 	 * of the $class_id group
  	******************************************************************************/
  
  	$allparticipants = array();
- 	foreach ($class_ids as $class_id) {
+ 	foreach ($classes as $class_array) {
+ 		$class_id = $class_array['class_id'];
+ 		
+ 		if ($class_array['classgroup_owner_id'])
+ 			$owner_id = $class_array['classgroup_owner_id'];
+ 		else
+ 			$owner_id = $class_array['class_owner_id'];
 	
 		$ugroup_id = getClassUGroupId($class_id);
 			
-		$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
 		$db_participants = array();
 		$external_memberlist_participants = array();
 		$participant = array();
@@ -103,7 +103,7 @@ function getclassstudents($class_id) {
 			$participant[email] = $a[user_email];
 			$participant[type] = $a[user_type];
 			$participant[memberlist] = "db";
-			$db_participants[]= $participant;
+			$db_participants[$user_uname]= $participant;
 		}
 		
 		
@@ -246,12 +246,14 @@ function getclassstudents($class_id) {
 							}	
 						} // end if	
 						$external_memberlist_participant_unames[]= $participant[uname];
-						$external_memberlist_participants[]= $participant;				
+						
+						$external_memberlist_participants[$participant[uname]]= $participant;				
 					} //end for loop
 				} // end num 				
 			}// end result count
 							
 		} // ends if bind
+		$external_memberlist_participant_unames = array_unique($external_memberlist_participant_unames);
 	
 		/******************************************************************************
 		 * Check to see if $external_memberlist_participant are already in database
@@ -294,8 +296,11 @@ function getclassstudents($class_id) {
 				$participants_unames = $db_participants[$key][uname];
 			}			
 		}	
-		// add participants of current class to array of participants from all classes
-		// (relevant when a site is a group of classes...)
+		
+		/******************************************************************************
+		 * add participants of current class to array of participants from all classes
+		 * (relevant when a site is a group of classes...)
+		 ******************************************************************************/
 		$allparticipants = array_merge($allparticipants,$participants);
 
 	}

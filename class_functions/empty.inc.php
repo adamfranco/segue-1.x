@@ -29,76 +29,117 @@ function isclass ($class) {
 function getclassstudents($class_id) {
 	global $cfg, $debug;
 	
+	$classes = array();
+	$query = "
+	SELECT
+		class_external_id,
+		class.FK_owner AS class_owner_id,
+		classgroup.FK_owner AS classgroup_owner_id
+	FROM 
+		class
+			LEFT JOIN 
+		classgroup ON FK_classgroup = classgroup_id
+	WHERE 
+		classgroup_name = '$class_id'
+		OR class_external_id = '$class_id'
+	";
+
+	$r = db_query($query);
+	while ($resultArray = db_fetch_assoc($r)) {
+		$classes[] = array (
+			'class_owner_id' => $resultArray['class_owner_id'],
+			'classgroup_owner_id' => $resultArray['classgroup_owner_id'],
+			'class_id' => $resultArray['class_external_id']
+		);
+	}
+	
 	/******************************************************************************
 	 * DB Class info: queries ugroup_user table for all users who are part
 	 * of the $class_id group
  	******************************************************************************/
 
-	$ugroup_id = getClassUGroupId($class_id);
+	$allparticipants = array();
+	foreach ($classes as $class_array) {
+		$class_id = $class_array['class_id'];
+ 		
+ 		if ($class_array['classgroup_owner_id'])
+ 			$owner_id = $class_array['classgroup_owner_id'];
+ 		else
+ 			$owner_id = $class_array['class_owner_id'];
+
+		$ugroup_id = getClassUGroupId($class_id);
+			
+		$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
+		$db_participants = array();
+		$external_memberlist_participants = array();
+		$participant = array();
+		$participants = array();
 		
-	$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
-	$db_participants = array();
-	$external_memberlist_participants = array();
-	$participant = array();
-	$participants = array();
-	
-	$query = "
-	SELECT
-		user_id,
-		user_fname,
-		user_uname,
-		user_email,
-		user_type
-	FROM
-		ugroup_user
-			INNER JOIN
-		user
-			ON
-		FK_user = user_id
-	WHERE
-		FK_ugroup = $ugroup_id
-	ORDER BY
-		user_type DESC, user_uname
-	";
-	$r = db_query($query);
+		$query = "
+		SELECT
+			user_id,
+			user_fname,
+			user_uname,
+			user_email,
+			user_type
+		FROM
+			ugroup_user
+				INNER JOIN
+			user
+				ON
+			FK_user = user_id
+		WHERE
+			FK_ugroup = $ugroup_id
+		ORDER BY
+			user_type DESC, user_uname
+		";
+		$r = db_query($query);
+			
+		while ($a = db_fetch_assoc($r)) {
+			$participant[id] = $a[user_id];
+			$participant[fname] = $a[user_fname];
+			$participant[uname] = $a[user_uname];
+			$participant[email] = $a[user_email];
+			$participant[type] = $a[user_type];
+			$participant[memberlist] = "db";
+			$db_participants[]= $participant;
+		}
 		
-	while ($a = db_fetch_assoc($r)) {
-		$participant[id] = $a[user_id];
-		$participant[fname] = $a[user_fname];
-		$participant[uname] = $a[user_uname];
-		$participant[email] = $a[user_email];
-		$participant[type] = $a[user_type];
-		$participant[memberlist] = "db";
-		$db_participants[]= $participant;
+		
+		/******************************************************************************
+		 * External member list source (e.g. LDAP group member
+		 ******************************************************************************/
+		
+		/******************************************************************************
+		* Compile definitive participant list from:
+		* $db_participants = all group members whose membership is defined in ugroup_user
+		* $external_memberlist_participants = all group members whose membership is
+		* determined by an external membership list (e.g. ldap group)
+		* if participant is in ugroup_user only then memberl ist is db
+		* if participant is in external member list only then memberlist is external
+		* if participant is in both ugroup_user and external member list then
+		* member list is external
+		 ******************************************************************************/
+		 
+		$participants = $external_memberlist_participants;
+		 
+		foreach (array_keys($db_participants) as $key) {
+			if (!is_array($external_memberlist_participant_unames) ||
+				!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) 
+			{
+				$participants[] = $db_participants[$key];
+			}			
+		}
+		
+		/******************************************************************************
+		 * add participants of current class to array of participants from all classes
+		 * (relevant when a site is a group of classes...)
+		 ******************************************************************************/
+		$allparticipants = array_merge($allparticipants,$participants);
+
 	}
-	
-	
-	/******************************************************************************
-	 * External member list source (e.g. LDAP group member
-	 ******************************************************************************/
-	
-	/******************************************************************************
-	* Compile definitive participant list from:
-	* $db_participants = all group members whose membership is defined in ugroup_user
-	* $external_memberlist_participants = all group members whose membership is
-	* determined by an external membership list (e.g. ldap group)
-	* if participant is in ugroup_user only then memberl ist is db
-	* if participant is in external member list only then memberlist is external
-	* if participant is in both ugroup_user and external member list then
-	* member list is external
-	 ******************************************************************************/
-	 
-	$participants = $external_memberlist_participants;
-	 
-	foreach (array_keys($db_participants) as $key) {
-		if (!is_array($external_memberlist_participant_unames) ||
-			!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) 
-		{
-			$participants[] = $db_participants[$key];
-		}			
-	}
-	
-	return $participants;
+	//return $participants;
+	return $allparticipants;
 
 }
 
