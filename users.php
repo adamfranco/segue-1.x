@@ -37,7 +37,7 @@ if ($curraction == 'add') {
 	// all good
 	if (!$error) {
 		$obj = &new user();
-		$obj->uname = $_REQUEST['uname'];
+		$obj->uname = strtolower($_REQUEST['uname']);
 		$obj->fname = $_REQUEST['fname'];
 		$obj->email = $_REQUEST['email'];
 		$obj->type = $_REQUEST['type'];
@@ -57,7 +57,7 @@ if ($curraction == 'edit') {
 		if (!$error) {
 			$obj = &new user();
 			$obj->fetchUserID($_REQUEST['id']);
-			$obj->uname = $_REQUEST['uname'];
+			$obj->uname = strtolower($_REQUEST['uname']);
 			$obj->fname = $_REQUEST['fname'];
 			$obj->email = $_REQUEST['email'];
 			$obj->type = $_REQUEST['type'];
