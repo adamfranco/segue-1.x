@@ -223,6 +223,9 @@ FROM
 	function getField ($field) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		if (!$this->fetched[$field]) {	// we haven't allready gotten this data
+/* 			print "<pre>--$field---\n"; */
+/* 			print_r ($this->_datafields[$field][1]); */
+/* 			print "</pre>"; */
 			$query = "
 				SELECT 
 					".implode(",",$this->_datafields[$field][1])."
@@ -233,6 +236,7 @@ FROM
 				ORDER BY
 					".$this->_datafields[$field][2]."
 			";
+/* 			print $query; */
 			
 /* 			print "-----------beginning---------$field<br><pre>".$query;  */
 	

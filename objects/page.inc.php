@@ -61,9 +61,9 @@ class page extends segue {
 			array("page_active"),
 			"page_id"
 		),		
-		"??????" => array(
+		"storyorder" => array(
 			"page",
-			array("page_order"),
+			array("page_storyorder"),
 			"page_id"
 		),
 		"showcreator" => array(
