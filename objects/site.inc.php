@@ -193,7 +193,7 @@ class site extends segue {
 /* 			} */
 /* 			print "<pre>allFields: "; print_r($this->_allfields); print "</pre>"; */
 			foreach ($this->_allfields as $f) {
-				echo $f."<br>";
+//				echo $f."<br>";
 				$this->getField($f);
 			}
 		}
