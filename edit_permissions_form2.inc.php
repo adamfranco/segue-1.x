@@ -156,7 +156,7 @@ function doEditorLine(&$o) {
 			$skip = 0;
 			if (($e == 'everyone' || $e == 'institute') && $i<3) $skip = 1;
 			if ($class=='story' && $v == 'add') $skip = 1;
-			if ($type != 'story' && $type != 'page' && $type != 'section' && $class != 'site') $skip=1;
+			if ($type != 'story' && $type != 'page' && $type != 'section' && $class != 'site' && $v == 'add') $skip=1;
 			if ($skip) {
 				print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">&nbsp;</td>";
 			} else {

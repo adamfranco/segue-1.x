@@ -81,6 +81,8 @@ do {
 	$page=$thisPage->id;
 	$thisSite->fetchDown();			// just in case we haven't already
 	
+	$topsections = !ereg("Side\+Sections",$thisSite->getField("themesettings"));
+	
 	// build the navbars
 	include("output_modules/".$thisSite->getField("type")."/navbars.inc.php");
 	

@@ -1386,16 +1386,16 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 	function canview($user="") {
 		if ($user == "") $user = $_SESSION[auser];
 		if ($user == 'anyuser') $noperms=1;
-		$_ignore_types = array("page"=>array("heading","divider"));
+//		$_ignore_types = array("page"=>array("heading","divider"));
 		$scope = get_class($this);
-		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
+//		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
+//		print "<br>$scope - ".$this->getField("type");
 		$this->fetchUp();
 		if ($this->owningSiteObj->getField("addedby") == $user) return 1;
-		if ($scope != 'story') {
+		if ($scope != 'story' && $this->getField("type") != 'heading') {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
-/* 		print "$user<br>"; */
 		if (!$noperms) return $this->hasPermissionDown("view",$user,0,1);
 		return 1;
 	}
