@@ -581,7 +581,7 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 						$areprof = false;
 						if (is_array($res[0][strtolower($cfg[ldap_group_attribute])])) {
 							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
-							foreach ($results[0][strtolower($cfg[ldap_group_attribute])] as $item) {
+							foreach ($res[0][strtolower($cfg[ldap_group_attribute])] as $item) {
 								if (eregi($isProfSearchString,$item)) {
 									$areprof=1;
 								}
