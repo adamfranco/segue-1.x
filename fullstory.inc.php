@@ -121,14 +121,14 @@ if ($storyObj->getField("type") == 'file') {
  ******************************************************************************/
 if ($storyObj->getField("discuss")) $titleExtra = " Discussion";
 
-printc("<table width=100% id='maintable' cellspacing=1>");
-printc("<tr><td>");
-printc("<table cellspacing=1 width=100%>");
-printc("<tr><td align=left class=title><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>");
+printc("<table width=100% id='maintable' cellspacing=1>\n");
+printc("<tr><td>\n");
+printc("<table cellspacing=1 width=100%>\n");
+printc("<tr><td align=left class=title><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
 //printc("<tr><td align=left class=title>".(($pageObj->getField('title'))?spchars($pageObj->getField('title')):'&nbsp;')."</td></tr>");		 
-printc("<tr><td align=left><b>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</b></td></tr>");
-printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>");
-printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>");
+printc("<tr><td align=left><b>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</b></td></tr>\n");
+printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>\n");
+printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>\n");
 
 		
 // output discussions?
@@ -139,41 +139,37 @@ if ($storyObj->getField("discuss")) {
 	$siteowner = $siteObj->getField("addedbyfull");	
 	
 	if ($showposts == 1) {
-		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion</td>");
+		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion</td>\n");
 	} else {
-		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment</td>");	
+		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment</td>\n");	
 	}
-	printc("<td align=right class=dheader2>");
+	printc("<td align=right class=dheader2>\n");
 	
-	printc("<table>");
-	printc("<tr><td>");
+	printc("<table>\n");
+	printc("<tr><td>\n");
 	$f = $_SESSION['flat_discussion'];
-	printc("<form action='index.php?$sid&action=site&".$getinfo."' method=post name=viewform>");
-	printc("<select name='flat_discussion'>");
-/* 	printc("<option value='true'".(($f)?" selected":"")." onClick='javascript:document.viewform.submit()'>Flat"); */
-/* 	printc("<option value='false'".((!$f)?" selected":"")." onClick='javascript:document.viewform.submit()'>Threaded"); */
-	printc("<option value='true'".(($f)?" selected":"").">Flat");
-	printc("<option value='false'".((!$f)?" selected":"").">Threaded");
-	printc("</select>");
-	printc("</td><td>");
+	printc("<form action='index.php?$sid&action=site&".$getinfo."' method=post name=viewform>\n");
+	printc("<select name='flat_discussion'>\n");
+	printc("<option value='true'".(($f)?" selected":"").">Flat\n");
+	printc("<option value='false'".((!$f)?" selected":"").">Threaded\n");
+	printc("</select>\n");
+	printc("</td><td>\n");
 
 	$r = $_SESSION['order'];
-	printc("<select name='order'>");
-/* 	printc("<option value='true'".(($r)?" selected":"")." onClick='javascript:document.viewform.submit()'>Recent First"); */
-/* 	printc("<option value='false'".((!$r)?" selected":"")." onClick='javascript:document.viewform.submit()'>Recent Last"); */
-	printc("<option value='2'".(($order == 2)?" selected":"").">Recent Last");
-	printc("<option value='1'".(($order == 1)?" selected":"").">Recent First");
+	printc("<select name='order'>\n");
+	printc("<option value='2'".(($order == 2)?" selected":"").">Recent Last\n");
+	printc("<option value='1'".(($order == 1)?" selected":"").">Recent First\n");
 	
 	//if ($_SESSION[auser]==$site_owner) {
-		printc("<option value='3'".(($order == 3)?" selected":"").">Rating");
-		printc("<option value='4'".(($order == 4)?" selected":"").">Author");
+		printc("<option value='3'".(($order == 3)?" selected":"").">Rating\n");
+		printc("<option value='4'".(($order == 4)?" selected":"").">Author\n");
 	//}
 	printc("</select>");
-	printc("<input type=submit class='button' value='Change'>");
-	printc("</td></tr></table>");
-	printc("</form>");	
-	printc("</th></tr>");
-	printc("</table>");
+	printc("<input type=submit class='button' value='Change'>\n");
+	printc("</td></tr></table>\n");
+	printc("</form>\n");	
+	printc("</th></tr>\n");
+	printc("</table>\n");
 	
 	if ($showposts == 2 && $showallauthors == 1) {
 		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
@@ -193,8 +189,8 @@ if ($storyObj->getField("discuss")) {
 	}
 
 	
-	printc("</th>");
-	printc("</tr>");
+	printc("</th>\n");
+	printc("</tr>\n");
 	
 	
 
@@ -227,12 +223,12 @@ if ($storyObj->getField("discuss")) {
 	if (!$ds->count()) printc("<tr><td>There have been no posts to this discussion.</td></tr>");
 }
 		
-printc("<tr><td align=left><br><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>");
-printc("</table>");
+printc("<tr><td align=left><br><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
+printc("</table>\n");
 
-printc("</tr></td>");
-printc("</table>");
-printc("<BR><BR>");
+printc("</tr></td>\n");
+printc("</table>\n");
+printc("<BR><BR>\n");
 
 ?>
 <!--<div align=right><input type=button value="Close Window" onClick="window.close()"></div>-->

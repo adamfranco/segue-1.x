@@ -54,6 +54,9 @@
 		<change author='adam'>
 			The user full name, email, and type in the db are now updated from LDAP
 			or other auth method if the db version doesn't match.
+		<fix author='alex'>
+			Fixed bug that prevented indentation of replies to thread in Windows Internet Explorer
+		</fix>
 		</change>
 	</version>
 	<version number="1.0.6" date="2003-12-29">
