@@ -132,7 +132,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	if ($supported == 1) {
 		if (!$_SESSION[settings][editor]) $_SESSION[settings][editor] = 'htmlarea';
 		//printpre($_SESSION[settings][editor]);
-		if (!$isWinIE) {
+		if ($isWinIE) {
 			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
 			printc("We recommend you chose HTMLarea for the greatest cross-platform compatibility.</div>");
 			printc("<div align=right>Current Editor: <select name=editor>");
