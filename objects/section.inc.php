@@ -68,7 +68,7 @@ class section extends segue {
 	
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown) {
-/* 			print "-->section fetchdown".$this->id."<BR>"; */
+/* 			print "-->section fetchdown ".$this->id."<BR>"; */
 			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			foreach ($this->getField("pages") as $p) {
 				$this->pages[$p] = new page($this->owning_site,$this->id,$p);

@@ -31,7 +31,7 @@ class site extends segue {
 	
 	function fetchDown($full=0) {
 		if (!$this->fetcheddown) {
-/* 			print "site fetchdown".$this->id."<BR>"; */
+/* 			print "site fetchdown ".$this->name."<BR>"; */
 			if (!$this->tobefetched) $this->fetchFromDB($full);
 			foreach ($this->getField("sections") as $s) {
 				$this->sections[$s] = new section($this->name,$s);

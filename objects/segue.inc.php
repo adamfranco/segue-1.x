@@ -556,6 +556,24 @@ class segue {
 		return $this->permissions;
 	}
 	
+	function movePermission($action, $user, $origSite, $moveLevel) {
+		// determines whether user can move an object here
+		if ($this->getField("type") != get_class($this)) return 0;
+		if ($this->owning_site == $origSite) {
+			if ($action == "COPY") {
+				if ($this->hasPermission("add",$user)) return 1;
+				if ($moveLevel != get_class($this) && $this->hasPermissionDown("add",$user)) return 1;
+			} else {
+				if ($this->hasPermission("add or edit",$user)) return 1;
+				if ($moveLevel != get_class($this) && $this->hasPermissionDown("add or edit",$user)) return 1;
+			}
+		} else {
+			if ($this->hasPermission("add",$user)) return 1;
+			if ($moveLevel != get_class($this) && $this->hasPermissionDown("add",$user)) return 1;
+		}
+		return 0;
+	}
+	
 /******************************************************************************
  * buildPermissionsArray - builds the permissions array for current obj from DB
  ******************************************************************************/

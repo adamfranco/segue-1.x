@@ -23,7 +23,8 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
  ******************************************************************************/
 
 if ($_REQUEST[type] && isset($_SESSION[origSiteObj])) {
-	unset($_SESSION[origSiteObj],$_SESSION[type],$_SESSION[origSite],$_SESSION[origSection],$_SESSION[origPage]);
+	unset($_SESSION[origSiteObj],$_SESSION[type],$_SESSION[origSite],$_SESSION[origSection],$_SESSION[origPage],$_SESSION[sites]);
+//	print "unsetting";
 }
 
 if (!is_object($_SESSION[origSiteObj])) {
@@ -35,6 +36,23 @@ if (!is_object($_SESSION[origSiteObj])) {
 	$_SESSION[origPage] = $_REQUEST[page];
 	
 	$_SESSION[type] = $_REQUEST[type];
+
+/******************************************************************************
+ * Get the sites that a person is the owner or editor of.
+ ******************************************************************************/
+	$sitesArray = segue::getAllSites($auser);
+	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($auser));
+	foreach ($sitesArray as $s) {
+/* 		print $s."<br>"; */
+		$temp = new site($s);
+		$temp->fetchDown();
+		if ($temp->hasPermissionDown("add",$auser) || $temp->name == $_REQUEST[site] || $temp->site_owner == $auser) {
+			$_SESSION[sites][$s] = $temp;
+/* 			$title = $sites[$s]->getField("title"); */
+/* 			print "title = $title <br>"; */
+		}
+	}
+
 }
 /* $oname = $_SESSION[origSiteObj]->sections['$_SESSION[origSection]']->getField("title"); */
 /* print "<pre>"; print_r($_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->getField("title")); print "</pre>"; */
@@ -78,24 +96,6 @@ if ($domove) {
 if (!isset($action)) $action = "MOVE";
 
 // $oname = $_SESSION[origionalsiteObj]->sections['$_SESSION[origionalsection]']->getField("title");
-
-/******************************************************************************
- * Get the sites that a person is the owner or editor of.
- ******************************************************************************/
-if (!isset($sites)) {
-	$sitesArray = segue::getAllSites($auser);
-	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($auser));
-	foreach ($sitesArray as $s) {
-/* 		print $s."<br>"; */
-		$sites[$s] = new site($s);
-		$sites[$s]->fetchDown();
-/* 		$title = $sites[$s]->getField("title"); */
-/* 		print "title = $title <br>"; */
-	}
-}
-/* print "<pre>"; print_r($sites); print "</pre>"; */
-/* $name = $sites[gabe]->getField("title"); */
-/* print $name; */
 
 /* // debug output -- handy :) */
 /* print "<pre>"; */
@@ -305,9 +305,9 @@ print "<tr>";
 	print "<td>";
 	if (!$domove) {
 		print "<select name='site' onChange=\"updateForm('site')\">";
-		foreach ($sites as $s=>$v) {
-			$name = $sites[$s]->getField("title");
-			print "<option value='$s'".(($sites[$s]->name == $site)?" selected":"").">$name\n";
+		foreach ($_SESSION[sites] as $s=>$v) {
+			$name = $_SESSION[sites][$s]->getField("title");
+			print "<option value='$s'".(($_SESSION[sites][$s]->name == $site)?" selected":"").">$name\n";
 		}
 		print "</select>";
 //	} else {
@@ -325,12 +325,16 @@ if ($type != "section") {
 		if (!$domove) {
 			if (count($siteObj->sections)) {
 				print "<select name='section' onChange=\"updateForm('section')\"";
-				print (($siteObj->sections[$section]->getField("type") != "section")?" style='background-color: #F00'":"").">";
+				if (!$siteObj->sections[$section]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
+					print " style='background-color: #F00'";
+					$cantmovehere=1;
+				}
+				print ">";
 				foreach ($siteObj->sections as $s=>$v) {
 					$name = $siteObj->sections[$s]->getField("title");
 					print "<option value='$s'";
 					print (($siteObj->sections[$s]->id == $section)?" selected":"");
-					print (($siteObj->sections[$s]->getField("type") != "section")?" style='background-color: #F00'":"");
+					print ((!$siteObj->sections[$s]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]))?" style='background-color: #F00'":" style='background-color: #FFF'");
 					print ">$name\n";
 				}
 				print "</select>";
@@ -354,12 +358,16 @@ if ($type == "story") {
 		if (!$domove) {
 			if (count($siteObj->sections[$section]->pages)) {
 				print "<select name='page' onChange=\"updateForm('page')\"";
-				print (($siteObj->sections[$section]->pages[$page]->getField("type") != "page")?" style='background-color: #F00'":"").">";
+				if (!$siteObj->sections[$section]->pages[$page]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
+					print " style='background-color: #F00'";
+					$cantmovehere=1;
+				}
+				print ">";
 				foreach ($siteObj->sections[$section]->pages as $p=>$v) {
 					$name = $siteObj->sections[$section]->pages[$p]->getField("title");
 					print "<option value='$p'";
 					print (($siteObj->sections[$section]->pages[$p]->id == $page)?" selected":"");
-					print (($siteObj->sections[$section]->pages[$p]->getField("type") != "page")?" style='background-color: #F00'":"");
+					print ((!$siteObj->sections[$section]->pages[$p]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]))?" style='background-color: #F00'":" style='background-color: #FFF'");
 					print ">$name\n";
 				}
 				print "</select>";
@@ -369,7 +377,8 @@ if ($type == "story") {
 			}
 //		} else {
 			$oname = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->getField("title");
-			$name = $siteObj->sections[$section]->pages[$page]->getField("title");
+			if (is_object($siteObj->sections[$section]->pages[$page])) 
+				$name = $siteObj->sections[$section]->pages[$page]->getField("title");
 			print "$oname => $name";
 		}
 		print "</td>";
