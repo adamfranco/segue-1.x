@@ -203,7 +203,7 @@ if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
 	}
 
 	if ($_SESSION[auser] == $thisSite->owningSiteObj->owner) {
-		$text .= "\n\t<input type=button style='width: $btnw' class='button' name='preview_as' value=' &nbsp; Preview Site As... &nbsp;' onClick='sendWindow(\"preview_as\",600,400,\"preview.php?$sid&site=$site&query=".urlencode($_SERVER[QUERY_STRING])."\")' target='preview_as' style='text-decoration: none'>";
+		$text .= "\n\t<input type=button style='width: $btnw' class='button' name='preview_as' value=' &nbsp; Preview Site As... &nbsp;' onClick='sendWindow(\"preview_as\",400,300,\"preview.php?$sid&site=$site&query=".urlencode($_SERVER[QUERY_STRING])."\")' target='preview_as' style='text-decoration: none'>";
 	}
 
 	$u = "$PHP_SELF?$sid".$editAction."&site=$site".(($supplement)?"&supplement=$supplement":"");

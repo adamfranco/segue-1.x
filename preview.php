@@ -45,70 +45,7 @@ if ($site_owner != $_SESSION[auser]) {
 	<head>
 	<title><? print $siteObj->getField("title"); print " - Preview Site As..."; ?></title>
 	
-	<style type='text/css'>
-	a {
-		color: #a33;
-		text-decoration: none;
-	}
-	
-	a:hover {text-decoration: underline;}
-	
-	table {
-		border: 1px solid #555;
-	}
-	
-	th, td {
-		border: 0px;
-		background-color: #ddd;
-	}
-	
-	.viewcol {
-		background-color: #cec;
-		border-left: 2px solid #FFF;
-	}
-	
-	.lockedcol {
-		background-color: #ecc;
-	}
-	
-	#collabel {
-		text-align: center;
-		background-color: #bbb;
-	}
-	
-	.edname {
-		border-left: 2px solid #FFF;
-	}
-	
-	.td1 { 
-		background-color: #ccc; 
-	}
-	
-	.td0 { 
-		background-color: #ddd; 
-	}
-	
-	th { 
-		background-color: #bbb; 
-		font-variant: small-caps;
-	}
-	
-	body { 
-		background-color: white; 
-	}
-	
-	body, table, td, th, input {
-		font-size: 12px;
-		font-family: "Verdana", "sans-serif";
-	}
-	
-	input {
-		border: 1px solid black;
-		background-color: white;
-		font-size: 10px;
-	}
-	
-	</style>
+	<? include("themes/common/logs_css.inc.php"); ?>
 	
 	<script lang='JavaScript'>
 	
@@ -135,7 +72,8 @@ if ($site_owner != $_SESSION[auser]) {
 	 * Print out the table of editors.
 	 ******************************************************************************/
 	?>
-	<table width='100%'>	
+	Preview this site as another user...
+	<table width='100%' id='maintable'>	
 <?
 	$color = 0;
 	foreach ($editors as $e) {
@@ -152,7 +90,7 @@ if ($site_owner != $_SESSION[auser]) {
 		
 		print "<a href='#' onClick=\"sendWindow('sitepreview',800,600,'".$url."')\">";
 		
-		print "Preview As: ";
+		print "Preview As: &nbsp; &nbsp; &nbsp; &nbsp; ";
 
 		if ($e == "everyone")
 			print "Everyone (everyone)";
