@@ -222,7 +222,7 @@ do {
 if (ereg('preview_edit_as', $_REQUEST['action'])) {
 	$previewAction = ereg_replace('preview_edit_as', '&action=preview_as', $_REQUEST['action']);
  } else {
-	$previewAction = '&action=viewsite';
+	$previewAction = '&action=site';
 }
 // add the key to the footer of the page
 /*$u = "$_SERVER[SCRIPT_URI]?action=site&site=$site";*/
@@ -257,19 +257,26 @@ print "\n\t<td valign=top align=left>";
 print "\n\t<input type=button style='width: $btnw' class='button' value='Preview This Site'  onClick=\"window.location='$u&$sid'\">";
 
 print "\n\t</td>";
+
+print "\n\t<td valign=center align=center rowspan=2>";
+print helplink("index");
+print "\n\t</td>";
+
 print "\n\t</tr><tr><td valign=top align=left>";
 
 print "\n\t<input type=button style='width: $btnw' class='button' name='browsefiles' value=' &nbsp; Media Library &nbsp; ' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none'>";
 
 print "\n\t</td>";
+
 print "\n\t<td valign=top align=left>";
-
 print "\n\t<input type=button style='width: $btnw' class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none'>";
-
 print "\n\t</td>";
-print "\n\t<td valign=top align=center>";
 
-print helplink("index");
+print "\n\t<td valign=top align=left>";
+if ($_SESSION[auser] == $site_owner) {
+	print "\n\t<input type=button style='width: $btnw' class='button' name='preview_as' value=' &nbsp; Preview Site As... &nbsp;' onClick='sendWindow(\"preview_as\",600,400,\"preview.php?$sid&site=$site&query=".urlencode($_SERVER[QUERY_STRING])."\")' target='preview_as' style='text-decoration: none'>";
+}
+print "\n\t</td>";
 
 print "\n\t</tr>\n</table>\n</div>";
 

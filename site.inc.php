@@ -195,17 +195,21 @@ do {
 
 // add the key to the footer of the page
 if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
-
+	$text .= "\n<br> \n\n<div align=right>";
 	if (ereg('preview_as', $_REQUEST['action'])) {
 		$editAction = ereg_replace('preview_as', '&action=preview_edit_as', $_REQUEST['action']);
 	 } else {
 		$editAction = '&action=viewsite';
 	}
 
+	if ($_SESSION[auser] == $thisSite->owningSiteObj->owner) {
+		$text .= "\n\t<input type=button style='width: $btnw' class='button' name='preview_as' value=' &nbsp; Preview Site As... &nbsp;' onClick='sendWindow(\"preview_as\",600,400,\"preview.php?$sid&site=$site&query=".urlencode($_SERVER[QUERY_STRING])."\")' target='preview_as' style='text-decoration: none'>";
+	}
+
 	$u = "$PHP_SELF?$sid".$editAction."&site=$site".(($supplement)?"&supplement=$supplement":"");
 	if ($section) $u .= "&section=$section";
 	if ($page) $u .= "&page=$page";
-	$text .= "\n<br> \n\n<div align=right>\n<input type=submit class='button' value='edit this site' onClick=\"window.location='$u&$sid'\">\n</div>";
+	$text .= "\n<input type=submit class='button' value='edit this site' onClick=\"window.location='$u&$sid'\">\n</div>";
 } else {
 	$text = "";
 }
