@@ -3,8 +3,6 @@
 	
 $_theme_colors = array(
 	"white"=>array(
-			"a"=>					"966",
-			"a:hover"=>				"b55",
 			"font-size"=>			"12px",
 			"input-borders"=>		"555",
 			"input-size"=>			"12px",
@@ -25,8 +23,6 @@ $_theme_colors = array(
 			"contentinfo"=>			"999"
 	),
 	"yellow"=>array(
-			"a"=>					"624",
-			"a:hover"=>				"024",
 			"font-size"=>			"12px",
 			"input-borders"=>		"555",
 			"input-size"=>			"12px",
@@ -47,8 +43,6 @@ $_theme_colors = array(
 			"contentinfo"=>			"999"
 	),
 		"lightblue"=>array(
-			"a"=>					"624",
-			"a:hover"=>				"024",
 			"font-size"=>			"12px",
 			"input-borders"=>		"555",
 			"input-size"=>			"12px",
@@ -69,8 +63,6 @@ $_theme_colors = array(
 			"contentinfo"=>			"999"
 	),
 	"olive"=>array(
-			"a"=>					"026",
-			"a:hover"=>				"060",
 			"font-size"=>			"12px",
 			"input-borders"=>		"555",
 			"input-size"=>			"12px",
@@ -91,9 +83,6 @@ $_theme_colors = array(
 			"contentinfo"=>			"999"
 	),
 	"red"=>array(
-			"a"=>					"620",
-			"a:hover"=>				"048",
-			"text"=>				"444",
 			"font-size"=>			"12px",
 			"input-borders"=>		"555",
 			"input-size"=>			"12px",
@@ -115,12 +104,6 @@ $_theme_colors = array(
 	)
 );
 
-$_borderstyle = array(
-	"dashed"=>					"dashed",
-	"solid"=>					"solid",
-	"dotted"=>					"dotted"
-);
-
 $_bordercolor = array(
 	"black"=>					"000000",
 	"red"=>						"990000",
@@ -128,23 +111,18 @@ $_bordercolor = array(
 );
 
 $_bgcolor = array(
-	"blue"=>array(
-			"bgshadow"=>		"blue",
-			"bg"=>				"5F7082"					
-	),
-	"gray"=>array(
-			"bgshadow"=>		"gray",
-			"bg"=>				"999999"					
-	),
 	"white"=>array(
 			"bgshadow"=>		"white",
 			"bg"=>				"FFFFFF"					
-	),	
+	),
+	"gray"=>array(
+			"bgshadow"=>		"gray",
+			"bg"=>				"CCCCCC"					
+	),
 	"yellow"=>array(
 			"bgshadow"=>		"yellow",
 			"bg"=>				"FFFFCC"					
 	)	
-
 );
 
 $_textcolor = array(
@@ -159,30 +137,4 @@ $_linkcolor = array(
 	"green"=>					"006633"
 );
 
-$_nav_arrange = array(
-	"Top Sections"=>			"1",
-	"Side Sections"=>			"2"
-);
-
-$_nav_width = array(
-	"150 pixels"=>				"150",
-	"175 pixels"=>				"175",
-	"200 pixels"=>				"200",
-	"250 pixels"=>				"250",
-	"275 pixels"=>				"275"
-);
-
-$_sectionnav_size = array(
-	"10 pixels"=>				"10",
-	"12 pixels"=>				"12",
-	"14 pixels"=>				"14",
-	"16 pixels"=>				"16"
-);
-
-$_nav_size = array(
-	"10 pixels"=>				"10",
-	"12 pixels"=>				"12",
-	"14 pixels"=>				"14",
-	"16 pixels"=>				"16"
-);
-
+include("$themesdir/common/nav.inc.php");

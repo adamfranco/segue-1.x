@@ -1,4 +1,4 @@
-<?
+<? 
 /* output.inc.php
  this script outputs the HTML resulting from action files
  output script needs to include the following:
@@ -13,6 +13,9 @@
 /*		handle the $themesettings array					*/
 //print "$themesdir/$theme";
 include("$themesdir/common/functions.inc.php");
+
+if (file_exists("$themesdir/$theme/colors.inc.php"))
+	include("$themesdir/$theme/colors.inc.php");
 	
 //$nav_arrange=2;
 
@@ -28,6 +31,7 @@ if ($themesettings[theme] == 'shadowbox') {   // indeed these settings are for t
 	$usenavwidth = $themesettings[nav_width];
 	$usesectionnavsize = $themesettings[sectionnav_size];	
 	$usenavsize = $themesettings[nav_size];	
+
 }
 if (!$usebg) $usebg = 'white';
 $bg = $_bgcolor[$usebg];
@@ -50,7 +54,6 @@ $linkcolor = $_linkcolor[$uselinkcolor];
 if (!$usenav) $usenav = 'Top Sections';
 $nav_arrange = $_nav_arrange[$usenav];
 
-
 if (!$usenavwidth) $usenavwidth = '150 pixels';
 $navwidth = $_nav_width[$usenavwidth];
 
@@ -59,6 +62,7 @@ $sectionnavsize = $_sectionnav_size[$usesectionnavsize];
 
 if (!$usenavsize) $usenavsize = '12 pixels';
 $navsize = $_nav_size[$usenavsize];
+
 
 /* ------------------- END THEME SETTINGS---------------------	*/
 
@@ -105,7 +109,7 @@ print $sitecrumbs;
 /* ------------------------------------------- */
 /* --------- TOP SECTION NAV ---------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==1) horizontal_nav('sections',$topnav, $topnav_extra);
+if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
 
 ?>
 </div>
@@ -120,9 +124,9 @@ if ($nav_arrange==1) horizontal_nav('sections',$topnav, $topnav_extra);
 /* --------------- LEFT NAV ------------------ */
 /* ------------------------------------------- */
 if ($nav_arrange==1) {
-	vertical_nav('page',$leftnav, $leftnav_extra);		
+	vertical_nav($page, $leftnav, $leftnav_extra);		
 } else { 
-	vertical_nav('section',$topnav, $topnav_extra);
+	vertical_nav($section, $topnav, $topnav_extra);
 }
 ?>
 </td>
@@ -132,7 +136,7 @@ if ($nav_arrange==1) {
 /* ------------------------------------------- */
 /* ------------ TOP PAGE NAV ---------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav('pages',$leftnav, $leftnav_extra);
+if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
 ?>
 </div>
 <?
@@ -148,7 +152,7 @@ print $content;
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav('pages',$leftnav, $leftnav_extra);
+if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
 ?>
 </div>
 </td>
@@ -164,19 +168,22 @@ if (count($rightnav)) {
 ?>
 </tr>
 </table>
+
 <div class=topnav align=center>
 <?
 /* ------------------------------------------- */
 /* ------------ BOTTOM SECTION NAV ----------- */
 /* ------------------------------------------- */
-if ($nav_arrange==1) horizontal_nav('sections',$topnav, $topnav_extra);
+if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
+
 ?>
 </div>
 <?
 /* ------------------------------------------- */
 /* -------------- FOOTER     ----------------- */
 /* ------------------------------------------- */
-print $sitefooter ?>
+print $sitefooter 
+?>
 
 </td> <!-- end content table cell -->
 <td class=right><img class=righttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>'></td>
