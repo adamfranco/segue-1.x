@@ -463,9 +463,7 @@ ORDER BY
 /* 		$this->owningPageObj->addStory($this->id); */
 		if ($removeOrigional) {
 			$this->owningPageObj->delStory($origid,0);
-			print "<br>gggggggggggggggggggggggggggggg<br>";
 			$this->owningPageObj->updateDB();
-			print "<br>gggggggggggggggggggggggggggggg<br>";
 		}
 		
 		// add new permissions entry.. force update

@@ -77,6 +77,13 @@ function get_sizes($pic,$maxsize) {
 
 function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	global $uploaddir, $auser;
+	
+	$sitename = $site;
+	$query = "SELECT FK_site FROM slot WHERE slot_name='$site'";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$siteid = $a[FK_site];
+	
 	if (!$file[name]) {
 		print "No File";
 		return "ERROR";
@@ -120,28 +127,28 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	}
 	if (!$r) {
 		print "Upload file error!<br>";
-		log_entry("media_error","File upload attempt by $auser in site $site failed.",$siteObj->id,"site");
+		log_entry("media_error","File upload attempt by $auser in site $site failed.",$siteid,"site");
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
-		$query = "update media set addedtimestamp=NOW(),addedby='$auser',size='$size' where id='$replace_id'";
+		$query = "UPDATE media SET media_updated_tstamp=NOW(),FK_createdby='".$_SESSION[aid]."',media_size='$size' WHERE media_id='$replace_id'";
 		/* print $query."<br>"; */
 		db_query($query);
 		print mysql_error()."<br>";
 		
 		$media_id = $replace_id;
 		
-		log_entry("media_update","$auser updated file: $name, id: $media_id, in site $site",$siteObj->id,"site");
+		log_entry("media_update","$auser updated file: $name, id: $media_id, in site $site",$siteid,"site");
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
-		$query = "insert into media set name='$name',site_id='$site',addedtimestamp=NOW(),addedby='$auser',type='$type',size='$size'";
+		$query = "INSERT INTO media SET media_tag='$name',FK_site='$siteid',media_updated_tstamp=NOW(),FK_createdby='".$_SESSION[aid]."',media_type='$type',media_size='$size'";
 //		print $query."<br>";
 		db_query($query);
 //		print mysql_error()."<br>";
 		
 		$media_id = lastid();
-		log_entry("media_upload","$auser uploaded file: $name, id: $media_id, to site $site",$siteObj->id,"site");
+		log_entry("media_upload","$auser uploaded file: $name, id: $media_id, to site $site",$siteid,"site");
 		return $media_id;
 	}
 }

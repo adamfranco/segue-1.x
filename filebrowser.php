@@ -11,7 +11,9 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 // include all necessary files 
 include("includes.inc.php"); 
 include("sniffer.inc.php");
+include("objects/objects.inc.php");
  
+//$siteObj = new site ($site);
 //if ($ltype != 'admin') exit; 
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb); 
@@ -21,15 +23,28 @@ if ($delete) {
 	printerr2(); 
 } 
 
+$sitelist = array();
+
 $w = array(); 
 if ($ltype == 'admin') { 
-	if ($site) $w[]="site_id='$site'"; 
-	else if ($all) $w[]="site_id like '%'"; 
-	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
-if (count($w)) $where = " where ".implode(" and ",$w); 
+	if ($site) 
+		$w[]="slot_name='$site'"; 
+	else if ($all) $w[]="slot_name like '%'"; 
+	else $w[]="slot_name='$settings[site]'"; 
+} else $w[]="slot_name='".(($site)?"$site":"$settings[site]")."'"; 
+if (count($w)) $where = " WHERE ".implode(" and ",$w); 
 
-$query = "select * from media$where"; 
+$query = "
+	SELECT 
+		*
+	FROM 
+		media
+			INNER JOIN
+		slot
+			ON
+		media.FK_site = slot.FK_site		
+	$where
+"; 
 $r = db_query($query); 
 
 $totalsize = 0;
@@ -38,7 +53,17 @@ while ($a = db_fetch_assoc($r)) {
 }
  
 if ($upload) { 
-	$query = "select * from media where site_id='".(($site)?"$site":"$settings[site]")."'"; 
+	$query = "
+		SELECT 
+			*
+		FROM 
+			media
+				INNER JOIN
+			slot
+				ON
+			media.FK_site = slot.FK_site
+		WHERE
+			slot_name='".(($site)?"$site":"$settings[site]")."'"; 
 //	print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
@@ -76,13 +101,23 @@ if ($clear) {
 
 $w = array(); 
 if ($ltype == 'admin') { 
-	if ($site) $w[]="site_id='$site'"; 
-	else if ($all) $w[]="site_id like '%'"; 
-	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
+	if ($site) $w[]="slot_name='$site'"; 
+	else if ($all) $w[]="slot_name like '%'"; 
+	else $w[]="slot_name='$settings[site]'"; 
+} else $w[]="slot_name='".(($site)?"$site":"$settings[site]")."'"; 
 if (count($w)) $where = " where ".implode(" and ",$w); 
 
-$query = "select * from media$where"; 
+$query = "
+	SELECT 
+		*
+	FROM 
+		media
+			INNER JOIN
+		slot
+			ON
+		media.FK_site = slot.FK_site
+	$where
+"; 
 $r = db_query($query); 
 
 $totalsize = 0;
@@ -90,30 +125,53 @@ while ($a = db_fetch_assoc($r)) {
 	$totalsize = $totalsize + $a[size];
 }
 
-if (!isset($order)) $order = "name asc"; 
-$orderby = " order by $order"; 
+if (!isset($order)) $order = "media_tag asc"; 
+$orderby = " ORDER BY $order"; 
  
 $w = array(); 
 if ($ltype == 'admin') { 
-	if ($site) $w[]="site_id='$site'"; 
-	else if ($all) $w[]="site_id like '%'"; 
-	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
-if ($user) $w[]="addedby like '%$user%'"; 
-if ($name) $w[]="name like '%$name%'"; 
+	if ($site) $w[]="slot_name='$site'"; 
+	else if ($all) $w[]="slot_name like '%'"; 
+	else $w[]="slot_name='$settings[site]'"; 
+} else $w[]="slot_name='".(($site)?"$site":"$settings[site]")."'"; 
+if ($user) $w[]="media_addedby LIKE '%$user%'"; 
+if ($name) $w[]="media_tag LIKE '%$name%'"; 
  
-if (count($w)) $where = " where ".implode(" and ",$w); 
+if (count($w)) $where = " WHERE ".implode(" AND ",$w); 
  
-$numrows=db_num_rows(db_query("select * from media$where")); 
+$r=db_query("
+	SELECT 
+		COUNT(*)
+	FROM 
+		media
+			INNER JOIN
+		slot
+			ON
+		media.FK_site = slot.FK_site
+	$where"); 
+$a = db_fetch_assoc($r);
+$numrows = $a['COUNT(*)'];
 $numperpage = 20; 
  
  
 if (!isset($lowerlimit)) $lowerlimit = 0; 
 if ($lowerlimit < 0) $lowerlimit = 0; 
  
-$limit = " limit $lowerlimit,$numperpage"; 
+$limit = " LIMIT $lowerlimit,$numperpage"; 
  
-$query = "select * from media$where$orderby$limit"; 
+$query = "
+	SELECT 
+		*
+	FROM 
+		media
+			INNER JOIN
+		slot
+			ON
+		media.FK_site = slot.FK_site
+	$where
+	$orderby
+	$limit
+"; 
  
 $r = db_query($query); 
  
@@ -565,3 +623,30 @@ if (db_num_rows($r)) {
 </form> 
  
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div> 
+
+<?
+
+// debug output -- handy :)
+print "<pre>";
+print "request:\n";
+print_r($_REQUEST);
+print "\n\n";
+print "session:\n";
+print_r($_SESSION);
+print "\n\n";
+
+/* if (is_object($thisPage)) { */
+/* 	print "\n\n"; */
+/* 	print "thisPage:\n"; */
+/* 	print_r($thisPage); */
+/* } else if (is_object($thisSection)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSection:\n"; */
+/* 	print_r($thisSection); */
+/* } else if (is_object($thisSite)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSite:\n"; */
+/* 	print_r($thisSite); */
+/* } */
+print "</pre>";
+?>
