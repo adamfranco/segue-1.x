@@ -94,7 +94,7 @@ if ($_SESSION[settings][add]) printc("<div class=title>Add Site</div>");
 if ($_SESSION[settings][edit]) printc("<div class=title>Edit Site</div>");
 printc("<br>");
 
-printc("<div class=desc>Set your browser to allow pop ups from this page in order to properly edit Segue themes.".helplink("theme","help")."</div>");
+printc("<div class=desc>Set your browser to allow pop ups from this page in order to properly edit Segue themes.</div>");
 // --- title ---
 printc("<div class=title>4. Appearance: &nbsp;Select a Theme".helplink("theme","help")."</div>");
 
@@ -110,7 +110,7 @@ foreach ($possible_themes as $themename=>$longname) {
 	printc("<td align=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
 	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
 	if ($_SESSION[siteObj]->getField("theme")==$themename)
-		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'></td>");
+		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'><div style='font-size: 9px;'>(disable popup window blocker)".helplink("theme","?")."</div></td>");
 	else 
 		printc("<td align=center valign=top style='border-top: 1px solid #aaa;'> &nbsp; </td>");
 	printc("</tr>");

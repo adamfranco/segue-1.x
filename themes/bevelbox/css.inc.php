@@ -55,6 +55,16 @@ body {
 	text-decoration: none;
 }
 
+.subnav a:hover {
+	color: #<? echo $c['nav']; ?>;
+	text-decoration: underline;
+}
+
+.subnav {
+	color: #<? echo $c['navtext']; ?>;
+	text-decoration: none;
+}
+
 
 .sitetitle {
 	color: #<? echo $c['navtext']; ?>;
