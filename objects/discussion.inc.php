@@ -529,7 +529,7 @@ class discussion {
 	
 	function _commithttpdata() {
 		global $sid,$error,$_full_uri;
-		global $mailposts;
+		global $mailposts, $cfg;
 		
 		//include("htmleditor/editor.inc.php");
 		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
@@ -551,8 +551,30 @@ class discussion {
 				if (user::userEmailExists($_REQUEST['visitor_email'])) {
 					 error("A user with that email address already exists.  Please log in before posting.");
 				}
+				
+				/******************************************************************************
+				 * Visitor account validation:
+				 * check that a name has been entered
+				 * check that the email enter doesn't already exist in Segue and 
+				 * is not part of the $cfg[visitor_email_excludes] specified in the config
+				 ******************************************************************************/
+				
 				if (!$_REQUEST['visitor_name']) error("You must enter a username.");
-				if (!$_REQUEST['visitor_email'] || !ereg("@", $_REQUEST['visitor_email'])) error("You must enter a valid email address.");
+				if (!$_REQUEST['visitor_email'] || !ereg("@", $_REQUEST['visitor_email'])) {
+					error("You must enter a valid email address.");
+					
+				} else if ($_REQUEST['visitor_email'] ) {
+					foreach ($cfg[visitor_email_excludes] as $visitor_email_exclude) {
+						if ($exclude = ereg($visitor_email_exclude, $_REQUEST['visitor_email'])) {
+							error("Please log in above with your $cfg[inst_name] account.");
+						}
+					}
+				}
+				
+				
+				
+				
+				
 				// all good
 				if (!$error) {
 					$obj = &new user();

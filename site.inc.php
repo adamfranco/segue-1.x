@@ -115,7 +115,7 @@ do {
 	
 	if ($thisPage) {
 		$thisPage->fetchDown();
-		printc("<div class=title>".$thisPage->getField("title")."</div>");
+		printc("<b>".$thisPage->getField("title")."</b>");
 		$i=0;
 		// handle archiving -- monthly, weekly, etc
 		$thisPage->handleStoryArchive();

@@ -12,15 +12,16 @@ $st = $o->getField("shorttext");
 $specfic_mediapath = $cfg[uploadurl]."/".$site;
 $general_mediapath = "mediapath";
 $st = eregi_replace($general_mediapath, $specfic_mediapath, $st);
-
-printc("<div>" . stripslashes($st));
+if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
+printc("<table cellspacing=0 cellpadding=0 width=100%><tr><td>");
+printc(stripslashes($st));
 
 if ($o->getField("discuss") || $o->getField("longertext")) {
 	$link = "index.php?$sid&action=site&site=$site&section=$section&page=$page&story=".$o->id."&detail=".$o->id;
 	//$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
 	//$link = "<a href='$link'>";
 	if ($o->getField("longertext")) printc("<a href='".$link."'>"." ...more.</a>");
-	printc("</div>");
+	
 	printc("<div class=contentinfo align=right>");
 	$l = array();
 	//if ($o->getField("longertext")) $l[] = $link."Full Text</a>";
@@ -37,3 +38,4 @@ if ($o->getField("discuss") || $o->getField("longertext")) {
 	printc(implode(" | ",$l));
 	printc("</div>");
 }
+printc("</td></tr></table><br>");

@@ -20,7 +20,7 @@ include_once (dirname(__FILE__)."/carprss/carp.php");
  ob_clean();
 
 
-// if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
+if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
 // printc("<div><a href='".$o->getField("url")."' target='_blank'>".$o->getField("url")."</a></div>");
 // if ($o->getField("shorttext")) printc("<div class=desc>".stripslashes($o->getField("shorttext"))."</div>");
 if ($o->getField("discuss")) {
