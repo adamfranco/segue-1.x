@@ -30,11 +30,11 @@ if (!isset($order)) $order = "editedtimestamp DESC";
 $orderby = " ORDER BY $order";
 
 $w = array();
-if ($type) $w[]="type='$type'";
-if ($user) $w[]="addedby like '%$user%'";
+if ($type) $w[]="slot_type='$type'";
+if ($user) $w[]="user_uname like '%$user%'";
 //if ($site) $w[]="site like '%$name%'";
-if ($site) $w[]="name like '%$site%'";
-if ($title) $w[]="title like '%$title%'";
+if ($site) $w[]="slot_name like '%$site%'";
+if ($title) $w[]="site_title like '%$title%'";
 if (count($w)) $where = " where ".implode(" and ",$w);
 
 $query = "
