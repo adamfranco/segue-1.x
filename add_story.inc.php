@@ -142,10 +142,10 @@ if ($step == 2) {
 			$stories = encode_array($stories);
 			$query = "update pages set stories='$stories' where id=$page";
 			db_query($query);
-			log_entry("add_story","$auser added story id $newid to page id $page in site $site");
+			log_entry("add_story",$site,$section,$page,"$auser added story id $newid to page id $page in site $site");
 		}
 		if ($edit) {
-			log_entry("edit_story","$auser edited story id $edit_story in page id $page in site $site");
+			log_entry("edit_story",$site,$section,$page,"$auser edited story id $edit_story in page id $page in site $site");
 			if ($type == 'image' || $type == 'file') {
 				copyuserfile($edit_story,$_FILES['file']);
 			}
