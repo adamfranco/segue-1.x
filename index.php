@@ -173,12 +173,6 @@ if ($_SESSION[settings][section]) $_REQUEST[section] = $_SESSION[settings][secti
 if ($_SESSION[settings][page]) $_REQUEST[page] = $_SESSION[settings][page];
 if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
 
-if ($cfg['user_notice']) {
-	print "<div style='border: 4px solid red; font-size: large;'>";
-	print $cfg['user_notice'];
-	print "</div>";
-}
-
 // set up theme, header,footer and navlinks
 if ($_REQUEST[site]) {						// we are in a site
 	
@@ -245,6 +239,12 @@ if (!$loginerror) {
 		}
 		else include("no_action.inc.php");		// action not implemented yet or doesn't exist :(
 	}
+}
+
+if ($cfg['user_notice'] && $action != 'rss') {
+	print "<div style='border: 4px solid red; font-size: large;'>";
+	print $cfg['user_notice'];
+	print "</div>";
 }
 
 //echo "</pre>";
