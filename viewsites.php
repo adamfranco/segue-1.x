@@ -99,6 +99,18 @@ input,select {
 
 </style>
 
+</style>
+
+<script lang="JavaScript">
+
+function changeOrder(order) {
+	f = document.searchform;
+	f.order.value=order;
+	f.submit();
+}
+
+</script>
+
 <table width='100%'>
 <tr><td width=50%>
 	<? print $content; ?>
@@ -117,7 +129,7 @@ input,select {
 	<td colspan=8>
 		<table width='100%'>
 		<tr><td>
-		<form action=<?echo "$PHP_SELF?$sid"?> method=post>
+		<form action=<?echo "$PHP_SELF?$sid"?> method=post name='searchform'>
 		<?
 		// $r1 = db_query("select distinct type from sites order by type asc");
 		?>
@@ -137,6 +149,7 @@ input,select {
 			user: <input type=text name=user size=15 value='<?echo $user?>'>
 			<input type=submit value='go'>
 			<input type=submit name='clear' value='clear'>
+			<input type=hidden name='order' value='<? echo $order ?>'>
 		<? } ?>
 		</form>
 		</td>
@@ -152,9 +165,9 @@ input,select {
 		print "$curr of $tpages ";
 //		print "$prev $lowerlimit $next ";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&title=$title&site=$site\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
 		?>
 		</td>
 		</tr>
@@ -162,14 +175,71 @@ input,select {
 	</td>
 </tr>
 <tr>
-	<th>time</th>
-	<th>site</th>
-	<th>active</th>
-	<th>type</th>
-	<th>view</th>
-	<th>theme</th>
-	<th>title</th>
-	<th>owner</th>
+<?
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='editedtimestamp desc') print "editedtimestamp asc";
+	else print "editedtimestamp desc";
+	print "')\" style='color: #000'>Time";
+	if ($order =='editedtimestamp asc') print " &or;";
+	if ($order =='editedtimestamp desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='name asc') print "name desc";
+	else print "name asc";
+	print "')\" style='color: #000'>Site";
+	if ($order =='name asc') print " &or;";
+	if ($order =='name desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='active asc') print "active desc";
+	else print "active asc";
+	print "')\" style='color: #000'>Active";
+	if ($order =='active asc') print " &or;";
+	if ($order =='active desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='type asc') print "type desc";
+	else print "type asc";
+	print "')\" style='color: #000'>Type";
+	if ($order =='type asc') print " &or;";
+	if ($order =='type desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='viewpermissions asc') print "viewpermissions desc";
+	else print "viewpermissions asc";
+	print "')\" style='color: #000'>View";
+	if ($order =='viewpermissions asc') print " &or;";
+	if ($order =='viewpermissions desc') print " &and;";	
+	print "</a></th>";
+
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='theme asc') print "theme desc";
+	else print "theme asc";
+	print "')\" style='color: #000'>Theme";
+	if ($order =='theme asc') print " &or;";
+	if ($order =='theme desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='title asc') print "title desc";
+	else print "title asc";
+	print "')\" style='color: #000'>Title";
+	if ($order =='title asc') print " &or;";
+	if ($order =='title desc') print " &and;";	
+	print "</a></th>";
+	
+	print "<th><a href=# onClick=\"changeOrder('";
+	if ($order =='addedby asc') print "addedby desc";
+	else print "addedby asc";
+	print "')\" style='color: #000'>Owner";
+	if ($order =='addedby asc') print " &or;";
+	if ($order =='addedby desc') print " &and;";	
+	print "</a></th>";
+?>
 </tr>
 <?
 $color = 0;
