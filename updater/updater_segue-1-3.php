@@ -14,7 +14,767 @@ include("permissions.inc.php");
 global $dbuser, $dbpass, $dbdb, $dbhost;
 db_connect($dbhost,$dbuser,$dbpass,$dbdb);
 
+$destinationDB = $dbdb;
+$sourceDB = "segue_et";
 echo "<pre>";
+
+// Set up the tables and copy most of the data
+$query = "
+		CREATE TABLE class (
+		  class_id int(10) unsigned NOT NULL auto_increment,
+		  class_external_id varchar(255) default NULL,
+		  class_department varchar(255) default NULL,
+		  class_number int(11) NOT NULL default '0',
+		  class_section varchar(25) default NULL,
+		  class_name varchar(255) NOT NULL default '',
+		  FK_owner int(10) unsigned default NULL,
+		  FK_ugroup int(10) unsigned default NULL,
+		  class_semester enum('w','s','f','l') NOT NULL default 'w',
+		  class_year year(4) NOT NULL default '0000',
+		  FK_classgroup int(10) unsigned default NULL,
+		  PRIMARY KEY  (class_id),
+		  UNIQUE KEY class_department (class_department,class_number,class_section,class_semester,class_year),
+		  UNIQUE KEY class_external_id (class_external_id),
+		  KEY class_name (class_name),
+		  KEY FK_owner (FK_owner),
+		  KEY FK_classgroup (FK_classgroup),
+		  KEY FK_ugroup (FK_ugroup),
+		  KEY class_department_2 (class_department),
+		  KEY class_number (class_number),
+		  KEY class_section (class_section),
+		  KEY class_semester (class_semester),
+		  KEY class_year (class_year)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE classgroup (
+		  classgroup_id int(10) unsigned NOT NULL auto_increment,
+		  FK_owner int(10) unsigned NOT NULL default '0',
+		  classgroup_name varchar(255) NOT NULL default '',
+		  PRIMARY KEY  (classgroup_id),
+		  UNIQUE KEY classgroup_name (classgroup_name),
+		  KEY FK_owner (FK_owner)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE discussion (
+		  discussion_id int(10) unsigned NOT NULL auto_increment,
+		  FK_author int(10) unsigned NOT NULL default '0',
+		  discussion_tstamp timestamp(14) NOT NULL,
+		  discussion_subject varchar(255) NOT NULL default '',
+		  discussion_content mediumblob NOT NULL,
+		  FK_story int(10) unsigned NOT NULL default '0',
+		  discussion_order int(10) unsigned NOT NULL default '0',
+		  FK_parent int(10) unsigned default NULL,
+		  PRIMARY KEY  (discussion_id),
+		  KEY FK_author (FK_author),
+		  KEY FK_story (FK_story),
+		  KEY discussion_order (discussion_order),
+		  KEY FK_parent (FK_parent),
+		  KEY discussion_tstamp (discussion_tstamp)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE log (
+		  log_id int(10) unsigned NOT NULL auto_increment,
+		  log_tstamp timestamp(14) NOT NULL,
+		  log_type enum('login','change_auser','media_upload','media_delete','media_error','add_site','add_section','add_page','add_story','classgroups','copy_site','copy_section','copy_page','copy_story','delete_site','delete_section','delete_page','delete_story','edit_site','edit_section','edit_page','edit_story','move_site','move_section','move_page','move_story') NOT NULL default 'login',
+		  FK_luser int(10) unsigned NOT NULL default '0',
+		  FK_auser int(10) unsigned NOT NULL default '0',
+		  FK_slot int(10) unsigned default NULL,
+		  FK_siteunit int(10) unsigned default '0',
+		  log_siteunit_type enum('site','section','page','story') default 'site',
+		  log_desc blob,
+		  PRIMARY KEY  (log_id),
+		  KEY FK_luser (FK_luser),
+		  KEY FK_auser (FK_auser),
+		  KEY FK_siteunit (FK_siteunit),
+		  KEY FK_site (FK_slot)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE media (
+		  media_id int(10) unsigned NOT NULL auto_increment,
+		  FK_site int(10) unsigned default NULL,
+		  FK_createdby int(10) unsigned NOT NULL default '0',
+		  media_tag varchar(255) NOT NULL default '',
+		  media_location enum('local','remote') NOT NULL default 'local',
+		  media_type enum('image','file','other') NOT NULL default 'other',
+		  FK_updatedby int(10) unsigned NOT NULL default '0',
+		  media_updated_tstamp timestamp(14) NOT NULL,
+		  media_size int(10) unsigned default NULL,
+		  PRIMARY KEY  (media_id),
+		  UNIQUE KEY uniqueness (FK_site,FK_createdby,media_tag,media_location),
+		  KEY FK_site (FK_site),
+		  KEY FK_createdby (FK_createdby),
+		  KEY media_tag (media_tag),
+		  KEY media_type (media_type),
+		  KEY media_location (media_location),
+		  KEY media_updated_tstamp (media_updated_tstamp),
+		  KEY media_size (media_size),
+		  KEY FK_updatedby (FK_updatedby)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE page (
+		  page_id int(10) unsigned NOT NULL auto_increment,
+		  FK_section int(10) unsigned NOT NULL default '0',
+		  page_order int(10) unsigned NOT NULL default '0',
+		  page_title varchar(255) NOT NULL default '',
+		  FK_updatedby int(10) unsigned NOT NULL default '0',
+		  page_updated_tstamp timestamp(14) NOT NULL,
+		  FK_createdby int(10) unsigned NOT NULL default '0',
+		  page_created_tstamp timestamp(14) NOT NULL,
+		  page_active enum('0','1') NOT NULL default '0',
+		  page_activate_tstamp timestamp(14) NOT NULL,
+		  page_deactivate_tstamp timestamp(14) NOT NULL,
+		  page_show_creator enum('0','1') NOT NULL default '0',
+		  page_show_date enum('0','1') NOT NULL default '0',
+		  page_show_hr enum('0','1') NOT NULL default '0',
+		  page_display_type enum('page','heading','divider','link') NOT NULL default 'page',
+		  FK_media int(10) unsigned default NULL,
+		  page_story_order enum('custom','addeddesc','addedasc','editeddesc','editedasc','author','editor','category','titleasc','titledesc') NOT NULL default 'custom',
+		  page_archiveby varchar(255) NOT NULL default '',
+		  page_locked enum('0','1') NOT NULL default '0',
+		  page_ediscussion enum('0','1') NOT NULL default '0',
+		  PRIMARY KEY  (page_id),
+		  KEY FK_section (FK_section),
+		  KEY FK_updatedby (FK_updatedby),
+		  KEY FK_createdby (FK_createdby),
+		  KEY page_title (page_title),
+		  KEY page_order (page_order),
+		  KEY FK_media (FK_media)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE permission (
+		  permission_id int(10) unsigned NOT NULL auto_increment,
+		  FK_editor int(10) unsigned default NULL,
+		  permission_editor_type enum('user','ugroup','everyone','institute') NOT NULL default 'user',
+		  FK_scope_id int(10) unsigned NOT NULL default '0',
+		  permission_scope_type enum('site','section','page','story') NOT NULL default 'site',
+		  permission_value set('v','a','e','d','di') NOT NULL default '',
+		  PRIMARY KEY  (permission_id),
+		  UNIQUE KEY uniq (FK_editor,permission_editor_type,FK_scope_id,permission_scope_type),
+		  KEY FK_editor (FK_editor,permission_editor_type),
+		  KEY FK_scope_id (FK_scope_id,permission_scope_type)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE section (
+		  section_id int(10) unsigned NOT NULL auto_increment,
+		  FK_site int(10) unsigned NOT NULL default '0',
+		  section_order int(10) unsigned NOT NULL default '0',
+		  section_title varchar(255) NOT NULL default '',
+		  FK_updatedby int(10) unsigned NOT NULL default '0',
+		  section_updated_tstamp timestamp(14) NOT NULL,
+		  FK_createdby int(10) unsigned NOT NULL default '0',
+		  section_created_tstamp timestamp(14) NOT NULL,
+		  section_active enum('0','1') NOT NULL default '0',
+		  section_activate_tstamp timestamp(14) NOT NULL,
+		  section_deactivate_tstamp timestamp(14) NOT NULL,
+		  section_locked enum('0','1') NOT NULL default '0',
+		  section_display_type enum('section','heading','divider','link') NOT NULL default 'section',
+		  FK_media int(10) unsigned default NULL,
+		  PRIMARY KEY  (section_id),
+		  KEY FK_site (FK_site),
+		  KEY section_order (section_order),
+		  KEY FK_updatedby (FK_updatedby),
+		  KEY FK_createdby (FK_createdby),
+		  KEY section_title (section_title),
+		  KEY FK_media (FK_media)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE site (
+		  site_id int(10) unsigned NOT NULL auto_increment,
+		  site_title varchar(255) NOT NULL default '',
+		  site_theme varchar(255) NOT NULL default '',
+		  site_themesettings blob NOT NULL,
+		  site_header blob,
+		  site_footer blob,
+		  FK_updatedby int(10) unsigned NOT NULL default '0',
+		  site_updated_tstamp timestamp(14) NOT NULL,
+		  FK_createdby int(10) unsigned NOT NULL default '0',
+		  site_created_tstamp timestamp(14) NOT NULL,
+		  site_active enum('0','1') NOT NULL default '0',
+		  site_activate_tstamp timestamp(14) NOT NULL,
+		  site_deactivate_tstamp timestamp(14) NOT NULL,
+		  site_listed enum('0','1') NOT NULL default '0',
+		  PRIMARY KEY  (site_id),
+		  KEY site_title (site_title),
+		  KEY FK_updatedby (FK_updatedby),
+		  KEY FK_createdby (FK_createdby),
+		  KEY site_listed (site_listed)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE site_editors (
+		  FK_site int(10) unsigned NOT NULL default '0',
+		  FK_editor int(10) unsigned default NULL,
+		  site_editors_type enum('user','ugroup','everyone','institute') NOT NULL default 'user',
+		  UNIQUE KEY FK_site (FK_site,FK_editor,site_editors_type)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE slot (
+		  slot_id int(10) unsigned NOT NULL auto_increment,
+		  slot_name varchar(255) default NULL,
+		  FK_owner int(10) unsigned NOT NULL default '0',
+		  FK_assocsite int(10) unsigned default NULL,
+		  FK_site int(10) unsigned default NULL,
+		  slot_type enum('class','personal','system','other','publication') NOT NULL default 'class',
+		  PRIMARY KEY  (slot_id),
+		  UNIQUE KEY FK_site (FK_site),
+		  UNIQUE KEY slot_name (slot_name),
+		  KEY FK_owner (FK_owner),
+		  KEY FK_assocsite (FK_assocsite),
+		  KEY slot_type (slot_type)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE story (
+		  story_id int(10) unsigned NOT NULL auto_increment,
+		  FK_page int(10) unsigned NOT NULL default '0',
+		  story_order int(10) unsigned NOT NULL default '0',
+		  story_title varchar(255) NOT NULL default '',
+		  FK_updatedby int(10) unsigned NOT NULL default '0',
+		  story_updated_tstamp timestamp(14) NOT NULL,
+		  FK_createdby int(10) unsigned NOT NULL default '0',
+		  story_created_tstamp timestamp(14) NOT NULL,
+		  story_text_short mediumblob NOT NULL,
+		  story_text_long mediumblob NOT NULL,
+		  story_active enum('0','1') NOT NULL default '0',
+		  story_activate_tstamp timestamp(14) NOT NULL,
+		  story_deactivate_tstamp timestamp(14) NOT NULL,
+		  story_discussable enum('0','1') NOT NULL default '0',
+		  story_category varchar(255) NOT NULL default '',
+		  story_text_type enum('text','html') NOT NULL default 'text',
+		  story_display_type enum('story','image','file','link') NOT NULL default 'story',
+		  FK_media int(10) unsigned default NULL,
+		  story_locked enum('0','1') NOT NULL default '0',
+		  PRIMARY KEY  (story_id),
+		  KEY FK_page (FK_page),
+		  KEY story_order (story_order),
+		  KEY story_title (story_title),
+		  KEY FK_media (FK_media),
+		  KEY FK_createdby (FK_createdby),
+		  KEY FK_updatedby (FK_updatedby)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE ugroup (
+		  ugroup_id int(10) unsigned NOT NULL auto_increment,
+		  ugroup_name varchar(255) NOT NULL default '',
+		  ugroup_type enum('class','other') NOT NULL default 'class',
+		  FK_owner int(11) default NULL,
+		  PRIMARY KEY  (ugroup_id),
+		  UNIQUE KEY ugroup_name (ugroup_name),
+		  KEY FK_owner (FK_owner)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE ugroup_user (
+		  FK_ugroup int(10) unsigned NOT NULL default '0',
+		  FK_user int(10) unsigned NOT NULL default '0',
+		  PRIMARY KEY  (FK_ugroup,FK_user)
+		) TYPE=MyISAM;
+		
+		CREATE TABLE user (
+		  user_id int(10) unsigned NOT NULL auto_increment,
+		  user_uname varchar(255) NOT NULL default '',
+		  user_pass varchar(255) NOT NULL default '',
+		  user_fname varchar(255) NOT NULL default '',
+		  user_first_name varchar(255) default NULL,
+		  user_last_name varchar(255) default NULL,
+		  user_email varchar(255) NOT NULL default '',
+		  user_type enum('stud','prof','staff','admin') NOT NULL default 'stud',
+		  user_authtype enum('ldap','db','pam') NOT NULL default 'ldap',
+		  PRIMARY KEY  (user_id),
+		  UNIQUE KEY user_uname (user_uname),
+		  KEY user_type (user_type),
+		  KEY user_fname (user_fname),
+		  KEY user_last_name (user_last_name)
+		) TYPE=MyISAM;
+
+";
+
+    
+
+
+
+/*############################################################################################################
+
+############################################################################################################
+
+# Now insert data from old database into new database
+
+############################################################################################################
+
+############################################################################################################*/
+
+
+
+
+
+/*############################################################################################################
+
+# user table
+
+############################################################################################################*/
+
+$query .= "
+INSERT 
+
+INTO segue2.user 
+
+	(user_id, user_uname, user_pass, user_fname,
+
+	 user_email, user_type, user_authtype)
+
+SELECT 
+
+	id, uname, pass, fname, email, type, status 
+
+FROM 
+
+	segue_et.users 
+
+ORDER BY uname;
+
+";
+
+
+
+
+
+/*############################################################################################################
+
+# slot table
+
+############################################################################################################*/
+
+$query .= "
+INSERT 
+
+INTO segue2.slot 
+
+	(slot_name, FK_owner, FK_site, slot_type)
+
+SELECT 
+
+	name, user_id, sites.id, sites.type 
+
+FROM 
+
+	segue_et.sites 
+
+		LEFT JOIN
+
+	segue2.user
+
+		ON addedby = user_uname
+
+ORDER BY name;
+";
+
+
+
+
+
+/*############################################################################################################
+
+# site table
+
+############################################################################################################*/
+
+$query .= "
+INSERT
+
+INTO segue2.site
+
+	(site_id, site_title, site_theme, site_themesettings, site_header, 
+
+	 site_footer, FK_updatedby, site_updated_tstamp, FK_createdby, site_created_tstamp, site_active,     	 site_activate_tstamp, site_deactivate_tstamp, site_listed)
+
+SELECT 
+
+	segue_et.sites.id, title, theme, themesettings, header, footer, u1.user_id, 
+
+	editedtimestamp, u2.user_id, addedtimestamp, CONV(active,2,2), 
+
+	FROM_UNIXTIME(UNIX_TIMESTAMP(activatedate)), 
+
+	FROM_UNIXTIME(UNIX_TIMESTAMP(deactivatedate)), CONV(listed,2,2)
+
+FROM 
+
+	segue_et.sites
+
+		LEFT JOIN
+
+	segue2.user AS u1
+
+		ON editedby = u1.user_uname
+
+		LEFT JOIN
+
+	segue2.user AS u2
+
+		ON addedby = u2.user_uname
+
+ORDER BY
+
+	segue_et.sites.name;
+
+
+
+UPDATE
+
+	segue2.site
+
+SET
+
+	FK_updatedby = FK_createdby
+
+WHERE
+
+	FK_updatedby = 0;
+
+";
+
+
+
+/*############################################################################################################
+
+# section table
+
+############################################################################################################*/
+
+$query .= "
+INSERT
+
+INTO segue2.section
+
+	(section_id, FK_site, section_order, section_title, FK_updatedby, section_updated_tstamp,
+
+	 FK_createdby, section_created_tstamp, section_active, section_activate_tstamp, 
+
+	 section_deactivate_tstamp, section_locked, section_display_type)
+
+SELECT 
+
+	sections.id, slot.FK_site, sections.id, title,   u1.user_id, editedtimestamp, u2.user_id,
+
+	addedtimestamp, CONV(active,2,2), FROM_UNIXTIME(UNIX_TIMESTAMP(activatedate)), 
+
+	FROM_UNIXTIME(UNIX_TIMESTAMP(deactivatedate)), CONV(locked,2,2), IF(sections.type = 'url', 'link', sections.type)
+
+FROM 
+
+	segue_et.sections
+
+		INNER JOIN
+
+	segue2.slot
+
+		ON slot.slot_name = sections.site_id
+
+		LEFT JOIN
+
+	segue2.user AS u1
+
+		ON editedby = u1.user_uname
+
+		LEFT JOIN
+
+	segue2.user AS u2
+
+		ON addedby = u2.user_uname
+
+ORDER BY
+
+	segue_et.sections.site_id;
+
+
+
+UPDATE
+
+	segue2.section
+
+SET
+
+	FK_updatedby = FK_createdby
+
+WHERE
+
+	FK_updatedby = 0;
+
+";
+
+
+
+/*############################################################################################################
+
+# page table
+
+############################################################################################################*/
+
+$query .= "
+INSERT
+
+INTO segue2.page
+
+	(page_id, FK_section, page_order, page_title, FK_updatedby, page_updated_tstamp, FK_createdby, 		 		 page_created_tstamp, page_active, page_activate_tstamp, page_deactivate_tstamp, page_show_creator, 	 		 page_show_date, page_show_hr, page_display_type, page_story_order, page_archiveby, page_locked, page_ediscussion)
+
+SELECT 
+
+	pages.id, section_id, pages.id, title,  u1.user_id, editedtimestamp, u2.user_id,
+
+	addedtimestamp, CONV(active,2,2), 
+
+	FROM_UNIXTIME(UNIX_TIMESTAMP(activatedate)), FROM_UNIXTIME(UNIX_TIMESTAMP(deactivatedate)),
+
+	CONV(showcreator,2,2), CONV(showdate,2,2), CONV(showhr,2,2), IF(pages.type = 'url', 'link', pages.type), storyorder, archiveby,
+
+	CONV(locked,2,2), CONV(ediscussion,2,2)
+
+FROM 
+
+	segue_et.pages
+
+		LEFT JOIN
+
+	segue2.user AS u1
+
+		ON editedby = u1.user_uname
+
+		LEFT JOIN
+
+	segue2.user AS u2
+
+		ON addedby = u2.user_uname
+
+ORDER BY
+
+	segue_et.pages.section_id;
+
+
+
+UPDATE
+
+	segue2.page
+
+SET
+
+	FK_updatedby = FK_createdby
+
+WHERE
+
+	FK_updatedby = 0;
+";
+
+
+
+
+/*############################################################################################################
+
+# story table
+
+############################################################################################################*/
+
+$query .= "
+INSERT
+
+INTO segue2.story
+
+	(story_id, FK_page, story_order, story_title, FK_updatedby, story_updated_tstamp, FK_createdby, 
+
+	 story_created_tstamp, story_text_short, story_text_long, story_active, story_activate_tstamp, 
+
+	 story_deactivate_tstamp, story_discussable, story_category, story_text_type, story_display_type, story_locked)
+
+SELECT 
+
+	stories.id, page_id, stories.id, title, u1.user_id, editedtimestamp, u2.user_id, addedtimestamp, shorttext,
+
+	longertext, CONV(active,2,2), FROM_UNIXTIME(UNIX_TIMESTAMP(activatedate)), 
+
+	FROM_UNIXTIME(UNIX_TIMESTAMP(deactivatedate)), CONV(discuss,2,2), category, texttype, IF(stories.type = 'url', 'link', stories.type), CONV(locked,2,2)
+
+FROM 
+
+	segue_et.stories
+
+		LEFT JOIN
+
+	segue2.user AS u1
+
+		ON editedby = u1.user_uname
+
+		LEFT JOIN
+
+	segue2.user AS u2
+
+		ON addedby = u2.user_uname
+
+ORDER BY
+
+	segue_et.stories.page_id;
+
+
+
+UPDATE
+
+	segue2.story
+
+SET
+
+	FK_updatedby = FK_createdby
+
+WHERE
+
+	FK_updatedby = 0;
+
+";
+
+
+
+/*############################################################################################################
+
+# permissions & site editors
+
+############################################################################################################*/
+
+$query .= "
+INSERT
+
+INTO segue2.site_editors
+
+	(FK_site, FK_editor, site_editors_type)
+
+SELECT
+
+	id, NULL, 'everyone'
+
+FROM
+
+	segue_et.sites
+
+WHERE
+
+	viewpermissions = 'anyone'
+
+ORDER BY
+
+	id;
+
+
+
+INSERT
+
+INTO segue2.site_editors
+
+	(FK_site, FK_editor, site_editors_type)
+
+SELECT
+
+	id, NULL, 'institute'
+
+FROM
+
+	segue_et.sites
+
+WHERE
+
+	viewpermissions = 'midd'
+
+ORDER BY
+
+	id;
+
+
+
+INSERT
+
+INTO segue2.permission
+
+	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
+
+SELECT
+
+	NULL, 'everyone', id, 'site', 'v'
+
+FROM
+
+	segue_et.sites
+
+WHERE
+
+	viewpermissions = 'anyone'
+
+ORDER BY
+
+	id;
+
+
+
+INSERT
+
+INTO segue2.permission
+
+	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
+
+SELECT
+
+	NULL, 'institute', id, 'site', 'v'
+
+FROM
+
+	segue_et.sites
+
+WHERE
+
+	viewpermissions = 'midd'
+
+ORDER BY
+
+	id;
+
+";
+
+
+
+
+
+/*############################################################################################################
+
+# media items: images & files
+
+############################################################################################################*/
+
+$query .= " 
+
+INSERT
+
+INTO segue2.media
+
+	(media_id, FK_site, FK_createdby, media_tag, media_location, media_type, FK_updatedby, media_size)
+
+SELECT
+
+	id, FK_site, user_id, name, 'local', type, user_id, size
+
+FROM
+
+	segue_et.media
+
+		INNER JOIN
+
+	segue2.slot
+
+		ON slot_name = site_id
+
+		LEFT JOIN
+
+	segue2.user
+
+		ON addedby = user_uname
+";
+
+	$queryArray = explode(";",$query);
+	foreach ($queryArray AS $query) {
+//		print "<br>\"$query\"";
+			db_query($query);
+	}
+
 
 
 // ************************************************************************************************************************************************
@@ -25,9 +785,9 @@ $query = "
 SELECT
 	FK_site, FK_createdby, url as media_tag, 'remote' as media_location, FK_updatedby, id AS section_id
 FROM
-	segue_et.sections
+	".$sourceDB.".sections
 		INNER JOIN
-	segue2.section
+	".$destinationDB.".section
 		ON id = section_id
 WHERE
 	type = 'url'
@@ -38,7 +798,7 @@ $r = db_query($query);
 while ($a = db_fetch_assoc($r)) {
 	$query = "
 INSERT
-INTO segue2.media
+INTO ".$destinationDB.".media
 SET
 	FK_site = ".$a[FK_site].", 
 	FK_createdby = ".$a[FK_createdby].", 
@@ -52,7 +812,7 @@ $media_id = lastid();
 
 	$query = "
 UPDATE
-	segue2.section
+	".$destinationDB.".section
 SET
 	FK_media = $media_id
 WHERE
@@ -71,12 +831,12 @@ $query = "
 SELECT
 	FK_site, page.FK_createdby, url as media_tag, 'remote' as media_location, page.FK_updatedby, id AS page_id
 FROM
-	segue_et.pages
+	".$sourceDB.".pages
 		INNER JOIN
-	segue2.page
+	".$destinationDB.".page
 		ON id = page_id
 		INNER JOIN
-	segue2.section
+	".$destinationDB.".section
 		ON FK_section = section.section_id
 WHERE
 	type = 'url'
@@ -87,7 +847,7 @@ $r = db_query($query);
 while ($a = db_fetch_assoc($r)) {
 	$query = "
 INSERT
-INTO segue2.media
+INTO ".$destinationDB.".media
 SET
 	FK_site = ".$a[FK_site].", 
 	FK_createdby = ".$a[FK_createdby].", 
@@ -101,7 +861,7 @@ $media_id = lastid();
 
 	$query = "
 UPDATE
-	segue2.page
+	".$destinationDB.".page
 SET
 	FK_media = $media_id
 WHERE
@@ -119,15 +879,15 @@ $query = "
 SELECT
 	FK_site, story.FK_createdby, url as media_tag, 'remote' as media_location, story.FK_updatedby, id AS story_id
 FROM
-	segue_et.stories
+	".$sourceDB.".stories
 		INNER JOIN
-	segue2.story
+	".$destinationDB.".story
 		ON id = story_id
 		INNER JOIN
-	segue2.page
+	".$destinationDB.".page
 		ON FK_page = page.page_id
 		INNER JOIN
-	segue2.section
+	".$destinationDB.".section
 		ON FK_section = section.section_id
 WHERE
 	type = 'link'
@@ -138,7 +898,7 @@ $r = db_query($query);
 while ($a = db_fetch_assoc($r)) {
 	$query = "
 INSERT
-INTO segue2.media
+INTO ".$destinationDB.".media
 SET
 	FK_site = ".$a[FK_site].", 
 	FK_createdby = ".$a[FK_createdby].", 
@@ -152,7 +912,7 @@ $media_id = lastid();
 
 	$query = "
 UPDATE
-	segue2.story
+	".$destinationDB.".story
 SET
 	FK_media = $media_id
 WHERE
@@ -171,7 +931,7 @@ $query = "
 SELECT
 	id, sections
 FROM
-	segue_et.sites
+	".$sourceDB.".sites
 ORDER BY
 	sites.id
 ";	
@@ -185,7 +945,7 @@ while ($a = db_fetch_assoc($r)) {
 	foreach ($sections as $section_order => $section_id) {
 		$query = "
 UPDATE
-	segue2.section
+	".$destinationDB.".section
 SET
 	section_order = $section_order
 WHERE
@@ -204,7 +964,7 @@ $query = "
 SELECT
 	pages
 FROM
-	segue_et.sections
+	".$sourceDB.".sections
 ORDER BY
 	sections.id
 ";	
@@ -218,7 +978,7 @@ while ($a = db_fetch_assoc($r)) {
 		
 		$query = "
 UPDATE
-	segue2.page
+	".$destinationDB.".page
 SET
 	page_order = $page_order
 WHERE
@@ -239,7 +999,7 @@ $query = "
 SELECT
 	stories
 FROM
-	segue_et.pages
+	".$sourceDB.".pages
 ORDER BY
 	pages.id
 ";	
@@ -253,7 +1013,7 @@ while ($a = db_fetch_assoc($r)) {
 		
 		$query = "
 UPDATE
-	segue2.story
+	".$destinationDB.".story
 SET
 	story_order = $story_order
 WHERE
@@ -268,14 +1028,14 @@ WHERE
 // import discussions
 // ************************************************************************************************************************************************
 
-//$query = "DELETE FROM segue2.discussion";
+//$query = "DELETE FROM ".$destinationDB.".discussion";
 //db_query($query);
 
 $query = "
 SELECT
 	id, discussions
 FROM
-	segue_et.stories
+	".$sourceDB.".stories
 ORDER BY
 	id
 ";
@@ -291,14 +1051,14 @@ while ($a = db_fetch_assoc($r)) {
 		foreach($discussions as $order => $id) {
 			$query = "
 INSERT
-INTO segue2.discussion
+INTO ".$destinationDB.".discussion
 	(FK_author, discussion_tstamp, discussion_subject, discussion_content , FK_story, discussion_order, FK_parent)
 SELECT
 	user_id, discussions.timestamp, '' as subject	, content, ".$a[id]." as story, $order as ord, NULL as parent	
 FROM
-	segue_et.discussions
+	".$sourceDB.".discussions
 		INNER JOIN
-	segue2.user
+	".$destinationDB.".user
 		ON discussions.author = user_uname
 WHERE
 	id = $id
@@ -323,7 +1083,7 @@ $query = "
 SELECT
 	id, permissions
 FROM
-	segue_et.sites
+	".$sourceDB.".sites
 ORDER BY
 	id
 ";
@@ -369,7 +1129,7 @@ WHERE
 SELECT
 	id, permissions
 FROM
-	segue_et.sites
+	".$sourceDB.".sites
 ";
 
 		$r = db_query($query);
@@ -413,7 +1173,7 @@ WHERE
 SELECT
 	id, site_id, permissions
 FROM
-	segue_et.sections
+	".$sourceDB.".sections
 ";
 
 		$r = db_query($query);
@@ -426,7 +1186,7 @@ FROM
 SELECT
 	id, permissions
 FROM
-	segue_et.sites
+	".$sourceDB.".sites
 WHERE
 	name = '".$a[site_id]."'";
 			$r1 = db_query($query);
@@ -513,7 +1273,7 @@ WHERE
 SELECT
 	id, section_id, permissions
 FROM
-	segue_et.pages
+	".$sourceDB.".pages
 ";
 
 		$r = db_query($query);
@@ -526,7 +1286,7 @@ FROM
 SELECT
 	site_id, id, permissions
 FROM
-	segue_et.sections
+	".$sourceDB.".sections
 WHERE
 	id = ".$a[section_id];
 	
@@ -614,7 +1374,7 @@ WHERE
 SELECT
 	id, page_id, permissions
 FROM
-	segue_et.stories
+	".$sourceDB.".stories
 ";
 
 		$r = db_query($query);
@@ -627,7 +1387,7 @@ FROM
 SELECT
 	site_id, id, permissions
 FROM
-	segue_et.pages
+	".$sourceDB.".pages
 WHERE
 	id = ".$a[page_id];
 	
