@@ -1472,147 +1472,188 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 	}
 
 
-/******************************************************************************
- * hasPermission - checks to see if a user has certain permissions
- * 		$perms paramater can be a complex string consisting of ()'s, 'and',
- *		'or', and permission types: 'add','edit','delete','view','discuss'
- ******************************************************************************/
-
-	function hasPermission($perms,$ruser='',$useronly=0) {
+	/**
+	 * Checks to see if the user has the specified permissions.
+	 * 
+	 * @param string $perms The permissions to check.
+	 *			$perms paramater can be a complex string consisting 
+	 *			of ()'s, 'and', 'or', and permission types:
+	 *			'add','edit','delete','view','discuss'
+	 * @param optional string $user The user to check.
+	 * @param option boolean $useronly If true, the user's permissions will be
+	 *			checked explicitly and the user will not be included in any
+	 *			groups.
+	 * @return boolean True if the user has the permissions asked for.
+	 * @access public
+	 * @date 8/31/04
+	 */
+	function hasPermission ($perms, $user = "", $useronly = FALSE) {
+		
+		//****************************************
+		// ----- Setup -----
+		//****************************************
 		global $allclasses, $_loggedin, $cfg;
 		
-			
-//		if (!$this->builtPermissions && $this->id) 
-			$this->buildPermissionsArray();
-
-		/******************************************************************************
-		 * user is either authenticated user or ruser ??
-		 * user can be part of a class group
-		 ******************************************************************************/
+		// Build the permissions array to check against.
+		$this->buildPermissionsArray();
 		
-		if ($ruser=='') $user=$_SESSION[auser];
-		else $user = $ruser;
-
-		if (!$useronly && !is_array($allclasses)) $allclasses = getuserclasses($user,"all");
+		// Get our current user if we weren't passed one to check:
+		if ($user == "") 
+			$user = $_SESSION[auser];
 		
-		/* Debuging stuff */
-/* 		$class = get_class($this); */
-/* 		print "checking $perms for $user on  $class ".$this->id."<br>"; */
+		// If we haven't built the classes array and we need it,
+		// build the classes array.
+		if (!is_array($allclasses) && !$useronly) 
+			$allclasses = getuserclasses($user,"all");
 		
-//		echo "Cached Permissions: <pre>";
-//		print_r($this->cachedPermissions);
 		
-		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) 
+		
+		//****************************************
+		// ----- Return Cached Permissions ------
+		// If we have checked this permission string before and cached it,
+		// just return the cached result.
+		//
+		// There are separate entries for useronly and those with groups as well.
+		// This is to prevent the caching of perms for a user with groups, then
+		// getting that cached result when asking only for user permissions.
+		//****************************************
+		
+		if ($useronly && isset($this->cachedPermissions[$user.$perms]))
+			return $this->cachedPermissions["onlyuser".$user.$perms];
+		
+		if (!$useronly && isset($this->cachedPermissions[$user.$perms]))
 			return $this->cachedPermissions[$user.$perms];
+		
+		
+		//****************************************
+		// ----- New checking of Permissions -----
+		// Below is where we will check to see if the user has the permissions
+		// asked for.
+		//****************************************
+		
+		// Make sure that we are fetched.
 		$this->fetchUp();
 		
-		/******************************************************************************
- 		* if user is owner then has permissions
- 		******************************************************************************/
- 		
+		// The site owner will always have permission, so return
+		// TRUE if the user is the owner.
 		$owner = $this->owningSiteObj->owner;
 		if (strtolower($user) == strtolower($owner)) 
-			return true;
+			return TRUE;
+		
+		
+		// ------ Verify the permissions String ------
+		// Verify that the permissions string is well formed. And return
+		// FALSE if it is not.
+		$validGrants = array('add', 'edit', 'delete', 'view', 'discuss');
+		$validOperators = array('and', 'or', '&&', '||');
+		
+		$permissionParts = explode(' ',ereg_replace("([()]){1}","",$perms));
+		$i=0;
+		$stringValid=1;
+		
+		foreach ($permissionParts as $permissionPart) {
+			if (!strlen($permissionPart))
+				continue;
 			
-//		echo "Id: ".$this->id.", Scope: ".get_class($this).", Title: ".$this->data[title]."<br>";
-
-		/******************************************************************************
-		 * creates verbose array of permission types
-		 ******************************************************************************/
-
-		$_a = array('add','edit','delete','view','discuss');
-		
-		/******************************************************************************
-		 * verifies permissions array is well formed
-		 ******************************************************************************/
-		 
-		$a = explode(' ',ereg_replace("([()]){1}","",$perms));
-//		print_r($a);
-		$i=0;$j=1;
-		
-		foreach ($a as $n) {
-//			print "$i: $n: ".strlen($n)."<BR>";
-			if (!strlen($n)) continue;
-			if (!($i%2) && !in_array($n,$_a)) $j=0;
-			if (!(($i+1)%2) && $n!='and' && $n!='or' && $n!='&&' && $n!='||') $j=0;
-			if (!$j) {
+			// Begining with our first part, every other permission part 
+			// should be a grant.
+			if (!($i % 2) && !in_array($permissionPart,$validGrants)) 
+				$stringValid = FALSE;
+			
+			// Beginning with our second part, every other permissions 
+			// part should be an operator
+			if (!(($i + 1) % 2) && !in_array($permissionPart,$validOperators)) 
+				$stringValid = FALSE;
+			
+			// If we don't have a valid permissions string, return FALSE.
+			if (!$stringValid) {
 				print "ERROR! loop: $i: Malformed permissions string: $perms<BR><BR>";
-				return 0;
+				return FALSE;
 			}
 			$i++;
 		}
-		// end
-
-		/******************************************************************************
-		 * gets permissions
-		 ******************************************************************************/
 		
-		$permissions = $this->getPermissions();
-/* 		print "<pre>Permissions: "; print_r($permissions); print "</pre>"; */
-
-		/******************************************************************************
-		 * determines whether to check permissions of user, institute or everyone
-		 ******************************************************************************/
-				
-		$toCheck = array();
-		if (strlen($user)) $toCheck[] = strtolower($user);
-		
-		if (!$useronly) {
-			$toCheck[] = "everyone";
-			if ($_loggedin) $toCheck[] = "institute";
-		
-			// check if our IP is in inst_ips
-			$good=0;
-			$ip = $_SERVER[REMOTE_ADDR];
-			if (is_array($cfg[inst_ips])) {
-				foreach ($cfg[inst_ips] as $i) {
-					if (ereg("^$i",$ip)) $good=1;
-				}
-			}
-			if ($good) $toCheck[]="institute";
-		}
-		
-		
-		/******************************************************************************
-		 * if permission not user only, then check merged permissions of all classes  
-		 ******************************************************************************/
-		
-		if (!$useronly) $toCheck = array_merge($this->returnEditorOverlap($allclasses),$toCheck);
-		
-/* 		print "<pre>"; print_r($toCheck); print "</pre><br>"; */
-		
-		foreach ($permissions as $u=>$p) $permissions[strtolower($u)] = $p;
-		
-		$pArray = array();
-		
-//		print "$perms<BR>";
-		
+		// convert word operators to symbol operators
 		$perms = str_replace('and','&&',$perms);
 		$perms = str_replace('or','||',$perms);
-
-		/******************************************************************************
-		 * create definite permissions array (pArray)
-		 ******************************************************************************/
-
-		foreach ($toCheck as $u) {
-			$exec = $perms;
-			foreach ($_a as $p) {
-				$exec = str_replace($p,'$permissions[\''.$u.'\'][permissions::'.strtoupper($p).'()]',$exec);
+		
+		
+		// ---- pull from the database/cache ---
+		// Get the permissions from the database
+		$permissions = $this->getPermissions();
+		// Make sure that we have a lowercase version of each entity
+		foreach ($permissions as $entity => $permission)
+			$permissions[strtolower($entity)] = $permission;
+		
+		
+		// --- Build a list of all entities to check for the permissions ---
+		$entitiesToCheck = array();
+		
+		// Add the user to the array if we have a user.
+		if (strlen($user)) 
+			$entitiesToCheck[] = strtolower($user);
+		
+		// Determine what additional entities to check.
+		if (!$useronly) {
+			
+			// ----- everyone ------
+			// Everyone, even not-logged-in users are a part of everyone.
+			$entitiesToCheck[] = "everyone";
+			
+			// ----- institute ------
+			// If we are logged-in, but not of type 'visitor', the user
+			// is a member of institute.
+			if ($_loggedin && $_SESSION['atype'] != 'visitor')
+				$entitiesToCheck[] = "institute";
+		
+			// If the user has a valid campus ip-address, then they are a
+			// member of 'institute'.
+			$ipIsInInstitute = FALSE;
+			$ip = $_SERVER[REMOTE_ADDR];
+			// check if our IP is in inst_ips
+			if (is_array($cfg[inst_ips])) {
+				foreach ($cfg[inst_ips] as $i) {
+					if (ereg("^$i",$ip)) 
+						$ipIsInInstitute = TRUE;
+				}
 			}
-			$pArray[] = "(".$exec.")";
+			if ($ipIsInInstitute) 
+				$entitiesToCheck[] = "institute";
+			
+			// ----- classes ------
+			$classesUserIsIn = $this->returnEditorOverlap($allclasses);
+			$entitiesToCheck = array_merge($classesUserIsIn, $entitiesToCheck);
 		}
 		
-		/******************************************************************************
-		 * checks if permissions are valid (ie isgood)
-		 ******************************************************************************/
+		// ------ Evaluation Strings--------
+		// Create an array of permission checking strings to be evaluated, one per entity.
+		$evalStrings = array();
+		foreach ($entitiesToCheck as $entity) {
+			$evalString = $perms;
+			foreach ($validGrants as $grant) {
+				$evalString = str_replace($grant,'$grantermissions[\''.$entity.'\'][permissions::'.strtoupper($grant).'()]',$evalString);
+			}
+			$evalStrings[] = "(".$evalString.")";
+		}
 		
-		$isgood = 0;
-		$condition = '$isgood = ('.implode(' || ',$pArray).')?1:0;';
+		// ------- Check the permissions ----------
+		$hasPermission = FALSE;
+		// 'OR' the permissions of each entity together so that if one is valid,
+		// the user has permission.
+		$condition = '$hasPermission = ('.implode(' || ',$evalStrings).')?TRUE:FALSE;';
 		eval($condition);
-		$this->cachedPermissions[$user.$perms] = $isgood;	// cache this entry
-/* 		print $this->id." ".$condition." == ".$isgood."<br>"; */
-		return $isgood;
+		
+		// Cache the permissions
+		if ($useronly)
+			$this->cachedPermissions["onlyuser".$user.$perms] = $hasPermission;
+		else
+			$this->cachedPermissions[$user.$perms] = $hasPermission;
+		
+		// ------- return our result -----------
+		return $hasPermission;
 	}
+	
+	
 
 /******************************************************************************
  * hasPermissionsDown checks if user (or usergroup) has permissions 
