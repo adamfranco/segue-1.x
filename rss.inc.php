@@ -180,57 +180,56 @@ if ($error) {
  ******************************************************************************/
 		
 		if ($thisPage->stories) {
-				foreach ($thisPage->data[stories] as $s) {
-					$o =& $thisPage->stories[$s];
+			foreach ($thisPage->data[stories] as $s) {
+				$o =& $thisPage->stories[$s];
+				
+				//printc("<table><tr><td>";
+				
+				if ($o->canview()) {
+					print "\t\t<item>\n";
+					print "\t\t\t<title>".$o->getField("title")."</title>\n";
+					print "\t\t\t<link>".$pagelink."</link>\n";
+					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink."</guid>\n";
 					
-					//printc("<table><tr><td>";
+					print "\t\t\t<pubDate>";
+					print timestamp2usdate($o->getField("addedtimestamp"));
+					print "</pubDate>\n";
 					
-					if ($o->canview()) {
-						print "\t\t<item>\n";
-						print "\t\t\t<title>".$o->getField("title")."</title>\n";
-						print "\t\t\t<link>".$pagelink."</link>\n";
-						print "\t\t\t<guid isPermaLink=\"true\">".$pagelink."</guid>\n";
-						
-						print "\t\t\t<pubDate>";
-						print timestamp2usdate($o->getField("addedtimestamp"));
-						print "</pubDate>\n";
-						
-						print "\t\t\t<author>";
-						print $o->getField("addedbyfull");
-						print " (".$o->getField("addedby").")";
-						print "</author>\n";
-						
-						if ($o->getField("category")) {
-							print "\t\t\t<category>";
-							print $o->getField("category");
-							print "</category>\n";
-						}
-						
-						if ($o->getField("discuss")) {
-							print "\t\t\t<comments>";
-							print $pagelink.htmlspecialchars("&story=".$o->id."&detail=".$o->id);
-							print "</comments>\n";
-						}
-						
-						$incfile = "output_modules/rss/".$o->getField("type").".inc.php";
-						
-						ob_start();
-						include($incfile);
-						$description = ob_get_contents();
-						ob_end_clean();
-						$description = str_replace("\n", "", $description);
-						$description = str_replace("\r", "", $description);
-						
-						print "<description>";
-						print htmlspecialchars($description, ENT_COMPAT, 'utf-8');
-						print "</description>\n";
-						
-						print "\t\t</item>\n";
+					print "\t\t\t<author>";
+					print $o->getField("addedbyfull");
+					print " (".$o->getField("addedby").")";
+					print "</author>\n";
+					
+					if ($o->getField("category")) {
+						print "\t\t\t<category>";
+						print $o->getField("category");
+						print "</category>\n";
 					}
-					$i++;
+					
+					if ($o->getField("discuss")) {
+						print "\t\t\t<comments>";
+						print $pagelink.htmlspecialchars("&story=".$o->id."&detail=".$o->id);
+						print "</comments>\n";
+					}
+					
+					$incfile = "output_modules/rss/".$o->getField("type").".inc.php";
+					
+					ob_start();
+					include($incfile);
+					$description = ob_get_contents();
+					ob_end_clean();
+					$description = str_replace("\n", "", $description);
+					$description = str_replace("\r", "", $description);
+					
+					print "<description>";
+					print htmlspecialchars($description, ENT_COMPAT, 'utf-8');
+					print "</description>\n";
+					
+					print "\t\t</item>\n";
+				}
+				$i++;
 
-				} //end foreach stories
-			} //end detail conditional
+			} //end foreach stories
 		}
 	}
 }
