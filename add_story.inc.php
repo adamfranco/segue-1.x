@@ -215,14 +215,18 @@ if ($_REQUEST[save]) {
 			
 			// replace upload url path with constant [[mediapath]]
 			$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
-			$general_mediapath = "\[\]mediapath\]\]";
+			$general_mediapath = "\[\[mediapath\]\]";
 			$text = eregi_replace($specfic_mediapath, $general_mediapath, $text);
 			
 			// replace internal link urls with constant [[linkpath]]
 			$specfic_internal_linkpath = $cfg[full_uri];
-			$general_internal_linkpath = "\[\]linkpath\]\]";
+			$general_internal_linkpath = "\[\[linkpath\]\]";
 			$text = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $text);
-			
+			// replace specific site reference with general
+			$specfic_sitename = "site=".$_SESSION[settings][site];
+			$general_sitename = "site=\[\[site\]\]"  ;
+			$text = eregi_replace($specfic_sitename, $general_sitename, $text);
+
 			// replace internal links to edit mode (action=viewsite)
 			// with internal links to non-edit mode (action=site)
 			$action_viewsite = "action=viewsite";
@@ -244,8 +248,13 @@ if ($_REQUEST[save]) {
 			
 			// replace internal link urls with constant [[linkpath]]
 			$specfic_internal_linkpath = $cfg[full_uri];
-			$general_internal_linkpath = "\[\]linkpath\]\]";
+			$general_internal_linkpath = "\[\[linkpath\]\]";
 			$url = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $url);
+			// replace specific site reference with general
+			$specfic_sitename = "site=".$_SESSION[settings][site];
+			$general_sitename = "site=\[\[site\]\]"  ;
+			$url = eregi_replace($specfic_sitename, $general_sitename, $url);
+
 			
 			// replace internal links to edit mode (action=viewsite)
 			// with internal links to non-edit mode (action=site)

@@ -79,7 +79,7 @@ include("htmleditor/editor.inc.php");
  ******************************************************************************/
 $mod_header = $_SESSION[siteObj]->getField("header");
 $specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][sitename];
-$general_mediapath = "\[\]mediapath\]\]";
+$general_mediapath = "\[\[mediapath\]\]";
 $mod_header = eregi_replace($general_mediapath, $specfic_mediapath, $mod_header);
 
 printc(addeditor("header",60,8,$mod_header));

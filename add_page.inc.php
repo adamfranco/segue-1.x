@@ -157,9 +157,13 @@ if ($_REQUEST[save]) {
 			$url = $_SESSION[pageObj]->getField("url");
 			// replace internal link urls with constant [[linkpath]]
 			$specfic_internal_linkpath = $cfg[full_uri];
-			$general_internal_linkpath = "\[\]linkpath\]\]";
+			$general_internal_linkpath = "\[\[linkpath\]\]";
 			$url = eregi_replace($specfic_internal_linkpath, $general_internal_linkpath, $url);
-			
+			 // replace specific site reference with general
+			$specfic_sitename = "site=".$_SESSION[settings][site];
+			$general_sitename = "site=\[\[site\]\]"  ;
+			$url = eregi_replace($specfic_sitename, $general_sitename, $url);
+
 			// replace internal links to edit mode (action=viewsite)
 			// with internal links to non-edit mode (action=site)
 			$action_viewsite = "action=viewsite";

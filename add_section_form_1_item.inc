@@ -79,8 +79,12 @@ if ($_SESSION[sectionObj]->getField("type")=='link') {
 	 ******************************************************************************/
 	// replace internal link urls with constant [[linkpath]]
 	$specfic_internal_linkpath = $cfg[full_uri];
-	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$general_internal_linkpath = "\[\[linkpath\]\]";
 	$url = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $url);
+	 // replace specific site reference with general
+	$specfic_sitename = "site=".$_SESSION[settings][site];
+	$general_sitename = "site=\[\[site\]\]"  ;
+	$url = eregi_replace($specfic_sitename, $general_sitename, $url);
 
 	printc("<div class=leftmargin>");
 	printc("URL: <input type=text name=url value='".$url."' size=50>");

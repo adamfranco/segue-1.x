@@ -11,13 +11,18 @@ $st = $o->getField("shorttext");
 //printpre($site);
 //$specfic_mediapath = "http://segue.middlebury.edu";
 $specfic_mediapath = $cfg[uploadurl]."/".$site;
-$general_mediapath = "\[\]mediapath\]\]";
+$general_mediapath = "\[\[mediapath\]\]";
 $st = eregi_replace($general_mediapath, $specfic_mediapath, $st);
 
 // replace constant [[linkpath]] with specific link path (i.e. $full_uri)
 $specfic_internal_linkpath = $cfg[full_uri];
-$general_internal_linkpath = "\[\]linkpath\]\]";
+$general_internal_linkpath = "\[\[linkpath\]\]";
 $st = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $st);
+// replace general site reference with specific
+$specfic_sitename = "site=".$site;
+$general_sitename = "site=\[\[site\]\]"  ;
+$st = eregi_replace($general_sitename, $specfic_sitename, $st);
+
 
 if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
 printc("<table cellspacing=0 cellpadding=0 width=100%><tr><td>");

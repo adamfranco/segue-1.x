@@ -135,8 +135,13 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 	
 	// replace internal link urls with constant [[linkpath]]
 	$specfic_internal_linkpath = $cfg[full_uri];
-	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$general_internal_linkpath = "\[\[linkpath\]\]";
 	$text = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $text);
+	// replace general site reference with specific
+	$specfic_sitename = "site=".$_SESSION[settings][site];
+	$general_sitename = "site=\[\[site\]\]"  ;
+	$text = eregi_replace($general_sitename, $specfic_sitename, $text);
+
 
 	printc("<tr>");
 	printc("<td>URL:<td><input type=text name=url value='".$url."' size=75></td>");
@@ -297,13 +302,18 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	 * replace general with specific
 	 ******************************************************************************/
 	$specfic_mediapath = $cfg[uploadurl]."/".$_SESSION[settings][site];
-	$general_mediapath = "\[\]mediapath\]\]";
+	$general_mediapath = "\[\[mediapath\]\]";
 	$text = eregi_replace($general_mediapath, $specfic_mediapath, $text);
 
 	// replace internal link urls with constant [[linkpath]]
 	$specfic_internal_linkpath = $cfg[full_uri];
-	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$general_internal_linkpath = "\[\[linkpath\]\]";
 	$text = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $text);
+	// replace general site reference with specific
+	$specfic_sitename = "site=".$_SESSION[settings][site];
+	$general_sitename = "site=\[\[site\]\]"  ;
+	$text = eregi_replace($general_sitename, $specfic_sitename, $text);
+	
 	
 	// replace internal links in edit mode (action=viewsite)
 	// with internal links in non-edit mode (action=site)

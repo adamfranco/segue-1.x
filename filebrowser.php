@@ -34,7 +34,7 @@ $site = $_SESSION[settings][site];
 /* 	$site = $_SESSION[settings][site]; */
 /* } */
 
-//printpre($_SESSION[settings][sitename]);
+printpre($_SESSION[settings]);
 //printpre($site);
 
 if ($_REQUEST[site]) {
@@ -134,7 +134,7 @@ if ($upload) {
 	"; 
 			
 			
-	//print "$query <br>"; 
+	print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	

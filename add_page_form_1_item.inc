@@ -128,8 +128,13 @@ if ($_SESSION[pageObj]->getField("type")=='link') {
 	 ******************************************************************************/
 	// replace internal link urls with constant [[linkpath]]
 	$specfic_internal_linkpath = $cfg[full_uri];
-	$general_internal_linkpath = "\[\]linkpath\]\]";
+	$general_internal_linkpath = "\[\[linkpath\]\]";
 	$url = eregi_replace($general_internal_linkpath, $specfic_internal_linkpath, $url);
+	// replace general site reference with specific
+	$specfic_sitename = "site=".$_SESSION[settings][site];
+	$general_sitename = "site=\[\[site\]\]"  ;
+	$url = eregi_replace($general_sitename, $specfic_sitename, $url);
+
 	
 	// replace internal links in edit mode (action=viewsite)
 	// with internal links in non-edit mode (action=site)
