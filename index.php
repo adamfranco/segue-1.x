@@ -47,7 +47,7 @@ if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
 /* } */
 
 // initialize the content variables
-$leftnav = $rightnav = $topnav = array();
+$leftnav = $rightnav = $topnav = $topnav2 = $leftnav2 = array();
 $content= "";
 $leftnav_extra = $rightnav_extra = $topnav_extra = '';
 

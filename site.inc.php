@@ -74,6 +74,7 @@ if ($thisSite->sections) {
 			$extra = '';
 			$i++;
 			add_link(topnav,$o->getField("title"),$link,$extra,$s,$target);
+			add_link(topnav2,$o->getField("title"),$link,$extra,$s,$target);
 		}
 	}
 }
@@ -85,14 +86,22 @@ if ($thisSection) {
 		foreach ($thisSection->pages as $p=>$o) {
 			$extra = '';
 			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
-				if ($o->getField("type") == 'page')
+				if ($o->getField("type") == 'page') {
 					add_link(leftnav,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
-				if ($o->getField("type") == 'url')
+					add_link(leftnav2,$o->getField("title"),"$PHPSELF?$sid&site=$site&section=$section&page=$p&action=site",$extra,$p);
+				}
+				if ($o->getField("type") == 'url') {
 					add_link(leftnav,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
-				if ($o->getField("type") == 'heading')
+					add_link(leftnav2,$o->getField("title"),$o->getField("url"),$extra,$p,"_blank");
+				}
+				if ($o->getField("type") == 'heading') {
 					add_link(leftnav,$o->getField("title"),'',$extra);
-				if ($o->getField("type") == 'divider')
+					add_link(leftnav2,$o->getField("title"),'',$extra);
+				}
+				if ($o->getField("type") == 'divider') {
 					add_link(leftnav,'','',$extra);
+					add_link(leftnav2,'','',$extra);
+				}
 				$i++;
 			}
 		}

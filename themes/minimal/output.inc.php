@@ -144,7 +144,7 @@ print $content;
 /* ------------------------------------------- */
 /* ------------ BOTTOM PAGE NAV -------------- */
 /* ------------------------------------------- */
-if ($nav_arrange==2) horizontal_nav($page,$leftnav, $leftnav_extra);
+if ($nav_arrange==2) horizontal_nav($page,$leftnav2, $leftnav2_extra);
 ?>
 </td>
 <?
@@ -165,7 +165,7 @@ if (count($rightnav)) {
 /* ------------------------------------------- */
 /* ------------ BOTTOM SECTION NAV ----------- */
 /* ------------------------------------------- */
-if ($nav_arrange==1) horizontal_nav($section,$topnav, $topnav_extra);
+if ($nav_arrange==1) horizontal_nav($section,$topnav2, $topnav2_extra);
 ?>
 
 <?
