@@ -538,7 +538,7 @@ FROM
 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
 		$_SESSION[settings][activatemonth]-=1;
 		$_SESSION[settings][deactivatemonth]-=1;
-		echo $this->getField("activatedate")."<br>";
+/* 		echo $this->getField("activatedate")."<br>"; */
 		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
 		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
 	}
