@@ -28,6 +28,9 @@ class segue {
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 	var $_tables = array("site"=>"sites","section"=>"sections","page"=>"pages","story"=>"stories"); // used for getField
 
+	var $_encode = array("title","header","footer","shorttext","longertext");
+	var $_parse = array("header","footer","shorttext","longertext");
+
 /******************************************************************************
  * siteExists - checks if the site/slot already exists with a certain name $name
  ******************************************************************************/
@@ -88,8 +91,8 @@ FROM
 			while ($a = db_fetch_assoc($r)) {
 					$sites[] = $a[slot_name];
 				}
-			}
-		return $sites;	}
+		return $sites;
+}
 
 /******************************************************************************
  * getAllSitesWhereUserIsEditor - gets all sites where $user is an editor
@@ -250,9 +253,9 @@ FROM
 				}
 				
 				// Decode this value if it is a member of _encode
-				if (in_array($field,$_encode)) 
+				if (in_array($field,$this->_encode)) 
 					$val = stripslashes(urldecode($val));
-				if (in_array($field,$_parse)) 
+				if (in_array($field,$this->_parse)) 
 					$val = parseMediaTextForEdit($val);
 
 				if (count($this->_datafields[$field][1]) == 1) { 
@@ -449,7 +452,7 @@ FROM
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='activatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -459,7 +462,7 @@ FROM
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 		
 		printc("</td></tr>");
 		
@@ -468,7 +471,7 @@ FROM
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='deactivatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -477,7 +480,7 @@ FROM
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 		
 		printc("</tr></td></table>");
 	}

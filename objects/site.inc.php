@@ -7,9 +7,12 @@ class site extends segue {
 						"addedby","editedby","editedtimestamp","addedtimestamp",
 						"activatedate","deactivatedate","active","sections",
 						"listed","type");
+
 	// fields listed in $_datafields are stored in the database.
 	// the first element is the table join syntax required to pull the data.
-	// the second element
+	// the second element is an array of the database fields we will be selecting
+	// the third element is the database field by which we will sort
+	
 	var $_datafields = array(
 		"id" => array(
 			"site",
@@ -82,6 +85,28 @@ class site extends segue {
 			array("site_footer"),
 			"site_id"
 		),
+
+		"??????" => array(
+			"site",
+			array("FK_updatedby"),
+			"site_id"
+		),
+		"??????" => array(
+			"site",
+			array("site_updated_tstamp"),
+			"site_id"
+		),
+		"??????" => array(
+			"site",
+			array("FK_createdby"),
+			"site_id"
+		),
+		"??????" => array(
+			"site",
+			array("site_created_tstamp"),
+			"site_id"
+		),
+
 		"sections" => array(
 			"site
 				INNER JOIN

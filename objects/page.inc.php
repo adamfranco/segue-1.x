@@ -10,6 +10,122 @@ class page extends segue {
 						"editedby","editedtimestamp","activatedate","deactivatedate",
 						"active","locked","showcreator","showdate","showhr","stories",
 						"storyorder","type","url","ediscussion","archiveby");
+						
+	// fields listed in $_datafields are stored in the database.
+	// the first element is the table join syntax required to pull the data.
+	// the second element is an array of the database fields we will be selecting
+	// the third element is the database field by which we will sort
+	
+	var $_datafields = array(
+		"id" => array(
+			"page",
+			array("page_id"),
+			"page_id"
+		),
+		"owning_section" => array(
+			"page",
+			array("FK_section"),
+			"page_id"
+		),
+		"type" => array(
+			"page",
+			array("page_type"),
+			"page_id"
+		),
+		"title" => array(
+			"page",
+			array("page_title"),
+			"page_id"
+		),
+		"activatedate" => array(
+			"page",
+			array("page_activate_tstamp"),
+			"page_id"
+		),
+		"deactivatedate" => array(
+			"page",
+			array("page_deactivate_tstamp"),
+			"page_id"
+		),
+		"active" => array(
+			"page",
+			array("page_active"),
+			"page_id"
+		),
+		
+		"??????" => array(
+			"page",
+			array("page_order"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("page_show_creator"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("page_show_date"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("page_show_hr"),
+			"page_id"
+		),
+		"??????" => array(
+			"page
+				INNER JOIN
+			media
+				FK_media = media_id",
+			array("media_id"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("page_archiveby"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("page_locked"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("FK_updatedby"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("page_updated_tstamp"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("FK_createdby"),
+			"page_id"
+		),
+		"??????" => array(
+			"page",
+			array("page_created_tstamp"),
+			"page_id"
+		),
+		
+		
+		"stories" => array(
+			"page
+				INNER JOIN
+			stories
+				ON page_id = FK_page",
+			array("story_id"),
+			"story_order"
+		)
+	);
+
+	var $_table = "page";
+	
+						
 	
 	function page($insite,$insection,$id=0) {
 		$this->owning_site = $insite;
@@ -257,7 +373,7 @@ class page extends segue {
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($startday == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='startmonth'>");
 		for ($i=0; $i<12; $i++)
 			printc("<option value=".($i+1). (($startmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -267,13 +383,13 @@ class page extends segue {
 		for ($i=$curryear-10; $i <= ($curryear); $i++) {
 			printc("<option" . (($startyear == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 	//	printc("<br>");
 		printc(" to <select name='endday'>");
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($endday == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='endmonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=".($i+1) . (($endmonth == $i+1)?" selected":"") . ">$months[$i]\n");
@@ -282,7 +398,7 @@ class page extends segue {
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($endyear == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 		printc(" <input type=submit class=button value='go'>");
 		printc("</form></div>");
 	

@@ -6,6 +6,117 @@ class story extends segue {
 							"activatedate","deactivatedate","discuss",
 							"locked","category","discussions","texttype","type","url");
 	
+	// fields listed in $_datafields are stored in the database.
+	// the first element is the table join syntax required to pull the data.
+	// the second element is an array of the database fields we will be selecting
+	// the third element is the database field by which we will sort
+	
+	var $_datafields = array(
+		"id" => array(
+			"story",
+			array("story_id"),
+			"story_id"
+		),
+		"owning_page" => array(
+			"story",
+			array("FK_page"),
+			"story_id"
+		),
+		"type" => array(
+			"story",
+			array("story_type"),
+			"story_id"
+		),
+		"title" => array(
+			"story",
+			array("story_title"),
+			"story_id"
+		),
+		"activatedate" => array(
+			"story",
+			array("story_activate_tstamp"),
+			"story_id"
+		),
+		"deactivatedate" => array(
+			"story",
+			array("story_deactivate_tstamp"),
+			"story_id"
+		),
+		"active" => array(
+			"story",
+			array("story_active"),
+			"story_id"
+		),
+		
+		"??????" => array(
+			"story",
+			array("story_order"),
+			"story_id"
+		),
+		"??????" => array(
+			"story
+				INNER JOIN
+			media
+				FK_media = media_id",
+			array("media_id"),
+			"story_id"
+		),
+		"??????" => array(
+			"story",
+			array("story_locked"),
+			"story_id"
+		),
+		"??????" => array(
+			"story",
+			array("FK_updatedby"),
+			"story_id"
+		),
+		"??????" => array(
+			"story",
+			array("story_updated_tstamp"),
+			"story_id"
+		),
+		"??????" => array(
+			"story",
+			array("FK_createdby"),
+			"story_id"
+		),
+		"??????" => array(
+			"story",
+			array("story_created_tstamp"),
+			"story_id"
+		),
+		"??????" => array(
+			"story",
+			array("story_discussable"),
+			"story_id"
+		),
+		"??????" => array(
+			"story",
+			array("story_category"),
+			"story_id"
+		),
+		"??????" => array(
+			"story",
+			array("story_text_type"),
+			"story_id"
+		),
+
+		"shorttext" => array(
+			"story",
+			array("story_text_short"),
+			"story_id"
+		),
+		"longertext" => array(
+			"story",
+			array("story_text_long"),
+			"story_id"
+		)
+
+	);
+
+	var $_table = "story";
+	
 	
 	function story($insite,$insection,$inpage,$id=0) {
 		$this->owning_site = $insite;
