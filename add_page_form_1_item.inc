@@ -18,7 +18,7 @@ else  printc("<div class=title>Edit Item \"".db_get_value("pages","title","id=$s
 printc("<table width=100%><tr><td width=50%>");
 	printc("<input type=submit value='Cancel' name='cancel'>\n");
 printc("</td><td width=50% align=right>");
-	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+	if ($settings[type] == 'page' || $settings[type] == 'url') printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
 printc("</td></tr><tr><td>");
 printc("</td><td align=right>");
 	printc("<input type=submit name=save value='Save Now'>\n");
