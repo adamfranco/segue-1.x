@@ -9,7 +9,7 @@
 foreach ($_auth_mods as $i) include("auth_mods/$i.inc.php");
 
 // this array contains a list of actions that don't *require* the user to be authenticated
-$actions_noauth = array("index.php","site","login","default","previewtheme","fullstory","list","username_lookup");
+$actions_noauth = array("index.php","site","login","default","previewtheme","fullstory","list","username_lookup","listarticles","listissues");
 
 
 $loginerror=0;
@@ -34,7 +34,7 @@ if (!$_loggedin) {
 //			header("Location: index.php?$sid&$newquerystring");
 			if (!ereg('\?',$newurl)) $g = '?';
 			//print "$newurl$g&$sid";
-//			header("Location: $newurl$g&$sid");
+			header("Location: $newurl$g&$sid");
 		} else {
 		// username or passwd incorrect
 			$loginerror=1;

@@ -116,6 +116,7 @@ input,select {
 <br><input type=radio name="type" value="personal"<? print (($type == 'personal')?" checked":""); ?>> Personal
 <br><input type=radio name="type" value="other"<? print (($type == 'other')?" checked":""); ?>> Other
 <br><input type=radio name="type" value="system"<? print (($type == 'system')?" checked":""); ?>> System
+<br><input type=radio name="type" value="publication"<? print (($type == 'publication')?" checked":""); ?>> Publication
 </td>
 </tr>
 <tr>

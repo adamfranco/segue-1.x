@@ -549,6 +549,21 @@ class segue {
 		}
 	}
 	
+/* 	function setPermissionsDown($p) { */
+/* 		if (!$this->fetcheddown) $this->fetchDown(); */
+/* 		$class=get_class($this); */
+/* 		$ar = $this->_object_arrays[$class]; */
+/* 		$this->setPermissions($p); */
+/* 		if ($ar) { */
+/* 			$a = &$this->$ar; */
+/* 			if ($a) { */
+/* 				foreach ($a as $i=>$o) { */
+/* 					$a[$i]->setPermissionsDown($p); */
+/* 				} */
+/* 			} */
+/* 		} */
+/* 	} */
+	
 	function clearPermissions() {
 /* 		print "Editors: <pre>"; print_r($this->getEditors()); print "</pre>"; */
 		$this->editorsToDeleteInScope = array_unique(array_merge(array_keys($this->permissions),$this->getEditors()));

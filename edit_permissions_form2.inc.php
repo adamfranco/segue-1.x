@@ -124,8 +124,10 @@ function doEditorLine(&$o) {
 	$indent = getIndent($class);
 	$textSize = getTextSize($class);
 	if ($class == "story") {
-		if ($o->getField("title") !="") $extra = $o->getField("title");
-		else $extra = $o->getFirst(25);		
+/* 		if ($o->getField("title") !="") $extra = $o->getField("title"); */
+/* 		else $extra = $o->getFirst(25);		 */
+		if ($o->getField("title") == "") $extra = $o->getFirst(25);
+		else $extra = '';
 	} else $extra = "";
 
 	print "<tr>";
