@@ -28,7 +28,6 @@ class site extends segue {
 		$this->data[listed] = 1;
 		$this->data[theme] = "minimal";
 		$this->data[themesettings] = "";
-		$this->data[template] = "template0";
 		$this->data[header] = "";
 		$this->data[footer] = "";
 	}

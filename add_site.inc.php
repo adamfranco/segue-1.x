@@ -46,45 +46,14 @@ if (isset($_SESSION[settings])) {
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[siteObj]->setField("listed",$_REQUEST[listed]);
 	if ($_REQUEST[theme] != "") $_SESSION[siteObj]->setField("theme",$_REQUEST[theme]);
 	if ($_REQUEST[theme] != "") $_SESSION[siteObj]->setField("themesettings",$_REQUEST[themesettings]);
-	if ($_SESSION[settings][step] == 3) $_SESSION[siteObj]->setField("template",$_REQUEST[template]);
-//	if ($settings[step] == 4 && !$_REQUEST[link]) $_SESSION[settings][editors] = strtolower($_REQUEST[editors]);
-//	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[settings][permissions] = $_REQUEST[permissions];
+	if ($_SESSION[settings][step] == 3) $_SESSION[settings][template] = $_REQUEST[template];
+	if ($settings[step] == 4 && !$_REQUEST[link]) $_SESSION[settings][editors] = strtolower($_REQUEST[editors]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[settings][permissions] = $_REQUEST[permissions];
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][recursiveenable] = $_REQUEST[recursiveenable];
 	if ($_REQUEST[copydownpermissions] != "") $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions];
 	if ($_REQUEST[copyfooter]) $_SESSION[siteObj]->setField("header",$_SESSION[siteObj]->getField("footer"));
 	if ($_REQUEST[copyheader]) $_SESSION[siteObj]->setField("footer",$_SESSION[siteObj]->getField("header"));	
 	
-/* 	if ($settings[step] == 5) { */
-/* 		$settings[header] = str_replace("src='####","####",$header); */
-/* 		$settings[header] = str_replace("src=####","####",$settings[header]); */
-/* 		$settings[header] = str_replace("####'","####",$settings[header]); */
-/* 		$textarray1 = explode("####", $settings[header]); */
-/* 		if (count($textarray1) > 1) { */
-/* 			for ($i=1; $i<count($textarray1); $i=$i+2) { */
-/* 				$id = $textarray1[$i]; */
-/* 				$filename = db_get_value("media","name","id=$id"); */
-/* 				$dir = db_get_value("media","site_id","id=$id"); */
-/* 				$filepath = $uploadurl."/".$dir."/".$filename; */
-/* 				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&"; */
-/* 			}		 */
-/* 			$settings[header] = implode("",$textarray1); */
-/* 		} */
-/* 	} */
-/* 	if ($settings[step] == 6) { */
-/* 		$settings[footer] = str_replace("src='####","####",$footer); */
-/* 		$settings[footer] = str_replace("src=####","####",$settings[footer]); */
-/* 		$settings[footer] = str_replace("####'","####",$settings[footer]); */
-/* 		$textarray1 = explode("####", $settings[footer]); */
-/* 		if (count($textarray1) > 1) { */
-/* 			for ($i=1; $i<count($textarray1); $i=$i+2) { */
-/* 				$id = $textarray1[$i]; */
-/* 				$dir = db_get_value("media","site_id","id=$id"); */
-/* 				$filepath = $uploadurl."/".$dir."/".$filename; */
-/* 				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&"; */
-/* 			}		 */
-/* 			$settings[footer] = implode("",$textarray1); */
-/* 		} */
-/* 	} */
 }
 
 if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
@@ -121,42 +90,16 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 	if ($_SESSION[settings][edit]) {
 		$_SESSION[siteObj]->fetchFromDB();
 		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$_SESSION[siteObj]->getField("activatedate"));
-		list($_SESSION[settings][deactivateyear],$s_SESSION[ettings][deactivatemonth],$s_SESSION[ettings][deactivateday]) = explode("-",$_SESSION[siteObj]->getField("deactivatedate"));
+		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$_SESSION[siteObj]->getField("deactivatedate"));
 		$_SESSION[settings][activatemonth]-=1;
 		$_SESSION[settings][deactivatemonth]-=1;
-		$_SESSION[settings][activatedate]=($_SESSION[settings][activatedate]=='0000-00-00')?0:1;
-		$_SESSION[settings][deactivatedate]=($_SESSION[settings][deactivatedate]=='0000-00-00')?0:1;
-//		$settings[permissions] = decode_array($settings[permissions]);
+//		$_SESSION[settings][activatedate]=($_SESSION[settings][activatedate]=='0000-00-00')?0:1;
+//		$_SESSION[settings][deactivatedate]=($_SESSION[settings][deactivatedate]=='0000-00-00')?0:1;
+/* ---------------------------------------------------- */
+/*  uncomment this line when permissions are set and done */
+//		$_SESSION[settings][permissions] = $_SESSION[siteObj]->buildPermissionsArray();
 		$_SESSION[settings][copydownpermissions] = decode_array($_SESSION[settings][copydownpermissions]);
 		$_SESSION[settings][site_owner] = $_SESSION[siteObj]->getField("addedby");	
-/*  */
-/* 		$settings[header] = str_replace("src='####","####",$settings[header]); */
-/* 		$settings[header] = str_replace("src=####","####",$settings[header]); */
-/* 		$settings[header] = str_replace("####'","####",$settings[header]); */
-/* 		$textarray1 = explode("####", $settings[header]); */
-/* 		if (count($textarray1) > 1) { */
-/* 			for ($i=1; $i<count($textarray1); $i=$i+2) { */
-/* 				$id = $textarray1[$i]; */
-/* 				$filename = db_get_value("media","name","id=$id"); */
-/* 				$dir = db_get_value("media","site_id","id=$id"); */
-/* 				$filepath = $uploadurl."/".$dir."/".$filename; */
-/* 				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&"; */
-/* 			}		 */
-/* 			$settings[header] = implode("",$textarray1); */
-/* 		} */
-/* 		$settings[footer] = str_replace("src='####","####",$settings[footer]); */
-/* 		$settings[footer] = str_replace("src=####","####",$settings[footer]); */
-/* 		$settings[footer] = str_replace("####'","####",$settings[footer]); */
-/* 		$textarray1 = explode("####", $settings[footer]); */
-/* 		if (count($textarray1) > 1) { */
-/* 			for ($i=1; $i<count($textarray1); $i=$i+2) { */
-/* 				$id = $textarray1[$i]; */
-/* 				$dir = db_get_value("media","site_id","id=$id"); */
-/* 				$filepath = $uploadurl."/".$dir."/".$filename; */
-/* 				$textarray1[$i] = "&&&& src='".$filepath."' @@@@".$id."@@@@ &&&&"; */
-/* 			}		 */
-/* 			$settings[footer] = implode("",$textarray1); */
-/* 		} */
 	}
 }
 
@@ -192,7 +135,7 @@ if (!sitenamevalid($_SESSION[siteObj]->getField("name"))) {// check if the site 
 }
 if ($_REQUEST[cancel]) {
 	$_REQUEST[commingFrom] = $_SESSION[settings][commingFrom];
-	$_REQUEST[sitename] = $_SESSION[settings][sitename];
+//	$_REQUEST[sitename] = $_SESSION[siteObj]->getField("name");
 	unset($_SESSION["settings"]);
 	unset($_SESSION["siteObj"]);
 	if ($_REQUEST[commingFrom]) header("Location: index.php?$sid&action=$_REQUEST[commingFrom]&site=".$_SESSION[siteObj]->getField("name"));
@@ -203,51 +146,6 @@ if ($_REQUEST[cancel]) {
 if ($_REQUEST[save]) {
 	if (!$error) { // save it to the database
 		
-/* 		if ($settings[activatedate]) $settings[activatedate] = $settings[activateyear] . "-" . ($settings[activatemonth]+1) . "-" . $settings[activateday]; */
-/* 		else $settings[activatedate] = "0000-00-00"; */
-/* 	 */
-/* 		if ($settings[deactivatedate]) $settings[deactivatedate] = $settings[deactivateyear] . "-" . ($settings[deactivatemonth]+1) . "-" . $settings[deactivateday]; */
-/* 		else $settings[deactivatedate] = "0000-00-00"; */
-/* 		 */
-/* 		if ($settings[editors]) { */
-/* 			$edlist = explode(",",$settings[editors]); */
-/* 			foreach ($edlist as $e) { */
-/* 				for ($i=0;$i<3;$i++) { */
-/* 					$settings[permissions][$e][$i] = ($settings[permissions][$e][$i])?1:0; */
-/* 				} */
-/* 			} */
-/* 		} else $settings[permissions] = ''; */
-/* 		print_r($settings[permissions]); */
-/* 		$settings[permissions]=encode_array($settings[permissions]); */
-/*  */
-/* 		// Break up the short and long text and properly configure image urls */
-/* 		$textarray1 = explode("&&&&", $settings[header]); */
-/* 		if (count($textarray1) > 1) { */
-/* 			for ($i=1; $i<count($textarray1); $i=$i+2) { */
-/* 				$textarray2 = explode("@@@@", $textarray1[$i]); */
-/* 				$id = $textarray2[1]; */
-/* 				$textarray1[$i] = "src='####".$id."####'"; */
-/* 			}		 */
-/* 			$settings[header] = implode("",$textarray1); */
-/* 		} */
-/* 		 */
-/* 		$textarray1 = explode("&&&&", $settings[footer]); */
-/* 		if (count($textarray1) > 1) { */
-/* 			for ($i=1; $i<count($textarray1); $i=$i+2) { */
-/* 				$textarray2 = explode("@@@@", $textarray1[$i]); */
-/* 				$id = $textarray2[1]; */
-/* 				$textarray1[$i] = "src='####".$id."####'"; */
-/* 			}		 */
-/* 			$settings[footer] = implode("",$textarray1); */
-/* 		} */
-/*  */
-/* 		$_SESSION[settings][header] = urlencode($_SESSION[settings][header]); */
-/* 		$query .= ", header='$_SESSION[settings][header]'"; */
-/*  */
-/* 		$_SESSION[settings][footer] = urlencode($_SESSION[settings][footer]); */
-/* 		$query .= ", footer='$_SESSION[settings][footer]'"; */
-		
-		//db_query($query.$where);
 		print "<BR><BR>$_SESSION[settings][sitename]<BR><BR>";
 		if ($_SESSION[settings][add]) $_SESSION[siteObj]->insertDB();
 		if ($_SESSION[settings][edit]) $_SESSION[siteObj]->updateDB();
@@ -259,13 +157,17 @@ if ($_REQUEST[save]) {
 		
 		// --- Copy the Template on add ---
 		if ($_SESSION[settings][add] && $_SESSION[settings][template] != "") {
-			copySite($_SESSION[settings][template],$_SESSION[settings][sitename]);
+			copySite($_SESSION[settings][template],$_SESSION[siteObj]->getField("name"));
 		} else if ($_SESSION[settings][add]) {
-			copySite("template0",$_SESSION[settings][sitename]);
+			copySite("template0",$_SESSION[siteObj]->getField("name"));
 		}
 	
 		// --- do the copy down and recursive changes for sections & pages --- 
 		print "count for copy down: " . count($_SESSION[settings][copydownpermissions]) . "<BR>";
+		
+/* ----------------------------------------------------------- */
+/* uncomment following line and comment out everything below when permissions are done */
+//		$_SESSION[siteObj]->copyDownPermissions($_SESSION[settings][copydownpermissions]);
 		
 		$_SESSION[settings][permissions] = decode_array($_SESSION[settings][permissions]);
 		$site_owner = $auser;

@@ -25,7 +25,7 @@ function closeAll() {
 }
 
 function doPreviewWin(theme, from) {
-	if (theme == "<? print $_SESSION[siteObj]->getField('ttheme'); ?>") {
+	if (theme == "<? print $_SESSION[siteObj]->getField('theme'); ?>") {
 		var themesettings = document.addform.themesettings.value;
 	} else {
 		var themesettings = "";
@@ -34,7 +34,7 @@ function doPreviewWin(theme, from) {
 		doThemeSettings();	
 	}
 	var edit = <? print $_SESSION[settings][edit]; ?>;
-	var sitename = "<? print $_SESSION[settings][sitename]; ?>";
+	var sitename = "<? print $_SESSION[siteObj]->getField("name"); ?>";
 	if (edit) {
 		var preview = window.open("index.php?action=site&site="+sitename+"&themesettings="+themesettings+"&theme="+theme+"&themepreview=1","preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
 	} else {
@@ -46,7 +46,7 @@ function doPreviewWin(theme, from) {
 
 function doTemplateWin() {
 	var template = document.addform.template.value;
-	var theme = "<? print $_SESSION[settings][theme]; ?>";
+	var theme = "<? print $_SESSION[siteObj]->getField("theme"); ?>";
 	var themesettings = document.addform.themesettings.value;
 	if (template != '') {
 		var temp = window.open("index.php?action=site&site="+template+"&themesettings="+themesettings+"&theme="+theme,"template","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
@@ -55,16 +55,16 @@ function doTemplateWin() {
 }
 
 function openThemeSettings() {
-	theme = "<? print $_SESSION[settings][theme]; ?>";
+	theme = "<? print $_SESSION[siteObj]->getField("theme"); ?>";
 	doPreviewWin(theme,"");
 	doThemeSettings();
 }
 
 function doThemeSettings() {
 	var f = document.addform;
-	var theme = "<? print $_SESSION[settings][theme]; ?>";
+	var theme = "<? print $_SESSION[siteObj]->getField("theme"); ?>";
 	var themesettings = document.addform.themesettings.value;
-	var site = "<? print $_SESSION[settings][sitename]; ?>";
+	var site = "<? print $_SESSION[siteObj]->getField("name"); ?>";
 	var themesettings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=500");
 //	document.addform.themesettingshandle.value = themesettings;
 }
@@ -100,18 +100,18 @@ printc("<tr><td> </td><td valign=bottom align=center style='border-bottom: 0px s
 $i=0;
 foreach ($possible_themes as $themename=>$longname) {
 	printc("<tr><td align=center><a name='row$i'>");
-	printc("<input type=radio name=theme value='$themename' ".(($_SESSION[settings][theme]==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
-	printc("<td align=center style='border-top: 1px solid #aaa;".(($_SESSION[settings][theme]==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
-	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[settings][theme]==$themename)?" background-color: #eee":"")."'>$longname<br><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
+	printc("<input type=radio name=theme value='$themename' ".(($_SESSION[siteObj]->getField("theme")==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
+	printc("<td align=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
+	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
 	if ($_SESSION[settings][theme]==$themename)
-		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[settings][theme]==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'></td>");
+		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'></td>");
 	else 
 		printc("<td align=center valign=top style='border-top: 1px solid #aaa;'> &nbsp; </td>");
 	printc("</tr>");
 	$i++;
 }
 
-printc("<input type=hidden name=themesettings value='".$_SESSION[settings][themesettings]."'>");
+printc("<input type=hidden name=themesettings value='".$_SESSION[siteObj]->getField("themesettings")."'>");
 printc("<input type=hidden name=themesettingshandle value='".$themesettingshandle."'>");
 printc("<input type=hidden name=previewhandle value='".$previewhandle."'>");
 
