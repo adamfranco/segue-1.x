@@ -18,9 +18,10 @@ if ($themesettings[theme] == 'shadowbox') {   // indeed these settings are for t
 	$usetextcolor = $themesettings[textcolor];
 	$uselinkcolor = $themesettings[linkcolor];
 	$usenav = $themesettings[nav_arrange];
+	$usenavwidth = $themesettings[nav_width];
 	
 }
-if (!$usebg) $usebg = 'blue';
+if (!$usebg) $usebg = 'white';
 $bg = $_bgcolor[$usebg];
 
 if (!$usecolor) $usecolor = 'white';
@@ -38,8 +39,11 @@ $textcolor = $_textcolor[$usetextcolor];
 if (!$uselinkcolor) $uselinkcolor = 'red';
 $linkcolor = $_linkcolor[$uselinkcolor];
 
-if (!$usenav) $usenav = '1';
+if (!$usenav) $usenav = 'Top Sections';
 $nav_arrange = $_nav_arrange[$usenav];
+
+if (!$usenavwidth) $usenavwidth = '150 pixels';
+$navwidth = $_nav_width[$usenavwidth];
 
 
 /* ------------------- END ---------------------------	*/
@@ -127,6 +131,7 @@ if ($nav_arrange==1) {
 <table width=100% class=contenttable>
 <tr>
 <td class=leftnav>
+<table width=100% cellpadding=2 cellspacing=0>	
 <?
 //use this if page navigation is in left nav
 if ($nav_arrange==1) {
@@ -135,6 +140,7 @@ if ($nav_arrange==1) {
 	/* ------------------------------------------- */
 			
 	foreach ($leftnav as $item) {
+		print "<tr><td>";
 		if ($item[type] == 'normal') {
 			$samepage = (isset($page) && ($page == $item[id]))?1:0;
 			if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
@@ -149,7 +155,9 @@ if ($nav_arrange==1) {
 			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
 			if ($item[extra]) print "<div align=right>$item[extra]</div>";
 		}
+		print "</tr></td>";
 	}
+	print "</table>";
 	print "<br>$leftnav_extra";
 }
 //use this if Section navigation is in left nav
@@ -160,6 +168,7 @@ if ($nav_arrange==2) {
 /* ------------------------------------------- */
 		
 	foreach ($topnav as $item) {
+		print "<tr><td>";
 		if ($item[type] == 'normal') {
 			$samepage = (isset($section) && ($section == $item[id]))?1:0;
 			//$samepage = (isset($page) && ($page == $item[id]))?1:0;
@@ -175,7 +184,9 @@ if ($nav_arrange==2) {
 			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
 			if ($item[extra]) print "<div align=right>$item[extra]</div>";
 		}
+		print "</tr></td>";
 	}
+	print "</table>";
 	print "<br>$topnav_extra";
 	//print "<br>$leftnav_extra";
 }

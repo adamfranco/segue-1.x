@@ -159,3 +159,11 @@ $_nav_arrange = array(
 	"Side Sections"=>			"2"
 );
 
+$_nav_width = array(
+	"150 pixels"=>				"150",
+	"175 pixels"=>				"175",
+	"200 pixels"=>				"200",
+	"250 pixels"=>				"250",
+	"275 pixels"=>				"275"
+);
+
