@@ -119,6 +119,7 @@ class section extends segue {
 			$a[] = "editedby='$_SESSION[auser]'";
 			$a[] = "editedtimestamp = NOW()";
 			$query = "update sections set ".implode(",",$a)." where id=".$this->id;
+			print $query."<p>";
 			db_query($query);
 		}
 		
@@ -193,6 +194,7 @@ class section extends segue {
 		if ($all || $this->changed[type]) $a[] = "type='$d[type]'";
 		if ($all || $this->changed[pages]) $a[] = "pages='".encode_array($this->getField("pages"))."'";
 		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
+		if ($all || $this->changed[locked]) $a[] = "locked=".(($d[locked])?1:0);
 		
 		return $a;
 	}

@@ -65,6 +65,7 @@ if ($error) return;
 
 if ($_REQUEST[savechanges]) {
 	if ($isOwner) {
+		/* print "<pre>"; print_r($_SESSION[obj]); print "</pre>"; */
 		$_SESSION[obj]->updateDB(1);
 		unset($_SESSION[obj],$_SESSION[editors]);
 		Header("Location: close.php");

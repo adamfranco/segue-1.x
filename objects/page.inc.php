@@ -220,6 +220,7 @@ class page extends segue {
 		if ($all || $this->changed[showdate]) $a[] = "showdate='$d[showdate]'";
 		if ($all || $this->changed[showhr]) $a[] = "showhr='$d[showhr]'";
 		if ($all || $this->changed[storyorder]) $a[] = "storyorder='$d[storyorder]'";
+		if ($all || $this->changed[locked]) $a[] = "locked=".(($d[locked])?1:0);
 		
 		return $a;
 	}
