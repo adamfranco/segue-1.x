@@ -70,12 +70,23 @@ class slot {
 	function getOwner($slot) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-		$query = "SELECT user_uname FROM slot INNER JOIN user ON FK_owner = user_id WHERE slot_name = '$slot'";
+		$query = "
+			SELECT 
+				user_uname 
+			FROM 
+				slot 
+					INNER JOIN 
+				user 
+					ON 
+						FK_owner = user_id 
+			WHERE 
+				slot_name = '$slot'
+		";
 		$r = db_query($query);
 		echo mysql_error();
 		if (!db_num_rows($r)) return false;
 		$a = db_fetch_assoc($r);
-		return $a[udrt_uname];
+		return $a[user_uname];
 	}
 	
 	function exists($name,$checkldap=0) {

@@ -332,7 +332,7 @@ class discussion {
 		$this->_fetchchildren();
 		if ($this->numchildren) {
 			if (is_array($opt)) $p = 0;
-			else $p = 10;
+			else $p = 30;
 			printc ("<tr><td><table width=100% style='padding-left:".$p."px'>");
 			for ($i=0;$i<$this->numchildren;$i++) {
 				if (is_array($opt)) $this->children[$i]->opt($opt);
