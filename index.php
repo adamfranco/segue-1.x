@@ -66,17 +66,20 @@ if ($_loggedin) {
 	$oldclasses=getuserclasses($auser,"past");
 	$futureclasses=getuserclasses($auser,"future");
 
+	// one array containing all user's classes
+	$allclasses = array_merge($classes,$oldclasses,$futureclasses);
 	
 	// get other sites they have added, but which aren't in the classes list
-	if (db_num_rows($r = db_query("select * from sites where addedby='$auser'"))) {
-		while ($a = db_fetch_assoc($r)) {
-			$n = $a['name'];
-			if (!is_array($classes[$n]) && isclass($n)) {
+	if ($s = segue::getAllSites($_SESSION[auser])) {
+		foreach ($s as $n) {
+/* 			$n = $a['name']; */
+			if (!is_array($allclasses[$n]) && isclass($n)) {
 				$oldsites[]=$n;
 			}
 		}
 	}
 }
+
 
 //if (count($classes)) printc(implode(",",array_keys($classes)));
 

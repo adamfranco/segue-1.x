@@ -23,6 +23,21 @@ class segue {
 	
 	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
 
+	
+/******************************************************************************
+ * getAllSites - returns a list of all sites owned by $user
+ ******************************************************************************/
+
+	function getAllSites($user) {
+		$sites = array();
+		if (db_num_rows($r = db_query("select * from sites where addedby='$user'"))) {
+			while ($a = db_fetch_assoc($r)) {
+				$sites[] = $a[name];
+			}
+		}
+		return $sites;
+	}
+
 /******************************************************************************
  * getAllValues - returns all values of $name in $scope in the current tree
  ******************************************************************************/
@@ -428,17 +443,67 @@ class segue {
  *		'or', and permission types: 'add','edit','delete','view','discuss'
  ******************************************************************************/
 
-	function hasPermission($perms,$user='') {
-		if ($user=='') $user=$_SESSION[auser];
+	function hasPermission($perms,$ruser='') {
+		global $allclasses, $_logged_in;
+
 		$_a = array('add','edit','delete','view','discuss');
-		$permissions = $this->getPermissions();
-		$exec = $perms;
-		$exec = str_replace('and','&&',$exec);
-		$exec = str_replace('or','||',$exec);
-		foreach ($_a as $p) {
-			$exec = str_replace($p,'$permissions[$user][permissions::'.strtoupper($p).'()]',$exec);
+		
+		// check if $perms is malformed
+		$a = explode(' ',ereg_replace("([()]){1}","",$perms));
+//		print_r($a);
+		$i=0;$j=1;
+		foreach ($a as $n) {
+//			print "$i: $n: ".strlen($n)."<BR>";
+			if (!strlen($n)) continue;
+			if (!($i%2) && !in_array($n,$_a)) $j=0;
+			if (!(($i+1)%2) && $n!='and' && $n!='or') $j=0;
+			if (!$j) {
+				print "ERROR! loop: $i: Malformed permissions string: $perms<BR><BR>";
+				return 0;
+			}
+			$i++;
 		}
-		//print $exec;
-		return eval($exec);
+		// end
+		
+		if ($ruser=='') $user=$_SESSION[auser];
+		else $user = $ruser;
+		$permissions = $this->getPermissions();
+		$toCheck = array();
+		if ($user && $user != '') $toCheck[] = strtolower($user);
+		$toCheck[] = "everyone";
+		if ($_logged_in) $toCheck[] = "institute";
+/* 		else { */
+			
+		foreach ($permissions as $u=>$p) {
+			$permissions[strtolower($u)] = $p;
+			$good=0;
+			$c = array();
+			if (isclass($u)) $c[] = $u;
+			if ($g = isgroup($u)) $c = array_merge($c,$g);
+			foreach($c as $class) {
+				if (is_array($allclasses[$class])) $good=1;
+			}
+			if ($good) $toCheck[]=strtolower($u);
+		}
+		$pArray = array();
+		
+//		print "$perms<BR>";
+		
+		$perms = str_replace('and','&&',$perms);
+		$perms = str_replace('or','||',$perms);
+
+		foreach ($toCheck as $u) {
+			$exec = $perms;
+			foreach ($_a as $p) {
+				$exec = str_replace($p,'$permissions[\''.$u.'\'][permissions::'.strtoupper($p).'()]',$exec);
+			}
+			//print $exec;
+			$pArray[] = "(".$exec.")";
+		}
+		$isgood = 0;
+		$condition = '$isgood = ('.implode(' || ',$pArray).')?1:0;';
+		eval($condition);
+		print $condition;
+		return $isgood;
 	}
 }

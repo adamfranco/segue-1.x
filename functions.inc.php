@@ -326,15 +326,10 @@ function currentsemester () {
 }
 
 function semorder($semester) {
-	if ($semester == "w") {
-		$order = 1;
-	} else if ($semester == "s") {
-		$order = 2;
-	} else if ($semester == "ls") {
-		$order = 3;	} 
-	else if ($semester == "f") {
-		$order = 4;
-	}
+	if ($semester == "w") $order = 1;
+	else if ($semester == "s") $order = 2;
+	else if ($semester == "ls")	$order = 3;
+	else if ($semester == "f") $order = 4;
 	return $order;
 }
 
