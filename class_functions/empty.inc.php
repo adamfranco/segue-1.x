@@ -5,12 +5,21 @@ require_once("class_functions/common.inc.php");
 
 function isclass ($class) {
 	global $auser,$_isclass_cache;
-	if (isset($_isclass_cache[$class])) return $_isclass_cache[$class];
+	
+	if (isset($_isclass_cache[$class])) 
+		return $_isclass_cache[$class];
+		
 	$auser = strtolower($auser);
-	$v = ereg("^(([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([lsfw]{1})([0-9]{2}))$",$class);
-	if (!$v && isgroup($class)) $v = 1;
-	$_isclass_cache[$class] = $v;
-	return $v;
+	
+	// Check the name against the form of our class codes
+	$isClass = ereg("^(([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2}))$",$class);
+	
+	// If this isn't a class, but itself, but is a class group, then it is a class.
+	if (!$isClass && isgroup($class)) 
+		$isClass = TRUE;
+	
+	$_isclass_cache[$class] = $isClass;
+	return $isClass;
 }
 
 /******************************************************************************
