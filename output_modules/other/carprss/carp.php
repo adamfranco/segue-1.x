@@ -243,7 +243,6 @@ function CarpFilter($url,$cachefile) { CarpShow($url,$cachefile,0); }
 
 function CarpCacheShow($url,$cachefile='',$showit=1, $user='everyone') {
 	global $carpconf;
-	print "Caching with md5('$url.$user');
 	CarpCache($url,$autocache=md5($url.$user),2);
 	CarpShow(call_user_func($carpconf['cachefunctions'][2]).$autocache,$cachefile,$showit);
 }
