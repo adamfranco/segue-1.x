@@ -9,6 +9,8 @@ define("STORY",3);
 define("ADD",0);
 define("EDIT",1);
 define("DELETE",2);
+define("VIEW",3);
+define("DISCUSS",4);
 
 // code..... to be written
 if ($site) $site_owner = db_get_value("sites","addedby","name='$site'");

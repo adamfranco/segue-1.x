@@ -103,7 +103,7 @@ foreach ($possible_themes as $themename=>$longname) {
 	printc("<input type=radio name=theme value='$themename' ".(($_SESSION[siteObj]->getField("theme")==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
 	printc("<td align=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
 	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
-	if ($_SESSION[settings][theme]==$themename)
+	if ($_SESSION[siteObj]->getField("theme")==$themename)
 		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'></td>");
 	else 
 		printc("<td align=center valign=top style='border-top: 1px solid #aaa;'> &nbsp; </td>");

@@ -53,13 +53,14 @@ printc("<style type='text/css'>th, .td0, .td1 {font-size: 10px;}</style>");
 printc("<table width=100% style='border: 1px solid gray'>");
 printc("<tr><th rowspan=2>Copy Down<br>Permissions</th><th width=50%>name</th><th colspan=3 width=30%>permissions</th><th>del</th></tr>");
 printc("<tr><th>&nbsp;</th><th>add</th><th>edit</th><th>delete</th><th>&nbsp;</th></tr>");
-if ($_SESSION[settings][editors]) {
+if (($edlist = $_SESSION[siteObj]->getEditors())) {
 /* 	$edlist = array(); */
 /* 	foreach (explode(",",$_SESSION[settings][editors]) as $n) { */
 /* 		array_push($edlist, trim($n)); */
 /* 	} */
-	$edlist = explode(",",$_SESSION[settings][editors]);
+/* 	$edlist = explode(",",$_SESSION[settings][editors]); */
 /* 	$editorsa = implode(",",$edlist); */
+	$permissions = $_SESSION[siteObj]->getPermissions();
 	if (count($edlist)) {
 		$color = 0;
 		foreach ($edlist as $e) {
@@ -69,7 +70,7 @@ if ($_SESSION[settings][editors]) {
 			
 			for ($i = 0; $i<3; $i++) {
 				printc("<td class=td$color align=center>");
-				printc("<input type=checkbox name='permissions[$e][$i]' value=1".(($_SESSION[settings][permissions][$e][$i])?" checked":"").">");
+				printc("<input type=checkbox name='permissions[$e][$i]' value=1".(($permissions[$e][$i])?" checked":"").">");
 				printc("</td>");
 			}
 			printc("</td>");
@@ -81,12 +82,12 @@ if ($_SESSION[settings][editors]) {
 		
 	}
 } else printc("<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=5>no editors added</td></tr>");
-printc("<tr><th colspan=5>".((isclass($_SESSION[settings][sitename]))?"<a href='#' onClick='addClassEditor();'>Add students in $_SESSION[settings][sitename]</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
+printc("<tr><th colspan=5>".((isclass($_SESSION[siteObj]->getField("sitename")))?"<a href='#' onClick='addClassEditor();'>Add students in ".$_SESSION[siteObj]->getField("sitename")."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
 printc("</table>");
 
-if ($_SESSION[settings][edit]) printc("<a href='editor_access.php?$sid&site=$_SESSION[settings][sitename]' onClick='doWindow(\"permissions\",600,400)' target='permissions'>Permissions as of last save</a>");
+if ($_SESSION[settings][edit]) printc("<a href='editor_access.php?$sid&site=".$_SESSION[siteObj]->getField("sitename")."' onClick='doWindow(\"permissions\",600,400)' target='permissions'>Permissions as of last save</a>");
 
-printc("<br><br><div class=desc>By checking \"Add\", \"Edit\", or \"Delete\" on here, you give the editor site-level permissions. Site-level permissions allow the Editor to either Add, Edit (includes changing the order of), or Delete sections of the site. Editors with permissions specified here will not have section-level or page-level permissions unless the \"Copy Down Permissions\" box is checked.</div> <div class=desc>To give someone section-level or page-level permissions, add them as an editor here, but with no boxes checked. On the page for which you want to give them access, check the permissions boxes next to their name in the \"Advanced View\" of the section or page edit screen.</div>");
+printc("<br><br><div class=desc>By checking \"Add\", \"Edit\", or \"Delete\" on here, you give the editor site-level permissions. Site-level permissions allow the Editor to either Add, Edit (includes changing the order of), or Delete sections of the site. Editors with permissions specified here will not have section-level or page-level permissions unless the \"Copy Down Permissions\" box is checked.</div>");
 
 /*if ($_SESSION[settings][edit])*/ printc("<div class=desc><b>NOTE:</b> if you would like Segue to copy the permissions for a certain user down to all sections and pages contained in this site, check the box to the left of their name. You also have the option later to lock sections of the site, preventing any editor access.</div>");
 //if ($_SESSION[settings][editors]) printc("<div class=desc>Example: if you want <i>$e</i> to be able to edit the settings (everything but the actual content) of sections in this site, check the <b>Edit</b> box associated with <i>$e</i>'s name. You also have the option later to lock sections of the site, preventing any editor access.</div>");	

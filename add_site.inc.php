@@ -1,30 +1,33 @@
 <? // add_site.inc.php -- add/edit a site (passed $sitename)
 
-if (isset($_SESSION[settings])) {
+if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	// if we have already started editing...
 
 	// ---- Editor actions ----
 	if ($edaction == 'add') {
-		if ($settings[editors])
-			$edlist = explode(",",$settings[editors]);
-		else $edlist = array();
-		if (!in_array($edname,$edlist) && $edname != $auser) $edlist[]=$edname;
-		$editors = implode(",",$edlist);
-		if ($edname == $auser) error("You do not need to add yourself as an editor.");
+/* 		if ($settings[editors]) */
+/* 			$edlist = explode(",",$settings[editors]); */
+/* 		else $edlist = array(); */
+/* 		if (!in_array($edname,$edlist) && $edname != $auser) $edlist[]=$edname; */
+/* 		$editors = implode(",",$edlist); */
+/* 		if ($edname == $auser) error("You do not need to add yourself as an editor."); */
 		
 		// eventually -- something like $_SESSION[siteObj]->addEditor($edname)
 		// same for below
+		$_SESSION[siteObj]->addEditor($edname);
 	}
 	
 	if ($edaction == 'del') {
-		if ($settings[editors])
-			$edlist = explode(",",$settings[editors]);
-		else $edlist = array();
-		$nlist = array();
-		foreach ($edlist as $e) {
-			if ($e != $edname) $nlist[]=$e;
-		}
-		$editors = implode(",",$nlist);
+/* 		if ($settings[editors]) */
+/* 			$edlist = explode(",",$settings[editors]); */
+/* 		else $edlist = array(); */
+/* 		$nlist = array(); */
+/* 		foreach ($edlist as $e) { */
+/* 			if ($e != $edname) $nlist[]=$e; */
+/* 		} */
+/* 		$editors = implode(",",$nlist); */
+
+		$_SESSION[siteObj]->delEditor($edname);
 	}
 
 	// --- Load any new variables into the array ---
@@ -41,14 +44,14 @@ if (isset($_SESSION[settings])) {
 	if ($_REQUEST[deactivatemonth] != "") $_SESSION[settings][deactivatemonth] = $_REQUEST[deactivatemonth];
 	if ($_REQUEST[deactivateday] != "") $_SESSION[settings][deactivateday] = $_REQUEST[deactivateday];
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link] && $_SESSION[settings][deactivatedate]) $_SESSION[siteObj]->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth],$_REQUEST[deactivateday]);
-	if ($_REQUEST[active] != "") $_SESSION[siteOjb]->setField("active",$_REQUEST[active]);
+	if ($_REQUEST[active] != "") $_SESSION[siteObj]->setField("active",$_REQUEST[active]);
 //	if ($_REQUEST[viewpermissions] != "") $_SESSION[settings][viewpermissions] = $_REQUEST[viewpermissions];
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[siteObj]->setField("listed",$_REQUEST[listed]);
 	if ($_REQUEST[theme] != "") $_SESSION[siteObj]->setField("theme",$_REQUEST[theme]);
 	if ($_REQUEST[theme] != "") $_SESSION[siteObj]->setField("themesettings",$_REQUEST[themesettings]);
 	if ($_SESSION[settings][step] == 3) $_SESSION[settings][template] = $_REQUEST[template];
-	if ($settings[step] == 4 && !$_REQUEST[link]) $_SESSION[settings][editors] = strtolower($_REQUEST[editors]);
-	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[settings][permissions] = $_REQUEST[permissions];
+//	if ($settings[step] == 4 && !$_REQUEST[link]) $_SESSION[settings][editors] = strtolower($_REQUEST[editors]);
+	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[siteObj]->setPermissions($_REQUEST[permissions]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][recursiveenable] = $_REQUEST[recursiveenable];
 	if ($_REQUEST[copydownpermissions] != "") $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions];
 	if ($_REQUEST[copyfooter]) $_SESSION[siteObj]->setField("header",$_SESSION[siteObj]->getField("footer"));
@@ -72,6 +75,7 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		"deactivateday" => "00",
 		"recursiveenable" => "",
 		"copydownpermissions" => "",
+		"template" => "template0",
 		"commingFrom" => $_REQUEST[commingFrom]
 	);
 	$_SESSION[siteObj] = new site($_REQUEST[sitename]);
@@ -88,6 +92,10 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 	}
 	
 	if ($_SESSION[settings][edit]) {
+		if (!$_SESSION[settings][sitename]) {
+			$_SESSION[settings][sitename] = $_REQUEST[edit_site];
+			$_SESSION[siteObj]->setSiteName($_REQUEST[edit_site]);
+		}
 		$_SESSION[siteObj]->fetchFromDB();
 		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$_SESSION[siteObj]->getField("activatedate"));
 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$_SESSION[siteObj]->getField("deactivatedate"));
@@ -108,10 +116,16 @@ if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = $_SESSION[settings][step]
 if ($_REQUEST[step] != "") $_SESSION[settings][step] = $_REQUEST[step];
 
 
-// error checking
-if (($_SESSION[settings][step] != 1) && (!$_SESSION[settings][title] || $_SESSION[settings][title] == '')) {
-	error("You must enter a site title.");
-	$_SESSION[settings][step] = 1;
+/* ---------------------------------------------------------------------------------------------*/
+/*						ERROR CHECKING															*/
+if ($_SESSION[settings][step] != 1) {
+	if ((!$_SESSION[siteObj]->getField("title") || $_SESSION[siteObj]->getField("title") == ''))
+		error("You must enter a site title.");
+	if ($_SESSION[ltype] == "admin" && $_SESSION[siteObj]->getField("name") == "")
+		error("You must enter a name for this site. Sites without names will be broken.");
+	if ($_SESSION[ltype] == "admin" && !ereg("^([0-9A-Za-z_-]*)$",$_SESSION[siteObj]->getField("name")))
+		error("The site name you entered is invalid. It may only contain alphanumeric characters, '_' and '-'.");
+	if ($error) $_SESSION[settings][step] = 1;
 }
 
 
@@ -134,11 +148,12 @@ if (!sitenamevalid($_SESSION[siteObj]->getField("name"))) {// check if the site 
 	return;
 }
 if ($_REQUEST[cancel]) {
-	$_REQUEST[commingFrom] = $_SESSION[settings][commingFrom];
-//	$_REQUEST[sitename] = $_SESSION[siteObj]->getField("name");
+	$commingFrom = $_SESSION[settings][commingFrom];
+	$site = $_SESSION[siteObj]->getField("name");
+	if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("siteObj"); }
 	unset($_SESSION["settings"]);
 	unset($_SESSION["siteObj"]);
-	if ($_REQUEST[commingFrom]) header("Location: index.php?$sid&action=$_REQUEST[commingFrom]&site=".$_SESSION[siteObj]->getField("name"));
+	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
 	else header("Location: index.php?$sid");
 }
 
@@ -223,15 +238,15 @@ if ($_REQUEST[save]) {
 			}
 		}
 		
+		$sitename = $_SESSION[siteObj]->getField("name");
+		$commingFrom = $_SESSION[settings][commingFrom];
+		if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("siteObj"); }
+		unset($_SESSION["settings"]);
+		unset($_SESSION["siteObj"]);
+		
 		if ($_SESSION[settings][add]) {
-			header("Location: index.php?$sid&action=viewsite&site=$_SESSION[settings][sitename]");
-			unset($_SESSION["settings"]);
-			unset($_SESSION["siteObj"]);
+			header("Location: index.php?$sid&action=viewsite&site=$sitename");
 		} else {
-			$commingFrom = $_SESSION[settings][commingFrom];
-			$sitename = $_SESSION[settings][sitename];
-			unset($_SESSION["settings"]);
-			unset($_SESSION["siteObj"]);
 			if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename");
 			else header("Location: index.php?$sid");
 		}
@@ -316,11 +331,11 @@ if ($_SESSION[settings][step] == 6) {
 
 
 // ---  variables for debugging ---
-$variables = "<br>";
-$variables .= "action = $action <br> auser = $auser <br> settings = $settings<br>";
-foreach ($settings as $n =>$v) {
-	$variables .= "$n = $v <br>";
-}
+/* $variables = "<br>"; */
+/* $variables .= "action = $action <br> auser = $auser <br> settings = $settings<br>"; */
+/* foreach ($settings as $n =>$v) { */
+/* 	$variables .= "$n = $v <br>"; */
+/* } */
 //printc("$variables");
 //------------------------------------
 
