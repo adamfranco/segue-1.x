@@ -889,6 +889,8 @@ ORDER BY
 	function copySite($newName, $clearPermissions=1) {
 		$newSiteObj = $this;
 		$newSiteObj->setSiteName($newName, 1);
+		$newSiteObj->addEditor("everyone");
+		$newSiteObj->addEditor("institute");
 		$newSiteObj->insertDB(1,1);
 	}
 	

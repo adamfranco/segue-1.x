@@ -1281,7 +1281,7 @@ WHERE
 	site_editors_type = '$ed_type' AND
 	FK_site = $id
 ";
-					echo $query."<br>";
+//					echo $query."<br>";
 					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
 					// if the editor is not in the site_editors then insert him
 					if (!db_num_rows($r_editor)) {
@@ -1293,7 +1293,7 @@ VALUES
 	($id, $ed_id, '$ed_type')
 ";					
 
-					echo $query."<br>";
+//					echo $query."<br>";
 						db_query($query);
 					}
 					
