@@ -10,6 +10,25 @@ include("objects/objects.inc.php");
 ob_start();		// start the output buffer so we can use headers if needed
 // we need to include the config before we start the session 
 require_once("config.inc.php");
+
+// check if we are only allowing access to one site based on virtual host
+if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
+//      print "checking vhosts...";
+        // we are getting the following information: host, site, full_uri, show_statusbar
+        $currentHost = $_SERVER["SERVER_NAME"];
+//      print " current host is '$currentHost'<br>";
+        foreach ($cfg["vhosts"] as $vhost) {
+//              print "checking config host ".$vhost["host"]."<br>";
+                if ($vhost["host"] == $currentHost) {
+                        if ($vhost["show_status"] == false) $_REQUEST["nostatus"] = "1";
+                        $_REQUEST["site"] = $vhost["site"];
+                        $cfg["full_uri"] = $_full_uri = $vhost["full_uri"];
+                        $_REQUEST["action"] = "site";
+                        break;
+                }
+        }
+}
+
 if ($cfg[domain]) ini_set("session.cookie_domain",$cfg[domain]);
 //ini_set("session.name","SeguePHPSESSID");
 session_start();// start the session manager :) -- important, as we just learned

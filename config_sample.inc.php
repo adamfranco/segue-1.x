@@ -96,7 +96,38 @@
 	$cfg[personalsitesurl] = $personalsitesurl = "";
 	$cfg[classsitesurl] = $classsitesurl = "";
 
+/*****************************************************************************
+ * $cfg[vhosts] = if you have virtual hosts set up on your server you can
+ *                "bind" a segue site to it, so anyone accessing segue
+ *                from a certain virtual host will only be able to see
+ *                that one site.
+ *
+ *		For this feature to work, you must point the DocumentRoot
+ *		of the virtual host to the segue directory.
+ *
+ * $cfg[vhosts] = array( // an array of arrays, each describing a virtual host
+ *      array(
+ *              "host"=>        "the domain name of the vhost, ie, www.sample.com",
+ *              "full_uri"=>    "the URL of the site - ie, http://www.sample.com",
+ *              "site"=>        "the short name of the site you want displayed - ie, template0",
+ *              "show_status"=> "display the login/status bar at the top of the
+ *                               window";
+ *      ),
+ * // ... add more vhosts here
+ * ); // done
+ *
+ *****************************************************************************/
 
+$cfg["vhosts"] = array(
+/*
+        array(
+                "host"=>        "www.sample.com",
+                "full_uri"=>    "http://www.sample.com",
+                "site"=>        "template0",
+                "show_status"=> false
+        )
+*/
+);
 
 /******************************************************************************
  * *** AUTHENTICATION
