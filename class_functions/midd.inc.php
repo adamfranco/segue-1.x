@@ -44,9 +44,9 @@ function getuserclasses($user,$time="all") {
 					if (ereg("cn=([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([lsfw]{1})([0-9]{2})",$p,$r)) {
 //						print "goood!";
 						$semester = currentsemester ();
-						print "<pre>";
-						print_r($r);
-						print "</pre>";
+/* 						print "<pre>"; */
+/* 						print_r($r); */
+/* 						print "</pre>"; */
 						if ($time == "now" && $r[5] == date('y') && $r[4] == $semester) {
 							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];					
 							$classes[$class] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
@@ -144,6 +144,24 @@ function getuserclasses($user,$time="all") {
 		WHERE
 			user_uname = '$user'
 	";
+	$semester = currentsemester ();
+	$r = db_query($query);
+	while ($a = db_fetch_assoc($r)) {
+		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
+/* 		print "<pre>"; print_r($a); print "</pre>"; */
+/* 		print $class_code."<br>"; */
+		if (!$classes[$class_code]) {
+			if ($time == "now" && $a[class_year] == date('Y') && $a[class_semester] == $semester) {
+				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+			} else if ($time == "past" && ($a[class_year] < date('Y') || semorder($a[class_semester]) < semorder($semester))) {
+				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+			} else if ($time == "future" && ($a[class_year] == date('Y') && semorder($a[class_semester]) > semorder($semester)) || ($a[class_year] > date('Y'))) {
+				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+			} else if ($time == "all") {
+				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
+			}
+		}
+	}
 	
 /* 	print "<pre>"; print_r($classes); print "</pre>";	 */
 	return $classes;
