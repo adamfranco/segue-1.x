@@ -76,7 +76,7 @@ class permissions {
 				foreach ($edlist as $e) {
 					// :: hack ::
 					// this is needed until "anonymous" discussion is enabled. could be v 2.0
-					if ($e == 'everyone') continue;
+					//if ($e == 'everyone') continue;
 					// :: /hack ::
 					
 					printc("<tr><td class=td$color align=left>");

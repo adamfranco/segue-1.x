@@ -8,7 +8,7 @@
 foreach ($_auth_mods as $i) include("auth_mods/$i.inc.php");
 
 // this array contains a list of actions that don't *require* the user to be authenticated
-$actions_noauth = array("index.php","site","login","default","previewtheme","fullstory","list","username_lookup","listarticles","listissues");
+$actions_noauth = array("site","login","default","previewtheme","fullstory","fullstory.php","list","username_lookup","listarticles","listissues");
 
 $loginerror=0;
 $_loggedin=0;
@@ -24,6 +24,7 @@ if ($_SESSION[luser]) {
 // if we're not yet logged in
 if (!$_loggedin) {
 	if ($_REQUEST[loginform]) {	// they just entered their name & pass
+	
 		// now, assuming they were successful
 		if (loginvalid($_REQUEST[name],$_REQUEST[password])) {
 			$newquerystring = ereg_replace("PHPSESSID","OLDID",urldecode($_REQUEST[getquery]));
@@ -43,7 +44,10 @@ if (!$_loggedin) {
 		if ($loginerror) error("The username and password pair you entered is not valid. Please try again.<BR>");
 		if ($_REQUEST[action]) $try = $_REQUEST[action];
 		if ($action) $try = $action;
-		else $try = trim($SCRIPT_NAME,"/");
+		else $try = trim($_SERVER['SCRIPT_NAME'],"/");
+		// :: hack for fullstory w/out auth
+		if (trim($_SERVER['SCRIPT_NAME'],"/") == "fullstory.php") $try = "fullstory.php";
+
 		if (!in_array($try,$actions_noauth)) {
 			$loginerror=1;
 			error("You must be authenticated to view this page. Please log in above.");

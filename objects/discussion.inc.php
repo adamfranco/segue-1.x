@@ -171,6 +171,12 @@ class discussion {
 		}
 		if ($this->content) $this->content = urldecode($this->content);
 		if ($this->subject) $this->subject = urldecode($this->subject);
+		
+		// :: hack for anonymous posts
+		if (!$this->authorfname) {
+			$this->authorfname = $this->authoruname = "Anonymous";
+			$this->authorid = 0;
+		}
 	}
 	
 	function _fetch() {
@@ -205,7 +211,7 @@ class discussion {
 		FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,FK_story,discussion_order,user_uname,user_fname
 	FROM
 		discussion
-		INNER JOIN
+		LEFT JOIN
 			user
 		ON
 			FK_author = user_id
@@ -341,7 +347,7 @@ class discussion {
 			if ($a=='edit') {
 				$d = & new discussion($_REQUEST['story']);
 				$d->fetchID($_REQUEST['id']);
-				if ($_SESSION['auser'] != $d->authoruname) print "ubleck!"; //return false;
+				if ($_SESSION['auser'] != $d->authoruname) return false;
 				$d->subject = $_REQUEST['subject'];
 				$d->content = $_REQUEST['content'];
 				$d->update();
@@ -352,7 +358,7 @@ class discussion {
 				$d->subject = $_REQUEST['subject'];
 				$d->content = $_REQUEST['content'];
 				if ($a=='reply') $d->parentid = $_REQUEST['replyto'];
-				$d->authorid = $_SESSION['aid'];
+				$d->authorid = ($_SESSION['aid'])?$_SESSION['aid']:0;
 				$d->insert();
 			}
 			unset($_REQUEST['action'],$_REQUEST['commit']);
@@ -394,7 +400,8 @@ class discussion {
 		print "<input type=hidden name=commit value=1>";
 		if ($t=='edit') print "<input type=hidden name=id value=".$_REQUEST['id'].">";
 		if ($t=='reply') print "<input type=hidden name=replyto value=".$_REQUEST['replyto'].">";
-		print "<br>You will be able to edit/delete your post as long as no-one replies to it.";
+		if ($_SESSION['aid']) print "<br>You will be able to edit your post as long as no-one replies to it.";
+		else print "<br>Once submitted, you will not be able to modify your post.";
 		print "</td></tr>";
 		print "</form>";
 	}
