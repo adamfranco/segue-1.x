@@ -1,6 +1,8 @@
 <? // add_story_form.inc -- the form that people use to add/edit a story
 
 // what kind of editor will we use?
+// now included in editor_control.inc.php
+/*
 $uagent = $HTTP_SERVER_VARS["HTTP_USER_AGENT"];
 $isMac = ereg("Mac",$uagent);
 $uagent = explode("; ",$uagent);
@@ -8,11 +10,11 @@ $uagent = explode(" ",$uagent[1]);
 $bname = strtoupper($uagent[0]);
 $bvers = $uagent[1];
 if(($bname == "MSIE") && (intval($bvers) >= 5) && (!$isMac) ) {
-	$editorType = "html";
+	$editorType = "activex";
 } else {
 	$editorType = "txt";
 }
-
+*/
 
 printc("<form action='$PHP_SELF?$sid' method=post name=storyform".(($type != 'story')?" enctype='multipart/form-data'":"").">");
 
@@ -115,65 +117,12 @@ if ($type == 'story') {
 //	Original link include to existing ActiveX Editor
 //	if ($editorType=='html') printc("<a href='htmleditor/editor.inc.php?element=shorttext' target='editor' onClick='doWindow(\"editor\",700,500);'>[easy editor]</a>");
 
-//	New ActiveX Editor include via JavaScript
-        printc("<script language=\"Javascript1.2\" src=\"/sitesdb/htmleditor/editor.js\"></script>\n");
-        printc("<script>\n");
-        printc("_editor_url = \"/sitesdb/htmleditor/\";\n");
-        printc("</script>\n");
-        printc("<style type=\"text/css\">\n");
-        printc("<!--\n");
-        printc("  .btn   { BORDER-WIDTH: 1; width: 26px; height: 24px; }\n");
-        printc("  .btnDN { BORDER-WIDTH: 1; width: 26px; height: 24px; BORDER-STYLE: inset; BACKGROUND-COLOR: buttonhighlight; }\n");
-        printc("  .btnNA { BORDER-WIDTH: 1; width: 26px; height: 24px; filter: alpha(opacity=25); }\n");
-        printc("-->\n");
-        printc("</style>\n");
-        printc("<style type=\"text/css\">\n");
-        printc("<!--\n");
-        printc("   body, td { font-family: arial; font-size: 12px; }\n");
-        printc("  .headline { font-family: arial black, arial; font-size: 28px; letter-spacing: -2px; }\n");
-        printc("  .subhead  { font-family: arial, verdana; font-size: 12px; let!ter-spacing: -1px; }\n");
-        printc("-->\n");
-        printc("</style>\n");
-//	End modification 1 - 10.26.02 - rlange
-        
-	printc("</td></tr></table>");
-//	Begin modification 2 - 10.26.02 - rlange
-//	Added an id tag to the textarea definition	
-	printc("<textarea name=shorttext id=shorttext cols=80 rows=16>");
-	printc(spchars($shorttext));
-	printc("</textarea>");
-//	End modification 2 - 10.26.02 - rlange	
+//	print out text areas with editor (determined by addeditor function
 
-//	Begin modification 3 - 10.26.02 - rlange
-//	Create the iView from JavaScript for the above textarea
-	printc("<script language=\"javascript1.2\">\n");
-	printc("editor_generate('shorttext');\n");
-	printc("</script>\n");
-//	End modification 3 - 10.26.02 - rlange	
+	include("htmleditor/editor_control.inc.php");
+	//include("htmleditor/editor_activex.inc.php");
 	
-	printc("<br>");
-	printc("<table width=80%><tr><td style='padding-left: 15px'>");
-	printc("Full Content: (optional)");
-	printc("</td><td align=right>");
-	
-//	Begin modification 4 - 10.26.02 - rlange	
-//	Original link include to existing ActiveX Editor	
-//	if ($editorType=='html') printc("<a href='htmleditor/editor.inc.php?element=longertext' target='editor' onClick='doWindow(\"editor\",700,500);'>[easy editor]</a>");
-//	End modification 4 - 10.26.02 - rlange
-	printc("</td></tr></table>");
-//	Begin modification 5 - 10.26.02 - rlange
-//	Added an id tag to the textarea definition	
-	printc("<textarea name=longertext id=longertext cols=80 rows=16>");
-	printc(spchars($longertext));
-	printc("</textarea>");
-//	End modification 5 - 10.26.02 - rlange
-
-//	Begin modification 6 - 10.26.02 - rlange
-//	Create the iView from JavaScript for the above textarea
-	printc("<script language=\"javascript1.2\">\n");
-	printc("editor_generate('longertext');\n");
-	printc("</script>\n");
-//	End modification 6 - 10.26.02 - rlange	
+	addeditor ("shorttext",80,60,$shorttext);
 
 	printc("<div align=right>");
 	printc("What type of text did you enter? <select name=texttype>");

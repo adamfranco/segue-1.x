@@ -196,9 +196,10 @@ $sitefooter = "";
 
 if ($cancel) {
 	$commingFrom = $settings[commingFrom];
-	$site = $settings[site];
+	$site = $settings[site];	
+	if ($settings[edit]) $section = $settings[section];
 	session_unregister("settings");
-	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
+	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site".(($section)?"&section=$section":""));
 	else header("Location: index.php?$sid");
 }
 
@@ -253,7 +254,7 @@ if ($save) {
 			$newid = lastid();
 			$sections = decode_array(db_get_value("sites","sections","name='$settings[site]'"));
 			array_push($sections,$newid);
-			$pages = encode_array($sections);
+			$sections = encode_array($sections);
 			$query = "update sites set sections='$sections' where name='$settings[site]'";
 			db_query($query);
 			log_entry("add_section","$auser added section id $newid to site $settings[site]");
@@ -285,7 +286,7 @@ if ($save) {
 			
 		}
 */		
-	//	header("Location: index.php?$sid&action=viewsite&site=$settings[site]".(($settings[type]=='section')?"&section=$newid":""));
+		header("Location: index.php?$sid&action=viewsite&site=$settings[site]".(($settings[type]=='section')?"&section=$newid":""));
 		
 	} else {
 		$settings[step] = 1;
@@ -339,11 +340,11 @@ if ($settings[step] == 3) {
 
 
 // ---  variables for debugging ---
-foreach ($settings as $n => $v) {
-	$variables .= "$n = $v <br>";	
-}
+//foreach ($settings as $n => $v) {
+//	$variables .= "$n = $v <br>";	
+//}
 //add_link(leftnav,'','',"$variables");
-print $variables;
+//print $variables;
 //------------------------------------
 
 // End of New Code
