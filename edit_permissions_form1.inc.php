@@ -50,9 +50,9 @@ if ($edlist = $_SESSION[obj]->getEditors()) {
 		print "<td class=td$color align=center><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
 		print "<td class=td$color>";
 		if ($e == "everyone")
-			print "Everyone (will override other entries)</td>";
+			print "Everyone (everyone) - will override other entries</td>";
 		else if ($e == "institute")
-			print $cfg[inst_name]." Users</td>";
+			print $cfg[inst_name]." Users (institute)</td>";
 		else
 			print ldapfname($e)." ($e)</td>";
 		print "<td class=td$color align=center>";
