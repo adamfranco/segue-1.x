@@ -216,32 +216,12 @@ if ($cancel) {
 
 if ($save) {
 	if (!$error) { // save it to the database
-		if ($settings[add]) $addedby=$auser;
-		if ($settings[edit]) $editedby = $auser;
-		
-		$where = '';
-		if ($settings[add]) $query = "insert into sites set name='$settings[sitename]', addedby='$addedby', addedtimestamp=NOW()";
-		else {
-			$query = "update sites set editedby='$editedby'";
-			$where = " where name='$settings[sitename]'";
-		}
 		
 		if ($settings[activatedate]) $settings[activatedate] = $settings[activateyear] . "-" . ($settings[activatemonth]+1) . "-" . $settings[activateday];
 		else $settings[activatedate] = "0000-00-00";
 	
 		if ($settings[deactivatedate]) $settings[deactivatedate] = $settings[deactivateyear] . "-" . ($settings[deactivatemonth]+1) . "-" . $settings[deactivateday];
 		else $settings[deactivatedate] = "0000-00-00";
-	
-		$settings[active] = ($settings[active])?1:0;
-		$settings[listed] = ($settings[listed])?1:0;
-			
-//		$viewpermissions = 'anyone';
-			
-		$query .= ", title='$settings[title]', viewpermissions='$settings[viewpermissions]', listed='$settings[listed]', activatedate='$settings[activatedate]', deactivatedate='$settings[deactivatedate]', active=$settings[active], type='$settings[type]'";
-		
-		$query .= ", theme='$settings[theme]', themesettings='$settings[themesettings]'";
-
-		$query .=", editors='$settings[editors]'";
 		
 		if ($settings[editors]) {
 			$edlist = explode(",",$settings[editors]);
@@ -253,8 +233,6 @@ if ($save) {
 		} else $settings[permissions] = '';
 		print_r($settings[permissions]);
 		$settings[permissions]=encode_array($settings[permissions]);
-	
-		$query .= ", permissions='$settings[permissions]'";
 
 		// Break up the short and long text and properly configure image urls
 		$textarray1 = explode("&&&&", $settings[header]);
@@ -283,9 +261,15 @@ if ($save) {
 		$settings[footer] = urlencode($settings[footer]);
 		$query .= ", footer='$settings[footer]'";
 		
-		db_query($query.$where);
+		//db_query($query.$where);
+		print "<BR><BR>$settings[sitename]<BR><BR>";
+		$siteObj = new site($settings[sitename]);
+		$siteObj->setData($settings);
+		if ($settings[add]) $siteObj->insertDB();
+		if ($settings[edit]) $siteObj->updateDB();
+		
 		log_entry($action,"$settings[sitename]","","","$auser ".(($settings[edit])?"edited":"added")." $settings[sitename]");
-		printc("<br>query = $query$where");
+		printc("<br>old query = $query$where");
 		
 		// --- Copy the Template on add ---
 		if ($settings[add] && $settings[template] != "") {
@@ -361,15 +345,8 @@ if ($save) {
 			if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename");
 			else header("Location: index.php?$sid");
 		}
-
-//		if ($edit) header("Location: index.php?$sid");
-//		if ($add) {
-//			if ($template) header("Location: index.php?$sid&action=viewsite&site=$sitename");
-//			if (!$sitename) $sitename = $edit_site;
-//		}
 		
 	} else {
-//		$step = 1;
 		printc ("<br>There was an error");
 	}
 	

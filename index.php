@@ -1,6 +1,10 @@
 <?	// index.php for coursesDB module
 	// this file controls pretty much the entire program, taking input and executing the correct scripts accordingly
 
+// we need to include object files before session_start() or registered
+// objects will be broken.
+include("objects/objects.inc.php");
+
 ob_start();		// start the output buffer so we can use headers if needed
 session_start();// start the session manager :) -- important, as we just learned
 

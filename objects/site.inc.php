@@ -51,11 +51,13 @@ class site {
 	
 	function updateDB() {
 		global $auser;
+		if (!$this->changed) return 0;
 		$a = $this->createSQLArray();
 		$a[] = "editedby='$auser'";
-		$a[] = "editedtimestamp=NOW()";		
+		$a[] = "editedtimestamp=NOW()";
 		$query = "update sites set ".implode(",",$a)." where id=".$this->id." and name='".$this->name."'";
 		db_query($query);
+		return 1;
 	}
 	
 	function insertDB() {
@@ -65,7 +67,9 @@ class site {
 		$a[] = "addedtimestamp=NOW()";
 		$a[] = "name='".$this->name."'";
 		$query = "insert into sites set ".implode(",",$a);
+		print "<BR>query = $query<BR>";
 		db_query($query);
+		return 1;
 	}
 	
 	function createSQLArray() {
@@ -73,10 +77,10 @@ class site {
 		$a = array();
 		$a[] = "title='$d[title]'";
 		$a[] = "viewpermissions='$d[viewpermissions]'";
-		$a[] = "listed='$d[listed]'";
+		$a[] = "listed=".(($d[listed])?1:0);
 		$a[] = "activatedate='$d[activatedate]'";
 		$a[] = "deactivatedate='$d[deactivatedate]'";
-		$a[] = "active=$d[active]";
+		$a[] = "active=".(($d[active])?1:0);
 		$a[] = "type='$d[type]'";
 		$a[] = "theme='$d[theme]'";
 		$a[] = "themesettings='$d[themesettings]'";
