@@ -19,7 +19,7 @@ require_once(dirname(__FILE__).'/../objects/story.inc.php');
 require_once(dirname(__FILE__).'/../permissions.inc.php');
 
 // print help if requested/needed
-if ($argc < 2 || $argc > 3 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) {
+if ($argc < 2 || $argc > 4 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) {
 
 ?>
 
@@ -31,11 +31,15 @@ not be copied.
 
 Usage:
 
-<?php echo $argv[0]; ?> [-v] <output directory>
+<?php echo $argv[0]; ?> [-v] [-z] <output directory>
 
 Options:
 	-v	Verbose output. Will print out the number 
 		and name of the sites being export.
+	-z	Export sites to /tmp/segue_tmp/, then create
+		a allsites.tar.gz file in <output directory>.
+		This option requires the ability to execute a
+		command of the form "tar -czf filename.tar.gz dirname". 
 
 With the --help, -help, -h,
 or -? options, you can get this help.
@@ -43,13 +47,28 @@ or -? options, you can get this help.
 <?
 } else {
 	
-	if ($argv[1] == '-v')
+	// get our options
+	if ($argv[1] == '-v' || $argv[2] == '-v')
 		$verbose = TRUE;
 	else 
 		$verbose = FALSE;
-		
 	
-	$exportpath = $argv[$argc-1];
+	if ($argv[1] == '-z' || $argv[2] == '-z')
+		$compress = TRUE;
+	else 
+		$compress = FALSE;
+	
+	// Set up our output directories and make a tmp dir
+	// if we will be creating a tarball
+	if ($compress) {
+		$backupdir = $argv[$argc-1];
+		$exportpath = $backupdir."segue_backup/";
+		
+		mkdir ($exportpath, 0700);
+	} else {
+		$backupdir = $argv[$argc-1];
+		$exportpath = $argv[$argc-1];
+	}
 	
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 	$query = "
@@ -74,52 +93,21 @@ or -? options, you can get this help.
 		
 		$i++;
 		
-		shell_exec("php ".dirname(__FILE__)."/domit_site_export.php ".$sitename." ".$exportpath);
-// 
-// 		// Fetch the site.
-// 		$site =& new Site($sitename);
-// 		$site->fetchDown(TRUE);
-// 		$site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
-// 		
-// 		// Fetch the location of the media files.
-// 		$imagepath = $uploaddir.$sitename.'/';
-// 		
-// 		// Get the XML for the site
-// 		$siteExporter =& new DomitSiteExporter();
-// 		$siteXML =& $siteExporter->export($site);
-// 		
-// 		
-// 		
-// 		// make a directory for the site contents
-// 		$siteDir = $exportpath.$sitename.'/';
-// 		if (file_exists($siteDir))
-// 			deletePath($siteDir);
-// 		mkdir ($siteDir);
-// 		
-// 		// Copy the Media Files to the sitedir.
-// 		dir_copy( $imagepath, $siteDir.'media/');
-// 		
-// 		// Save the XML to a file.
-// 		$xmlFile = $siteDir.'site.xml';
-// 		
-// 		
-// 		if (!$handle = fopen($xmlFile, 'a')) {
-// 			 echo "Cannot open file ($xmlFile)";
-// 			 exit;
-// 		}
-// 		
-// 		// Write $somecontent to our opened file.
-// 		if (!fwrite($handle, $siteXML)) {
-// 		   echo "Cannot write to file ($xmlFile)";
-// 		   exit;
-// 		}
-// 		
-// 		fclose($handle);
-// 		
-// 		unset($site, $siteExporter, $siteXML, 
-// 			$handle, $xmlFile, $siteDir, $imagepath, 
-// 			$sitename, $a);
+		print shell_exec("php ".dirname(__FILE__)."/export_site.php ".$sitename." ".$exportpath);
 	}
-
+	
+	// If we are compressing, make a tarball and delete the temp directory
+	if ($compress) {
+		if ($verbose)
+			print "\ncd ".$backupdir;
+		print shell_exec("cd ".$backupdir);
+		if ($verbose)
+			print "\ntar -czf ".$backupdir."segue_backup.tar.gz segue_backup";
+		print shell_exec("tar -czf ".$backupdir."segue_backup.tar.gz segue_backup");
+		deletePath($exportpath);
+	}
+	
+	if ($verbose)
+		print "\n";
 }
 exit(0);

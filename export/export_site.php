@@ -50,8 +50,7 @@ or -? options, you can get this help.
 	// Fetch the location of the media files.
 	$imagepath = $uploaddir.$sitename.'/';
 	
-	
-	
+		
 	// Get the XML for the site
 	$siteExporter =& new DomitSiteExporter();
 	$siteXML =& $siteExporter->export($site);
