@@ -37,9 +37,9 @@ if ($copysite && $newname && $origname) {
 if ($allowclasssites != $allowpersonalsites && ($personalsitesurl != "" || $classsitesurl != "")) {
 	if ($allowclasssites) {
 		add_link(topnav,"Classes");
-		add_link(topnav,"Community","$personalsitesurl/?name=$luser",'','','');
+		add_link(topnav,"Community","$personalsitesurl",'','','');
 	} else {
-		add_link(topnav,"Classes","$classsitesurl/?name=$luser",'','','');
+		add_link(topnav,"Classes","$classsitesurl",'','','');
 		add_link(topnav,"Community");
 	}
 }
