@@ -9,10 +9,34 @@ if (file_exists("$themesdir/$theme/colors.inc.php"))
 
 if ($themesettings[theme] == 'shadowbox') {   // indeed these settings are for this theme
 
-	$use = $themesettings[colorscheme];
+	$usebg = $themesettings[bgcolor];
+	$usecolor = $themesettings[colorscheme];
+	$useborder = $themesettings[borderstyle];
+	$usebordercolor = $themesettings[bordercolor];
+	$usetextcolor = $themesettings[textcolor];
+	$uselinkcolor = $themesettings[linkcolor];
+	
 }
-if (!$use) $use = 'white';
-$c = $_theme_colors[$use];
+if (!$usebg) $usebg = 'gray';
+$bg = $_bgcolor[$usebg];
+
+if (!$usecolor) $usecolor = 'white';
+$c = $_theme_colors[$usecolor];
+
+if (!$useborder) $useborder = 'dashed';
+$borders = $_borderstyle[$useborder];
+
+if (!$usebordercolor) $usebordercolor = 'black';
+$bordercolor = $_bordercolor[$usebordercolor];
+
+if (!$usetextcolor) $usetextcolor = 'black';
+$textcolor = $_textcolor[$usetextcolor];
+
+if (!$uselinkcolor) $uselinkcolor = 'red';
+$linkcolor = $_linkcolor[$uselinkcolor];
+
+
+
 
 /* ------------------- END ---------------------------	*/
 
@@ -60,7 +84,7 @@ include("themes/common/header.inc.php"); ?>
 <td class=topright>&nbsp;</td>
 </tr>
 <tr>
-<td class=left><img class=lefttop src='<? echo "$themesdir/$theme/images/lefttop.gif"?>'></td>
+<td class=left><img class=lefttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>'></td>
 <td class=content>
 
 <div class=header>
@@ -183,7 +207,7 @@ foreach ($topnav as $item) {
 print $sitefooter ?>
 
 </td> <!-- end content table cell -->
-<td class=right><img class=righttop src='<? echo "$themesdir/$theme/images/righttop.gif"?>'></td>
+<td class=right><img class=righttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>'></td>
 </tr>
 <tr>
 <td class=bottomleft>&nbsp;</td>

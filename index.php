@@ -82,7 +82,6 @@ if ($_loggedin) {
 
 //if (count($classes)) printc(implode(",",array_keys($classes)));
 
-include("permissions.inc.php");
 
 // connect to the database
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);

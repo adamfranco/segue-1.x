@@ -7,6 +7,7 @@ include("error.inc.php");
 include("themes/themeslist.inc.php");
 include("dates.inc.php");
 include("help/include.inc.php");
+include("permissions.inc.php");
 
 
 //output a meta tag

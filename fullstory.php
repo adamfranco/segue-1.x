@@ -8,7 +8,6 @@ session_start();
 
 // include all necessary files
 include("includes.inc.php");
-include("permissions.inc.php");
 
 include("$themesdir/common/header.inc.php");
 $partialstatus = 1;

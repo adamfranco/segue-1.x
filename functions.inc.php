@@ -487,7 +487,10 @@ function handlestoryorder($stories,$order) {
 
 function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 	// $action can have value MOVE or COPY
+	global $auser;
 	$action = strtolower($action);
+//	print "--------------------------<br>";
+//	print "action = $action<br>parttype = $parttype<br>id = $id<br>newparentid = $newparentid<br>isSubCall = $isSubCall<br>";
 	
 	// Get part and newparent info
 	if ($parttype == 'story') {
@@ -512,6 +515,8 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 	}
 	
 	$part = db_get_line($parttable,"id=$id");
+//	print_r($part);
+//	print "<br>";
 	if ($parenttype == "site")
 		$newparent = db_get_line($parenttable,"name='$newparentid'");
 	else	
@@ -533,15 +538,16 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 		else
 			$parentparts = decode_array(db_get_value($parenttable,$partarray,"id=$parentid"));
 		$parentnewparts = array();
-		foreach ($partarray as $p) {
+		foreach ($parentparts as $p) {
 			if ($p != $id) array_push($parentnewparts,$p);
 		}
-		$parentparts = encode_array($parentnewpartss);
+		$parentparts = encode_array($parentnewparts);
 		if ($parenttype == "site")
 			$query = "update $parenttable set $partarray='$parentparts' where name='$parentid'";
 		else
 			$query = "update $parenttable set $partarray='$parentparts' where id='$parentid'";
 		db_query($query);
+//		print "$query<br>";
 	}
 	
 	// Update the part's fields if MOVING, if COPYING insert into new row
@@ -549,7 +555,7 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 		$query = "update $parttable set editedby='$auser',"; 
 		$where = " where id='$id'";
 	} else {	// COPY
-		$query = "insert into $parttable set addedby='$auser',"; 
+		$query = "insert into $parttable set addedby='$auser',addedtimestamp=NOW(),"; 
 		$where = "";
 	}
 			
@@ -595,7 +601,7 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 		}
 	}
 	if ($parttype == 'section') {
-		$chg[] = "site_id='$newparent[site_id]'";
+		$chg[] = "site_id='$newparentid'";
 		$chg[] = "permissions='$newparent[permissions]'";
 		if ($action == "copy") {
 			$chg[] = "url='$part[url]'";
@@ -607,30 +613,34 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 			$chg[] = "active=$part[active]";
 		}
 	}
-		
+
 	$query .= implode(",",$chg);
-//	print $query.$where."<BR>";
 	if (count($chg)) db_query($query.$where);
+//	print $query.$where."<BR>";
+//	print mysql_error()."<br>";
 
 	// Make sure that we have the correct new ID
 	if ($action == "copy") $newid = lastid();
 	else $newid = $id;
 	
-	// Update the stories array in the newparent
-	$newparentparts = decode_array($newparent[$partarray]);
-	array_push($newparentparts,$newid);
-	$newparentparts = encode_array($newparentparts);
-	if ($parenttype == "site")
-		$query = "update $parenttable set $partarray='$newparentparts' where name='$newparentid'";
-	else
-		$query = "update $parenttable set $partarray='$newparentparts' where id='$newparentid'";
-	db_query($query);
+	// Update the stories array in the newparent if not a move sub call.
+	if (!($action == "move" && $isSubCall)) {
+		$newparentparts = decode_array($newparent[$partarray]);
+		array_push($newparentparts,$newid);
+		$newparentparts = encode_array($newparentparts);
+		if ($parenttype == "site")
+			$query = "update $parenttable set $partarray='$newparentparts' where name='$newparentid'";
+		else
+			$query = "update $parenttable set $partarray='$newparentparts' where id='$newparentid'";
+		db_query($query);
+//		print "$query<br>";
+	}
 	
 	// Update the appropriate ids and permissions of pages lower in the hierarchy.
 	if ($parttype != "story") {
-		if (move) {
+		$children = decode_array($part[$childarray]);
+		if ($action == "move") {
 			// update the foreign keys and permissions for the entry
-			$children = decode_array($part[$childarray]);
 			foreach ($children as $childid) {
 				copyPart(MOVE,$childtype,$childid,$newid,1);
 			}
@@ -641,6 +651,8 @@ function copyPart($action,$parttype,$id,$newparentid,$isSubCall=0) {
 			}
 		}
 	}
+	
+	if (!$isSubCall) return $newid;
 }
 
 function copySite($orig,$dest) {

@@ -142,29 +142,42 @@ function has_permissions($user, $this_level,$site,$section,$page,$story) {
 // gets $user (person trying to edit), $type (SITE,SECTION, or PAGE), and $function (ADD,EDIT, or DELETE)
 function permission($user,$type,$function,$id) {
 	$user = strtolower($user);
-	global $site_owner,$site,$section,$page,$story,$classes;
-	// the above is taken as a fix.. i was stupid enough to forget that the addedby field can contain
-	// people other than the site owner, so we have to check if the site owner is the current user
-	if ($site_owner == $user) return 1;
+	global $classes;
+
 	if ($type == SITE) { 
 		$a = db_get_line("sites","name='$id'");
+		$site_owner = db_get_value("sites","addedby","name='$id'");
+		$site = $id;
+		if ($site_owner == $user) return 1;
 	}
 	if ($type == SECTION) {
 		$a = db_get_line("sections","id=$id");
+		$site_owner = db_get_value("sites","addedby","name='$a[site_id]'");
+		$site = $a[site_id];
+		if ($site_owner == $user) return 1;
 	}
 	if ($type == PAGE) {
 		$a = db_get_line("pages","id=$id");
+		$site_owner = db_get_value("sites","addedby","name='$a[site_id]'");
+		$site = $a[site_id];
+		$section = $a[section_id];
+		if ($site_owner == $user) return 1;
 		$sectiona = db_get_line("sections","id=$section");
 		if ($sectiona[locked]) return 0;
 	}
 	if ($type == STORY) {
 		$a = db_get_line("stories","id=$id");
+		$site_owner = db_get_value("sites","addedby","name='$a[site_id]'");
+		$site = $a[site_id];
+		$section = $a[section_id];
+		$page = $a[page_id];
+		if ($site_owner == $user) return 1;
 		$sectiona = db_get_line("sections","id=$section");
 		if ($sectiona[locked]) return 0;
 		$pagea = db_get_line("pages","id=$page");
 		if ($pagea[locked]) return 0;
 	}
-	
+
 	
 	if ($a['locked'] && $user != $site_owner) return 0;
 	
@@ -188,6 +201,7 @@ function permission($user,$type,$function,$id) {
 		}
 	}
 	return $permissions[$user][$function];
+
 }
 
 function is_editor($user,$site,$ignore_owner=0) {

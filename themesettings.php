@@ -20,10 +20,10 @@ $themesettings -- existing theme settings
 */
 
 /* ------ debug ------- */
-/* $themesettings = $HTTP_GET_VARS['themesettings']; */
-/* print "$themesettings<br>"; */
-/* print_r(unserialize(stripslashes($themesettings)))."<br>"; */
-/* print "$theme - $updatemethod - $site<br>"; */
+// $themesettings = $HTTP_GET_VARS['themesettings']; 
+// print "$themesettings<br>"; 
+// print_r(unserialize(stripslashes($themesettings)))."<br>"; 
+// print "$theme - $updatemethod - $site"."<br>"; 
 
 $themesettings = unserialize(stripslashes(($themesettings)));
 $filename = "$themesdir/$theme/themesettings.inc.php";
@@ -43,7 +43,7 @@ if ($submitted) {
 	$onLoad = ' onLoad="';
 	$themesettings = encode_array($themesettings);
 	if ($updatemethod == 'javascript') {
-		$onLoad .= 'updateAndClose()';
+		$onLoad .= 'update()';
 	}
 	if ($updatemethod == 'db') {
 		$onLoad .= 'window.close()';
@@ -58,7 +58,8 @@ if ($submitted) {
 	printc("<input type=hidden name='site' value='$site'>");
 	printc("<input type=hidden name='theme' value='$theme'>");
 	printc($settings_form);
-	printc("<div align=right><input type=submit value='Update & Close' class=button></div>");
+	printc("<div align=right><input type=submit value='Update' class=button><input type=button value='Close' class=button onclick=\"closeall()\"></div>");
+	
 	printc("</form>");
 }
 
@@ -67,9 +68,17 @@ if ($submitted) {
 
 <head>
 <script lang='JavaScript'>
-function updateAndClose() {
+
+function closeall() {
+	window.close();
+}
+
+function update() {
 	var ts = '<?echo $themesettings?>';
 	opener.document.addform.themesettings.value = ts;
+	opener.document.addform.submit();
+	opener.doPreviewWin("<?echo $theme?>", "settings");
+	preview.focus();
 	window.close();
 }
 </script>
@@ -117,8 +126,5 @@ select {font-size: 10px; }
 
 <div class=content>
 <? print $content ?>
-<div style='margin-left: 220px; margin-right: 30px'>
-After updating you can click the thumbnail to preview your new settings.
-</div>
 </div>
 </body>

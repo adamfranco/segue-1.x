@@ -16,11 +16,14 @@ function selectTheme(row) {
 	document.addform.submit();
 }
 
-function doPreviewWin(theme) {
+function doPreviewWin(theme, from) {
 	if (theme == "<? print $settings[theme]; ?>") {
 		var themesettings = document.addform.themesettings.value;
 	} else {
 		var themesettings = "";
+	}
+	if (from == "settings") {
+		doThemeSettings();	
 	}
 	var preview = window.open("index.php?action=site&site=sample&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=500");
 	preview.focus();
@@ -43,6 +46,7 @@ function doThemeSettings() {
 	var site = "<? print $settings[sitename]; ?>";
 	var settings = window.open("themesettings.php?<?echo $sid?>&theme="+theme+"&site="+site+"&themesettings="+themesettings+"&updatemethod=javascript","settings","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=400,height=400");
 }
+
 </script>
 
 <? // add_site_form_2_theme.inc -- the form that people use to add/edit a site
