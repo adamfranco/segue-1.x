@@ -80,7 +80,7 @@ class segue {
 
 	function getAllSitesWhereUserIsEditor($user='') {
 		if ($user == '') $user = $_SESSION[auser];
-		$query = "select from permissions where user='$user'";
+		$query = "select * from permissions where user='$user'";
 		$r = db_query($query);
 		$ar = array();
 		if (db_num_rows($r)) {
@@ -88,7 +88,7 @@ class segue {
 				$ar[] = $a[site];
 			}
 		}
-		return $ar;
+		return array_unique($ar);
 	}
 
 /******************************************************************************

@@ -133,22 +133,23 @@ $pwhat = $_REQUEST[pwhat];
 $puser = $_REQUEST[puser];
 
 //print "$pscope - $psite - $psection - $ppage - $pstory - $pfield - $pwhat - $puser";
-
-if ($fieldchange) {	 // we're supposed to change a field
-	$_a = array("story"=>0,"page"=>1,"section"=>2,"site"=>3);
-	if ($pscope == 'site') $theObj = &$_SESSION[obj];
-	if ($pscope == 'section') $theObj = &$_SESSION[obj]->sections[$psection];
-	if ($pscope == 'page') $theObj = &$_SESSION[obj]->sections[$psection]->pages[$ppage];
-	if ($pscope == 'story') $theObj = &$_SESSION[obj]->sections[$psection]->pages[$ppage]->stories[$pstory];
-	if ($pfield == 'locked') {
-		$theObj->setField('locked',$pwhat);
-	}
-	if (ereg("perms-([a-z]){1,}",$pfield)) {
-		$regs = split('-',$pfield);
-		$perm = $regs[1];
-		$theObj->setUserPermissionDown($perm,$puser,$pwhat);
-		$theObj->setFieldDown("l-$puser-$perm",$pwhat);
-		if ($pwhat ==1) $theObj->setField("l-$puser-$perm",(1-$pwhat));
+if ($isOwner) {
+	if ($fieldchange) {	 // we're supposed to change a field
+		$_a = array("story"=>0,"page"=>1,"section"=>2,"site"=>3);
+		if ($pscope == 'site') $theObj = &$_SESSION[obj];
+		if ($pscope == 'section') $theObj = &$_SESSION[obj]->sections[$psection];
+		if ($pscope == 'page') $theObj = &$_SESSION[obj]->sections[$psection]->pages[$ppage];
+		if ($pscope == 'story') $theObj = &$_SESSION[obj]->sections[$psection]->pages[$ppage]->stories[$pstory];
+		if ($pfield == 'locked') {
+			$theObj->setField('locked',$pwhat);
+		}
+		if (ereg("perms-([a-z]){1,}",$pfield)) {
+			$regs = split('-',$pfield);
+			$perm = $regs[1];
+			$theObj->setUserPermissionDown($perm,$puser,$pwhat);
+			$theObj->setFieldDown("l-$puser-$perm",$pwhat);
+			if ($pwhat ==1) $theObj->setField("l-$puser-$perm",(1-$pwhat));
+		}
 	}
 }
 

@@ -305,13 +305,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 		}
 
 		printc("<div align=left>");
-//		printc("<a href='siteeditor.php?$sid&site=$name' target='sitemap' onclick='doWindow(\"sitemap\",600,500)'>[site map]</a><br>");
-	//	printc("<a href='$namelink2'>[edit content]</a><br>");
 	
-/* 		$addr = $_SERVER[SCRIPT_URI]; */
-/* 		$l = explode("/",$addr); */
-/* 		array_pop($l); */
-/* 		$addr = implode("/",$l); */
 		$addr = "$_full_uri/sites/$name";
 		printc("<div style='padding-left: 20px; font-size: 12px;'>  URL: <a href='$addr' target='_blank'>$addr</a><br></div></div>");
 		

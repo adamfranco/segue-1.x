@@ -70,15 +70,20 @@ doEditorLine($_SESSION[obj]);
 $sections = &$_SESSION[obj]->sections;
 foreach ($sections as $i=>$o) {
 	$sections[$i]->buildPermissionsArray();
-	doEditorLine($sections[$i]);
-	$pages = &$sections[$i]->pages;
-	foreach ($pages as $pi=>$po) {
-		$pages[$pi]->buildPermissionsArray();
-		doEditorLine($pages[$pi]);
-		$stories = &$pages[$pi]->stories;
-		foreach ($stories as $si=>$so) {
-			$stories[$si]->buildPermissionsArray();
-			doEditorLine($stories[$si]);
+	if ($isOwner || ($sections[$i]->canview() || $sections[$i]->hasPermissionDown("add or edit or delete"))) {
+		doEditorLine($sections[$i]);
+		$pages = &$sections[$i]->pages;
+		foreach ($pages as $pi=>$po) {
+			$pages[$pi]->buildPermissionsArray();
+			if ($isOwner || ($pages[$pi]->canview() || $pages[$pi]->hasPermissionDown("add or edit or delete"))) {
+				doEditorLine($pages[$pi]);
+				$stories = &$pages[$pi]->stories;
+				foreach ($stories as $si=>$so) {
+					$stories[$si]->buildPermissionsArray();
+					if ($isOwner || ($stories[$si]->canview() || $stories[$si]->hasPermissionDown("add or edit or delete")))
+						doEditorLine($stories[$si]);
+				}
+			}
 		}
 	}
 }
@@ -100,6 +105,7 @@ print "</table></form>";
  * | view | add | edit | delete |
  ******************************************************************************/
 function doEditorLine(&$o) {
+	global $isEditor,$isOwner;
 	$class = get_class($o);
 	$bgColor = getBgColor($class,"normal");
 	$bgColorL = getBgColor($class,"locked");
@@ -121,7 +127,7 @@ function doEditorLine(&$o) {
 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->id.",0";
 	if ($class == 'story')
 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->owning_page.",".$o->id;
-	print "<td align=center class='lockedcol' style='background-color: $bgColorL'>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onChange=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\">":"-")."</td>";
+	print "<td align=center class='lockedcol' style='background-color: $bgColorL'>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onChange=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\" ".((!$isOwner)?"disabled":"").">":"-")."</td>";
 	
 	$o->buildPermissionsArray();
 	$p = $o->getPermissions();
@@ -134,7 +140,7 @@ function doEditorLine(&$o) {
 			if (($e == 'everyone' || $e == 'institute') && $i<3) $skip = 1;
 			if ($class=='story' && $v == 'add') $skip = 1;
 			if ($skip) print "<td align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">-</td>";
-			else print "<td align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onChange=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v"))?"disabled":"")."></td>";
+			else print "<td align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onChange=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v") || !$isOwner)?"disabled":"")."></td>";
 		}
 	}
 	print "</tr>";
