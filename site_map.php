@@ -11,7 +11,6 @@ include("includes.inc.php");
 include("objects/objects.inc.php");
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-/* $sa = db_get_line("sites","name='$site'"); */
 $siteObj = new site($site);
 $siteObj->fetchDown();
 ?>
@@ -75,54 +74,8 @@ print "<tr>";
 	print "<th>Site Map - ".$siteObj->getField("title")."</th>";
 print "</tr>";
 
-/* if (count($sections)) { */
-/* 	foreach ($sections as $sec) { */
-/* 		print "<tr>"; */
-/* 		$seca = db_get_line("sections","id=$sec"); */
-/* 		$secp = decode_array($seca[permissions]); */
-/* 		print "<td class=td$color style='padding-left: 10px'>"; */
-/* 		if ($seca[type]=='section') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec\"'>"; */
-/* 		print "$seca[title]"; */
-/* 		if ($seca[type]=='section') print "</a>"; */
-/* //		print "<br><pre>";print_r($secp);print "</pre>"; */
-/* 		print "</td>"; */
-/* 		print "</tr>"; */
-/* 		$color = 1-$color; */
-/* 		$pages = decode_array($seca['pages']); */
-/* 		foreach ($pages as $p) { */
-/* 			$pa = db_get_line("pages","id=$p"); */
-/* 			$pp = decode_array($pa[permissions]); */
-/* 			if ($pa[type]=='divider' || $pa[type]=='heading') next; */
-/* 			print "<tr>"; */
-/* 			print "<td class=td$color style='padding-left: 20px'>"; */
-/* 			print "-&gt; "; */
-/* 			if ($pa[type]=='page') print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s&page=$p\"'>"; */
-/* 			print "$pa[title]"; */
-/* 			if ($pa[type]=='page') print "</a>"; */
-/* 			print "</td>"; */
-/* 			print "</tr>"; */
-/* 			$color = 1-$color; */
-/* 	 */
-/* 			$stories = decode_array($pa['stories']); */
-/* 			$j=1; */
-/* 			foreach ($stories as $s) { */
-/* 				print "<tr>"; */
-/* 				$sa = db_get_line("stories","id=$s"); */
-/* 				$sp = decode_array($sa[permissions]); */
-/* 				print "<td class=td$color style='padding-left: 40px'>"; */
-/* 				 print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$sec&page=$p\"'>"; */
-/* 				print "$j. &nbsp; $sa[title]"; */
-/* 				 print "</a>"; */
-/* //				print "<br><pre>";print_r($sp);print "</pre>"; */
-/* 				print "</td>";					 */
-/* 				print "</tr>"; */
-/* 				$color = 1-$color; */
-/* 				$j++; */
-/* 			} */
-/* 		} */
-/* 	} */
 /******************************************************************************
- * print out site/section/page/story name & link, "locked" column
+ * print out site/section/page/story name & link
  ******************************************************************************/
 $siteObj->fetchDown();
 
@@ -166,7 +119,6 @@ print "</table><BR>";
 <? 
 /******************************************************************************
  * doEditorLine - prints out the line for each object.
- * | view | add | edit | delete |
  ******************************************************************************/
 function doEditorLine(&$o) {
 	global $isEditor,$isOwner;
@@ -202,34 +154,6 @@ function doEditorLine(&$o) {
 	print $o->getField("title").$extra;
 	print "</a>";
 	print "</td>";
-	// reference $args = "'scope',site,section,page,story";
-/* 	if ($class == 'site')  */
-/* 		$args = "'$class','".$o->name."',0,0,0"; */
-/* 	if ($class == 'section') */
-/* 		$args = "'$class','".$o->owning_site."',".$o->id.",0,0"; */
-/* 	if ($class == 'page') */
-/* 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->id.",0"; */
-/* 	if ($class == 'story') */
-/* 		$args = "'$class','".$o->owning_site."',".$o->owning_section.",".$o->owning_page.",".$o->id; */
-/* 	print "<td align=center class='lockedcol' style='background-color: $bgColorL' width=18>".(($class!='site')?"<input type=checkbox".(($o->getField("locked"))?" checked":"")." onClick=\"doFieldChange('',$args,'locked',".(($o->getField("locked"))?"0":"1").");\" ".((!$isOwner)?"disabled":"").">":"&nbsp;")."</td>"; */
-/* 	 */
-/* 	$type = $o->getField("type"); */
-/* 	 */
-/* 	$o->buildPermissionsArray(); */
-/* 	$p = $o->getPermissions(); */
-/* 	 */
-/* 	$_a = array("view"=>3,"add"=>0,"edit"=>1,"delete"=>2); */
-/* 	foreach ($_SESSION[editors] as $e) { */
-/* 		$args1 = "'$e',".$args; */
-/* 		foreach ($_a as $v=>$i) { */
-/* 			$skip = 0; */
-/* 			if (($e == 'everyone' || $e == 'institute') && $i<3) $skip = 1; */
-/* 			if ($class=='story' && $v == 'add') $skip = 1; */
-/* 			if ($type != 'story' && $type != 'page' && $type != 'section' && $class != 'site') $skip=1; */
-/* 			if ($skip) print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">&nbsp;</td>"; */
-/* 			else print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onClick=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v") || !$isOwner)?"disabled":"")."></td>"; */
-/* 		} */
-/* 	} */
 	print "</tr>";
 }
 
