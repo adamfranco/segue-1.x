@@ -433,7 +433,7 @@ WHERE
 		return true;
 	}
 	
-	function insertDB($down=0,$newsite=null,$newsection=0,$removeOrigional=0,$keepaddedby=0) {
+	function insertDB($down=0, $newsite=null, $newsection=0, $removeOrigional=0, $keepaddedby=0, $keepDiscussions=0) {
 		$origsite = $this->owning_site;
 		$origid = $this->id;
 		if ($newsite) {
@@ -537,7 +537,7 @@ SET
 					$GLOBALS['__site_hash']['stories'][$i] = 'NEXT';
 					
 				$this->stories[$i]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
-				$this->stories[$i]->insertDB(1,$this->owning_site,$this->owning_section,$this->id,1,$keepaddedby);
+				$this->stories[$i]->insertDB(1, $this->owning_site, $this->owning_section, $this->id, 1, $keepaddedby,  $keepDiscussions);
 			}
 		}
 		return true;

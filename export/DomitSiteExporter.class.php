@@ -517,7 +517,7 @@ class DomitSiteExporter {
 			$show_others_posts = (($story->getField('discussdisplay') == 1)?"TRUE":"FALSE");
 			$discussion->setAttribute('show_others_posts', $show_others_posts);
 			
-			$discussionObj = & new discussion(&$story);
+			$discussionObj = & new discussion( $story);
 			$discussionObj->_fetchchildren();
 			
 			while ($node =& $discussionObj->getNext()) {

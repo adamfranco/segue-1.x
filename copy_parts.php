@@ -192,9 +192,14 @@ if ($domove) {
 	} else if ($_SESSION[type] == "story") {
 		$GLOBALS['__site_hash']['stories'][$partObj->id] = 'NEXT';
 	}
+	
+	if ($_REQUEST['keep_discussions'] == 'no')
+		$keepDiscussion = FALSE;
+	else
+		$keepDiscussion = TRUE;
 		
 	// move the object.
-	$partObj->copyObj($parentObj,$removeOrigional,$keepaddedby);
+	$partObj->copyObj($parentObj,$removeOrigional,$keepaddedby, $keepDiscussion);
 	
 	// If we have moved to a new site, update the site links from the hash.
 	$newSiteObj = new site($parentObj->owningSiteObj->name);
@@ -501,10 +506,17 @@ if ($_SESSION[type] == "story") {
 	print "</tr>";
 }
 
+if (!$domove) {
+	print "\n<tr><td colspan=2>";
+	print "\n".(($action == "COPY")?"Copy":"Move")." discussions? ";
+	print "\nYes: <input type='radio' name='keep_discussions' value='yes' ".(($_REQUEST['keep_discussions'] != 'no')?"checked='checked'":"").">";
+	print "\nNo: <input type='radio' name='keep_discussions' value='no' ".(($_REQUEST['keep_discussions'] == 'no')?"checked='checked'":"").">";
+	print "\n</td></tr>";
+}
 /******************************************************************************
  * print buttons
  ******************************************************************************/
-print "<tr>";
+print "\n<tr>";
 	print "<td colspan=2>";
 	if (!$domove) {
 		if (!$cantmovehere)

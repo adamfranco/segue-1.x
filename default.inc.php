@@ -48,7 +48,8 @@ if ($copysite && $newname && $origname) {
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
 	if (!$a[FK_site]) {
-		$origSite->copySite($newname);
+		$copyDiscussions = ($_REQUEST['copy_discussions'])?TRUE:FALSE;
+		$origSite->copySite($newname, TRUE, $copyDiscussions);
 		log_entry("copy_site","$_SESSION[auser] copied site ".$origname." to ".$newname,$newname,$origSite->id,"site"); // Should maybe be the newsite's id.
 	}
 }
@@ -385,6 +386,7 @@ if ($_loggedin) {
 			printOptions($allExistingSlots);
 			printc("</select>");
 /*			printc(" Clear Permissions: <input type=checkbox name='clearpermissions' value='1' checked>"); */
+			printc(" Copy discussion posts: <input type=checkbox name='copy_discussions' value='1' checked>");
 			printc(" <input type=submit name='copysite' value='Copy' class='button'></form>");
 	}
 	

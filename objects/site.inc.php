@@ -974,7 +974,7 @@ ORDER BY
 /******************************************************************************
  * copySite - clearPermissions currently has no effect. All permissions are cleared.
  ******************************************************************************/
-	function copySite($newName, $clearPermissions=1) {
+	function copySite($newName, $clearPermissions=1, $copyDiscussions=FALSE) {
 		if ($newName == $this->name) return FALSE;
 		if ($newName == "" || !$newName) return FALSE;
 		
@@ -986,7 +986,7 @@ ORDER BY
 		
 		// Since we are specifying TRUE for the 'copy' option, each
 		// part should add its new id to the global hash
-		$newSiteObj->insertDB(1,1);
+		$newSiteObj->insertDB(1, 1, 0, $copyDiscussions);
 		
 		$newSiteObj = NULL;
 		unset($newSiteObj);
@@ -1053,7 +1053,7 @@ ORDER BY
 		return 1;
 	}
 	
-	function insertDB($down=0,$copysite=0,$importing=0) {
+	function insertDB($down=0,$copysite=0,$importing=0, $keepDiscussions=0) {
 		$a = $this->createSQLArray(1);
 		if (!$importing) {
 			$a[] = "FK_createdby=".$_SESSION[aid];
@@ -1112,7 +1112,7 @@ ORDER BY
 					$GLOBALS['__site_hash']['sections'][$id] = 'NEXT';
 					
 				$this->sections[$id]->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
-				$this->sections[$id]->insertDB(1,$this->name,$copysite);
+				$this->sections[$id]->insertDB(1,$this->name,$copysite, $importing, $keepDiscussions);
 			}
 		}
 		return 1;

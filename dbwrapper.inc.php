@@ -135,7 +135,7 @@ function db_get_line($table,$where) {
 	global $debug;
 	db_connect($dbhost, $dbuser, $dbpass,$dbdb);
 	$query = "select * from $table where $where";
-	if ($debug) print "$query<BR>";
+	if ($debug) printpre ($query);
 	$line = db_fetch_assoc(db_query($query));
 	return $line;
 }
@@ -207,7 +207,7 @@ function db_query ($query, $cid=-1) {
 	if ($debug) {
 		// The $debug variable is set at the top of this script
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-		echo "\n\n<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$query;
+		echo "\n\n<br><br>QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".printpre($query, TRUE);
 	}
 	if ($cid==-1) 
 		$cid = $_connect_id;

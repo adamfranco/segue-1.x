@@ -374,7 +374,7 @@ FROM
 /******************************************************************************
  * copyObj - Copies an object to a new parent
  ******************************************************************************/
-	function copyObj(&$newParent,$removeOrigional=1,$keepaddedby=0) {
+	function copyObj(&$newParent,$removeOrigional=1,$keepaddedby=0, $copyDiscussions=TRUE) {
 		$_a = array("site"=>3,"section"=>2,"page"=>1,"story"=>0);
 		// check that the newParent can be a parent
 		$thisClass = get_class($this);
@@ -388,13 +388,13 @@ FROM
 		if ($thisClass == 'section') {
 			$owning_site = $newParent->name;
 			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
-			$this->insertDB(1,$owning_site,$removeOrigional,$keepaddedby);
+			$this->insertDB(1, $owning_site, $removeOrigional, $keepaddedby, $copyDiscussions);
 		}
 		if ($thisClass == 'page') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->id;
 			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
-			$this->insertDB(1,$owning_site,$owning_section,$removeOrigional,$keepaddedby);
+			$this->insertDB(1, $owning_site, $owning_section, $removeOrigional, $keepaddedby, $copyDiscussions);
 		}
 		if ($thisClass == 'story') {
 			$owning_site = $newParent->owning_site;
@@ -402,7 +402,7 @@ FROM
 			$owning_page = $newParent->id;
 			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 /* 			print "insertDB: 1,$owning_site,$owning_section,$owning_page,$keepaddedby<br>"; */
-			$this->insertDB(1,$owning_site,$owning_section,$owning_page,$removeOrigional,$keepaddedby);
+			$this->insertDB(1, $owning_site, $owning_section, $owning_page, $removeOrigional, $keepaddedby, $copyDiscussions);
 		}
 
 /* 		print_r($newParent); */

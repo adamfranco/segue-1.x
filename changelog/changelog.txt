@@ -9,6 +9,8 @@ v. 1.3.0 (the future)
 	**** IMPORTANT *** Change: Various changes in Segue necessitate that you upgrade to a new config file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make several changes to Segue's database and file-storage structure. (Adam Franco)
 		
 		
+	* New feature: When copying sites or other parts of a site, discussion posts can now be coppied as well. (Adam Franco)
+		
 	* New feature: When viewing the logs screen, old logs are cleaned out as per a configurable number of days. (Adam Franco)
 		
 	* Bug Fix: Sites associated with a class and class sites now can properly add the class as an editor. (Adam Franco)

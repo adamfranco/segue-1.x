@@ -496,7 +496,7 @@ WHERE
 		return true;
 	}
 	
-	function insertDB($down=0,$newsite=null,$newsection=0,$newpage=0,$removeOrigional=0,$keepaddedby=0) {
+	function insertDB($down=0, $newsite=null, $newsection=0, $newpage=0, $removeOrigional=0, $keepaddedby=0, $keepDiscussions=0) {
 		$origsite = $this->owning_site;
 		$origid = $this->id;
 		if ($newsite) {
@@ -581,7 +581,6 @@ SET
 		}
 
 		$query = "INSERT INTO story SET ".implode(",",$a);
-/* 		print $query."<br>"; //debug */
 		db_query($query);
 		
 		$this->id = lastid();
@@ -604,13 +603,83 @@ SET
 		// add new permissions entry.. force update
 		$this->updatePermissionsDB(1);
 		
-		// add log entry
-/* 		log_entry("add_story",$this->owning_site,$this->owning_section,$this->id,"$_SESSION[auser] added content id ".$this->id." to site ".$this->owning_site); */
-		
-		// insert down
-/* 		if ($down && $this->fetcheddown) { */
-/* 			foreach ($this->stories as $i=>$o) $o->insertDB(1,$this->owning_site,$this->owning_section,$this->id,$keepaddedby); */
-/* 		} */
+		if ($keepDiscussions && $this->fetcheddown && $this->data[discussions]) {
+			
+			$idMapping = array();
+			$discussionData = array();
+	
+			// The discussions objects are way to fucked up to use to copy the
+			// posts so we are going to have to do this 'maunally'.
+			
+			// Fetch all of the discussling data
+			foreach($this->data[discussions] as $discussionId) {
+				// Get all the posts and dump their properties into an array.
+				$query = "
+					SELECT
+						*
+					FROM
+						discussion
+					WHERE
+						discussion_id=".$discussionId;
+				$r = db_query($query);
+				$discussionData[$discussionId] = db_fetch_assoc($r);
+			}
+			
+			// Insert new posts, pointing to the new story	
+			foreach (array_keys($discussionData) as $oldId) {
+				
+				// Insert the post
+				$query = 
+"INSERT INTO
+	discussion
+SET";
+				// Set the FK_story to our new story ID
+				$discussionData[$oldId]['FK_story'] = $this->id;
+				
+				// Add the rest of the fields.
+				$i=0;
+				foreach ($discussionData[$oldId] as $field => $val) {
+					if ($field != 'discussion_id' && $val) {
+						$query .= "\n\t".(($i==0)?"":", ").$field."='".$val."'";
+						$i++;
+					}
+				}
+				$r = db_query($query);
+				
+				// store the id mapping
+				$idMapping[$oldId] = lastid();
+				if ($GLOBALS['__site_hash']['discussions']){
+					$GLOBALS['__site_hash']['discussions'][$oldId] = lastid();
+				}
+			}
+			
+			// go through and update all of the FK_parents to point to the new Ids.
+			// Also, rebuild the discussions array in case we try to access it after
+			// the copy.
+			$this->data[discussions] = array();
+			foreach (array_keys($discussionData) as $oldId) {
+				$newId = $idMapping[$oldId];
+				
+				$this->data[discussions][] = $newId;
+				
+				// If we were a reply, update our parent key
+				if ($discussionData[$oldId]['FK_parent']) {
+				
+					$query = "
+UPDATE
+	discussion
+SET
+	FK_parent = '".$idMapping[$discussionData[$oldId]['FK_parent']]."',
+	discussion_tstamp = '".$discussionData[$oldId]['discussion_tstamp']."'
+	
+WHERE
+	discussion_id = '".$newId."'";
+					
+//					printpre($query);
+					$res = db_query($query);
+				}
+			}
+		}
 		return true;
 	}
 	

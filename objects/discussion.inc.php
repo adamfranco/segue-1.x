@@ -2,7 +2,6 @@
 //echo "bla";
 class discussion {
 	var $storyid,$parentid,$id;
-	var $storyObj;
 	var $detail;
 //	var $author = array("id"=>0,"uname"=>"","fname"=>"");
 	var $authorid=0,$authoruname,$authorfname,$authoremail;
@@ -25,6 +24,7 @@ class discussion {
 			"useoptforchildren"=>false
 			);
 	var $getinfo;
+	var $storyObj;
 
 /******************************************************************************
  * sets discussion options variables from $opt array
