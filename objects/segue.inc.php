@@ -493,8 +493,8 @@ FROM
 		
 		printc("</select>");
 		printc("<select name='activatemonth'>");
-		for ($i=0; $i<12; $i++) {
-			printc("<option value='$i'" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">".$months[$i]."\n");
+		for ($i=1; $i<13; $i++) {
+			printc("<option value='$i'" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">".$months[$i-1]."\n");
 		}
 		printc("</select>\n<select name='activateyear'>");
 		$curryear = date("Y");
@@ -512,8 +512,8 @@ FROM
 		}
 		printc("</select>\n");
 		printc("<select name='deactivatemonth'>");
-		for ($i=0; $i<12; $i++) {
-			printc("<option value='$i'" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+		for ($i=1; $i<13; $i++) {
+			printc("<option value='$i'" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">".$months[$i-1]."\n");
 		}
 		printc("</select>\n<select name='deactivateyear'>");
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
@@ -539,8 +539,8 @@ FROM
 		$_SESSION[settings][deactivatedate] = 0;
 		list($_SESSION[settings][activateyear],$_SESSION[settings][activatemonth],$_SESSION[settings][activateday]) = explode("-",$this->getField("activatedate"));
 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$this->getField("deactivatedate"));
-		$_SESSION[settings][activatemonth]-=1;
-		$_SESSION[settings][deactivatemonth]-=1;
+//		$_SESSION[settings][activatemonth]-=1;
+//		$_SESSION[settings][deactivatemonth]-=1;
 /* 		echo $this->getField("activatedate")."<br>"; */
 		$_SESSION[settings][activatedate]=($this->getField("activatedate")=='0000-00-00')?0:1;
 		$_SESSION[settings][deactivatedate]=($this->getField("deactivatedate")=='0000-00-00')?0:1;
@@ -548,7 +548,6 @@ FROM
 
 	function setActivateDate($year,$month=0,$day=0) {
 		// test to see if it's a valid date
-//		print "activate: $year-$month-$day<br>";
 		if ($year == -1) { // unset field
 			$this->setField("activatedate","0000-00-00");
 			return true;
@@ -558,13 +557,20 @@ FROM
 			error("The activate date you entered is invalid. It has not been set.");
 			return false;
 		}
+		
+		if ($month < 10) {
+			$month = "0".$month;
+		}
+		if ($day < 10) {
+			$day = "0".$day;
+		}
+		
 		$this->setField("activatedate",$year."-".$month."-".$day);
 		return true;
 	}
 	
 	function setDeactivateDate($year,$month=0,$day=0) {
 		// test to see if it's a valid date
-//		print "deactivate: $year-$month-$day<br>";
 		if ($year == -1) { // unset field
 			$this->setField("deactivatedate","0000-00-00");
 			return true;
@@ -573,6 +579,14 @@ FROM
 			error("The deactivate date you entered is invalid. It has not been set.");
 			return false;
 		}
+
+		if ($month < 10) {
+			$month = "0".$month;
+		}
+		if ($day < 10) {
+			$day = "0".$day;
+		}		
+		
 		$this->setField("deactivatedate",$year."-".$month."-".$day);
 		return true;
 	}
