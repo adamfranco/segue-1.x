@@ -120,6 +120,11 @@ class section extends segue {
 		$this->data[site_id] = $insite;
 		$this->init();
 		$this->data[type] = "section";
+		$this->data[id] = $id;
+		
+/* 		print "<pre>"; */
+/* 		print_r($this); */
+/* 		print "</pre>"; */
 	}
 	
 	function delete($deleteFromParent=0) {	// delete from db

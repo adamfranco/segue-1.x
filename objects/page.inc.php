@@ -422,9 +422,21 @@ ORDER BY
 		$origid = $this->id;
 		if ($newsite) $this->owning_site = $newsite;
 		if ($newsection) $this->owning_section = $newsection;
-
-		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
-		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_section);
+		
+/* 		print "<pre>\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n"; */
+/* 		print "owning_site=".$this->owning_site."\nowning section=".$this->owning_section."\nOwningSiteObj: "; */
+/* //		print_r ($this->owningSiteObj); */
+/* 		print "\nOwningSectionObj: "; */
+/* 		print_r ($this->owningSectionObj); */
+/* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
+		
+		if (!isset($this->owningSiteObj)) {
+			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj->fetchDown();
+		}
+		if (!isset($this->owningSectionObj)) {
+			$this->owningSectionObj = &$this->owningSiteObj->sections[$this->owning_section];
+		}
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
@@ -464,18 +476,13 @@ ORDER BY
 		$d = $this->data;
 		$a = array();
 		
-/* 		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site); */
-/* 		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'"; */
-		print "<pre>\n\nXXXXXXX\n";
-		if (!isset($this->owningSectionObj)) {
-			print "owning_site=".$this->owning_site."\nowning section=".$this->owning_section."\n";
-			$this->owningSectionObj = new section($this->owning_site,$this->owning_section);
-			$this->owningSectionObj->fetchFromDB(1);
+		if (!isset($this->owningSiteObj)) {
+			$this->owningSiteObj = new site($this->owning_site);
+			$this->owningSiteObj->fetchDown();
 		}
-		print_r ($this->owningSectionObj);
-		
-		print "\nid=".$this->owningSectionObj->getField("id")."\n";
-		print "\n############\n";
+		if (!isset($this->owningSectionObj)) {
+			$this->owningSectionObj = &$this->owningSiteObj->sections[$this->owning_section];
+		}
 		
 		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->id."'";
 		
@@ -487,7 +494,7 @@ ORDER BY
 			$a[] = "page_order=".count($this->owningSectionObj->getField("pages"));
 		}
 		
-		print "\nXXXXXXX\n</pre>";
+/* 		print "\nXXXXXXX\n</pre>"; */
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
 		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
