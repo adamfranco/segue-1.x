@@ -23,29 +23,37 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 // what's the action?
 $curraction = $_REQUEST['action'];
 $scope = $_REQUEST['scope'];
-
+$sql = $_REQUEST['sql'];
+$query_custom = $_REQUEST['newquery'];
 
 /******************************************************************************
  * get search variables and create query
  ******************************************************************************/
 		
-$storyid = $_REQUEST['story'];
-$siteid = $_REQUEST['site'];
+$storyid = $_REQUEST['storyid'];
+$siteid = $_REQUEST['siteid'];
 if ($scope == "site") {
 	$where = "site_id = $siteid";
 } else {
 	$where = "story_id = $storyid";	
 }
 
+if ($action == "review") {
+	$select = "user_id, user_fname, user_email, discussion_rate, discussion_tstamp, discussion_id, discussion_subject, story_id, page_id, page_title, story_text_short, section_id, site_id";
+} else {
+	$select = "DISTINCT user_fname, user_email";	
+}
+
+
 
 /******************************************************************************
  * query database 
  ******************************************************************************/
  
- if ($storyid) {	
+ if (!$query_custom || $query_custom) {	
 	$query = "
 	SELECT 
-		distinct user_fname, user_email
+		DISTINCT user_fname, user_email
 	FROM 
 		discussion
 	INNER JOIN story ON FK_story = story_id
@@ -67,7 +75,7 @@ if ($scope == "site") {
 
 	$query = "
 	SELECT 
-		distinct user_fname, user_email
+		$select
 	FROM 
 		discussion
 	INNER JOIN story ON FK_story = story_id
@@ -79,6 +87,11 @@ if ($scope == "site") {
 		$where $limit
 	";		
 	$r = db_query($query);
+} else {
+	$query = $query_custom;
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$numparticipants = db_num_rows($r);
 }
 
 printerr();
@@ -162,12 +175,25 @@ printerr();
 		print "<form action=$PHP_SELF method=post name=emailform>";
 		print "<table><tr><td><div style='font-size: 12px'>";
 		if ($curraction == "list") {
-			print "<a href=$PHP_SELF?$sid&story=$storyid&site=$siteid&action=email&scope=$scope>Email</a> | List - ".$numparticipants." participants";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email>Email</a> | ";
+			print "List | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=review>Review</a> - ";
+			print $numparticipants." participants";
+		} else if ($curraction == 'review') {
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list>List</a> | ";
+			print "Review - ";
+			print $numparticipants." participants";
+			
 		} else if ($curraction == 'email') {
-			print "<a href=$PHP_SELF?$sid&story=$storyid&site=$siteid&action=list&scope=$scope>List</a> | Email - ".$numparticipants." participants";
+			print "Email | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=review>Review</a> - ";
+			print $numparticipants." participants";
 		} else if ($curraction == 'send') {
-			print "<a href=$PHP_SELF?$sid&story=$storyid&site=$siteid&action=email>Email</a> | ";
-			print "<a href=$PHP_SELF?$sid&story=$storyid&site=$siteid&action=list>List</a> - ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email>Email</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list>List</a> | ";
+			print "<a href=$PHP_SELF?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=review>Review</a> - ";
 			print $numparticipants." participants";
 		}
 				
@@ -178,9 +204,26 @@ printerr();
 		<option<?=($scope=='site')?" selected":""?>>site
 		</select>
 		<input type=hidden name='action' value='<? echo $action ?>'>
-		<input type=hidden name='story' value='<? echo $storyid ?>'>
-		<input type=hidden name='site' value='<? echo $siteid ?>'>
+		<input type=hidden name='storyid' value='<? echo $storyid ?>'>
+		<input type=hidden name='siteid' value='<? echo $siteid ?>'>
+		<input type=hidden name='site' value='<? echo $site ?>'>
 		<input type=submit name='update' value='Update'>
+		
+		<? 
+		if ($_SESSION['ltype']=='admin') {
+			if ($sql) {
+				print "<input type='checkbox' name='sql' checked>";
+			} else {
+				print "<input type='checkbox' name='sql'>";
+			}
+			print "(show sql)<br>";
+			if ($sql) {
+				print "<textarea name=newquery cols=80 rows=10>";
+				print $query;
+				print "</textarea>";
+			}
+		}
+		?>
 		</form>
 		</div></td></tr></table>	
 		
@@ -224,8 +267,9 @@ printerr();
 			</table>
 			<input type=hidden name='action' value='send'>
 			<input type=hidden name='scope' value='<? echo $scope ?>'>
-			<input type=hidden name='story' value='<? echo $storyid ?>'>
-			<input type=hidden name='site' value='<? echo $siteid ?>'>
+			<input type=hidden name='storyid' value='<? echo $storyid ?>'>
+			<input type=hidden name='siteid' value='<? echo $siteid ?>'>
+			<input type=hidden name='site' value='<? echo $site ?>'>
 			<input type=hidden name='to' value='<? echo $to ?>'>
 			<input type=hidden name='from' value='<? echo $from ?>'>
 			</form>
@@ -254,13 +298,51 @@ printerr();
 	<table width='100%'>
 		<tr>
 		<th>full name</th>
-		<th>email</th>
+		<?
+		if ($curraction == 'review') {
+			print "<th>Page > Topic</th>";
+			print "<th>discussion_subject</th>";
+			print "<th>discussion_rate</th>";
+			print "<th>discussion_tstamp</th>"; 
+		} else {
+			print "<th>Email</th>";
+		}
+		?>
 		</tr>		
 		<? 
 			while ($a = db_fetch_assoc($r)) {
+/* 				$query2 = " */
+/* 				SELECT  */
+/* 					user_id, discussion_rate, discussion_tstamp */
+/* 				FROM  */
+/* 					discussion */
+/* 				INNER JOIN story ON FK_story = story_id */
+/* 				INNER JOIN page ON FK_page = page_id */
+/* 				INNER JOIN section ON FK_section = section_id */
+/* 				INNER JOIN site ON FK_site = site_id */
+/* 				INNER JOIN user ON FK_author = user_id */
+/* 				WHERE  */
+/* 					user_id = ".$a['user_id']". AND story_id = $storyid */
+/* 				";		 */
+/* 				$r2 = db_query($query2); */
+/* 				$a2 = db_fetch_assoc($r2); */
+/* 				$postcount = db_num_rows($r2); */
+				$discussion_date = $a['discussion_tstamp'];
+				$discussion_date = timestamp2usdate($discussion_date);
+				$dicuss_link = $_full_uri."/index.php?action=site&site=$site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id']."&detail=".$a['story_id']."#".$a['discussion_id'];
+				$shory_text_all = urldecode($a['story_text_short']);
+				$shory_text = substr($shory_text_all,0,25)."...";
 				print "<tr>";
 				print "<td>".$a['user_fname']."</td>";
-				print "<td>".$a['user_email']."</td>";
+				if ($curraction == 'review') {
+					print "<td>".$a['page_title']." > ".$shory_text."</td>";
+					print "<td>".urldecode($a['discussion_subject'])."</td>";
+					print "<td>".$a['discussion_rate']."</td>";
+					print "<td><a href='#' onClick='opener.window.location=\"$dicuss_link\"'>".$discussion_date."</a></td>";
+				} else {
+					print "<td>".$a['user_email']."</td>";
+				}
+								
 				print "</tr>";
 			}
 		?>
