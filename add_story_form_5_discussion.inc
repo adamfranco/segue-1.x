@@ -28,12 +28,12 @@ printc("</td></tr></table>");
 
 	if ($auser == $site_owner || db_get_value("pages","ediscussion","id=$settings[page]")==1) {
 		printc("<div class=title>Discussion</div>");
-		printc("<div class=desc>You have the option of allowing visitors to your site discuss certain content contained in it. You can restrict discussion access to students in the class (if this is a class website), only Middlebury users, or anyone (allowing for anonymous discussion).</div>");
+		printc("<div class=desc>You have the option of allowing visitors to your site discuss certain content contained in it. You can restrict discussion access to students in the class (if this is a class website), only $cfg[inst_name] users, or anyone (allowing for anonymous discussion).</div>");
 		printc("<div class=leftmargin>");
 		printc("Enable discussion for this story: <input type=checkbox value='1' name=discuss".(($settings[discuss])?" checked":"")."><br>");
 		printc("Who should be able to discuss this story? <select name=discusspermissions>");
 		printc("<option value='anyone'".(($settings[discusspermissions]=='anyone')?" selected":"")."> anyone");
-		printc("<option value='midd'".(($settings[discusspermissions]=='midd')?" selected":"")."> Middlebury College users");
+		printc("<option value='midd'".(($settings[discusspermissions]=='midd')?" selected":"")."> $cfg[inst_name] users");
 		if (isclass($settings[site])) printc("<option value='class'".(($settings[discusspermissions]=='class')?" selected":"").">students in class");
 		printc("</select>");
 		printc("</div>");

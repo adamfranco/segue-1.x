@@ -356,7 +356,7 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 			printc(txtdaterange($a[activatedate],$a[deactivatedate]));
 			if ($viewpermissions != 'anyone') {
 				printc(" to ");
-				if ($viewpermissions == 'midd') printc("Middlebury users");
+				if ($viewpermissions == 'midd') printc("$cfg[inst_name] users");
 				if ($viewpermissions == 'class') printc("students in this class");
 				
 			}

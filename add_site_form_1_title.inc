@@ -56,7 +56,7 @@ printc("<br><br><br>");
 printc("<div class=title>2. Who do you want to be able to view this site?</div>");
 
 printc("Allow: <b><input type=radio name=viewpermissions value='anyone'".(($settings[viewpermissions]=='anyone')?" checked":"")."> anyone ");
-printc("<input type=radio name=viewpermissions value='midd'".(($settings[viewpermissions]=='midd')?" checked":"")."> Middlebury College users ");
+printc("<input type=radio name=viewpermissions value='midd'".(($settings[viewpermissions]=='midd')?" checked":"")."> $cfg[inst_name] users ");
 if (isclass($settings[sitename])) printc("<input type=radio name=viewpermissions value='class'".(($settings[viewpermissions]=='class')?" checked":"")."> students in class");
 //printc("</b> to view this site.");
 if (!isclass($settings[sitename])) printc("<br><br><input type=checkbox name='listed' value=1".(($settings[listed])?" checked":"")."> Include site in public listing.".helplink("listing"));

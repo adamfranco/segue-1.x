@@ -257,7 +257,7 @@ function siteviewpermissions($siteinfo,$pe=0) {
 	if ($siteinfo[viewpermissions] == 'midd') {
 		if (!ereg("140.233.([0-9]{1,3}).([0-9]{1,3})",$REMOTE_ADDR)) {
 			if (!($_loggedin && $lmethod=='ldap')) {
-				error("In order to view this site, you must either be on the Middlebury College campus, or logged in with your Middlebury username and password.",$pe);
+				error("In order to view this site, you must either be on the $cfg[inst_name] network, or logged in with your username and password.",$pe);
 				$x=1;
 			}
 		}
@@ -289,7 +289,7 @@ function candiscuss($a,$pe=0) {
 	$x=0;
 	if ($a[discusspermissions]=='midd') {
 		if (!$_loggedin && $lmethod!='ldap') {
-			error("In order to discuss this story, you must be a Middlebury user. Please log in above to begin dicussion.",$pe);
+			error("In order to discuss this story, you must be a $cfg[inst_name] user. Please log in above to begin dicussion.",$pe);
 			$x=1;
 		}
 	}
