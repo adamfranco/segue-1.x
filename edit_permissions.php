@@ -300,19 +300,19 @@ if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All
 print "</div>";
 
 // debug output -- handy :)
-print "<pre>";
-print "session:\n";
-print_r($_SESSION);
-print "\n\n";
-print "request:\n";
-print_r($_REQUEST);
-if (is_object($thisSection)) {
-	print "\n\n";
-	print "thisSection:\n";
-	print_r($thisSection);
-} else if (is_object($thisSite)) {
-	print "\n\n";
-	print "thisSite:\n";
-	print_r($thisSite);
-}
-print "</pre>";
+/* print "<pre>"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* if (is_object($thisSection)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSection:\n"; */
+/* 	print_r($thisSection); */
+/* } else if (is_object($thisSite)) { */
+/* 	print "\n\n"; */
+/* 	print "thisSite:\n"; */
+/* 	print_r($thisSite); */
+/* } */
+/* print "</pre>"; */

@@ -572,7 +572,9 @@ class segue {
 		$this->changedpermissions=1;
 		if ($ar) {
 			$a = &$this->$ar;
-			foreach ($a as $i=>$o) $a[$i]->setUserPermissionDown($perm,$user,$val);
+			if ($a) {
+				foreach ($a as $i=>$o) $a[$i]->setUserPermissionDown($perm,$user,$val);
+			}
 		}
 	}
 	
@@ -642,8 +644,10 @@ class segue {
 			$ar = $this->_object_arrays[$scope];
 			if ($ar) {
 				$a = &$this->$ar;
-				foreach ($a as $i=>$o) {
-					$a[$i]->buildPermissionsArray($force,$down);
+				if ($a) {
+					foreach ($a as $i=>$o) {
+						$a[$i]->buildPermissionsArray($force,$down);
+					}
 				}
 			}
 		}
