@@ -2,41 +2,39 @@
 // handles the authentication of scripts executed and decides if the user needs to be
 // authenticated in the first place.
 // - this script essentially has the same structure as checklogin.inc.php
-// - but adds functionality specific to coursesdb. i may eventually combine these two into one
+// - but adds functionality specific to segue. i may eventually combine these two into one
 
 
 // include the authentication modules
 foreach ($_auth_mods as $i) include("auth_mods/$i.inc.php");
 
 // this array contains a list of actions that don't *require* the user to be authenticated
-$actions_noauth = array("site","login","default","previewtheme","fullstory","list","username_lookup");
+$actions_noauth = array("index.php","site","login","default","previewtheme","fullstory","list","username_lookup");
 
 
 $loginerror=0;
 $_loggedin=0;
 
-$name = strtolower($name);
+//$name = strtolower($name);
 
 // first off, if el user is already logged in, lets make sure their info is good
-if (session_is_registered("luser")) {
+if ($_SESSION[luser]) {
 	if (!loginvalid($luser,$lpass,1)) $loginerror=1;
 	else $_loggedin=1;
-//	include("checklogin.inc.php");
-//	return;
 } 
 
 // if we're not yet logged in
 if (!$_loggedin) {
-	if ($loginform) {	// they just entered their name & pass
+	if ($_REQUEST[loginform]) {	// they just entered their name & pass
 		// now, assuming they were successful
-		if (loginvalid($name,$password)) {
-			$newquerystring = ereg_replace("PHPSESSID","OLDID",urldecode($getquery));
-			$newurl = ereg_replace("PHPSESSID","OLDID",urldecode($gotourl));
+		if (loginvalid($_REQUEST[name],$_REQUEST[password])) {
+			$newquerystring = ereg_replace("PHPSESSID","OLDID",urldecode($_REQUEST[getquery]));
+			$newurl = ereg_replace("PHPSESSID","OLDID",urldecode($_REQUEST[gotourl]));
 			$_loggedin=1;
 //			header("Location: index.php?$sid&$newquerystring");
 			if (!ereg('\?',$newurl)) $g = '?';
 			//print "$newurl$g&$sid";
-			header("Location: $newurl$g&$sid");
+//			header("Location: $newurl$g&$sid");
 		} else {
 		// username or passwd incorrect
 			$loginerror=1;
@@ -45,6 +43,7 @@ if (!$_loggedin) {
 	if (!$_loggedin) { // if we still have no login
 		
 		if ($loginerror) error("The username and password pair you entered is not valid. Please try again.<BR>");
+		if ($_REQUEST[action]) $try = $_REQUEST[action];
 		if ($action) $try = $action;
 		else $try = trim($SCRIPT_NAME,"/");
 		if (!in_array($try,$actions_noauth)) {
@@ -56,16 +55,20 @@ if (!$_loggedin) {
 
 
 function loginvalid($user,$pass,$alreadyloggedin=0) {
-	global $lmethod,$lid,$luser,$lpass,$lfname,$lemail,$ltype;
-	global $auser,$aemail,$afname,$atype,$aid;
+//	global $lmethod,$lid,$luser,$lpass,$lfname,$lemail,$ltype;
+//	global $auser,$aemail,$afname,$atype,$aid;
 	global $_auth_mods;
 		
 	// we have two choices in this function. either the user has already logged in
 	// or we have to check for them
 	if ($alreadyloggedin) {	
 //		print "lmethod: $lmethod - $luser<BR>";
-		$func = "_valid_".$lmethod;		
-		if ($func($user,$pass))		
+		if (!$_SESSION[lmethod]) {
+			error("An unknown error happened during authentication. Please <a href='index.php?login'>logout</a> and try again. Ignore the error below.");
+			return 0;
+		}
+		$func = "_valid_".$_SESSION[lmethod];		
+		if ($func($user,$pass))
 			return 1;		// ok, they passed the test
 		else
 			return 0;			
@@ -83,38 +86,21 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 				break;
 			}
 		}
-		$lid = $x[id];
-		$luser = $user;
-		$lpass = $pass;
-		$lfname = $x[fullname];
-		$lemail = $x[email];
-		$ltype = $x[type];
-		$lmethod = $x[method];
+		print "<BR>$valid<BR>";
+		print_r($x);
 		
 		if ($valid) {	// register all of the needed variables
 						// and send them to the correct page
 			
 			// set the acting user variables.. default to same as login -- may change later
-			$auser = $luser;
-			$aemail = $lemail;
-			$afname = $lfname;
-			$atype = $ltype;
-			$aid = $lid;
-			$amethod = $lmethod;
-			log_entry("login","","","",$luser);
-			session_register("luser");
-			session_register("lpass");
-			session_register("lemail");
-			session_register("lfname");
-			session_register("ltype");
-			session_register("lid");
-			session_register("lmethod");
-			session_register("auser");
-			session_register("aemail");
-			session_register("afname");
-			session_register("atype");
-			session_register("aid");
-			session_register("amethod");
+			$_SESSION[aid] = $_SESSION[lid] = $x[id];
+			$_SESSION[auser] = $_SESSION[luser] = $user;
+			$_SESSION[lpass] = $pass;
+			$_SESSION[afname] = $_SESSION[lfname] = $x[fullname];
+			$_SESSION[aemail] = $_SESSION[lemail] = $x[email];
+			$_SESSION[atype] = $_SESSION[ltype] = $x[type];
+			$_SESSION[amethod] = $_SESSION[lmethod] = $x[method];
+			log_entry("login","","","",$_SESSION[luser]);
 			return 1;
 				
 		} else return 0;
@@ -150,27 +136,3 @@ function _auth_check_db($x,$add_to_db=0) {
 		} else { return 0; } // no database entry, don't add to db, so return 0
 	}
 }
-	
-/* 	if ($num==0) {		// no entries w/ that name */
-/* 		// add them to the db */
-/* 		$fname = $results[0]["cn"][0]; */
-/* 		if (ereg(",",$fname)) {			// if there's a comma, change name from "Schine, Gabriel B" to "Gabriel B Schine" */
-/* 			$vars = split(",",$fname); */
-/* 			$fname = $vars[1] . " " . $vars[0]; */
-/* 		} */
-/* 		$uname=$name; */
-/* 		$email = $results[0]["mail"][0]; */
-/* 		// let's find out what kind of user they are */
-/* 		$areprof=0; */
-/* 		foreach ($results[0]["memberof"] as $item) { */
-/* 			if (eregi("all_faculty",$item)) { */
-/* 				$areprof=1; */
-/* 			} */
-/* 		} */
-/* 		$usertype = ($areprof)?"prof":"stud"; */
-/*  */
-/* 		$status = 'ldap'; */
-/* 		$query = "insert into users set uname='$uname', email='$email', fname='$fname',type='$usertype',pass='LDAP PASS',status='ldap'"; */
-/* 		db_query($query); */
-/* 	} */
-/* } */

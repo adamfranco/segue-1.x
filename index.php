@@ -197,7 +197,10 @@ include("$themesdir/$theme/output.inc.php");
 // ------------------
 // if register_globals is off, we have to do some hacking to get things to work:
 if (!ini_get("register_globals")) {
-	foreach (array_keys($_SESSION) as $n) { if ($n!='editors'&&$n!='obj' && $n != "settings" && $n != "siteObj" && $n != "sectionObj" && $n != "pageObj" && $n != "storyObj") $_SESSION[$n] = $$n; }
+	$_ign = array("editors","obj","settings","siteObj","sectionObj","pageObj","storyObj",
+				"auser","lpass","afname","aemail","atype","amethod","lmethod","ltype",
+				"lemail","lfname","luser","lid","aid");
+	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = $$n; }
 }
 
 // debug output -- handy :)
