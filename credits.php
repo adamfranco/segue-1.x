@@ -36,7 +36,10 @@ li { margin-bottom: 3px; }
 </style>
 </head>
 <body bgcolor=white>
-<h1><a href='http://segue.sourceforge.net/' target="_blank">Segue</a> (v. <?=file_get_contents("version.txt");?>)</h1>
+<h1>
+<a href='http://segue.sourceforge.net/' target="_blank">Segue</a> 
+(<a href='changelog/changelog.html' target='_blank'>v. <?=file_get_contents("version.txt");?></a>)
+</h1>
 
 <h2>Developers</h2>
 
