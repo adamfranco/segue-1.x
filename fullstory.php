@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-
+require("objects/objects.inc.php");
 $content = '';
 
 ob_start();
@@ -33,7 +33,7 @@ if ($_REQUEST[add] && $story->hasPermission("discuss")) {
 		$thetext = urlencode($_REQUEST[thetext]);
 		$query = "insert into discussions set author='$_REQUEST[author]', authortype='$_REQUEST[authortype]', content='$thetext'";
 		db_query($query);
-		$newid = lastid();
+		$newid = mysql_insert_id();
 		$story->addDiscussion($newid);
 		$story->updateDB();
 /* 		$discussions = decode_array($a[discussions]); */
@@ -167,7 +167,7 @@ if ($story->getField("discuss")) {
 		print "<tr><th align=left>Post to discussion</th></tr><tr><td>";
 		print "<form name='postform' action='fullstory.php?$sid&site=$site&section=$section&page=$page&story=$story&action=$action' method=post>";
 		print "<input type=hidden name='add' value=1>";
-/* 		print "<input type=hidden name='story' value=$story>"; */
+		print "<input type=hidden name='story' value=".$story->id.">";
 /* 		print "<input type=hidden name='site' value=$site>"; */
 /* 		print "<input type=hidden name='section' value=$section>"; */
 /* 		print "<input type=hidden name='page' value=$page>"; */
@@ -179,7 +179,7 @@ if ($story->getField("discuss")) {
 		else print "Name:</td><td><input type=text name=author size=20 class=textfield value='$author'> <input type=hidden name=authortype value='anon'>";
 		print "</td></tr>";
 		print "<tr><td align=right valign=top>Text:</td><td>";
-		print "<textarea name='thetext' rows=6 cols=80 class=textarea>".spchars(thetext)."</textarea></td></tr>";
+		print "<textarea name='thetext' rows=6 cols=80 class=textarea>".spchars($thetext)."</textarea></td></tr>";
 		print "<tr><td colspan=2 align=right><input type=submit class=button value='Post'></td></tr></table>";
 		print "</form>";
 		print "</td></tr>";
