@@ -1412,13 +1412,14 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
 		
-		echo "<pre>\nCANVIEW\n";
-		echo "USER: $user\n";
-		print_r($this->canview);
-		echo "\nCANVIEW </pre>";
+//		echo "<pre>\nCANVIEW\n";
+//		echo "USER: $user\n";
+//		echo "CLASS: ".get_class($this)."\n";
+//		print_r($this->canview);
+//		echo "\nCANVIEW </pre>";
 		
 		if (!$noperms) {
-			if ($this->fetched_forever_and_ever) {
+			if ($this->fetched_forever_and_ever && get_class($this)=="site") {
 				// check if our IP is in inst_ips
 				$good=0;
 				$ip = $_SERVER[REMOTE_ADDR];
@@ -1429,7 +1430,18 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 				if ($good) $institute = true;
 				else $institute = false;
 
-				return ($this->canview[everyone] || $this->canview[$user] || (($institute) ? $this->canview[institute] : true));
+				$canview = ($this->canview[everyone] || $this->canview[$user] || (($institute) ? $this->canview[institute] : false));
+				if ($canview)
+					return $canview;
+				
+				// now check for class permissions
+				$allclasses = getuserclasses($user,"all");
+				foreach (array_keys($allclasses) as $class)
+					if ($this->canview[$class]) 
+					    return true;
+				
+				
+				return FALSE;
 			}
 			else
 				//exit;
