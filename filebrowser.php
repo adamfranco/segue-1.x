@@ -26,7 +26,7 @@ if ($ltype == 'admin') {
 	if ($site) $w[]="site_id='$site'"; 
 	else if ($all) $w[]="site_id like '%'"; 
 	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='$settings[site]'"; 
+} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
 if (count($w)) $where = " where ".implode(" and ",$w); 
 
 $query = "select * from media$where"; 
@@ -44,24 +44,34 @@ if ($upload) {
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	$nameUsed = 0; 
 	while ($a = db_fetch_assoc($r)) { 
-		if ($a[name] == $filename) $nameUsed = 1; 
+		if ($a[name] == $filename) {
+			$nameUsed = 1;
+			$usedId = $a[id];
+		}
 	} 
 	if ($_FILES['file']['tmp_name'] == 'none') { 
 		$upload_results = "<li>No file selected"; 
 	} else if (($_FILES[file][size] + $totalsize) > $userdirlimit) {
 		$upload_results = "<li>There is not enough room in your directory for $filename."; 
+	} else if ($overwrite && $nameUsed) {
+		$newID = copyuserfile($_FILES['file'],(($site)?"$site":"$settings[site]"),1,$usedId,0); 
+		$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
 	} else if ($nameUsed) { 
-		$upload_results = "<li>Filename, $filename, is already in use. Please change the filename before uploading.<br>Or click here to OVERWRITE"; 
+		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
 	} else { 
 		$newID = copyuserfile($_FILES['file'],(($site)?"$site":"$settings[site]"),0,0); 
 		$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
 	}	 
 } 
  
-if ($clear) { 
-	$user = ""; 
-	$site = ""; 
-	$name = ""; 
+if ($clear) {
+	if ($ltype == 'admin') {
+		$user = ""; 
+		$site = ""; 
+		$name = ""; 
+	} else {
+		$name = "";
+	}
 } 
 
 $w = array(); 
@@ -69,7 +79,7 @@ if ($ltype == 'admin') {
 	if ($site) $w[]="site_id='$site'"; 
 	else if ($all) $w[]="site_id like '%'"; 
 	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='$settings[site]'"; 
+} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
 if (count($w)) $where = " where ".implode(" and ",$w); 
 
 $query = "select * from media$where"; 
@@ -88,7 +98,7 @@ if ($ltype == 'admin') {
 	if ($site) $w[]="site_id='$site'"; 
 	else if ($all) $w[]="site_id like '%'"; 
 	else $w[]="site_id='$settings[site]'"; 
-} else $w[]="site_id='$settings[site]'"; 
+} else $w[]="site_id='".(($site)?"$site":"$settings[site]")."'"; 
 if ($user) $w[]="addedby like '%$user%'"; 
 if ($name) $w[]="name like '%$name%'"; 
  
@@ -219,7 +229,6 @@ function changeOrder(order) {
  
 </script> 
  
-<? // print "\$editor = $editor"; ?>
 <!--  
 <table width='100%'> 
 <tr><td style='text-align: left'> 
@@ -228,7 +237,7 @@ function changeOrder(order) {
 	?> 
 </td></tr> 
 </table> --> 
- 
+
 <table cellspacing=1 width='100%'> 
  
 	<tr> 
@@ -237,10 +246,13 @@ function changeOrder(order) {
 				<tr> 
 				<td style='text-align: center; padding-top: 5px; border: 0px solid #FFF' valign=top> 
 					<form action="filebrowser.php" name='addform' method="POST" enctype="multipart/form-data"> 
+					<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'>
+					<input type=hidden name='site' value='<? echo $site ?>'> 
 					<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'"> 
 					<input type=hidden name='upload' value='1'> 
 					<input type=hidden name='order' value='<? echo $order ?>'> 
 					<input type=hidden name='editor' value='<? echo $editor ?>'> 
+					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
 					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
 						print "<input type=file name='file' class=textfield>";
@@ -309,7 +321,7 @@ function changeOrder(order) {
 	</tr> 
  
 <? 
-if ($ltype == 'admin' || $numrows >= $numperpage) { 
+if (1) { 
 ?> 
 <tr> 
 	<td colspan=<? print (($ltype=='admin')?"10":"9"); ?>> 
@@ -324,12 +336,14 @@ if ($ltype == 'admin' || $numrows >= $numperpage) {
 			user: <input type=text name=user size=10 value='<?echo $user?>'> 
 		<? } else { ?> 
 			filename: <input type=text name=name size=10 value='<?echo $name?>'> 
+			<input type=hidden name=site value='<?echo $site?>'>
 		<? } ?> 
 		<input type=submit value='search'> 
 		<input type=submit name='clear' value='clear'> 
 		<? if ($ltype == 'admin') print "Search all sites: <input type=checkbox name='all' value='all sites'".(($all)?" checked":"").">"; ?> 
 		<input type=hidden name='order' value='<? echo $order ?>'> 
 		<input type=hidden name='editor' value='<? echo $editor ?>'> 
+		<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
 		</form> 
 		</td> 
 		<td align=right> 
@@ -354,7 +368,16 @@ if ($ltype == 'admin' || $numrows >= $numperpage) {
 		</table> 
 	</td> 
 </tr> 
-<? } ?> 
+<? } else { ?> 
+	<form action=<?echo "$PHP_SELF?$sid"?> method=post name='searchform'> 
+	<input type=hidden name='order' value='<? echo $order ?>'> 
+	<input type=hidden name='editor' value='<? echo $editor ?>'> 
+	<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'>
+	<input type=hidden name='site' value='<? echo $site ?>'>
+	</form>
+<? } ?>
+
+
 <tr> 
 	<th> </th> 
 	<th> </th> 
@@ -441,9 +464,10 @@ if (db_num_rows($r)) {
 		 
 		print "<tr>"; 
  
-		print "<td class=td$color>"; 
+		print "<td class=td$color>";
+			if ($comingfrom != "viewsite") {
                 if ($editor == 'none') {
-			print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
+					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
                 }
                 else if ($editor == 'text') {
                         print "<input type=button name='use' value='use' onClick=\"useFile('".$a[id]."','".$a[name]."')\">";
@@ -451,6 +475,7 @@ if (db_num_rows($r)) {
                 else {
                         print "<input type=button name='use' value='use' onClick=\"useFile('".$a[site_id]."','".$a[name]."','".$a[id]."')\">";
                 }   
+            } else print " &nbsp; ";
 //			print "<input type=button name='use' value='use' onClick=\"useFile()\">";  
 		print "</td>"; 
  
@@ -518,7 +543,9 @@ if (db_num_rows($r)) {
 <input type=hidden name='delete' value=1> 
 <input type=hidden name='order' value='<? echo $order ?>'> 
 <input type=hidden name='all' value='<? echo $all ?>'> 
-<input type=hidden name='editor' value='<? echo $editor ?>'> 
+<input type=hidden name='editor' value='<? echo $editor ?>'>
+<input type=hidden name='site' value='<? echo $site ?>'>
+<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
 </form> 
  
 <div align=right><input type=button value='Close Window' onClick='window.close()'></div> 

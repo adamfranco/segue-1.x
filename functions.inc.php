@@ -104,10 +104,16 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		mkdir($userdir,0777); 
 		chmod($userdir,0775); 
 	}
+	
+	if ($replace) {
+		$unlink = unlink($userdir."/".$name);
+		/* print "unlink: $unlink"; */
+	}
+	
 	if ($allreadyuploaded) {
 		$r = copy($file[tmp_name],"$userdir/".$name);
 	} else {
-//		print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>";
+/* 		print "move uploaded file ($file[tmp_name], $userdir/$file[name])<br>"; */
 		$r=move_uploaded_file($file['tmp_name'],"$userdir/".$name);
 	}
 	if (!$r) {
@@ -116,7 +122,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
 		$query = "update media set addedtimestamp=NOW(),addedby='$auser',size='$size' where id='$replace_id'";
-		print $query."<br>";
+		/* print $query."<br>"; */
 		db_query($query);
 		print mysql_error()."<br>";
 		

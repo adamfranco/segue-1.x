@@ -239,5 +239,6 @@ else $text .= "</tr><tr><td> &nbsp; </td>";
 $text .= "<td><form action='edit_permissions.php?$sid&site=$site' onClick='doWindow(\"permissions\",600,400)' target='permissions' method=post><input type=submit value='Permissions'></form></td>";
 $text .= "</tr><tr>";
 $text .= "<td><form action='$PHP_SELF?$sid&action=site&site=sample' target='_blank' method=post><input type=submit value='View Sample Site'></form></td>";
+$text .= "<td><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none'></td>";
 $text .= "</tr></table></div>";
 $sitefooter = $sitefooter . $text;
