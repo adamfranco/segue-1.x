@@ -2,6 +2,7 @@
 
 /* print "canview: ".$thisSite->canview()."<br>"; */
 /* print "hasperm: ".$thisSite->hasPermissionDown("add or edit or delete","",0,1)."<br>"; */
+/* print "<pre>"; print_r($thisSite); print "</pre>"; */
 
 // check view permissions
 if (!$thisSite->canview() && !$thisSite->hasPermissionDown("add or edit or delete")) {

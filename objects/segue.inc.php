@@ -794,6 +794,7 @@ class segue {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
+/* 		print "$user<br>"; */
 		if (!$noperms) return $this->hasPermissionDown("view",$user,0,1);
 		return 1;
 	}
@@ -805,7 +806,7 @@ class segue {
  ******************************************************************************/
 
 	function hasPermission($perms,$ruser='',$useronly=0) {
-		global $allclasses, $_logged_in, $cfg;
+		global $allclasses, $_loggedin, $cfg;
 				
 		if (!$this->builtPermissions) $this->buildPermissionsArray();
 		
@@ -841,11 +842,14 @@ class segue {
 		// end
 		
 		$permissions = $this->getPermissions();
+/* 		print "<pre>"; print_r($permissions); print "</pre>"; */
+
 		$toCheck = array();
 		if (strlen($user)) $toCheck[] = strtolower($user);
-		if (!$useronly) $toCheck[] = "everyone";
-		if (!$useronly && $_logged_in) $toCheck[] = "institute";
-		else if (!$useronly) {
+		if (!$useronly) {
+			$toCheck[] = "everyone";
+			if ($_loggedin) $toCheck[] = "institute";
+		
 			// check if our IP is in inst_ips
 			$good=0;
 			$ip = $_SERVER[REMOTE_ADDR];
@@ -880,7 +884,7 @@ class segue {
 		$condition = '$isgood = ('.implode(' || ',$pArray).')?1:0;';
 		eval($condition);
 		$this->cachedPermissions[$user.$perms] = $isgood;	// cache this entry
-/* 		print $this->id." ".$condition."<br>"; */
+/* 		print $this->id." ".$condition." == ".$isgood."<br>"; */
 		return $isgood;
 	}
 	
