@@ -216,6 +216,8 @@ print "<pre>";
 /* print_r($_SESSION); */
 /* print "\n\n"; */
 
+//print_r($thisSite);
+
 /*
  if (is_object($thisPage)) { 
  	print "\n\n"; 

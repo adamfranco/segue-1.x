@@ -150,6 +150,7 @@ class site extends segue {
 		$this->data[header] = "";
 		$this->data[footer] = "";
 		$this->data[sections] = array();
+		
 	}
 	
 	function fetchDown($full=0) {
