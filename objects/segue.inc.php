@@ -227,7 +227,7 @@ FROM
  ******************************************************************************/
 	function getField ($field) {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
-		if (ereg("^l-",$field)) 
+		if (ereg("^l%",$field)) 
 			return $this->data[$field];
 		if ($this->tobefetched && !$this->fetched[$field] && $this->id) {	// we haven't allready gotten this data
 													// and this object is in the database.
@@ -709,11 +709,11 @@ WHERE
 				if ($v != $e) $n[]=$v;
 			}
 			$this->editors = $n;
-			$this->setFieldDown("l-$e-add",0);
-			$this->setFieldDown("l-$e-edit",0);
-			$this->setFieldDown("l-$e-delete",0);
-			$this->setFieldDown("l-$e-view",0);
-			$this->setFieldDown("l-$e-discuss",0);
+			$this->setFieldDown("l%$e%add",0);
+			$this->setFieldDown("l%$e%edit",0);
+			$this->setFieldDown("l%$e%delete",0);
+			$this->setFieldDown("l%$e%view",0);
+			$this->setFieldDown("l%$e%discuss",0);
 			$this->setUserPermissionDown("ADD",$e,0);
 			$this->setUserPermissionDown("VIEW",$e,0);
 			$this->setUserPermissionDown("EDIT",$e,0);
@@ -1120,10 +1120,11 @@ FROM
 	function spiderDownLockedFlag() {
 		$editors = $this->getEditors();
 		$p = $this->getPermissions();
-		
+//		print_r($editors);print "<br>";print_r($p);
 		$_a = array("add","edit","delete","view");
 		
 		foreach ($editors as $e) {
+//			print "doing flags for $e<br>";
 			for ($i=0;$i<4;$i++) {
 				$this->checkLockedFlag($e,$_a[$i]);
 			}
@@ -1136,10 +1137,10 @@ FROM
 		$p = $this->getPermissions();
 		$_t = strtoupper($perm);
 		$pid = permissions::$_t();
-		$e = strtolower($e);
+		$e = $e;
 		if ($p[$e][$pid]) { // set locked flag
-			$this->setFieldDown("l-$e-$perm",1);
-			$this->setField("l-$e-$perm",0);
+			$this->setFieldDown("l%$e%$perm",1);
+			$this->setField("l%$e%$perm",0);
 		} else {
 			// keep going down the line
 			$ar = $this->_object_arrays[get_class($this)];

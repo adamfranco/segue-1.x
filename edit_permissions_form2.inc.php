@@ -152,6 +152,7 @@ function doEditorLine(&$o) {
 	foreach ($_SESSION[editors] as $e) {
 		$args1 = "'$e',".$args;
 		foreach ($_a as $v=>$i) {
+//			print "l-$e$v";
 			$skip = 0;
 			if (($e == 'everyone' || $e == 'institute') && $i<3) $skip = 1;
 			if ($class=='story' && $v == 'add') $skip = 1;
@@ -159,7 +160,7 @@ function doEditorLine(&$o) {
 			if ($skip) {
 				print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'").">&nbsp;</td>";
 			} else {
-				print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onClick=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l-$e-$v") || !$isOwner)?"disabled":"")."></td>";
+				print "<td width=18 align=center".(($i==3)?" class='viewcol' style='background-color: $bgColorV'":" style='background-color: $bgColor'")."><input type=checkbox".(($p[$e][$i])?" checked":"")." onClick=\"doFieldChange($args1,'perms-$v',".(($p[$e][$i])?"0":"1").");\" ".(($o->getField("l%$e%$v") || !$isOwner)?"disabled":"")."></td>";
 			}
 		}
 	}

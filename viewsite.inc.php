@@ -18,7 +18,7 @@ do {
 			$thisSite->fetchDown();
 			foreach (array_keys($thisSite->sections) as $k=>$s) {
 				$o =& $thisSite->sections[$s];
-				if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisSection =& $o; break; }
+				if ($o->getField("type") == 'section' && $o->canview()) { $thisSection =& $o; break; }
 			}
 		}
 	/* 	print count($thisSite->sections); */
@@ -31,7 +31,7 @@ do {
 			$thisSection->fetchDown();
 			foreach (array_keys($thisSection->pages) as $k=>$p) {
 				$o =& $thisSection->pages[$p];
-				if ($o->getField("type") == 'page' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisPage =& $o; break; }
+				if ($o->getField("type") == 'page' && $o->canview()) { $thisPage =& $o; break; }
 			}
 		}
 		$st = " > " . $thisSection->getField("title");
@@ -130,7 +130,7 @@ do {
 	
 	if ($thisPage) {
 		$thisPage->fetchDown();
-		if ($thisPage->canview() || $thisPage->hasPermissionDown("add or edit or delete")) {
+		if ($thisPage->canview()) {
 			printc("<div class=title>".$thisPage->getField("title")."</div>");
 		}
 		
@@ -148,7 +148,7 @@ do {
 			foreach ($thisPage->data[stories] as $s) {
 				$o =& $thisPage->stories[$s];
 		/* 		$a = db_get_line("stories","id=$s"); */
-				if ($o->canview() || $thisPage->hasPermissionDown("add or edit or delete")) {
+				if ($o->canview()) {
 					if ($i!=0)
 						printc("<hr class=block style='margin-top: 10px'>");
 						

@@ -524,7 +524,7 @@ FROM
 			$a = array();
 			$a[a] = (strpos($row[permissions],'a') !== false) ? 1 : 0; // look for 'a' in 'final_permissions'
 			$a[e] = (strpos($row[permissions],'e') !== false) ? 1 : 0; // !== is very important here, because a position 0 is interpreted by != as FALSE
-			$a[d] = (strpos($row[permissions],'d') !== false) ? 1 : 0;
+			$a[d] = (strpos($row[permissions],'d') !== false && (strpos($row[permissions],'d') !== strpos($row[permissions],'di'))) ? 1 : 0;
 			$a[v] = (strpos($row[permissions],'v') !== false) ? 1 : 0;
 			$a[di] = (strpos($row[permissions],'di') !== false) ? 1 : 0;
 			
@@ -540,7 +540,7 @@ FROM
 //			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
 
 			// set the permissions for this editor
-			$this->permissions[strtolower($t_editor)] = array(
+			$this->permissions[$t_editor] = array(
 				permissions::ADD()=>$a[a], 
 				permissions::EDIT()=>$a[e], 
 				permissions::DELETE()=>$a[d], 
@@ -596,7 +596,7 @@ FROM
 			$a = array();
 			if (strpos($row[permissions],'a') !== false) $a[permissions::ADD()] = 1; // look for 'a' in 'final_permissions'
 			if (strpos($row[permissions],'e') !== false) $a[permissions::EDIT()] = 1; // !== is very important here, because a position 0 is interpreted by != as FALSE
-			if (strpos($row[permissions],'d') !== false) $a[permissions::DELETE()] = 1;
+			if (strpos($row[permissions],'d') !== false && (strpos($row[permissions],'d') !== strpos($row[permissions],'di'))) $a[permissions::DELETE()] = 1;
 			if (strpos($row[permissions],'v') !== false) $a[permissions::VIEW()] = 1;
 			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
 
@@ -661,7 +661,7 @@ FROM
 			$a = array();
 			if (strpos($row[permissions],'a') !== false) $a[permissions::ADD()] = 1; // look for 'a' in 'final_permissions'
 			if (strpos($row[permissions],'e') !== false) $a[permissions::EDIT()] = 1; // !== is very important here, because a position 0 is interpreted by != as FALSE
-			if (strpos($row[permissions],'d') !== false) $a[permissions::DELETE()] = 1;
+			if (strpos($row[permissions],'d') !== false && (strpos($row[permissions],'d') !== strpos($row[permissions],'di'))) $a[permissions::DELETE()] = 1;
 			if (strpos($row[permissions],'v') !== false) $a[permissions::VIEW()] = 1;
 			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
 
@@ -725,11 +725,13 @@ FROM
 			// decode 'final_permissions'; 
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
+//			print_r($row[permissions]);print "<br>"; //debug
 			if (strpos($row[permissions],'a') !== false) $a[permissions::ADD()] = 1; // look for 'a' in 'final_permissions'
 			if (strpos($row[permissions],'e') !== false) $a[permissions::EDIT()] = 1; // !== is very important here, because a position 0 is interpreted by != as FALSE
-			if (strpos($row[permissions],'d') !== false) $a[permissions::DELETE()] = 1;
+			if (strpos($row[permissions],'d') !== false && (strpos($row[permissions],'d') !== strpos($row[permissions],'di'))) $a[permissions::DELETE()] = 1;
 			if (strpos($row[permissions],'v') !== false) $a[permissions::VIEW()] = 1;
 			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
+//			print_r($a); //debug
 
 			// if the editor is a user then the editor's name is just the user name
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly

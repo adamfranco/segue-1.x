@@ -1,11 +1,8 @@
 <? /* $Id$ */
 
-/* print "canview: ".$thisSite->canview()."br>"; */
-/* print "hasperm: ".$thisSite->hasPermissionDown("add or edit or delete","",0,1)."<br>"; */
-/* print "<pre>"; print_r($thisSite); print "</pre>"; */
 
 // check view permissions
-if (!$thisSite->canview() && !$thisSite->hasPermissionDown("add or edit or delete")) {
+if (!$thisSite->canview()) {
 	error("You may not view this site. This may be due to any of the following reasons:<BR><ul><li>The site has not been activated by the owner.<li>You are not on a computer within $cfg[inst_name].<li>You are not logged in.<li>You are not part of a set of specific users or groups allowed to view this site.</ul>");
 }	
 
@@ -49,12 +46,7 @@ do {
 			$thisSite->fetchDown();
 //			$thisSite->buildPermissionsArray();
 			foreach ($thisSite->sections as $s=>$o) {
-//				$o->buildPermissionsArray();
-//				print_r($o);
-//				print "<br>hasPermission: ".$o->hasPermissionDown("add or edit or delete");
-//				print "<br>Canview: ".$o->canview();
-//				print_r($o->permissions);
-				if ($o->getField("type") == 'section' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { 
+				if ($o->getField("type") == 'section' && $o->canview()) { 
 					$thisSection = &$thisSite->sections[$s]; 
 					break; 
 				}
@@ -67,7 +59,7 @@ do {
 		if (!$thisPage && count($thisSection->getField("pages"))) {
 			$thisSection->fetchDown();
 			foreach ($thisSection->pages as $p=>$o) {
-				if ($o->getField("type") == 'page' && ($o->canview() || $o->hasPermissionDown("add or edit or delete"))) { $thisPage = &$thisSection->pages[$p]; break; }
+				if ($o->getField("type") == 'page' && $o->canview()) { $thisPage = &$thisSection->pages[$p]; break; }
 			}
 		}
 		$st = " > " . $thisSection->getField("title");
@@ -107,7 +99,7 @@ do {
 		if ($thisPage->stories) {
 			foreach ($thisPage->data[stories] as $s) {
 				$o =& $thisPage->stories[$s];
-				if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {		
+				if ($o->canview()) {		
 					if ((/* $thisPage->getField("showcreator") || $thisPage->getField("showdate") ||  */$thisPage->getField("showhr")) && $i!=0) 
 						printc("<hr size='1' noshade style='margin-top: 5px'>");
 					if ($o->getField("category")) {

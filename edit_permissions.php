@@ -153,9 +153,9 @@ if ($isOwner) {
 			$regs = split('-',$pfield);
 			$perm = $regs[1];
 			$theObj->setUserPermissionDown($perm,$puser,$pwhat);
-			$theObj->setFieldDown("l-$puser-$perm",$pwhat);
-			echo "l-$puser-$perm: ".$pwhat;
-			if ($pwhat ==1) $theObj->setField("l-$puser-$perm",(1-$pwhat));
+			$theObj->setFieldDown("l%$puser%$perm",$pwhat);
+//			echo "l-$puser-$perm: ".$pwhat;
+			if ($pwhat ==1) $theObj->setField("l%$puser%$perm",(1-$pwhat));
 		}
 	}
 }

@@ -204,12 +204,14 @@ if ($_loggedin) {
         $sites = array();
         $esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor());
         foreach ($esites as $n=>$s) {
-                if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
-                        array_push($sites,$n);
-                else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
-                        array_push($sites,$n);
-                else
-                        array_push($sites,$n);
+        		if (!in_array($n,$sitesprinted)) {
+					if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
+							array_push($sites,$n);
+					else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
+							array_push($sites,$n);
+					else
+							array_push($sites,$n);
+				}
         }
         
         // if they are editors for any sites, they will be in the $sites[] array
