@@ -1,92 +1,106 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
-	<version number="1.1.0" date="future">	
+	<version number="1.1.0" date="2004-04-22">	
 		<new author='adam'>
-			Command-line XML import/export scripts now allow for backup of Segue sites
-			to flat XML files.
+			Command-line XML import/export scripts now allow for backup of Segue
+			sites to flat XML files. For more information please reference the 
+			README in the segue/export/ directory.
 		</new>
 		<fix author='alex'>
-			Fixed bug in admin tools search users UI (users.php) so search pagination working properly.
+			Fixed bug in admin tools search users UI (users.php) so search
+			pagination working properly.
 		</fix>
 		<fix author='alex'>
-			Posting to discussions now works reliably on all browsers (PC Internet Explorer sometimes
-			would not post because did not interpret postform action path correctly).
+			Posting to discussions now works reliably on all browsers (PC
+			Internet Explorer sometimes would not post because did not 
+			interpret postform action path correctly).
 		</fix>
 		<fix author='adam'>
-			Adding of editors now works in the 'discussions settings' step of the add/edit 
-			story interface.
+			Adding of editors now works in the 'discussions settings' step of
+			the add/edit story interface.
 		</fix>
 		<important author='alex'>
-			New database fields have been added to the story and discussion tables. To add new fields,
-			log in as an administrator, then go to 'admin tools' > 'segue updates' and run the 1.1.0 
-			update if needed.
+			New database fields have been added to the story and discussion
+			tables. To add new fields, log in as an administrator, then go to 
+			'admin tools' > 'segue updates' and run the 1.1.0 update if needed.
 		</important>
 		<new author='alex'>
-			Added information about discussion/assessment access such as authentication requirements,
-			information about what will be displayed to other users (e.g. author name, post content)
+			Added information about discussion/assessment access such as
+			authentication requirements, information about what will be 
+			displayed to other users (e.g. author name, post content)
 			and what post information is available to the site owner. 
 		</new>	
 		<new author='alex' ref='888585' reftype='fr'>
-			Added file upload UI to discussion/assessment post form.  This feature will allow
-			those who post to a discussion to attach a file.  Upload UI uses the site 
-			Media Library (accessible from filebrowser.php).  When the Media Library is
-			accessed from discussion/assessment, only files uploaded by the currently authenticated
-			user will appear (unless that user is the site owner).  This new functionality will
-			allow the discussion/assessment UI to function as an assignment/assessment dropbox.
+			Added file upload UI to discussion/assessment post form.  This
+			feature will allow those who post to a discussion to attach a file.
+			Upload UI uses the site Media Library (accessible from 
+			filebrowser.php).  When the Media Library is accessed from 
+			discussion/assessment, only files uploaded by the currently 
+			authenticated user will appear (unless that user is the site owner).
+			This new functionality will	allow the discussion/assessment UI to
+			function as an assignment/assessment dropbox.
 		</new>
 		<new author='alex' ref='888588' reftype='fr'>
 			Added option to rate discussion/assessment posts.  This feature 
-			will allow site owners rate the quality of posts.  In assessment mode this rating
-			can be used as a grade.
+			will allow site owners rate the quality of posts.  In assessment
+			mode this rating can be used as a grade.
 		</new>
 		<new author='alex' ref='888588' reftype='fr'>
-			Added option to show or hide authors of discussion/assessment posts.  This feature 
-			will allow site owners to create publicly anonymous discussions while
-			retaining their own access to the identity of discussion post authors.  All users (other
-			then the site owner) will see only then own posts identified.  This feature will also
-			allow site owners to let all users see then results of an assessment without revealing
-			identity of assessment post authors.
+			Added option to show or hide authors of discussion/assessment posts.
+ 			This feature will allow site owners to create publicly anonymous 
+ 			discussions while retaining their own access to the identity of 
+ 			discussion post authors.  All users (other then the site owner) 
+ 			will see only then own posts identified.  This feature will also
+			allow site owners to let all users see then results of an assessment
+			without revealing identity of assessment post authors.
 		</new>
 		<new author='alex' ref='888588' reftype='fr'>
-			Added option to show or hide discussion/assessment posts.  This feature will allow
-			site owners to use discussions as assessments.  Thus if hide posts is set
-			then posts referred to collectively as an Assessment.  All users (other then the site owner) will
-			see their own posts only.
+			Added option to show or hide discussion/assessment posts.  This
+			feature will allow site owners to use discussions as assessments.
+			Thus if hide posts is set then posts referred to collectively as 
+			an Assessment.  All users (other then the site owner) will see 
+			their own posts only.
 		</new>
 		<new author='alex'>
-			Added option to email site owner all discussion/assessment posts.  This feature
-			will allow site owners to get email updates of posts to their discussions. 
+			Added option to email site owner all discussion/assessment posts. 
+			This feature will allow site owners to get email updates of posts to
+			their discussions. 
 		</new>
 		<new author='alex'>
-			Added option to sort discussion/assessment posts by recent first or recent last, rating
-			and author. 
+			Added option to sort discussion/assessment posts by recent first or
+			recent last, rating	and author. 
 		</new>	
 		<change author='alex'>
-			Information on who posted last to a given discussion/assessment has been removed.
-			This has been done to preserve integrity of assessment mode described above.
+			Information on who posted last to a given discussion/assessment has
+			been removed. This has been done to preserve integrity of assessment
+			mode described above.
 		</change>
 		<change author='alex'>
-			Link to discussions have been changed from Discussion to Discuss/Assess.
+			Link to discussions have been changed from Discussion to
+			Discuss/Assess.
 		</change>
 		<change author='alex'>
-			Full name (instead of username) now displayed in story author and editor attribution.
+			Full name (instead of username) now displayed in story author and
+			editor attribution.
 		</change>
 		<change author='adam'>
-			The user full name, email, and type in the db are now updated from LDAP
-			or other auth method if the db version doesn't match.
+			The user full name, email, and type in the db are now updated from
+			LDAP or other auth method if the db version doesn't match.
 		<fix author='alex'>
-			Fixed bug that prevented indentation of replies to thread in Windows Internet Explorer
+			Fixed bug that prevented indentation of replies to thread in Windows
+			Internet Explorer.
 		</fix>
 		</change>
 	</version>
 	<version number="1.0.6" date="2003-12-29">
 		<fix author='adam' ref='750109' reftype='bug'>
-			Now doesn't attempt to perform operations on nonexistant LDAP results.
+			Now doesn't attempt to perform operations on nonexistant LDAP
+			results.
 		</fix>
 		<fix author='gabe' ref='865065' reftype='bug'>
-			Now checks that the destination name is not the same as the source name
-			and is also not an empty string.
+			Now checks that the destination name is not the same as the source
+			name and is also not an empty string.
 		</fix>
 	</version>
 	<version number="1.0.5" date="2003-12-19">
@@ -96,8 +110,9 @@
 		</change>
 		<change author='alex'>
 			Refined admin tools UI.  Added all Segue users
-			to add/edit user UI and allowed for searching by auth and user type.  Added
-			pagination to add/edit slots UI and refined layout of search results
+			to add/edit user UI and allowed for searching by auth and user type.
+			Added pagination to add/edit slots UI and refined layout of search 
+			results.
 		</change>
 		<fix author='alex' ref='853466' reftype='bug'>
 			Classes now show up if the user is an admin.
