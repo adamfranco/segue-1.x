@@ -15,7 +15,8 @@ body {
 	 background-color: #<? echo $bg['bg']; ?>; 
 }
 
-<? echo include("$themesdir/common/css.inc.php"); ?>;
+<? include("$themesdir/common/css.inc.php"); ?>
+
 
 
 
