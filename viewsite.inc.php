@@ -169,6 +169,7 @@ if ($thisPage) {
 					printc("</div>");
 				}
 				$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
+/* 				print "<br>".$incfile; */
 				include($incfile);
 				
 				if ($thisPage->getField("showcreator") || $thisPage->getField("showdate")) {

@@ -26,7 +26,7 @@ class story extends segue {
 		$this->data[title] = "";
 		$this->data[activatedate] = $this->data[deactivatedate] = "0000-00-00";
 		$this->data[shorttext] = $this->data[longertext] = "";
-		$this->data[discuss] = 0;
+/* 		$this->data[discuss] = 0; */
 		$this->data[texttype] = "text";
 		$this->data[category] = "";
 		$this->data[url] = "http://";

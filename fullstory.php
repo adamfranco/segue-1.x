@@ -58,13 +58,27 @@ if ($_REQUEST[del] && $_SESSION[auser] == $site_owner) {
 /* 	db_query($query); */
 }
 
-$smalltext = $story->getField("shorttext");
-$fulltext = $story->getField("longertext");
-//print "$smalltext - $fulltext";
-if (!$fulltext || $fulltext=='') $fulltext = $smalltext;
-$fulltext = stripslashes($fulltext);
-if ($story->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);
-
+if ($story->getField("type") == 'story') {
+	$smalltext = $story->getField("shorttext");
+	$fulltext = $story->getField("longertext");
+	//print "$smalltext - $fulltext";
+	if (!$fulltext || $fulltext=='') $fulltext = $smalltext;
+	$fulltext = stripslashes($fulltext);
+	if ($story->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);
+}
+if ($story->getField("type") == 'image') {
+	$filename = urldecode(db_get_value("media","name","id=".$story->getField("longertext")));
+	$dir = db_get_value("media","site_id","id=".$story->getField("longertext"));
+	$imagepath = "$uploadurl/$dir/$filename";
+	$fulltext = "<div style='text-align: center'><br><img src='$imagepath' border=0></div>";
+/* 	if ($story->getField("title")) $fulltext .= "<tr><td align=center><b>".spchars($story->getField("title"))."</b></td></tr>"; */
+	if ($story->getField("shorttext")) $fulltext .= "<br>".stripslashes($story->getField("shorttext"));
+	$fulltext .= "";
+}
+if ($story->getField("type") == 'file') {
+	$fulltext = "<br>";
+	$fulltext .= makedownloadbar($story);
+}
 
 ?>
 <html>
@@ -78,6 +92,14 @@ a {
 }
 
 a:hover {text-decoration: underline;}
+
+.downloadbar {
+	color: #000;
+	background-color: #ddd;
+	border: 1px solid #555;
+	padding: 5px;
+	padding-left: 15px;
+}
 
 body, table, td, th, input {
 	font-family: "Verdana";
