@@ -22,7 +22,7 @@ $db_type = "MySQL";
 
 // $debug: set this to 1 if you would like all debug output to be printed to the browser.
 //		possible values: 1, 0
-$debug = 0;
+$debug = 1;
 
 /*--------------------------------------------------------------------------------------*/
 /* --------------------------  /end GLOBALS ----------------------------------------	*/
@@ -153,7 +153,7 @@ function db_connect ($host_db, $username, $password, $db='', $port=0) {
   global $_connect_id;
   global $db_type; global $debug;
   if ($debug) {
-    print "db_connect: starting function with arguments:<br>";
+    print "<br><br>db_connect: starting function with arguments:<br>";
     print "host_db = $host_db, username = $username, password = $password";
     print ", db = $db, port = $port<br>";
     print "db_connect: db_type = $db_type<br>";

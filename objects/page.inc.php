@@ -364,7 +364,7 @@ ORDER BY
 	function updateDB($down=0) {
 		if (count($this->changed)) {
 			$a = $this->createSQLArray();
-			$a[] = $this->_datafields[editedby][1][0]."=".$_SESSION[aid];
+			$a[] = "FK_updatedby=".$_SESSION[aid];
 //			$a[] = "editedtimestamp=NOW()";  // no need to do this anymore, MySQL will update the timestamp automatically
 			$query = "UPDATE page SET ".implode(",",$a)." WHERE page_id=".$this->id;
 			print "<pre>Page->UpdateDB: $query<br>";
@@ -428,14 +428,14 @@ ORDER BY
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
-			$a[] = $this->_datafields[addedby][1][0]."=".$_SESSION[aid];
+			$a[] = "FK_createdby=".$_SESSION[aid];
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
 		} else {
-			$a[] = $this->_datafields[addedby][1][0]."=".$this->getField('addeby');
+			$a[] = "FK_createdby=".$this->getField('addeby');
 			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
 		}
 
-		$query = "INSERT INTO pages SET ".implode(",",$a);
+		$query = "INSERT INTO page SET ".implode(",",$a);
 /* 		print $query."<br>"; //debug */
 		db_query($query);
 		
@@ -464,10 +464,20 @@ ORDER BY
 		$d = $this->data;
 		$a = array();
 		
-		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site);
-		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'";
-		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section);
-		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->getField("id")."'";
+/* 		if (!isset($this->owningSiteObj)) $this->owningSiteObj = new site($this->owning_site); */
+/* 		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'"; */
+		print "<pre>\n\nXXXXXXX\n";
+		if (!isset($this->owningSectionObj)) {
+			print "owning_site=".$this->owning_site."\nowning section=".$this->owning_section."\n";
+			$this->owningSectionObj = new section($this->owning_site,$this->owning_section);
+			$this->owningSectionObj->fetchFromDB(1);
+		}
+		print_r ($this->owningSectionObj);
+		
+		print "\nid=".$this->owningSectionObj->getField("id")."\n";
+		print "\n############\n";
+		
+		if ($all) $a[] = $this->_datafields[section_id][1][0]."='".$this->owningSectionObj->id."'";
 		
 //		if ($this->id && ($all || $this->changed[pages])) { //I belive we may always need to fix the order.
 		if ($this->id) {
@@ -476,6 +486,8 @@ ORDER BY
 		} else {
 			$a[] = "page_order=".count($this->owningSectionObj->getField("pages"));
 		}
+		
+		print "\nXXXXXXX\n</pre>";
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
 		if ($all || $this->changed[activatedate]) $a[] = $this->_datafields[activatedate][1][0]."='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp

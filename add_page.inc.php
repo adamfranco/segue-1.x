@@ -181,7 +181,7 @@ if ($_REQUEST[save]) {
 			}			
 		}
 		
-		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id.(($_SESSION[pageObj]->getField("type")=='page')?"&page=".$_SESSION[pageObj]->id:""));
+//		header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id.(($_SESSION[pageObj]->getField("type")=='page')?"&page=".$_SESSION[pageObj]->id:""));
 		
 	} else {
 		$_SESSION[settings][step] = 1;
