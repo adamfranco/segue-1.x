@@ -70,11 +70,15 @@ include("themes/common/status.inc.php"); ?>
 	if (count($topnav) > 0) {
 		print " | ";
 		foreach ($topnav as $item) {
+			print "<span style='color: #000;";
+			if (!$item[url])
+				print " font-weight: bold;";
+			print "'>";
 		
 			$samepage = (isset($section) && ($section == $item[id]))?1:0;
 			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
 			print makelink($item,$samepage);
-			print " | ";
+			print "</span> | ";
 			
 		}
 		

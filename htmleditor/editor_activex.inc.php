@@ -97,26 +97,44 @@ function editor_generate(objname,w,h) {
   var editor = ''
   + '<table border=0 cellspacing=0 cellpadding=0 bgcolor="buttonface" style="padding: 1 0 0 0" width=' + width + ' unselectable="on">\n'
   + '<tr><td>\n'
+  
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: left;" unselectable="on">\n' 
+  + ' <tr>\n' 
+  + ' <td style="border-width: 0; padding: 2 1 0 1;">\n' 
+  + ' <select id="_' +objname+ '_formatBlock" onChange="editor_action(this.id)" unselectable="on">\n' 
+  + ' <option value="Heading 1">Heading 1</option>\n' 
+  + ' <option value="Heading 2">Heading 2</option>\n' 
+  + ' <option value="Heading 3">Heading 3</option>\n' 
+  + ' <option value="Heading 4">Heading 4</option>\n' 
+  + ' <option value="Heading 5">Heading 5</option>\n' 
+  + ' <option value="Heading 6">Heading 6</option>\n'   
+  + ' <option value="Normal" selected>Normal</option>\n' 
+  + ' </select>' 
+  + ' </td>\n' 
+  + ' </tr>\n' 
+  + '</table>\n' 
 
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on">\n'
+
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on">\n'
   + ' <tr>\n'
-  + '  <td style="border-width: 0; padding: 2 0 0 3;">\n'
+  + '  <td style="border-width: 0; padding: 2 1 0 1;">\n'
   + '   <select id="_' +objname+ '_FontName" onChange="editor_action(this.id)" unselectable="on">\n'
-  + '   <option value="arial, helvetica, sans-serif">Arial</option>\n'
-  + '   <option value="courier new, courier, mono">Courier New</option>\n'
-  + '   <option value="Georgia, Times New Roman, Times, Serif">Georgia</option>\n'
-  + '   <option value="Tahoma, Arial, Helvetica, sans-serif">Tahoma</option>\n'
-  + '   <option value="times new roman, times, serif">Times</option>\n'
-  + '   <option value="Verdana, Arial, Helvetica, sans-serif">Verdana</option>\n'
-  + '   <option value="wingdings">WingDings</option>\n'
+  + '   <option value="arial, helvetica, sans-serif">Arial, Helvetica, sans-serif</option>\n'
+  + '   <option value="courier new, courier, mono">Courier new, Courier, Mono</option>\n'
+  + '   <option value="Georgia, Times New Roman, Times, Serif">Georgia, Times New Roman, Times</option>\n'
+  + '   <option value="Tahoma, Arial, Helvetica, sans-serif">Tahoma, Arial, Helvetica, sans-serif</option>\n'
+  + '   <option value="times new roman, times, serif">Times New Roman, Times, serif</option>\n'
+  + '   <option value="Verdana, Arial, Helvetica, sans-serif">Verdana, Arial, Helvetica, sans-serif</option>\n'
+  + '   <option value="Geneva, Helvetica, sans-serif">Geneva, Helvetica, sans-serif</option>\n'  
+  + '   <option value="wingdings">Wing Dings</option>\n'
   + '   </select>'
   + '  </td>\n'
   + ' </tr>\n'
   + '</table>\n'
 
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on">\n'
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on">\n'
   + ' <tr>\n'
-  + '  <td style="border-width: 0; padding: 2 1 0 0;">\n'
+  + '  <td style="border-width: 0; padding: 2 1 0 1;">\n'
   +    '<select id="_' +objname+ '_FontSize" onChange="editor_action(this.id)" style="width:38px"  unselectable="on">\n'
   + '   <option value=1>1</option><option value=2>2</option><option value=3>3</option><option value=4>4</option><option value=5>5</option><option value=6>6</option><option value=7>7</option>\n'
   + '   </select>\n\n'
@@ -124,47 +142,58 @@ function editor_generate(objname,w,h) {
   + ' </tr>\n'
   + '</table>\n'
 
-
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Bold" id="_' +objname+ '_Bold" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_bold.gif" unselectable="on"></button>'
   +    '<button title="Italic" id="_' +objname+ '_Italic" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_italic.gif" unselectable="on"></button>'
   +    '<button title="Underline" id="_' +objname+ '_Underline" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_underline.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
 
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Strikethrough" id="_' +objname+ '_StrikeThrough" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_strike.gif" unselectable="on"></button>'
   +    '<button title="Subscript" id="_' +objname+ '_SubScript" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_sub.gif" unselectable="on"></button>'
   +    '<button title="Superscript" id="_' +objname+ '_SuperScript" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_format_sup.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Justify Left" id="_' +objname+ '_JustifyLeft" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_align_left.gif" unselectable="on"></button>'
   +    '<button title="Justify Center" id="_' +objname+ '_JustifyCenter" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_align_center.gif" unselectable="on"></button>'
   +    '<button title="Justify Right" id="_' +objname+ '_JustifyRight" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_align_right.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '</td></tr>\n'
+  + '<tr><td>\n'
+
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Ordered List" id="_' +objname+ '_InsertOrderedList" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_list_num.gif" unselectable="on"></button>'
   +    '<button title="Bulleted List" id="_' +objname+ '_InsertUnorderedList" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_list_bullet.gif" unselectable="on">\n'
   +    '<button title="Decrease Indent" id="_' +objname+ '_Outdent" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_indent_less.gif" unselectable="on"></button>'
   +    '<button title="Increase Indent" id="_' +objname+ '_Indent" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_indent_more.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;"  unselectable="on" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;"  unselectable="on" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Font Color" id="_' +objname+ '_ForeColor" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_color_fg.gif" unselectable="on"></button>'
   +    '<button title="Background Color" id="_' +objname+ '_BackColor" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_color_bg.gif" unselectable="on">\n'
   + '</td></tr></table>\n'
 
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;" unselectable="on"><tr><td style="border: inset 1px;">\n'
   +    '<button title="Horizontal Rule" id="_' +objname+ '_InsertHorizontalRule" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_hr.gif" unselectable="on"></button>'
-  +    '<button title="Insert Web Link" id="_' +objname+ '_CreateLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_link.gif" unselectable="on"></button>'
+  +    '<button title="Insert Web Link" id="_' +objname+ '_InsertLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_link.gif" unselectable="on"></button>'
+  +    '<button title="Remove Web Link" id="_' +objname+ '_UnLink" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_unlink.gif" unselectable="on"></button>'
+  +    '<button title="Insert Email Link" id="_' +objname+ '_InsertEmail" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_email.gif" unselectable="on"></button>'
+  +    '<button title="Insert Image" id="_' +objname+ '_InsertImage" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_image.gif" unselectable="on"></button>\n'
+  +    '<button title="Insert Table" id="_' +objname+ '_InsertTable" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_table.gif" unselectable="on"></button>\n'
+  +    '<button title="Insert Special Characters" id="_' +objname+ '_InsertCharacters" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_insert_characters.gif" unselectable="on"></button>\n'
+  +    '<button title="Insert Annotation" id="_' +objname+ '_InsertAnnotation" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_annotation.gif" unselectable="on"></button>\n'
+  +    '<button title="Insert Date/Time" id="_' +objname+ '_DateTime" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_date_time.gif" unselectable="on"></button>'
+  
   + '</td></tr></table>\n'
-
-  + '<table border=0 cellspacing=2 cellpadding=0 bgcolor="buttonface" style="float: left;" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  
+  + '<table border=0 cellspacing=1 cellpadding=0 bgcolor="buttonface" style="float: right;" unselectable="on"><tr><td style="border: inset 1px;">\n'
+  +    '<button title="Print" id="_' +objname+ '_Print" class="btn" onClick="editor_action(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_print.gif" unselectable="on"></button>' 
   +    '<button title="View HTML Source" id="_' +objname+ '_HtmlMode" class="btn" onClick="editor_setmode(this.id)" unselectable="on"><img src="' +imgURL+ 'ed_html.gif" unselectable="on"></button>'
-
-  + '</td></tr></table>\n'
+  + '</td></tr></table>\n'  
+  
   + '</td></tr></table>\n'
 
   + '<textarea ID="_' +objname + '_editor" style="width:' +width+ '; height:' +height+ '; margin-top: -1px; margin-bottom: -1px;"></textarea>'
@@ -236,19 +265,50 @@ function editor_action(button_id) {
     if (cmdID.toLowerCase() == 'subscript' && editdoc.queryCommandState('superscript')) { editdoc.execCommand('superscript'); }
     if (cmdID.toLowerCase() == 'superscript' && editdoc.queryCommandState('subscript')) { editdoc.execCommand('subscript'); }
 
-    // insert link
-    if (cmdID.toLowerCase() == 'createlink'){
-      editdoc.execCommand(cmdID,1);
-    }
-    
-    if (cmdID.toLowerCase() == 'insertfilebrowser'){
-      showModalDialog(_editor_url + "../filebrowser.php?",  "resizable: no; help: no; status: no; scroll: no; ");
+    // insert annotation
+    if (cmdID.toLowerCase() == 'insertannotation'){
+      showModalDialog(_editor_url + "insert_annotation.php?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
     }
 
-    // insert image
-    else if (cmdID.toLowerCase() == 'insertimage'){
-      showModalDialog(_editor_url + "insert_image.html", editdoc, "resizable: no; help: no; status: no; scroll: no; ");
+    // insert link
+    if (cmdID.toLowerCase() == 'insertlink'){
+      showModalDialog(_editor_url + "insert_link.html?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
     }
+
+    // insert email link
+    else if (cmdID.toLowerCase() == 'insertemail'){
+      showModalDialog(_editor_url + "insert_email.html?"+objname, window, "resizable: no; help: no; status: no; scroll: no; ");
+    }
+
+    // insert special characters
+    else if (cmdID.toLowerCase() == 'insertcharacters'){
+      showModalDialog(_editor_url + "insert_characters.html?"+objname, window, "resizable: yes; help: no; status: no; scroll: no; ");
+    }
+
+    // insert table
+    else if (cmdID.toLowerCase() == 'inserttable'){
+      showModalDialog(_editor_url + "insert_table.html?"+objname, window, "resizable: yes; help: no; status: no; scroll: no; ");
+    }
+
+    // insert date & time
+    else if (cmdID.toLowerCase() == 'datetime'){
+      showModalDialog(_editor_url + "insert_date_time.php?"+objname, window, "resizable: yes; help: no; status: no; scroll: no; ");
+    }
+
+
+    // insert link
+    //if (cmdID.toLowerCase() == 'createlink'){
+    //  editdoc.execCommand(cmdID,1);
+    //}
+    
+    //if (cmdID.toLowerCase() == 'insertfilebrowser'){
+    //  showModalDialog(_editor_url + "../filebrowser.php?",  "resizable: no; help: no; status: no; scroll: no; ");
+    //}
+
+    // insert image
+    //else if (cmdID.toLowerCase() == 'insertimage'){
+    //  showModalDialog(_editor_url + "insert_image.html", editdoc, "resizable: no; help: no; status: no; scroll: no; ");
+    //}
      
 
     // insert image
@@ -344,6 +404,7 @@ function editor_updateUI(objname,runDelay) {
   var fontsize = editdoc.queryCommandValue('FontSize');
   if (fontname != null) { fontname = fontname.toLowerCase(); }
 
+
   // Set Font face pulldown
   var fontname_obj = document.all["_" +objname+ "_FontName"];
   if (fontname == null) { fontname_obj.value = fontname; }
@@ -370,6 +431,22 @@ function editor_updateUI(objname,runDelay) {
     }
   }
 }
+
+  // Set Font Format pulldown 
+  var fontformat_obj = document.all["_" +objname+ "_formatBlock"]; 
+  if (fontformat == null) { fontformat_obj.value = fontformat; } 
+  else { 
+    var foundformat; 
+    var formats = fontformat_obj.length; 
+    for (i=0; i<formats; i++) { 
+      var thisformat = fontformat_obj.text.toLowerCase(); 
+        if (thisformat == fontformat) { 
+          fontformat_obj.selectedIndex = i; 
+          foundformat = 1; 
+        } 
+    } 
+  if (foundformat != 1) { fontformat_obj.value = fontformat; } // for formats not in list 
+  } 
 
 /* ---------------------------------------------------------------------- *\
   Function    : editor_setmode
@@ -406,7 +483,7 @@ function editor_setmode(button_id, mode) {
     editor_updateUI(objname);
 
     // disable buttons
-    var IDList = Array('Bold','Italic','Underline','StrikeThrough','SubScript','SuperScript','JustifyLeft','JustifyCenter','JustifyRight','InsertOrderedList','InsertUnorderedList','Outdent','Indent','ForeColor','BackColor','InsertHorizontalRule','CreateLink','InsertImage');
+    var IDList = Array('Bold','Italic','Underline','StrikeThrough','SubScript','SuperScript','JustifyLeft','JustifyCenter','JustifyRight','InsertOrderedList','InsertUnorderedList','Outdent','Indent','ForeColor','BackColor','InsertHorizontalRule','InsertLink','UnLink','InsertEmail','InsertImage','InsertTable','InsertCharacters','InsertAnnotation','DateTime','Print');
     for (i=0; i<IDList.length; i++) {                                // for each button
       var button_obj = document.all["_" +objname+ "_" +IDList[i]];   // get button object
       if (button_obj == null) { continue; }                          // if no btn obj???
@@ -415,7 +492,7 @@ function editor_setmode(button_id, mode) {
     }
 
     // disable font pulldowns
-    var IDList = Array('FontName','FontSize');
+    var IDList = Array('formatBlock','FontName','FontSize');
     for (i=0; i<IDList.length; i++) {
       var button_obj = document.all["_" +objname+ "_" +IDList[i]];   // button object
       if (button_obj == null) { continue; }                          // if no btn obj???
@@ -467,11 +544,18 @@ function editor_setmode(button_id, mode) {
     editdoc.close();
 
     // enable buttons
-    var IDList = Array('Bold','Italic','Underline','StrikeThrough','SubScript','SuperScript','JustifyLeft','JustifyCenter','JustifyRight','InsertOrderedList','InsertUnorderedList','Outdent','Indent','ForeColor','BackColor','InsertHorizontalRule','CreateLink','InsertImage');
+    var IDList = Array('Bold','Italic','Underline','StrikeThrough','SubScript','SuperScript','JustifyLeft','JustifyCenter','JustifyRight','InsertOrderedList','InsertUnorderedList','Outdent','Indent','ForeColor','BackColor','InsertHorizontalRule','InsertLink','UnLink','InsertEmail','InsertImage','InsertTable','InsertCharacters','InsertAnnotation','DateTime','Print');
     for (i=0; i<IDList.length; i++) {
       var button_obj = document.all["_" +objname+ "_" +IDList[i]];
       if (button_obj == null) { continue; }
       button_obj.className = 'btn';
+      button_obj.disabled = false;
+    }
+    
+    // enable font pulldowns
+    var IDList = Array('formatBlock','FontName','FontSize');
+    for (i=0; i<IDList.length; i++) {
+      var button_obj = document.all["_" +objname+ "_" +IDList[i]];   // button object
       button_obj.disabled = false;
     }
 

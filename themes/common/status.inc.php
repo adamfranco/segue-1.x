@@ -30,4 +30,22 @@ if ($_loggedin) {	//we're already logged in
 
 print "</div>";
 print "</form>";
+
+// Small definitions for the extended tooltips
+// added by Reinhold Lange December 06, 2002
+// Questions? rlange@middlebury.edu
+print "<script language=\"JavaScript\">\n";
+print " var ol_textfont = \"Arial,Geneva,Helvetica,sans-serif\";\n";
+print " var ol_fgcolor =  \"#FFFFCC\";\n";
+print " var ol_bgcolor = \"#FAE952\";\n";
+print " var ol_textcolor = \"#000000\";\n";
+print " var ol_captionfont = \"Arial,Geneva,Helvetica,sans-serif\";\n";
+print " var ol_capcolor = \"#000000\";\n";
+print " var ol_textsize = \"2\";\n";
+print " var ol_captionsize = \"2\";\n";
+print " var ol_closesize = \"2\";\n";
+print "</script>\n";
+print "<div id=\"overDiv\" style=\"position:absolute; visibility:hidden; z-index:1000;\"></div>\n";
+print "<script language=\"JavaScript\" src=\"themes/common/overlib.js\"></script>\n";
+
 ?>

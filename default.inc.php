@@ -18,20 +18,13 @@ if ($allowclasssites != $allowpersonalsites && ($personalsitesurl || $classsites
 	}
 }
 
-$urls = array(
-	"Educational Technology"=>"sitesdb.middlebury.edu/sites/ET",
-	"Academic Programs"=>"www.middlebury.edu/academics/",
-	"Libraries"=>"www.middlebury.edu/~lib/",
-	"Middlebury College"=>"www.middlebury.edu"
-);
-
 
 if ($_loggedin) {
 	// -------------------------------------------------------------------
 	//add_link(leftnav,"Home","index.php?$sid","","");
 	//add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
-	foreach ($urls as $t=>$u)
+	foreach ($defaultlinks as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
 	
      /* -------------------- list of sites -------------------- */	
@@ -249,21 +242,14 @@ if ($_loggedin) {
 	//add_link(leftnav,"Home","index.php?$sid","","");
 	//add_link(leftnav,"Personal Site List<br>","index.php?$sid&action=list","","");
 	add_link(leftnav,"Links");
-	foreach ($urls as $t=>$u)
+	foreach ($defaultlinks as $t=>$u)
 		add_link(leftnav,$t,"http://".$u,'','',"_blank");
 //		add_link(leftnav,$t." <img src=globe.gif border=0 align=absmiddle height=15 width=15>",$u,'','',"_blank");
 	
 	
-	printc("<div class=title>SitesDB</div>");
+	printc("<div class=title>$defaulttitle</div>");
 	printc("<div class=leftmargin>");
-	printc("<p>Welcome to SitesDB! To access your personal and class websites, please login with your username and password above. For Middlebury College users, these are identical to your email username and password.  See:<br>");
-	printc("<a href=http://www.middlebury.edu/webemailtools.html target=new_window>http://www.middlebury.edu/webemailtools.html</a></p>");	
-	printc("<p>With SitesDB, you can quickly and easily create websites for yourself and, if you are a professor, for your classes.</p>");
-	printc("<hr size=1>");
-	printc("<font class=small>If you are not affliated with Middlebury College and you would like a demo of SitesDB, log in above as follows:<br>");
-	printc("username: demo<br>");
-	printc("password: demo<br><br>");
-	printc("For more information, contact: <a href='mailto:achapin@middlebury.edu'>achapin@middlebury.edu</a></font>");
+	printc($defaultmessage);
 	
 	
 }

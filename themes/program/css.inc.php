@@ -195,7 +195,7 @@ th {
 /* more images */
 
 .topright {
-	background: white url('<? echo "$themesdir/$theme/images/blue/topright.gif"; ?>') no-repeat;
+	background: white url('<? echo "$themesdir/$theme/images/$c[bg]/topright.gif"; ?>') no-repeat;
 	width: 7px;
 	height: 51px;
 }
