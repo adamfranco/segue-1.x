@@ -20,10 +20,19 @@ if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
         foreach ($cfg["vhosts"] as $vhost) {
 //              print "checking config host ".$vhost["host"]."<br>";
                 if ($vhost["host"] == $currentHost) {
-                        if ($vhost["show_status"] == false) $_REQUEST["nostatus"] = "1";
+                        if ($vhost["show_status"] == false) 
+                        	$_REQUEST["nostatus"] = "1";
+                        
                         $_REQUEST["site"] = $vhost["site"];
                         $cfg["full_uri"] = $_full_uri = $vhost["full_uri"];
-                        $_REQUEST["action"] = "site";
+                        
+                        // All of the "home" links in Segue doen't specify an action,
+                        // so they will be redirected to the site page.
+                        // putting the if-statement allows normal editing and other
+                        // functions to work, while still retricting to the same site.
+                        if (!$_REQUEST["action"])
+                        	$_REQUEST["action"] = "site";
+                        	
                         break;
                 }
         }
