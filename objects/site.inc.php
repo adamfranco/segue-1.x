@@ -569,8 +569,8 @@ FROM
 			else
 				$t_editor = $row[editor_type];
 			
-//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
-
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; On the Site";
+				
 			// set the permissions for this editor
 			$this->permissions[$t_editor] = array(
 				permissions::ADD()=>$a[a], 
@@ -650,7 +650,7 @@ FROM
 			else
 				$t_editor = $row[editor_type];
 			
-//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; on Section ".$row[section_id];
 
 			foreach ($a as $key => $value)
 				$this->sections[$row[section_id]]->permissions[$t_editor][$key] = 1;
@@ -739,7 +739,7 @@ FROM
 
 		$query = "
 SELECT
-	section_id, page_id, story_id, user_uname as editor, ugroup_name as editor2,  site_editors_type as editor_type,
+	section_id, page_id, story_id, user_uname as editor, ugroup_name as editor2,  site_editors_type as editor_type, permission_id,
 	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	t_stories
@@ -771,12 +771,6 @@ FROM
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
 //			print_r($row[permissions]);print "<br>"; //debug
-			if (strpos($row[permissions],'a') !== false) $a[permissions::ADD()] = 1; // look for 'a' in 'final_permissions'
-			if (strpos($row[permissions],'e') !== false) $a[permissions::EDIT()] = 1; // !== is very important here, because a position 0 is interpreted by != as FALSE
-			if (strpos($row[permissions],'d') !== false && (strpos($row[permissions],'d') !== strpos($row[permissions],'di'))) $a[permissions::DELETE()] = 1;
-			if (strpos($row[permissions],'v') !== false) $a[permissions::VIEW()] = 1;
-			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
-//			print_r($a); //debug
 
 			// if the editor is a user then the editor's name is just the user name
 			// if the editor is 'institute' or 'everyone' then set the editor's name correspondingly
@@ -786,9 +780,46 @@ FROM
 				$t_editor = $row[editor2];
 			else
 				$t_editor = $row[editor_type];
+				
 			
-//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
-
+			
+			// Everyone and institute can't have add, edit, or delete permissions.
+			// Somehow, these were added sometimes. If this is the case, prevent 
+			// these from being set and reset those for the site.
+			if ($t_editor == 'everyone' || $t_editor == 'institute') {
+				// If we have a bad permission, do cleanup.
+				 if ((strpos($row[permissions],'a') !== false)
+				 || (strpos($row[permissions],'e') !== false)
+				 ||(strpos($row[permissions],'d') !== false && (strpos($row[permissions],'d') !== strpos($row[permissions],'di')))
+				) {
+					printError ("Invalid add, edit, or delete permissions for $t_editor: permissionId - ".$row[permission_id]."; permission - ".$row[permissions]."\n<br>Cleaning up Database.");
+					
+					// Clean up the permissions
+					$this->owningSiteObj->setUserPermissionDown('add', $t_editor, 0);
+					$this->owningSiteObj->setUserPermissionDown('edit', $t_editor, 0);
+					$this->owningSiteObj->setUserPermissionDown('delete', $t_editor, 0);
+					$this->owningSiteObj->updatePermissionsDB(TRUE);
+					if (is_numeric($row[permission_id])) {
+						if (strpos($row[permissions],'di'))
+							$cleanupQuery = "UPDATE permission SET  permission_value='di' WHERE permission_id=".$row[permission_id];
+						else
+							$cleanupQuery = "DELETE FROM permission WHERE permission_id=".$row[permission_id];
+						$cleanupResult = db_query($cleanupQuery);
+					}
+				}		
+			}
+			// Assign Add, edit, and delete permissions as needed.
+			else {
+				if (strpos($row[permissions],'a') !== false) $a[permissions::ADD()] = 1; // look for 'a' in 'final_permissions'
+				if (strpos($row[permissions],'e') !== false) $a[permissions::EDIT()] = 1; // !== is very important here, because a position 0 is interpreted by != as FALSE
+				if (strpos($row[permissions],'d') !== false && (strpos($row[permissions],'d') !== strpos($row[permissions],'di'))) $a[permissions::DELETE()] = 1;
+			}
+			if (strpos($row[permissions],'v') !== false) $a[permissions::VIEW()] = 1;
+			if (strpos($row[permissions],'di') !== false) $a[permissions::DISCUSS()] = 1;
+//			print_r($a); //debug
+			
+//			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; On story id ".$row[story_id];
+			
 			foreach ($a as $key => $value)
 				$this->sections[$row[section_id]]->pages[$row[page_id]]->stories[$row[story_id]]->permissions[$t_editor][$key] = 1;
 			if ($a[permissions::VIEW()] && !$this->canview[$t_editor])

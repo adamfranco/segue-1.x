@@ -1101,8 +1101,28 @@ FROM
 			else
 				$t_editor = $row[editor_type];
 			
+			// Everyone and institute can't have add, edit, or delete permissions.
+			// Somehow, these were added sometimes. If this is the case, prevent 
+			// these from being set and reset those for the site.
+			if ($t_editor == 'everyone' || $t_editor == 'institute') {
+				// If we have a bad permission, do cleanup.
+				if ($a[a] || $a[e] || $a[d]) {
+				
+					
+					// Make sure that zeros get passed on.
+					$a[a] = 0;
+					$a[e] = 0;
+					$a[d] = 0;
+					
+					// Clean up the permissions
+					$this->owningSiteObj->setUserPermissionDown('add', $t_editor, 0);
+					$this->owningSiteObj->setUserPermissionDown('edit', $t_editor, 0);
+					$this->owningSiteObj->setUserPermissionDown('delete', $t_editor, 0);
+					$this->owningSiteObj->updatePermissionsDB(TRUE);
+				}
+			}
 //			echo "<br><br>Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di];";
-
+			
 			// set the permissions for this editor
 //			$this->permissions[strtolower($t_editor)] = array(
 			$this->permissions[$t_editor] = array(
@@ -1228,7 +1248,20 @@ FROM
 					$p1[VIEW] = 0;
 					$p1[DISCUSS] = 0;
 				}
-					
+				
+				// Make sure that everyone and institute aren't given
+				// add, edit, or delete permission
+				if ($editor == 'everyone' || $editor == 'institute') {
+					if ($p1[ADD] || $p1[EDIT] || $p1[DELETE] || $p2[ADD] || $p2[EDIT] ||$p2[DELETE])
+						printError("Ahh, trying to give $editor invalid permissions!");
+						
+					$p1[ADD] = 0;
+					$p1[EDIT] = 0;
+					$p1[DELETE] = 0;
+					$p2[ADD] = 0;
+					$p2[EDIT] = 0;
+					$p2[DELETE] = 0;
+				}
 					
 					// note that if a certain permission is set in $p1, it is impossible that the same permission is not set in $p2 (because $p2 inherits $p1's permissions)
 					// thus, there are 3 possibilities:
@@ -1654,7 +1687,9 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		}
 		
 		// Debugging line
-//		print "\n<br>Checking hasPermission for '$user' ".get_class($this)." ".$this->name." / ".$this->id." - ".$this->getField("title");
+//		print "\n<br>Checking hasPermission '$perms' for '$user' ".get_class($this)." ".$this->name." / ".$this->id." - ".$this->getField("title");
+//		print "\n<br>Permissions = ".printpre($permissions,TRUE);
+//		print "\n<br>entitiesToCheck = ".printpre($entitiesToCheck,TRUE);
 		
 		// ------- Check the permissions ----------
 		$hasPermission = FALSE;
