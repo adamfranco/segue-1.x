@@ -27,6 +27,7 @@ printc("</td></tr></table>");
 
 
 if ($settings[type]=='page') {
+	printc("<div class=title style='font-size: 14px'>Display Options</div>");
 	printc("<div class=leftmargin>");
 		
 	printc("Show added/edited by <i>username</i> for content: <input type=checkbox name='showcreator' value=1". (($settings[showcreator])?" checked":"") . "><BR>");

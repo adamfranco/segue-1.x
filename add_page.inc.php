@@ -273,7 +273,7 @@ if ($save) {
 
 // ------- print out the add form -------
 // --- The Navigation Links for the sidebar ---
-$leftlinks = "________________<br><table>";
+$leftlinks = "_________________<br><table>";
 $leftlinks .= "<tr><td>";
 if ($settings[step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
@@ -307,12 +307,12 @@ if ($settings[type] == "page") {
 	if ($settings[step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
 	if ($settings[step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_page&step=4&link=1 onClick=\"submitForm()\">";
-	$leftlinks .= "Show & Archive";
+	$leftlinks .= "Display Options";
 	if ($settings[step] != 4) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-$leftlinks .= "</table>________________<br><a href=$PHP_SELF?$sid&action=add_page&cancel=1>Cancel</a>";
+$leftlinks .= "</table>_________________<br><a href=$PHP_SELF?$sid&action=add_page&cancel=1>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
 
