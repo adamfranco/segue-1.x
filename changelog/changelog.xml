@@ -62,7 +62,12 @@
 			Changed display of links on home page.  In particular, change "Public Site
 			Lising" to "Public Sites".  Removed "links" header and removed header
 			formatting from help link.  Also added text to public site listing.
-		</change>		
+		</change>
+		<new author='alex' ref='1036499' reftype='fr'>
+			Added a config option to include registration link below login
+			fields when there has been no authentication.  Also added config option
+			to include a external authentication help text string.
+		</new>	
 		<new author='alex'>
 			Added a config option to include forgot your password link below login
 			fields when there has been no authentication.  This allows users to request

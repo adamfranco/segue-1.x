@@ -248,12 +248,17 @@
 		
 	/******************************************************************************
 	 * Segue Authentication help
-	 * if Segue is your primary means of authentication include a link to reset
-	 * password below login fields
-	 * (if you use an external authentication system then this should be set to FALSE
+	 * if Segue is your primary means of authentication then turn password reset on
+	 * to allow users to self register visitor account then turn auth_registration on
+	 * if you use an external authentication system then include help instructions
+	 * for creating user accounts
 	 ******************************************************************************/
 	 
-		$cfg[password_reset_on] = $password_reset_on = TRUE;	
+		$cfg[auth_reset_on] = $auth_reset_on = TRUE;		// displays password reset link
+		$cfg[auth_register_on] = $auth_register_on = TRUE;	// displays visitor registration link
+		$cfg[auth_help_on] = $auth_help_on = TRUE;			// displays custom authentication help info
+		$cfg[auth_help] .= $auth_help .= "Users should manage their user accounts at:";
+		$cfg[auth_help] .= $auth_help .= " <a href=http://www/mydomain.com/help/users>User Accounts</a>";	
 
 	
 	/******************************************************************************

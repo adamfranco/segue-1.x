@@ -240,8 +240,15 @@ printerr();
 
 <html>
 <head>
-<title>Participants</title>
-<? include("themes/common/logs_css.inc.php"); ?>
+
+<? 
+if ($action == "user") {
+	print "<title>Your Posts</title>";
+} else {
+	print "<title>Participants</title>";
+}
+
+include("themes/common/logs_css.inc.php"); ?>
 
 <script lang="JavaScript">
 
