@@ -494,7 +494,7 @@ FROM
 		printc("</select>");
 		printc("<select name='activatemonth'>");
 		for ($i=0; $i<12; $i++) {
-			printc("<option value='$months_values[$i]'" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">".$months[$i]."\n");
+			printc("<option value='$i'" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">".$months[$i]."\n");
 		}
 		printc("</select>\n<select name='activateyear'>");
 		$curryear = date("Y");
@@ -513,7 +513,7 @@ FROM
 		printc("</select>\n");
 		printc("<select name='deactivatemonth'>");
 		for ($i=0; $i<12; $i++) {
-			printc("<option value='$months_values[$i]'" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
+			printc("<option value='$i'" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
 		}
 		printc("</select>\n<select name='deactivateyear'>");
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
@@ -553,6 +553,7 @@ FROM
 			$this->setField("activatedate","0000-00-00");
 			return true;
 		}
+
 		if (!checkdate($month,$day,$year)) {
 			error("The activate date you entered is invalid. It has not been set.");
 			return false;
