@@ -19,7 +19,7 @@ $this_computer = trim($file[0]);
 //print $this_computer;
 if (!$this_computer) $this_computer = "etdev";
 
-include("config_".$this_computer.".inc.php");
+include("configs/config_".$this_computer.".inc.php");
 
 $networknames = array("midd"=>"Middlebury","kenyon"=>"Kenyon");
 
