@@ -26,7 +26,10 @@ $id = $_REQUEST['id'];
 
 if ($curraction == 'del') {
 	$id = $_REQUEST['id'];
-	if ($id > 0) { course::delCourse($id); $message = "Class ID $id deleted successfully."; }
+	if ($id > 0) {
+		course::delCourse($id);
+		$message = "Class ID $id deleted successfully."; 
+	}
 }
 
 // if they want to add a class...
@@ -41,7 +44,7 @@ if ($curraction == 'add') {
 			INSERT INTO
 				ugroup
 			SET
-				ugroup_name = '$_REQUEST[code]'
+				ugroup_name = '$_REQUEST[code]',
 				ugroup_type = 'class'
 		";
 		db_query($query);
@@ -62,21 +65,35 @@ if ($curraction == 'add') {
 	}
 }
 
-// if they're editing a user
+// if they're editing a course
 if ($curraction == 'edit') {
 	if ($_REQUEST['commit']==1) {
-		if (!$_REQUEST['uname']) error("You must enter a username.");
-		if (!$_REQUEST['email']) error("You must enter a valid email address.");
+		if (!$_REQUEST['code']) error("You must enter a code.");
+		if (!$_REQUEST['year']) error("You must enter a valid 4-digit year.");
 		if (!$error) {
-			$obj = &new user();
-			$obj->fetchUserID($_REQUEST['id']);
-			$obj->uname = $_REQUEST['uname'];
-			$obj->fname = $_REQUEST['fname'];
-			$obj->email = $_REQUEST['email'];
-			$obj->type = $_REQUEST['type'];
+			$obj = &new course();
+			$obj->fetchCourseID($_REQUEST['id']);
+			$obj->code = $_REQUEST['code'];
+			$obj->name = $_REQUEST['name'];
+			$obj->semester = $_REQUEST['semester'];
+			$obj->year = $_REQUEST['year'];
+			$obj->owner = $_REQUEST['owner'];
+	//		$obj->ugroup = $ugroup_id;
+	//		$obj->classgroup = $_REQUEST['classgroup'];
 			$obj->updateDB();
-			unset($_REQUEST['uname'],$_REQUEST['fname'],$_REQUEST['email'],$_REQUEST['type'],$curraction);
-			$message = "User '".$obj->uname."' updated successfully.";
+			
+			$query = "
+				UPDATE
+					ugroup
+				SET
+					ugroup_name='$_REQUEST[code]'
+				WHERE
+					ugroup_id='".$obj->ugroup."'
+			";
+			db_query($query);
+			
+			unset($_REQUEST['code'],$_REQUEST['name'],$_REQUEST['semester'],$_REQUEST['year'],$_REQUEST['owner'],$_REQUEST['ugroup']);
+			$message = "Course '".$obj->code."' updated successfully.";
 		}
 	}
 }

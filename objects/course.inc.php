@@ -85,11 +85,26 @@ class course {
 	}
 	
 	function delCourse($id) {
+		$ugroup_id = db_get_value("class","FK_ugroup","class_id=$id");
 		$query = "
-	DELETE FROM
-		class
-	WHERE
-		class_id=$id";
+			DELETE FROM
+				class
+			WHERE
+				class_id=$id";
+		db_query($query);
+		$query = "
+			DELETE FROM
+				ugroup_user
+			WHERE
+				FK_ugroup=$ugroup_id
+		";
+		db_query($query);
+		$query = "
+			DELETE FROM
+				ugroup
+			WHERE
+				ugroup_id=$ugroup_id
+		";
 		db_query($query);
 	}
 		
