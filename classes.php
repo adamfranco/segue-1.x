@@ -47,7 +47,7 @@ if ($curraction == 'del') {
 if ($curraction == 'add') {
 	// check for errors first
 	if (course::courseExists(generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year']))) error("A class with that code already exists.");
-	if (!ereg("^[a-zA-Z0-9]{1,}$",$_REQUEST['external_id'])) error("You must enter an external ID. Only combination of charactors \"a-z\" and \"A-Z\" and numbers are allowed.");
+	if (!ereg("^[a-zA-Z0-9\._\-]{1,}$",$_REQUEST['external_id'])) error("You must enter an external ID. Only combination of charactors \"a-z\" and \"A-Z\", numbers, and the charactors '-_.' are allowed.");
 	if (!ereg("^[a-zA-Z]{1,}$",$_REQUEST['department'])) error("You must enter a department. Only charactors \"a-z\" and \"A-Z\" are allowed.");
 	if (!ereg("^[0-9]{1,}$",$_REQUEST['number'])) error("You must enter a numeric number.");
 	if (!ereg("^[a-zA-Z]{0,}$",$_REQUEST['section'])) error("Your course section must be letters \"a-z\" and \"A-Z\" only");
