@@ -1,6 +1,6 @@
 <?php
 
-require_once("errors/ArgumentRenderer.class.php");
+require_once(dirname(__FILE__)."/ArgumentRenderer.class.php");
 
 /**
 * Prints a single error.
