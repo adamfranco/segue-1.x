@@ -131,7 +131,7 @@ function changeOrder(order) {
 
 </head>
 <!-- <body onLoad="document.addform.uname.focus()">  -->
-<body onLoad="document.searchform.name.focus()">
+<body onLoad="initEditor()">
 <div align=right>
 <!-- <a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a> -->
 <!-- | <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a> -->
@@ -303,7 +303,7 @@ Participants<br><br>
 				$headers .= "Content-Type: text/html\n";
 			} 
 		
-			$text = "email text here";
+			//$text = "email text here";
 			//$textarea = "email";
 			?>
 			
@@ -315,12 +315,12 @@ Participants<br><br>
 			<tr><td align=right>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align=left></td></tr>
 			<tr><td></td><td align=left>
 			<?
-			//include("htmleditor/editor.inc.php");
-			//include("sniffer.inc.php");
-			//addeditor ("content",60,20,$text,"discuss"); 
-			//print $content;
+			include("htmleditor/editor.inc.php");
+			include("sniffer.inc.php");
+			addeditor ("body",60,20,$text,"discuss"); 
+			print $content;
 			?>
-			<textarea name=body cols=60 rows=20></textarea>
+<!-- 			<textarea name=body cols=60 rows=20></textarea> -->
 			</td><td><td align=right></td></tr>
 			</table>
 			<input type=hidden name='action' value='send'>
@@ -347,7 +347,7 @@ Participants<br><br>
 			print "<tr><td>Cc:</td><td>".$_SESSION['afname']."</td></tr>\n";
 			print "<tr><td>Subject:</td><td>".$subject."</td></tr>\n";
 			print "<tr><td></td><td>".$body."</td></tr>\n";
-			print "<tr><td></td><td>".$headers."</td></tr>\n";  //debug
+			//print "<tr><td></td><td>".$headers."</td></tr>\n";  //debug
 			print "</table>\n";
 			print "</div>\n";
 			//mail($to,$subject,$body,"From: $from");

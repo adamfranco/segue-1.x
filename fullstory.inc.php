@@ -190,20 +190,33 @@ if ($storyObj->getField("discuss")) {
 	printc("</th></tr>\n");
 	printc("</table>\n");
 	
+	// hide posts (assessment)
 	if ($showposts == 2 && $showallauthors == 1) {
 		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
 		if ($_SESSION[auser]==$site_owner) {
-			printc("<br><div style='font-size: 9px'> To make posts to this assessment available for discussion by all participants, edit the display options for this content block and select Show Posts.</div>");
+			if ($mailposts == 1) {
+				printc("<br><div style='font-size: 9px'> All posts to this discussion will be mailed to you.  To disable emailing of posts, edit the display options for this content block and deselect Email Posts.</div>");
+			}
+			printc("<div style='font-size: 9px'> To make posts to this assessment available for discussion by all participants, edit the display options for this content block and select Show Posts.</div>");		
 		}
+	// show posts, hide author names (Anonymous Discussion)
 	} else if ($showposts == 1 && $showallauthors == 2) {
 		printc("Author of posts to this discussion or assessment are known only to the site owner, <i>$siteowner</i>.  Other participants will not see your name associated with your posts.");
 		if ($_SESSION[auser]==$site_owner) {
-			printc("<br><div style='font-size: 9px'> To make authors known to all participants, edit the display options for this content block and select Show Authors.</div>");
+			if ($mailposts == 1) {
+				printc("<br><div style='font-size: 9px'> All posts to this discussion will be mailed to you.  To disable emailing of posts, edit the display options for this content block and deselect Email Posts.</div>");
+			}
+			printc("<div style='font-size: 9px'> To make authors known to all participants, edit the display options for this content block and select Show Authors.</div>");
 		}
+	// hide posts, hide authornames  (assessment)
 	} else if ($showposts == 2 && $showallauthors == 2) {
 		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
 		if ($_SESSION[auser]==$site_owner) {
-			printc("<br><div style='font-size: 9px'> To make posts and their authors viewable by all participants, edit the display options for this content block and select both Show Authors and Show Posts.</div>");
+			if ($mailposts == 1) {
+				printc("<br><div style='font-size: 9px'> All posts to this discussion will be mailed to you.  To disable emailing of posts, edit the display options for this content block and deselect Email Posts.</div>");
+			}
+
+			printc("<div style='font-size: 9px'> To make posts and their authors viewable by all participants, edit the display options for this content block and select both Show Authors and Show Posts.</div>");
 		}
 	}
 

@@ -44,11 +44,10 @@ function highlight() {
 }
 </script>
 
-</head>
+<body onLoad="initEditor();">
 
 <!-- use <body onload="HTMLArea.replaceAll()" if you don't care about
      customizing the editor.  It's the easiest way! :) -->
-<!-- <body onload="initEditor()"> -->
 
 <!-- <form action="test.cgi" method="post" id="edit" name="edit"> -->
 
@@ -57,9 +56,10 @@ function highlight() {
 <? print spchars($text); ?>
 </textarea>
 
-<script>
-initEditor();
-</script>
+<!-- <script> -->
+<!-- initEditor(); -->
+<!-- </script> -->
+
 
 <!-- <p /> -->
 
