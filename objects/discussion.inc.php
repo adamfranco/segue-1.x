@@ -701,7 +701,7 @@ class discussion {
 		printc ("<table width=100%  cellspacing='0'px>\n");
 		
 		if ($t == 'rate') {	
-			//printc ("Subject: <input type=text size=50 name=subject value='".spchars($s)."' readonly>");
+			//printc ("Subject: <input type='text' size=50 name=subject value='".spchars($s)."' readonly>");
 			printc ("<td class=dheader3>\n");
 							
 			printc ("<table width=100% cellspacing='0'px>\n");
@@ -709,7 +709,7 @@ class discussion {
 			printc ("<span class=subject><a name='".$this->id."'>\n");
 			printc ($s);
 			printc ("</a><input type=hidden name=subject value='".spchars($s)."'>\n");
-			printc (" (<input type=text size= 3 class='textfield small' name='rating' value=".$this->rating.">\n");
+			printc (" (<input type='text' size= 3 class='textfield small' name='rating' value=".$this->rating.">\n");
 			printc("<input type=submit class='button small' value='rate'>");
 			printc(" <a href='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."#".$this->id."'><input type=button class='button small' value='cancel'></a>\n");
 			printc(" numeric only");
@@ -743,8 +743,8 @@ class discussion {
 				printc ("<tr><td colspan = 2><div style='font-size: 9px'>If you part of the ".$cfg[inst_name]);
 				printc (" community or have posted to a public forum here and received a visitor user account, please log in <b>before</b> posting.");
 				printc ("  If you do not yet have a user account, please register below.</div></td></tr>\n");
-				//printc ("<tr><td>Full Name:</td><td><input type=text size=50 name=visitor_name value='".$_REQUEST['visitor_name']."'></td></tr>\n");
-				//printc ("<tr><td>Email:</td><td><div style='font-size: 9px'><input type=text size=25 name=visitor_email value='".$_REQUEST['visitor_email']."'>\n");
+				//printc ("<tr><td>Full Name:</td><td><input type='text' size=50 name=visitor_name value='".$_REQUEST['visitor_name']."'></td></tr>\n");
+				//printc ("<tr><td>Email:</td><td><div style='font-size: 9px'><input type='text' size=25 name=visitor_email value='".$_REQUEST['visitor_email']."'>\n");
 				printc ("<tr><td  colspan = 2 align = center><div style='font-size: 10px'>");
 				printc ("<a href='passwd.php?action=login' target='password' onClick='doWindow(\"password\",400,300)'>Login</a> | ");
 				printc ("<a href='passwd.php?action=register' target='password' onClick='doWindow(\"password\",400,300)'>Register</a> | ");
@@ -753,7 +753,7 @@ class discussion {
 			}
 			
 			if ($_SESSION[auser]) {			
-				printc ("<tr><td>Subject:</td><td><input type=text size=50 name=subject value='".spchars($s)."'></td></tr>\n");
+				printc ("<tr><td>Subject:</td><td><input type='text' size=50 name=subject value='".spchars($s)."'></td></tr>\n");
 			//	printc ("<tr><td></td><td></td></tr>\n");
 				
 			}
@@ -806,7 +806,7 @@ class discussion {
 		 ******************************************************************************/
 		 
 		if ($t != 'rate'  && $_SESSION[auser]) {		
-			printc ("<br />Upload a File:<input type=text name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size=25 readonly>\n<input type=button name='browsefiles' value='Browse...' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?site=$site&source=discuss&owner=$site_owner&editor=none\")' target='filebrowser' style='text-decoration: none'>\n\n");
+			printc ("<br />Upload a File:<input type='text' name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size=25 readonly>\n<input type=button name='browsefiles' value='Browse...' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?site=$site&source=discuss&owner=$site_owner&editor=none\")' target='filebrowser' style='text-decoration: none'>\n\n");
 			if ($_SESSION['aid']) printc ("<br />You will be able to edit your post as long as no-one replies to it.\n");
 			else printc ("<br />Once submitted, you will not be able to modify your post.\n");
 		}

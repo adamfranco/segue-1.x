@@ -272,7 +272,7 @@ print "</div><br />";
 		print "&nbsp;  ";
 	?>
 	</td>
-	<td>Name: <input type=text name='n' size=20 value='<?echo $_REQUEST[n]?>'> <input type=submit value='find'></td>
+	<td>Name: <input type='text' name='n' size=20 value='<?echo $_REQUEST[n]?>'> <input type=submit value='find'></td>
 	<td></td>	
 </tr>
 <?

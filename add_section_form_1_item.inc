@@ -66,7 +66,7 @@ if ($_SESSION[sectionObj]->getField("type")=='section') {
 }
 
 printc("<div class=leftmargin>");
-printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[sectionObj]->getField("title"))."'>");
+printc("Title: <input type='text' size=35 name=title value='".spchars($_SESSION[sectionObj]->getField("title"))."'>");
 printc("</div><br />");
 
 if ($_SESSION[sectionObj]->getField("type")=='link') {	
@@ -80,7 +80,7 @@ if ($_SESSION[sectionObj]->getField("type")=='link') {
 	$url = convertTagsToInteralLinks($_SESSION[settings][site], $url);
 
 	printc("<div class=leftmargin>");
-	printc("URL: <input type=text name=url value='".$url."' size=50>");
+	printc("URL: <input type='text' name=url value='".$url."' size=50>");
 	printc("</div>");
 }
 

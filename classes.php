@@ -328,9 +328,9 @@ if ($site) {
 	<table cellspacing=1 width='100%'>
 		<tr><td>
 			<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-			Code: <input type=text name='class_external_id' size=10 value='<?echo $class_external_id?>'> 
-			Name: <input type=text name='class_name' size=10 value='<?echo $class_name?>'>
-			Dept: <input type=text name='class_dept' size=3 value='<?echo $class_dept?>'>
+			Code: <input type='text' name='class_external_id' size=10 value='<?echo $class_external_id?>'> 
+			Name: <input type='text' name='class_name' size=10 value='<?echo $class_name?>'>
+			Dept: <input type='text' name='class_dept' size=3 value='<?echo $class_dept?>'>
 			Semester:
 			<select name=semester>
 				<option<?=($semester=='any')?" selected":""?> value='any'>Any</option>
@@ -342,8 +342,8 @@ if ($site) {
 					}
 				?>
 			</select>
-			Year: <input type=text name='class_year' size=5 value='<?echo $class_year?>'>
-			Owner: <input type=text name='class_owner' size=7 value='<?echo $class_owner?>'>
+			Year: <input type='text' name='class_year' size=5 value='<?echo $class_year?>'>
+			Owner: <input type='text' name='class_owner' size=7 value='<?echo $class_owner?>'>
 			<input type=submit name='search' value='Find'>
 			<input type=submit name='findall' value='Find All'>
 			</td>
@@ -440,11 +440,11 @@ function doClassForm($a,$p='',$e=0) {
 		<tr>
 		<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
   		<td><?=($e)?generateCourseCode($a[$p.'id']):""?></td>
-		<td><input type=text name='external_id' size=10 value="<?=$a[$p.'external_id']?>"></td>
-		<td><input type=text name='name' size=20 value="<?=$a[$p.'name']?>"></td>
-		<td><input type=text name='department' size=3 value="<?=$a[$p.'department']?>"></td>
-		<td><input type=text name='number' size=3 value="<?=$a[$p.'number']?>"></td>
-		<td><input type=text name='section' size=1 value="<?=$a[$p.'section']?>"></td>
+		<td><input type='text' name='external_id' size=10 value="<?=$a[$p.'external_id']?>"></td>
+		<td><input type='text' name='name' size=20 value="<?=$a[$p.'name']?>"></td>
+		<td><input type='text' name='department' size=3 value="<?=$a[$p.'department']?>"></td>
+		<td><input type='text' name='number' size=3 value="<?=$a[$p.'number']?>"></td>
+		<td><input type='text' name='section' size=1 value="<?=$a[$p.'section']?>"></td>
 		<td><select name=semester>
 		<?
 		foreach (array_keys($cfg['semesters']) as $semesterKey) {
@@ -455,8 +455,8 @@ function doClassForm($a,$p='',$e=0) {
 		?>
 		</select>
 		</td>
-		<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>
-		<td><input type=text name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
+		<td><input type='text' name='year' size=4 value="<?=$a[$p.'year']?>"></td>
+		<td><input type='text' name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
 		<td><?=$a[classgroup_name]?></td>
 		<td align='center'>
 		<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>

@@ -248,7 +248,7 @@ if ($_loggedin) {
 			}
 			
 			//info/interface for groups
-			printc("<tr><th colspan=2 align='right'>add checked sites to group: <input type=text name=newgroup size=10 class=textfield>");
+			printc("<tr><th colspan=2 align='right'>add checked sites to group: <input type='text' name=newgroup size=10 class=textfield>");
 			$havegroups = count(($grs = group::getGroupsOwnedBy($_SESSION[auser])));
 			if ($havegroups) {
 				printc(" <select name='groupname' onChange='document.groupform.newgroup.value = document.groupform.groupname.value'>");

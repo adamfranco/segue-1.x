@@ -271,8 +271,8 @@ if ($site) {
 	<table cellspacing=1 width='100%'>
 	<tr><td>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		Name: <input type=text name='slot_name' size=10 value='<?echo $slot_name?>'>
-		Owner: <input type=text name='slot_owner' size=10 value='<?echo $slot_owner?>'>
+		Name: <input type='text' name='slot_name' size=10 value='<?echo $slot_name?>'>
+		Owner: <input type='text' name='slot_owner' size=10 value='<?echo $slot_owner?>'>
 		Type: <select name=slot_type>
 				<option<?=($slot_type=='all')?" selected":""?>>all
 				<option<?=($slot_type=='class')?" selected":""?>>class
@@ -400,10 +400,10 @@ function doSlotForm($slot,$p='',$e=0) {
 	<? if ($e) {
 		print $slot[$p.'name']."<input type=hidden name='name' value='".$slot[$p.'name']."'>";
 	 } else { ?>
-		<input type=text name='name' size=10 value="<?=$slot[$p.'name']?>">
+		<input type='text' name='name' size=10 value="<?=$slot[$p.'name']?>">
 	<? } ?>
 	</td>
-	<td><input type=text name='owner' size=10 value="<?=$slot['owner']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
+	<td><input type='text' name='owner' size=10 value="<?=$slot['owner']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
 	<td>
 	<? if ($e) {
 		print $slot[$p.'type']."<input type=hidden name='type' value='".$slot[$p.'type']."'>";
@@ -416,22 +416,22 @@ function doSlotForm($slot,$p='',$e=0) {
 		</select>
 	<? } ?>
 	</td>
-	<td align='left'><input type=text name='assocsite' size=10 value="<?=$slot[$p.'assocsite']?>"></td>
+	<td align='left'><input type='text' name='assocsite' size=10 value="<?=$slot[$p.'assocsite']?>"></td>
 	<td align='right'>
 <?	if ($slot[$p.'uploadlimit'] >= 1073741824) {
-		print "<input type=text align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1073741824,2)."'>";
+		print "<input type='text' align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1073741824,2)."'>";
 		$units = "GB";
 	} else if ($slot[$p.'uploadlimit'] >= 1048576) {
-		print "<input type=text align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1048576,2)."'>";
+		print "<input type='text' align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1048576,2)."'>";
 		$units = "MB";
 	} else if ($slot[$p.'uploadlimit'] >= 1024) {
-		print "<input type=text align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1024,2)."'>";
+		print "<input type='text' align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1024,2)."'>";
 		$units = "KB";
 	} else if ($slot[$p.'uploadlimit'] > 0) {
-		print "<input type=text align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit'],2)."'>";
+		print "<input type='text' align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit'],2)."'>";
 		$units = "B";
 	} else {
-		print "<input type=text align='right' name='uploadlimit' size=5 value='".$default_uploadlimit."'>";
+		print "<input type='text' align='right' name='uploadlimit' size=5 value='".$default_uploadlimit."'>";
 		$units = "MB";
 	}
 ?>

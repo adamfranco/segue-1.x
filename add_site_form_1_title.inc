@@ -25,7 +25,7 @@ if ($ltype=='admin') {
 	printc("<br />type: ".$_SESSION[siteObj]->getField("type"));
 	printc("<br /><br />");
 
-/* 	printc("name: <input type=text size=20 name=sitename value='".$_SESSION[siteObj]->getField("name")."'>"); */
+/* 	printc("name: <input type='text' size=20 name=sitename value='".$_SESSION[siteObj]->getField("name")."'>"); */
 /* 	printc("<br />type:"); */
 /* 	printc("<br /><input type=radio name=type value='class'".(($_SESSION[siteObj]->getField("type")=='class')?" checked":"")."> class"); */
 /* 	printc("<br /><input type=radio name=type value='personal'".(($_SESSION[siteObj]->getField("type")=='personal')?" checked":"")."> personal"); */
@@ -46,7 +46,7 @@ printc("<br />");
 printc("<div class=title>1. Title</div><br />");
 //printc("<div class=desc>Enter the site <b>title</b>. This is required.</div>");
 
-printc("Title: <input type=text size=35 name='title' value='".spchars($_SESSION[siteObj]->getField("title"))."'>");
+printc("Title: <input type='text' size=35 name='title' value='".spchars($_SESSION[siteObj]->getField("title"))."'>");
 printc("<span class=editnote> *required</span>");
 printc("<br />");
 

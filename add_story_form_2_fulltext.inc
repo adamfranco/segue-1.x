@@ -42,7 +42,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<tr><td colspan=2>");
 	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
 	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
-	printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
+	printc(" <input type='text' name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
 	printc(" (media file URL)");
 	printc("</div></td></tr>");
 	printc("<tr><td>");
@@ -159,7 +159,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	//	printc("<option value=text".(($_SESSION[settings][texttype]=='text')?" selected":"").">Plain text");
 	//	printc("<option value=html".(($_SESSION[settings][texttype]=='html')?" selected":"").">Preformatted HTML");
 	//	printc("</select>");
-		printc("<input type=textarea disabled value='".(($_SESSION[storyObj]->getField("texttype")=='text')?" Plain text":" Preformatted HTML")."'>");
+		printc("<input type='text'area disabled value='".(($_SESSION[storyObj]->getField("texttype")=='text')?" Plain text":" Preformatted HTML")."'>");
 		printc("</div>");
 		printc("<div class=desc align='right'>Change this option on the previous screen.</div>");
 	}

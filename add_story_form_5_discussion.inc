@@ -69,7 +69,7 @@ printc("<td valign=top><input type=radio value='Comment' name=discusslabel".(($d
 printc("<td valign=top><input type=radio value='Review' name=discusslabel".(($discusslabel == "Review")?" checked":"")."> Review</td>");
 printc("<td valign=top><input type=radio value='Register' name=discusslabel".(($discusslabel == "Register")?" checked":"")."> Register</td>");
 //printc("</tr><tr>");
-//printc("<td valign=top colspan=5><input type=radio value='1' name=label".(($label == "Other")?" checked":"")."> Other <input type=textfield value='' name=label></td>");
+//printc("<td valign=top colspan=5><input type=radio value='1' name=label".(($label == "Other")?" checked":"")."> Other <input type='text'field value='' name=label></td>");
 //printc("</tr>");
 printc("</table><br />");
 

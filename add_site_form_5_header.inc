@@ -59,12 +59,12 @@ printc("<tr><td colspan=2>");
 if ($_SESSION[settings][edit]) {
 	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
 	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
-	printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
+	printc(" <input type='text' name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
 }
 // We can't add media if we don't have a site id yet
 else {
 	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' style='text-decoration: none' disabled>");
-	printc(" <input type=text name='media_url' class='textfield small' value='You must save the site before you can add media to it.' size=75 readonly>");
+	printc(" <input type='text' name='media_url' class='textfield small' value='You must save the site before you can add media to it.' size=75 readonly>");
 }
 
 printc(" (media file URL)");

@@ -583,11 +583,11 @@ if (1) {
 		<? 
 		if ($ltype == 'admin') { 
 		?> 
-			filename: <input type=text name=name size=15 value='<?echo $name?>'> 
-			site: <input type=text name=site size=10 value='<?echo $site?>'> 
-			user: <input type=text name=user size=10 value='<?echo $user?>'> 
+			filename: <input type='text' name=name size=15 value='<?echo $name?>'> 
+			site: <input type='text' name=site size=10 value='<?echo $site?>'> 
+			user: <input type='text' name=user size=10 value='<?echo $user?>'> 
 		<? } else { ?> 
-			filename: <input type=text name=name size=10 value='<?echo $name?>'> 
+			filename: <input type='text' name=name size=10 value='<?echo $name?>'> 
 			<input type=hidden name=site value='<?echo $site?>'>
 		<? } ?> 
 		<input type=submit value='search'> 

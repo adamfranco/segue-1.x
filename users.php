@@ -223,7 +223,7 @@ if ($site) {
 	<table cellspacing=1 width='100%'>
 	<tr><td>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		Name: <input type=text name='name' size=20 value='<?echo $name?>'> 
+		Name: <input type='text' name='name' size=20 value='<?echo $name?>'> 
 		User Type:
 		<select name=type>
 		<option<?=($type=='Any')?" selected":""?>>Any
@@ -347,9 +347,9 @@ function doUserForm($a,$p='',$e=0) {
 	<form method='post' name='addform'>
 	<tr>
 	<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='uname' size=10 value=\"".$a[$p.'uname']."\">":$a[$p.'uname']?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='fname' size=20 value=\"".$a[$p.'fname']."\">":$a[$p.'fname']?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='email' size=30 value=\"".$a[$p.'email']."\">":$a[$p.'email']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='uname' size=10 value=\"".$a[$p.'uname']."\">":$a[$p.'uname']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='fname' size=20 value=\"".$a[$p.'fname']."\">":$a[$p.'fname']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='email' size=30 value=\"".$a[$p.'email']."\">":$a[$p.'email']?></td>
 	<td><select name=type>
 		<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
 		<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof

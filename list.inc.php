@@ -54,9 +54,9 @@ printc("<tr>");
 		printc("<tr><td>");
 		printc("<form action=$PHP_SELF?$sid method=get>");
 		
-//		printc("site: <input type=text name=name size=15 value='$name'>");
-		printc("title: <input type=text name=title size=15 value='$title'>");
-		printc("owner: <input type=text name=user size=15 value='$user'>");
+//		printc("site: <input type='text' name=name size=15 value='$name'>");
+		printc("title: <input type='text' name=title size=15 value='$title'>");
+		printc("owner: <input type='text' name=user size=15 value='$user'>");
 		printc("<input type=submit value='go'>");
 		printc("</form>");
 		printc("</td>");

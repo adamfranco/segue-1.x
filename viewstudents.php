@@ -185,9 +185,9 @@ function changeOrder(order) {
         } else {
         ?>
             <!-- </select> -->
-            site: <input type=text name='site' size=15 value='<?echo $site?>'>
-            <!--title: <input type=text name=title size=15 value='<?echo $title?>'>-->
-            user: <input type=text name=user size=15 value='<?echo $user?>'>
+            site: <input type='text' name='site' size=15 value='<?echo $site?>'>
+            <!--title: <input type='text' name=title size=15 value='<?echo $title?>'>-->
+            user: <input type='text' name=user size=15 value='<?echo $user?>'>
             <input type=submit value='go'>
             <input type=submit name='clear' value='clear'>
             <input type=hidden name='order' value='<? echo $order ?>'>

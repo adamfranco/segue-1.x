@@ -103,7 +103,7 @@ input {
 	?>
 	</td>
 	<td>
-		Name: <input type=text name='n' size=20 value='<?echo $_REQUEST[n]?>'> 
+		Name: <input type='text' name='n' size=20 value='<?echo $_REQUEST[n]?>'> 
 	</td>
 	<td>
 		<input type=submit value='find'>

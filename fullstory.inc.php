@@ -321,7 +321,7 @@ if ($storyObj->getField("discuss")) {
 printc("<tr><td align='left'><br /><a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a> > in depth</td></tr>\n");
 printc("</table>\n");
 
-printc("</tr></td>\n");
+printc("</td></tr>\n");
 printc("</table>\n");
 printc("<br /><br />\n");
 

@@ -237,11 +237,11 @@ if ($site) {
 		<?
 		if ($ltype == 'admin') {
 		?>
-			user: <input type=text name=user size=15 value='<?echo $user?>'>
-			site: <input type=text name=site size=15 value='<?echo $site?>'>
+			user: <input type='text' name=user size=15 value='<?echo $user?>'>
+			site: <input type='text' name=site size=15 value='<?echo $site?>'>
 			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?><br />
-			start date (yyyymmdd): <input type=text name=startdate size=10 value='<?echo $startdate?>'> 
-			end date (yyyymmdd): <input type=text name=enddate size=10 value='<?echo $enddate?>'> 
+			start date (yyyymmdd): <input type='text' name=startdate size=10 value='<?echo $startdate?>'> 
+			end date (yyyymmdd): <input type='text' name=enddate size=10 value='<?echo $enddate?>'> 
 
 		<? } ?>	
 		<input type=submit value='go'>

@@ -88,14 +88,14 @@ if ($_SESSION[pageObj]->getField("type")=='page') {
 
 if ($_SESSION[pageObj]->getField("type") !='divider') {
 	printc("<div class=leftmargin>");
-	printc("Title: <input type=text size=35 name=title value='".spchars($_SESSION[pageObj]->getField("title"))."'>");
+	printc("Title: <input type='text' size=35 name=title value='".spchars($_SESSION[pageObj]->getField("title"))."'>");
 	printc("</div>");
 }
 
 /*   enter author's name for publication site */
 if ($thisSite->getField("type") == 'publication') {
 	printc("<div class=leftmargin>");
-	printc("Author: <input type=text name=url value='".$_SESSION[pageObj]->getField("url")."' size=25>");
+	printc("Author: <input type='text' name=url value='".$_SESSION[pageObj]->getField("url")."' size=25>");
 	$authors = $thisSite->getAllValues("page","url");
 	$nauthors = array();
 	foreach ($authors as $auth) {
@@ -136,7 +136,7 @@ if ($_SESSION[pageObj]->getField("type")=='link') {
 	//$url = eregi_replace($action_viewsite, $action_site, $url);
 
 	printc("<div class=leftmargin>");
-	printc("URL: <input type=text name=url value='".$url."' size=50>");
+	printc("URL: <input type='text' name=url value='".$url."' size=50>");
 	printc("</div>");
 }
 

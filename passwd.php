@@ -313,13 +313,13 @@ if ($_REQUEST[action] == "change" || $change) {
 		if ($cfg['auth_help_on'])
 			print "<br /><div align='left'>(".$cfg[auth_help].")</div><br />";
 		print "<tr><td> User Name: </td>";
-		print "<td><input type=text name='uname' size=30 value='".$_SESSION['auser']."' readonly></td>"; 
+		print "<td><input type='text' name='uname' size=30 value='".$_SESSION['auser']."' readonly></td>"; 
 		print "</tr>";
 		print "<tr><td>Full Name: </td>";
-		print "<td><input type=text name='fname' size=30 value='".$_SESSION['afname']."' readonly></td>";
+		print "<td><input type='text' name='fname' size=30 value='".$_SESSION['afname']."' readonly></td>";
 		print "</tr>";
 		//print "<tr><td>Email Address:</td>";
-		//print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."' readonly></td> ";
+		//print"<td><input type='text' name='email' size=30 value='".$_REQUEST['email']."' readonly></td> ";
 		//print"<tr>";
 		print"<td>Old Password:</td>";
 		print"<td><input type=password name='oldpass' size=30 value='".$oldpass."'></td></tr>";
@@ -347,7 +347,7 @@ if ($_REQUEST[action] == "change" || $change) {
 } else if (($_REQUEST[action] == "login" && !$_SESSION['auser']) || $auth) {
 	print "<tr><td colspan=2 align='left'> Please enter your username and password. <br /><br />";
 	print "</td><tr><td> User Name: </td>";
-	print "<td><input type=text name='uname' size=30 value=''></td>";
+	print "<td><input type='text' name='uname' size=30 value=''></td>";
 	print "<tr><td>Password:</td>";
 	print"<td><input type=password name='password' size=30 value=''> </td>";
 	print"<tr><td colspan=2 align='center'><input type=submit value='Log In'><br /><br />";
@@ -366,9 +366,9 @@ if ($_REQUEST[action] == "change" || $change) {
 	if ($cfg['auth_help_on'])
 		print "(".$cfg[auth_help].")<br /><br />";
 	print "</td><tr><td> Name: </td>";
-	print "<td><input type=text name='uname' size=30 value='".$_REQUEST['uname']."'></td>";
+	print "<td><input type='text' name='uname' size=30 value='".$_REQUEST['uname']."'></td>";
 	print "<tr><td>Email Address:</td>";
-	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'> </td>";
+	print"<td><input type='text' name='email' size=30 value='".$_REQUEST['email']."'> </td>";
 	if (!$newuser || $error == TRUE)
 		print"<tr><td colspan=2 align='center'><input type=submit value='Register'></td></tr>";
 	print"<input type=hidden name='action' value='newuser'>";
@@ -388,7 +388,7 @@ if ($_REQUEST[action] == "change" || $change) {
 		if ($cfg['auth_help_on'])
 			print "(".$cfg[auth_help].")<br /><br />";
 		print "</td><tr><td>Email Address:</td>";
-		print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'></td></tr>";
+		print"<td><input type='text' name='email' size=30 value='".$_REQUEST['email']."'></td></tr>";
 		print"<tr><td colspan=2 align='center'><input type=submit name='submit' value='Send new password'><br /><br />";
 		print"<input type=hidden name='action' value='send'>";
 		print"<input type=hidden name='reset' value='1'>";

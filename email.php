@@ -528,7 +528,7 @@ print "</table><br />";
 				}
 			?>
 			<tr><td align='right'>Cc:</td><td><? echo $_SESSION['afname'] ?></td><td align='right'></td></tr>
-			<tr><td align='right'>Subject</td><td><input type=text name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align='left'></td></tr>
+			<tr><td align='right'>Subject</td><td><input type='text' name='subject' value='' size=50> <input type=submit name='email' value='Send'></td><td align='left'></td></tr>
 			<tr><td></td><td align='left'>
 			<?
 			require_once("htmleditor/editor.inc.php");

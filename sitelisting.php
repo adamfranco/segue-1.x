@@ -165,9 +165,9 @@ function changeOrder(order) {
 		if (true) {
 		?>
 			<!-- </select> -->
-			site: <input type=text name=site size=10 value='<?echo $site?>'>
-			title: <input type=text name=title size=10 value='<?echo $title?>'>
-			user: <input type=text name=user size=10 value='<?echo $user?>'>
+			site: <input type='text' name=site size=10 value='<?echo $site?>'>
+			title: <input type='text' name=title size=10 value='<?echo $title?>'>
+			user: <input type='text' name=user size=10 value='<?echo $user?>'>
 			<!--
 			type: <select name=type>
 				<option<?=($type=='%')?" selected":""?>>all

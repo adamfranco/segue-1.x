@@ -109,7 +109,7 @@ printc("<br /><table cellpadding=5 cellspacing='0' style='border: 1px solid gray
 
 if ($_SESSION[storyObj]->getField("type")!='rss') {
 	printc("<tr>");
-	printc("<td>Title:</td><td><input type=text size=50 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
+	printc("<td>Title:</td><td><input type='text' size=50 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
 	if ($_SESSION[storyObj]->getField("type") == 'file') {
 		printc(" <span style='font-size:10px; color: #D00'> *required</span>");
 	} else {
@@ -119,7 +119,7 @@ if ($_SESSION[storyObj]->getField("type")!='rss') {
 		
 } else if ($_SESSION[storyObj]->getField("type")=='rss') {	
 	printc("<tr>");
-	printc("<td>URL:</td><td><input type=text name=url value='".$_SESSION[storyObj]->getField("url")."' size=75></td>");
+	printc("<td>URL:</td><td><input type='text' name=url value='".$_SESSION[storyObj]->getField("url")."' size=75></td>");
 	printc("</tr>");
 	
 }
@@ -137,7 +137,7 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 
 
 	printc("<tr>");
-	printc("<td>URL:<td><input type=text name=url value='".$url."' size=75></td>");
+	printc("<td>URL:<td><input type='text' name=url value='".$url."' size=75></td>");
 
 }
 
@@ -162,7 +162,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<tr><td colspan=2>");
 	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
 	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
-	printc(" <input type=text name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
+	printc(" <input type='text' name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
 	printc(" (media file URL)");
 	printc("</div></td></tr>");
 	printc("<tr><td>");
@@ -182,7 +182,7 @@ if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->get
 	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
 	printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
 	printc("<input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'>");	
-	printc(" <input type=text class='textfield' small name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=75 readonly>");
+	printc(" <input type='text' class='textfield' small name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=75 readonly>");
 
 	printc("</td></tr>");
 	printc("<tr><td>");

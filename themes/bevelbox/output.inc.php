@@ -73,7 +73,7 @@ include("themes/$theme/css.inc.php");
 /* ------------------------------------------- */
 print $siteheader; 
 ?>
-</tr></td>
+</td></tr>
 </table>
 
 <table width=90% align='center' cellpadding='0' cellspacing='0'>
@@ -220,7 +220,7 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav2, $topnav2_extra);
 /* ------------------------------------------- */
 print $sitefooter 
 ?>
-</tr></td>
+</td></tr>
 </table>
 <br />
 
