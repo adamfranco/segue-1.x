@@ -143,18 +143,20 @@ input,select {
 <th>owner</th>
 <th>type</th>
 <th>assocSite</th>
+<th>in use?</th>
 </tr>
 
 <?
 $allSlots = slot::getAllSlotsInfo();
 foreach ($allSlots as $slot) {
 	print "<tr>";
-	print "<td><a href=''><a href='$PHP_SELF?$SID&delete=$slot[id]'>delete</a></td>";
+	print "<td>".(($slot[FK_site])?"":"<a href='$PHP_SELF?$SID&delete=$slot[id]'>")."delete".(($slot[FK_site])?"":"</a>")."</td>";
 	print "<td>$slot[id]</td>";
 	print "<td>$slot[name]</td>";
 	print "<td>$slot[owner]</td>";
 	print "<td>$slot[type]</td>";
 	print "<td>$slot[assocsite]</td>";
+	print "<td align=center>".(($slot[FK_site])?"<b>YES</b>":"NO")."</td>";
 	print "</tr>";
 }
 ?>

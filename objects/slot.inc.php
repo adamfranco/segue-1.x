@@ -124,7 +124,7 @@ class slot {
 		if (!$error) {
 			// get id for owner of slot
 			$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
-			echo $query."<br>";
+/* 			echo $query."<br>"; */
 			$r = db_query($query);
 			if (!db_num_rows($r)) return false;
 			$a = db_fetch_assoc($r);
@@ -177,11 +177,11 @@ class slot {
 			$a = db_fetch_assoc($r);
 			$owner_id = $a[user_id];
 			$query = "SELECT * FROM slot WHERE FK_owner=$owner_id";
-			echo $query;
+/* 			echo $query; */
 		}
 		else {
 			$query = "SELECT * FROM slot";
-			echo $query;
+/* 			echo $query; */
 		}
 		$r = db_query($query);
 		
@@ -193,6 +193,7 @@ class slot {
 			$allSlots[$i][owner] = $a[FK_owner];
 			$allSlots[$i][type] = $a[slot_type];
 			$allSlots[$i][assocsite] = $a[FK_assocsite];
+			$allSlots[$i][FK_site] = $a[FK_site];
 			$i++;
 		}
 		return $allSlots;
