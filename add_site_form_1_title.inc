@@ -109,8 +109,9 @@ printc("<br>");
 printc("<div class=title>4. Hide my site".helplink("available")."</div>");
 //printc("<div class=desc>To prevent the site from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
 printc("<br>");
-printc("<input type=radio name=active value=1 " . (($settings[active])?" checked":"") . "> Hide ");
-printc("<input type=radio name=active value=0 " . (($settings[active])?"":" checked") . "> Don't Hide <br>");
+
+printc("<input type=radio name=active value=0 " . (($settings[active])?"":" checked") . "> Hide ");
+printc("<input type=radio name=active value=1 " . (($settings[active])?" checked":"") . "> Don't Hide  <br>");
 printc("<br>(this overrides availability option above)<br>");
 
 if ($settings[edit]) {
@@ -122,5 +123,14 @@ if ($settings[edit]) {
 }
 
 printc("<br>");
+
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	if ($settings[edit]) printc("<input type=submit name=save value='Save Changes'>\n");
+printc("</td></tr></table>");
 
 printc("</form>");

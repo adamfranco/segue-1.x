@@ -1,5 +1,6 @@
 
 <script lang="JavaScript">
+
 //var theme = document.addform.theme.value;
 
 function submitForm() {
@@ -8,8 +9,11 @@ function submitForm() {
 
 function selectTheme(row) {
 	document.addform.themesettings.value = "";
+	if (row > 1) {
+		action = document.addform.action;
+		document.addform.action=action+"#row"+row;
+	}
 	document.addform.submit();
-//	window.location= "#"+row;
 }
 
 function doPreviewWin(theme) {
@@ -41,7 +45,6 @@ function doThemeSettings() {
 }
 </script>
 
-
 <? // add_site_form_2_theme.inc -- the form that people use to add/edit a site
 
 printc("<form action='$PHP_SELF?$sid&action=".(($settings[add])?"add_site":"edit_site")."' method=post name=addform>");
@@ -66,13 +69,13 @@ printc("<div class=title>4. Appearance: &nbsp;Select a Theme".helplink("theme","
 
 // --- form contents ---
 printc("<table width=100% cellspacing=0px>");
-printc("<tr><td> </td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Click to Preview</td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Name</td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Select a theme to<br>edit its settings</td></tr>");
+printc("<tr><td> </td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Click on image to preview</td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Name</td><td valign=bottom align=center style='border-bottom: 0px solid #aaa; color: #aaa;'>Select a theme to<br>edit its settings</td></tr>");
 
 $i=0;
 foreach ($possible_themes as $themename=>$longname) {
 	printc("<tr><td align=center><a name='row$i'>");
-	printc("<input type=radio name=theme value='$themename' ".(($settings[theme]==$themename)?" checked":"")." onClick=\"selectTheme('row$i')\"></td>");
-	printc("<td align=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0></a></td>");
+	printc("<input type=radio name=theme value='$themename' ".(($settings[theme]==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
+	printc("<td align=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
 	printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'>$longname<br><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
 	if ($settings[theme]==$themename)
 		printc("<td align=center valign=center style='border-top: 1px solid #aaa;".(($settings[theme]==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='doThemeSettings()'></td>");

@@ -69,4 +69,15 @@ printc("<br>");
 
 printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");
 
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
+	if ($settings[add]) printc("<input type=submit name=save value=' &nbsp; &nbsp; Finish &nbsp; &nbsp; '>\n"); 
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	if ($settings[edit]) printc("<input type=submit name=save value='Save Changes'>\n");
+//	if ($settings[add]) printc("<input type=submit name=save value='Finish Now'>\n"); 
+printc("</td></tr></table>");
+
 printc("</form>");

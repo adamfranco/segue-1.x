@@ -11,7 +11,7 @@ if (file_exists("$themesdir/$theme/colors.inc.php"))
 if ($themesettings[theme] == 'bevelbox') {   // indeed these settings are for this theme
 	$use = $themesettings[colorscheme];
 }
-if (!$use) $use = 'blue';
+if (!$use) $use = 'gray';
 $c = $_theme_colors[$use];
 
 /* ------------------- END ---------------------------	*/

@@ -6,6 +6,14 @@ function submitForm() {
 	document.addform.submit();	
 }
 
+function selectRow(row) {
+	if (row > 1) {
+		action = document.addform.action;
+		document.addform.action=action+"#row"+row;
+	}
+	document.addform.submit();
+}
+
 function doTemplateWin(template) {
 	//var template = document.addform.template.value;
 	var theme = "<? print $settings[theme]; ?>";
@@ -38,7 +46,7 @@ printc ("<div style='font-size: 10px; margin-left: 30px; margin-right: 30px;'>")
 printc("After selecting a template, you will have completed all of the steps required for making your site.  You can finish now or continue for more options.</div>");
 printc("<br>");
 
-printc("<div class=title>5. Select a Template".helplink("template","help")."</div>");
+printc("<div class=title>5. Choose a Template".helplink("template","help")."</div>");
 
 printc ("<div style='font-size: 10px; margin-left: 30px; margin-right: 30px;'>");
 printc("If you want more, less, or different sections from those in any template, chose one that is close and add/delete sections later.</div>");
@@ -47,9 +55,10 @@ printc("<br>");
 include("templates/descriptions.inc");
 
 printc ("<table width=100% cellspacing=0>");
+$i=0;
 foreach ($_templates as $template=>$tname) {
 	printc("<tr>");
-	printc("<td align=center valign=top><input type=radio name=template value=$template".(($settings[template]==$template)?" checked":"")."></td>");
+	printc("<td align=center valign=top><a name='row$i'><input type=radio name=template value=$template".(($settings[template]==$template)?" checked":"")." onClick=\"selectRow('$i')\"></td>");
 	printc("<td width=25% valign=top style='border-top: 1px solid #aaa;'><b>$tname</b></td>");
 
 	printc("<td valign=top align=right style='border-top: 1px solid #aaa;'><input type=button class='small' value='Preview This Template' onClick='doTemplateWin(\"$template\")'></td>");
@@ -58,6 +67,7 @@ foreach ($_templates as $template=>$tname) {
 	printc("<td> &nbsp; </td>");
 	printc("<td valign=top colspan=2 style='padding-left: 20px; padding-right: 20px; padding-bottom: 15px;'>".(($descriptions[$template])?"$descriptions[$template]":"No description availible")."</td>");
 	printc("</tr>");
+	$i++;
 }
 /*printc("<tr>");
 	printc("<td valign=top><input type=radio name=template value=''".(($settings[template]=='')?" checked":"")."></td>");
@@ -71,5 +81,16 @@ printc("<br>");
 printc("<br>");
 
 printc("<input type=hidden name=gobackurl value='$PHP_SELF?$sid'>");
+
+printc("<table width=100%><tr><td width=50%>");
+	printc("<input type=submit value='Cancel' name='cancel'>\n");
+printc("</td><td width=50% align=right>");
+	printc("<input type=submit name=prevbutton value='&larr; Previous'>\n");
+	printc("<input type=submit name=nextbutton value='Continue &rarr;'>\n");
+printc("</td></tr><tr><td>");
+printc("</td><td align=right>");
+	if ($settings[edit]) printc("<input type=submit name=save value='Save Changes'>\n");
+	if ($settings[add]) printc("<input type=submit name=save value='Finish Now'>\n"); 
+printc("</td></tr></table>");
 
 printc("</form>");

@@ -17,7 +17,7 @@ a:hover {
 
 div, p, td, span, input { 
 	color: #<? echo $c['text']; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-family: "Arial", "Verdana", "Helvetica", "sans-serif";
 	font-size: <? echo $c['font-size']; ?>;
 }
 
@@ -145,13 +145,13 @@ th {
 
 .nav { 
 	color: #<? echo $c['navtext']; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-family: "Arial", "Verdana", "Helvetica", "sans-serif";
 	font-size: <? echo $c['font-size']; ?>;
 }
 
 .sitetitle {
 	color: #<? echo $c['navtext']; ?>;
-	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-family: "Arial", "Verdana", "Helvetica", "sans-serif";
 	font-size: 16px;
 }
 

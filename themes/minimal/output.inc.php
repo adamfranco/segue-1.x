@@ -9,7 +9,7 @@ if (file_exists("$themesdir/$theme/defaults.inc.php"))
 if ($themesettings[theme] == 'minimal') {   // indeed these settings are for this theme
 	$use = $themesettings[colorscheme];
 }
-if (!$use) $use = 'white';
+if (!$use) $use = 'turquoise';
 $c = $_theme_colors[$use];
 
 /* ------------------- END ---------------------------	*/

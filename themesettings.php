@@ -117,5 +117,8 @@ select {font-size: 10px; }
 
 <div class=content>
 <? print $content ?>
+<div style='margin-left: 220px; margin-right: 30px'>
+After updating you can click the thumbnail to preview your new settings.
+</div>
 </div>
 </body>
