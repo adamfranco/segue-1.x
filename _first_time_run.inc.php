@@ -90,16 +90,16 @@ if (!$allTablesExist) {
 		  discussion_tstamp timestamp(14) NOT NULL,
 		  discussion_subject varchar(255) NOT NULL default '',
 		  discussion_content mediumblob NOT NULL,
-		  discussion_rate INT(10) unsigned default NULL,
+		  discussion_rate int(10) unsigned default NULL,
 		  FK_story int(10) unsigned NOT NULL default '0',
 		  discussion_order int(10) unsigned NOT NULL default '0',
 		  FK_parent int(10) unsigned default NULL,
+		  FK_media int(10) unsigned default NULL,
 		  PRIMARY KEY  (discussion_id),
 		  KEY FK_author (FK_author),
 		  KEY FK_story (FK_story),
 		  KEY discussion_order (discussion_order),
 		  KEY FK_parent (FK_parent),
-		  KEY FK_media (FK_media),
 		  KEY discussion_tstamp (discussion_tstamp)
 		) TYPE=MyISAM;
 		

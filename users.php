@@ -319,9 +319,9 @@ function doUserForm($a,$p='',$e=0) {
 	<form method='post' name='addform'>
 	<tr>
 	<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='uname' size=10 value=".$a[$p.'uname'].">":$a[$p.'uname']?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='fname' size=20 value=".$a[$p.'fname'].">":$a[$p.'fname']?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='email' size=30 value=".$a[$p.'email'].">":$a[$p.'email']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='uname' size=10 value=\"".$a[$p.'uname']."\">":$a[$p.'uname']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='fname' size=20 value=\"".$a[$p.'fname']."\">":$a[$p.'fname']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type=text name='email' size=30 value=\"".$a[$p.'email']."\">":$a[$p.'email']?></td>
 	<td><select name=type>
 		<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
 		<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof
@@ -336,9 +336,9 @@ function doUserForm($a,$p='',$e=0) {
 	if ($e) {
 		print "<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>";
 		if ($a[$p.'authtype'] != "db") {
-			print "<input type=hidden name='uname' value=".$a[$p.'uname'].">";
-			print "<input type=hidden name='fname' value=".$a[$p.'fname'].">";
-			print "<input type=hidden name='email' value=".$a[$p.'email'].">";
+			print "<input type=hidden name='uname' value=\"".$a[$p.'uname']."\">";
+			print "<input type=hidden name='fname' value=\"".$a[$p.'fname']."\">";
+			print "<input type=hidden name='email' value=\"".$a[$p.'email']."\">";
 		}
 	} else {
 		print "";

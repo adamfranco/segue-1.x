@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
+<<<<<<< changelog.xml
 	<version number="1.2.0" date="2004-06-10">
 		<new author='alex' ref='957602' reftype='fr'>
 			Added HTMLarea version 3.0 to UI for adding content, editing site headers
@@ -32,7 +33,20 @@
 			permissions to discuss to any group/users 
 		</fix>
 	</version>
-	<version number="1.1.0" date="2004-04-22">	
+		<version number="1.1.1" date="2004-04-23">
+		<fix author='adam'>
+			Fixed a problem in the _first_time_run.inc.php SQL syntax that 
+			was preventing the discussion table from being created for new
+			installs of Segue.
+		</fix>
+		<fix author='adam'>
+			Fixed some missing quotation marks, ", in "admin tools" --> "edit
+			users" page that were causing problems with spaces in names. Thanks
+			go to Steve from Nottingham Trent University, England, for finding
+			this problem.
+		</fix>
+	</version>
+	<version number="1.1.0" date="2004-04-22">
 		<new author='adam'>
 			Command-line XML import/export scripts now allow for backup of Segue
 			sites to flat XML files. For more information please reference the 
