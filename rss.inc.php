@@ -178,6 +178,8 @@ if ($error) {
 		if ($thisPage->stories) {
 			$i=0;
 			foreach ($thisPage->data[stories] as $s) {
+				$i++;
+				
 				if ($i > 10)
 					break;
 					
@@ -227,8 +229,6 @@ if ($error) {
 					
 					print "\t\t</item>\n";
 				}
-				$i++;
-
 			} //end foreach stories
 		}
 	}
