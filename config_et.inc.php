@@ -45,7 +45,7 @@ $themesdir = "themes";
 
 //folder for data uploads (images and files)
 $uploaddir = "/www/sitesdb_userfiles";
-$uploadurl = "userfiles";
+$uploadurl = "http://et.middlebury.edu/sitesdb_userfiles";
 
 // Theme for login/default pages
 $defaulttheme = "program";
