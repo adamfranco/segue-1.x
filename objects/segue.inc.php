@@ -979,7 +979,10 @@ FROM
 		$r = db_query($query);
 		
 		// reset the editor array		
-		if ($r) $this->editors = array();
+		if ($r) {
+			$this->editors = array();
+			$this->permissions = array();
+		}
 		
 		// for every permisson entry, add it to the permissions array
 		while ($row=db_fetch_assoc($r)) {
@@ -1081,8 +1084,6 @@ FROM
 			$id = $this->id;
 			$site = $this->owning_site;
 
-			print_r($a);
-			
 			$n = array_unique(array_merge($this->editors,array_keys($this->permissions)));
 			
 			print_r($n);
@@ -1136,28 +1137,23 @@ FROM
 					// if we are clearing the permissions, delete the entry from the db
 					else {
 						$a = db_fetch_assoc($r);
-						$query = 'DELETE FROM permission WHERE permission_id = '.$a[permission_id];
+						$query = "DELETE FROM permission WHERE permission_id = ".$a[permission_id];
 						db_query($query);
 					}
 				}
-				/*
-				$a2 = $a;
-				$a2[] = "user='$user'";
-				$a3 = array();
-				$a3[] = "a=".(($p[ADD])?"'1'":"'0'");
-				$a3[] = "e=".(($p[EDIT])?"'1'":"'0'");
-				$a3[] = "d=".(($p[DELETE])?"'1'":"'0'");
-				$a3[] = "v=".(($p[VIEW])?"'1'":"'0'");
-				$a3[] = "di=".(($p[DISCUSS])?"'1'":"'0'");
-				if (db_get_line("permissions",implode(" and ",$a2))) {
-					$query = "update permissions set ".implode(",",$a3)." where ".implode(" and ",$a2);
-				} else {
-					$query = "insert into permissions set ".implode(",",$a2).",".implode(",",$a3);
-				}
+				else if ($p_str) {
+					// need to insert permissions
+						$query = "
+INSERT
+INTO permission
+	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
+VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_str')
+";
+				echo $query."<br>";
 				db_query($query);
- 				print "$query<br>";
- 				print mysql_error()."<br><br>";
-				*/
+				
+				}
+
 			}
 
 			/*
