@@ -193,6 +193,8 @@ input,select {
 		o = opener.document.addform; 
 		o.libraryfileid.value=fileID; 
 		o.libraryfilename.value=fileName; 
+		var insert = '<img src=' +o.libraryfileid.value=fileID+ '>'
+                opener.editor_insertHTML(insert);
 		o.submit();
 		window.close(); 
 	} 
