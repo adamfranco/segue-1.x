@@ -102,41 +102,44 @@ function getclassstudents($class_id) {
 			$participant[email] = $a[user_email];
 			$participant[type] = $a[user_type];
 			$participant[memberlist] = "db";
-			$db_participants[]= $participant;
+			$db_participants[$a[user_uname]]= $participant;
 		}
 		
 		
 		/******************************************************************************
 		 * External member list source (e.g. LDAP group member
 		 ******************************************************************************/
+		$external_memberlist_participants = array();
+		$external_memberlist_participant_unames = array();
 		
 		/******************************************************************************
 		* Compile definitive participant list from:
 		* $db_participants = all group members whose membership is defined in ugroup_user
 		* $external_memberlist_participants = all group members whose membership is
 		* determined by an external membership list (e.g. ldap group)
-		* if participant is in ugroup_user only then memberl ist is db
+		* if participant is in ugroup_user only then memberlist is db
 		* if participant is in external member list only then memberlist is external
 		* if participant is in both ugroup_user and external member list then
 		* member list is external
 		 ******************************************************************************/
 		 
 		$participants = $external_memberlist_participants;
+		$participants_unames = $external_memberlist_participant_unames;
 		 
 		foreach (array_keys($db_participants) as $key) {
-			if (!is_array($external_memberlist_participant_unames) ||
-				!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) 
-			{
-				$participants[] = $db_participants[$key];
+			if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
+				$participants[$db_participants[$key][uname]] = $db_participants[$key];
+				$participants_unames = $db_participants[$key][uname];
 			}			
-		}
+		}	
 		
 		/******************************************************************************
 		 * add participants of current class to array of participants from all classes
 		 * (relevant when a site is a group of classes...)
 		 ******************************************************************************/
 		$allparticipants = array_merge($allparticipants,$participants);
-
+		//printpre($participants);
+		
 	}
 	//return $participants;
 	return $allparticipants;

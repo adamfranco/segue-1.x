@@ -280,7 +280,7 @@ function getclassstudents($class_id) {
 		* $db_participants = all group members whose membership is defined in ugroup_user
 		* $external_memberlist_participants = all group members whose membership is
 		* determined by an external membership list (e.g. ldap group)
-		* if participant is in ugroup_user only then memberl ist is db
+		* if participant is in ugroup_user only then memberlist is db
 		* if participant is in external member list only then memberlist is external
 		* if participant is in both ugroup_user and external member list then
 		* member list is external
@@ -292,7 +292,7 @@ function getclassstudents($class_id) {
 		 
 		foreach (array_keys($db_participants) as $key) {
 			if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
-				$participants[] = $db_participants[$key];
+				$participants[$db_participants[$key][uname]] = $db_participants[$key];
 				$participants_unames = $db_participants[$key][uname];
 			}			
 		}	
