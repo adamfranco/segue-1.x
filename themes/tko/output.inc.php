@@ -60,12 +60,12 @@ include("themes/$theme/css.inc.php");
 	foreach ($topnav as $item) {
 		$samepage = (isset($navtype) && ($page == $item[id]))?1:0;
 		if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-		print "<td class=topbar width=180 align=center valign=middle>";
+		print "<td class=topbar width=180 align=center valign=middle><nobr>";
 		print makelink($item,$samepage, " class='navlink' ");
-		print "</td>";
+		print "</nobr></td>";
 		$next=$next+1;
 	}
-	print $topnav_extra;
+	if ($topnav_extra) print "<td class=topbar align=center valign=middle><nobr>$topnav_extra</nobr></td>";
 //	print "</div>";
 
 	?>
@@ -96,7 +96,7 @@ include("themes/$theme/css.inc.php");
 			$gif = "$themesdir/$theme/images/". (($samepage)?"lis.gif":"li.gif");
 			print "<td valign=middle><img src=$gif border=0 style='padding-right: 4px; padding-top: 1px'></td>";
 			print "<td class='nav'>";
-			print makelink($item,0," class='navlink' ",1);
+			print tkoMakelink($item,0," class='navlink' ",1);
 			print "</td>";
 		}
 		if ($item[type] == 'divider') {
@@ -118,7 +118,7 @@ include("themes/$theme/css.inc.php");
 			$gif = "$themesdir/$theme/images/". (($samepage)?"lis.gif":"li.gif");
 			print "<td valign=middle><img src=$gif border=0 style='padding-right: 4px; padding-top: 1px'></td>";
 			print "<td class='nav'>";
-			print makelink($item,0," class='navlink' ",1);
+			print tkoMakelink($item,0," class='navlink' ",1);
 			print "</td>";
 		}
 		if ($item[type] == 'divider') {
@@ -157,6 +157,14 @@ include("themes/$theme/css.inc.php");
 </tr>
 </table>
 
-
+<?
+function tkoMakelink($i,$samepage=0,$e='',$newline=0) {
+	$s = '';
+	$s=(!$samepage&&$i[url])?"<a href='$i[url]' target='$i[target]'".(($e)?" $e":"").">":"";
+	$s.=$i[name];
+	$s.=(!$samepage&&$i[url])?"</a>":"";
+	$s.=($i[extra])?(($newline)?"</td></tr><tr><td></td><td class='nav'><div align=right>":" ").$i[extra].(($newline)?"</div>":""):"";
+	return $s;
+}
 
 

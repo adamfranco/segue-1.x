@@ -161,7 +161,7 @@ printerr();
 
 $t = $action;
 if ($t != 'site') $t = 'viewsite';
-if ($thisSite) $st = ($thisSite->getField("type")=='publication')?'listarticles':$t;
+if ($thisSite) $st = ($thisSite->getField("type")=='publication')?"$t&supplement=listarticles":$t;
 if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&action=$st&site=$_REQUEST[site]&section=$_REQUEST[section]' class='navlink'>".$thisSection->getField("title")."</a>";
 if ($thisPage) $pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]' class='navlink'>".$thisPage->getField("title")."</a>";
 if ($thisSite) {
