@@ -133,28 +133,34 @@ function doEditorLine(&$o) {
 	$bgColorV = getBgColor($class,"view");
 	$indent = getIndent($class);
 	$textSize = getTextSize($class);
-	if ($class == "story") {
-		if ($o->getField("title") !="") $extra = $o->getField("title");
-		else $extra = $o->getFirst(25);		
-	} else $extra = "";
 
-	print "<tr>";
-	print "<td style='background-color: $bgColor; padding-left: ".$indent."px; font-size: $textSize'>";
+	print "\n\n<tr>";
+	print "\n<td style='background-color: $bgColor; padding-left: ".$indent."px; font-size: $textSize'>";
 	$noLinkTypes = array("url","heading","divider");
 	if (!in_array($o->getField("type"),$noLinkTypes)) {
-		print "<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=".$o->owning_site;
+		print "\n\t<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=".$o->owning_site;
 		if ($level == 1) print "&section=".$o->id; 
 		if ($level > 1) print "&section=".$o->owning_section;
 		if ($level == 2) print "&page=".$o->id; 
 		if ($level > 2) print "&page=".$o->owning_page;
 		print "\"'>";
 	}
-	if ($o->getField("type") == "url") print "<a href='#' onClick='opener.window.location=\"".$o->getField("url")."\"'>";
-	if ($o->getField("type") == "divider") print " &nbsp; ";
-	print $o->getField("title").$extra;
-	print "</a>";
-	print "</td>";
-	print "</tr>";
+	if ($o->getField("type") == "url") 
+		print "\n\t<a href='#' onClick='opener.window.location=\"".$o->getField("url")."\"'>";
+		
+	if ($o->getField("type") == "divider") 
+		print " &nbsp; ";
+		
+	if ($class == "story") {
+		if ($o->getField("title") !="") 
+			print $o->getField("title");
+		else 
+			print $o->getFirst(25);		
+	} else
+		print "\n\t".$o->getField("title");
+	print "\n\t</a>";
+	print "\n</td>";
+	print "\n</tr>";
 }
 
 

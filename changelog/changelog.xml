@@ -8,7 +8,10 @@
 			to make several changes to Segue's database and file-storage structure.
 		</important>
 		
-		<new author='adam'>
+		<fix author='adam' ref='879877' reftype='bug'>
+			Removed repeating titles for stories in the sitemap.
+		</fix>
+		<new author='adam' ref='1029412' reftype='fr'>
 			When copying sites or other parts of a site, discussion posts can
 			now be coppied as well.
 		</new>
