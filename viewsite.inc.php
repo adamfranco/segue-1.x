@@ -256,7 +256,7 @@ if (!ereg('preview_edit_as', $_REQUEST['action'])) {
 print "\n\t</td>";
 print "\n\t<td valign=top align=left>";
 
-print "\n\t<input type=button style='width: $btnw' class='button' value='Preview This Site'  onClick=\"window.location='$u&$sid'\">";
+print "\n\t<input type=button style='width: $btnw' class='button' value='View This Site'  onClick=\"window.location='$u&$sid'\">";
 
 print "\n\t</td>";
 

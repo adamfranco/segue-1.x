@@ -242,7 +242,7 @@ if ($thisSite->isEditor()
 	$u = "$PHP_SELF?$sid".$editAction."&site=$site".(($supplement)?"&supplement=$supplement":"");
 	if ($section) $u .= "&section=$section";
 	if ($page) $u .= "&page=$page";
-	$text .= "\n<input type=submit class='button' value='edit this site' onClick=\"window.location='$u&$sid'\">\n</div>";
+	$text .= "\n<input type=submit class='button' value='Edit This Site' onClick=\"window.location='$u&$sid'\">\n</div>";
 } else {
 	$text = "";
 }

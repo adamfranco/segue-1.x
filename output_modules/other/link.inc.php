@@ -35,23 +35,5 @@ printc("<div class=desc><a href='".$url."' target='_blank'>".$abbrurl."...</a></
 
 if ($o->getField("shorttext")) printc("<div class=desc>".stripslashes($o->getField("shorttext"))."</div>");
 if ($o->getField("discuss")) {
-	printc("<div class=contentinfo align=right>");
-	$link = "index.php?$sid&action=fullstory&site=$site&section=$section&page=$page&story=".$o->id;
-	//$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
-	//$link = "<a href='$link'>";
-	
-	$l = array();
-	if ($o->getField("discuss")) {
-		$discusslabel = $o->getField("discusslabel");
-		// check if discuss label exists for backward compatibility
-		if ($discusslabel) {
-			printc("<a href=".$link."#discuss>".$discusslabel."</a>");
-		} else {
-			printc("<a href=".$link."#discuss>Discuss</a>");
-		}
-		printc(" (".discussion::generateStatistics($o->id).")");	
-	}
-/* 	if ($o->getField("longertext")) $l[] = $link."full text</a>"; */
-	printc(implode(" | ",$l));
-	printc("</div>");
+	include (dirname(__FILE__)."/discussionLink.inc.php");
 }
