@@ -116,7 +116,9 @@ do {
 	
 	if ($thisPage) {
 		$thisPage->fetchDown();
-		printc("<b>".$thisPage->getField("title")."</b>");
+		if ($thisPage->hasPermissionDown("view"))
+			printc("<b>".$thisPage->getField("title")."</b>");
+			
 		$i=0;
 		// handle archiving -- monthly, weekly, etc
 		$thisPage->handleStoryArchive();
