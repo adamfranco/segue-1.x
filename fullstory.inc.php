@@ -49,8 +49,8 @@ $site_owner=$storyObj->owningSiteObj->owner;
 
 // get the correct shorttext
 if ($storyObj->getField("type") == 'story') {
-	$smalltext = $storyObj->getField("shorttext");
-	$fulltext = $storyObj->getField("longertext");
+	$smalltext = convertTagsToInteralLinks($siteObj->name, $storyObj->getField("shorttext"));
+	$fulltext = convertTagsToInteralLinks($siteObj->name, $storyObj->getField("longertext"));
 	$smalltext = stripslashes($smalltext);
 	$fulltext = stripslashes($fulltext);
 	if ($storyObj->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);	

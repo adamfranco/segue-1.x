@@ -240,7 +240,10 @@ if ($_REQUEST[save]) {
 		
  		// Lets pass the cleaning of editor text off to the editor.
 		$texttype = $_SESSION[storyObj]->getField("texttype");
-		$_SESSION[storyObj]->setField("longertext", cleanEditorText($_SESSION[storyObj]->getField("longertext"), $texttype));
+		$text = $_SESSION[storyObj]->getField("longertext");
+		$text = convertInteralLinksToTags($_SESSION[settings][site], $text);
+		$text = cleanEditorText($text, $texttype);
+		$_SESSION[storyObj]->setField("longertext", $text);
 		
 		// check make sure the owner is the current user if they are changing permissions
 /* 		if ($site_owner != $_SESSION[auser]) { */
