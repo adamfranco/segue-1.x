@@ -471,6 +471,8 @@ if (db_num_rows($r)) {
 <form action='filebrowser.php' name='deleteform' method=post> 
 <input type=hidden name='filetodelete'> 
 <input type=hidden name='delete' value=1> 
+<input type=hidden name='order' value='<? echo $order ?>'> 
+<input type=hidden name='all' value='<? echo $all ?>'> 
 <input type=hidden name='editor' value='<? echo $editor ?>'> 
 </form> 
  
