@@ -14,6 +14,7 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	if ($_REQUEST[active] != "") $_SESSION[siteObj]->setField("active",$_REQUEST[active]);
 	if ($_REQUEST[viewpermissions] == "everyone") {
 		$_SESSION[siteObj]->setUserPermissionDown("view","everyone","1");
+		$_SESSION[siteObj]->addEditor("institute");
 //		$_SESSION[siteObj]->updatePermissionsDB();
 		$_SESSION[settings][viewpermissions] = "";
 	}
