@@ -25,7 +25,7 @@ $curraction = $_REQUEST['action'];
 
 if ($curraction == 'del') {
 	$id = $_REQUEST['id'];
-	if ($id > 0) { user::delUser($id); $message = "User ID $id deleted successfully."; }
+	if ($id > 0) { user::delUser($id); $message = "User $delname (id=$id) deleted successfully."; }
 }
 
 // if they want to add a user...
@@ -46,6 +46,7 @@ if ($curraction == 'add') {
 		$obj->sendemail();
 		unset($_REQUEST['uname'],$_REQUEST['fname'],$_REQUEST['email'],$_REQUEST['type']);
 		$message = "User '".$obj->uname."' added successfully.";
+		$name = $_REQUEST['uname'];
 	}
 }
 
@@ -80,20 +81,43 @@ if ($curraction == 'resetpw') {
 	}
 }
 		
-		
-$query = "
+$name = $_REQUEST['name'];
+$id = $_REQUEST['id'];
+if ($findall) $name = '%';
+
+ if ($id) {	
+	$query = "
 	SELECT
 		user_id,user_uname,user_fname,user_email,user_type
 	FROM
 		user
 	WHERE
 		user_authtype='db'
+	AND
+		user_id = $id
 	ORDER BY
 		user_uname ASC";
-
-$r = db_query($query);
+	$r = db_query($query);
+	
+} else if ($name) {
+	$query = "
+	SELECT
+		user_id,user_uname,user_fname,user_email,user_type
+	FROM
+		user
+	WHERE
+		user_authtype='db'
+	AND
+		user_uname LIKE '%$name%'
+	OR
+		user_fname LIKE '%$name%'
+	ORDER BY
+		user_uname ASC";
+	$r = db_query($query);
+}
 
 printerr();
+
 
 ?>
 
@@ -102,51 +126,63 @@ printerr();
 <title>Users</title>
 <? include("themes/common/logs_css.inc.php"); ?>
 </head>
-<body onLoad="document.addform.uname.focus()">
+<!-- <body onLoad="document.addform.uname.focus()">  -->
+<body onLoad="document.searchform.name.focus()">
+
 <?=($_SESSION['ltype']=='admin')?"<div align=right><a href='username_lookup.php?$sid'>user lookup</a> | add/edit users | <a href='classes.php?$sid'>add/edit classes</a> | <a href='add_slot.php?$sid'>add/edit slots</a></div>":""?>
 
 <?=$content?>
 
 <table cellspacing=1 width='100%' id='maintable'>
-<tr>
-	<td>
-		<table width='100%'>
-			<tr>
-			<th>id</th>
-			<th>user</th>
-			<th>full name</th>
-			<th>email</th>
-			<th>type</th>
-			<th>options</th>
-			</tr>
-			
-			<? if ($curraction != 'edit') { doUserForm($_REQUEST); } ?>
-			
-			<? // now output all the users
+<tr><td>
+
+	<table cellspacing=1 width='100%'>
+	<tr><td colspan=3>
+		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
+		Name: <input type=text name='name' size=20 value='<?echo $name?>'> 
+		<input type=submit name='search' value='Find'>
+		<input type=submit name='findall' value='Find All'>
+		(Segue database users only)
+		</form>
+		<? if (!db_num_rows($r)) print "No matching names found"; ?>
+	</td></tr>
+	</table>
+		
+	<table width='100%'>
+		<tr>
+		<th>id</th>
+		<th>user</th>
+		<th>full name</th>
+		<th>email</th>
+		<th>type</th>
+		<th>options</th>
+		</tr>
+		
+		<? if ($curraction != 'edit') { doUserForm($_REQUEST); } 
+		if ($curraction == 'edit') {
+			$a = db_fetch_assoc($r);
+			doUserForm($a,'user_',1);
+		
+		// output found users				
+		} else if ($name || $id) {		
 			while ($a = db_fetch_assoc($r)) {
-				if ($curraction == 'edit' && $_REQUEST['id'] == $a['user_id'])
-					doUserForm($a,'user_',1);
-				else {
-					print "<tr>";
-					print "<td align=center>".$a['user_id']."</td>";
-					print "<td>".$a['user_uname']."</td>";
-					print "<td>".$a['user_fname']."</td>";
-					print "<td>".$a['user_email']."</td>";
-					print "<td>".$a['user_type']."</td>";
-					print "<td align=center><nobr>";
-					print "<a href='users.php?$sid&action=del&id=".$a['user_id']."'>del</a> | \n";
-					print "<a href='users.php?$sid&action=edit&id=".$a['user_id']."'>edit</a> | \n";
-					print "<a href='users.php?$sid&action=resetpw&id=".$a['user_id']."'>reset pwd</a>\n";
-					print "</nobr></td>";
-					print "</tr>";
-				}
+				print "<tr>";
+				print "<td align=center>".$a['user_id']."</td>";
+				print "<td>".$a['user_uname']."</td>";
+				print "<td>".$a['user_fname']."</td>";
+				print "<td>".$a['user_email']."</td>";
+				print "<td>".$a['user_type']."</td>";
+				print "<td align=center><nobr>";
+				print "<a href='users.php?$sid&action=del&id=".$a['user_id']."&delname=".$a['user_uname']."'>del</a> | \n";
+				print "<a href='users.php?$sid&action=edit&id=".$a['user_id']."'>edit</a> | \n";
+				print "<a href='users.php?$sid&action=resetpw&id=".$a['user_id']."'>reset pwd</a>\n";
+				print "</nobr></td>";
+				print "</tr>";
 			}
-			?>
-			
-			
-		</table>
-	</td>
-</tr>
+		}
+		?>
+	</table>	
+</td></tr>
 </table>
 
 <BR>
@@ -154,26 +190,26 @@ printerr();
 <?
 function doUserForm($a,$p='',$e=0) {
 	?>
-			<form method='post' name='addform'>
-			<tr>
-			<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-			<td><input type=text name='uname' size=10 value="<?=$a[$p.'uname']?>"></td>
-			<td><input type=text name='fname' size=20 value="<?=$a[$p.'fname']?>"></td>
-			<td><input type=text name='email' size=30 value="<?=$a[$p.'email']?>"></td>
-			<td><select name=type>
-				<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
-				<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof
-				<option<?=($a[$p.'type']=='staff')?" selected":""?>>staff
-				<option<?=($a[$p.'type']=='admin')?" selected":""?>>admin
-			</select>
-			</td>
-			<td align=center>
-			<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
-			<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-			<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add user"?></a> | <a href='users.php'>cancel</a>
-			</td>
-			</tr>
-			</form>
+	<form method='post' name='addform'>
+	<tr>
+	<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
+	<td><input type=text name='uname' size=10 value="<?=$a[$p.'uname']?>"></td>
+	<td><input type=text name='fname' size=20 value="<?=$a[$p.'fname']?>"></td>
+	<td><input type=text name='email' size=30 value="<?=$a[$p.'email']?>"></td>
+	<td><select name=type>
+		<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
+		<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof
+		<option<?=($a[$p.'type']=='staff')?" selected":""?>>staff
+		<option<?=($a[$p.'type']=='admin')?" selected":""?>>admin
+	</select>
+	</td>
+	<td align=center>
+	<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
+	<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
+	<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add user"?></a> | <a href='users.php'>cancel</a>
+	</td>
+	</tr>
+	</form>
 	<?
 }
 ?>

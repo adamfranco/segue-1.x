@@ -46,8 +46,9 @@ if (count($usernames)) {
 <tr>
 	<td colspan=3>
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		Name: <input type=text name='name' size=20 value='<?echo $name?>'> <input type=submit value='GO'>
+		Name: <input type=text name='name' size=20 value='<?echo $name?>'> <input type=submit value='Find'>
 		</form>
+		<? if (!$usernames) print "No matching names found. Enter a name or part of a name above."; ?>
 	</td>
 </tr>
 <tr>
@@ -67,7 +68,7 @@ if (count($usernames)) {
 		$c++;
 	}
 } else {
-	print "<tr><td colspan=3>No usernames. Enter a name or part of a name above.</td></tr>";
+	//print "<tr><td colspan=3>No usernames. Enter a name or part of a name above.</td></tr>";
 }
 ?>
 </table>

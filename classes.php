@@ -213,8 +213,21 @@ include("themes/common/header.inc.php");
 <?=$content?>
 
 <table cellspacing=1 width='100%' id='maintable'>
-<tr>
-	<td>
+<tr><td>
+	<table cellspacing=1 width='100%'>
+		<tr><td colspan=3>
+			<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
+			<b>Class</B>
+			ID: <input type=text name='id' size=10 value='<?echo $name?>'> 
+			Name: <input type=text name='name' size=20 value='<?echo $name?>'>
+			<input type=submit name='search' value='Find'>
+			<input type=submit name='findall' value='Find All'>
+			(search interface not yet functional)
+			</form>
+			<? if (!db_num_rows($r)) print "No matching classes found"; ?>
+		</td></tr>
+		</table>
+	
 		<table width='100%'>
 			<tr>
 			<th>id</th>

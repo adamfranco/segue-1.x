@@ -202,7 +202,7 @@ class slot {
 		$allSlots = array();
 		
 		if ($owner != "") {
-			$query = "SELECT slot_id, slot_name FROM slot INNER JOIN user ON FK_owner=user_id WHERE user_uname='$owner'";
+			$query = "SELECT slot_id, slot_name FROM slot INNER JOIN user ON FK_owner=user_id WHERE user_uname='$owner' OR slot_name='$slot_name'";
 			/* echo $query."<br>"; */
 		} else {
 			$query = "SELECT slot_id, slot_name FROM slot";
@@ -217,41 +217,50 @@ class slot {
 		return $allSlots;
 	}
 	
-	function getAllSlotsInfo($owner="") {
+	function getAllSlotsInfo($slot_owner="",$slot_name="",$slot_id="",$slot_type="") {
 		$allSlots = array();
 		
-		if ($owner != "") {
-			$query = "SELECT * FROM user WHERE user_uname = '".$owner."'";
+		if ($slot_owner != "") {
+			$query = "SELECT * FROM user WHERE user_uname = '".$slot_owner."'";
 			$r = db_query($query);
-			$a = db_fetch_assoc($r);
-			$owner_id = $a[user_id];
-			$query = "
-				SELECT 
-					slot.slot_id,
-					slot.slot_name,
-					user.user_uname,
-					slot.slot_type,
-					assocsite.slot_name AS assocsite_name,
-					slot.FK_site,
-					slot.slot_uploadlimit
-				FROM 
-					slot
-						LEFT JOIN
-					user
-						ON
-							slot.FK_owner = user_id
-						LEFT JOIN
-					slot AS assocsite
-						ON
-							slot.FK_assocsite = assocsite.slot_id
-				WHERE
-					FK_owner=$owner_id
-				ORDER BY
-					slot.slot_name
-			";
+			if (db_num_rows($r)) {
+				$a = db_fetch_assoc($r);
+				$owner_id = $a[user_id];
+				$query = "
+					SELECT 
+						slot.slot_id,
+						slot.slot_name,
+						user.user_uname,
+						slot.slot_type,
+						assocsite.slot_name AS assocsite_name,
+						slot.FK_site,
+						slot.slot_uploadlimit
+					FROM 
+						slot
+							LEFT JOIN
+						user
+							ON
+								slot.FK_owner = user_id
+							LEFT JOIN
+						slot AS assocsite
+							ON
+								slot.FK_assocsite = assocsite.slot_id
+					WHERE
+						slot.FK_owner=$owner_id
+					ORDER BY
+						slot.slot_name
+				";
+			}
+				
 /* 			echo $query; */
-		}
-		else {
+		} else {
+			if ($slot_id) {
+				$where = "slot.slot_id=$slot_id";
+			} else if ($slot_name) {
+				$where = "slot.slot_name LIKE '%$slot_name%'";
+			} else {
+				$where = "slot.slot_type='$slot_type'";
+			}
 			$query = "
 				SELECT 
 					slot.slot_id,
@@ -271,6 +280,9 @@ class slot {
 					slot AS assocsite
 						ON
 							slot.FK_assocsite = assocsite.slot_id
+					WHERE
+						$where
+
 				ORDER BY
 					slot.slot_name
 			";
