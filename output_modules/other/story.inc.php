@@ -7,21 +7,21 @@ $st = $o->getField("shorttext");
 if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
 if ($o->getField("texttype") == 'text') $st = htmlbr($st);
 
-printc("<div>" . stripslashes($st) . "</div>");
+printc("<div>" . stripslashes($st));
 if ($o->getField("discuss") || $o->getField("longertext")) {
-	printc("<div class=contentinfo align=right>");
 	$link = "index.php?$sid&action=site&site=$site&section=$section&page=$page&story=".$o->id."&detail=".$o->id;
 	//$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
-	$link = "<a href='$link'>";
+	//$link = "<a href='$link'>";
+	if ($o->getField("longertext")) printc("<a href='".$link."'>"." ...more.</a>");
+	printc("</div>");
+	printc("<div class=contentinfo align=right>");
 	$l = array();
+	//if ($o->getField("longertext")) $l[] = $link."Full Text</a>";
 	if ($o->getField("discuss")) {
-		if ($o->getField("discussdisplay") == 1) {
-			$l[] = $link."discuss</a> (".discussion::generateStatistics($o->id).")";
-		} else {
-			$l[] = $link."assess</a> (".discussion::generateStatistics($o->id).")";	
-		}
+		$discusslabel = $o->getField("discusslabel");
+		printc("<a href=".$link."#discuss>".$discusslabel."</a> (".discussion::generateStatistics($o->id).")");
 	}
-	if ($o->getField("longertext")) $l[] = $link."full text</a>";
+
 	printc(implode(" | ",$l));
 	printc("</div>");
 }

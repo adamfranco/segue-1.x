@@ -464,6 +464,7 @@ SELECT
 	story_created_tstamp AS addedtimestamp,
 	story_discussable AS discuss, 
 	story_discussemail AS discussemail,
+	story_discusslabel AS discusslabel,
 	story_discussdisplay AS discussdisplay, 
 	story_discussauthor AS discussauthor, 
 	story_category AS category, 

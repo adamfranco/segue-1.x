@@ -10,6 +10,8 @@
 class Update130
 	extends Update {
 	
+	var $field01Exists = FALSE;
+	
 	/**
      * Returns the name of the update
      *
@@ -26,7 +28,7 @@ class Update130
 	 */
 	function getDescription() {
 		return "This update modifies Segue to allow the use of RSS Feeds as content-types.  As well 
-		it added visitor and guest usertypes to the user table";
+		it adds visitor and guest usertypes to the user table and adds a discussion label to story table";
 	}
 	
     /**
@@ -71,6 +73,19 @@ class Update130
 			print "\nNeeds type, 'visitor' and 'guest' in ".$a['Type']."<br>";
 		}
 		
+		// check for discusslabel field in story table
+		$query = "
+		DESCRIBE
+			story story_discusslabel
+		";
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			$this->field01Exists = TRUE;
+		} else {
+			$hasRun = FALSE;
+			print "\nNeeds discuss link label field in story table.<br>";
+		}
+				
 		return $hasRun;	
 	}
 	
@@ -139,6 +154,16 @@ class Update130
 			$r = db_query($query);
 		}
 
+		//add the story_discusslabel field to the story table	
+		if (!$this->field01Exists) {
+			$query = "
+			ALTER TABLE 
+				story
+			ADD 
+				story_discussdisplay varchar(128) NULL default '' AFTER story_discussauthor
+			";
+			$r = db_query($query);
+		}
 
 	}
 }

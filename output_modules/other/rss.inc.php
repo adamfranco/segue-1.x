@@ -27,9 +27,12 @@ if ($o->getField("discuss")) {
 	printc("<div class=contentinfo align=right>");
 	$link = "index.php?$sid&action=fullstory&site=$site&section=$section&page=$page&story=".$o->id;
 	//$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
-	$link = "<a href='$link'>";
+	//$link = "<a href='$link'>";
 	$l = array();
-	if ($o->getField("discuss")) $l[] = $link."discussions</a>";
+	if ($o->getField("discuss")) {
+		$discusslabel = $o->getField("discusslabel");
+		printc("<a href=".$link."#discuss>".$discusslabel."</a> (".discussion::generateStatistics($o->id).")");
+	}
 /* 	if ($o->getField("longertext")) $l[] = $link."full text</a>"; */
 	printc(implode(" | ",$l));
 	printc("</div>");

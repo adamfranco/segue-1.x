@@ -145,12 +145,15 @@ if ($storyObj->getField("discuss")) {
 	$showposts = $storyObj->getField("discussdisplay");
 	$showallauthors = $storyObj->getField("discussauthor");	
 	$siteowner = $siteObj->getField("addedbyfull");	
+	$discusslabel = $storyObj->getField("discusslabel");	
 	
-	if ($showposts == 1) {
-		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion\n");
-	} else {
-		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment\n");	
-	}
+	printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader><a name=discuss></a>".$discusslabel."\n");
+	
+/* 	if ($showposts == 1) { */
+/* 		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Discussion\n"); */
+/* 	} else { */
+/* 		printc("<td align=left><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=left class=dheader>Assessment\n");	 */
+/* 	} */
 	
 	//get number of discuss/assess participants
 	$numparticipants = participants();

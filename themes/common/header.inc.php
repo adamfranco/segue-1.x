@@ -72,7 +72,7 @@ function delEditor(n) {
 </script>
 <style type="text/css">
 .desc {
-	padding-left: 40px;
+	padding-left: 20px;
 	font-size: 11px;
 	margin-bottom: 5px;
 }

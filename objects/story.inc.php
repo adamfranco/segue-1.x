@@ -8,7 +8,7 @@ class story extends segue {
 
 	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp", "addedbyfull", "editedbyfull",
 							"editedby","editedtimestamp","shorttext","longertext",
-							"activatedate","deactivatedate","discuss","discussdisplay","discussauthor","discussemail",
+							"activatedate","deactivatedate","discuss","discussdisplay","discussauthor","discussemail","discusslabel",
 							"locked","category","discussions","texttype","type","url","active");
 	
 	// fields listed in $_datafields are stored in the database.
@@ -151,6 +151,11 @@ class story extends segue {
 		"discussemail" => array(
 			"story",
 			array("story_discussemail"),
+			"story_id"
+		),
+		"discusslabel" => array(
+			"story",
+			array("story_discusslabel"),
 			"story_id"
 		),
 		"category" => array(
@@ -345,6 +350,7 @@ class story extends segue {
 					story_discussdisplay AS discussdisplay, 
 					story_discussauthor AS discussauthor, 
 					story_discussemail AS discussemail,
+					story_discusslabel AS discusslabel,
 					story_category AS category, 
 					story_text_type AS texttype, 
 					story_text_short AS shorttext,
@@ -634,6 +640,7 @@ SET
 		if ($all || $this->changed[discussemail]) $a[] = $this->_datafields[discussemail][1][0]."='".(($d[discussemail])?1:0)."'";
 		if ($all || $this->changed[discussdisplay]) $a[] = $this->_datafields[discussdisplay][1][0]."='".($d[discussdisplay])."'";
 		if ($all || $this->changed[discussauthor]) $a[] = $this->_datafields[discussauthor][1][0]."='".($d[discussauthor])."'";
+		if ($all || $this->changed[discusslabel]) $a[] = $this->_datafields[discusslabel][1][0]."='".addslashes($d[discusslabel])."'";
 		
 		if ($all || $this->changed[texttype]) $a[] = $this->_datafields[texttype][1][0]."='$d[texttype]'";
 		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='$d[category]'";

@@ -36,6 +36,7 @@ printc("<div class=desc>You have the option of allowing visitors to your site di
 printc("<div class=leftmargin>");
 $discuss = $_SESSION[storyObj]->getField("discuss");
 $discussemail = $_SESSION[storyObj]->getField("discussemail");
+$discusslabel = $_SESSION[storyObj]->getField("discusslabel");
 $discussdisplay = $_SESSION[storyObj]->getField("discussdisplay");
 $discussauthor = $_SESSION[storyObj]->getField("discussauthor");
 printc("<table cellpadding=3 cellspacing=0>");
@@ -56,8 +57,23 @@ printc("<td valign=top><b>Discussion:</b> Participants can read and respond to e
 //printc("</tr><tr>");
 printc("<td valign=top><input type=radio value='2' name=discussdisplay".(($discussdisplay == 2)?" checked":"")."></td>");
 printc("<td valign=top><b>Assessment:</b> Participants will <b>not</b> be able to read each other's posts (assessment posts can be made available for discussion after assessment is completed). </td>");
-printc("</tr><tr>");
+printc("</tr>");
 printc("</table><br>");
+printc("Specify discussion/assessment link label:");
+printc("<div class=desc>(This is the label for the link that participants use to access discussion/assessment)</div>");
+printc("<table width=100% cellpadding=3 cellspacing=0 style='border: 1px solid gray'>");
+printc("<tr>");
+printc("<td valign=top><input type=radio value='Discuss' name=discusslabel".(($discusslabel == "Discuss" || !$discusslabel)?" checked":"")."> Discuss</td>");
+printc("<td valign=top><input type=radio value='Assess' name=discusslabel".(($discusslabel == "Assess")?" checked":"")."> Assess</td>");
+printc("<td valign=top><input type=radio value='Comment' name=discusslabel".(($discusslabel == "Comment")?" checked":"")."> Comment</td>");
+printc("<td valign=top><input type=radio value='Review' name=discusslabel".(($discusslabel == "Review")?" checked":"")."> Review</td>");
+printc("<td valign=top><input type=radio value='Register' name=discusslabel".(($discusslabel == "Register")?" checked":"")."> Register</td>");
+//printc("</tr><tr>");
+//printc("<td valign=top colspan=5><input type=radio value='1' name=label".(($label == "Other")?" checked":"")."> Other <input type=textfield value='' name=label></td>");
+//printc("</tr>");
+printc("</table><br>");
+
+//printpre($_SESSION);
 
 
 
@@ -67,7 +83,9 @@ if ($_SESSION[auser] == $site_owner) {
 	$canAddEditors = false;
 }
 
-printc("Specify who can discuss/assess this content: <BR><BR>");
+printc("Specify who can discuss/assess this content:");
+printc("<div class=desc>(Giving everyone permission will require participants to register.  Limit permissions to ".$cfg[inst_name]." or specified groups to ensure proper authentication)</div>");
+
 permissions::outputForm($_SESSION[storyObj],1,$canAddEditors);
 
 printc("</div>");

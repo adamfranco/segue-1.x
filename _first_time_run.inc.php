@@ -272,6 +272,7 @@ if (!$allTablesExist) {
 		  story_discussemail ENUM('0','1') NOT NULL default '0',
 		  story_discussdisplay ENUM('1','2') NOT NULL default '1',
 		  story_discussauthor ENUM('1','2') NOT NULL default '1',
+		  story_discussdisplay varchar(128) NULL default '',
 		  story_category varchar(255) NOT NULL default '',
 		  story_text_type enum('text','html') NOT NULL default 'text',
 		  story_display_type enum('story','image','file','link') NOT NULL default 'story',

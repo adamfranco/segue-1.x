@@ -14,14 +14,11 @@ if ($o->getField("discuss")) {
 	$link = "index.php?$sid&action=site&site=$site&section=$section&page=$page&story=".$o->id."&detail=".$o->id;
 	//$link = "index.php?$sid&action=fullstory&site=$site&section=$section&page=$page&story=".$o->id;
 	//$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
-	$link = "<a href='$link'>";
+	//$link = "<a href='$link'>";
 	$l = array();
 	if ($o->getField("discuss")) {
-		if ($o->getField("discussdisplay") == 1) {
-			$l[] = $link."discuss</a> (".discussion::generateStatistics($o->id).")";
-		} else {
-			$l[] = $link."assess</a> (".discussion::generateStatistics($o->id).")";	
-		}
+		$discusslabel = $o->getField("discusslabel");
+		printc("<a href=".$link."#discuss>".$discusslabel."</a> (".discussion::generateStatistics($o->id).")");
 	}
 	printc(implode(" | ",$l));
 	printc("</div>");
