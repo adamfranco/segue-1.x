@@ -1,22 +1,27 @@
 <? /* $Id$ */
 
 function _valid_ldap($name,$pass,$admin_auser=0) {
-//	print "hallooo!"; return 1;
+//	print "hallooo!";
 	$name = strtolower($name);
-	global $dbhost, $dbuser, $dbpass, $dbdb, $ldapserver, $ldap_voadmin_user, $ldap_voadmin_pass;
+	global $cfg;
+	$ldap_user = "cn=".(($admin_auser)?$cfg[ldap_voadmin_user]:$name).", ".$cfg[ldap_base_dn];
+	$ldap_pass = ($admin_auser)?$cfg[ldap_voadmin_pass]:$pass;
+
 	
-	$ldap_user = "cn=".(($admin_auser)?$ldap_voadmin_user:$name).",cn=midd";
-	$ldap_pass = ($admin_auser)?$ldap_voadmin_pass:$pass;
 	// check if we already have an ldap connection... otherwise, open a new one
-	if (!($c = ldap_connect($ldapserver))) $c = ldap_connect($ldapserver);
+	if (!($c = ldap_connect($cfg[ldapserver]))) $c = ldap_connect($cfg[ldapserver]);
 	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
-	//$r=ldap_bind($c,"cn=gschine,cn=midd","");  //debug
+	
+//	print "@ldap_bind($c,$ldap_user,$ldap_pass);";
 		
 	if ($r) { // they're good!
 		// pull down their info
-		$return = array("uid","cn","mail","extension-attribute-1","memberOf");
-		$base_dn = "ou=Midd,o=MC";
-		$filter = "uid=$name";
+		$return = $cfg[ldap_return];
+	
+		
+		
+		$base_dn = $cfg[ldap_base_dn];		
+		$filter = $cfg[ldap_user_filter]."=".$userid;		
 		
 //		print "$name with $pass was in the LDAP database!<BR>";//debug
 		
@@ -31,12 +36,14 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		$x[user] = $name;
 		$x[pass] = $pass;
 		$x[method] = 'ldap';
-		$x[fullname] = $results[0]["cn"][0];
-		$x[email] = $results[0]["mail"][0];
+		$x[fullname] = $results[0][$cfg[ldap_return]['fullname']][0];
+		$x[email] = $results[0][$cfg[ldap_return]['mail']][0];
 		// are they prof?
-		if (is_array($results[0]["memberof"])) {
-			foreach ($results[0]["memberof"] as $item) {
-				if (eregi("All_Staff",$item) || eregi("All_Faculty",$item)) {
+		
+		if (is_array($results[0][$cfg[ldap_return]['group']])) {
+			$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
+			foreach ($results[0][$cfg[ldap_return]['group']] as $item) {
+				if (eregi($isProfSearchString,$item)) {
 					$areprof=1;
 				}
 			}
