@@ -68,7 +68,7 @@ class slot {
 	}
 	
 	function exists($name,$checkldap=0) {
-		$query = "SELECT * FROM slot WHERE slot_name='$name'";
+		$query = "SELECT slot_id FROM slot WHERE slot_name='$name'";
 		if (db_num_rows(db_query($query)) > 0) return 1;
 		// check the ldap
 /* 		print "ldapfname '".ldapfname($name)."'"; */
@@ -145,8 +145,8 @@ class slot {
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);
 			$owner_id = $a[user_id];
-			$query = "SELECT * FROM slot WHERE FK_owner=$owner_id";
-			echo $query;
+			$query = "SELECT slot_id FROM slot WHERE FK_owner=$owner_id";
+			echo $query."<br>";
 		}
 		else {
 			$query = "SELECT slot_id, slot_name FROM slot";

@@ -257,7 +257,7 @@ FROM
 			
 			$valarray = array();
 			while($a = db_fetch_assoc($r)) {
-				print_r($a);
+			//	print_r($a);
 				
 				if (count($this->_datafields[$field][1]) == 1) { 
 					// We just want a single value
@@ -285,7 +285,7 @@ FROM
 					$valarray[$key] = $val;
 				}
 /* 				print "<br>key = $key \nval = $val \nvalarray =\n"; */
-				print_r($valarray);
+//				print_r($valarray);
 			}
 			
 			// only object_arrays should really be returning arrays to the data array.

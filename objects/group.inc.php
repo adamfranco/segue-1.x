@@ -24,9 +24,10 @@ class group {
 	}
 	
 	function fetchFromDB() {
+		// get id
 		$query = "
 SELECT
-	classgroup_id as id, classgroup_name as name
+	classgroup_id AS id, classgroup_name AS name
 FROM classgroup WHERE classgroup_id=".$this->id;
 		echo $query."<br>";
 			
@@ -35,7 +36,8 @@ FROM classgroup WHERE classgroup_id=".$this->id;
 			$a = db_fetch_assoc($r);
 			$this->id=$a[id];
 		} else return false;
-		
+
+		// get owner		
 		$query = "
 SELECT
 	user_uname
@@ -51,6 +53,7 @@ FROM
 			$this->owner=$a[user_uname];
 		} else return false;
 			
+		// get classes for that group<br>
 		$query = "SELECT class_code FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_id=".$this->id;
 		echo $query."<br>";
 
@@ -62,23 +65,49 @@ FROM
 		} else return false;
 	}
 	
-	
-	// UPDATE THIS FUNCTION	
 	function updateDB() {
-		if ($this->exists($this->name)) {
-			$query = "update classgroups set name='".$this->name."',owner='".$this->owner."'";
-			$query .= ",classes='".implode(",",$this->classes)."' where id=".$this->id;
-			db_query($query);
-		} else {
-			// insert in the db
-			$query = "insert into classgroups set name='".$this->name."',owner='".$this->owner."'";
-			$query .= ",classes='".implode(",",$this->classes)."'";
-			db_query($query);
+		// get owner id
+		$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
+		echo $query."<br>";
+		$r = db_query($query);
+		if (db_num_rows($r)==0) return false;
+		else {
+			$a = db_fetch_assoc($r);
+			$owner_id = $a[user_id];
+		}	
+
+		// if this classgroup has not been inserted into the db yet, do it!
+		if (!$this->exists($this->name))
+        {
+			$query = "INSERT INTO classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
+			echo $query."<br>";
+			$r = db_query($query);
+    		$this->id = mysql_insert_id();
+		}
+		// else just update it
+		else {
+			$query = "UPDATE classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
+			echo $query."<br>";
+		}
+
+		// now that the group is in the db, update the foreign key for the classes
+
+		// first, reset classes that used to be part of this classgroup
+		$query = "UPDATE class SET FK_classgroup = NULL WHERE FK_classgroup = ".$this->id;
+		echo $query."<br>";
+		$r = db_query($query);
+		
+		// then, set new forign key		
+		if (count($this->classes)>0) {
+			$classes = "'".implode("','",$this->classes)."'";
+			$query = "UPDATE class SET FK_classgroup = ".$this->id." WHERE class_code IN ($classes)";
+			echo $query."<br>";
+			$r = db_query($query);
 		}
 	}
 	
 	function exists($name) {
-		$query = "SELECT * FROM classgroup WHERE classgroup_name='$name'";
+		$query = "SELECT classgroup_id FROM classgroup WHERE classgroup_name='$name'";
 		echo $query."<br>";
 		if (db_num_rows(db_query($query))) return true;
 		return false;
@@ -109,7 +138,7 @@ FROM
 	}
 	
 	function getGroupsOwnedBy($owner) {
-		$query = "SELECT * FROM user WHERE user_uname = '".$owner."'";
+		$query = "SELECT user_id FROM user WHERE user_uname = '".$owner."'";
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
 		$owner_id = $a[user_id];
