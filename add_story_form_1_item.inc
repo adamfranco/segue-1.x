@@ -56,6 +56,7 @@ if ($settings[add] || $settings[type] == 'link') {
 }
 
 
+   
 if ($settings[type]=='image') {
 	printc("<div class=title>Image</div>");
 	printc("<div class=desc>Select an image file to use, and enter optional title and caption text.</div>");
@@ -125,10 +126,9 @@ if ($settings[type] == 'image' || $settings[type] == 'file') {
 	printc("<br><br>");
 	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
 	printc("<input type=hidden name='libraryfileid' value='$settings[libraryfileid]'>");
-	printc((($settings[type]=='image')?"Image":"File")." from Media Library: <input type=text name='libraryfilename' value='$settings[libraryfilename]' size=25 readonly> <a href=filebrowser.php? onClick='doWindow(\"filebrowser\",500,600)' target='filebrowser' style='text-decoration: none'><input type=button name='browsefiles' value='Media Library...'></a> <br><br>");
-	printc ("<input type=radio name='filefrom' value='medialibrary' ".(($settings[filefrom]=='local')?" selected":"")."> ");
-	if ($settings[type]=='image') printc("<div class=desc>Select the image you would like to use by clicking the 'Browse...' button above. Accepted image types are GIF, JPEG and PNG.</div>");
-	else printc("<div class=desc>Select the file you would like to make available by clicking the 'Browse...' button above.</div>");
+	printc((($settings[type]=='image')?"Image":"File").": <input type=text name='libraryfilename' value='$settings[libraryfilename]' size=25 readonly> <a href=filebrowser.php? onClick='doWindow(\"filebrowser\",500,600)' target='filebrowser' style='text-decoration: none'><input type=button name='browsefiles' value='Media Library'></a> <br><br>");
+	if ($settings[type]=='image') printc("<div class=desc>Accepted image types are GIF, JPEG (JPG), and PNG.</div>");
+	else // printc("<div class=desc>Select the file you would like to make available by clicking the 'Browse...' button above.</div>");
 	printc("<br>");
 	if ($settings[type]=='image') printc("Caption/Description (optional):");
 	else printc("Description (optional):");

@@ -4,15 +4,16 @@
 // Begining of new code
 
 // ---  variables for debugging ---
-//foreach ($settings as $n => $v) {
-//	$variables .= "$n = $v <br>";	
-//}
+/*$vars = $settings;
+ksort($vars);
+$variables .= "<br>----------------------<br>";
+foreach ($vars as $n => $v) {
+	$variables .= "$n = $v <br>";	
+}
+if ($settings[file]) foreach ($settings[file] as $n => $v) $variables .= "<br>$n - $v";
 //add_link(leftnav,'','',"$variables");
-//print $variables."<br>site owner = $site_owner <br>typeswitch = $typeswitch <br>";
-//print "siteheader = '$siteheader' <br>sitefooter = '$sitefooter' <br>";
-//print "site = $site<br>section = $section<br>page=$page<br>";
-
-//------------------------------------
+//printc("$variables");
+*///------------------------------------
 
 // first check if we are allowed to edit this site at all
 if ($auser != $site_owner && $auser != $settings[site_owner] && !is_editor($auser,$site) && !is_editor($auser,$settings[site])) {
@@ -60,7 +61,7 @@ if ($settings) {
 	// Checkboxes need a "if ($settings[step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
 	if ($type) $settings[type] = $type;
-	if ($settings[step] == 1) $settings[title] = $title;
+	if ($settings[step] == 1 && !$link) $settings[title] = $title;
 	if ($activateyear != "") $settings[activateyear] = $activateyear;
 	if ($activatemonth != "") $settings[activatemonth] = $activatemonth;
 	if ($activateday != "") $settings[activateday] = $activateday;
@@ -80,8 +81,8 @@ if ($settings) {
 //	if ($settings[step] == 4 && !$link) $settings[showcreator] = $showcreator;
 //	if ($settings[step] == 4 && !$link) $settings[showdate] = $showdate;
 //	if ($archiveby) $settings[archiveby] = $archiveby;
-	if ($url) $settings[url] = $url;
-	if ($file && $_FILES['file']['tmp_name'] != 'none' && $settings[step] == 1 && !$link) $settings[file] = $_FILES['file'];
+	if ($url) $settings[url] = $url;	
+//	if ($file && $_FILES['file']['tmp_name'] != 'none' && $settings[step] == 1 && !$link) $settings[file] = $_FILES['file'];	
 	if ($texttype) $settings[texttype] = $texttype;
 	if ($settings[step] == 5 && !$link) $settings[discuss] = $discuss;
 	if ($settings[step] == 5 && !$link) $settings[discusspermissions] = $discusspermissions;
@@ -93,7 +94,9 @@ if ($settings) {
 	}
 	if ($settings[step] == 1 && !$link) $settings[shorttext] = $shorttext;
 	if ($settings[step] == 2 && !$link) $settings[longertext] = $longertext;
-	
+	if ($settings[step] == 1 && !$link) $settings[libraryfilename] = $libraryfilename;
+	if ($settings[step] == 1 && !$link) $settings[libraryfileid] = $libraryfileid;
+
 	//---- If switching type, take values to defaults ----
 	if ($typeswitch) {
 		$editors = db_get_value("sites","editors","name='$settings[site]'");
@@ -121,7 +124,9 @@ if ($settings) {
 		$settings[category] = "";
 		$settings[shorttext] = "";
 		$settings[longertext] = "";
-		$settings[file] = "";
+		$settings[libraryfilename] = "";
+		$settings[libraryfileid] = "";
+//		$settings[file] = "";
 		
 		if ($settings[add]) {
 			//print "<p> deleting settings[permissions]....</p>";
@@ -132,6 +137,7 @@ if ($settings) {
 }
 
 if (!$settings && !$error) {
+//	print "Making a new settings array<br>";
 	// create the settings array with default values. $settings must be passed along with each link.
 	// The array will be saved on clicking a save button.
 	$editors = db_get_value("sites","editors","name='$site'");
@@ -198,7 +204,8 @@ if (!$settings && !$error) {
 		$settings[permissions] = decode_array($settings[permissions]);
 		$settings[shorttext] = urldecode($settings[shorttext]);
 		$settings[longertext] = urldecode($settings[longertext]);
-		$settings['file']['name'] = $settings[longertext];
+		$settings[libraryfileid] = $settings[longertext];
+		$settings[libraryfilename] = db_get_value("media","name","id=$settings[libraryfileid]");
 	}
 	
 	$settings[categories]=array();
@@ -240,12 +247,16 @@ $siteheader = "";
 $sitefooter = "";
 
 // ---  variables for debugging ---
-//foreach ($settings as $n => $v) {
-//	$variables .= "$n = $v <br>";	
-//}
+/*$vars = $settings;
+ksort($vars);
+$variables .= "<br>----------------------<br>";
+foreach ($vars as $n => $v) {
+	$variables .= "$n = $v <br>";	
+}
+if ($settings[file]) foreach ($settings[file] as $n => $v) $variables .= "<br>$n - $v";
 //add_link(leftnav,'','',"$variables");
-//print $variables;
-//------------------------------------
+//printc("$variables");
+*///------------------------------------
 
 if ($cancel) {
 	$commingFrom = $settings[commingFrom];
@@ -262,11 +273,10 @@ if ($save) {
 			error ("You must enter some story content.");
 	if ($settings[type]=='link' && (!$settings[url] || $settings[url]=='' || $settings[url]=='http://'))
 		error("You must enter a URL.");
-	if ($settings[type]=='file' && (!$settings['file']['name'] || $settings['file']['name'] == '') && $settings[add])
+	if ($settings[type]=='file' && (!$settings[libraryfileid] || $settings[libraryfileid] == ''))
 		error("You must select a file to upload.");
-	if ($settings[type]=='image' && (!$settings['file']['name'] || $settings['file']['name'] == '') && $settings[add])
+	if ($settings[type]=='image' && (!$settings[libraryfileid] || $settings[libraryfileid] == ''))
 		error("You must select an image to upload.");
-		
 		
 	if (!$error) { // save it to the database
 		$addedby=$auser;
@@ -279,20 +289,6 @@ if ($save) {
 		$settings[showcreator] = ($settings[showcreator])?1:0;
 		$settings[showdate] = ($settings[showdate])?1:0;
 		$settings[ediscussion] = ($settings[ediscussion])?1:0;
-		
-
-		if ($settings[type] == 'image' || $settings[type] == 'file') {
-			$settings[longertext] = $settings['file']['name'];
-			if ($settings[edit]) {
-				$oldfilename = db_get_value("stories","longertext","id=$settings[story]");
-				if (!$settings[longertext]) {
-					$settings[longertext] = $oldfilename;
-				} else if ($oldfilename != $settings[longertext]) {
-					// delete the old file
-					deleteuserfile($settings[story],$oldfilename);
-				}
-			}
-		}
 
 		$settings[shorttext]=urlencode($settings[shorttext]);
 		$settings[longertext]=urlencode($settings[longertext]);
@@ -330,7 +326,7 @@ if ($save) {
 		$chg[] = "texttype='$settings[texttype]'";
 		$chg[] = "category='$settings[category]'";
 		$chg[] = "shorttext='$settings[shorttext]'";
-		$chg[] = "longertext='$settings[longertext]'";
+		$chg[] = "longertext='$settings[libraryfileid]'";
 		$chg[] = "url='$settings[url]'";
 		$chg[] = "type='$settings[type]'";
 		$chg[] = "title='$settings[title]'";
@@ -348,11 +344,6 @@ if ($save) {
 		if ($settings[add]) {
 			$newid = lastid();
 			
-			// move the file to the appropriate upload dir
-                        if ($settings[type] == 'image' || $settings[type] == 'file') {
-				copyuserfile($newid,$settings['file']);
-                        }
-			
 			$stories = decode_array(db_get_value("pages","stories","id=$settings[page]"));
 			array_push($stories,$newid);
 			$stories = encode_array($stories);
@@ -363,9 +354,6 @@ if ($save) {
 		if ($settings[edit]) {
 			log_entry("edit_page",$settings[site],$settings[section],$settings[page],"$auser edited content id $settings[story] in page $settings[page] of section $settings[section] of site $settings[site]");
 			$newid=$settings[page];
-			if ($settings[type] == 'image' || $settings[type] == 'file') {
-				copyuserfile($settings[story],$settings['file']);
-			}
 		}
 		
 		// add or remove any changes to the site editor list.
@@ -458,11 +446,12 @@ if ($settings[step] == 5) {
 // ---  variables for debugging ---
 $vars = $settings;
 ksort($vars);
+$variables .= "<br>----------------------<br>";
 foreach ($vars as $n => $v) {
 	$variables .= "$n = $v <br>";	
 }
+if ($settings[file]) foreach ($settings[file] as $n => $v) $variables .= "<br>$n - $v";
 //add_link(leftnav,'','',"$variables");
 //printc("$variables");
-//if ($settings[file]) foreach ($settings[file] as $n => $v) printc ("<br>$n - $v");
 //------------------------------------
 

@@ -94,8 +94,6 @@ if ($settings) {
 	}
 	if ($settings[step] == 1 && !$link) $settings[shorttext] = $shorttext;
 	if ($settings[step] == 2 && !$link) $settings[longertext] = $longertext;
-	if ($useagain) $settings[useagain] = 1;
-	if ($overwrite) $settings[overwrite] = 1;
 	if ($settings[step] == 1 && !$link) $settings[libraryfilename] = $libraryfilename;
 	if ($settings[step] == 1 && !$link) $settings[libraryfileid] = $libraryfileid;
 
@@ -126,7 +124,9 @@ if ($settings) {
 		$settings[category] = "";
 		$settings[shorttext] = "";
 		$settings[longertext] = "";
-		$settings[file] = "";
+		$settings[libraryfilename] = "";
+		$settings[libraryfileid] = "";
+//		$settings[file] = "";
 		
 		if ($settings[add]) {
 			//print "<p> deleting settings[permissions]....</p>";
@@ -204,7 +204,8 @@ if (!$settings && !$error) {
 		$settings[permissions] = decode_array($settings[permissions]);
 		$settings[shorttext] = urldecode($settings[shorttext]);
 		$settings[longertext] = urldecode($settings[longertext]);
-		$settings['file']['name'] = $settings[longertext];
+		$settings[libraryfileid] = $settings[longertext];
+		$settings[libraryfilename] = db_get_value("media","name","id=$settings[libraryfileid]");
 	}
 	
 	$settings[categories]=array();
@@ -272,30 +273,10 @@ if ($save) {
 			error ("You must enter some story content.");
 	if ($settings[type]=='link' && (!$settings[url] || $settings[url]=='' || $settings[url]=='http://'))
 		error("You must enter a URL.");
-	if ($settings[type]=='file' && (!$settings['file']['name'] || $settings['file']['name'] == '') && $settings[add])
+	if ($settings[type]=='file' && (!$settings[libraryfileid] || $settings[libraryfileid] == ''))
 		error("You must select a file to upload.");
-	if ($settings[type]=='image' && (!$settings['file']['name'] || $settings['file']['name'] == '') && $settings[add])
+	if ($settings[type]=='image' && (!$settings[libraryfileid] || $settings[libraryfileid] == ''))
 		error("You must select an image to upload.");
-	if ($settings[type]=='image' || $settings[type]=='file') {
-		$name = $settings[file][name];
-		$query = "select * from media where name='$name' AND site_id='$settings[site]'";
-//		print $query."<br>";
-		if (db_num_rows(($r=db_query($query))) && (!$settings[useagain] && !$settings[overwrite])) {
-			error ((($settings[type] == 'image')?"An image":"A file")." with name <b>$name</b> is already in your directory. Select a new file or <br>click here to: <a href='$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&useagain=1&save=1&link=1' onClick=\"submitForm()\">USE THE ".(($settings[type] == 'image')?"IMAGE":"FILE")." AGAIN</a> <br>click here to: <a href='$PHP_SELF?$sid&action=".(($setting[add])?"edit":"add")."_story&overwrite=1&save=1&link=1' onClick=\"submitForm()\">OVERWRITE YOUR OLD ".(($settings[type] == 'image')?"IMAGE":"FILE")."</a>");
-		} else if ($settings[useagain]) {
-			print "Using image again<br>";
-			$settings[media_id] = db_get_value("media","id","site_id='$settings[site]' and name='$name'");		
-		} else if ($settings[overwrite]) {
-			print "Overwriting image<br>";
-			$d = deleteuserfile(0,$name);
-			if ($d) print "Delete successful<br>";
-			$settings[media_id] = copyuserfile($settings['file'],1,$settings[longertext]);
-		} else {
-			// move the file to the appropriate upload dir
-			print "Moving file<br>";
-			$settings[media_id] = copyuserfile($settings['file'],0,0);
-		}
-	}
 		
 	if (!$error) { // save it to the database
 		$addedby=$auser;
@@ -308,20 +289,6 @@ if ($save) {
 		$settings[showcreator] = ($settings[showcreator])?1:0;
 		$settings[showdate] = ($settings[showdate])?1:0;
 		$settings[ediscussion] = ($settings[ediscussion])?1:0;
-		
-
-		if ($settings[type] == 'image' || $settings[type] == 'file') {
-			$settings[longertext] = $settings['file']['name'];
-			if ($settings[edit]) {
-				$oldfilename = db_get_value("stories","longertext","id=$settings[story]");
-				if (!$settings[longertext]) {
-					$settings[longertext] = $oldfilename;
-				} else if ($oldfilename != $settings[longertext]) {
-					// delete the old file
-					deleteuserfile($settings[story],$oldfilename);
-				}
-			}
-		}
 
 		$settings[shorttext]=urlencode($settings[shorttext]);
 		$settings[longertext]=urlencode($settings[longertext]);
@@ -359,7 +326,7 @@ if ($save) {
 		$chg[] = "texttype='$settings[texttype]'";
 		$chg[] = "category='$settings[category]'";
 		$chg[] = "shorttext='$settings[shorttext]'";
-		$chg[] = "longertext='$settings[media_id]'";
+		$chg[] = "longertext='$settings[libraryfileid]'";
 		$chg[] = "url='$settings[url]'";
 		$chg[] = "type='$settings[type]'";
 		$chg[] = "title='$settings[title]'";
@@ -398,7 +365,7 @@ if ($save) {
 //		db_query($query);
 //		print "$query <br>";
 		
-//		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]&page=$settings[page]");
+		header("Location: index.php?$sid&action=viewsite&site=$settings[site]&section=$settings[section]&page=$settings[page]");
 		
 	} else {
 		$settings[step] = 1;
