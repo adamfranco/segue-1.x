@@ -11,10 +11,10 @@ if ($allowclasssites != $allowpersonalsites) {
 	$type = db_get_value("sites","type","name='$site'");
 	if ($allowclasssites && !$allowpersonalsites) {
 		if ($type == 'personal')
-			header("Location: $personalsitesurl/index.php?action=site&site=$site");
+			header("Location: $personalsitesurl/index.php?action=site&site=$site&section=$section&page=&page");
 	} else if (!$allowclasssites && $allowpersonalsites) {
 		if ($type != 'personal' && $type != 'system')
-			header("Location: $classsitesurl/index.php?action=site&site=$site");
+			header("Location: $classsitesurl/index.php?action=site&site=$site&section=$section&page=&page");
 	} else {
 		// Do nothing
 	}
