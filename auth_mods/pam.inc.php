@@ -5,7 +5,18 @@ function _valid_pam($name,$pass,$admin_auser=0) {
 	if ($_network == 'kenyon')
 		global $supdbhost, $supdbuser, $supdbpass, $supdbdb, $dbhost, $dbuser, $dbpass, $dbdb;
 	
-	if (pam_auth($name,$pass,&$error)) {
+	$exists = 0;
+	if ($admin_auser) {
+		if ($_network == 'kenyon') {
+			db_connect($supdbhost, $supdbuser, $supdbpass, $supdbdb);
+			if (db_num_rows(db_query("select * from people where email like '$name%' limit 1")))
+				$exists = 1;
+			db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+		} else $exists = 1;
+	}
+		
+	
+	if ($exists || pam_auth($name,$pass,&$error)) {
 		$x = array();
 		$x[user] = $name;
 		$x[pass] = $pass;

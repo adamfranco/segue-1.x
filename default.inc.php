@@ -28,11 +28,11 @@ if ($_loggedin) {
 	if ($atype=='stud') {
 		printc("<table width=100%>");
 		
-		//print out current classes
-		printc("<tr>");
-		printc("<td valign=top>");		
-		printc("<div class=title>Your Current Classes</div>");
 		if (count($classes)) {
+			//print out current classes
+			printc("<tr>");
+			printc("<td valign=top>");		
+			printc("<div class=title>Your Current Classes</div>");
 			//print class list
 			printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
 			$c=0;
@@ -58,16 +58,17 @@ if ($_loggedin) {
 					db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 			}
 			printc("</tr></table>");
-		} else
-			printc("You are not registered for any classes.");
-		printc("</td>");
-		printc("</tr>");
+			printc("</td>");
+			printc("</tr>");
+
+		}
 		
 		//print out student classes for previous semester
-		printc("<tr>");
-		printc("<td valign=top>");		
-		printc("<div class=title>Previous Semester</div>");
 		if (count($oldclasses)) {
+			printc("<tr>");
+			printc("<td valign=top>");		
+			printc("<div class=title>Previous Semester</div>");
+	//		print "debug: count(oldclasses) = ".count($oldclasses)."<BR>";//debug
 			//print class list
 			printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
 			$c=0;
@@ -92,9 +93,9 @@ if ($_loggedin) {
 					db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 			}
 			printc("<tr><td></td><td align=right>Show All Semesters</td></tr>");
-			printc("<tr></table>");
-		} else
-			printc("You do not have any previous classes.");
+			printc("</tr></table>");
+
+		}
 		printc("</td>");
 		printc("</tr>");
 		printc("</table>");
