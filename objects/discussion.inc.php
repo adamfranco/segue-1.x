@@ -291,7 +291,7 @@ class discussion {
 			".$this->_generateSQLdata();
 			
 		// If we've set a timestamp before saving, we probably want to keep it.
-		if ($this->tstamp) $query .= ",discussion_tstamp='".$this->tstamp."'";
+		//if ($this->tstamp) $query .= ",discussion_tstamp='".$this->tstamp."'";
 
 		db_query($query);
 		//printc($query);
@@ -337,6 +337,9 @@ class discussion {
 			$query .= ",discussion_rate=".$this->rating;
 		}
 		$query .= ",FK_story=".$this->storyid;
+		// If we've set a timestamp before saving, we probably want to keep it.
+		if ($this->tstamp) $query .= ",discussion_tstamp='".$this->tstamp."'";
+
 		//if ($this->order) $query .= $this->order;
 		return $query;
 	}
@@ -365,11 +368,15 @@ class discussion {
 					$this->_outputform('newpost');
 				} else {
 					$newpostbar='';
-					$newpostbar.="<tr><td align=right>";					
-					$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>new post</a>";
+					$newpostbar.="<tr><td align=right>";
+					if (!$_SESSION[auser] && $showposts != 1) {	
+						$newpostbar.="You must be logged in to do this assessment.";
+					} else {				
+						$newpostbar.="<a href='".$_SERVER['SCRIPT_NAME']."?$sid&".$this->getinfo."&action=site&discuss=newpost'>new post</a>";
+					}
 					$newpostbar.="</td></tr>";
-					printc ($newpostbar);
 				}
+				printc ($newpostbar);
 			}
 		}
 			if ($this->id) $this->_output($cr,$o);
@@ -520,7 +527,9 @@ class discussion {
 			$b = 'rate';
 			//$d = "<a name='".$this->id."'>You are editing your post &quot;".$this->subject."&quot;</a>";
 			$s = ($_REQUEST['subject'])?$_REQUEST['subject']:$this->subject;
-			$a .= "by <span class=subject>".$this->authorfname."</span>";
+			$a = "by <span class=subject>".$this->authorfname."</span>";
+			$a .= " posted on ";
+			$a .= timestamp2usdate($this->tstamp);
 			$c = ($_REQUEST['content'])?$_REQUEST['content']:$this->content;						
 		}
 				
@@ -540,11 +549,8 @@ class discussion {
 			printc ("<span class=subject><a name='".$this->id."'>");
 			printc ($s);
 			printc ("</a><input type=hidden name=subject value='".spchars($s)."'>");
-			//if ($o) {
-				printc (" (<input type=text size= 3 class='textfield small' name='rating' value=".$this->rating.">");
-				//printc ("<a href='#' onClick='document.postform.submit()'>[$b]</a>");
-				printc("<input type=submit class='button small' value='rate'>)");
-			//}
+			printc (" (<input type=text size= 3 class='textfield small' name='rating' value=".$this->rating.">");
+			printc("<input type=submit class='button small' value='rate'>)");
 			printc ("</span></td>");
 			
 			printc ("<td align=right></td>");
@@ -590,14 +596,14 @@ class discussion {
 		//added site variable for discussion logging
 		printc ("<input type=hidden name=site value='".$_REQUEST['site']."'>");	
 		printc ("<input type=hidden name=libraryfileid value='".$_REQUEST['libraryfileid']."'>");	
-		//printc ("<input type=hidden name=dis_order value='".$this->dis_order>."'");
+		printc ("<input type=hidden name=dis_order value='".$this->dis_order."'");
 		printc ("<input type=hidden name=commit value=1>");
 		if ($t=='edit' || $t=='rate') printc ("<input type=hidden name=id value=".$_REQUEST['id'].">");
 		if ($t=='reply') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">");
 		$site = $_REQUEST[site];
 		
 		//print file upload UI
-		if ($t != 'rate') {		
+		if ($t != 'rate'  && $_SESSION[auser]) {		
 			printc ("<br>Upload a File:<input type=text name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size=25 readonly><input type=button name='browsefiles' value='Browse...' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?site=$site&source=discuss&owner=$site_owner&editor=none\")' target='filebrowser' style='text-decoration: none'>");
 			if ($_SESSION['aid']) printc ("<br>You will be able to edit your post as long as no-one replies to it.");
 			else printc ("<br>Once submitted, you will not be able to modify your post.");
@@ -618,7 +624,7 @@ class discussion {
 		$parentAuthorId = db_get_value("discussion","FK_author","discussion_id='".$this->parentid."'");
 		//print $siteOwnerId;
 		//printc("author=".$parentAuthorId);
-		if ($showposts == 1 || $o == 1 || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId ) {
+		if ($showposts == 1 || $o == 1 || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId && $_SESSION[auser]) {
 			// check to see if we have any info to commit
 			$this->_commithttpdata();
 			
@@ -684,7 +690,7 @@ class discussion {
 				printc ("<tr><td align=left>");
 				printc ("<span class=subject>");
 				printc ($s);
-				if ($o) printc (" (Rating: ".$this->rating.")");
+				if ($this->rating) printc (" (Rating: ".$this->rating.")");
 				printc ("</span></td>");
 				printc ("<td align=right>$ratelink</td>");
 				printc ("</tr><tr>");

@@ -68,6 +68,8 @@ if ($_REQUEST[source]) {
 	$username = $_SESSION[auser];
 	if ($username == $owner) {
 		$userfilter = "";
+	} else if (!$user_id) {		
+		$userfilter = "AND user_id = 'anonymous'";
 	} else {
 		$userfilter = "AND user_id = $user_id";
 	}
@@ -424,6 +426,7 @@ function changePage(lolim) {
 					<input type=hidden name='order' value='<? echo $order ?>'> 
 					<input type=hidden name='editor' value='<? echo $editor ?>'> 
 					<input type=hidden name='source' value='<? echo $source ?>'> 
+					<input type=hidden name='owner' value='<? echo $owner ?>'> 
 					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
 					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {

@@ -160,7 +160,7 @@ if ($storyObj->getField("discuss")) {
 	printc("<option value='1'".(($order == 1)?" selected":"").">Recent First");
 	printc("<option value='2'".(($order == 2)?" selected":"").">Recent Last");
 	if ($_SESSION[auser]==$site_owner) {
-		printc("<option value='3'".(($order == 3)?" selected":"").">Highest Rating");
+		printc("<option value='3'".(($order == 3)?" selected":"").">Rating");
 		printc("<option value='4'".(($order == 4)?" selected":"").">Author");
 	}
 	printc("</select>");
