@@ -1,5 +1,17 @@
 <? // includes for Segue scripts
 
+if (!ini_get("register_globals")) {
+/* 	print "AAAAAAAAAAAAAH!!!<BR><BR>"; */
+/* 	print "<b>SUPER DUPER ERROR!</b><BR>"; */
+/* 	print "This script can only be run with <b>register_globals</b> turned <b>On</b> in the php configuration!<BR>"; */
+/* 	print "You must turn this on before anything will work correctly. Maybe someday we'll re-write it. Maybe."; */
+	// a workaround for register_globals = off
+//	print "Globals are <b>OFF</b>";
+	import_request_variables("gp");
+	foreach (array_keys($_SESSION) as $n) {$$n = $_SESSION[$n];}
+//	if ($_SESSION["settings"]) print_r($_SESSION["settings"]);
+}
+
 include("functions.inc.php");
 include("dbwrapper.inc.php");
 include("config.inc.php");

@@ -8,13 +8,6 @@ include("objects/objects.inc.php");
 ob_start();		// start the output buffer so we can use headers if needed
 session_start();// start the session manager :) -- important, as we just learned
 
-if (!ini_get("register_globals")) {
-	print "AAAAAAAAAAAAAH!!!<BR><BR>";
-	print "<b>SUPER DUPER ERROR!</b><BR>";
-	print "This script can only be run with <b>register_globals</b> turned <b>On</b> in the php configuration!<BR>";
-	print "You must turn this on before anything will work correctly. Maybe someday we'll re-write it. Maybe.";
-}
-
 /* if (!ini_get("register_globals")) { */
 /* 	if ($HTTP_POST_VARS) { */
 /* 		foreach ($HTTP_POST_VARS as $n=>$v) */
@@ -203,14 +196,6 @@ if (!$theme) {
 /* 	include("$themesdir/$theme/defaults.inc.php"); */
 
 
-// decode the arrays -- unneeded! (idiot me)
-/*
-$topnav = decode_array($topnav);
-$leftnav = decode_array($leftnav);
-$rightnav = decode_array($rightnav);
-*/
-
-
 //output a meta tag
 //print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
@@ -222,5 +207,11 @@ if ($themesettings) $themesettings = decode_array($themesettings);
 
 //output the HTML
 include("$themesdir/$theme/output.inc.php");
+
+// ------------------
+// if register_globals is off, we have to do some hacking to get things to work:
+if (!ini_get("register_globals")) {
+	foreach (array_keys($_SESSION) as $n) $_SESSION[$n] = $$n;
+}
 
 ?>

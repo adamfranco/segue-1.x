@@ -1,7 +1,9 @@
 <? // help handler
 
+if (!ini_get("register_globals")) $helptopic = $_GET["helptopic"];
+
 $file = "topics/$helptopic.inc.php";
-/* print $file; */
+//print $file;
 if (!file_exists($file))
 	$file = "topics/notfound.inc.php";
 
