@@ -6,7 +6,7 @@ ob_start();
 session_start(); 
  
 //output a meta tag 
-print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'; 
+print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
  
 // include all necessary files 
 include("includes.inc.php"); 
@@ -461,14 +461,22 @@ if (db_num_rows($r)) {
 		
 		$url = $uploadurl."/".$a[site_id]."/".rawurlencode($a[name]); 
 		if ($a[type] == 'image') { 
-			$img_path = $uploadurl."/".$a[site_id]."/".$a[name]; 
-			$thumb_size = get_sizes($url,'50');
+			$img_path = $uploaddir."/".$a[site_id]."/".$a[name];
+			$img_url = $url;
 		} else { 
 			$img_path = "images/file.gif";
-			$thumb_size = get_sizes($img_path,'50');
+			$img_url = $img_path;
 		}  
-//		$img_size = get_size($img_path); 
-		$img_size = get_size($url); 
+		if (file_exists($img_path)) {
+			$thumb_size = get_sizes($img_path,'50');
+			$img_size = get_size($img_path); 
+		} else {
+			$img_url = "images/nofile.gif";
+			$thumb_size = get_sizes($img_path);
+			$img_size = get_size($img_path); 
+		}
+		
+/* 		$img_size = get_size($url);  */
 		 
 		print "<tr>"; 
  
@@ -495,7 +503,7 @@ if (db_num_rows($r)) {
 				print "<a href=JavaScript:window.open('$url','imagewindow',config='width=$windowSize[x],height=$windowSize[y],resizeable=1,scrollbars=0');void('');>"; 
 			} else 
 				print "<a href='$url'>"; 
-			print "<img src='$img_path' height=$thumb_size[y] width=$thumb_size[x] border=0>"; 
+			print "<img src='$img_url' height=$thumb_size[y] width=$thumb_size[x] border=0>"; 
 			print "</a>"; 
 		print "</td>"; 
  
