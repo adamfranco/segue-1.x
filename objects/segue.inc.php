@@ -785,13 +785,17 @@ class segue {
  *		'or', and permission types: 'add','edit','delete','view','discuss'
  ******************************************************************************/
 
-	function hasPermission($perms,$ruser='') {
+	function hasPermission($perms,$ruser='',$useronly=0) {
 		global $allclasses, $_logged_in, $cfg;
 		
 		if (!$this->builtPermissions) $this->buildPermissionsArray();
 		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
+		
+		/* Debuging stuff */
+/* 		$class = get_class($this); */
+/* 		print "checking $perms for $user on  $class ".$this->id."<br>"; */
 		
 		if (isset($this->cachedPermissions[$user.$perms]) && count($this->chachedPermissions)) return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
@@ -820,9 +824,9 @@ class segue {
 		$permissions = $this->getPermissions();
 		$toCheck = array();
 		if (strlen($user)) $toCheck[] = strtolower($user);
-		$toCheck[] = "everyone";
-		if ($_logged_in) $toCheck[] = "institute";
-		else {
+		if (!$useronly) $toCheck[] = "everyone";
+		if (!$useronly && $_logged_in) $toCheck[] = "institute";
+		else if (!$useronly) {
 			// check if our IP is in inst_ips
 			$good=0;
 			$ip = $_SERVER[REMOTE_ADDR];
@@ -833,7 +837,9 @@ class segue {
 			}
 			if ($good) $toCheck[]="institute";
 		}
-		$toCheck = array_merge($this->returnEditorOverlap($allclasses),$toCheck);
+		if (!$useronly) $toCheck = array_merge($this->returnEditorOverlap($allclasses),$toCheck);
+		
+/* 		print "<pre>"; print_r($toCheck); print "</pre><br>"; */
 		
 		foreach ($permissions as $u=>$p) $permissions[strtolower($u)] = $p;
 		
@@ -859,20 +865,20 @@ class segue {
 		return $isgood;
 	}
 	
-	function hasPermissionDown($perms,$user='') {
+	function hasPermissionDown($perms,$user='',$useronly=0) {
 		if (!$this->fetcheddown) $this->fetchDown();
-		if ($this->hasPermission($perms,$user)) return true;
+		if ($this->hasPermission($perms,$user,$useronly)) return true;
 		$class = get_class($this);
 		$ar = $this->_object_arrays[$class];
 		if ($ar) {
 			$a = &$this->$ar;
 			if ($a) {
 				foreach ($a as $i=>$o) {
-					if($a[$i]->hasPermissionDown($perms,$user)) return true;
+					if($a[$i]->hasPermissionDown($perms,$user,$useronly)) return true;
 				}
 			}
 		}
-		return false;
+		return 0;
 	}
 	
 	function returnEditorOverlap($classes) {

@@ -26,7 +26,7 @@ if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 		$_SESSION[settings][viewpermissions] = "";
 	}
 	if ($_REQUEST[viewpermissions] == "class") {
-		print "viewpermissions: $viewpermissions <br>";
+		/* print "viewpermissions: $viewpermissions <br>"; */
 		if (!$_SESSION[siteObj]->isEditor($_SESSION[siteObj]->getField("name"))) {
 			print "not editor";
 			$_SESSION[siteObj]->addEditor($_SESSION[siteObj]->getField("name"));
