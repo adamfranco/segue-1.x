@@ -24,7 +24,7 @@ $getinfo = "site=".$site->name."&section=".$section->id."&page=".$page->id."&sto
 
 $story->fetchFromDB();
 $story->owningSiteObj->fetchFromDB();
-$site_owner=$story->owningSiteObj->getField("addedby");
+$site_owner=slot::getOwner($story->owningSiteObj->name);
 //print_r($story->owningSiteObj);
 //print $site_owner;
 

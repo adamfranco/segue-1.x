@@ -124,10 +124,11 @@ if ($_SESSION[settings][story]) $_REQUEST[story] = $_SESSION[settings][story];
 if ($_REQUEST[site]) {						// we are in a site
 	
 	$thisSite =& new site($_REQUEST[site]);
+	$thisSlot =& new slot($thisSite->name);
 	$thisSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_REQUEST[section],$_REQUEST[page]);
 //	$thisSite->buildPermissionsArray(1,1);
 	
-	$site_owner = $thisSite->getField("addedby");
+	$site_owner = $thisSlot->getField("owner");
 	if ($_REQUEST[theme]) $sid .= "&theme=$_REQUEST[theme]";
 	if ($_REQUEST[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&themesettings=$themesettings";}
 	if ($_REQUEST[nostatus]) $sid .= "&nostatus=1";

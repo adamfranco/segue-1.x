@@ -83,11 +83,8 @@ SELECT
 FROM
 	slot
 		INNER JOIN 
-	site
-		ON FK_site = site_id
-		INNER JOIN 
 	user
-		ON FK_createdby = user_id
+		ON FK_owner = user_id
 			AND
 		user_uname = '$user'
 ";
@@ -676,7 +673,7 @@ WHERE
 		if (!$this->builtPermissions && $this->id) $this->buildPermissionsArray();
 		if ($user=='') $user=$_SESSION[auser];
 		$this->fetchUp();
-		$owner = $this->owningSiteObj->getField("addedby");
+		$owner = slot::getOwner($this->owningSiteObj->name);
 /* 		print "owner: $owner"; */
 		if (strtolower($user) == strtolower($owner)) return 1;
 		$toCheck = array(strtolower($user));
@@ -1393,12 +1390,12 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 //		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
 //		print "<br>$scope - ".$this->getField("type");
 		$this->fetchUp();
-		if ($this->owningSiteObj->getField("addedby") == $user) return 1;
+		if (slot::getOwner($this->owningSiteObj->name) == $user) { return 1;}
 		if ($scope != 'story' && $this->getField("type") != 'heading') {
 			if (!$this->getField("active")) return 0;
 		}
 		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
-		if (!$noperms) return $this->hasPermissionDown("view",$user,0,1);
+		if (!$noperms) {return $this->hasPermissionDown("view",$user,0,1); }
 		return 1;
 	}
 
@@ -1428,7 +1425,8 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) 
 			return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
-		$owner = $this->owningSiteObj->getField('addedby');
+		$owner = slot::getOwner($this->owningSiteObj->name);
+		
 		if (strtolower($user) == strtolower($owner)) 
 			return true;
 			

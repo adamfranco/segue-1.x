@@ -67,6 +67,12 @@ class slot {
 		$this->site = 0;
 	}
 	
+	function getOwner($slot) {
+		$slot =& new slot($slot);
+		$owner = $slot->getField("owner");
+		return $owner;
+	}
+	
 	function exists($name,$checkldap=0) {
 		$query = "SELECT slot_id FROM slot WHERE slot_name='$name'";
 		if (db_num_rows(db_query($query)) > 0) return 1;

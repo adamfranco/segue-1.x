@@ -189,7 +189,7 @@ class page extends segue {
 	}
 	
 	function delete($deleteFromParent=0) {	// delete from db
-		print "<br><BR> Deleting Page<bR><BR>";
+//		print "<br><BR> Deleting Page<bR><BR>";
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
 			$parentObj =& new section($this->owning_site,$this->owning_section,&$this->owningSectionObj->owningSiteObj);

@@ -143,8 +143,10 @@ if ($_loggedin) {
 	
 	if ($allowpersonalsites) {
 		// print out the personal site
-		printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
-		printSiteLine($_SESSION[auser]);
+		if ($_SESSION[auser] == slot::getOwner($_SESSION['auser']) || !slot::exists($_SESSION['auser'])) {
+			printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
+			printSiteLine($_SESSION[auser]);
+		}
 	}
 	
 	if ($allowclasssites) {	       
@@ -204,13 +206,13 @@ if ($_loggedin) {
 	$sites = array();
 	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor());
 	foreach ($esites as $n=>$s) {
-		if (!in_array($n,$sitesprinted) && $s->hasPermissionDown("add or edit or delete",$_SESSION[auser],0,1) && $_SESSION[auser] != $s->getField("addedby")) {
+		if (!in_array($n,$sitesprinted) && $s->hasPermissionDown("add or edit or delete",$_SESSION[auser],0,1) && $_SESSION[auser] != slot::getOwner($s->name)) {
 			if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
 				array_push($sites,$n);
 			else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
 				array_push($sites,$n);
-/* 			else */
-/* 				array_push($sites,$n); */
+			else
+				array_push($sites,$n);
 		}
 	}
 	
@@ -338,7 +340,6 @@ if ($_loggedin) {
 
 function printOptions($siteArray) {
 	foreach ($siteArray as $n=>$site) {
-		$siteObj =& new site($site);
 		printc("<option value='$site'>$site\n");
 	}
 }
@@ -346,11 +347,12 @@ function printOptions($siteArray) {
 function allSitesSlots ($user,$existingSites) {
 	global $classes, $futureclasses;
 	$allsites = array();
-	$allsites[] = $user;
+	if ($user == slot::getOwner($user) || !slot::exists($user)) $allsites[] = $user;
 	$sitesOwnerOf = segue::getAllSites($user);
 	$slots = slot::getAllSlots($user);
 	$sitesEditorOf = array();
 	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor($user));
+
 	foreach ($esites as $o) {
 			if ($o->hasPermission("add and edit and delete",$user)) $sitesEditorOf[] = $o->name;
 	}
@@ -359,19 +361,22 @@ function allSitesSlots ($user,$existingSites) {
 		foreach ($classes as $n => $v) $allclasses[] = $n;
 		foreach ($futureclasses as $n => $v) $allclasses[] = $n;
 	}
+
 	$allsites = array_unique(array_merge($allsites,$allclasses,$sitesOwnerOf,$sitesEditorOf,$slots));
 	
 	$allGroups = group::getGroupsOwnedBy($user);
+
 	$sitesInGroups = array();
 	foreach ($allGroups as $n=>$g) {
 		$sitesInGroups = array_unique(array_merge($sitesInGroups,group::getClassesFromName($g)));
 	}
+
 	foreach ($allsites as $n=>$site) {
 		if (!in_array($site,$sitesInGroups)) $allsites2[] = $site;
 	}
 	$allsites = array_merge($allsites2,$allGroups);
 	asort($allsites);
-	
+
 /*	print "<pre>"; print_r($allclasses); print "</pre>"; */
 	if ($existingSites) {
 		$sites = array();
