@@ -126,9 +126,9 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 if ($_SESSION[settings][step] == 1 && !$dontCheckError) {
 	if ((!$_SESSION[siteObj]->getField("title") || $_SESSION[siteObj]->getField("title") == ''))
 		error("You must enter a site title.");
-	if ($_SESSION[ltype] == "admin" && $_SESSION[siteObj]->getField("name") == "")
+	if ($_SESSION[siteObj]->getField("name") == "")
 		error("You must enter a name for this site. Sites without names will be broken.");
-	if ($_SESSION[ltype] == "admin" && !ereg("^([0-9A-Za-z_-]*)$",$_SESSION[siteObj]->getField("name")))
+	if (!ereg("^([0-9A-Za-z_-]*)$",$_SESSION[siteObj]->getField("name")))
 		error("The site name you entered is invalid. It may only contain alphanumeric characters, '_' and '-'.");
 /* 	if ($error) $_SESSION[settings][step] = 1; */
 }

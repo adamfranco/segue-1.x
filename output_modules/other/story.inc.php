@@ -29,7 +29,7 @@ printc("<table cellspacing=0 cellpadding=0 width=100%><tr><td>");
 printc(stripslashes($st));
 
 if ($o->getField("discuss") || $o->getField("longertext")) {
-	$link = "index.php?$sid&action=site&site=$site&section=$section&page=$page&story=".$o->id."&detail=".$o->id;
+	$link = "index.php?$sid&action=$action&site=$site&section=$section&page=$page&story=".$o->id."&detail=".$o->id;
 	//$link = "<a href='$link' target='story' onClick='doWindow(\"story\",720,600)'>";
 	//$link = "<a href='$link'>";
 	if ($o->getField("longertext")) printc("<a href='".$link."'>"." ...more.</a>");

@@ -164,7 +164,7 @@ if ($storyObj->getField("discuss")) {
 	$site=$siteObj->name;
 	//printpre($_SESSION);
 	printc("<div style='font-size: 10px'>");
-	if ($_SESSION[auser]==$site_owner || $_SESSION[ltype]=="admin") {		
+	if ($_SESSION[auser]==$site_owner) {		
 		printc("<a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=list' onClick='doWindow(\"email\",700,500)' target='email'>List</a> | \n");
 		printc("<a href='email.php?$sid&storyid=$storyid&siteid=$siteid&site=$site&action=email' onClick='doWindow(\"email\",700,500)' target='email'>Email</a> - \n");
 		printc($numparticipants." participants");
