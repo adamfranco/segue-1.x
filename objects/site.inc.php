@@ -1,22 +1,14 @@
 <? // site object
 
 class site extends segue {
-	var $id;
-	var $data;
-	var $changed;
 	var $sections;
 	var $name;
-	var $fetched;
-	var $fetcheddown;
-	var $fetchedup;
 	
 	function site($name) {
-		$this->id = 0;
 		$this->name = $name;
-		$this->changed = 0;
+		$this->owning_site = $name;
 		$this->sections = array();
 		$this->data = array();
-		$this->fetched = $this->fetcheddown = $this->fetchedup = 0;
 		
 		// initialize the data array
 		$this->data[name] = $name;
@@ -30,6 +22,7 @@ class site extends segue {
 		$this->data[themesettings] = "";
 		$this->data[header] = "";
 		$this->data[footer] = "";
+		$this->data[sections] = array();
 	}
 	
 	function fetchFromDB() {
@@ -42,63 +35,42 @@ class site extends segue {
 		$query = "select * from sites where name='".$this->name."' limit 1";
 		$r = db_query($query);
 		$this->data = db_fetch_assoc($r);
-		$this->fetched = 1;
-//		$this->sections = unserialize(urldecode($this->data['sections']));
-		$this->id = $this->data['id'];
-		
-		// decode appropriate info
-		$this->data[header] = stripslashes(urldecode($this->data[header]));
-		$this->data[footer] = stripslashes(urldecode($this->data[footer]));
-		$this->parseMediaTextForEdit("header");
-		$this->parseMediaTextForEdit("footer");
-		$this->buildPermissionsArray();
-		return 1;
-	}
-	
-	function fetchData() {
-		if ($fetched) return $this->data;
-		else return 0;
-	}
-	
-	function setData($data) {
-		if (is_array($data)) {
-			$this->data = $data;
-			$this->changed = 1;
+		if (is_array($this->data)) {
+			$this->fetched = 1;
+	//		$this->sections = unserialize(urldecode($this->data['sections']));
+			$this->id = $this->data['id'];
+			
+			// decode appropriate info
+			$this->data[sections] = decode_array($this->data[sections]);
+			$this->data[header] = stripslashes(urldecode($this->data[header]));
+			$this->data[footer] = stripslashes(urldecode($this->data[footer]));
 			$this->parseMediaTextForEdit("header");
 			$this->parseMediaTextForEdit("footer");
+			$this->buildPermissionsArray();
+			return 1;
 		}
-	}
-	
-	function getField($name) {
-		return $this->data[$name];
-	}
-	
-	function setField($name,$value) {
-		$this->data[$name] = $value;
-		$this->changed = 1;
-		if ($name == "footer" || $name == "header") {
-			$this->parseMediaTextForEdit($name);
-		}
+		return false;
 	}
 	
 	function setSiteName($name) {
 		if ($this->fetched) { // we are trying to change the name of an existing site!! bad.
 			return 0;
 		}
-		$this->name = $name;
+		$this->name = $this->owning_site = $name;
 		$this->data[name] = $name;
 		$this->changed = 1;
 		return 1;
 	}
 	
 	function updateDB() {
-		if (!$this->changed) return 0;
-		$a = $this->createSQLArray();
-		$a[] = "editedby='$_SESSION[auser]'";
-		$a[] = "editedtimestamp=NOW()";
-		$query = "update sites set ".implode(",",$a)." where id=".$this->id." and name='".$this->name."'";
-		db_query($query);
-		
+		if ($this->changed) {
+			$a = $this->createSQLArray();
+			$a[] = "editedby='$_SESSION[auser]'";
+			$a[] = "editedtimestamp=NOW()";
+			$query = "update sites set ".implode(",",$a)." where id=".$this->id." and name='".$this->name."'";
+			db_query($query);
+		}
+				
 		// now update the permissions
 		$this->updatePermissionsDB();
 		return 1;
@@ -112,7 +84,26 @@ class site extends segue {
 		$query = "insert into sites set ".implode(",",$a);
 		print "<BR>query = $query<BR>";
 		db_query($query);
+		
+		// add new permissions entry.. force update
+		$this->updatePermissionsDB(1);
 		return 1;
+	}
+	
+	function addSection($id) {
+		if (!is_array($this->data[sections])) $this->data[sections] = array();
+		$this->data[sections][] = $id;
+		$this->changed = 1;
+	}
+	
+	function delSection($id) {
+		$d = array();
+		foreach ($this->data[sections] as $n)
+			if ($n != $id) $d[] = $n;
+		$this->data[sections] = $d;
+		$section = new section($this->name,$id);
+		$section->delete();
+		$this->changed = 1;
 	}
 	
 	function createSQLArray() {
@@ -133,9 +124,9 @@ class site extends segue {
 		$a[] = "themesettings='$d[themesettings]'";
 		$a[] = "editors='$d[editors]'";
 //		$a[] = "permissions='$d[permissions]'";
-		$a[] = "header='$d[header]'";
-		$a[] = "footer='$d[footer]'";
-		$a[] = "sections='$d[sections]'";
+		$a[] = "header='".urlencode($d[header])."'";
+		$a[] = "footer='".urlencode($d[footer])."'";
+		$a[] = "sections='".encode_array($d[sections])."'";
 		return $a;
 	}
 }

@@ -28,10 +28,12 @@ function submitForm() {
 }
 
 function delEditor(n) {
-	f = document.addform;
-	f.edaction.value = 'del';
-	f.edname.value = n;
-	document.forms["addform"].submit();
+	if (confirm('ALERT: Removing an editor will completely remove all their permissions from every part of your site! If you wish to revoke privileges for this part only, uncheck all the associated boxes instead of removing them. Continue if you are sure you want to remove all privileges for this user.')) {		
+		f = document.addform;
+		f.edaction.value = 'del';
+		f.edname.value = n;
+		document.forms["addform"].submit();
+	}
 }
 
 </script>

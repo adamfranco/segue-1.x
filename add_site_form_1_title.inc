@@ -50,10 +50,7 @@ printc("<div class=title>1. Title</div><br>");
 
 printc("Title: <input type=text size=35 name='title' value='".spchars($_SESSION[siteObj]->getField("title"))."'>");
 printc("<span class=editnote> *required</span>");
-printc("<br><br><br>");
-
-
-printc("<div class=title>2. Who do you want to be able to view this site?</div>");
+printc("<br><br>");
 
 /* ------------------------------------------------------------ */
 /* this will be replace by our new permissions system -- hence the comments */
@@ -67,7 +64,7 @@ else printc("<input type=hidden name='listed' value=1>");
 printc("<br><br><br>");
 
 
-printc("<div class=title>3. When is this site available?".helplink("daterange")." &nbsp; - &nbsp; <i>Optional</i></div>");
+printc("<div class=title>2. When is this site available?".helplink("daterange")." &nbsp; - &nbsp; <i>Optional</i></div>");
 //printc("<div class=desc>If you would like this site to be available only during a certain range of dates, enter them below and select the checkbox to the left of that date.</div>");
 
 printc("<table>");
@@ -109,7 +106,7 @@ printc("</select>");
 printc("</td></tr></table>");
 printc("<br>");
 
-printc("<div class=title>4. Hide my site".helplink("available")."</div>");
+printc("<div class=title>3. Hide my site".helplink("available")."</div>");
 //printc("<div class=desc>To prevent the site from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</b></div>");
 printc("<br>");
 

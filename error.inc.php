@@ -5,6 +5,7 @@
 $numerrs = 0;
 $errors = array();
 $error = 0;
+//$errorRevertStep = 0; // step to go back to when there's an error
 
 function printerr() {
  // this prints out all the errors stored in the error array

@@ -79,7 +79,7 @@ input {
 	<th>Username</th>
 </tr>
 <tr>
-	<td align=center><? if ($ltype=='admin') print "<input type=button name='use' value='add' onClick='addEditor(document.lookup.n.value)'>"; else print "&nbsp;";?></td>
+	<td align=center><? if ($_SESSION[ltype]=='admin') print "<input type=button name='use' value='add' onClick='addEditor(document.lookup.n.value)'>"; else print "&nbsp;";?></td>
 	<td>
 		Name: <input type=text name='n' size=20 value='<?echo $n?>'> 
 	</td>

@@ -79,75 +79,40 @@ if ($_loggedin) {
 
 //if (count($classes)) printc(implode(",",array_keys($classes)));
 
-
+/* --------------- eventually, this command will be gone... unneeded and handled by ADOdb */
 // connect to the database
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 // set up theme, header,footer and navlinks
-if ($site) {						// we are in a site
-	$siteinfo = db_get_line("sites","name='$site'");
-	$site_owner = $siteinfo[addedby];
-	if ($HTTP_GET_VARS[theme]) $sid .= "&theme=$theme";
-	if ($HTTP_GET_VARS[themesettings]) {$themesettings=urlencode(stripslashes($themesettings)); $sid.="&themesettings=$themesettings";}
-	if (!isset($theme)) $theme = $siteinfo[theme];
-	if (!isset($themesettings)) $themesettings = $siteinfo[themesettings];
+if ($_REQUEST[site]) {						// we are in a site
+	$thisSite = new site($_REQUEST[site]);
+	$thisSite->fetchFromDB();
+	$siteinfo = $thisSite->fetchData();
+	$site_owner = $thisSite->getField("addedby");
+	if ($_REQUEST[theme]) $sid .= "&theme=$_REQUEST[theme]";
+	if ($_REQUEST[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&themesettings=$themesettings";}
+	if (!isset($theme)) $theme = $thisSite->getField("theme");
+	if (!isset($themesettings)) $themesettings = $thisSite->getField("themesettings");
 
 	$siteheader = "<div align=center style='margin-bottom: 3px'>";
-	$st = stripslashes(urldecode($siteinfo[header]));
-	$st = str_replace("src='####","####",$st);
-	$st = str_replace("src=####","####",$st);
-	$st = str_replace("####'","####",$st);
-	$textarray1 = explode("####", $st);
-	if (count($textarray1) > 1) {
-		for ($i=1; $i<count($textarray1); $i=$i+2) {
-			$id = $textarray1[$i];
-			$filename = urldecode(db_get_value("media","name","id=$id"));
-			$userdir = db_get_value("media","site_id","id=$id");
-			$filepath = $uploadurl."/".$userdir."/".$filename;
-			$textarray1[$i] = "src='".$filepath."'";
-		}		
-		$st = implode("",$textarray1);
-	}
-	$siteheader .= $st;
+	$siteheader .= $thisSite->getField("header");
 	$siteheader .= "</div>";
 
 	$sitefooter = "<center>";
-	$st = stripslashes(urldecode($siteinfo[footer]));
-	$st = str_replace("src='####","####",$st);
-	$st = str_replace("src=####","####",$st);
-	$st = str_replace("####'","####",$st);
-	$textarray1 = explode("####", $st);
-	if (count($textarray1) > 1) {
-		for ($i=1; $i<count($textarray1); $i=$i+2) {
-			$id = $textarray1[$i];
-			$filename = urldecode(db_get_value("media","name","id=$id"));
-			$userdir = db_get_value("media","site_id","id=$id");
-			$filepath = $uploadurl."/".$userdir."/".$filename;
-			$textarray1[$i] = "src='".$filepath."'";
-		}		
-		$st = implode("",$textarray1);
-	}
-	$sitefooter .= $st;
+	$sitefooter .= $thisSite->getField("footer");
 	$sitefooter .= "</center>";
 }
 
+// compatibility:
+if (isset($_REQUEST[action])) $action = $_REQUEST[action];
 
 // if we don't already have content (probably login error messages), then output some shite
 if (!$loginerror) {
-	// debug -- make sure we're logged in :)
-/* 	print "You are logged in using $luser" . (($ltype=='admin' && $luser != $auser)?", acting as $auser":"").". Your email is $lemail.<BR><BR>"; */
-/* 	if ($ltype == 'admin') { */
-/* 		print "<form action='$PHP_SELF?$sid' method=post>"; */
-/* 		print "<input type=hidden name=action value='change_auser'>"; */
-/* 		print "Change active user: <input type=text name='name' size=15> <input type=submit value=Go>"; */
-/* 		print "</form>"; */
-/* 	} */
-	
-	$try = "$action.$ltype.inc.php";			// first try a ltype-specific action file
+	$try = "$_REQUEST[action].$_SESSION[ltype].inc.php";			// first try a ltype-specific action file
 	if (file_exists($try)) {					// yes, indeed
 		include($try);
 	} else {
-		$try = "$action.inc.php";				// try a general one
+		$try = "$_REQUEST[action].inc.php";				// try a general one
 		if (file_exists($try)) include($try);
 		else include("no_action.inc.php");		// action not implemented yet or doesn't exist :(
 	}
@@ -161,25 +126,32 @@ printerr();
 
 $t = $action;
 if ($t != 'site') $t = 'viewsite';
-if ($section) {
-	$sectioninfo = db_get_line("sections","id=$section");
-	$sn = " > <a href='$PHP_SELF?$sid&action=$t&site=$site&section=$section'>$sectioninfo[title]</a>";
+if ($_REQEUST[section]) {
+	$thisSection = new section($thisSite->getField("name"),$_REQUEST[section]);
+	$thisSection->fetchFromDB();
+	$sectioninfo = $thisSection->fetchData();
+	$sn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]'>".$thisSection->getField("title")."</a>";
 }
-if ($page) {		// we're viewing a page
+if ($_REQUEST[page]) {		// we're viewing a page
+//	$thisPage = new page($thisSite->getField("name"),$thisSection->id,$_REQUEST[page];
+//	$thisPage->fetchFromDB();
+//	$pageinfo = $thisPage->fetchData();
 	$pageinfo = db_get_line("pages","id=$page");
-	$pn = " > <a href='$PHP_SELF?$sid&action=$t&site=$site&section=$section&page=$page'>$pageinfo[title]</a>";
+	$pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$site&section=$section&page=$page'>$pageinfo[title]</a>";
 }
-if ($site)
-	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$site'>$siteinfo[title]</a>";
-	$title = "$siteinfo[title]";
+if ($_REQUEST[site])
+	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]'>".$thisSite->getField("title")."</a>";
+	$title = $thisSite->getField("title");
 $nav .= $sn.$pn;
-if ($nav)
+if ($nav) {
 	//$siteheader = $siteheader . "<div align=left style='margin-bottom: 5px; margin-left: 10px'>$nav</div>";
 	$sitecrumbs = "<div align=left style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
+}
 
 // Load non-pervasive theme for "program" actions
 // the theme and settings are defined in the config.inc.php
-if (!$pervasivethemes && ($action == "edit_site" || $action == "add_site" || $action == "add_section" || $action == "edit_section" || $action == "add_page" || $action == "edit_page" || $action == "add_story" || $action == "edit_story")) {
+$pervasiveActions = array("edit_site","add_site","add_section","edit_section","add_page","edit_page","add_story","edit_story");
+if (!$pervasivethemes && in_array($action,$pervasiveActions)) {
 	$theme = $programtheme;
 	$themesettings = $programthemesettings;
 }
@@ -189,8 +161,6 @@ if (!$theme) {
 	$theme = $defaulttheme;
 	$themesettings = $defaultthemesettings;
 }
-
-// get theme default settings
 
 /* if (file_exists("$themesdir/$theme/defaults.inc.php")) */
 /* 	include("$themesdir/$theme/defaults.inc.php"); */
@@ -214,8 +184,14 @@ if (!ini_get("register_globals")) {
 	foreach (array_keys($_SESSION) as $n) { if ($n != "settings" && $n != "siteObj") $_SESSION[$n] = $$n; }
 }
 
+
+// debug output -- handy :)
+print "<pre>";
+print "session:\n";
 print_r($_SESSION);
-print "<BR><BR>";
+print "\n\n";
+print "request:\n";
 print_r($_REQUEST);
+print "</pre>";
 
 ?>

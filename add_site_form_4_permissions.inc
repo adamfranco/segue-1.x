@@ -31,61 +31,9 @@ printc("<div class=title>".(($_SESSION[settings][edit])?"5":"6").". Editing Perm
 printc("<div class=desc>In this section you can designate people for whom you may later give section-level or page-level editing access.</div>");
 
 // --- form contents ---
-printc("<input type=hidden name=edaction value=''>");
-printc("<input type=hidden name=editors value='$_SESSION[settings][editors]'>");
-printc("<input type=hidden name=edname value=''>");
 
-if (isclass($_SESSION[siteObj]->getField("name"))) {
-	?>
-	<script lang='javascript'>
-	function addClassEditor() {
-		f = document.addform;
-		f.edaction.value='add';
-		f.edname.value='<?echo $_SESSION[siteObj]->getField("name")?>';
-		f.submit();
-	}
-	</script>
-	<?
-}
+permissions::outputForm($_SESSION[siteObj]);
 
-// output permissions table
-printc("<style type='text/css'>th, .td0, .td1 {font-size: 10px;}</style>");
-printc("<table width=100% style='border: 1px solid gray'>");
-printc("<tr><th rowspan=2>Copy Down<br>Permissions</th><th width=50%>name</th><th colspan=3 width=30%>permissions</th><th>del</th></tr>");
-printc("<tr><th>&nbsp;</th><th>add</th><th>edit</th><th>delete</th><th>&nbsp;</th></tr>");
-if (($edlist = $_SESSION[siteObj]->getEditors())) {
-/* 	$edlist = array(); */
-/* 	foreach (explode(",",$_SESSION[settings][editors]) as $n) { */
-/* 		array_push($edlist, trim($n)); */
-/* 	} */
-/* 	$edlist = explode(",",$_SESSION[settings][editors]); */
-/* 	$editorsa = implode(",",$edlist); */
-	$permissions = $_SESSION[siteObj]->getPermissions();
-	if (count($edlist)) {
-		$color = 0;
-		foreach ($edlist as $e) {
-			printc("<tr><td class=td$color align=center>");
-			/*if ($_SESSION[settings][edit])*/ printc("<input type=checkbox name='copydownpermissions[]' value='$e' ".(($_SESSION[settings][copydownpermissions] && in_array($e,$_SESSION[settings][copydownpermissions]))?" checked":"")."></td><td class=td$color>");
-			printc(ldapfname($e)." ($e)</td>");
-			
-			for ($i = 0; $i<3; $i++) {
-				printc("<td class=td$color align=center>");
-				printc("<input type=checkbox name='permissions[$e][$i]' value=1".(($permissions[$e][$i])?" checked":"").">");
-				printc("</td>");
-			}
-			printc("</td>");
-			printc("<td class=td$color align=center>");
-			printc("<a href='#' onClick='delEditor(\"$e\");'>remove</a>");
-			printc("</td></tr>");
-			$color = 1-$color;
-		}
-		
-	}
-} else printc("<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=5>no editors added</td></tr>");
-printc("<tr><th colspan=5>".((isclass($_SESSION[siteObj]->getField("sitename")))?"<a href='#' onClick='addClassEditor();'>Add students in ".$_SESSION[siteObj]->getField("sitename")."</a>":"&nbsp;")."</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
-printc("</table>");
-
-if ($_SESSION[settings][edit]) printc("<a href='editor_access.php?$sid&site=".$_SESSION[siteObj]->getField("sitename")."' onClick='doWindow(\"permissions\",600,400)' target='permissions'>Permissions as of last save</a>");
 
 printc("<br><br><div class=desc>By checking \"Add\", \"Edit\", or \"Delete\" on here, you give the editor site-level permissions. Site-level permissions allow the Editor to either Add, Edit (includes changing the order of), or Delete sections of the site. Editors with permissions specified here will not have section-level or page-level permissions unless the \"Copy Down Permissions\" box is checked.</div>");
 

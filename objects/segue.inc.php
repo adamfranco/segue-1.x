@@ -1,16 +1,57 @@
 <? // segue common functions for sites, sections, pages, stories
 
 class segue {
-	var $permissions = array();
-	var $editors = array();
+	var $permissions = array("everyone"=>array(3=>1),"institute"=>array(3=>1));
+	var $editors = array("everyone","institute");
+	var $editorsToDelete = array();
 	var $changedpermissions = 0;
+	
+	var $id = 0;
+	var $data;
+	var $changed = 0;
+	
+	var $fetched = 0;
+	var $fetcheddown = 0;
+	var $fetchedup = 0;
+	
+	var $owning_site; var $owningSiteObj;		// used by all types (including site for compatibility)
+	var $owning_section; var $owningSectionObj;	// only used for pages and stories
+	var $owning_page; var $owningPageObj;		// only used for stories
+	
+	function fetchData() {
+		if ($fetched) return $this->data;
+		else return 0;
+	}
+	
+	function setData($data) {
+		if (is_array($data)) {
+			$this->data = $data;
+			$this->changed = 1;
+			$this->parseMediaTextForEdit("header");
+			$this->parseMediaTextForEdit("footer");
+		}
+	}
+
+	function getField($name) {
+		return $this->data[$name];
+	}
+	
+	function setField($name,$value) {
+		$this->data[$name] = $value;
+		$this->changed = 1;
+		if ($name == "footer" || $name == "header") {
+			$this->parseMediaTextForEdit($name);
+		}
+	}
 	
 	function addEditor($e) { 
 		if ($e == 'institute' || $e == 'everyone') return false;
 		if ($_SESSION[auser] == $e) { error("You do not need to add yourself as an editor."); return false; }
 		if (!in_array($e,$this->editors)) {
 			$this->editors[]=$e;
-			$this->changedpermissions = 1;
+			$this->setUserPermissions($e);
+/* 			print_r($this->permissions); */
+			unset($_REQUEST[permissions]);
 		}
 	}
 
@@ -22,6 +63,8 @@ class segue {
 				if ($v != $e) $n[]=$v;
 			}
 			$this->editors = $n;
+			unset($this->permissions[$e]);
+			$this->editorsToDelete[] = $e;
 			
 			// remove any pertinent entries from the permissions table
 			// to be added later -- not sure exactly how to handle this yet.
@@ -41,13 +84,15 @@ class segue {
 		}
 	}
 	
-	function setUserPermissions($user,$add,$edit,$del,$view,$discuss) {
+	function setUserPermissions($user,$add=0,$edit=0,$del=0,$view=1,$discuss=0) {
 		$this->setUserPermissionsFromArray($user,array(ADD=>$add,EDIT=>$edit,DELETE=>$del,VIEW=>$view,DISCUSS=>$discuss));
 	}
 	
 	function setUserPermissionsFromArray($user,$p) {
 		$this->permissions[$user] = $p;
 		$this->changedpermissions = 1;
+/* 		print "Setting permissions from array for $user:<BR><BR>"; */
+/* 		print_r($p); */
 	}
 	
 	function getPermissions() {
@@ -58,13 +103,16 @@ class segue {
 	function buildPermissionsArray() {
 		// builds the permissions array from the database
 		$scope = get_class($this);
-		if ($scope == 'site') $site = $this->name;
-		else $site = $this->owning_site;
+		$site = $this->owning_site;
 		$id = $this->id;
 		$query = "select * from permissions where site='$site' and scope='$scope' and scopeid='$id'";
 		$r = db_query($query);
 		while ($a=db_fetch_assoc($r)) {
-			$this->permissions[$a[user]] = array( ADD=>$a[a], EDIT=>$a[e], DELETE=>$a[d], VIEW=>$a[v], DISCUSS=>$a[di]);
+			$this->permissions[$a[user]] = array( permissions::ADD()=>$a[a], 
+												permissions::EDIT()=>$a[e], 
+												permissions::DELETE()=>$a[d], 
+												permissions::VIEW()=>$a[v], 
+												permissions::DISCUSS()=>$a[di]);
 		}
 		// build editors array
 		$query = "select * from permissions where site='$site'";
@@ -73,14 +121,23 @@ class segue {
 		while ($a=db_fetch_assoc($r)) {
 			$this->editors[]=$a[user];
 		}
+		if (!in_array("everyone",$this->editors)) {
+			$this->editors[] = "everyone";
+			$this->setUserPermissions("everyone",0,0,0,1,0);
+			$this->changedpermissions = 1;
+		}
+		if (!in_array("institute",$this->editors)) {
+			$this->editors[] = "institute";
+			$this->setUserPermissions("institute",0,0,0,1,0);
+			$this->changedpermissions = 1;
+		}
 	}
 
-	function updatePermissionsDB() {
-		if ($this->changedpermissions) {
+	function updatePermissionsDB($force=0) {
+		if ($this->changedpermissions || $force) {
 			$scope = get_class($this);
 			$id = $this->id;
-			if ($scope == 'site') $site = $this->name;
-			else $site = $this->owning_site;
+			$site = $this->owning_site;
 
 			// build a quickie array
 			$a = array();
@@ -88,15 +145,18 @@ class segue {
 			$a[] = "scope='$scope'";
 			$a[] = "scopeid=$id";
 			
-			foreach ($this->permissions as $user=>$p) {
+			$n = array_unique(array_merge($this->editors,array_keys($this->permissions)));
+			
+			foreach ($n as $user) {
+				$p = $this->permissions[$user];
 				$a2 = $a;
 				$a2[] = "user='$user'";
 				$a3 = array();
-				$a3[] = "a=".(($p[ADD])?'1':'0');
-				$a3[] = "e=".(($p[EDIT])?'1':'0');
-				$a3[] = "d=".(($p[DELETE])?'1':'0');
-				$a3[] = "v=".(($p[VIEW])?'1':'0');
-				$a3[] = "di=".(($p[DISCUSS])?'1':'0');
+				$a3[] = "a=".(($p[ADD])?"'1'":"'0'");
+				$a3[] = "e=".(($p[EDIT])?"'1'":"'0'");
+				$a3[] = "d=".(($p[DELETE])?"'1'":"'0'");
+				$a3[] = "v=".(($p[VIEW])?"'1'":"'0'");
+				$a3[] = "di=".(($p[DISCUSS])?"'1'":"'0'");
 				if (db_get_line("permissions",implode(" and ",$a2))) {
 					$query = "update permissions set ".implode(",",$a3)." where ".implode(" and ",$a2);
 				} else {
@@ -104,6 +164,10 @@ class segue {
 				}
 				print "$query<BR><BR>";
 				db_query($query);
+			}
+			// delete the appropriate entries from the table
+			foreach ($this->editorsToDelete as $e) {
+				db_query("delete from permissions where user='$e' and site='$site'");
 			}
 		}
 	}
@@ -129,6 +193,7 @@ class segue {
 	}
 	
 	function parseMediaTextForEdit($field) {
+		if (!$this->data[$field]) return false;
 		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->data[$field]);
 		$textarray1 = explode("####", $this->data[$field]);
 		if (count($textarray1) > 1) {
@@ -144,6 +209,7 @@ class segue {
 	}
 	
 	function parseMediaTextForDB($field) {
+		if (!$this->data[$field]) return false;
 		$textarray1 = explode("&&&&", $this->data[$field]);
 		if (count($textarray1) > 1) {
 			for ($i=1; $i<count($textarray1); $i=$i+2) {

@@ -3,47 +3,21 @@
 if (isset($_SESSION[settings]) && isset($_SESSION[siteObj])) {
 	// if we have already started editing...
 
-	// ---- Editor actions ----
-	if ($edaction == 'add') {
-/* 		if ($settings[editors]) */
-/* 			$edlist = explode(",",$settings[editors]); */
-/* 		else $edlist = array(); */
-/* 		if (!in_array($edname,$edlist) && $edname != $auser) $edlist[]=$edname; */
-/* 		$editors = implode(",",$edlist); */
-/* 		if ($edname == $auser) error("You do not need to add yourself as an editor."); */
-		
-		// eventually -- something like $_SESSION[siteObj]->addEditor($edname)
-		// same for below
-		$_SESSION[siteObj]->addEditor($edname);
-	}
-	
-	if ($edaction == 'del') {
-/* 		if ($settings[editors]) */
-/* 			$edlist = explode(",",$settings[editors]); */
-/* 		else $edlist = array(); */
-/* 		$nlist = array(); */
-/* 		foreach ($edlist as $e) { */
-/* 			if ($e != $edname) $nlist[]=$e; */
-/* 		} */
-/* 		$editors = implode(",",$nlist); */
-
-		$_SESSION[siteObj]->delEditor($edname);
-	}
-
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($settings[step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) { $_SESSION[settings][activatedate] = $_REQUEST[activatedate]; $_SESSION[settings][deactivatedate] = $_REQUEST[deactivatedate]; }
 	if ($_REQUEST[sitename] != ""  && $_SESSION[ltype] == "admin") { $_SESSION[siteObj]->setSiteName($_REQUEST[sitename]); $_SESSION[settings][sitename] = $_REQUEST[sitename]; }
 	if ($_REQUEST[type] && $_SESSION[ltype]=='admin') $_SESSION[siteObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1 && $_REQUEST[title] != "") $_SESSION[siteObj]->setField("title",$_REQUEST[title]);
 	if ($_REQUEST[activateyear] != "") $_SESSION[settings][activateyear] = $_REQUEST[activateyear];
 	if ($_REQUEST[activatemonth] != "") $_SESSION[settings][activatemonth] = $_REQUEST[activatemonth];
 	if ($_REQUEST[activateday] != "") $_SESSION[settings][activateday] = $_REQUEST[activateday];
-	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link] && $_SESSION[settings][activatedate]) $_SESSION[siteObj]->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth],$_REQUEST[activateday]);
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link] && $_SESSION[settings][activatedate]) $_SESSION[siteObj]->setActivateDate($_REQUEST[activateyear],$_REQUEST[activatemonth]+1,$_REQUEST[activateday]);
 	if ($_REQUEST[deactivateyear] != "") $_SESSION[settings][deactivateyear] = $_REQUEST[deactivateyear];
 	if ($_REQUEST[deactivatemonth] != "") $_SESSION[settings][deactivatemonth] = $_REQUEST[deactivatemonth];
 	if ($_REQUEST[deactivateday] != "") $_SESSION[settings][deactivateday] = $_REQUEST[deactivateday];
-	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link] && $_SESSION[settings][deactivatedate]) $_SESSION[siteObj]->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth],$_REQUEST[deactivateday]);
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link] && $_SESSION[settings][deactivatedate]) $_SESSION[siteObj]->setDeactivateDate($_REQUEST[deactivateyear],$_REQUEST[deactivatemonth]+1,$_REQUEST[deactivateday]);
 	if ($_REQUEST[active] != "") $_SESSION[siteObj]->setField("active",$_REQUEST[active]);
 //	if ($_REQUEST[viewpermissions] != "") $_SESSION[settings][viewpermissions] = $_REQUEST[viewpermissions];
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[siteObj]->setField("listed",$_REQUEST[listed]);
@@ -101,8 +75,8 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		list($_SESSION[settings][deactivateyear],$_SESSION[settings][deactivatemonth],$_SESSION[settings][deactivateday]) = explode("-",$_SESSION[siteObj]->getField("deactivatedate"));
 		$_SESSION[settings][activatemonth]-=1;
 		$_SESSION[settings][deactivatemonth]-=1;
-//		$_SESSION[settings][activatedate]=($_SESSION[settings][activatedate]=='0000-00-00')?0:1;
-//		$_SESSION[settings][deactivatedate]=($_SESSION[settings][deactivatedate]=='0000-00-00')?0:1;
+		$_SESSION[settings][activatedate]=($_SESSION[siteObj]->getField("activatedate")=='0000-00-00')?0:1;
+		$_SESSION[settings][deactivatedate]=($_SESSION[siteObj]->getField("deactivatedate")=='0000-00-00')?0:1;
 /* ---------------------------------------------------- */
 /*  uncomment this line when permissions are set and done */
 //		$_SESSION[settings][permissions] = $_SESSION[siteObj]->buildPermissionsArray();
@@ -111,37 +85,27 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 	}
 }
 
-if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] - 1;
-if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] + 1; 
-if ($_REQUEST[step] != "") $_SESSION[settings][step] = $_REQUEST[step];
-
-
 /* ---------------------------------------------------------------------------------------------*/
 /*						ERROR CHECKING															*/
-if ($_SESSION[settings][step] != 1) {
+if ($_SESSION[settings][step] == 1) {
 	if ((!$_SESSION[siteObj]->getField("title") || $_SESSION[siteObj]->getField("title") == ''))
 		error("You must enter a site title.");
 	if ($_SESSION[ltype] == "admin" && $_SESSION[siteObj]->getField("name") == "")
 		error("You must enter a name for this site. Sites without names will be broken.");
 	if ($_SESSION[ltype] == "admin" && !ereg("^([0-9A-Za-z_-]*)$",$_SESSION[siteObj]->getField("name")))
 		error("The site name you entered is invalid. It may only contain alphanumeric characters, '_' and '-'.");
-	if ($error) $_SESSION[settings][step] = 1;
+/* 	if ($error) $_SESSION[settings][step] = 1; */
 }
+
+if (!$error) {
+	if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] - 1;
+	if ($_REQUEST[nextbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] + 1; 
+}
+if ($_REQUEST[step] != "") $_SESSION[settings][step] = $_REQUEST[step];
 
 
 if ($_SESSION[settings][add]) $pagetitle="Add Site";
 if ($_SESSION[settings][edit]) $pagetitle="Edit Site";
-
-/*
-// ---  variables for debugging ---
-$variables = "<br><br>active = $active<br>";
-$variables .= "action = $action <br> auser = $auser <br> settings = $settings";
-foreach ($settings as $n => $v) {
-	$variables .= "$n = $v <br>";	
-}
-add_link(leftnav,'','',"$variables");
-//------------------------------------
-*/
 
 if (!sitenamevalid($_SESSION[siteObj]->getField("name"))) {// check if the site name is valid
 	error("You are not allowed to edit this site. Nice try.");
@@ -151,8 +115,7 @@ if ($_REQUEST[cancel]) {
 	$commingFrom = $_SESSION[settings][commingFrom];
 	$site = $_SESSION[siteObj]->getField("name");
 	if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("siteObj"); }
-	unset($_SESSION["settings"]);
-	unset($_SESSION["siteObj"]);
+	unset($_SESSION[siteObj],$_SESSION[setting]);
 	if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$site");
 	else header("Location: index.php?$sid");
 }
@@ -161,7 +124,7 @@ if ($_REQUEST[cancel]) {
 if ($_REQUEST[save]) {
 	if (!$error) { // save it to the database
 		
-		print "<BR><BR>$_SESSION[settings][sitename]<BR><BR>";
+		print "<BR><BR>".$_SESSION[settings][sitename]."<BR><BR>";
 		if ($_SESSION[settings][add]) $_SESSION[siteObj]->insertDB();
 		if ($_SESSION[settings][edit]) $_SESSION[siteObj]->updateDB();
 		
@@ -240,11 +203,11 @@ if ($_REQUEST[save]) {
 		
 		$sitename = $_SESSION[siteObj]->getField("name");
 		$commingFrom = $_SESSION[settings][commingFrom];
+		$add = $_SESSION[settings][add];
 		if (ini_get("register_globals")) { session_unregister("settings"); session_unregister("siteObj"); }
-		unset($_SESSION["settings"]);
-		unset($_SESSION["siteObj"]);
-		
-		if ($_SESSION[settings][add]) {
+		unset($_SESSION[siteObj],$_SESSION[setting]);
+
+		if ($add) {
 			header("Location: index.php?$sid&action=viewsite&site=$sitename");
 		} else {
 			if ($commingFrom) header("Location: index.php?$sid&action=$commingFrom&site=$sitename");
@@ -266,42 +229,42 @@ $leftlinks = "________________<br><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "<span class=editnote>&rArr;</span>";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$_SESSION[settings][sitename]&step=1&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 1) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=1&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Title & Availability";
 if ($_SESSION[settings][step] != 1 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 2) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$_SESSION[settings][sitename]&step=2&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 2) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=2&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Appearance";
 if ($_SESSION[settings][step] != 2 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 if ($_SESSION[settings][add]) $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 3 && $_SESSION[settings][add]) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$_SESSION[settings][sitename]&step=3&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 3) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=3&link=1 onClick=\"submitForm()\">";
 if ($_SESSION[settings][add]) $leftlinks .= "Template";
 if ($_SESSION[settings][step] != 3 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 4) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$_SESSION[settings][sitename]&step=4&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 4) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=4&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Editing Permissions";
 if ($_SESSION[settings][step] != 4 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 5) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$_SESSION[settings][sitename]&step=5&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 5) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=5&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Custom Header";
 if ($_SESSION[settings][step] != 5 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 
 $leftlinks .= "</td></tr><tr><td>";
 if ($_SESSION[settings][step] == 6) $leftlinks .= "<span class=editnote>&rArr;</span> ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 6) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=$_SESSION[settings][sitename]&step=6&link=1 onClick=\"submitForm()\">";
+if ($_SESSION[settings][edit] && $_SESSION[settings][step] != 6) $leftlinks .= "<a href=$PHP_SELF?$sid&action=edit_site&sitename=".$_SESSION[siteObj]->getField("name")."&step=6&link=1 onClick=\"submitForm()\">";
 $leftlinks .= "Custom Footer";
 if ($_SESSION[settings][step] != 6 && $_SESSION[settings][edit]) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr></table>________________<br><a href=$PHP_SELF?$sid&action=add_site&cancel=1>Cancel</a>";
@@ -327,15 +290,4 @@ if ($_SESSION[settings][step] == 6) {
 	include("add_site_form_6_footer.inc");	
 }
 
-
-
-
-// ---  variables for debugging ---
-/* $variables = "<br>"; */
-/* $variables .= "action = $action <br> auser = $auser <br> settings = $settings<br>"; */
-/* foreach ($settings as $n =>$v) { */
-/* 	$variables .= "$n = $v <br>"; */
-/* } */
-//printc("$variables");
-//------------------------------------
 
