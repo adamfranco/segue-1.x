@@ -5,9 +5,12 @@ session_start();
 ob_start();
 
 require("includes.inc.php");
+global $dbuser, $dbpass, $dbdb, $dbhost;
+db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 
 $add = $_REQUEST[add];
 $name = $_REQUEST[name];
+$stype = $_REQUEST[stype];
 $owner = $_REQUEST[owner];
 $assocsite = $_REQUEST[assocsite];
 $delete = $_REQUEST[delete];
@@ -19,7 +22,7 @@ if ($add) {
 	
 	
 	if (!$error) {
-		$slotObj = new slot($name,$owner,$type,$assocsite);
+		$slotObj = new slot($name,$owner,$stype,$assocsite);
 		$successful = $slotObj->insertDB();
 		if ($successful) {
 			$name = "";
@@ -112,11 +115,12 @@ input,select {
 <tr>
 <td valign=top>Type:</td>
 <td>
-<input type=radio name="type" value="class"<? print (($type == 'class' || !isset($type))?" checked":""); ?>> Class
-<br><input type=radio name="type" value="personal"<? print (($type == 'personal')?" checked":""); ?>> Personal
-<br><input type=radio name="type" value="other"<? print (($type == 'other')?" checked":""); ?>> Other
-<br><input type=radio name="type" value="system"<? print (($type == 'system')?" checked":""); ?>> System
-<br><input type=radio name="type" value="publication"<? print (($type == 'publication')?" checked":""); ?>> Publication
+<? print $stype."<br>"; ?>
+<input type=radio name="stype" value="class"<? print (($stype == 'class' || !isset($stype))?" checked":""); ?>> Class
+<br><input type=radio name="stype" value="personal"<? print (($stype == 'personal')?" checked":""); ?>> Personal
+<br><input type=radio name="stype" value="other"<? print (($stype == 'other')?" checked":""); ?>> Other
+<br><input type=radio name="stype" value="system"<? print (($stype == 'system')?" checked":""); ?>> System
+<br><input type=radio name="stype" value="publication"<? print (($stype == 'publication')?" checked":""); ?>> Publication
 </td>
 </tr>
 <tr>
