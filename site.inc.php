@@ -152,5 +152,8 @@ if ($thisSite->isEditor() && !$_REQUEST[themepreview]) {
 	if ($section) $u .= "&section=$section";
 	if ($page) $u .= "&page=$page";
 	$text .= "<br> <div align=right><input type=submit class='button' value='edit this site' onClick=\"window.location='$u&$sid'\"></div>";
-	$sitefooter = $sitefooter . $text;
+} else {
+	$text = "";
 }
+$text .= "<br><div align=right><img src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></div>";
+$sitefooter = $sitefooter . $text;

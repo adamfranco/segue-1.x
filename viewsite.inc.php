@@ -212,32 +212,32 @@ if ($section) $u .= "&section=$section";
 if ($page) $u .= "&page=$page";
 if ($supplement) $u .="&supplement=$supplement";
 
-$text .= "<br><div align=right><table style='border-top: 1px solid #000; border-left: 1px solid #000; border-bottom: 2px solid #000; border-right: 2px solid #000;'><tr>";
+$text .= "<br><div align=right><table style='border-top: 1px solid #555; border-left: 1px solid #555; border-bottom: 2px solid #555; border-right: 2px solid #555; background-color: #ddd;'><tr>";
 $text .= "<td valign=top align=left>";
 
 if ($thisSite->hasPermission("edit")) 
-$text .= "<input type=button class='button' value='Edit Site Settings' onClick=\"window.location='index.php?$sid&action=edit_site&sitename=$site&comingFrom=viewsite'\">";
+$text .= "<input type=button class='button' value='Edit Site Settings' onClick=\"window.location='index.php?$sid&action=edit_site&sitename=$site&comingFrom=viewsite'\" style='width: 120px;'>";
 else $text .= "&nbsp; ";
 
 $text .= "</td>";
 $text .= "<td valign=top align=left>";
 
-$text .= "<input type=button class='button' name='sitemap' value=' Permissions ' onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=$site\")' target='permissions' style='text-decoration: none'>";
+$text .= "<input type=button class='button' name='sitemap' value=' Permissions ' onClick='sendWindow(\"permissions\",600,400,\"edit_permissions.php?$sid&site=$site\")' target='permissions' style='text-decoration: none; width: 120px;'>";
 
 $text .= "</td>";
 $text .= "<td valign=top align=left>";
 
-$text .= "<input type=button class='button' value='Preview This Site'  onClick=\"window.location='$u&$sid'\">";
+$text .= "<input type=button class='button' value='Preview This Site'  onClick=\"window.location='$u&$sid'\" style='width: 120px;'>";
 
 $text .= "</td>";
 $text .= "</tr><tr><td valign=top align=left>";
 
-$text .= "<input type=button class='button' name='browsefiles' value=' &nbsp; Media Library &nbsp; ' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none'>";
+$text .= "<input type=button class='button' name='browsefiles' value=' &nbsp; Media Library &nbsp; ' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none&site=$site&comingfrom=viewsite\")' target='filebrowser' style='text-decoration: none; width: 120px;'>";
 
 $text .= "</td>";
 $text .= "<td valign=top align=left>";
 
-$text .= "<input type=button class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none'>";
+$text .= "<input type=button class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none; width: 120px;'>";
 
 $text .= "</td>";
 $text .= "<td valign=top align=center>";
@@ -245,4 +245,6 @@ $text .= "<td valign=top align=center>";
 $text .= helplink("index");
 
 $text .= "</tr></table></div>";
+
+$text .= "<br><div align=right><img src=$cfg[themesdir]/common/images/segue_logo_trans_solid.gif></div>";
 $sitefooter = $sitefooter . $text;
