@@ -86,8 +86,8 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 				break;
 			}
 		}
-		print "<BR>$valid<BR>";
-		print_r($x);
+//		print "<BR>$valid<BR>";
+//		print_r($x);
 		
 		if ($valid) {	// register all of the needed variables
 						// and send them to the correct page

@@ -1,6 +1,7 @@
 <? /* $Id$ */
 
 function _valid_ldap($name,$pass,$admin_auser=0) {
+//	print "hallooo!"; return 1;
 	$name = strtolower($name);
 	global $dbhost, $dbuser, $dbpass, $dbdb, $ldapserver, $ldap_voadmin_user, $ldap_voadmin_pass;
 	
@@ -26,26 +27,6 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		if (!$numldap) return 0; // if we don't have any entries, return false
 		//ldap_close($c);
 		
-/* 		// check if they're in the database yet */
-/* 		db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
-/* 		$query = "select * from users where uname='$name'"; */
-/* 		$res = db_query($query); */
-/* 		$num = db_num_rows($res); */
-/* //		print "res=$res num=$num<BR>";//debug */
-/* 		 else { */
-/* 			$a = db_fetch_assoc($res); // get their info */
-/* //			print "They were already in the users db.<BR>";//debug */
-/* 			if ($a[status] != 'ldap') { // looks like they are valid w/ ldap, but don't have the ldap status set */
-/* 				// let's repair this */
-/* //				print "for some reason, ldap status was not set for them... updating...<BR>";//debug */
-/* 				$query = "update users set status='ldap' where id=$a[id]"; */
-/* 				db_query($query); */
-/* 			} */
-/* 			// Otherwise everything is dandy! */
-/* 		} */
-/* 	//	print "LDAP_valid: done.<BR>";//debug */
-/* 		return $results; */
-
 		$x = array();
 		$x[user] = $name;
 		$x[pass] = $pass;
