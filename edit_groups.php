@@ -9,31 +9,58 @@ session_start();
 // include all necessary files
 include("includes.inc.php");
 
-/* db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
+db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 if ($del = $_REQUEST[del]) { // we're deleting something
 //	print $del;
 	if ($del=='group') {
-		$query = "delete from classgroups where id=$group";
-		log_entry("classgroups","$auser removed group ".db_get_value("classgroups","name","id=$group"),"NULL",$group,"classgroup");
+		$query = "UPDATE class SET FK_classgroup=NULL WHERE FK_classgroup=$group";
+		db_query($query);
+		$query = "DELETE FROM classgroup WHERE classgroup_id=$group";
+		db_query($query);
+		log_entry("classgroups","$auser removed group ".db_get_value("classgroup","classgroup_name","classgroup_id=$group"),"NULL",$group,"classgroup");
 	}
 	if ($del=='class') {
-		$list = explode(",",db_get_value("classgroups","classes","id=$group"));
-		$nlist = array();
-		foreach ($list as $l) {
-			if ($l != $class)
-				$nlist[]=$l;
-		}
-		$list = implode(",",$nlist);
-		$query = "update classgroups set classes='$list' where id=$group";
-		log_entry("classgroups","$auser removed $class from group ".db_get_value("classgroups","name","id=$group"),"NULL",$group,"classgroup");
+		$query = "UPDATE class SET FK_classgroup=NULL WHERE class_id=$class";
+		db_query($query);
+		log_entry("classgroup","$auser removed $class from group ".db_get_value("classgroup","classgroup_name","classgroup_id=$group"),"NULL",$group,"classgroup");
 	}
-//	print $query;
-	db_query($query);
 	print "<script lang='JavaScript'>function updater() { opener.window.location=\"index.php?$sid\"; }</script>";
 }
 print mysql_error();
-$r = db_query("select * from classgroups where owner='$auser'");
+
+
+$query = "
+	SELECT
+		COUNT(*)
+	FROM
+		classgroup
+			INNER JOIN
+		user
+			ON
+				classgroup.FK_owner = user_id 
+	WHERE 
+		user_uname='$auser'
+";
+/* echo $query; */
+$r = db_query($query);
+$a = db_fetch_assoc($r);
+$numGroups = $a["COUNT(*)"];
+
+$query = "
+	SELECT
+		*
+	FROM
+		classgroup
+			INNER JOIN
+		user
+			ON
+				classgroup.FK_owner = user_id 
+	WHERE 
+		user_uname='$auser'
+";
+/* echo $query; */
+$r = db_query($query);
 
 ?>
 <html>
@@ -96,25 +123,35 @@ print "<body".(($del)?" onLoad='updater()'":"").">";
 	<th>del</th>
 </tr>
 <?
-if (db_num_rows($r)) {
+if ($numGroups) {
 	while ($a=db_fetch_assoc($r)) {
 		print "<tr>";
 		print "<td>";
-		print "$a[name]";
+		print "$a[classgroup_name]";
 		print "</td>";
 		print "<td align=center>";
-		print "<a href='$PHP_SELF?$sid&del=group&group=$a[id]'>[del]</a>";
+		print "<a href='$PHP_SELF?$sid&del=group&group=$a[classgroup_id]'>[del]</a>";
 		print "</td>";
 		
 		print "</tr>";
-		$classes = explode(",",$a[classes]);
-		foreach ($classes as $c) {
+		$query = "
+			SELECT
+				*
+			FROM
+				classgroup
+					INNER JOIN
+				class
+					ON
+						FK_classgroup = $a[classgroup_id]
+		";
+		$r2 = db_query($query);
+		while($b = db_fetch_assoc($r2)){
 			print "<tr>";
 			print "<td style='padding-left: 20px'>";
-			print "-&gt; $c</a>";
+			print "-&gt; ".generateCourseCode($b[class_id])."</a>";
 			print "</td>";
 			print "<td align=center>";
-			print "<a href='$PHP_SELF?$sid&del=class&group=$a[id]&class=$c'>[remove]</a>";
+			print "<a href='$PHP_SELF?$sid&del=class&group=$a[classgroup_id]&class=$b[class_id]'>[remove]</a>";
 			print "</td>";
 			print "</tr>";
 		}
