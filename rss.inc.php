@@ -127,13 +127,7 @@ if ($error) {
 			print "<li>Requested page object doesn't exist.</li>";
 			
 		} else {
-			printpre($_SESSION);
-			if (!$_SESSION[auser]) {
-				print "<li>You are not logged in.</li>";
-				print "<li>You are not on a computer within $cfg[inst_name]</li>";
-			}
-			print "<li>The feed has not been activated by the owner.</li>";
-			print "<li>You are not part of a set of specific users or groups allowed to view this feed.</li>";
+			print "<li>The feed has not been made public by the owner.</li>";
 		}
 		print "</ul>";
 		
@@ -154,7 +148,7 @@ if ($error) {
 	
 		$thisPage->fetchDown();
 		if ($thisPage->hasPermissionDown("view"))
-			print "\t\t<title>".$thisPage->getField("title")." - ".$_SESSION[auser]."</title>\n";
+			print "\t\t<title>".$thisPage->getField("title")."</title>\n";
 			
 			$pagelink = $cfg[full_uri]."/index.php?$sid&action=site";
 			$pagelink .= "&site=".$thisSite->name;
