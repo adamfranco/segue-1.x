@@ -81,12 +81,12 @@ if ($_REQUEST[action] == "newpassword") {
 	$email = $_REQUEST['email'];
 	
 	$error = FALSE;
-	if (!$_REQUEST[action] == "newuser" && $_REQUEST['uname']) {
-		$message .= "<div align=center>You must enter a Name.<br><br></div>";
+	if ($_REQUEST[action] == "newuser" && !$_REQUEST['uname']) {
+		$message .= "<div align=center>You must enter a Name.<br></div>";
 		$error = TRUE;
 	}
 	if (!$_REQUEST['email'] || !ereg("@", $_REQUEST['email'])) {
-		 $message .= "<div align=center>You must enter a valid email address.<br><br></div>";
+		 $message .= "<div align=center>You must enter a valid email address.<br></div>";
 		 $error = TRUE;
 	}
 	
@@ -94,10 +94,11 @@ if ($_REQUEST[action] == "newpassword") {
 	foreach ($cfg[visitor_email_excludes] as $visitor_email_exclude) {
 		if ($exclude = ereg($visitor_email_exclude, $email)) {
 			if ($_REQUEST[action] == "send") {
-				$message = "<div align=center>You cannot reset your $cfg[inst_name] account password here.<br></div>";
+				$message = "<div align=left>You cannot reset your $cfg[inst_name] account password here.<br></div>";
+				if ($cfg['auth_help_on']) $message .= "<br>(".$cfg[auth_help].")<br><br>";
 			} else {
-				$message = "You cannot register your $cfg[inst_name] account here. ";
-				$message .= "(<a href=passwd.php?$sid&action=login>Login</a>).<br><br>";
+				$message = "You cannot register your $cfg[inst_name] account here.<br></div>";
+				if ($cfg['auth_help_on']) $message .= "<br>(".$cfg[auth_help].")<br><br>";
 			}
 			$id = 0;
 			$error = TRUE;
@@ -126,8 +127,8 @@ if ($_REQUEST[action] == "newpassword") {
 			$obj->sendemail(1);
 			$message = "<div align=left>A new random password has been sent to the email address you entered above.<br></div>";
 		} else {
-			$message = "<div align=left>Your email address is already in our database.";
-			$message .= " (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>).</div>";
+			$message = "<div align=left>Your email address is already in our database.<br></div>";
+			//$message .= " (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>).</div>";
 		}	
 	
 	/******************************************************************************
@@ -179,7 +180,7 @@ if ($_REQUEST[action] == "newpassword") {
 			$_SESSION[amethod] = $x[method];
 		}
 		$message = "Thank you for registering. Your user account information has been emailed to you.  Use this information to log into Segue.<br><br>";
-		$message .= "<div align=center><input type=button value='Return' onClick='refreshParent()'></div>";
+		$message .= "<div align=center><input type=button value='Return' onClick='refreshParent()'></div><br>";
 
 	}
 
@@ -215,10 +216,8 @@ if ($_REQUEST[action] == "newpassword") {
 		$message = "<div align=left>Your login information was correct. Use the Return button below to complete authentication.<br><br></div>";
 		$message .= "<div align=center><input type=button value='Return' onClick='refreshParent()'></div>";
 	} else {
-		$message = "<div align=left>Your password/username was incorrect.<br>";
-		//$message .= " (<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>).</div>";
+		$message = "<div align=left>Your password/username was incorrect.</div>";
 	}
-
 }
 
 ?>
@@ -251,10 +250,6 @@ function refreshParent() {
 </script>
 </head>
 <body onLoad="document.passform.oldpass.focus()">
-<?
-//printerr2();
-?>
-
 <form action="<? echo $PHP_SELF ?>" method=post name="passform">
 <table cellspacing=1 width='100%'>
 <tr><th colspan=2>
@@ -272,15 +267,55 @@ function refreshParent() {
 </th></tr>
 
 <?
+
+/******************************************************************************
+ * User Accounts links 
+ * Login | Forget your Password | Change your Password
+ ******************************************************************************/
+print "<tr><td colspan=2 align=center>";
+print "<br><div align=center>";
+
+if ($_REQUEST[action] == "reset" || $reset) {
+	print "Forgot your password?";
+} else {
+	print "<a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>";
+}
+if ($cfg[auth_register_on] == TRUE && isset($_SESSION[auser]) == FALSE) {
+	if ($_REQUEST[action] == "register" || $newuser) {
+		print " | Register";
+	} else {
+		print " | <a href=passwd.php?$sid&action=register&email=$email>Register</a>";
+	}
+}
+
+if ($_REQUEST[action] == "login" || $auth) {
+	print " | Login";
+} else {
+	print " | <a href=passwd.php?$sid&action=login>Login</a>";
+} 
+if ($_REQUEST[action] == "change" || $change) {
+	print " | Change your password";
+} else {
+	print " | <a href=passwd.php?$sid&action=change&email=$email>Change your password</a>";
+}
+
+print "</div><br>";
+print "</td></tr>";
+
 /******************************************************************************
  * Change Password UI
  ******************************************************************************/
-
+//printpre ($_SESSION);
 if ($_REQUEST[action] == "change" || $change) {
 	if (!isset($_SESSION[ltype])) {
-		print "<tr><td colspan=2 align=center> You must already be authenticated in order to change your password.<br>";
-		print" <a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a>";
+		print "<tr><td colspan=2 align=left> You must already be authenticated in order to change your password.<br><br>";
+		if ($cfg['auth_help_on']) print "(".$cfg[auth_help].")<br><br>";
 		print "</td></tr>";
+	} else if ($_SESSION[amethod] != "db") {
+		print "<tr><td colspan=2 align=left>This user account is not authenticated by Segue and so you cannot reset this account's password here.";
+		if ($cfg['auth_help_on']) print "<br><br>(".$cfg[auth_help].")<br><br>";
+		print "</td></tr>";
+		
 	} else {	
 		print "<tr><td colspan=2 align=center> Chose a new password below.<br>";
 		if ($cfg['auth_help_on'])
@@ -291,9 +326,9 @@ if ($_REQUEST[action] == "change" || $change) {
 		print "<tr><td>Full Name: </td>";
 		print "<td><input type=text name='fname' size=30 value='".$_SESSION['afname']."' readonly></td>";
 		print "</tr>";
-		print "<tr><td>Email Address:</td>";
-		print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."' readonly></td> ";
-		print"<tr>";
+		//print "<tr><td>Email Address:</td>";
+		//print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."' readonly></td> ";
+		//print"<tr>";
 		print"<td>Old Password:</td>";
 		print"<td><input type=password name='oldpass' size=30 value='".$oldpass."'></td></tr>";
 		print"<tr>";
@@ -310,8 +345,6 @@ if ($_REQUEST[action] == "change" || $change) {
 		print"<tr><td colspan=2 align=center><input type=submit value='Change password'><br><br>";
 		print"<input type=hidden name='action' value='newpassword'>";
 		print"<input type=hidden name='change' value='1'>";
-		print" <a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a> | ";
-		print" <a href=passwd.php?$sid&action=login&email=$email>Log in.</a>";
 		print "</td></tr>";
 	}
 
@@ -320,16 +353,12 @@ if ($_REQUEST[action] == "change" || $change) {
  ******************************************************************************/
 
 } else if ($_REQUEST[action] == "login" || $auth) {
-	print "<tr><td colspan=2 align=center> Please enter your username and password. <br>";
-	if ($cfg['auth_help_on'])
-		print "<br><div align=left>(".$cfg[auth_help].")</div><br>";
+	print "<tr><td colspan=2 align=left> Please enter your username and password. <br><br>";
 	print "</td><tr><td> User Name: </td>";
 	print "<td><input type=text name='uname' size=30 value=''></td>";
 	print "<tr><td>Password:</td>";
 	print"<td><input type=password name='password' size=30 value=''> </td>";
 	print"<tr><td colspan=2 align=center><input type=submit value='Log In'><br><br>";
-	print" <a href=passwd.php?$sid&action=reset&email=$email>Forgot your password?</a> | ";
-	print" <a href=passwd.php?$sid&action=change&email=$email>Change your password.</a>";
 	print "</td></tr>";
 	print"<input type=hidden name='action' value='auth'>";
 	print"<input type=hidden name='auth' value='1'>";
@@ -357,18 +386,22 @@ if ($_REQUEST[action] == "change" || $change) {
  ******************************************************************************/
 
 } else if ($_REQUEST[action] == "reset" || $reset) {
-	print "<tr><td colspan=2 align=left> Please enter your email address and a new password will be sent to you.<br><br>";
-	if ($cfg['auth_help_on'])
-		print "(".$cfg[auth_help].")<br><br>";
-	print "</td><tr><td>Email Address:</td>";
-	print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'></td></tr>";
-	print"<tr><td colspan=2 align=center><input type=submit name='submit' value='Send new password'><br><br>";
-	print"<input type=hidden name='action' value='send'>";
-	print"<input type=hidden name='reset' value='1'>";
-	print" <a href=passwd.php?$sid&action=change&email=$email>Change your password</a> | ";
-	print" <a href=passwd.php?$sid&action=login&email=$email>Log in</a></td></tr>";
-
+	if (isset($_SESSION[amethod]) && $_SESSION[amethod] != "db") {
+		print "<tr><td colspan=2 align=left>This user account is not authenticated by Segue and so you cannot reset this account's password here.";
+		if ($cfg['auth_help_on'])
+			print "<br><br>(".$cfg[auth_help].")<br><br>";
+	} else {
+		print "<tr><td colspan=2 align=left> Please enter your email address and a new password will be sent to you.<br><br>";
+		if ($cfg['auth_help_on'])
+			print "(".$cfg[auth_help].")<br><br>";
+		print "</td><tr><td>Email Address:</td>";
+		print"<td><input type=text name='email' size=30 value='".$_REQUEST['email']."'></td></tr>";
+		print"<tr><td colspan=2 align=center><input type=submit name='submit' value='Send new password'><br><br>";
+		print"<input type=hidden name='action' value='send'>";
+		print"<input type=hidden name='reset' value='1'>";
+	}
 }
+
 print "</td></tr>";
 print "<tr><td colspan=2>"; 
 print"<br>";
