@@ -209,31 +209,35 @@ class segue {
 /******************************************************************************
  * copyObj - Copies an object to a new parent
  ******************************************************************************/
-	function copyObj(&$object,&$newParent,$keepaddedby=0) {
+	function copyObj(&$newParent,$keepaddedby=0) {
 		$_a = array("site"=>3,"section"=>2,"page"=>1,"story"=>0);
 		// check that the newParent can be a parent
-		$objClass = get_class($object);
+		$thisClass = get_class($this);
 		$parentClass = get_class($newParent);
-		print "$objClass - $parentClass";
-		if (!($_a[$parentClass]-1 == $_a[$objClass])) return 0;
-//		print " Hi ";
-		$object->fetchDown(1);
-//		print "<pre>";		print_r($object);print "</pre>";
-		if ($objClass == 'section') {
+		print "$thisClass - $parentClass<br>";
+		if (!($_a[$parentClass]-1 == $_a[$thisClass])) return 0;
+		print " Before ".$this->fetcheddown."<br>";
+
+		$this->fetchDown(1);
+/* 		print " After <br>"; */
+/* 		print "title: ".$this->data[title]."<br>";		 */
+/* 		print "title: ".$this->getField("title")."<br>"; */
+/* 		print "<pre>this: "; print_r($this); print " newparent: "; print_r($newParent); print "</pre>"; */
+		if ($thisClass == 'section') {
 			$owning_site = $newParent->name;
-			$object->insertDB(1,$owning_site,$keepaddedby);
+			$this->insertDB(1,$owning_site,$keepaddedby);
 		}
-		if ($objClass == 'page') {
+		if ($thisClass == 'page') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->id;
-			$object->insertDB(1,$owning_site,$owning_section,$keepaddedby);
+			$this->insertDB(1,$owning_site,$owning_section,$keepaddedby);
 		}
-		if ($objClass == 'story') {
-			print "asdasdasd";
+		if ($thisClass == 'story') {
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->owning_section;
 			$owning_page = $newParent->id;
-			$object->insertDB(1,$owning_site,$owning_section,$owning_page,$keepaddedby);
+/* 			print "insertDB: 1,$owning_site,$owning_section,$owning_page,$keepaddedby<br>"; */
+			$this->insertDB(1,$owning_site,$owning_section,$owning_page,$keepaddedby);
 		}
 
 //		print_r($newParent);

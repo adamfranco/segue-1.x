@@ -65,15 +65,17 @@ class page extends segue {
 		$this->changed[stories]=1;
 	}
 	
-	function delStory($id) {
+	function delStory($id,$delete=1) {
 		$d = array();
 		foreach ($this->getField("stories") as $s) {
 			if ($s != $id) $d[]=$s;
 		}
 		$this->data[stories] = $d;
 		$this->changed[stories]=1;
-		$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
-		$story->delete();
+		if ($delete) {
+			$story = new story($this->owning_site,$this->owning_section,$this->owning_page,$id);
+			$story->delete();
+		}
 	}
 	
 	function fetchUp() {
@@ -87,8 +89,8 @@ class page extends segue {
 	}
 	
 	function fetchDown($full=0) {
-		if (!$this->fetcheddown) {
-/* 			print "---->page fetchdown".$this->id."<BR>"; */
+		if (!$this->fetcheddown || $full) {
+/* 			print "---->page fetchdown".$this->id." full = $full<BR>"; */
 			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			foreach ($this->getField("stories") as $s) {
 				$this->stories[$s] = new story($this->owning_site,$this->owning_section,$this->id,$s);
@@ -146,8 +148,14 @@ class page extends segue {
 	}
 	
 	function insertDB($down=0,$newsite=null,$newsection=0,$keepaddedby=0) {
+		$origsite = $this->owning_site;
+		$origid = $this->id;
 		if ($newsite) $this->owning_site = $newsite;
-		if ($newsection) $this->owning_section = $newsection;
+		if ($newsection) {
+			$this->owning_section = $newsection;
+			$this->owningSectionObj = new section($newsite,$newsection);
+		}
+		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "addedby='$_SESSION[auser]'";
@@ -158,13 +166,14 @@ class page extends segue {
 		}
 
 		$query = "insert into pages set ".implode(",",$a);
-		print $query; //debug
+		print $query."<br>"; //debug
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
 		
 		$this->fetchUp();
 		$this->owningSectionObj->addPage($this->id);
+		$this->owningSectionObj->delPage($origid,0);
 		$this->owningSectionObj->updateDB();
 		
 		// add new permissions entry.. force update
@@ -180,7 +189,7 @@ class page extends segue {
 		return true;
 	}
 	
-	function createSQLArray() {
+	function createSQLArray($all=0) {
 		$d = $this->data;
 		$a = array();
 		

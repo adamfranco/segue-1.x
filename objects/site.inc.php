@@ -30,7 +30,7 @@ class site extends segue {
 	}
 	
 	function fetchDown($full=0) {
-		if (!$this->fetcheddown) {
+		if (!$this->fetcheddown || $full) {
 /* 			print "site fetchdown ".$this->name."<BR>"; */
 			if (!$this->tobefetched) $this->fetchFromDB($full);
 			foreach ($this->getField("sections") as $s) {
@@ -164,14 +164,16 @@ class site extends segue {
 		$this->changed[sections] = 1;
 	}
 	
-	function delSection($id) {
+	function delSection($id,$delete=1) {
 		$d = array();
 		foreach ($this->getField("sections") as $n)
 			if ($n != $id) $d[] = $n;
 		$this->data[sections] = $d;
-		$section = new section($this->name,$id);
-		$section->delete();
 		$this->changed[sections] = 1;
+		if ($delete) {
+			$section = new section($this->name,$id);
+			$section->delete();
+		}
 	}
 	
 	function delete() {	// delete from db

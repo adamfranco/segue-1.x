@@ -56,18 +56,20 @@ class section extends segue {
 		$this->changed[pages] = 1;
 	}
 	
-	function delPage($id) {
+	function delPage($id,$delete=1) {
 		$d = array();
 		foreach ($this->getField("pages") as $p)
 			if ($p != $id) $d[]=$p;
 		$this->data[pages] = $d;
-		$page = new page($this->owning_site,$this->id,$id);
-		$page->delete();
 		$this->changed[pages]=1;
+		if ($delete) {
+			$page = new page($this->owning_site,$this->id,$id);
+			$page->delete();
+		}
 	}
 	
 	function fetchDown($full=0) {
-		if (!$this->fetcheddown) {
+		if (!$this->fetcheddown || $full) {
 /* 			print "-->section fetchdown ".$this->id."<BR>"; */
 			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			foreach ($this->getField("pages") as $p) {
@@ -125,7 +127,13 @@ class section extends segue {
 	}
 	
 	function insertDB($down=0,$newsite=null,$keepaddedby=0) {
-		if ($newsite) $this->owning_site = $newsite;
+		$origsite = $this->owning_site;
+		$origid = $this->id;
+		if ($newsite) {
+			$this->owning_site = $newsite;
+			$this->owningSiteObj = new site($newsite);
+		}
+		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "addedby='$_SESSION[auser]'";
@@ -143,6 +151,7 @@ class section extends segue {
 		
 		$this->fetchUp();
 		$this->owningSiteObj->addSection($this->id);
+		$this->owningSiteObj->delSection($origid,0);
 		$this->owningSiteObj->updateDB();
 		
 		// add new permissions entry.. force update

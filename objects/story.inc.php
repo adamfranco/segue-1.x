@@ -87,7 +87,7 @@ class story extends segue {
 	}
 	
 	function fetchDown($full=0) {
-		if (!$this->fetcheddown) {
+		if (!$this->fetcheddown || $full) {
 			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			$this->fetcheddown = 1;
 		}
@@ -139,9 +139,13 @@ class story extends segue {
 	
 	function insertDB($down=0,$newsite=null,$newsection=0,$newpage=0,$keepaddedby=0) {
 		$origsite = $this->owning_site;
+		$origid = $this->id;
 		if ($newsite) $this->owning_site = $newsite;
 		if ($newsection) $this->owning_section = $newsection;
-		if ($newpage) $this->owning_page = $newpage;
+		if ($newpage) {
+			$this->owning_page = $newpage;
+			$this->owningPageObj = new Page($newsite,$newsection,$newpage);
+		}
 		
 		// if moving to a new site, copy the media
 		if ($origsite != $this->owning_site && $down) {
@@ -168,13 +172,14 @@ class story extends segue {
 			$a[] = "addedtimestamp='".$this->getField("addedtimestamp")."'";
 		}
 		$query = "insert into stories set ".implode(",",$a);
-		print $query; //debug
+		print $query."<br>"; //debug
 		db_query($query);
 		
 		$this->id = mysql_insert_id();
 		
 		$this->fetchUp();
 		$this->owningPageObj->addStory($this->id);
+		$this->owningPageObj->delStory($origid,0);
 		$this->owningPageObj->updateDB();
 		
 		// add new permissions entry.. force update

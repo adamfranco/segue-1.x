@@ -23,7 +23,7 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
  ******************************************************************************/
 
 if ($_REQUEST[type] && isset($_SESSION[origSiteObj])) {
-	unset($_SESSION[origSiteObj],$_SESSION[type],$_SESSION[origSite],$_SESSION[origSection],$_SESSION[origPage],$_SESSION[sites]);
+	unset($_SESSION[origSiteObj],$_SESSION[type],$_SESSION[origSite],$_SESSION[origSection],$_SESSION[origPage],$_SESSION[sites],$_SESSION[onlyCopy]);
 //	print "unsetting";
 }
 
@@ -34,8 +34,29 @@ if (!is_object($_SESSION[origSiteObj])) {
 	$_SESSION[origSite] = $_REQUEST[site];
 	$_SESSION[origSection] = $_REQUEST[section];
 	$_SESSION[origPage] = $_REQUEST[page];
+	$_SESSION[origStory] = $_REQUEST[story];
 	
 	$_SESSION[type] = $_REQUEST[type];
+	
+/******************************************************************************
+ * Make sure that the user try to move, has permission to delete the origional
+ ******************************************************************************/
+	if ($_SESSION[type] == "section") {
+		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->hasPermission("delete",$auser)) {
+			$_SESSION[onlyCopy] = 1;
+			$action = "COPY";
+		}
+	} else if ($_SESSION[type] == "page") {
+		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->hasPermission("delete",$auser)) {
+			$_SESSION[onlyCopy] = 1;
+			$action = "COPY";
+		}
+	} else {
+		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]]->hasPermission("delete",$auser)) {
+			$_SESSION[onlyCopy] = 1;
+			$action = "COPY";
+		}
+	}	
 
 /******************************************************************************
  * Get the sites that a person is the owner or editor of.
@@ -56,42 +77,6 @@ if (!is_object($_SESSION[origSiteObj])) {
 }
 /* $oname = $_SESSION[origSiteObj]->sections['$_SESSION[origSection]']->getField("title"); */
 /* print "<pre>"; print_r($_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->getField("title")); print "</pre>"; */
-
-/******************************************************************************
- * save move to DB
- ******************************************************************************/
-
-if ($domove) {
-	// set the origional objects to move/copy	
-	if ($type == "section") {
-		$partObj = new section($origionalsite,$section);
-		$parentObj = new site($site);
-	}
-	else if ($type == "page") {
-		$partObj = new page($origionalsite,$origionalsection,$page);
-		$parentObj = new section($site,$section);
-	}
-	else if ($type == "story") {
-		$partObj = new story($origionalsite,$origionalsection,$origionalpage,$story);
-		$parentObj = new page($site,$section,$page);
-	} else 
-		print "Major Error!!!!!!!!!!!!!!!!!!!!!!  AHHHHHhhhhhhhh!!!!!!!!!!!!!!!!!!!!";
-	
-	// make a copy of the origional to delete later.
-	$origPartObj = $partObj;
-	
-	if ($action == "MOVE" && $site == $origionalsite) $keepaddedby = 1;
-	else $keepaddedby = 0;	
-	
-	// move the object.
-	$succesfull = segue::copyObj($partObj,$parentObj,$keepaddedby);
-	return 1;
-	
-	// delete the origional
-	if ($successfull && $action == "MOVE") {
-		$partObj->delete();
-	}
-}
 
 if (!isset($action)) $action = "MOVE";
 
@@ -158,6 +143,42 @@ if (($type == "story" && !isset($page)) || ($selecttype == "site" || $selecttype
 /* } */
 
 $actionlc = strtolower($action);
+
+/******************************************************************************
+ * save move to DB
+ ******************************************************************************/
+
+if ($domove) {
+	// set the origional objects to move/copy	
+	if ($type == "section") {
+		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]];
+		$parentObj = $siteObj;
+	}
+	else if ($type == "page") {
+		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]];
+		$parentObj = $siteObj->sections[$section];
+	}
+	else if ($type == "story") {
+		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]];
+		$parentObj = $siteObj->sections[$section]->pages[$page];
+	} else 
+		print "Major Error!!!!!!!!!!!!!!!!!!!!!!  AHHHHHhhhhhhhh!!!!!!!!!!!!!!!!!!!!";
+	
+	// make a copy of the origional to delete later.
+	$origPartObj = $partObj;
+	
+	if ($action == "MOVE" && $site == $origionalsite) $keepaddedby = 1;
+	else $keepaddedby = 0;	
+	
+	// move the object.
+	$partObj->copyObj($parentObj,$keepaddedby);
+	
+/* 	// delete the origional */
+/* 	if ($successfull && $action == "MOVE") { */
+/* 		$partObj->delete(); */
+/* 	} */
+	
+}
 
 ?> 
 <html> 
@@ -280,7 +301,8 @@ print "<table cellspacing=1 width='100%'>";
 if (!$domove) {
 	print "<tr> ";
 		print "<td colspan=2>";
-			print "<input type=radio value='MOVE' name='action'".(($action=="MOVE")?" checked":"")." onClick=\"updateForm('move')\"> Move &nbsp; &nbsp; ";
+			if (!$_SESSION[onlyCopy])
+				print "<input type=radio value='MOVE' name='action'".(($action=="MOVE")?" checked":"")." onClick=\"updateForm('move')\"> Move &nbsp; &nbsp; ";
 			print "<input type=radio value='COPY' name='action'".(($action=="COPY")?" checked":"")." onClick=\"updateForm('move')\"> Copy";
 		print "</td>";
 	print "</tr> ";
@@ -412,12 +434,12 @@ if ($type == "story") {
 ------------------------------------
 <?
 // debug output -- handy :)
-/* print "<pre>"; */
+print "<pre>";
 /* print "session:\n"; */
 /* print_r($_SESSION); */
 /* print "\n\n"; */
-/* print "request:\n"; */
-/* print_r($_REQUEST); */
+print "request:\n";
+print_r($_REQUEST);
 /* if (is_object($thisPage)) { */
 /* 	print "\n\n"; */
 /* 	print "thisPage:\n"; */
@@ -431,7 +453,7 @@ if ($type == "story") {
 /* 	print "thisSite:\n"; */
 /* 	print_r($thisSite); */
 /* } */
-/* print "</pre>"; */
+print "</pre>";
 ?>
 </body>
 </html>
