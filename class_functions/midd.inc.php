@@ -32,237 +32,275 @@ function getclassstudents($class_id) {
 	global $cfg;
 	
 	/******************************************************************************
+	 * Check if site is a group of classes
+ 	******************************************************************************/
+	$classgroup_id = db_get_value("classgroup","classgroup_id ","classgroup_name = $class_id");
+	$class_ids = array();
+	
+	if ($classgroup_id) {
+		$query = "
+		SELECT
+			class_external_id  		
+		FROM
+			class
+		WHERE
+			FK_classgroup = $classgroup_id
+		";
+		$r = db_query($query);
+		
+		//if (db_num_rows($r)) {
+		//foreach (db_fetch_array($r) as $nextclass) {
+			$class_ids = db_fetch_array($r);
+			//$class_ids = array('sp101a-s05', 'sp101b-s05');
+		//	$class_ids[] = $nextclass;
+		//}
+		//}		
+	} else {
+		$class_ids = array($class_id);
+	}
+
+	$class_ids = array('sp101a-s05', 'sp101b-s05');
+	/******************************************************************************
 	 * DB Class info: queries ugroup_user table for all users who are part
 	 * of the $class_id group
  	******************************************************************************/
-
-	$ugroup_id = getClassUGroupId($class_id);
+ 
+ 	$allparticipants = array();
+ 	foreach ($class_ids as $class_id) {
+	
+		$ugroup_id = getClassUGroupId($class_id);
+			
+		$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
+		$db_participants = array();
+		$external_memberlist_participants = array();
+		$participant = array();
+		$participants = array();
 		
-	$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
-	$db_participants = array();
-	$external_memberlist_participants = array();
-	$participant = array();
-	$participants = array();
-	
-	$query = "
-	SELECT
-		user_id,
-		user_fname,
-		user_uname,
-		user_email,
-		user_type
-	FROM
-		ugroup_user
-			INNER JOIN
-		user
-			ON
-		FK_user = user_id
-	WHERE
-		FK_ugroup = $ugroup_id
-	ORDER BY
-		user_type DESC, user_uname
-	";
-	$r = db_query($query);
+		$query = "
+		SELECT
+			user_id,
+			user_fname,
+			user_uname,
+			user_email,
+			user_type
+		FROM
+			ugroup_user
+				INNER JOIN
+			user
+				ON
+			FK_user = user_id
+		WHERE
+			FK_ugroup = $ugroup_id
+		ORDER BY
+			user_type DESC, user_uname
+		";
+		$r = db_query($query);
+			
+		while ($a = db_fetch_assoc($r)) {
+			$participant[id] = $a[user_id];
+			$participant[fname] = $a[user_fname];
+			$participant[uname] = $a[user_uname];
+			$participant[email] = $a[user_email];
+			$participant[type] = $a[user_type];
+			$participant[memberlist] = "db";
+			$db_participants[]= $participant;
+		}
 		
-	while ($a = db_fetch_assoc($r)) {
-		$participant[id] = $a[user_id];
-		$participant[fname] = $a[user_fname];
-		$participant[uname] = $a[user_uname];
-		$participant[email] = $a[user_email];
-		$participant[type] = $a[user_type];
-		$participant[memberlist] = "db";
-		$db_participants[]= $participant;
-	}
-	
-	
-	/******************************************************************************
-	 *  External member list source (e.g. LDAP group member
-	 *  LDAP Class info: queries LDAP for users in class group
-	 ******************************************************************************/
-
-		
-	ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2})",$class_id,$r);
-	$department = $r[1];
-	$number = $r[2];
-	$section = $r[3];
-	$semester = $r[4];
-	$year = $r[5];
-	
-	if ($semester == "f") {
-		$semester = "Fall";
-	} else if ($semester == "s"){
-		$semester = "Spring";
-	} else if ($semester == "w"){
-		$semester = "Winter";
-	} else if ($semester == "l"){
-		$semester = "Summer";
-	} 
-
-	/******************************************************************************
-	 * create class search dn with appropriate semester information
-	 ******************************************************************************/
-
-	$ldap_search_semester = "ou=".$semester.$year.",ou=classes,ou=groups,";
-	//printpre ($ldap_search_semester);
-	
-	$ldap_user = $cfg[ldap_voadmin_user_dn];
-	$ldap_pass = $cfg[ldap_voadmin_pass];
-
-	$c = ldap_connect($cfg[ldap_server]);
-	$r = @ldap_bind($c,$ldap_user,$ldap_pass);
-	if ($r && true) {		// connected & logged in
-
-		$return = array(
-			$cfg[ldap_groupmember_attribute]
-		);
 		
 		/******************************************************************************
-		 * create class search dn and filter
-		 * needs to search semester, classes, groups within base domain
+		 *  External member list source (e.g. LDAP group member
+		 *  LDAP Class info: queries LDAP for users in class group
 		 ******************************************************************************/
+	
+			
+		ereg("([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2})",$class_id,$r);
+		$department = $r[1];
+		$number = $r[2];
+		$section = $r[3];
+		$semester = $r[4];
+		$year = $r[5];
 		
-		$classSearchDN = $ldap_search_semester.$cfg[ldap_base_dn];
-		//printpre ("classSearchDN: ".$classSearchDN);
-		$classSearchFilter = "(".$cfg[ldap_groupname_attribute]."=".$class_id.")";
-		//printpre ("classSearchFilter:".$classSearchFilter);
-		
+		if ($semester == "f") {
+			$semester = "Fall";
+		} else if ($semester == "s"){
+			$semester = "Spring";
+		} else if ($semester == "w"){
+			$semester = "Winter";
+		} else if ($semester == "l"){
+			$semester = "Summer";
+		} 
+	
 		/******************************************************************************
-		 * search ldap with search dn and filter, get results, close ldap connection
-		 * results will be list of members of group within a class within a semester
+		 * create class search dn with appropriate semester information
 		 ******************************************************************************/
-		$sr = ldap_search($c,$classSearchDN,$classSearchFilter,$return);
-		$res = ldap_get_entries($c,$sr);
-		if ($res['count']) {
-			$res[0] = array_change_key_case($res[0], CASE_LOWER);
-	//		print "<pre>";print_r($res);print"</pre>";
-			$num = ldap_count_entries($c,$sr);
-	//		print "num: $num<br />";
-			ldap_close($c);
+	
+		$ldap_search_semester = "ou=".$semester.$year.",ou=classes,ou=groups,";
+		//printpre ($ldap_search_semester);
+		
+		$ldap_user = $cfg[ldap_voadmin_user_dn];
+		$ldap_pass = $cfg[ldap_voadmin_pass];
+	
+		$c = ldap_connect($cfg[ldap_server]);
+		$r = @ldap_bind($c,$ldap_user,$ldap_pass);
+		if ($r && true) {		// connected & logged in
+	
+			$return = array(
+				$cfg[ldap_groupmember_attribute]
+			);
 			
 			/******************************************************************************
-			 * if class found, then get groupmember attributes
-			 * these will be list of students in class
+			 * create class search dn and filter
+			 * needs to search semester, classes, groups within base domain
 			 ******************************************************************************/
-
-			if ($num) {
-				//$groupmembers = array();
-				for ($i = 0; $i<$res[0][strtolower($cfg[ldap_groupmember_attribute])]['count']; $i++) {
-					$nextmember = $res[0][strtolower($cfg[ldap_groupmember_attribute])][$i];
-					
-					/******************************************************************************
-					 * for each member (ie student) found, search ldap for their attributes
-					 * need, username, fullname at least
-					 * (could add group attributes which would list groups they are members of)
-					 ******************************************************************************/
-
-					$c = ldap_connect($cfg[ldap_server]);
-					$r = @ldap_bind($c,$ldap_user,$ldap_pass);
-					if ($r && true) {		// connected & logged in
-					
-						$return2 = array (
-							$cfg[ldap_username_attribute], 
-							$cfg[ldap_fullname_attribute],
-							$cfg[ldap_email_attribute], 
-							$cfg[ldap_group_attribute]
-						);
+			
+			$classSearchDN = $ldap_search_semester.$cfg[ldap_base_dn];
+			//printpre ("classSearchDN: ".$classSearchDN);
+			$classSearchFilter = "(".$cfg[ldap_groupname_attribute]."=".$class_id.")";
+			//printpre ("classSearchFilter:".$classSearchFilter);
+			
+			/******************************************************************************
+			 * search ldap with search dn and filter, get results, close ldap connection
+			 * results will be list of members of group within a class within a semester
+			 ******************************************************************************/
+			$sr = ldap_search($c,$classSearchDN,$classSearchFilter,$return);
+			$res = ldap_get_entries($c,$sr);
+			if ($res['count']) {
+				$res[0] = array_change_key_case($res[0], CASE_LOWER);
+		//		print "<pre>";print_r($res);print"</pre>";
+				$num = ldap_count_entries($c,$sr);
+		//		print "num: $num<br />";
+				ldap_close($c);
+				
+				/******************************************************************************
+				 * if class found, then get groupmember attributes
+				 * these will be list of students in class
+				 ******************************************************************************/
+	
+				if ($num) {
+					//$groupmembers = array();
+					for ($i = 0; $i<$res[0][strtolower($cfg[ldap_groupmember_attribute])]['count']; $i++) {
+						$nextmember = $res[0][strtolower($cfg[ldap_groupmember_attribute])][$i];
 						
-						$userSearchDN = (($cfg[ldap_user_dn])?$cfg[ldap_user_dn].",":"").$cfg[ldap_base_dn];
-						//printpre ("userSearchDN: ".$userSearchDN);
+						/******************************************************************************
+						 * for each member (ie student) found, search ldap for their attributes
+						 * need, username, fullname at least
+						 * (could add group attributes which would list groups they are members of)
+						 ******************************************************************************/
+	
+						$c = ldap_connect($cfg[ldap_server]);
+						$r = @ldap_bind($c,$ldap_user,$ldap_pass);
+						if ($r && true) {		// connected & logged in
 						
-						//not sure user search filter below will work
-						//search filter user in ldap.inc.php is
-						//$searchFilter = "(".$cfg[ldap_username_attribute]."=".$name.")";
-						
-						$userSearchFilter = "(".$nextmember.")";
-						$userSearchFilter = eregi_replace("(,)\s?".$userSearchDN,"", $userSearchFilter);
-						$userSearchFilter = str_replace("\\", "", $userSearchFilter);
-						//printpre($userSearchFilter);
-						// search ldap with filter set to full name...
-						//$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
-						//print "<hr>";
-						//printpre("$sr2 = ldap_search($c :: $userSearchDN :: $userSearchFilter :: $return2);");
-						//printpre($return2);
-						$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
-						$res2 = ldap_get_entries($c,$sr2);
-						//printpre($res2);
-						$res2[0] = array_change_key_case($res2[0], CASE_LOWER);
-						//printpre($cfg[ldap_fullname_attribute]);
-						$num = ldap_count_entries($c,$sr);
-						ldap_close($c);
-						$participant = array();
-						if ($num) {	
-							//printpre($cfg[ldap_username_attribute]);	
-							$participant[id] = 0;					
-							$participant[fname] = $res2[0][strtolower($cfg[ldap_fullname_attribute])][0];
-							$participant[uname] = $res2[0][strtolower($cfg[ldap_username_attribute])][0];
-							$participant[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
-							$participant[memberlist] = "external";
-// 							printpre("uname: ".$participant[uname]);
-							$areprof = 0;
-							if (is_array($res2[0][strtolower($cfg[ldap_group_attribute])])) {
-							$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
-								foreach ($res2[0][strtolower($cfg[ldap_group_attribute])] as $item) {
-									if (eregi($isProfSearchString,$item)) {
-										$areprof=1;
+							$return2 = array (
+								$cfg[ldap_username_attribute], 
+								$cfg[ldap_fullname_attribute],
+								$cfg[ldap_email_attribute], 
+								$cfg[ldap_group_attribute]
+							);
+							
+							$userSearchDN = (($cfg[ldap_user_dn])?$cfg[ldap_user_dn].",":"").$cfg[ldap_base_dn];
+							//printpre ("userSearchDN: ".$userSearchDN);
+							
+							//not sure user search filter below will work
+							//search filter user in ldap.inc.php is
+							//$searchFilter = "(".$cfg[ldap_username_attribute]."=".$name.")";
+							
+							$userSearchFilter = "(".$nextmember.")";
+							$userSearchFilter = eregi_replace("(,)\s?".$userSearchDN,"", $userSearchFilter);
+							$userSearchFilter = str_replace("\\", "", $userSearchFilter);
+							//printpre($userSearchFilter);
+							// search ldap with filter set to full name...
+							//$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
+							//print "<hr>";
+							//printpre("$sr2 = ldap_search($c :: $userSearchDN :: $userSearchFilter :: $return2);");
+							//printpre($return2);
+							$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
+							$res2 = ldap_get_entries($c,$sr2);
+							//printpre($res2);
+							$res2[0] = array_change_key_case($res2[0], CASE_LOWER);
+							//printpre($cfg[ldap_fullname_attribute]);
+							$num = ldap_count_entries($c,$sr);
+							ldap_close($c);
+							$participant = array();
+							if ($num) {	
+								//printpre($cfg[ldap_username_attribute]);	
+								$participant[id] = 0;					
+								$participant[fname] = $res2[0][strtolower($cfg[ldap_fullname_attribute])][0];
+								$participant[uname] = $res2[0][strtolower($cfg[ldap_username_attribute])][0];
+								$participant[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
+								$participant[memberlist] = "external";
+	// 							printpre("uname: ".$participant[uname]);
+								$areprof = 0;
+								if (is_array($res2[0][strtolower($cfg[ldap_group_attribute])])) {
+								$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
+									foreach ($res2[0][strtolower($cfg[ldap_group_attribute])] as $item) {
+										if (eregi($isProfSearchString,$item)) {
+											$areprof=1;
+										}
 									}
 								}
-							}
-							$participant[type] = ($areprof)?"prof":"stud";
-
-							//$student[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
-							//printpre("found ".$studentname);
-						}	
-					} // end if	
-					$external_memberlist_participant_unames[]= $participant[uname];
-					$external_memberlist_participants[]= $participant;				
-				} //end for loop
-			} // end num 				
-		}// end result count
-						
-	} // ends if bind
-
-	/******************************************************************************
-	 * Check to see if $external_memberlist_participant are already in database
-	 * if not add them to database
-	 ******************************************************************************/
-	foreach (array_keys($external_memberlist_participants) as $key) {
-		$student_uname = $external_memberlist_participants[$key][uname];
-		//printpre ($cfg[auth_mods]);
-		//$cfg[auth_mods]
-		$valid = 0;
-		foreach ($cfg[auth_mods] as $_auth) {
-			$func = "_valid_".$_auth;
-			//printpre ("<br />AUTH: trying ".$_auth ."..."); //debug
-			if ($x = $func($student_uname,"",1)) {
-				$valid = 1;
-				break;
+								$participant[type] = ($areprof)?"prof":"stud";
+	
+								//$student[email] = $res2[0][strtolower($cfg[ldap_email_attribute])][0];
+								//printpre("found ".$studentname);
+							}	
+						} // end if	
+						$external_memberlist_participant_unames[]= $participant[uname];
+						$external_memberlist_participants[]= $participant;				
+					} //end for loop
+				} // end num 				
+			}// end result count
+							
+		} // ends if bind
+	
+		/******************************************************************************
+		 * Check to see if $external_memberlist_participant are already in database
+		 * if not add them to database
+		 ******************************************************************************/
+		foreach (array_keys($external_memberlist_participants) as $key) {
+			$student_uname = $external_memberlist_participants[$key][uname];
+			//printpre ($cfg[auth_mods]);
+			//$cfg[auth_mods]
+			$valid = 0;
+			foreach ($cfg[auth_mods] as $_auth) {
+				$func = "_valid_".$_auth;
+				//printpre ("<br />AUTH: trying ".$_auth ."..."); //debug
+				if ($x = $func($student_uname,"",1)) {
+					$valid = 1;
+					break;
+				}
 			}
 		}
-	}
+	
+		
+		/******************************************************************************
+		* Compile definitive participant list from:
+		* $db_participants = all group members whose membership is defined in ugroup_user
+		* $external_memberlist_participants = all group members whose membership is
+		* determined by an external membership list (e.g. ldap group)
+		* if participant is in ugroup_user only then memberl ist is db
+		* if participant is in external member list only then memberlist is external
+		* if participant is in both ugroup_user and external member list then
+		* member list is external
+		 ******************************************************************************/
+		 
+		$participants = $external_memberlist_participants;
+		$participants_unames = $external_memberlist_participant_unames;
+		
+		 
+		foreach (array_keys($db_participants) as $key) {
+			if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
+				$participants[] = $db_participants[$key];
+				$participants_unames = $db_participants[$key][uname];
+			}			
+		}	
+		// add participants of current class to array of participants from all classes
+		// (relevant when a site is a group of classes...)
+		$allparticipants = array_merge($allparticipants,$participants);
 
-	
-	/******************************************************************************
-	* Compile definitive participant list from:
-	* $db_participants = all group members whose membership is defined in ugroup_user
-	* $external_memberlist_participants = all group members whose membership is
-	* determined by an external membership list (e.g. ldap group)
-	* if participant is in ugroup_user only then memberl ist is db
-	* if participant is in external member list only then memberlist is external
-	* if participant is in both ugroup_user and external member list then
-	* member list is external
-	 ******************************************************************************/
-	 
-	$participants = $external_memberlist_participants;
-	$participants_unames = $external_memberlist_participant_unames;
-	
-	 
-	foreach (array_keys($db_participants) as $key) {
-		if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
-			$participants[] = $db_participants[$key];
-			$participants_unames = $db_participants[$key][uname];
-		}			
-	}	
-	return $participants;
+	}
+	//return $participants;
+	return $allparticipants;
 
 }
 
