@@ -2,6 +2,22 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.0.3" date="Not Yet Released">
+		<change author='adam'>
+			Permissions window now has Save/Cancel buttons at the top of the 
+			window.
+		</change>
+		<important author='adam'>
+			Segue expects that usernames are all lower-case. Checks are in place
+			to force the creation of lowercase usernames when adding users, but 
+			if you are using a custom authentication modules, these checks may 
+			be bypassed and you should check that usernames in your user table 
+			are lower-case if you see strange problems with permissions. 
+		</important>
+		<new author='adam'>
+			Addition of an update framework for applying database updates in
+			Segue. When templates/database updates are in a release, they
+			will appear in the "Segue Updates" section of the "admin tools".
+		</new>
 		<change author='alex'>
 			Two new site templates: "Advanced: Single Section" and 
 			"Advanced: Blank".

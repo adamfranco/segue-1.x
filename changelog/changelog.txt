@@ -6,6 +6,12 @@ Name: Segue ChangeLog
 v. 1.0.3 (Not Yet Released)
 ----------------------------------------------------
 		
+	* Change: Permissions window now has Save/Cancel buttons at the top of the window. (Adam Franco)
+		
+	**** IMPORTANT *** Change: Segue expects that usernames are all lower-case. Checks are in place to force the creation of lowercase usernames when adding users, but if you are using a custom authentication modules, these checks may be bypassed and you should check that usernames in your user table are lower-case if you see strange problems with permissions. (Adam Franco)
+		
+	* New feature: Addition of an update framework for applying database updates in Segue. When templates/database updates are in a release, they will appear in the &quot;Segue Updates&quot; section of the &quot;admin tools&quot;. (Adam Franco)
+		
 	* Change: Two new site templates: &quot;Advanced: Single Section&quot; and &quot;Advanced: Blank&quot;. (Alex Chapin)
 		
 	**** IMPORTANT *** Change: To create the new templates, log in as an administrator, then enter the url &quot;http://...your_segue_directory/index.php?action=update_1.0.3&quot;.
