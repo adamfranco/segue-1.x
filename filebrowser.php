@@ -24,6 +24,9 @@ if ($delete) {
 } 
 
 $sitelist = array();
+//$source = $_REQUEST[editor];
+//printpre($_SESSION);
+//printpre($_REQUEST);
 
 $w = array(); 
 if ($ltype == 'admin') { 
@@ -55,8 +58,28 @@ $totalsize = 0;
 while ($a = db_fetch_assoc($r)) {
 	$totalsize = $totalsize + $a[media_size];
 }
+
+/******************************************************************************
+ * if source = discuss then show only files uploaded by currently authed user
+ ******************************************************************************/
+if ($_REQUEST[source]) {		
+	$user_id = $_SESSION[aid];
+	$userfilter = "AND user_id = $user_id";
+	//print "userid=".$user_id;
+} else {
+	$userfilter = "";
+}
+
+if ($_REQUEST[comingFrom]) {		
+	//print $_REQUEST[comingFrom];
+}
+
+/******************************************************************************
+ * Uploads files
+ ******************************************************************************/
  
 if ($upload) { 
+	
 	$query = "
 		SELECT 
 			media_tag,
@@ -64,6 +87,7 @@ if ($upload) {
 			media_size,
 			media_type,
 			slot_name,
+			user_id,
 			user_fname,
 			user_uname,
 			slot_uploadlimit
@@ -76,8 +100,14 @@ if ($upload) {
 			user
 				ON media.FK_createdby = user_id
 		WHERE
-			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."' AND media_location = 'local'"; 
-//	print "$query <br>"; 
+			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."' 
+		AND 
+			media_location = 'local' 
+		$userfilter
+	"; 
+			
+			
+	//print "$query <br>"; 
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	
@@ -230,6 +260,7 @@ $query = "
 		user
 			ON media.FK_createdby = user_id
 	$where AND media_location = 'local'
+	$userfilter
 	$orderby
 	$limit
 "; 
@@ -301,6 +332,16 @@ input,select {
 </style> 
  
 <script lang="JavaScript"> 
+
+<? if ($source == 'discuss') { ?> 
+	function useFileDiscuss(fileID,fileName) { 
+		o = opener.document.postform; 
+		o.libraryfileid.value=fileID; 
+		o.libraryfilename.value=fileName; 
+		o.submit(); 
+		window.close(); 
+	}  
+<? } ?> 
  
 <? if ($editor == 'none') { ?> 
 	function useFile(fileID,fileName) { 
@@ -309,7 +350,7 @@ input,select {
 		o.libraryfilename.value=fileName; 
 		o.submit(); 
 		window.close(); 
-	} 
+	}  
 
 <? } else if ($editor == 'text') { 
 	// if using the non-IE text editor 
@@ -377,6 +418,7 @@ function changePage(lolim) {
 					<input type=hidden name='upload' value='1'> 
 					<input type=hidden name='order' value='<? echo $order ?>'> 
 					<input type=hidden name='editor' value='<? echo $editor ?>'> 
+					<input type=hidden name='source' value='<? echo $source ?>'> 
 					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
 					if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
@@ -480,6 +522,7 @@ if (1) {
 		<? if ($ltype == 'admin') print "Search all sites: <input type=checkbox name='all' value='all sites'".(($all)?" checked":"").">"; ?> 
 		<input type=hidden name='order' value='<? echo $order ?>'> 
 		<input type=hidden name='editor' value='<? echo $editor ?>'> 
+		<input type=hidden name='source' value='<? echo $source ?>'> 
 		<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
 		<input type=hidden name='lowerlimit' value=0>
 		</form> 
@@ -510,6 +553,7 @@ if (1) {
 	<form action=<?echo "$PHP_SELF?$sid"?> method=post name='searchform'> 
 	<input type=hidden name='order' value='<? echo $order ?>'> 
 	<input type=hidden name='editor' value='<? echo $editor ?>'> 
+	<input type=hidden name='source' value='<? echo $source ?>'> 
 	<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'>
 	<input type=hidden name='site' value='<? echo $site ?>'>
 	</form>
@@ -613,6 +657,9 @@ if (db_num_rows($r)) {
  
 		print "<td class=td$color>";
 			if ($comingfrom != "viewsite") {
+				if ($source == 'discuss') {
+					print "<input type=button name='use' value='use' onClick=\"useFileDiscuss('".$a[media_id]."','".$a[media_tag]."')\">";				
+				} 
                 if ($editor == 'none') {
 					print "<input type=button name='use' value='use' onClick=\"useFile('".$a[media_id]."','".$a[media_tag]."')\">";
                 }
@@ -691,6 +738,7 @@ if (db_num_rows($r)) {
 <input type=hidden name='order' value='<? echo $order ?>'> 
 <input type=hidden name='all' value='<? echo $all ?>'> 
 <input type=hidden name='editor' value='<? echo $editor ?>'>
+<input type=hidden name='source' value='<? echo $source ?>'>
 <input type=hidden name='site' value='<? echo $site ?>'>
 <input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'> 
 </form> 

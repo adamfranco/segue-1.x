@@ -98,6 +98,7 @@ if (!$allTablesExist) {
 		  KEY FK_story (FK_story),
 		  KEY discussion_order (discussion_order),
 		  KEY FK_parent (FK_parent),
+		  KEY FK_media (FK_media),
 		  KEY discussion_tstamp (discussion_tstamp)
 		) TYPE=MyISAM;
 		

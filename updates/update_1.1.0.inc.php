@@ -13,6 +13,7 @@ class Update110
 	var $field01Exists = FALSE;
 	var $field02Exists = FALSE;
 	var $field03Exists = FALSE;
+	var $field04Exists = FALSE;
 	
 	
     /**
@@ -65,7 +66,16 @@ class Update110
 		if (db_num_rows($r))
 			$this->field03Exists = TRUE;
 			
-		if ($this->field01Exists && $this->field02Exists && $this->field03Exists)
+		$query = "
+		DESCRIBE
+			discussion FK_media
+		";
+		$r = db_query($query);
+		if (db_num_rows($r))
+			$this->field04Exists = TRUE;
+
+			
+		if ($this->field01Exists && $this->field02Exists && $this->field03Exists && $this->field04Exists)
 			return TRUE;
 		else
 			return FALSE;
@@ -100,7 +110,7 @@ class Update110
 			$r = db_query($query);
 		}
 		
-				if (!$this->field03Exists) {
+		if (!$this->field03Exists) {
 			$query = "
 			ALTER TABLE 
 				story
@@ -110,6 +120,18 @@ class Update110
 			$r = db_query($query);
 		}		
 		
+		if (!$this->field04Exists) {
+			$query = "
+			ALTER TABLE 
+				discussion
+			ADD 
+				 FK_media INT( 10 ) UNSIGNED NULL AFTER FK_parent
+			";
+			$r = db_query($query);
+		}		
+
 	}
 }
+
+
 ?>

@@ -7,6 +7,7 @@ class discussion {
 //	var $author = array("id"=>0,"uname"=>"","fname"=>"");
 	var $authorid=0,$authoruname,$authorfname,$authoremail;
 	
+	var $libraryfilename, $libraryfilenameid=0;
 	var $tstamp,$content,$subject,$order;
 	
 	var $children=array();
@@ -178,7 +179,7 @@ class discussion {
 	function fetchchildren() { $this->_fetchchildren(); }
 	
 	function _parseDBline($a) {
-		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname","user_email"=>"authoremail");
+		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","media_tag"=>"media_tag","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname","user_email"=>"authoremail");
 		foreach ($_f as $f=>$v) {
 			if ($a[$f]) $this->$v = $a[$f];
 		}
@@ -196,14 +197,6 @@ class discussion {
 		if (!$this->id) return false;
 		
 		$query = "
-	SELECT
-		discussion_tstamp,discussion_content,discussion_subject,user_uname,user_fname,FK_story,FK_author,FK_parent,user_email
-	FROM
-		discussion
-		INNER JOIN
-			user
-		ON
-			FK_author = user_id
 	WHERE
 		discussion_id=".$this->id;
 
@@ -295,6 +288,11 @@ class discussion {
 	function _generateSQLdata() {
 		$query = "FK_author=".$this->authorid;
 		if ($this->parentid) $query .= ",FK_parent=".$this->parentid;
+		if ($this->libraryfilenameid) {
+			$media_id = $this->libraryfilenameid;
+			$query .= ",FK_media=".$media_id;
+		}
+		
 		$query .= ",discussion_content='".urlencode(stripslashes($this->content))."'";
 		$query .= ",discussion_subject='".urlencode(stripslashes($this->subject))."'";
 		$query .= ",FK_story=".$this->storyid;
@@ -433,6 +431,8 @@ class discussion {
 	function _outputform($t) { // outputs a post form of type $t (newpost,edit,reply)
 		global $sid,$error;
 		$script = $_SERVER['SCRIPT_NAME'];
+		
+		
 		if ($t == 'edit') {
 			$b = 'update';
 			$d = "<a name='".$this->id."'>You are editing your post &quot;".$this->subject."&quot;</a>";
@@ -451,6 +451,7 @@ class discussion {
 			}
 			else $s = $_REQUEST['subject'];
 		}
+				
 		$p = ($t=='reply')?" style='padding-left: 15px'":'';
 		//
 		printc ("<form action='$script?$sid&".$this->getinfo."#".$this->id."' method=post name=postform>");
@@ -467,14 +468,20 @@ class discussion {
 		//added fullstory action for posting form
 		printc ("<input type=hidden name=action value='".$_REQUEST['action']."'>");
 		//added site variable for discussion logging
-		printc ("<input type=hidden name=site value='".$_REQUEST['site']."'>");		
+		printc ("<input type=hidden name=site value='".$_REQUEST['site']."'>");	
+		printc ("<input type=hidden name=libraryfileid value='".$_REQUEST['libraryfilenameid']."'>");	
 		printc ("<input type=hidden name=commit value=1>");
 		if ($t=='edit') printc ("<input type=hidden name=id value=".$_REQUEST['id'].">");
 		if ($t=='reply') printc ("<input type=hidden name=replyto value=".$_REQUEST['replyto'].">");
+				
+		printc ("<br>Upload a File:<input type=text name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size=25 readonly><input type=button name='browsefiles' value='Browse...' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?source=discuss&editor=none\")' target='filebrowser' style='text-decoration: none'>");
+		//printc ("<input type=submit name='browsefiles' value='Add'>");
+		printc ("</form>");
+		
 		if ($_SESSION['aid']) printc ("<br>You will be able to edit your post as long as no-one replies to it.");
 		else printc ("<br>Once submitted, you will not be able to modify your post.");
 		printc ("</td></tr>");
-		printc ("</form>");
+		
 	}
 		
 /******************************************************************************
@@ -482,7 +489,7 @@ class discussion {
  ******************************************************************************/
 	
 	function _output($cr,$o) {
-		global $sid,$error,$showallauthors,$showposts;
+		global $sid,$error,$showallauthors,$showposts,$uploadurl;
 		
 		if ($showposts == 1 || $o == 1 || $_SESSION[auser] == $this->authoruname) {
 			// check to see if we have any info to commit
@@ -531,6 +538,10 @@ class discussion {
 				 ******************************************************************************/
 				printc ("<table width=100% cellspacing=0px>");
 					printc ("<tr><td align=left><span class=subject>$s</span><br>$a</td><td align=right valign=bottom>$c</td></tr>");
+					if ($media_tag) {
+						$media_link = "<a href='".$uploadurl."/".$media_tag."'>".$media_tag."</a>";
+						printc ("<tr><td align=left>$media_link</td></tr>");
+					}
 				printc("</table>");
 			} else
 				printc ($s);
