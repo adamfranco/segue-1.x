@@ -222,7 +222,10 @@
 						"template0"=>"Default",
 						"template1"=>"Extensive Course Site",
 						"template2"=>"Standard Course Site",
-						"template3"=>"Brief Course Site");
+						"template3"=>"Brief Course Site",
+						"template4"=>"Advanced: Single Section",
+						"template5"=>"Advanced: Blank"
+						);
 						
 	/******************************************************************************
 	 * themesdir - the folder where all the themes are kept. shouldn't need changing

@@ -16,17 +16,22 @@ include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
+$begindate = "$_REQUEST[begindate]";
+$enddate = "$_REQUEST[enddate]";
+
+
 if ($clear) {
 	$type = "";
 	$user = "";
 	$site = "";
 	$_auser = "";
 	$_luser = "";
-	$startdate = "";
+	$begindate = "";
+	$enddate = "";
 }
 
 if ($_REQUEST[order]) $order = $_REQUEST[order];
-if (!isset($order)) $order = "log_tstamp ASC";
+if (!isset($order)) $order = "log_tstamp DESC";
 $orderby = " order by $order";
 
 $w = array();
@@ -38,18 +43,12 @@ if ($_REQUEST[_auser]) $w[]="FK_auser='$_auser'";
 if ($_SESSION[ltype] != 'admin') {
 	$w[]="slot_name LIKE '%$site%'";
 } else {
-	if ($_REQUEST[site]) $w[]="slot_name LIKE '%$site%'";
-	
-//cannot figure how to compare dates	
-/* 	if ($_REQUEST[startdate]) { */
-/* 		$startdate = "$_REQUEST[startdate]";	 */
-/* 		print $startdate."<br>"; */
-/* 		$startdate = strtotime("$startdate"); */
-/* 		print $startdate;		 */
-/* 		$w[]="log_tstamp > $startdate"; */
-/* 	} */
-
+	if ($_REQUEST[site] != "") $w[]="slot_name LIKE '%$site%'";
+	if ($begindate) $w[]="log_tstamp < $begindate";
+	if ($enddate) $w[]="log_tstamp > $enddate";
 }
+
+
 if ($_REQUEST[hideadmin]) $w[]="log_type NOT LIKE 'change_auser'";
 	
 
@@ -73,12 +72,14 @@ $query = "
 			ON
 		log.FK_auser = user2.user_id		
 	$where";
+	//print "<pre>".print_r($query)."</pre>";
 $r=db_query($query); 
 $a = db_fetch_assoc($r);
 $numlogs = $a[log_count];
 
-if (!isset($lowerlimit) && $order == 'log_tstamp ASC') $lowerlimit = $numlogs-30;
-if (!isset($lowerlimit) && $order != 'log_tstamp ASC') $lowerlimit = 0;
+//if (!isset($lowerlimit) && $order == 'log_tstamp DESC') $lowerlimit = $numlogs-30;
+//if (!isset($lowerlimit) && $order != 'log_tstamp DESC') $lowerlimit = 0;
+if (!isset($lowerlimit)) $lowerlimit = 0;
 if ($lowerlimit < 0) $lowerlimit = 0;
 
 $limit = " LIMIT $lowerlimit,30";
@@ -178,10 +179,12 @@ function changeOrder(order) {
 			print "<option".(($type==$a[log_type])?" selected":"").">$a[log_type]\n";
 		?>
 		</select>
-<!-- 		start date: <input type=text name=startdate size=10 value='<?echo $startdate?>'> -->
+ 	
 		<?
 		if ($ltype == 'admin') {
 		?>
+			start date (yyyymmdd): <input type=text name=enddate size=10 value='<?echo $enddate?>'> 
+			end date (yyyymmdd): <input type=text name=begindate size=10 value='<?echo $begindate?>'> 
 			user: <input type=text name=user size=15 value='<?echo $user?>'>
 			site: <input type=text name=site size=15 value='<?echo $site?>'>
 			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?>
@@ -206,9 +209,9 @@ function changeOrder(order) {
 		print "$curr of $tpages ";
 //		print "$prev $lowerlimit $next ";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
+			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&begindate=$begindate&enddate=$enddate&lowerlimit=$prev&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
+			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&begindate=$begindate&enddate=$enddate&lowerlimit=$next&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
 		?>
 		</td>
 		</tr>
