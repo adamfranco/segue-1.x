@@ -20,18 +20,36 @@ if ($delete) {
 	deleteuserfile($filetodelete); 
 	printerr2(); 
 } 
+
+$w = array(); 
+if ($ltype == 'admin') { 
+	if ($site) $w[]="site_id='$site'"; 
+	else if ($all) $w[]="site_id like '%'"; 
+	else $w[]="site_id='$settings[site]'"; 
+} else $w[]="site_id='$settings[site]'"; 
+if (count($w)) $where = " where ".implode(" and ",$w); 
+
+$query = "select * from media$where"; 
+$r = db_query($query); 
+
+$totalsize = 0;
+while ($a = db_fetch_assoc($r)) {
+	$totalsize = $totalsize + $a[size];
+}
  
 if ($upload) { 
 	$query = "select * from media where site_id='".(($site)?"$site":"$settings[site]")."'"; 
 //	print "$query <br>"; 
 	$r = db_query($query); 
-	$filename = $_FILES['file']['name']; 
+	$filename = $_FILES[file][name]; 
 	$nameUsed = 0; 
 	while ($a = db_fetch_assoc($r)) { 
 		if ($a[name] == $_FILES['file']['name']) $nameUsed = 1; 
 	} 
 	if ($_FILES['file']['tmp_name'] == 'none') { 
 		$upload_results = "<li>No file selected"; 
+	} else if (($_FILES[file][size] + $totalsize) > $userdirlimit) {
+		$upload_results = "<li>There is not enough room in your directory for $filename."; 
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. Please change the filename before uploading.<br>Or click here to OVERWRITE"; 
 	} else { 
@@ -45,7 +63,23 @@ if ($clear) {
 	$site = ""; 
 	$name = ""; 
 } 
- 
+
+$w = array(); 
+if ($ltype == 'admin') { 
+	if ($site) $w[]="site_id='$site'"; 
+	else if ($all) $w[]="site_id like '%'"; 
+	else $w[]="site_id='$settings[site]'"; 
+} else $w[]="site_id='$settings[site]'"; 
+if (count($w)) $where = " where ".implode(" and ",$w); 
+
+$query = "select * from media$where"; 
+$r = db_query($query); 
+
+$totalsize = 0;
+while ($a = db_fetch_assoc($r)) {
+	$totalsize = $totalsize + $a[size];
+}
+
 if (!isset($order)) $order = "name asc"; 
 $orderby = " order by $order"; 
  
@@ -108,7 +142,16 @@ th {
 	background-color: #ccc;  
 	font-variant: small-caps; 
 } 
- 
+
+.sizebox1 {
+	text-align: left;
+	padding-right: 5px;
+}
+
+.sizebox2 {
+	text-align: right;
+}
+
 body {  
 	background-color: white;  
 } 
@@ -186,8 +229,8 @@ function changeOrder(order) {
 		<td colspan=<? print (($ltype=='admin')?"10":"9"); ?>> 
 			<table width='100%'> 
 				<tr> 
-				<td style='text-align: left; padding-top:10px;' valign=top> 
-					<? 
+				<td style='text-align: left; padding-top:10px;' valign=top width=33%> 
+					<? 					
 					if ($upload) { 
 						print "Upload Results: <div style='margin-left: 25px'>"; 
 						print $upload_results; 
@@ -195,7 +238,7 @@ function changeOrder(order) {
 					} 
 					?> 
 				</td> 
-				<td style='text-align: left; padding-top:10px;' width=50% valign=top> 
+				<td style='text-align: left; padding-top:10px;' valign=top> 
 					<form action="filebrowser.php" name='addform' method="POST" enctype="multipart/form-data"> 
 					<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'"> 
 					<input type=hidden name='upload' value='1'> 
@@ -210,6 +253,19 @@ function changeOrder(order) {
 					<div class=desc>Select the file or image you would like to upload<br>by clicking the 'Browse...' button above.</div> 
 					</form> 
 				</td> 
+				<td>
+					<?
+					$dirtotal = convertfilesize($totalsize);
+					$dirlimit = convertfilesize($userdirlimit);
+					$space = $userdirlimit - $totalsize;
+					$space = convertfilesize($space);
+					print "<table cellspacing=0 cellpadding=0 align=center>";
+					print "<tr><td class='sizebox1'>Total size of your media: </td><td class='sizebox2'> $dirtotal</td></tr>";
+					print "<tr><td class='sizebox1'>Total media allowed: </td><td class='sizebox2'> $dirlimit</td></tr>";
+					print "<tr><td class='sizebox1'>Space availible: </td><td class='sizebox2' style='border-top: 1px solid #000'> $space</td></tr>";
+					print "</table><br>";
+					?>
+				</td>
 				</tr> 
 			</table> 
 		</td> 
