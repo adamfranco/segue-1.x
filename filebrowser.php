@@ -190,11 +190,15 @@ input,select {
 	// if using the activeX editor 
 ?> 
 	function useFile(fileID,fileName) { 
-		o = opener.document.addform; 
+                var _editor_url = opener._editor_url;
+                var objname     = location.search.substring(1,location.search.length);
+                var config      = opener.document.all[objname].config;
+                var editor_obj  = opener.document.all["_" +objname+  "_editor"];
+                var editdoc     = editor_obj.contentWindow.document;
 		o.libraryfileid.value=fileID; 
 		o.libraryfilename.value=fileName; 
 		var insert = '<img src=' +o.libraryfileid.value=fileID+ '>'
-                opener.editor_insertHTML(insert);
+                opener.editor_insertHTML(objname, insert);
 		o.submit();
 		window.close(); 
 	} 
