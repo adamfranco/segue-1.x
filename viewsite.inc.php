@@ -205,6 +205,9 @@ $text .= "<td valign=top align=left>";
 $text .= "<input type=button class='button' name='sitemap' value=' &nbsp; Site Map &nbsp; &nbsp;' onClick='sendWindow(\"sitemap\",600,400,\"site_map.php?$sid&site=$site\")' target='sitemap' style='text-decoration: none'>";
 
 $text .= "</td>";
+$text .= "<td valign=top align=center>";
+
+$text .= helplink("index");
 
 $text .= "</tr></table></div>";
 $sitefooter = $sitefooter . $text;

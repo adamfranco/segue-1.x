@@ -42,6 +42,8 @@ if ($_loggedin) {
         add_link(leftnav,"Links");
         foreach ($defaultlinks as $t=>$u)
                 add_link(leftnav,$t,"http://".$u,'','',"_blank");
+        
+        add_link(leftnav,helplink("index"));
 
 /*      print_r($classes); */
 /*      print_r($futureclasses); */

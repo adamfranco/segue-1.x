@@ -241,6 +241,18 @@ $leftlinks .= "</td></tr></table>________________<br><a href=$PHP_SELF?$sid&acti
 
 add_link(leftnav,'','',"$leftlinks");
 
+print "Everyone:".$_SESSION[siteObj]->hasPermission("view","everyone","1")."<br>";
+print "EveryoneDirect:".$_SESSION[siteObj]->permissions[everyone][3]."<br>";
+print "EveryoneDown:".$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")."<br>";
+print "<br>";
+print "Institute:".$_SESSION[siteObj]->hasPermission("view","institute","1")."<br>";
+print "InstituteDirect:".$_SESSION[siteObj]->permissions[institute][3]."<br>";
+print "InstituteDown:".$_SESSION[siteObj]->hasPermissionDown("view","institute","1")."<br>";
+print "<br>";
+print "Class:".$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1")."<br>";
+print "ClassDirect:".$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3]."<br>";
+print "--------------------------------<br>";
+
 if ($_SESSION[settings][step] == 1) {
 	include("add_site_form_1_title.inc");
 }

@@ -598,7 +598,7 @@ class segue {
 /* 			print " &nbsp; "; */
 /* 			$i++; */
 /* 		} */
-/* 		print $class.": setting ".$this->id." permissions[".$user."][".$c."] = ".$val."<br>"; */
+		print $class.": set ".$this->id." permissions[".$user."][".$c."] = ".$this->permissions[$user][$c]."<br>";
 		
 		$this->changedpermissions=1;
 		if ($ar) {
@@ -882,7 +882,10 @@ class segue {
 	
 	function hasPermissionDown($perms,$user='',$useronly=0) {
 		if (!$this->fetcheddown) $this->fetchDown();
-		if ($this->hasPermission($perms,$user,$useronly)) return true;
+		if ($this->hasPermission($perms,$user,$useronly)) {
+			print "$user has perms $perms on ".get_class($this)." ".$this->id."<br>";
+			return true;
+		}
 		$class = get_class($this);
 		$ar = $this->_object_arrays[$class];
 		if ($ar) {

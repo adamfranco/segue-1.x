@@ -1,7 +1,7 @@
 <script lang="JavaScript">
 <!--
 function doHelpWin() {
-	var newWin = window.open("","help","height=300,width=400,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,resizable=no,copyhistory=no");
+	var newWin = window.open("","help","height=300,width=400,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,resizable=yes,copyhistory=no");
 	newWin.focus();
 }
 //-->

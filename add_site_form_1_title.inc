@@ -67,17 +67,17 @@ printc("<br><br>");
  *				class, has full view permissions.
  * Custom:		Checked if the others fail and in edit mode.
  ******************************************************************************/
-print "Everyone:".$_SESSION[siteObj]->hasPermission("view","everyone","1")."<br>";
-print "EveryoneDirect:".$_SESSION[siteObj]->permissions[everyone][3]."<br>";
-print "EveryoneDown:".$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")."<br>";
-print "<br>";
-print "Institute:".$_SESSION[siteObj]->hasPermission("view","institute","1")."<br>";
-print "InstituteDirect:".$_SESSION[siteObj]->permissions[institute][3]."<br>";
-print "InstituteDown:".$_SESSION[siteObj]->hasPermissionDown("view","institute","1")."<br>";
-print "<br>";
-print "Class:".$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1")."<br>";
-print "ClassDirect:".$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3]."<br>";
-print "--------------------------------<br>";
+/* print "Everyone:".$_SESSION[siteObj]->hasPermission("view","everyone","1")."<br>"; */
+/* print "EveryoneDirect:".$_SESSION[siteObj]->permissions[everyone][3]."<br>"; */
+/* print "EveryoneDown:".$_SESSION[siteObj]->hasPermissionDown("view","everyone","1")."<br>"; */
+/* print "<br>"; */
+/* print "Institute:".$_SESSION[siteObj]->hasPermission("view","institute","1")."<br>"; */
+/* print "InstituteDirect:".$_SESSION[siteObj]->permissions[institute][3]."<br>"; */
+/* print "InstituteDown:".$_SESSION[siteObj]->hasPermissionDown("view","institute","1")."<br>"; */
+/* print "<br>"; */
+/* print "Class:".$_SESSION[siteObj]->hasPermission("view",$_SESSION[siteObj]->getField("name"),"1")."<br>"; */
+/* print "ClassDirect:".$_SESSION[siteObj]->permissions[$_SESSION[siteObj]->getField("name")][3]."<br>"; */
+/* print "--------------------------------<br>"; */
 
 printc("Allow: <b><input type=radio name=viewpermissions value='everyone'".(($_SESSION[siteObj]->hasPermission("view","everyone","1"))?" checked":"")."> anyone ");
 printc(" <input type=radio name=viewpermissions value='institute'".(($_SESSION[siteObj]->hasPermission("view","institute","1") && !$_SESSION[siteObj]->hasPermissionDown("view","everyone","1"))?" checked":"")."> $cfg[inst_name] users ");

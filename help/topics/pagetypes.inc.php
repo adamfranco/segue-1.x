@@ -1,4 +1,4 @@
-<? $title = "Navigation Types (Page)"; ?>
+<? $title = "Page Types"; ?>
 
 <div class=desc><b>Content Page</b> - will allow you to add content to your site, along with user discussions if necessary.</div>
 <div class=desc><b>Link/URL</b> - is a link to a page outside of your site (like <i>http://www.middlebury.edu/</i>). URLs will open in a new window, allowing users to continue browsing your site.</div>

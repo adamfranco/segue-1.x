@@ -50,6 +50,7 @@ body { background-color: white; }
 </style>
 </head>
 <BODY marginheight=0 marginwidth=0 leftmargin=0 rightmargin=0 topmargin=0 bottommargin=0>
+<div align=right class=content><a href='help.php?&helptopic=index'>Index</a></div>
 <div class=title>Help Topic: <?echo $title?></div>
 <div class=content><?echo $content?></div>
 <div align=right><input type=button class=button value='close' onClick='window.close()'></div>

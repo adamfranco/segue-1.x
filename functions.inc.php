@@ -202,6 +202,14 @@ function deleteuserfile($fileid) {
 function deleteComplete($file) {
 	// posted by georg@spieleflut.de on PHP.net 24-Dec-2001 10:28
 	// This function will completely delete even a non-empty directory.
+	global $uploaddir;
+	$uploadDirs = array(
+		$uploaddir,
+		$uploaddir."/",
+		$uploaddir."//",
+		$uploaddir."///"
+	);
+	if (in_array($file, $uploadDirs)) return false;
 	chmod($file,0777);
 	if (is_dir($file)) {
 		$handle = opendir($file);
