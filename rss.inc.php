@@ -157,7 +157,7 @@ if ($error) {
 	
 		$thisPage->fetchDown();
 		if ($thisPage->hasPermissionDown("view"))
-			print "\t\t<title>".$thisPage->getField("title")."</title>\n";
+			print "\t\t<title>".$thisPage->getField("title")." - ".$_SESSION[auser]."</title>\n";
 			
 			$pagelink = $cfg[full_uri]."/index.php?$sid&action=site";
 			$pagelink .= "&site=".$thisSite->name;
