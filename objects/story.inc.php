@@ -4,7 +4,7 @@ class story extends segue {
 	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp",
 							"editedby","editedtimestamp","shorttext","longertext",
 							"activatedate","deactivatedate","discuss",
-							"locked","category","discussions","texttype","type","url");
+							"locked","category","discussions","texttype","type","url","active");
 	
 	// fields listed in $_datafields are stored in the database.
 	// the first element is the table join syntax required to pull the data.

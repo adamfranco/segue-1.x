@@ -141,7 +141,7 @@ FROM
 					ON slot.FK_site = site_id
 					INNER JOIN 
 				site_editors ON (
-					site_id = FK_site 
+					site_id = site_editors.FK_site 
 						AND 
 					site_editors_type = 'ugroup'
 				)

@@ -286,7 +286,7 @@ SELECT
 	page_type AS type, page_title AS title, page_activate_tstamp AS activatedate, page_deactivate_tstamp AS deactivatedate,
 	page_active AS active, page_storyorder AS storyorder, page_show_creator AS showcreator, 
 	page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
-	page_updated_tstamp AS edtiedtimestamp, page_created_tstamp AS addedtimestamp,
+	page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
 	page_ediscussion AS ediscussion,
 	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
 	FK_section AS section_id, media_tag AS url
