@@ -13,7 +13,7 @@ class group {
 	}
 	
 	function fetchFromDB() {
-		$query = "select * from classgroups where name='".$this->name."'";
+		$query = "SELECT * FROM classgroup WHERE classgroup_name='".$this->name."'";
 		if ($this->owner) $query .= " and owner='".$this->owner."'";
 		$r = db_query($query);
 		if (db_num_rows($r)) {

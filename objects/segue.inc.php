@@ -25,15 +25,16 @@ class segue {
 	var $owning_section; var $owningSectionObj;	// only used for pages and stories
 	var $owning_page; var $owningPageObj;		// only used for stories
 	
-	var $_object_arrays = array("site"=>"sections","section"=>"pages","page"=>"stories"); // used for automatic functions like setFieldDown and setVarDown
-	var $_tables = array("site"=>"sites","section"=>"sections","page"=>"pages","story"=>"stories"); // used for getField
+	var $_object_arrays = array("site"=>"section","section"=>"page","page"=>"story"); // used for automatic functions like setFieldDown and setVarDown
+	var $_tables = array("site"=>"site","section"=>"section","page"=>"page","story"=>"story"); // used for getField
 
 /******************************************************************************
  * siteExists - checks if the site/slot already exists with a certain name $name
  ******************************************************************************/
 	
 	function siteExists($site) {
-		$query = "select * from sites where name='$site'";
+// !!!!!!!!!!!!!!!!! UPDATE THIS QUERY	
+		$query = "SELECT site_id FROM site WHERE site_id='$site'";
 		if (db_num_rows(db_query($query))) return 1;
 		return 0;
 	}
@@ -66,9 +67,9 @@ class segue {
 
 	function getAllSites($user) {
 		$sites = array();
-		if (db_num_rows($r = db_query("select * from sites where addedby='$user'"))) {
+		if (db_num_rows($r = db_query("SELECT site_id FROM site WHERE FK_createdby=$user"))) {
 			while ($a = db_fetch_assoc($r)) {
-				$sites[] = $a[name];
+				$sites[] = $a[site_id];
 			}
 		}
 		return $sites;
@@ -335,7 +336,7 @@ class segue {
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='activatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -345,7 +346,7 @@ class segue {
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 		
 		printc("</td></tr>");
 		
@@ -354,7 +355,7 @@ class segue {
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>\n");
+		printc("/select>\n");
 		printc("<select name='deactivatemonth'>");
 		for ($i=0; $i<12; $i++) {
 			printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n");
@@ -363,7 +364,7 @@ class segue {
 		for ($i=$curryear; $i <= ($curryear+5); $i++) {
 			printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n");
 		}
-		printc("</select>");
+		printc("/select>");
 		
 		printc("</tr></td></table>");
 	}

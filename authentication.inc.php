@@ -1,4 +1,5 @@
 <? /* $Id$ */
+
 // handles the authentication of scripts executed and decides if the user needs to be
 // authenticated in the first place.
 // - this script essentially has the same structure as checklogin.inc.php
@@ -81,7 +82,7 @@ function loginvalid($user,$pass,$alreadyloggedin=0) {
 		
 		foreach ($_auth_mods as $_auth) {
 			$func = "_valid_".$_auth;
-//			print "<BR>AUTH: trying ".$_auth ."..."; //debug
+//			print "<BR>AUTH: trying ".$_auth ."... $func"; //debug
 			if ($x = $func($user,$pass)) {
 				$valid = 1;
 				break;
@@ -116,7 +117,7 @@ function _auth_check_db($x,$add_to_db=0) {
 	// $x[user] and $x[method] must be set
 	global $dbuser,$dbhost,$dbpass,$dbdb;
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-	$query = "SELECT * FROM user WHERE user_id='".$x[id]."' AND user_authtype='".$x[method]."'";
+	$query = "SELECT * FROM user WHERE user_uname='".$x[user]."' AND user_authtype='".$x[method]."'";
 	$r = db_query($query);
 	if (db_num_rows($r)) {		// they have an entry already -- pull down their info
 		$a = db_fetch_assoc($r);
