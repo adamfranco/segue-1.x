@@ -3,7 +3,7 @@
 Name: Segue ChangeLog
 
 
-v. 1.3.1 (2004-10-04)
+v. 1.3.1 (2004-10-05)
 ----------------------------------------------------
 		
 	* Bug Fix: Removed invalid template from sample config. (Alex Chapin)
