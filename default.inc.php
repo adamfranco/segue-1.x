@@ -315,17 +315,22 @@ if ($_loggedin) {
 	$sites =& removePrinted($da_sites);
 	
 	if (count($sites)) {
-/* 		printc("<tr><td class='inlineth' colspan=2>"); */
+		printc("<tr><td class='inlineth' colspan=2>");
+		
+		/******************************************************************************
+		 * expand/collapse option for others sites listing
+		 ******************************************************************************/
+		
 /* 		if ($_REQUEST[expand_other] == 0) { */
 /* 			printc("<a href=$PHP_SELF?expand_other=1>+</a> "); */
 /* 		} else { */
 /* 			printc("<a href=$PHP_SELF?expand_other=0>-</a> "); */
 /* 		} */
-		printc ("Other Sites".helplink("othersites","What are these?")."</td></tr>");
-//		if ($expand_other) {
-			foreach (array_keys($sites) as $i=>$n)
-				printSiteLine($sites[$n]);
-//		}
+/* 		printc ("Other Sites".helplink("othersites","What are these?")."</td></tr>"); */
+/* 		if ($expand_other) { */
+/* 			foreach (array_keys($sites) as $i=>$n) */
+/* 				printSiteLine($sites[$n]); */
+/* 		} */
 	}
 	
 /******************************************************************************

@@ -1401,86 +1401,76 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 	}
 
 
-/******************************************************************************
- * canview - checks if part is active & within date range. if so, forwards
- *    to hasPermission() to check view permissions
- ******************************************************************************/
-
-	function canview($user="") {
-		if ($user == "") $user = $_SESSION[auser];
-		if ($user == 'anyuser') $noperms=1;
+	/**
+	 * Checks Several things to determine if the user can view the part:
+	 *	- is this part Active?
+	 *	- is this part within the enabled date ranges?
+	 *	- does the user have permission to view this part if the above are true?
+	 * 
+	 * @param optional string $user
+	 * @return boolean TRUE if the user can view the part
+	 * @access public
+	 * @date 8/31/04
+	 */
+	function canview ($user = "") {
+		// Get our current user:
+		if ($user == "") 
+			$user = $_SESSION[auser];
 		
-//		$_ignore_types = array("page"=>array("heading","divider"));
-		$scope = get_class($this);
-//		if ($_ignore_types[$scope][$this->getField("type")]) return 1;
-//		print "<br>$scope - ".$this->getField("type");
+		// Make sure we have everything fetched that we need.
 		$this->fetchUp();
-//		if (slot::getOwner($this->owningSiteObj->name) == $user) { return 1;}
-		if ($this->owningSiteObj->owner == $user) { return 1;}
-				
-		if ($scope != 'story' && $this->getField("type") != 'heading') {
-			if (!$this->getField("active")) return 0;
-		}
-		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) return 0;
 		
-/* 		echo "<pre>\nCANVIEW\n"; */
-/* 		echo "USER: $user\n"; */
-/* 		echo "CLASS: ".get_class($this)."\n"; */
-/* 		print_r($this->canview); */
-/* 		echo "\nCANVIEW </pre>"; */
-
-//		print "type: ".$_SESSION[atype]." | ";
-//		print "institute: ".$institute."<br>";
-		
-		if (!$noperms) {
-			if ($this->fetched_forever_and_ever && get_class($this)=="site") {
-				// check if our IP is in inst_ips
-				global $cfg;
-				$ipgood=0;
-				$ip = $_SERVER[REMOTE_ADDR];
-				if (is_array($cfg[inst_ips]))
-					foreach ($cfg[inst_ips] as $i)
-						if (ereg("^$i",$ip)) $ipgood=1;
-
-				if (($ipgood || $_SESSION[auser]) && $_SESSION[atype] != 'visitor') 
-					$institute = true;
-				//if ($ipgood || $_SESSION[auser]) $institute = true;
-				else $institute = false;
-				
-				//if (!$institute && $_SESSION[atype] == 'visitor') { print_r("visitor, not institute</br>");}
-				
-			
-			/******************************************************************************
-			 * Visitor user-types cannot view institute-only content
-			 ******************************************************************************/
-			
-			//  if the user canview && type is visitor && institute is true then canview is false (0 or null?)
-			//  if institute && type is visitor then not canview
-			
-			///printpre($this->canview);
-			  $canview = ($this->canview[everyone] || $this->canview[$user] || (($institute) ? $this->canview[institute] : false));
-			//	$canview = ($this->canview[everyone] || $this->canview[$user] || (($institute && $_SESSION[atype] != 'visitor') ? $this->canview[institute] : false));
-			//	$canview = ($this->canview[everyone] || $this->canview[$user] || (($institute && $_SESSION[atype] != 'visitor') ? $this->canview[institute] : false));
-				
-				
-				if ($canview)
-					return $canview;
-				
-				// now check for class permissions
-				$allclasses = getuserclasses($user,"all");
-				foreach (array_keys($allclasses) as $class)
-					if ($this->canview[$class]) 
-					    return true;
-				
-				
-				return FALSE;
-			}
-			else
-				//exit;
-				return $this->hasPermissionDown("view",$user,0,1); 
+		// The owner can always view, so return TRUE 
+		if ($this->owningSiteObj->owner == $user) { 
+			return TRUE;
 		}
-		return 1;
+		
+		
+		// ------ Activation ------
+		// First lets check if this part is active so that we don't have to bother
+		// checking permissions if it isn't active.
+		
+		// What level of the hierarchy are we looking at?
+		$scope = get_class($this);
+		
+		// Check to see if this part is active.
+		// Sections and pages of type "heading" can't be disabled
+		if (!$this->getField("active") && ($scope != 'story' && $this->getField("type") != 'heading')) {
+			return FALSE;
+		}
+		
+		// Check to see if this part is outside of its active date range.
+		if (!indaterange($this->getField("activatedate"),$this->getField("deactivatedate"))) 
+			return FALSE;
+		
+		// If we are passed the 'anyuser' user, then we are being asked if this
+		// part is active, akin to asking, "Can anybody see this thing?". If we have
+		// gotten this far, this is the case, so return TRUE if we are passed
+		// $user == 'anyuser'.
+		if ($user == 'anyuser')
+			return TRUE;
+	
+	
+		// ------ Permission ------
+		// If we have gotten this far, then the part is active.
+		// We now need to check if the current user has permission to view the
+		// part.
+		
+		// If we are looking at a site and already fetched the permissions,
+		// we don't need to fetch them again.
+		if ($this->fetched_forever_and_ever && get_class($this)=="site")
+			$fetch = FALSE;
+		else
+			$fetch = TRUE;
+		
+		// view: The permission to check
+		// $user: The user to check
+		// FALSE: Don't check only the user, include the user in any groups they
+		// 			may be a part of.
+		// $fetch: Should we fetch permissions?
+		return $this->hasPermissionDown("view", $user, FALSE, $fetch); 
 	}
+
 
 /******************************************************************************
  * hasPermission - checks to see if a user has certain permissions
@@ -1495,6 +1485,10 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 //		if (!$this->builtPermissions && $this->id) 
 			$this->buildPermissionsArray();
 
+		/******************************************************************************
+		 * user is either authenticated user or ruser ??
+		 * user can be part of a class group
+		 ******************************************************************************/
 		
 		if ($ruser=='') $user=$_SESSION[auser];
 		else $user = $ruser;
@@ -1511,19 +1505,31 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		if (isset($this->cachedPermissions[$user.$perms]) && count($this->cachedPermissions)) 
 			return $this->cachedPermissions[$user.$perms];
 		$this->fetchUp();
-		$owner = $this->owningSiteObj->owner;
 		
+		/******************************************************************************
+ 		* if user is owner then has permissions
+ 		******************************************************************************/
+ 		
+		$owner = $this->owningSiteObj->owner;
 		if (strtolower($user) == strtolower($owner)) 
 			return true;
 			
 //		echo "Id: ".$this->id.", Scope: ".get_class($this).", Title: ".$this->data[title]."<br>";
 
+		/******************************************************************************
+		 * creates verbose array of permission types
+		 ******************************************************************************/
+
 		$_a = array('add','edit','delete','view','discuss');
 		
-		// check if $perms is malformed
+		/******************************************************************************
+		 * verifies permissions array is well formed
+		 ******************************************************************************/
+		 
 		$a = explode(' ',ereg_replace("([()]){1}","",$perms));
 //		print_r($a);
 		$i=0;$j=1;
+		
 		foreach ($a as $n) {
 //			print "$i: $n: ".strlen($n)."<BR>";
 			if (!strlen($n)) continue;
@@ -1536,12 +1542,21 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			$i++;
 		}
 		// end
+
+		/******************************************************************************
+		 * gets permissions
+		 ******************************************************************************/
 		
 		$permissions = $this->getPermissions();
 /* 		print "<pre>Permissions: "; print_r($permissions); print "</pre>"; */
 
+		/******************************************************************************
+		 * determines whether to check permissions of user, institute or everyone
+		 ******************************************************************************/
+				
 		$toCheck = array();
 		if (strlen($user)) $toCheck[] = strtolower($user);
+		
 		if (!$useronly) {
 			$toCheck[] = "everyone";
 			if ($_loggedin) $toCheck[] = "institute";
@@ -1556,6 +1571,12 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			}
 			if ($good) $toCheck[]="institute";
 		}
+		
+		
+		/******************************************************************************
+		 * if permission not user only, then check merged permissions of all classes  
+		 ******************************************************************************/
+		
 		if (!$useronly) $toCheck = array_merge($this->returnEditorOverlap($allclasses),$toCheck);
 		
 /* 		print "<pre>"; print_r($toCheck); print "</pre><br>"; */
@@ -1569,6 +1590,10 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		$perms = str_replace('and','&&',$perms);
 		$perms = str_replace('or','||',$perms);
 
+		/******************************************************************************
+		 * create definite permissions array (pArray)
+		 ******************************************************************************/
+
 		foreach ($toCheck as $u) {
 			$exec = $perms;
 			foreach ($_a as $p) {
@@ -1576,6 +1601,11 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			}
 			$pArray[] = "(".$exec.")";
 		}
+		
+		/******************************************************************************
+		 * checks if permissions are valid (ie isgood)
+		 ******************************************************************************/
+		
 		$isgood = 0;
 		$condition = '$isgood = ('.implode(' || ',$pArray).')?1:0;';
 		eval($condition);
@@ -1583,6 +1613,11 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 /* 		print $this->id." ".$condition." == ".$isgood."<br>"; */
 		return $isgood;
 	}
+
+/******************************************************************************
+ * hasPermissionsDown checks if user (or usergroup) has permissions 
+ * to access all children
+ ******************************************************************************/
 	
 	function hasPermissionDown($perms,$user='',$useronly=0,$fetch=0) {
  		if ($fetch) {
@@ -1604,6 +1639,11 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		}
 		return false;
 	}
+
+/******************************************************************************
+ * returnEditorOverlap checks to see if user is in group or class 
+ * and merges permissions of group and class
+ ******************************************************************************/
 	
 	function returnEditorOverlap($classes) {
 		$toCheck = array();
