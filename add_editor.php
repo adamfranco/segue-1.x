@@ -1,13 +1,15 @@
 <? /* $Id$ */
-session_start();
+
+require("objects/objects.inc.php");
+
 ob_start();
+session_start();
 
-
-if ($n) {
+if ($_REQUEST[n]) {
 	//include("config.inc.php");
 	//include("functions.inc.php");
 	include("includes.inc.php");
-	$usernames=userlookup($n,LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
+	$usernames=userlookup($_REQUEST[n],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
 }
 
 // sort alphabetically
@@ -84,9 +86,16 @@ input {
 	<th>Username</th>
 </tr>
 <tr>
-	<td align=center><? if ($_SESSION[ltype]=='admin') print "<input type=button name='use' value='add' onClick='addEditor(document.lookup.n.value)'>"; else print "&nbsp;";?></td>
+	<td align=center>
+	<? 
+		if ($_SESSION[ltype]=='admin') 
+			print "<input type=button name='use' value='add' onClick='addEditor(document.lookup.n.value)'>"; 
+		else 
+			print "&nbsp;";
+	?>
+	</td>
 	<td>
-		Name: <input type=text name='n' size=20 value='<?echo $n?>'> 
+		Name: <input type=text name='n' size=20 value='<?echo $_REQUEST[n]?>'> 
 	</td>
 	<td>
 		<input type=submit value='find'>
@@ -116,3 +125,15 @@ if (count($usernames)) {
 <div align=right>
 <!-- <input type=button value='Add Editor' onClick='addEditor()'> -->
 <input type=button value='Done' onClick='window.close()'></div>
+
+<?
+
+// debug output -- handy :)
+/* print "<pre>"; */
+/* print "request:\n"; */
+/* print_r($_REQUEST); */
+/* print "\n\n"; */
+/* print "session:\n"; */
+/* print_r($_SESSION); */
+/* print "\n\n";  */
+/* print "</pre>"; */
