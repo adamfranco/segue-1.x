@@ -39,6 +39,19 @@ if (!is_editor($auser,$site)) {
 	return;
 }
 
+// check for proper instance of scripts
+if ($allowclasssites != $allowpersonalsites) {
+	$type = db_get_value("sites","type","name='$site'");
+	if ($allowclasssites && !$allowpersonalsites) {
+		if ($type == 'personal')
+			header("Location: $personalsitesurl/index.php?action=viewsite&site=$site");
+	} else if (!$allowclasssites && $allowpersonalsites) {
+		if ($type != 'personal' && $type != 'system')
+			header("Location: $classsitesurl/index.php?action=viewsite&site=$site");
+	} else {
+		// Do nothing
+	}
+}
 
 // we are reordering either pages or sections (or stories?)
 if ($reorder) {

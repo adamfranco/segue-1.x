@@ -1,10 +1,24 @@
-<? // viewsite.inc.php	-- allows logged in people to view a site
+<? // site.inc.php	-- allows logged in people to view a site
 
 $siteinfo = db_get_line("sites","name='$site'");
 $site_owner = $siteinfo[addedby];
 
 // check view permissions
 siteviewpermissions($siteinfo);
+
+// check for proper instance of scripts
+if ($allowclasssites != $allowpersonalsites) {
+	$type = db_get_value("sites","type","name='$site'");
+	if ($allowclasssites && !$allowpersonalsites) {
+		if ($type == 'personal')
+			header("Location: $personalsitesurl/index.php?action=site&site=$site");
+	} else if (!$allowclasssites && $allowpersonalsites) {
+		if ($type != 'personal' && $type != 'system')
+			header("Location: $classsitesurl/index.php?action=site&site=$site");
+	} else {
+		// Do nothing
+	}
+}
 
 // if we're an admin, override all errors
 if ($ltype == 'admin') {

@@ -202,7 +202,14 @@ if ($_loggedin) {
 /* 		} else $l[]=$c; */
 /* 	} */
 //	$query = "select * from sites where editors LIKE '%$auser%'";
-	$query = "select * from sites where editors != '' order by addedtimestamp asc";
+
+	if ($allowclasssites && !$allowpersonalsites)
+	  $query = "select * from sites where editors != '' and type!='personal' order by addedtimestamp asc";
+	else if (!$allowclasssites && $allowpersonalsites)
+	  $query = "select * from sites where editors != '' and type='personal' order by addedtimestamp asc";
+	else
+	  $query = "select * from sites where editors != '' order by addedtimestamp asc";
+	
 	$sites = array();
 	$r = db_query($query);
 	while ($a = db_fetch_assoc($r)) {
@@ -221,7 +228,12 @@ if ($_loggedin) {
 	}
 	
 	$sites=array();
-	$query = "select * from sites where addedby='$auser' order by addedtimestamp asc";
+	if ($allowclasssites && !$allowpersonalsites)
+	  $query = "select * from sites where addedby='$auser' and type!='personal' order by addedtimestamp asc";
+	else if (!$allowclasssites && $allowpersonalsites)
+	  $query = "select * from sites where addedby='$auser' and type='personal' order by addedtimestamp asc";
+	else
+	  $query = "select * from sites where addedby='$auser' order by addedtimestamp asc";
 	$r = db_query($query);
 	while ($a=db_fetch_assoc($r)) {
 		//printSiteLine($a[name]);
