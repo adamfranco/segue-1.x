@@ -45,7 +45,7 @@ function editor_htmlarea($textarea,$text,$context) {
 	}
 	$neweditor=ob_get_contents();
 	ob_end_clean();ob_start();
-	printc("$neweditor");
+	printc($neweditor);
 }
 
 /******************************************************************************

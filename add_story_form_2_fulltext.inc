@@ -66,9 +66,9 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		if ($isWinIE) {
 			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
 			printc("We recommend you chose HTMLarea for the greatest cross-platform compatibility.</div>");
-			printc("<div align=right>Current Editor: <select name=editor>");
-			printc("<option onClick='document.addform.submit()' value=htmlarea".(($_SESSION[settings][editor]=='htmlarea')?" selected":"").">HTMLarea");
-			printc("<option onClick='document.addform.submit()' value=activex".(($_SESSION[settings][editor]=='activex')?" selected":"").">Active-X");
+			printc("<div align=right>Current Editor: <select name=editor onChange='document.addform.submit()'>");
+			printc("<option value=htmlarea".(($_SESSION[settings][editor]=='htmlarea')?" selected":"").">HTMLarea");
+			printc("<option value=activex".(($_SESSION[settings][editor]=='activex')?" selected":"").">Active-X");
 			printc("</select></div>");
 			//printc("<input type=button value='Update' onClick='document.addform.submit()'>\n");						
 		}	

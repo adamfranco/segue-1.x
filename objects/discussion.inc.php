@@ -696,7 +696,7 @@ class discussion {
 			include("sniffer.inc.php");
 			printc ("<td class=content$p>\n");
 			if ($supported == 1) $c = htmlbr($c);
-			printc(addeditor ("content",60,20,$c,"discuss"));
+			addeditor ("content",60,20,$c,"discuss");
 		} else {
 			printc ("<td>".$c."<br><br>\n");
 			printc ("<input type=hidden name=content value='".$c."'>\n");
