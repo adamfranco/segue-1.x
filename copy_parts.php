@@ -78,7 +78,7 @@ if (!is_object($_SESSION[origSiteObj])) {
 /* $oname = $_SESSION[origSiteObj]->sections['$_SESSION[origSection]']->getField("title"); */
 /* print "<pre>"; print_r($_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->getField("title")); print "</pre>"; */
 
-if (!isset($action)) $action = "MOVE";
+if (!isset($action)) $action = "COPY";
 
 // $oname = $_SESSION[origionalsiteObj]->sections['$_SESSION[origionalsection]']->getField("title");
 
@@ -194,7 +194,7 @@ if ($domove) {
 ?> 
 <html> 
 <head> 
-<title>Move/Copy</title> 
+<title>Copy/Move</title> 
  
 <style type='text/css'> 
 a { 
@@ -312,9 +312,9 @@ print "<table cellspacing=1 width='100%'>";
 if (!$domove) {
 	print "<tr> ";
 		print "<td colspan=2>";
+			print "<input type=radio value='COPY' name='action'".(($action=="COPY")?" checked":"")." onClick=\"updateForm('move')\"> Copy &nbsp; &nbsp; ";
 			if (!$_SESSION[onlyCopy])
-				print "<input type=radio value='MOVE' name='action'".(($action=="MOVE")?" checked":"")." onClick=\"updateForm('move')\"> Move &nbsp; &nbsp; ";
-			print "<input type=radio value='COPY' name='action'".(($action=="COPY")?" checked":"")." onClick=\"updateForm('move')\"> Copy";
+				print "<input type=radio value='MOVE' name='action'".(($action=="MOVE")?" checked":"")." onClick=\"updateForm('move')\"> Move";
 		print "</td>";
 	print "</tr> ";
 }
@@ -342,11 +342,11 @@ print "<tr>";
 	if (!$domove) {
 		print "<select name='site' onChange=\"updateForm('site')\" style='";
 		if ($siteObj->name == $_SESSION[origSite] && $action=="MOVE" && $_SESSION[type] == "section") {
-			print "background-color: #F00;";
+			print "background-color: #F33;";
 			$cantmovehere=1;
 			$cantmovereason = "You can not move this section to the same place it exists. Try copying or moving to a new location instead.";
 /* 		} else if (!$siteObj->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) { */
-/* 	//		print "background-color: #F00;"; */
+/* 	//		print "background-color: #F33;"; */
 /* 			$cantmovehere=1; */
 /* 			$cantmovereason = "You do not have permission to $actionlc this section here."; */
 		}
@@ -359,7 +359,7 @@ print "<tr>";
 			print "<option value='$s'";
 			print (($siteObj->name == $s)?" selected":"");
 			print " style='";
-			print (($s == $_SESSION[origSite] && $action == "MOVE" && $_SESSION[type] == "section")?"background-color: #F00;":"background-color: #FFF;");
+			print (($s == $_SESSION[origSite] && $action == "MOVE" && $_SESSION[type] == "section")?"background-color: #F33;":"background-color: #FFF;");
 			print (($s == $_SESSION[origSite])?" font-weight: bold;":" font-weight: normal;");
 			print "'";
 			print ">$title\n";
@@ -384,13 +384,16 @@ if ($_SESSION[type] != "section") {
 			if (count($siteObj->sections)) {
 				print "<select name='section' onChange=\"updateForm('section')\" style='";
 				if ($siteObj->sections[$section]->id == $_SESSION[origSection] && $action=="MOVE" && $_SESSION[type] == "page") {
-					print "background-color: #F00;";
+					print "background-color: #F33;";
 					$cantmovehere=1;
 					$cantmovereason = "You can not move this page to the same place it exists. Try copying or moving to a new location instead.";
 				} else if (!$siteObj->sections[$section]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
-					print "background-color: #F00;";
+					print "background-color: #F33;";
 					$cantmovehere=1;
-					$cantmovereason = "You do not have permission to $actionlc this page here.";
+					if ($siteObj->sections[$section]->getField("type") != "section")
+						$cantmovereason = "This is not a section which you can $actionlc this page to.";
+					else
+						$cantmovereason = "You do not have permission to $actionlc this page here.";
 				}
 				if ($siteObj->sections[$section]->id == $_SESSION[origSection]) print " font-weight: bold;";
 				else print " font-weight: normal;";
@@ -401,7 +404,7 @@ if ($_SESSION[type] != "section") {
 					print "<option value='$s'";
 					print (($siteObj->sections[$s]->id == $section)?" selected":"");
 					print " style='";
-					print ((!$siteObj->sections[$s]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$s]->id == $_SESSION[origSection] && $action == "MOVE" && $_SESSION[type] == "page"))?"background-color: #F00;":"background-color: #FFF;");
+					print ((!$siteObj->sections[$s]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$s]->id == $_SESSION[origSection] && $action == "MOVE" && $_SESSION[type] == "page"))?"background-color: #F33;":"background-color: #FFF;");
 					print (($siteObj->sections[$s]->id == $_SESSION[origSection])?" font-weight: bold;":" font-weight: normal;");
 					print "'";
 					print ">$title\n";
@@ -431,13 +434,16 @@ if ($_SESSION[type] == "story") {
 			if (count($siteObj->sections[$section]->pages)) {
 				print "<select name='page' onChange=\"updateForm('page')\" style='";
 				if ($siteObj->sections[$section]->pages[$page]->id == $_SESSION[origPage] && $action=="MOVE") {
-					print "background-color: #F00;";
+					print "background-color: #F33;";
 					$cantmovehere=1;
 					$cantmovereason = "You can not move this story to the same place it exists. Try copying or moving to a new location instead.";
 				} else if (!$siteObj->sections[$section]->pages[$page]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
-					print "background-color: #F00;";
+					print "background-color: #F33;";
 					$cantmovehere=1;
-					$cantmovereason = "You do not have permission to $actionlc this story here.";
+					if ($siteObj->sections[$section]->pages[$page]->getField("type") != "page")
+						$cantmovereason = "This is not a page which you can $actionlc this story to.";
+					else
+						$cantmovereason = "You do not have permission to $actionlc this story here.";
 				}
 				if ($siteObj->sections[$section]->pages[$page]->id == $_SESSION[origPage]) print "font-weight: bold;";
 				print "'>";
@@ -447,7 +453,7 @@ if ($_SESSION[type] == "story") {
 					print "<option value='$p'";
 					print (($siteObj->sections[$section]->pages[$p]->id == $page)?" selected":"");
 					print " style='";
-					print ((!$siteObj->sections[$section]->pages[$p]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$section]->pages[$p]->id == $_SESSION[origPage] && $action=="MOVE"))?"background-color: #F00;":"background-color: #FFF;");
+					print ((!$siteObj->sections[$section]->pages[$p]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$section]->pages[$p]->id == $_SESSION[origPage] && $action=="MOVE"))?"background-color: #F33;":"background-color: #FFF;");
 					if ($siteObj->sections[$section]->pages[$p]->id == $_SESSION[origPage]) print "font-weight: bold;";
 					else print "font-weight: normal;";
 					print "'>$title\n";
@@ -477,7 +483,7 @@ print "<tr>";
 		if (!$cantmovehere)
 			print "<input type=submit name='domove' value='$action'>";
 		else 
-			print "<input type=button value='$action' style='background-color: #F00;' onClick=\"alert('$cantmovereason')\">";				
+			print "<input type=button value='$action' style='background-color: #F33;' onClick=\"alert('$cantmovereason')\">";				
 	} else {
 		print "<input type=button value='Go To ".(($action=="MOVE")?"Moved":"Copied")." $_SESSION[type]' onClick=\"followLink('";
 		if ($_SESSION[type] == "story")
@@ -496,7 +502,7 @@ print "</tr>";
 </table>
 </form>
  
-<input type=button value='Cancel' onClick='window.close()' align=right><BR> 
+<div align=right><input type=button value='Cancel' onClick='window.close()' align=right></div><BR> 
 
 <?
 // debug output -- handy :)
