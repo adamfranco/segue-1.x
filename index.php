@@ -32,7 +32,7 @@ if (ereg("^login",getenv("QUERY_STRING"))) {
 //		session_unset();
 //		session_destroy();
 	}
-	header("Location: index1.php");
+	header("Location: index.php");
 }
 
 // actions for which we use pervasive themes (if enabled)
