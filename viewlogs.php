@@ -334,7 +334,7 @@ if (db_num_rows($r)) {
 */		print "<td class=td$color><a href=# onClick=\"selectAUser('".$a[auser]."')\"  style='color: #000;'>$a[auser]</a></td>";
 		print "<td class=td$color>";
 			if ($a[site_id]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]\"'>";
-			print "$a[slot_name]";
+			print stripslashes($a[slot_name]);
 			if ($a[site_id]) print "</a>";
 		print "</td>";
 		print "<td class=td$color>";

@@ -16,9 +16,11 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
 			editor_activex($textarea,$cols,$rows,$text);
 		} else if ($context=="story" && $_SESSION[settings][editor]=='htmlarea') {
 			editor_htmlarea($textarea,$text,$context);
-		} else if  ($context=="discuss") {
+		} else if ($context=="discuss") {
 			editor_htmlarea($textarea,$text,$context);
-		}	
+		} else {
+			editor_htmlarea($textarea,$text,$context);
+		}
 		
 	} else if ($supported == 0) {
 		editor_txt($textarea,$cols,$rows,$text);
@@ -36,7 +38,7 @@ function addeditor($textarea,$cols,$rows,$text,$context="story") {
  * $textarea can be shorttext, longtext or discuss
  * $text is content of textarea
  ******************************************************************************/
-function editor_htmlarea($textarea,$text,$context) {	
+function editor_htmlarea($textarea,$text,$context="story") {	
 	ob_start();	
 	if ($context == "story") {
 		include("htmlarea/story.php");	

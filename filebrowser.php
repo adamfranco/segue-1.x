@@ -363,7 +363,16 @@ if ($source == 'discuss') { ?>
 	}  
 <? } ?> 
  
-<? if ($editor == 'none') { ?> 
+<? 
+/******************************************************************************
+ * if coming from discuss or add story then editor = none
+ * $editor variable is passed for future versions of editor which
+ * may include an upload UI
+ ******************************************************************************/
+
+if ($editor == 'none') { 
+
+?> 
 	function useFile(fileID,fileName) { 
 		o = opener.document.addform; 
 		o.libraryfileid.value=fileID; 
@@ -442,13 +451,15 @@ function changePage(lolim) {
 					<input type=hidden name='owner' value='<? echo $owner ?>'> 
 					Overwrite old version: <input type=checkbox name='overwrite' value=1>
 					<?
+					// For all browsers, include upload button
+					// (support for onClick form submission varies across browsers....)
 					//if ($browser_os == "pcie5+" || $browser_os == "pcie4") {
-					if ($isWinIE) {
+					//if ($isWinIE || $isSafari) {
 						print "<input type=file name='file' class=textfield style='color: #000'>";
 						print "<input type=submit value='Upload'>";
-					} else {
-						print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";
-					}
+					//} else {
+					//	print "<input type=file name='file' class=textfield onClick=\"document.addform.submit()\">";
+					//}
 					?>
 					</form> 
 				</td> 

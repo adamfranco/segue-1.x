@@ -422,10 +422,11 @@ function doClassForm($a,$p='',$e=0) {
 		<td><input type=text name='number' size=3 value="<?=$a[$p.'number']?>"></td>
 		<td><input type=text name='section' size=1 value="<?=$a[$p.'section']?>"></td>
 		<td><select name=semester>
-			<option<?=($a[$p.'semester']=='f')?" selected":""?> value='f'><?=$_semesters[f]?>
-			<option<?=($a[$p.'semester']=='w')?" selected":""?> value='w'><?=$_semesters[w]?>
-			<option<?=($a[$p.'semester']=='s')?" selected":""?> value='s'><?=$_semesters[s]?>
-			<option<?=($a[$p.'semester']=='l')?" selected":""?> value='l'><?=$_semesters[l]?>
+		<?
+		foreach ($_semesters as $k=>$v) {
+			print "<option".(($a[$p.'semester']==$k)?" selected":"")." value='$k'>$v\n";
+		}
+		?>
 		</select>
 		</td>
 		<td><input type=text name='year' size=4 value="<?=$a[$p.'year']?>"></td>

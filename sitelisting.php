@@ -15,8 +15,6 @@ print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 // include all necessary files
 include("includes.inc.php");
 
-//if ($ltype != 'admin') exit;
-
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
 if ($clear) {
@@ -32,14 +30,22 @@ if ($_REQUEST[order]) $order = $_REQUEST[order];
 if (!isset($order)) $order = "editedtimestamp DESC";
 $orderby = " ORDER BY $order";
 
-$w = array();
+$w = array();$wExtra=array();
 //if ($_REQUEST[type]) $w[]="slot_type like '%$type%'";
-if ($_REQUEST[user]) $w[]="user_uname like '%$user%'";
-//if ($site) $w[]="site like '%$name%'";
-if ($_REQUEST[site]) $w[]="slot_name like '%$site%'";
-if ($_REQUEST[title]) $w[]="site_title like '%$title%'";
+if ($cfg[allowpersonalsites] && $cfg[allowclasssites])
+	$w[]="(slot_type='personal' OR slot_type='class' OR slot_type='other')";
+else if ($cfg[allowpersonalsites]) $w[]="(slot_type='personal' OR slot_type='other')";
+else if ($cfg[allowclasssites]) $w[]="slot_type='class'";
+if ($_REQUEST[user]) $wExtra[]="user_uname like '%$user%'";
+if ($_REQUEST[site]) $wExtra[]="slot_name like '%$site%'";
+if ($_REQUEST[title]) $wExtra[]="site_title like '%$title%'";
+$w[] = "site_active='1'";
+$w[] = "site_listed='1'";
 //if ($_REQUEST[active]) $w[]="site_active like '%$active%'";
-if (count($w)) $where = " where ".implode(" and ",$w);
+if (count($w)) {
+	$where = " where ".implode(" and ",$w);
+	$where2 = " where ".implode(" and ",array_merge($w,$wExtra));
+}
 
 $query = "
 	SELECT 
@@ -57,7 +63,7 @@ $query = "
 	$where";
 $r=db_query($query); 
 $a = db_fetch_assoc($r);
-$numlogs = $a[log_count];
+$numSites = $a[log_count];
 
 if (!isset($lowerlimit)) $lowerlimit = 0;
 if ($lowerlimit < 0) $lowerlimit = 0;
@@ -85,14 +91,17 @@ $query = "
 		user
 			ON
 		FK_owner = user_id
-	$where$orderby$limit";
+	$where2$orderby$limit";
 
 $r = db_query($query);
+$numlogs = db_num_rows($r);
+
+//print $query;
 
 ?>
 <html>
 <head>
-<title>View Logs</title>
+<title>Segue: Public Site Listing</title>
 
 <? include("themes/common/logs_css.inc.php"); ?>
 
@@ -107,17 +116,10 @@ function changeOrder(order) {
 </script>
 
 <table width='100%' class='bg'>
-<tr><td  align=right class='bg'>
-	<a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
-	| Sites
-<!-- 	| <<a href='email.php?<? echo $sid ?>&storyid=<? echo $storyid ?>&siteid=<? echo $siteid ?>&site=<? echo $site ?>&action=list'>Participants</a> -->
-
-
-</td></tr>
 <tr><td class='bg'>
 	<? print $content; ?>
 	<? //print $numlogs . " | " . $query; ?>
-	<? print "Total Segue Sites:".$numlogs ?>
+	<? print "Total Active Segue Sites: ".$numSites ?>
 
 
 </td></tr>
@@ -138,9 +140,7 @@ function changeOrder(order) {
 		//while ($a=db_fetch_assoc($r1))
 		//	print "<option".(($type==$a[type])?" selected":"").">$a[type]\n";
 		
-		if ($ltype != 'admin') {
-			print "Activity on $site";
-		} else {
+		if (true) {
 		?>
 			<!-- </select> -->
 			site: <input type=text name=site size=10 value='<?echo $site?>'>
@@ -153,11 +153,6 @@ function changeOrder(order) {
 				<option<?=($type=='other')?" selected":""?>>other
 				<option<?=($type=='personal')?" selected":""?>>personal
 				<option<?=($type=='system')?" selected":""?>>system
-				</select>
-			active: <select name=active>
-				<option<?=($active=='%')?" selected":""?>>Choose
-				<option<?=($active=='active')?" selected":""?>>active
-				<option<?=($active=='inactive')?" selected":""?>>inactive
 				</select>
 			-->
 			<input type=submit value='go'>
@@ -205,13 +200,13 @@ function changeOrder(order) {
 	if ($order =='name desc') print " &and;";	
 	print "</a></th>";
 	
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='active asc') print "active desc";
-	else print "active asc";
-	print "')\" style='color: #000'>Active";
-	if ($order =='active asc') print " &or;";
-	if ($order =='active desc') print " &and;";	
-	print "</a></th>";
+//	print "<th><a href=# onClick=\"changeOrder('";
+//	if ($order =='active asc') print "active desc";
+//	else print "active asc";
+//	print "')\" style='color: #000'>Active";
+//	if ($order =='active asc') print " &or;";
+//	if ($order =='active desc') print " &and;";	
+//	print "</a></th>";
 	
 	print "<th><a href=# onClick=\"changeOrder('";
 	if ($order =='type asc') print "type desc";
@@ -229,13 +224,13 @@ function changeOrder(order) {
 /* 	if ($order =='viewpermissions desc') print " &and;";	 */
 /* 	print "</a></th>"; */
 
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='theme asc') print "theme desc";
-	else print "theme asc";
-	print "')\" style='color: #000'>Theme";
-	if ($order =='theme asc') print " &or;";
-	if ($order =='theme desc') print " &and;";	
-	print "</a></th>";
+//	print "<th><a href=# onClick=\"changeOrder('";
+//	if ($order =='theme asc') print "theme desc";
+//	else print "theme asc";
+//	print "')\" style='color: #000'>Theme";
+//	if ($order =='theme asc') print " &or;";
+//	if ($order =='theme desc') print " &and;";	
+//	print "</a></th>";
 	
 	print "<th><a href=# onClick=\"changeOrder('";
 	if ($order =='title asc') print "title desc";
@@ -263,23 +258,20 @@ if (db_num_rows($r)) {
 	while ($a=db_fetch_assoc($r)) {
 		print "<tr>";
 		print "<td class=td$color><nobr>";
-			print "<a href='viewlogs.php?$sid&site=$a[name]' style='color: #000;'>";
-			//print "$yesterday";
 			if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "<b>";
 			print timestamp2usdate($a[editedtimestamp],1);
 			if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "</b>";
 			print "</nobr>";
-			print "</a>";
 		print "</td>";
 		print "<td class=td$color>$a[name]</td>";
-		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
+//		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
 		print "<td class=td$color>".((group::getClassesFromName($a[name]))?"group - ":"")."$a[type]</td>";
 /* 		print "<td class=td$color><span style='color: #"; */
 /* 			if ($a[viewpermissions] == 'anyone') print "000"; */
 /* 			if ($a[viewpermissions] == 'midd') print "00c"; */
 /* 			if ($a[viewpermissions] == 'class') print "900"; */
 /* 		print "'>$a[viewpermissions]</span></td>"; */
-		print "<td class=td$color>$a[theme]</td>";
+//		print "<td class=td$color>$a[theme]</td>";
 		print "<td class=td$color>";
 		print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
 		print stripslashes($a[title]);
@@ -292,7 +284,7 @@ if (db_num_rows($r)) {
 		$color = 1-$color;
 	}
 } else {
-	print "<tr><td colspan=7>No sites found based on above criteria.</td></tr>";
+	print "<tr><td colspan=5>No sites found based on above criteria.</td></tr>";
 }
 ?>
 </table><BR>

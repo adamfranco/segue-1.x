@@ -3,6 +3,15 @@
 Name: Segue ChangeLog
 
 
+v. 1.2.2 (2004-07-06)
+----------------------------------------------------
+		
+	* Bug Fix: Fixed a UI bug in which story timestamps/editors would display &quot;edited by ...&quot; when nobody had done any editing. (Gabe Schine)
+		
+	* Bug Fix: Fixed browser sniffer bug that prevented inclusion of html editor in add_site_form_5_header.inc and add_site_form_5_footer.inc (Alex Chapin)
+		
+	* Bug Fix: Fixed problem uploading files to Media Library that occured in Mac Safari. Removed browser specific code from filebrowser.php (Alex Chapin)
+	
 v. 1.2.1 (2004-06-17)
 ----------------------------------------------------
 		

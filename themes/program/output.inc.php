@@ -8,7 +8,7 @@
 if (file_exists("$themesdir/$theme/colors.inc.php"))
 	include("$themesdir/$theme/colors.inc.php");
 
-if ($themesettings[theme] == 'bevelbox') {   // indeed these settings are for this theme
+if ($themesettings[theme] == 'program') {   // indeed these settings are for this theme
 	$use = $themesettings[colorscheme];
 }
 if (!$use) $use = 'gray';
@@ -109,11 +109,11 @@ include("themes/$theme/css.inc.php");
 
 <tr>
 
-<td class="left" width=160>
+<td class="left" width=160 height="100%">
 
 
 <table width=100% cellpadding=5 cellspacing=0>
-<td class=leftnav>
+<td class=leftnav height="100%">
 <div class='nav'>
 	<?
 /* ------------------------------------------- */

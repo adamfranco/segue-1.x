@@ -7,6 +7,16 @@
 			a Segue site.
 		</new>
 	</version>
+	<version number="1.2.2" date="Unreleased">
+		<new author='gabe'>
+			Added in public site listing feature.
+		</new>
+		<fix author='gabe'>
+			Changed semester-list in add-course admin tools view so that it
+			corresponds to the list given in the config file instead of a static
+			Middlebury-based list.
+		</fix>
+	</version>
 	<version number="1.2.1" date="2004-06-17">
 		<fix author='alex'>
 			Fixed a problem uploading files to Media Library that occured in

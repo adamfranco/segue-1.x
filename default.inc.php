@@ -7,6 +7,19 @@ $color = 0;
 $sitesprinted=array();
 
 /******************************************************************************
+ * public site listing link
+ ******************************************************************************/
+$leftnav_extra .= <<< END
+<table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
+	<tr>
+		<td height="100%" valign="bottom" style="font-weight: bolder">
+		<a href='sitelisting.php?$sid' onClick='doWindow("listing",600,500)' target='listing'>Public Site Listing</a>
+		</td>
+	</tr>
+</table>
+END;
+
+/******************************************************************************
  * handle site copy
  ******************************************************************************/
 if ($copysite && $newname && $origname) {
