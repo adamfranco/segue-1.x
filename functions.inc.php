@@ -307,7 +307,7 @@ function log_entry($type,$content,$site=0,$siteunit=0,$siteunit_type="site") {
 	if ($site) {
 		$query = " 
 			SELECT 
-				FK_site
+				slot_id
 			FROM
 				slot
 			WHERE
@@ -315,9 +315,9 @@ function log_entry($type,$content,$site=0,$siteunit=0,$siteunit_type="site") {
 		";
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
-		$site_id = "'".$a[FK_site]."'";
+		$slot_id = "'".$a[slot_id]."'";
 	} else {
-		$site_id = "NULL";
+		$slot_id = "NULL";
 	}
 	
 	db_connect($dbhost,$dbuser,$dbpass, $dbdb);
@@ -326,7 +326,7 @@ function log_entry($type,$content,$site=0,$siteunit=0,$siteunit_type="site") {
 		log_desc='$content',
 		FK_luser='".$_SESSION[lid]."',
 		FK_auser='".$_SESSION[aid]."',
-		FK_site=$site_id,
+		FK_slot=$slot_id,
 		FK_siteunit='$siteunit',
 		log_siteunit_type='$siteunit_type'
 	");

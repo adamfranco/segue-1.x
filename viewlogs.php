@@ -50,7 +50,7 @@ $query = "
 			LEFT JOIN
 		slot
 			ON
-		log.FK_siteunit = slot.FK_site
+		log.FK_slot = slot.slot_id
 			INNER JOIN
 		user AS user1
 			ON
@@ -75,15 +75,18 @@ SELECT
 		log_type,
 		log_tstamp,
 		log_desc,
+		FK_siteunit AS siteunit,
+		log_siteunit_type AS siteunit_type,
 		user1.user_uname AS luser,
 		user2.user_uname AS auser,
-		slot_name
+		slot_name,
+		FK_site AS site_id
 	FROM 
 		log
 			LEFT JOIN
 		slot
 			ON
-		log.FK_site = slot.FK_site
+		log.FK_slot = slot.slot_id
 			INNER JOIN
 		user AS user1
 			ON
@@ -298,14 +301,14 @@ if (db_num_rows($r)) {
 		print "'>$a[auser]</span></td>";
 */		print "<td class=td$color><a href=# onClick=\"selectAUser('".$a[auser]."')\"  style='color: #000;'>$a[auser]</a></td>";
 		print "<td class=td$color>";
-			if ($a[slot_name]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]\"'>";
+			if ($a[site_id]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]\"'>";
 			print "$a[slot_name]";
-			if ($a[slot_name]) print "</a>";
+			if ($a[site_id]) print "</a>";
 		print "</td>";
 		print "<td class=td$color>";
-			if ($a[section_id]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]&section=$a[section_id]&page=$a[page_id]\"'>";
+			if ($a[siteunit_type] == "section") print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]&section=$a[siteunit]\"'>";
 			print "$a[log_desc]";
-			if ($a[section_id]) print "</a>";
+			if ($a[siteunit_type] == "section") print "</a>";
 		print "</td>";
 		print "</tr>";
 		$color = 1-$color;
