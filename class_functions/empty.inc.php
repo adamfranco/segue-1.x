@@ -139,7 +139,7 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 		$r = db_query($query);
 	$ugroups = array();
 	while ($a = db_fetch_assoc($r)) {
-		$ugroups[$a[ugroup_name]] = $a[ugroup_name];
+		$ugroups[$a[ugroup_name]] = $a[ugroup_name]." (Group)";
 	}
 	
 	$usernames = array_merge($db_users,$usernames,$ugroups);	
