@@ -21,6 +21,7 @@ if (ereg("^login",getenv("QUERY_STRING"))) {
 $pervasiveActions = array("edit_site","add_site","add_section","edit_section","add_page","edit_page","add_story","edit_story");
 $permittedSettingsActions = $pervasiveActions;
 $permittedSettingsActions[]='site';
+$permittedPermissionsActions = array("site","viewsite");
 
 // check if we have any stray session variables
 if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
@@ -35,6 +36,9 @@ if (!in_array($_REQUEST[action],$permittedSettingsActions)) {
 		unset($_SESSION[settings],$_SESSION[siteObj],$_SESSION[sectionObj],$_SESSION[pageObj],$_SESSION[storyObj]);
 	}
 }
+/* if (!in_array($_REQUEST[action],$permittedPermissionsActions)) { */
+/* 	if (isset($_SESSION[editors]) || isset($_SESSION[obj])) unset($_SESSION[obj],$_SESSION[editors]); */
+/* } */
 
 // if they clicked a 'goback' button -- this is OBSOLETE
 /* if ($goback && $gobackurl) { */
@@ -178,16 +182,11 @@ if (!$theme) {
 	$themesettings = $defaultthemesettings;
 }
 
-/* if (file_exists("$themesdir/$theme/defaults.inc.php")) */
-/* 	include("$themesdir/$theme/defaults.inc.php"); */
-
-
 //output a meta tag
 //print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
 // decode themesettings
 if ($themesettings) $themesettings = decode_array($themesettings);
-//print "$themesdir/$theme/";
 
 //output the HTML
 include("$themesdir/$theme/output.inc.php");

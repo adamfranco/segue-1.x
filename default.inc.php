@@ -73,74 +73,6 @@ if ($_loggedin) {
 					printc("</tr>");
 				}
 			}
-			
-/* 			//upcoming classes */
-/* 			if (count($futureclasses)) { */
-/* 				printc("<tr>"); */
-/* 				printc("<td valign=top>");				 */
-/* 				printc("<div class=title>Upcoming Classes</div>"); */
-/* 				printc("<table width=100%><tr><th>class</th><th>site</th></tr>"); */
-/* 				$c=0; */
-/* 				foreach (array_keys($futureclasses) as $cl) { */
-/* 				 */
-/* 					printc("<tr><td class=td$c width= 150>$cl</td>"); */
-/* 					if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) { */
-/* 						if ($gr) $db=db_get_line("sites","name='$gr'"); */
-/* 						if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>"); */
-/* 						else printc("<td style='color: #999' class=td$c>created, not yet available</td>"); */
-/* 						 */
-/* 					//check webcourses databases to see if course website was created in course folders (instead of Segue) */
-/* 					} else if ($course_site = coursefoldersite($cl)) {					 */
-/* 						$course_url = urldecode($course_site['url']); */
-/* 						$title = urldecode($course_site['title']); */
-/* 						printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>"); */
-/* 						db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
-/* 										 */
-/* 					} else */
-/* 						printc("<td style='color: #999' class=td$c>not created</td>"); */
-/* 						printc("</tr>"); */
-/* 						$c = 1-$c; */
-/* 						db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
-/* 				} */
-/* 				printc("</tr></table>"); */
-/* 				printc("</td>"); */
-/* 				printc("</tr>"); */
-/* 			} 	 */
-/*  */
-/* 			 */
-/* 			//print out student classes for previous semester */
-/* 			if (count($oldclasses)) { */
-/* 				printc("<tr>"); */
-/* 				printc("<td valign=top>");		 */
-/* 				printc("<div class=title>Previous Semester</div>"); */
-/* 		//		print "debug: count(oldclasses) = ".count($oldclasses)."<BR>";//debug */
-/* 				//print class list */
-/* 				printc("<table width=100%><tr><th>class</th><th>site</th></tr>"); */
-/* 				$c=0; */
-/* 				foreach (array_keys($oldclasses) as $cl) { */
-/* 					printc("<tr><td class=td$c width= 150>$cl</td>"); */
-/* 					if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) { */
-/* 						if ($gr) $db=db_get_line("sites","name='$gr'"); */
-/* 						if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>"); */
-/* 						else printc("<td style='color: #999' class=td$c>created, not yet available</td>"); */
-/* 						 */
-/* 					//check webcourses databases to see if course website was created in course folders (instead of Segue) */
-/* 					} else if ($course_site = coursefoldersite($cl)) {					 */
-/* 						$course_url = urldecode($course_site['url']); */
-/* 						$title = urldecode($course_site['title']); */
-/* 						printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>"); */
-/* 						db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
-/* 										 */
-/* 					} else */
-/* 						printc("<td style='color: #999' class=td$c>not created</td>"); */
-/* 						printc("</tr>"); */
-/* 						$c = 1-$c; */
-/* 						db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
-/* 				} */
-/* 				printc("<tr><td></td><td align=right>Show All Semesters</td></tr>"); */
-/* 				printc("</tr></table>"); */
-/* 	 */
-/* 			} */
 			printc("</td>");
 			printc("</tr>");
 			printc("</table>");
@@ -235,12 +167,6 @@ if ($_loggedin) {
  * output a list of the user's other sites
  ******************************************************************************/
 
-/* 	if ($allowclasssites && !$allowpersonalsites) */
-/* 	  $query = "select * from sites where editors != '' and type!='personal' order by addedtimestamp asc"; */
-/* 	else if (!$allowclasssites && $allowpersonalsites) */
-/* 	  $query = "select * from sites where editors != '' and type='personal' order by addedtimestamp asc"; */
-/* 	else */
-/* 	  $query = "select * from sites where editors != '' order by addedtimestamp asc"; */
 	
 	$sites = array();
 	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor());
@@ -264,13 +190,6 @@ if ($_loggedin) {
 	
 	$sites=array();
 	$esites=segue::buildObjArrayFromSites(segue::getAllSites($_SESSION[auser]));
-/* 	if ($allowclasssites && !$allowpersonalsites) */
-/* 	  $query = "select * from sites where addedby='$auser' and type!='personal' order by addedtimestamp asc"; */
-/* 	else if (!$allowclasssites && $allowpersonalsites) */
-/* 	  $query = "select * from sites where addedby='$auser' and type='personal' order by addedtimestamp asc"; */
-/* 	else */
-/* 	  $query = "select * from sites where addedby='$auser' order by addedtimestamp asc"; */
-/* 	$r = db_query($query); */
 	foreach ($esites as $n=>$s) {
 		if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
 			array_push($sites,$n);
@@ -402,10 +321,10 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 			printc(" <a href='$PHP_SELF?$sid&action=viewsite&site=$name'>edit</a> | ");
 			printc(" <a href='$PHP_SELF?$sid&action=delete_site&name=$name'>delete</a> | ");
 			printc(" <a href='$PHP_SELF?$sid&action=edit_site&edit_site=$name'>settings</a> | ");
-			printc(" <a href='editor_access.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>permissions</a>");
+			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>permissions</a>");
 			
 		} else {
-			printc(" <a href='editor_access.php?$sid&site=$name' onClick='doWindow(\"permissions\",400,400)' target='permissions'>your permissions</a>");
+			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>your permissions</a>");
 		}
 		printc("</div>");
 		
@@ -421,33 +340,3 @@ function printSiteLine($name,$ed=0,$isclass=0,$atype='stud') {
 }
 
 $sitefooter .= "<div align=right style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gabe@schine.net'>Gabriel Schine</a> and <a href='mailto:achapin@middlebury.edu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a></div>";
-
-//cannot get this function to work???
-//best place for this function is in class_functions.inc.php
-/* function printclasses($classes) { */
-/* 	printc("<table width=100%><tr><th>class</th><th>site</th></tr>"); */
-/* 	$c=0; */
-/* 	foreach (array_keys($classes) as $cl) { */
-/* 	 */
-/* 		printc("<tr><td class=td$c width= 150>$cl</td>"); */
-/* 		if (($gr = inclassgroup($cl)) || ($db = db_get_line("sites","name='$cl'"))) { */
-/* 			if ($gr) $db=db_get_line("sites","name='$gr'"); */
-/* 			if (canview($db)) printc("<td align=left class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$db[name]."'>".$db[title]."</a></td>"); */
-/* 			else printc("<td style='color: #999' class=td$c>created, not yet available</td>"); */
-/* 			 */
-/* 		//check webcourses databases to see if course website was created in course folders (instead of Segue) */
-/* 		} else if ($course_site = coursefoldersite($cl)) {					 */
-/* 			$course_url = urldecode($course_site['url']); */
-/* 			$title = urldecode($course_site['title']); */
-/* 			printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>"); */
-/* 			db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
-/* 							 */
-/* 		} else */
-/* 			printc("<td style='color: #999' class=td$c>not created</td>"); */
-/* 			printc("</tr>"); */
-/* 			$c = 1-$c; */
-/* 			db_connect($dbhost, $dbuser, $dbpass, $dbdb); */
-/* 	} */
-/* 	printc("</tr></table>"); */
-/*  */
-/* } */
