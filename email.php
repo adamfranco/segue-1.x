@@ -170,7 +170,6 @@ if ($_REQUEST[addtoclass] == "Add Checked to Roster") {
 }
 
 
-
 /******************************************************************************
  * Query: WHERE clause
  * story, site, and/or user or 
@@ -322,10 +321,6 @@ while ($a = db_fetch_assoc($logged_participants)) {
 		$non_roster_ids[] = $logged_participant_id;
 	}	
 }
-//printpre($students);
-//printpre($non_roster_ids);
-//printpre($roster_ids);
-//printpre($logged_participants_ids);
 
 /******************************************************************************
  * Print out HTML
@@ -560,8 +555,10 @@ print "</table><br />";
 	</td></tr>
 	</table>
 	
-	<? if (!db_num_rows($r)) {
+	<? 
+	if (!db_num_rows($r)) {
 		print "No participants found. Try extending the scope to all participants in the site";
+	}
 		
 /******************************************************************************
  * depending on action print out either:
@@ -570,8 +567,6 @@ print "</table><br />";
  * sent email confirmation
  ******************************************************************************/
 
-	} 
-	
 		/******************************************************************************
 		 * Navigation Email | List | Review participants in discussion or site
 		 ******************************************************************************/
@@ -659,7 +654,6 @@ print "</table><br />";
 			 * check all/uncheck all buttons, check class only
 			 * add checked to roster, email checked participants
 			 ******************************************************************************/
-
 									
 			$selectbuttons .= "<select name='groupcheck' onChange='checkGroup()'>\n";
 			$selectbuttons .= "<option value=''>Check...</option>\n";
@@ -839,19 +833,13 @@ print "</table><br />";
 		</tr>		
 		<? 
 
-		 	$color = 0;
 		 	
-		 	// get ids of all discussion participants
-//			while ($a = db_fetch_assoc($r2)) {
-//				$logged_participants_id[] = $a[user_id];				
-//			}
-			
-			//printpre($editors);
 			/******************************************************************************
 			 * if a class site, print out list of students
 			 * if student has participated get post stats
 			 * get # of posts and avg. rating
 			 ******************************************************************************/
+		 	$color = 0;
 			 
 			if (is_array($students) && $curraction == 'list') {
 				$rostercount = count($students);
@@ -869,11 +857,9 @@ print "</table><br />";
 					}
 					
 					print "<tr>";
-					
-				
+									
 					// if not in logged participant array, then just print out name
 					if (!in_array($students[$key]['id'], $logged_participants_ids)) {
-						if ($_REQUEST[checkgroup] == 'No Posts Participants') $checkstatus = " checked";
 						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".$checkstatus."></td>";
 						print "<td class=td$color>".$students[$key][fname]."</td>";
 						print "<td class=td$color>".$students[$key][email]."</td>";
@@ -885,7 +871,6 @@ print "</table><br />";
 						$userid = $students[$key]['id'];
 						$postcount = getNumPosts($userid);
 						$avg_rating = getAvgRating($userid);
-						if ($_REQUEST[checkgroup] == 'Posting Participants') $checkstatus = " checked";
 						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".$checkstatus."></td>";
 						print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$students[$key][id]."&userfname=".urlencode($students[$key][fname])."&".$getvariables.">".$students[$key][fname]."</a></td>";
 						print "<td class=td$color>".$students[$key][email]."</td>";
@@ -986,10 +971,7 @@ print "</table><br />";
 		?>
 	</table>
 	<? 
-		if ($action != 'email') {
-//				print $selectbuttons;
-				print $buttons;
-			}
+	if ($action != 'email') print $buttons;
 	?>
 </td></tr>
 </table></form>
@@ -997,9 +979,6 @@ print "</table><br />";
 <br />
 <div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
 <?
-
-//printpre($_SESSION[editors]);
-//printpre($emaillist);
 
 function getNumPosts ($userid) {
 	global $where, $orderby, $limit;
