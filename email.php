@@ -119,12 +119,18 @@ $class_id = $_REQUEST['site'];
 
 
 /******************************************************************************
- * if class get all members of class from ldap
+ * STUDENT and CLASS if class get all members of class from ldap
  * returns array with uname, fname and type
  ******************************************************************************/
+$students = array();
+$roster_ids = array();
 
 if (isclass($class_id)) {
-	$students = getclassstudents($class_id);
+	$students = getclassstudents($class_id);	
+	foreach (array_keys($students) as $key) {
+		$roster_ids[] = $students[$key][id];
+	}
+
 	//printpre($students);
 }
 
@@ -166,7 +172,7 @@ if ($_REQUEST[addtoclass] == "Add Checked to Roster") {
 
 
 /******************************************************************************
- * Query: where clause
+ * Query: WHERE clause
  * story, site, and/or user or 
  * all users, all sites
  ******************************************************************************/
@@ -201,7 +207,7 @@ if ($_REQUEST['findsite'] && $action == "review") {
 
 
 /******************************************************************************
- * Query: select and order clauses
+ * Query: SELECT and ORDER clauses
  ******************************************************************************/
 
 if ($action == "review" || $action == "user") {
@@ -215,7 +221,7 @@ if ($action == "review" || $action == "user") {
 
 
 /******************************************************************************
- * Query: number of rows (i.e. number of posts for where clause) 
+ * Query: NUMBER of post (i.e. number of posts for WHERE clause) 
  ******************************************************************************/
  
 	$query = "
@@ -242,7 +248,7 @@ if ($action == "review" || $action == "user") {
 	$limit = " LIMIT $lowerlimit,$range";
 
 /******************************************************************************
- * Query: number of participants (i.e. distinct users)
+ * Query: NUMBER of participants (i.e. distinct users)
  ******************************************************************************/
 	
 	$query = "
@@ -267,7 +273,7 @@ if ($action == "review" || $action == "user") {
 	//print $numrows."<br />";
 
 /******************************************************************************
- * Query: all discussion post information based on select
+ * Query: GET all discussion post information based on select
  * select summary info for each user
  * select all post info for all specified users
  ******************************************************************************/
@@ -293,15 +299,33 @@ if ($action == "review" || $action == "user") {
 	//printpre($curraction);
 	$r = db_query($query);
 	$r2 = db_query($query);
+	$logged_participants = db_query($query);
 
 	
 printerr();
 
 /******************************************************************************
- * Check subsets of participants (except check all and uncheck all)
- *
+ * SUBSETS of participants 
+ * $logged_participants_ids = ids of all users who have posted to discussion
+ * $roster_ids = ids of all participants in roster
+ * $non_roster_ids = ids of all participants not in roster
  ******************************************************************************/
+ 
+$non_roster_ids = array();
+$logged_participants_ids = array();
 
+while ($a = db_fetch_assoc($logged_participants)) {
+	$logged_participant_id = $a[user_id];
+	$logged_participants_ids[] = $a[user_id];
+	
+	if (!in_array($logged_participant_id, $roster_ids)) {
+		$non_roster_ids[] = $logged_participant_id;
+	}	
+}
+//printpre($students);
+//printpre($non_roster_ids);
+//printpre($roster_ids);
+//printpre($logged_participants_ids);
 
 /******************************************************************************
  * Print out HTML
@@ -354,6 +378,47 @@ function uncheckAll() {
 		field[i].checked = false ;
 }
 
+function checkGroup() {
+	selectField = document.forms[0].elements['groupcheck'];
+	groupName = selectField.value;
+	field = document.forms[0].elements['editors[]'];
+	
+	classIds = new Array (
+			<? print implode (",\n\t\t\t", $roster_ids); ?>);
+	otherIds = new Array (
+			<? print implode (",\n\t\t\t", $non_roster_ids); ?>);
+	
+	switch(groupName) {
+	case 'all':
+		checkAll();
+		break;
+	case 'un_all':
+		uncheckAll();
+		break;
+	case 'class':
+		checkArrayMembersInField(classIds, field, true);
+		break;
+	case 'un_class':
+		checkArrayMembersInField(classIds, field, false);
+		break;
+	case 'other':
+		checkArrayMembersInField(otherIds, field, true);
+		break;
+	case 'un_other':
+		checkArrayMembersInField(otherIds, field, false);
+		break;
+	}
+}
+
+function checkArrayMembersInField (arrayToCheck, field, checkValue) {
+	for (i=0; i<arrayToCheck.length; i++) {
+			id = arrayToCheck[i];
+			for (j = 0; j < field.length; j++) {
+				if (field[j].value == id)
+					field[j].checked = checkValue;
+			}
+	}
+}
 
 function doFieldChange(user,scope,site,section,page,story,field,what) {
 	f = document.addform;
@@ -373,7 +438,7 @@ function doFieldChange(user,scope,site,section,page,story,field,what) {
 
 </head>
 <!-- <body onLoad="document.addform.uname.focus()">  -->
-<body onLoad="initEditor()">
+<body>
 
 <?
 
@@ -491,7 +556,6 @@ print "</table><br />";
 			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction&findall=$findall\"'>\n";
 		?>
 
-<!-- 		</form> -->
 	
 	</td></tr>
 	</table>
@@ -545,7 +609,7 @@ print "</table><br />";
 				print " <input type=submit name='findall' value='Find All'>  ";
 				//print " (".urldecode($userfname)." ) ";
 
-				//print "</form>";
+
 			}
 			if ($userid) {
 				//print "<a href=$PHP_SELF?$sid&action=review&$getvariables>Review all</a> | ";
@@ -595,33 +659,27 @@ print "</table><br />";
 			 * check all/uncheck all buttons, check class only
 			 * add checked to roster, email checked participants
 			 ******************************************************************************/
-						
-			$buttons = "<tr>";
-			$buttons .= "<td align='left' colspan=2>\n";
-						
-			$buttons .= "<input type=button name='checkall' value='Check All' onClick='checkAll()'> \n";
-			$buttons .= "<input type=button name='uncheckall' value='Uncheck All' onClick='uncheckAll()'> \n";
-			$buttons .= "<input type=submit name='checkclass' value='Check Class only'> \n";
-			
-		//	 $buttons .= "<select name='checkgroup' onChange='document.searchform.submit()'>\n";
-//			$buttons .= "<select name=checkgroup>\n";			
-//			$buttons .= "<option value='Check All'";
-//			if ($_REQUEST[checkgroup]=='Check All') $buttons .= " selected";
-//			$buttons .= ">Check All\n";
-//			$buttons .= "<option value='Uncheck All' ";
-//			if ($_REQUEST[checkgroup]=='Uncheck All') $buttons .= "selected";
-//			$buttons .= ">Uncheck All\n";
-//			$buttons .= "<option value='Check Class Participants'";
-//			if ($_REQUEST[checkgroup]=='Check Class Participants') $buttons .= " selected\n";
-//			$buttons .= ">Check Class Participants\n";			
-//			$buttons .= "</select> \n";
-//			
-//			$buttons .= "<input type=submit name='check' value='Update Checks'> ";
 
+									
+			$selectbuttons .= "<select name='groupcheck' onChange='checkGroup()'>\n";
+			$selectbuttons .= "<option value=''>Check...</option>\n";
+			$selectbuttons .= "<option value='all'>Check All</option>\n";
+			$selectbuttons .= "<option value='un_all'>Uncheck All</option>\n";
+			$selectbuttons .= "<option value='class'>Check Roster Participants</option>\n";
+			$selectbuttons .= "<option value='un_class'>Uncheck Roster Participants</option>\n";
+			$selectbuttons .= "<option value='other'>Check Other Participants</option>\n";	
+			$selectbuttons .= "<option value='un_other'>uncheck Other Participants</option>\n";	
+			$selectbuttons .= "</select> \n";
+			
 			$buttons .= "<input type=submit name='addtoclass' value='Add Checked to Roster'> \n";
 			$buttons .= "<input type=submit name='email' value='Email Checked Participants-&gt;'>\n";
-			$buttons .= "</td></tr>";
-			if ($action != 'email') print $buttons;
+			if ($action != 'email') {
+				print "<tr>";
+				print "<td align='left' colspan=2>\n";
+				print $selectbuttons;
+				print $buttons;
+				print "</td></tr>";
+			}
 
 		} 
 		
@@ -637,9 +695,6 @@ print "</table><br />";
 		if ($curraction == 'email') {
 			
 			$emaillist = array();
-//			while ($a2 = db_fetch_assoc($r)) {
-//				array_push($emaillist, $a2['user_email']);	
-//			}
 
 			foreach ($_REQUEST[editors] as $editor) {
 				$editor_email = db_get_value("user","user_email", "user_id =".$editor);
@@ -787,9 +842,9 @@ print "</table><br />";
 		 	$color = 0;
 		 	
 		 	// get ids of all discussion participants
-			while ($a = db_fetch_assoc($r2)) {
-				$logged_participants_id[] = $a[user_id];				
-			}
+//			while ($a = db_fetch_assoc($r2)) {
+//				$logged_participants_id[] = $a[user_id];				
+//			}
 			
 			//printpre($editors);
 			/******************************************************************************
@@ -809,8 +864,6 @@ print "</table><br />";
 						$checkstatus = " checked";
 					} else if (in_array($e,$_SESSION[editors])) {
 						$checkstatus = " checked";
-					} else if ($_REQUEST[checkgroup] == 'Check Class only') {
-						$checkstatus = " checked";
 					} else {
 						$checkstatus = "";
 					}
@@ -819,7 +872,7 @@ print "</table><br />";
 					
 				
 					// if not in logged participant array, then just print out name
-					if (!in_array($students[$key]['id'], $logged_participants_id)) {
+					if (!in_array($students[$key]['id'], $logged_participants_ids)) {
 						if ($_REQUEST[checkgroup] == 'No Posts Participants') $checkstatus = " checked";
 						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".$checkstatus."></td>";
 						print "<td class=td$color>".$students[$key][fname]."</td>";
@@ -866,9 +919,7 @@ print "</table><br />";
 					$postcount = getNumPosts($userid);
 					$avg_rating = getAvgRating($userid);
 					
-					if ($_REQUEST[checkgroup] == 'Check Class only') {
-						$checkstatus = "";
-					} else if (!$_SESSION[editors]) {
+					if (!$_SESSION[editors]) {
 						$checkstatus = " checked";
 					} else if (in_array($e,$_SESSION[editors])) {
 						$checkstatus = " checked";
@@ -933,8 +984,13 @@ print "</table><br />";
 
 			
 		?>
-	</table>	
-	<? print $buttons; ?>
+	</table>
+	<? 
+		if ($action != 'email') {
+//				print $selectbuttons;
+				print $buttons;
+			}
+	?>
 </td></tr>
 </table></form>
 
