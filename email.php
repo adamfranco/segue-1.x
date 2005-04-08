@@ -15,10 +15,12 @@ include("includes.inc.php");
 /* 	header("Location: username_lookup.php"); */
 /* 	exit; */
 /* } */
-//printpre($_REQUEST);
+
+//printpre($curraction);
 
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+
 
 /******************************************************************************
  * Action: list, review, user
@@ -29,9 +31,27 @@ if ($_REQUEST['action']) {
 } 
 
 if ($_REQUEST['email']) {
-	$curraction = 'email';
+	if ($_REQUEST['action'] == 'send') {
+		$curraction = 'send';
+	} else {
+		$curraction = 'email';
+	}
 	$action = 'email';
 } 
+
+
+/******************************************************************************
+ * Determine which subsets of participants will be checked
+ ******************************************************************************/
+
+//if ($_REQUEST[checkclass] == "Check Class only") $checkgroup = "class";
+
+
+if ($curraction != "list" && $curraction != "review") $_SESSION[editors] = $_REQUEST['editors'];
+//$_SESSION[editors] = $_REQUEST['editors'];
+//printpre($_SESSION[editors]);
+//printpre($_REQUEST);
+
 
 /******************************************************************************
  * Scope: site, discussion/assessment
@@ -104,6 +124,42 @@ if (isclass($class_id)) {
 	$students = getclassstudents($class_id);
 	//printpre($students);
 }
+
+/******************************************************************************
+ * Add Participants to Roster
+ ******************************************************************************/
+
+if ($_REQUEST[addtoclass] == "Add Checked to Roster") {
+	//$checkgroup = "";
+	foreach($_SESSION[editors] as $studentid) {
+	
+		//get ids of all student currently in class
+		$currentstudents = array();
+		foreach (array_keys($students) as $key) {
+			$currentstudents[] = $students[$key][id];
+		}
+
+		//add to class roster only if not currently a student
+		if (!in_array($studentid, $currentstudents)) {
+			print "add to db";
+			$user_id = $studentid;
+			$ugroup_id = getClassUGroupId($class_id);
+			
+			// add them to the ugroup
+			$query = "
+				INSERT INTO
+					ugroup_user
+				SET
+					FK_user=$user_id,
+					FK_ugroup=$ugroup_id			
+			";
+			//printpre($query);
+			db_query($query);
+		}
+	}
+	$students = getclassstudents($class_id);
+}
+
 
 
 /******************************************************************************
@@ -239,6 +295,12 @@ if ($action == "review" || $action == "user") {
 printerr();
 
 /******************************************************************************
+ * Check subsets of participants (except check all and uncheck all)
+ *
+ ******************************************************************************/
+
+
+/******************************************************************************
  * Print out HTML
  ******************************************************************************/
 
@@ -288,6 +350,7 @@ function uncheckAll() {
 	for (i = 0; i < field.length; i++)
 		field[i].checked = false ;
 }
+
 
 function doFieldChange(user,scope,site,section,page,story,field,what) {
 	f = document.addform;
@@ -381,6 +444,9 @@ print "</table><br />";
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
 		<input type=hidden name='order' value='<? echo urlencode($order) ?>'>
 		<input type=hidden name='action' value='<? echo $action ?>'>
+<!--
+		<input type=hidden name='checkgroup' value='<? echo $checkgroup ?>'>
+-->
 		<input type=hidden name='storyid' value='<? echo $storyid ?>'>
 		<input type=hidden name='siteid' value='<? echo $siteid ?>'>
 		<input type=hidden name='site' value='<? echo $site ?>'>
@@ -522,25 +588,39 @@ print "</table><br />";
 			print "<input type=submit name='update' value='Update'>";
 			print "</td></tr>";
 			
-
 			
 			/******************************************************************************
 			 * Buttons:
 			 * check all/uncheck all buttons, check class only
 			 * add checked to roster, email checked participants
 			 ******************************************************************************/
-			 
-			
+						
 			$buttons = "<tr>";
-			$buttons .= "<td align='left' colspan=2>";
-			$buttons .= "<input type=button name='checkall' value='Check All' onClick='checkAll()'> ";
-			$buttons .= "<input type=button name='uncheckall' value='Uncheck All' onClick='uncheckAll()'> ";
-			$buttons .= "<input type=button name='checkclass' value='Check Class Only' onClick=\"sendWindow('addeditor',400,250,'add_editor.php?$sid')\"> ";
-			$buttons .= "<input type=button name='addtoclass' value='Add Checked to Roster' onClick=\"sendWindow('addeditor',400,250,'add_editor.php?$sid')\"> ";
+			$buttons .= "<td align='left' colspan=2>\n";
+			
+//	  	    $buttons .= "<select name='checkgroup' onChange='document.searchform.submit()'>\n";
+//			$buttons .= "<select name='checkgroup'>\n";			
+//			$buttons .= "<option value='Check All'";
+//			if ($_REQUEST[checkgroup]=='Check All') $buttons .= " selected";
+//			$buttons .= ">Check All\n";
+//			$buttons .= "<option value='Uncheck All' ";
+//			if ($_REQUEST[checkgroup]=='Uncheck All') $buttons .= "selected";
+//			$buttons .= ">Uncheck All\n";
+//			$buttons .= "<option value='Check Class Participants'";
+//			if ($_REQUEST[checkgroup]=='Check Class Participants') $buttons .= " selected\n";
+//			$buttons .= ">Check Class Participants\n";			
+//			$buttons .= "</select> \n";
+//			
+//			$buttons .= "<input type=submit name='check' value='Update Checks'> ";
+			
+			$buttons .= "<input type=button name='checkall' value='Check All' onClick='checkAll()'> \n";
+			$buttons .= "<input type=button name='uncheckall' value='Uncheck All' onClick='uncheckAll()'> \n";
+			//$buttons .= "<input type=submit name='checkclass' value='Check Class only'> ";
+			$buttons .= "<input type=submit name='addtoclass' value='Add Checked to Roster'> \n";
 			//$edlist = $_SESSION[obj]->getEditors();
 			//$buttons .= (($className && !in_array($className,$edlist))?"<div><a href='#' onClick='addClassEditor();'>Add students in ".$className."</a></div>":"");
 			//$buttons .= "</th><th align='right'>";
-			$buttons .= "<input type=submit name='email' value='Email Checked Participants-&gt;'>";
+			$buttons .= "<input type=submit name='email' value='Email Checked Participants-&gt;'>\n";
 			$buttons .= "</td></tr>";
 			if ($action != 'email') print $buttons;
 
@@ -718,16 +798,34 @@ print "</table><br />";
 			 * if student has participated get post stats
 			 * get # of posts and avg. rating
 			 ******************************************************************************/
+			 
 			if (is_array($students) && $curraction == 'list') {
 				$rostercount = count($students);
 				print "<tr><td colspan=4><b>".$rostercount." Participants from Roster</b></tr>";
+				
+				//if ($_REQUEST['checkclass']) {
+				
+				
 				foreach (array_keys($students) as $key) {
 					$e = $students[$key][id];
+
+					if (!$_SESSION[editors]) {
+						$checkstatus = " checked";
+					} else if (in_array($e,$_SESSION[editors])) {
+						$checkstatus = " checked";
+					} else if ($_REQUEST[checkgroup] == 'Check Class only') {
+						$checkstatus = " checked";
+					} else {
+						$checkstatus = "";
+					}
+					
 					print "<tr>";
-					print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
+					
 				
 					// if not in logged participant array, then just print out name
 					if (!in_array($students[$key]['id'], $logged_participants_id)) {
+						if ($_REQUEST[checkgroup] == 'No Posts Participants') $checkstatus = " checked";
+						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".$checkstatus."></td>";
 						print "<td class=td$color>".$students[$key][fname]."</td>";
 						print "<td class=td$color>".$students[$key][email]."</td>";
 						print "<td class=td$color>0</td>";
@@ -738,6 +836,8 @@ print "</table><br />";
 						$userid = $students[$key]['id'];
 						$postcount = getNumPosts($userid);
 						$avg_rating = getAvgRating($userid);
+						if ($_REQUEST[checkgroup] == 'Posting Participants') $checkstatus = " checked";
+						print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".$checkstatus."></td>";
 						print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$students[$key][id]."&userfname=".urlencode($students[$key][fname])."&".$getvariables.">".$students[$key][fname]."</a></td>";
 						print "<td class=td$color>".$students[$key][email]."</td>";
 						print "<td class=td$color>".$postcount."</td>";
@@ -748,11 +848,12 @@ print "</table><br />";
 					$color = 1-$color;
 				}
 			}
-
-			print "<tr><td colspan=4><b>Participants not in Roster</b></tr>";
-
-			while ($a = db_fetch_assoc($r)) {
 			
+			
+			if ($curraction == 'list' && is_array($students)) print "<tr><td colspan=4><b>Participants not in Roster</b></tr>";
+			
+			while ($a = db_fetch_assoc($r)) {
+				
 				$userid = $a['user_id'];
 				$e = $a['user_id'];
 				/******************************************************************************
@@ -763,17 +864,24 @@ print "</table><br />";
 				 
 				if (!in_array($userid, $logged_students_id) && $curraction == 'list') {
 				
-					//if ($curraction == 'list') {
-						$userid = $a[user_id];
-						$logged_participants[] = $a[user_uname];
-						
-						$postcount = getNumPosts($userid);
-						$avg_rating = getAvgRating($userid);
-						
-					//}
+					$userid = $a[user_id];
+					$logged_participants[] = $a[user_uname];
+					
+					$postcount = getNumPosts($userid);
+					$avg_rating = getAvgRating($userid);
+					
+					if ($checkgroup == 'class') {
+						$checkstatus = "";
+					} else if (!$_SESSION[editors]) {
+						$checkstatus = " checked";
+					} else if (in_array($e,$_SESSION[editors])) {
+						$checkstatus = " checked";
+					} else {
+						$checkstatus = "";
+					}
 					
 					print "<tr>";
-					print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
+					print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".$checkstatus."></td>";
 					print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
 					print "<td class=td$color>".$a['user_email']."</td>";
 					print "<td class=td$color>".$postcount."</td>";
@@ -807,10 +915,10 @@ print "</table><br />";
 						// user full name
 						if ($curraction == 'user') {
 						//	print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
-							print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
+							print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".$checkstatus."></td>";
 							print "<td class=td$color>".$a['user_fname']." (".$a['user_uname'].")</td>";
 						} else {
-							print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
+							print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".$checkstatus."></td>";
 							print "<td class=td$color><a href=$PHP_SELF?$sid&action=review&userid=".$a['user_id']."&userfname=".urlencode($a['user_fname'])."&".$getvariables.">".$a['user_fname']."</a></td>";
 						}
 						//site links
@@ -826,6 +934,7 @@ print "</table><br />";
 					print "</tr>";
 					$color = 1-$color;				
 			}
+
 			
 		?>
 	</table>	
