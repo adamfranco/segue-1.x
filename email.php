@@ -44,7 +44,10 @@ if ($_REQUEST['email']) {
  * Determine which subsets of participants will be checked
  ******************************************************************************/
 
-//if ($_REQUEST[checkclass] == "Check Class only") $checkgroup = "class";
+if ($_REQUEST[checkclass] == "Check Class only") $checkgroup = "Check Class only";
+
+//$checkgroup = $_REQUEST['checkgroup'];
+//$checkgroup = "Check Class only";
 
 
 if ($curraction != "list" && $curraction != "review") $_SESSION[editors] = $_REQUEST['editors'];
@@ -444,9 +447,7 @@ print "</table><br />";
 		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
 		<input type=hidden name='order' value='<? echo urlencode($order) ?>'>
 		<input type=hidden name='action' value='<? echo $action ?>'>
-<!--
 		<input type=hidden name='checkgroup' value='<? echo $checkgroup ?>'>
--->
 		<input type=hidden name='storyid' value='<? echo $storyid ?>'>
 		<input type=hidden name='siteid' value='<? echo $siteid ?>'>
 		<input type=hidden name='site' value='<? echo $site ?>'>
@@ -597,9 +598,13 @@ print "</table><br />";
 						
 			$buttons = "<tr>";
 			$buttons .= "<td align='left' colspan=2>\n";
+						
+			$buttons .= "<input type=button name='checkall' value='Check All' onClick='checkAll()'> \n";
+			$buttons .= "<input type=button name='uncheckall' value='Uncheck All' onClick='uncheckAll()'> \n";
+			$buttons .= "<input type=submit name='checkclass' value='Check Class only'> \n";
 			
-//	  	    $buttons .= "<select name='checkgroup' onChange='document.searchform.submit()'>\n";
-//			$buttons .= "<select name='checkgroup'>\n";			
+		//	 $buttons .= "<select name='checkgroup' onChange='document.searchform.submit()'>\n";
+//			$buttons .= "<select name=checkgroup>\n";			
 //			$buttons .= "<option value='Check All'";
 //			if ($_REQUEST[checkgroup]=='Check All') $buttons .= " selected";
 //			$buttons .= ">Check All\n";
@@ -612,14 +617,8 @@ print "</table><br />";
 //			$buttons .= "</select> \n";
 //			
 //			$buttons .= "<input type=submit name='check' value='Update Checks'> ";
-			
-			$buttons .= "<input type=button name='checkall' value='Check All' onClick='checkAll()'> \n";
-			$buttons .= "<input type=button name='uncheckall' value='Uncheck All' onClick='uncheckAll()'> \n";
-			//$buttons .= "<input type=submit name='checkclass' value='Check Class only'> ";
+
 			$buttons .= "<input type=submit name='addtoclass' value='Add Checked to Roster'> \n";
-			//$edlist = $_SESSION[obj]->getEditors();
-			//$buttons .= (($className && !in_array($className,$edlist))?"<div><a href='#' onClick='addClassEditor();'>Add students in ".$className."</a></div>":"");
-			//$buttons .= "</th><th align='right'>";
 			$buttons .= "<input type=submit name='email' value='Email Checked Participants-&gt;'>\n";
 			$buttons .= "</td></tr>";
 			if ($action != 'email') print $buttons;
@@ -803,9 +802,6 @@ print "</table><br />";
 				$rostercount = count($students);
 				print "<tr><td colspan=4><b>".$rostercount." Participants from Roster</b></tr>";
 				
-				//if ($_REQUEST['checkclass']) {
-				
-				
 				foreach (array_keys($students) as $key) {
 					$e = $students[$key][id];
 
@@ -870,7 +866,7 @@ print "</table><br />";
 					$postcount = getNumPosts($userid);
 					$avg_rating = getAvgRating($userid);
 					
-					if ($checkgroup == 'class') {
+					if ($_REQUEST[checkgroup] == 'Check Class only') {
 						$checkstatus = "";
 					} else if (!$_SESSION[editors]) {
 						$checkstatus = " checked";
