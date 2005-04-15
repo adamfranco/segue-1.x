@@ -3,6 +3,23 @@ Name: Segue ChangeLog
 
 
 
+v. 1.3.4 (The Future) 
+----------------------------------------------------
+		
+    * Bug Fix: #1177195  (Alex Chapin) 
+    Discussion feedback now show site owner instead of addedby user	
+		
+    * Bug Fix: #1177199  (Alex Chapin) 
+    Hide authors now works for both authenticated and unauthenticated users	
+		
+    * Bug Fix: #1120772  (Alex Chapin) 
+    Typo in discussion settings explanation is fixed	
+		
+    * Bug Fix: #1164085  (Alex Chapin) 
+    Segue class sites that are grouped will now display all the students in all
+    theclasses included in the group.	
+	
+
 v. 1.3.3 (2005-01-14) 
 ----------------------------------------------------
 		
