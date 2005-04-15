@@ -139,7 +139,7 @@ if (isclass($class_id)) {
  ******************************************************************************/
 
 if ($_REQUEST[addtoclass] == "Add Checked to Roster") {
-	//$checkgroup = "";
+	$_SESSION[editors] = $_REQUEST[editors];
 	foreach($_SESSION[editors] as $studentid) {
 	
 		//get ids of all student currently in class
@@ -150,7 +150,7 @@ if ($_REQUEST[addtoclass] == "Add Checked to Roster") {
 
 		//add to class roster only if not currently a student
 		if (!in_array($studentid, $currentstudents)) {
-			print "add to db";
+			//print "Participants added to roster";
 			$user_id = $studentid;
 			$ugroup_id = getClassUGroupId($class_id);
 			
@@ -166,7 +166,15 @@ if ($_REQUEST[addtoclass] == "Add Checked to Roster") {
 			db_query($query);
 		}
 	}
+	unset($_SESSION[editors]);
+	unset($_SESSION[roster_ids]);
+	unset($_SESSION[non_roster_ids]);
+	unset($_SESSION[logged_participants_ids]);
 	$students = getclassstudents($class_id);
+	foreach (array_keys($students) as $key) {
+		$roster_ids[] = $students[$key][id];
+	}
+
 }
 
 
@@ -321,6 +329,10 @@ while ($a = db_fetch_assoc($logged_participants)) {
 		$non_roster_ids[] = $logged_participant_id;
 	}	
 }
+//printpre($roster_ids);
+//printpre($non_roster_ids);
+//printpre($_SESSION[editors]);
+
 
 /******************************************************************************
  * Print out HTML
@@ -382,7 +394,7 @@ function checkGroup() {
 			<? print implode (",\n\t\t\t", $roster_ids); ?>);
 	otherIds = new Array (
 			<? print implode (",\n\t\t\t", $non_roster_ids); ?>);
-	
+	alert=(otherIds);
 	switch(groupName) {
 	case 'all':
 		checkAll();
@@ -971,7 +983,10 @@ print "</table><br />";
 		?>
 	</table>
 	<? 
-	if ($action != 'email') print $buttons;
+	if ($action != 'email') {
+	//	print $selectbuttons;
+		print $buttons;
+	}
 	?>
 </td></tr>
 </table></form>
