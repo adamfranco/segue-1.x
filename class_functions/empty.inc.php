@@ -27,7 +27,7 @@ function isclass ($class) {
  ******************************************************************************/
 
 function getclassstudents($class_id) {
-	global $cfg, $debug;
+	global $cfg;
 	
 	$classes = array();
 	$query = "
@@ -69,7 +69,6 @@ function getclassstudents($class_id) {
 
 		$ugroup_id = getClassUGroupId($class_id);
 			
-		$owner_id = db_get_value("class","FK_owner","FK_ugroup = $ugroup_id");
 		$db_participants = array();
 		$external_memberlist_participants = array();
 		$participant = array();
@@ -138,8 +137,7 @@ function getclassstudents($class_id) {
 		 * (relevant when a site is a group of classes...)
 		 ******************************************************************************/
 		$allparticipants = array_merge($allparticipants,$participants);
-		//printpre($participants);
-		
+
 	}
 	//return $participants;
 	return $allparticipants;
@@ -147,7 +145,7 @@ function getclassstudents($class_id) {
 }
 
 
-function getuserclasses($user,$time="now") {
+function getuserclasses($user,$time="all") {
 	$user = strtolower($user);
 	$classes = array();
 	$semester = currentsemester ();
@@ -237,6 +235,7 @@ function generateTermsFromCode($code) {
 	return $terms;
 }
 
+//This function checks for non-Segue sites (those in web courses database created in course folders)
 function coursefoldersite($cl) {
 	return 0;
 }
@@ -269,8 +268,10 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 	while ($a = db_fetch_assoc($r)) {
 		$db_users[$a[user_uname]] = $a[user_fname];
 	}
-	
-	// add in the ugroups
+
+/******************************************************************************
+ * 	add in the ugroups
+ ******************************************************************************/
 	$query = "
 		SELECT
 			ugroup_name

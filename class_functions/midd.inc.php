@@ -3,8 +3,6 @@
 // include the common class functions
 require_once("class_functions/common.inc.php");
 
-$_isclass_cache = array();
-
 function isclass ($class) {
 	global $auser,$_isclass_cache;
 	
@@ -54,21 +52,21 @@ function getclassstudents($class_id) {
 			'class_id' => $resultArray['class_external_id']
 		);
 	}
-
+	
 	/******************************************************************************
 	 * DB Class info: queries ugroup_user table for all users who are part
 	 * of the $class_id group
  	******************************************************************************/
- 
- 	$allparticipants = array();
- 	foreach ($classes as $class_array) {
- 		$class_id = $class_array['class_id'];
+
+	$allparticipants = array();
+	foreach ($classes as $class_array) {
+		$class_id = $class_array['class_id'];
  		
  		if ($class_array['classgroup_owner_id'])
  			$owner_id = $class_array['classgroup_owner_id'];
  		else
  			$owner_id = $class_array['class_owner_id'];
-	
+
 		$ugroup_id = getClassUGroupId($class_id);
 			
 		$db_participants = array();
@@ -288,7 +286,6 @@ function getclassstudents($class_id) {
 		 
 		$participants = $external_memberlist_participants;
 		$participants_unames = $external_memberlist_participant_unames;
-		
 		 
 		foreach (array_keys($db_participants) as $key) {
 			if (!in_array($db_participants[$key][uname], $external_memberlist_participant_unames)) {
@@ -463,7 +460,7 @@ function getuserclasses($user,$time="all") {
 	while ($a = db_fetch_assoc($r)) {
 		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
 		if (!$classes[$class_code]) {
-						if ($time == "now" && isSemesterNow($a[class_semester], $a[class_year])) {
+			if ($time == "now" && isSemesterNow($a[class_semester], $a[class_year])) {
 				$classes[$class_code] = array("code"=>"$class_code","sect"=>$a[class_section],"sem"=>$a[class_semester],"year"=>$a[class_year]);
 
 			} else if ($time == "past" && isSemesterPast($a[class_semester], $a[class_year])) {
@@ -477,7 +474,6 @@ function getuserclasses($user,$time="all") {
 			}
 		}
 	}
-	//print "<pre>$time";print_r($classes);
 	return $classes;
 }
 
@@ -683,7 +679,7 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 	}
 	
 	$usernames = array_merge($db_users,$usernames,$ugroups);	
-	
+
 	if ($lc && $usernames) {
 		foreach ($usernames as $u=>$f)
 			$usernames[strtoupper($u)] = $usernames[strtolower($u)] = $f;
@@ -691,3 +687,5 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 	
 	return $usernames;
 }
+
+?>

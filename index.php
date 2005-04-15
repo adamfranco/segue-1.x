@@ -1,5 +1,5 @@
 <? /* $Id$ */
-
+error_reporting(E_PARSE | E_ERROR);
 	// this file controls pretty much the entire program, taking input and executing the correct scripts accordingly
 
 // we need to include object files before session_start() or registered
