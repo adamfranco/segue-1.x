@@ -6,6 +6,9 @@ Name: Segue ChangeLog
 v. 1.3.4 (The Future) 
 ----------------------------------------------------
 		
+    * Change: #1185237  (Adam Franco) 
+    Default page now focuses to username field.
+		
     * Bug Fix: #1177195  (Alex Chapin) 
     Discussion feedback now show site owner instead of addedby user	
 		
