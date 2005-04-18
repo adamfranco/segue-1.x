@@ -1008,6 +1008,10 @@ function convertInteralLinksToTags ($sitename, $text) {
 	$patterns[]  = $cfg[uploadurl]."/".$sitename;
 	$replacements[] = "\[\[mediapath\]\]";
 	
+	// Remove any PHPSESSID components from the URL
+	$patterns[]  = "&?PHPSESSID=[a-zA-Z0-9]+";
+	$replacements[] = "";
+	
 	for ($i=0; $i < count($patterns); $i++) {
 		$text = eregi_replace($patterns[$i], $replacements[$i], $text);
 	}

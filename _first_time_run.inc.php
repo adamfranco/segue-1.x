@@ -37,6 +37,10 @@ if (is_resource($r)) {
 $allTablesExist = true;
 foreach ($neededTables as $table) {
 	if (!in_array($table,$existingTables)) {
+		// If this is the first missing table, print a heading.
+		if ($allTablesExist)
+			print "\n<h3>Auto-Configuring Segue Database Tables...</h3>";
+		
 		print "\nMissing Table: $table<br />";
 		print "\n &nbsp; - Inserting Table: $table<br /><br />";
 		$allTablesExist = false;	
@@ -547,6 +551,6 @@ if ($a[numslots] == 0) {
 		mkdir ($path."/RSScache/autocache/", 0770);
 	}
 	
-	print "\ndone";
+	print "\n<h3>...Database Auto-Configuration Complete. You will not see this message again.</h3>";
 }
 

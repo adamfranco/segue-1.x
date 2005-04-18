@@ -1,4 +1,5 @@
 <? /* $Id$ */
+// error_reporting(E_PARSE | E_ERROR);
 
 	// this file controls pretty much the entire program, taking input and executing the correct scripts accordingly
 
@@ -47,7 +48,12 @@ if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
         }
 }
 
-if ($cfg[domain]) ini_set("session.cookie_domain",$cfg[domain]);
+// We don't want to force the cookie domain if we are not accessing segue
+// from the domain specified (either due to a configuration error or a 
+// vhost setting) as that would make the cookie inaccessible.
+if ($cfg[domain] && ereg($cfg['domain'], $_SERVER["SERVER_NAME"]))
+	ini_set("session.cookie_domain",$cfg[domain]);
+	
 //ini_set("session.name","SeguePHPSESSID");
 session_start();// start the session manager :) -- important, as we just learned
 

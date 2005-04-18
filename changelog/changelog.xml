@@ -15,36 +15,92 @@
 		</new>
 
 	</version>
+	<version number="1.3.4" date="2005-04-18">
+		<change author='adam' ref='1185237' reftype='fr'>
+			Default page now focuses to username field.
+		</change>
+		<fix author='alex' ref='1177195' reftype='bug'>
+			Discussion feedback now show site owner instead of addedby user
+		</fix>	
+		<fix author='alex' ref='1177199' reftype='bug'>
+			Hide authors now works for both authenticated and unauthenticated
+			users
+		</fix>	
+		<fix author='alex' ref='1120772' reftype='bug'>
+			Typo in discussion settings explanation is fixed
+		</fix>	
+		<fix author='alex' ref='1164085' reftype='bug'>
+			Segue class sites that are grouped will now display all the students
+			in all the classes included in the group.
+		</fix>	
+	</version>
+	<version number="1.3.3" date="2005-01-14">
+		<fix author='adam'>
+			Now Segue strips PHPSESSID tags from any urls saved to prevent
+			accidental session hijacking when copy/pasting links from a browser
+			without cookies enabled.
+		</fix>
+		<fix author='adam'>
+			Now Segue doesn't force the cookie domain if we are not accessing 
+			segue from the domain specified in the config (either due to a
+			configuration error or a vhost setting) as that would make the
+			cookie inaccessible.
+		</fix>
+		<fix author='adam' ref='1083127' reftype='bug'>
+			Added some additional error lines to be printed on email failure.
+		</fix>
+		<fix author='adam' ref='1083131' reftype='bug'>
+			Added some additional information lines to be printed during table
+			creation.
+		</fix>
+		<fix author='adam'>
+			Database errors on connection will now not print the database
+			password used unless the debug configuration option is set to 1.
+		</fix>
+		<change author='adam'>
+			Date printing has been re-worked to support more timestamp formats.
+			As well, config options have been added for customing date/time
+			formats.
+		</change>
+		<fix author='adam' ref='878641' reftype='bug'>
+			Removed some unused form fields.
+		</fix>
+	</version>
 	<version number="1.3.2" date="2004-10-07">
 		<fix author='adam'>
-			Replaced preview links in permissions window with a link to the new preview screen.
+			Replaced preview links in permissions window with a link to the new
+			preview screen.
 		</fix>
 		<fix author='adam'>
-			'Build permissions array' now doesn't confuse delete and discuss permissions.
+			'Build permissions array' now doesn't confuse delete and discuss
+			permissions.
 		</fix>
 		<fix author='adam' ref='1042319' reftype='bug'>
-			Classes with the external ID different from the internal code now are
-			pulled properly in the roster.
+			Classes with the external ID different from the internal code now
+			are pulled properly in the roster.
 		</fix>
 		<change author='adam' ref='854782' refttype='bug'>
-			Headers have been reworked to print a doctype tag as well as html and
-			head tags in the right order. Some attributes, such as align='right',
-			have their attributes quoted, and br tags have trailing slashes added.
-			Much more cleaning up of the HTML needs to be done before Segue code
-			will validate, but it is now partially along the way.
+			Headers have been reworked to print a doctype tag as well as html 
+			and	head tags in the right order. Some attributes, such as 
+			align='right', have their attributes quoted, and br tags have
+			trailing slashes added.	Much more cleaning up of the HTML needs to
+			be done before Segue code will validate, but it is now partially
+			along the way.
 		</change>
 		<fix author='adam'>
 			Site-listing next/previous buttons now reflect search results.
 		</fix>
 		<fix author='adam'>
-			Fixed midd network's LDAP search function to properly show members of
-			the class as students.
+			Fixed midd network's LDAP search function to properly show members
+			of the class as students.
 		</fix>
 		<fix author='adam'>
-			Modified HTMLarea to not capture CTRL+v, which was violating Mozilla's security policy for clipboard access.
+			Modified HTMLarea to not capture CTRL+v, which was violating 
+			Mozilla's security policy for clipboard access.
 		</fix>
 		<fix author='adam'>
-			Content blocks created in plain-text mode now have br tags replacing line breaks.
+			Content blocks created in plain-text mode now have br tags replacing
+			line breaks.
 		</fix>
 	</version>
 	<version number="1.3.1" date="2004-10-05">
@@ -52,12 +108,13 @@
 			Removed invalid template from sample config.
 		</fix>
 		<fix author='alex'>
-			Fixed links in user account maintenance UI (passwd.php).  Links to register
-			now appear in  user account maintenance UI if auth_register is turned on in config.
+			Fixed links in user account maintenance UI (passwd.php).  Links to 
+			register now appear in  user account maintenance UI if auth_register
+			is turned on in config.
 		</fix>
 		<fix author='adam'>
-			'Visitor Registration' screen now asks for Name instead of username, what it was doing before,
-			but not saying.
+			'Visitor Registration' screen now asks for Name instead of username, 
+			what it was doing before, but not saying.
 		</fix>
 		<fix author='adam'>
 			'Forgot password' screen now works properly.
@@ -67,28 +124,31 @@
 			'added' timestamps are now preserved.
 		</fix>
 		<fix author='alex'>
-			Link to Segue site listing (sitelisting.php) changed from Public Sites to Site Listing to reflect
-			that sites actually listed are not necessarily public.  Clarification made in explanation
-			of site listing to indicate that the listing includes all class sites and all other sites
-			that have settings which specify public listing.
+			Link to Segue site listing (sitelisting.php) changed from Public
+			Sites to Site Listing to reflect that sites actually listed are not
+			necessarily public.  Clarification made in explanation of site
+			listing to indicate that the listing includes all class sites and
+			all other sites	that have settings which specify public listing.
 		</fix>
 		<fix author='alex'>
-			If a section has a single page, that page link will not be displayed.
-			However, if that page is a "link" then it will be displayed to make
-			it accessable.
+			If a section has a single page, that page link will not be
+			displayed. However, if that page is a "link" then it will be
+			displayed to make it accessable.
 		</fix>
 		<fix author='adam'>
-			The side-sections navigation was all screwed up and not printing editing links in viewsite mode.
+			The side-sections navigation was all screwed up and not printing
+			editing links in viewsite mode.
 		</fix>
 		<fix author='adam'>
-			Page titles are now displayed with the title CSS class instead of just bold letters.
+			Page titles are now displayed with the title CSS class instead of
+			just bold letters.
 		</fix>
 		<fix author='adam'>
 			The sample_config was replicating the auth_help string.
 		</fix>
 		<fix author='adam'>
-			The sample_config now has an empty arry for the email excludes, instead of
-			an empty string as an element.
+			The sample_config now has an empty arry for the email excludes, 
+			instead of an empty string as an element.
 		</fix>
 		<fix author='adam'>
 			Misspelling in the Midd class functions was throwing a warning.
@@ -96,12 +156,11 @@
 	</version>
 	<version number="1.3.0" date="2004-09-30">
 		<important author='adam'>
-			Various changes in Segue necessitate that you upgrade to a new config
-			file as well as run the '1.3.0 update' under 'admin tools' --> 'updates'
-			to make several changes to Segue's database and file-storage structure.
-		</important>
-		
-		
+			Various changes in Segue necessitate that you upgrade to a new 
+			config file as well as run the '1.3.0 update' under 
+			'admin tools' --> 'updates'	to make several changes to Segue's
+			database and file-storage structure.
+		</important>		
 		<fix author='adam'>
 			'...more.' links now don't print for stories if the extended content 
 			is just a line-return and a line break inserted by the editor.
@@ -111,39 +170,42 @@
 		</fix>
 		<change author='adam'>
 			Everyone and institute permissions are now not dropped on site-copy.
-			As well, when creating a group from an existing site, the permissions are 
-			now retained.
+			As well, when creating a group from an existing site, the 
+			permissions are now retained.
 		</change>
 		<fix author='adam' ref='1036482' reftype='bug'>
-			LDAP users are now syched with the database when they are given permissions.
+			LDAP users are now syched with the database when they are given 
+			permissions.
 		</fix>
 		<fix author='adam'>
-			When adding slots to a group, they now disapear from the site listing.
+			When adding slots to a group, they now disapear from the site
+			listing.
 		</fix>
 		<fix author='adam' ref='1036562' reftype='bug'>
 			CopySite now copies all media, not just those referenced by stories.
 		</fix>
 		<new author='adam'>
 			Added a configuration checking function and some more helpful error
-			messages so that installing and configuring Segue is more straight forward.
+			messages so that installing and configuring Segue is more straight
+			forward.
 		</new>
 		<fix author='alex' ref='856465' reftype='bug'>
-			Have added notes and help to themes UI indicating the Popup Window blocker
-			software should be disabled for Segue.
+			Have added notes and help to themes UI indicating the Popup Window
+			blocker software should be disabled for Segue.
 		</fix>
 		<fix author='alex'>
-			Improved navigation header display.  Fixed style of navigation header 
-			in bevelbox theme.
+			Improved navigation header display.  Fixed style of navigation
+			header in bevelbox theme.
 		</fix>
 		<change author='alex'>
-			Changed side sections navigational arrangement (see: theme settings) such
-			that links to pages of the current section appear in an indented list
-			below section name in left navigation.
+			Changed side sections navigational arrangement (see: theme settings)
+			such that links to pages of the current section appear in an
+			indented list below section name in left navigation.
 		</change>				
 		<fix author='adam'>
-			Segue now checks that it can write to a site directory before attempting 
-			to copy media to it and prints out an informative message if it can't
-			instead of failing with confusing errors.
+			Segue now checks that it can write to a site directory before 
+			attempting to copy media to it and prints out an informative message
+			if it can't	instead of failing with confusing errors.
 		</fix>
 		<fix author='adam' ref='879877' reftype='bug'>
 			Removed repeating titles for stories in the sitemap.
@@ -161,19 +223,19 @@
 			add the class as an editor.
 		</fix>
 		<fix author='adam'>
-			Segue now prints a nice error instructing the user to update thier links 
-			if a bad link tries to get a non-existant section or page and creates a 
-			corrupted section or page object.
+			Segue now prints a nice error instructing the user to update thier
+			links if a bad link tries to get a non-existant section or page and
+			creates a corrupted section or page object.
 		</fix>
 		<new author='adam'>
 			When copying a site, section, or page, links internal to that part 
 			(such as links in a	content block that point to another page in the 
-			site or section) are now updated to point to the appropriate place in 
-			the new version of the part.
+			site or section) are now updated to point to the appropriate place
+			in the new version of the part.
 		</new>
 		<fix author='alex'>
-			When editing slots, information about whether the slot was in use not or not
-			is now accurate.
+			When editing slots, information about whether the slot was in use
+			not or not is now accurate.
 		</fix>
 		<change author='alex'>
 			Added new template to config.inc.php.

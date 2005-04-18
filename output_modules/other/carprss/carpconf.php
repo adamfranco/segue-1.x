@@ -42,6 +42,7 @@ function MyCarpConfReset($set='default') {
 	$carpconf['aitems'] = "</table>";
 
 	$carpconf['poweredby'] = "";
+	$carpconf['cacheinterval'] = 10;
 	
 	$carpconf['cacheinterval'] = 10;
 	

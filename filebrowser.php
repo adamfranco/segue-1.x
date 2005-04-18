@@ -480,7 +480,6 @@ function changePage(lolim) {
 					<form action="filebrowser.php" name='addform' method="POST" enctype="multipart/form-data"> 
 					<input type=hidden name='comingfrom' value='<? echo $comingfrom ?>'>
 					<input type=hidden name='site' value='<? echo $site ?>'> 
-					<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'"> 
 					<input type=hidden name='upload' value='1'> 
 					<input type=hidden name='order' value='<? echo $order ?>'> 
 					<input type=hidden name='editor' value='<? echo $editor ?>'> 

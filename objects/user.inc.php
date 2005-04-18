@@ -101,7 +101,8 @@ class user {
 		$body .= "IMPORTANT: Please change your password as soon as you log in. DO NOT continue using this random password as email is insecure.\n\n  Thanks and enjoy using Segue";
 		
 		// send it!
-		mail($to,$subject,$body,"From: $from");
+		if (!mail($to,$subject,$body,"From: $from"))
+			print "ERROR: Sending message, '$subject', to '$to' failed.";
 	}
 	
 	function userExists($u) {

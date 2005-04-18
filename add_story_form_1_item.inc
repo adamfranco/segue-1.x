@@ -179,7 +179,6 @@ if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->get
 
 	printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 	printc("<tr><td colspan=2>");
-	printc('<input type="hidden" name="MAX_FILE_SIZE" value="'.$_max_upload.'">');
 	printc("<input type=hidden name='libraryfileid' value='".$_SESSION[settings][libraryfileid]."'>");
 	printc("<input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=none\")' target='filebrowser' style='text-decoration: none'>");	
 	printc(" <input type='text' class='textfield' small name='libraryfilename' value='".$_SESSION[settings][libraryfilename]."' size=75 readonly>");

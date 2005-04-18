@@ -1,107 +1,242 @@
 <? /* $Id$ */
 
-function valid_date($date) {
-  // first off, if they're blank, return true
-  if (!$date || $date=='') return true;
-  if (!ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $date, $regs)) {
-    return false;
-  }
-  if ($regs[1]==0 && $regs[2]==0 && $regs[3]==0) return true;
-  if ($regs[2]>12 || $regs[3]>31) return false;
-  if (!checkdate((integer)$regs[2],(integer)$regs[3],(integer)$regs[1])) return false;
-  return true;
+/**
+ * Break a date-string into parts
+ * 
+ * @param string $date
+ * @return integer array OR FALSE on invalid format
+ * @access public
+ * @date 12/13/04
+ */
+function getDateArray ($date) {
+	// Trim off any whitespace
+	$date = trim($date);
+	
+	// Check for two forms of dates (with and without delimiters):
+	//		2003-06-17 17:10:18
+	//		20030617171018
+	// As well, dates may or may not include times
+	//
+	$regex = "/
+			^								# Match the start of the line to 
+											# ensure no prior charachters
+	
+			([0-9]{4})						# Match the Year - #1
+			-?								# Possibly followed by a dash
+			
+			(0?[0-9]|1[0-2])?				# Match the Month - #2
+			
+			-?								# Possibly followed by a dash
+			(0?[0-9]|1[0-9]|2[0-9]|3[0-1])?	# Match the Day - #3
+	
+			(								# Begin the possible time match - #4
+				\s?							# Possibly starting with a space
+				(0?[0-9]|1[0-9]|2[0-3])		# Match the Hour - #5
+			
+				:?							# Possibly separated by a colon
+				([0-5][0-9])				# Match the Minute - #6
+			
+				:?							# Possibly separated by a colon
+				([0-5][0-9])?				# Match the second if it exists - #7
+			)?								# End the time match
+	
+			$								# Ensure no other characters at the
+											# end of the line
+	/x";	// Ignore whitespace
+	
+	if (!preg_match ($regex, $date, $regs)) {
+		return FALSE;
+	}
+	
+	// If we have a match, build our array
+	$dateArray = array(
+		"Year" => intval($regs[1]),
+		"Month" => intval($regs[2]),
+		"Day" => intval($regs[3]),
+		"Hour" => intval($regs[5]),
+		"Minute" => intval($regs[6]),
+		"Second" => intval($regs[7]),
+	);
+	
+	// Make sure that we don't have a Month or Day	
+	return $dateArray;
 }
 
+
+/**
+ * Check whether or not a date string is a valid string
+ * 
+ * @param string $date
+ * @return boolean
+ * @access public
+ * @date 12/13/04
+ */
+function valid_date($date) {	
+	// first off, if they're blank, return true
+	if (!$date || trim($date) == '') 
+		return TRUE;
+	
+	// Get an array of the date parts
+	if (!$dateArray = getDateArray($date))
+		return FALSE;
+		
+	// If all parts are zero, then this date is valid:
+	//		0000-00-00 00:00:00
+	//		00000000000000
+	if ($dateArray['Year'] == 0 
+		&& $dateArray['Month'] == 0 
+		&& $dateArray['Day'] == 0
+		&& $dateArray['Hour'] == 0
+		&& $dateArray['Minute'] == 0
+		&& $dateArray['Second'] == 0)
+	{
+		 return TRUE;
+	} 
+	// If the dates are zero, but the time isn't, 
+	// then this is invalid
+	else if ($dateArray['Year'] == 0 
+		&& $dateArray['Month'] == 0 
+		&& $dateArray['Day'] == 0)
+	{
+		return FALSE;
+	}
+	
+	// Check that we do not have non-zero values
+	// following zero values.
+	if ($dateArray['Year'] == 0
+		&& ($dateArray['Month'] != 0
+			|| $dateArray['Day'] != 0))
+	{
+		return FALSE;
+	}
+	
+	// Check that we do not have non-zero values
+	// following zero values.
+	if ($dateArray['Month'] == 0
+		&& $dateArray['Day'] != 0)
+	{
+		return FALSE;
+	}
+	
+	// Validate that the date is a valid Gregorian date
+	$month = ($dateArray['Month'])?$dateArray['Month']:1;
+	$day = ($dateArray['Day'])?$dateArray['Day']:1;
+	if (!checkdate($month, 
+				$day,
+				$dateArray['Year']))
+	{
+		return FALSE;
+	}
+		
+	return TRUE;
+}
+
+/**
+ * Check whether or not a date string is real, non-zero date
+ * 
+ * @param string $date
+ * @return boolean
+ * @access public
+ * @date 12/13/04
+ */
 function real_date($date) {
-  // first off, if they're blank, return false
-  if (!$date || $date=='') return false;
-  if (!ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $date, $regs)) {
-    return false;
-  }
-  if ($regs[2]>12 || $regs[3]>31) return false;
-  if ($regs[3]==0 || $regs[2]==0) return false;
-  if (!checkdate((integer)$regs[2],(integer)$regs[3],(integer)$regs[1])) return false;
-  return true;
+	// first off, if they're blank, return false
+	if (!$date || $date=='') 
+		return FALSE;
+	
+	// Make sure that the date is good format
+	if (!valid_date($date))
+		return FALSE;
+	
+	// Get an array of the date parts
+	if (!$dateArray = getDateArray($date))
+		return FALSE;
+	
+	// Validate that the date is a valid Gregorian date
+	$month = ($dateArray['Month'])?$dateArray['Month']:1;
+	$day = ($dateArray['Day'])?$dateArray['Day']:1;
+	if (!checkdate($month, 
+				$day,
+				$dateArray['Year']))
+	{
+		return FALSE;
+	}
+		
+	return TRUE;
 }
 
 function usdate($date) {
-  ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $date, $regs);
-  $newdate='';
-  if ($regs[1]>1900) $regs[1]-=1900;
-  if ($regs[1]>=100) $regs[1]-=100;
-  $newdate = ((integer)$regs[2])."/".((integer)$regs[3])."/".sprintf("%02d",$regs[1]);
-  return $newdate;
+	// Get an array of the date parts
+	return dateArrayToUSDate(getDateArray($date));
 }
 
 function datetime2usdate($dt,$include_s=0) {
-	ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})",$dt,$regs);
-	return regs2usdate($regs,$include_s);
+	// Get an array of the date parts
+	return dateArrayToUSDate(getDateArray($dt), TRUE, $include_s);
 }
 
 function timestamp2usdate($t,$include_s=0) {
-//	return date("n/d/y g:i".(($include_s)?":s":"")." A",$t);
-	ereg("([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})",$t,$regs);
-	return regs2usdate($regs,$include_s);
+	// Get an array of the date parts
+	return dateArrayToUSDate(getDateArray($t), TRUE, $include_s);
 }
 
-function regs2usdate($regs,$include_s=0) {
-	$year = (integer)$regs[1];
-	$month = (integer)$regs[2];
-	$day = (integer)$regs[3];
-	if ($year > 1900) $year-=1900;
-	if ($year >=100) $year-=100;
-	$date = $month."/".sprintf("%02d",$day)."/".sprintf("%02d",$year);
+function dateArrayToUSDate($dateArray, $include_time=0, $include_s=0) {
+	global $cfg;
 	
-	$hours = (integer)$regs[4];
-	$mins = (integer)$regs[5];
-	$sec = (integer)$regs[6];
-	$ampm = "AM";
-	if ($hours > 12) { $hours -=12; $ampm = "PM"; }
-	if ($hours == 12) $ampm = "PM";
-	if ($hours == 0) $hours = 12;
-	$time = "$hours:".sprintf("%02d",$mins).(($include_s)?":".sprintf("%02d",$sec):"")." $ampm";
-	return $date . " " . $time;
-}
-
-function valid_time($time) {
-  if (!$time || $time=='') return true;
-  if (!ereg("([0-9]{1,2}):([0-9]{1,2})", $time, $regs)) return false;
-  if ($regs[2]>59) return false;
-  return true;
-}
-
-function time2long($time) {
-  ereg("([0-9]{1,2}):([0-9]{1,2})", $time, $regs);
-  $t = $regs[1]*60 + $regs[2];
-  return $t;
-}
-
-function long2time($time) {
-  $hrs = $time/60;
-  for ($i=0;$i<$hrs;$i++);
-  if ($i != $hrs) $i--;
-  $mins= $time % 60;
-  return sprintf("%02d:%02d",$i,$mins);
+// 	print $dateArray['Hour']." ".$dateArray['Minute']." ".$dateArray['Second']." ".
+// 			(($dateArray['Year'] && !$dateArray['Month'])?1:$dateArray['Month'])." ".$dateArray['Day']." ".$dateArray['Year']."\n";
+	
+	$timestamp = mktime(
+			$dateArray['Hour'], 
+			$dateArray['Minute'], 
+			$dateArray['Second'], 
+			($dateArray['Year'] && !$dateArray['Month'])?1:$dateArray['Month'], // Must be non-zero
+			$dateArray['Day'], 
+			$dateArray['Year']);
+			
+	// Set our date format
+	if ($cfg['date_format']) {
+		$dateFormat = $cfg['date_format'];
+	} else {
+		$dateFormat = "n/j/Y";
+	}
+	
+	if ($include_time) {
+		// Set our time format
+		if ($cfg['time_format']) {
+			$timeFormat = $cfg['time_format'];
+		} else {
+			$timeFormat = "g:i A";
+		}
+		
+		if ($include_s) {
+				$timeFormat = ereg_replace("([^gGhH]?)(i)", "\\1\\2\\1s", $timeFormat);
+		}
+		
+		return date($dateFormat, $timestamp)." ".date($timeFormat, $timestamp);
+	} else {
+		return date($dateFormat, $timestamp);
+	}
 }
 
 // checks if we are currently in this range of dates
 function indaterange($date1, $date2) {
 	if (real_date($date1)) {
-		ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $date1, $regs);
-//		print "m: ".$regs[2]." d: ".$regs[3]." y: ".$regs[1];
-		$unix1=mktime(0,0,0,$regs[2],$regs[3],$regs[1]);
-//		print "<br />time1: $unix1<br />";
-//		print strftime("%D",$unix1)."<br />";
-	} else $unix1=0;
+		$dateArray = getDateArray($date1);
+		$unix1 = mktime(
+			$dateArray['Hour'], $dateArray['Minute'], $dateArray['Second'], 
+			$dateArray['Month'], $dateArray['Day'], $dateArray['Year']);
+	} else 
+		$unix1=0;
 	
 	if (real_date($date2)) {
-		ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $date2, $regs);
-//		print "m: ".$regs[2]." d: ".$regs[3]." y: ".$regs[1];
-		$unix2=mktime(23,59,59,$regs[2],$regs[3],$regs[1]);
-//		print "<br />time1: $unix2<br />";
-//		print strftime("%D",$unix2)."<br />";
-	} else $unix2=0;
-//	print "ctime: ".time()."<br />";
+		$dateArray = getDateArray($date2);
+		$unix2 = mktime(
+			$dateArray['Hour'], $dateArray['Minute'], $dateArray['Second'], 
+			$dateArray['Month'], $dateArray['Day'], $dateArray['Year']);
+	} else 
+		$unix2=0;
+		
 	$ctime = time();
 
 	return (($unix1==0 || $unix1<=$ctime) && ($unix2==0 || $unix2>=$ctime));
@@ -116,8 +251,10 @@ function txtdaterange($date1,$date2) {
 }
 
 function nulldate($date) {
-	if ($date == '0000-00-00') return 1;
-	return 0;
+	if ($date == '0000-00-00') 
+		return 1;
+	else
+		return 0;
 }
 
 ?>

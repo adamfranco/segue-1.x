@@ -34,6 +34,38 @@ $h++;$m++;
 /* if (($m >= 3 && $m < 6) && !($m%15)) $_timefunctions=1; */
 if (($m >= 3 && $m < 6) && !($m%15)) $_timefunctions=1;
 if ($_timefunctions) { include("themes/common/timefunctions.inc.php"); $_ol = " onLoad='init()'"; }
+
+if (!$_REQUEST[nostatus]) {
+	if (!$_loggedin) {
+		print <<<END
+		
+		<script lang='JavaScript'>
+			function focusLogin() {
+				forms = document.forms;
+				for (i=0; i<forms.length; i++) {
+					if (forms[i].id == 'loginform') {
+						loginForm = forms[i];
+						break;
+					}
+				}
+				
+				if (loginForm) {
+					elements = loginForm.elements;
+					for (i=0; i<elements.length; i++) {
+						if (elements[i].name == 'name') {
+							elements[i].focus();
+							break;
+						}
+					}
+				}
+			}
+		</script>
+		
+END;
+		$_ol = " onLoad='focusLogin()'";
+	}
+}
+
 include("themes/$theme/css.inc.php");
 ?>
 

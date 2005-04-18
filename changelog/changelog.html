@@ -3,28 +3,98 @@
 	h1, h2 {color: #005;}
 	h1 {font-size: 18pt;}
 	li {padding-bottom: 3px;}
-	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.2</h2><h3>2004-10-07</h3><ul>
+	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.4</h2><h3>2005-04-18</h3><ul>
+		<li/> Change: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1185237&amp;group_id=82171&amp;atid=565237">
+        			#1185237</a> 
+			Default page now focuses to username field.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1177195&amp;group_id=82171&amp;atid=565234">
+        			#1177195</a> 
+			Discussion feedback now show site owner instead of addedby user
+		 (<i>Alex Chapin</i>)	
+		<li/> Bug Fix:
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1177199&amp;group_id=82171&amp;atid=565234">
+        			#1177199</a> 
+			Hide authors now works for both authenticated and unauthenticated
+			users
+		 (<i>Alex Chapin</i>)	
+		<li/> Bug Fix:
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1120772&amp;group_id=82171&amp;atid=565234">
+        			#1120772</a> 
+			Typo in discussion settings explanation is fixed
+		 (<i>Alex Chapin</i>)	
+		<li/> Bug Fix:
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1164085&amp;group_id=82171&amp;atid=565234">
+        			#1164085</a> 
+			Segue class sites that are grouped will now display all the students
+			in all the classes included in the group.
+		 (<i>Alex Chapin</i>)	
+	</ul><br/><h2>Version 1.3.3</h2><h3>2005-01-14</h3><ul>
 		<li/> Bug Fix:
 	 
-			Replaced preview links in permissions window with a link to the new preview screen.
+			Now Segue strips PHPSESSID tags from any urls saved to prevent
+			accidental session hijacking when copy/pasting links from a browser
+			without cookies enabled.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			'Build permissions array' now doesn't confuse delete and discuss permissions.
+			Now Segue doesn't force the cookie domain if we are not accessing 
+			segue from the domain specified in the config (either due to a
+			configuration error or a vhost setting) as that would make the
+			cookie inaccessible.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1042319&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1083127&amp;group_id=82171&amp;atid=565234">
+        			#1083127</a> 
+			Added some additional error lines to be printed on email failure.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1083131&amp;group_id=82171&amp;atid=565234">
+        			#1083131</a> 
+			Added some additional information lines to be printed during table
+			creation.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Database errors on connection will now not print the database
+			password used unless the debug configuration option is set to 1.
+		 (<i>Adam Franco</i>)
+		<li/> Change:  
+			Date printing has been re-worked to support more timestamp formats.
+			As well, config options have been added for customing date/time
+			formats.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=878641&amp;group_id=82171&amp;atid=565234">
+        			#878641</a> 
+			Removed some unused form fields.
+		 (<i>Adam Franco</i>)
+	</ul><br/><h2>Version 1.3.2</h2><h3>2004-10-07</h3><ul>
+		<li/> Bug Fix:
+	 
+			Replaced preview links in permissions window with a link to the new
+			preview screen.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			'Build permissions array' now doesn't confuse delete and discuss
+			permissions.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1042319&amp;group_id=82171&amp;atid=565234">
         			#1042319</a> 
-			Classes with the external ID different from the internal code now are
-			pulled properly in the roster.
+			Classes with the external ID different from the internal code now
+			are pulled properly in the roster.
 		 (<i>Adam Franco</i>)
 		<li/> Change: 
 				#854782 
-			Headers have been reworked to print a doctype tag as well as html and
-			head tags in the right order. Some attributes, such as align='right',
-			have their attributes quoted, and br tags have trailing slashes added.
-			Much more cleaning up of the HTML needs to be done before Segue code
-			will validate, but it is now partially along the way.
+			Headers have been reworked to print a doctype tag as well as html 
+			and	head tags in the right order. Some attributes, such as 
+			align='right', have their attributes quoted, and br tags have
+			trailing slashes added.	Much more cleaning up of the HTML needs to
+			be done before Segue code will validate, but it is now partially
+			along the way.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
@@ -32,16 +102,18 @@
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			Fixed midd network's LDAP search function to properly show members of
-			the class as students.
+			Fixed midd network's LDAP search function to properly show members
+			of the class as students.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			Modified HTMLarea to not capture CTRL+v, which was violating Mozilla's security policy for clipboard access.
+			Modified HTMLarea to not capture CTRL+v, which was violating 
+			Mozilla's security policy for clipboard access.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			Content blocks created in plain-text mode now have br tags replacing line breaks.
+			Content blocks created in plain-text mode now have br tags replacing
+			line breaks.
 		 (<i>Adam Franco</i>)
 	</ul><br/><h2>Version 1.3.1</h2><h3>2004-10-05</h3><ul>
 		<li/> Bug Fix:
@@ -50,13 +122,14 @@
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
 	 
-			Fixed links in user account maintenance UI (passwd.php).  Links to register
-			now appear in  user account maintenance UI if auth_register is turned on in config.
+			Fixed links in user account maintenance UI (passwd.php).  Links to 
+			register now appear in  user account maintenance UI if auth_register
+			is turned on in config.
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
 	 
-			'Visitor Registration' screen now asks for Name instead of username, what it was doing before,
-			but not saying.
+			'Visitor Registration' screen now asks for Name instead of username, 
+			what it was doing before, but not saying.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
@@ -69,24 +142,27 @@
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			Link to Segue site listing (sitelisting.php) changed from Public Sites to Site Listing to reflect
-			that sites actually listed are not necessarily public.  Clarification made in explanation
-			of site listing to indicate that the listing includes all class sites and all other sites
-			that have settings which specify public listing.
+			Link to Segue site listing (sitelisting.php) changed from Public
+			Sites to Site Listing to reflect that sites actually listed are not
+			necessarily public.  Clarification made in explanation of site
+			listing to indicate that the listing includes all class sites and
+			all other sites	that have settings which specify public listing.
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
 	 
-			If a section has a single page, that page link will not be displayed.
-			However, if that page is a &quot;link&quot; then it will be displayed to make
-			it accessable.
+			If a section has a single page, that page link will not be
+			displayed. However, if that page is a &quot;link&quot; then it will be
+			displayed to make it accessable.
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
 	 
-			The side-sections navigation was all screwed up and not printing editing links in viewsite mode.
+			The side-sections navigation was all screwed up and not printing
+			editing links in viewsite mode.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			Page titles are now displayed with the title CSS class instead of just bold letters.
+			Page titles are now displayed with the title CSS class instead of
+			just bold letters.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
@@ -94,8 +170,8 @@
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			The sample_config now has an empty arry for the email excludes, instead of
-			an empty string as an element.
+			The sample_config now has an empty arry for the email excludes, 
+			instead of an empty string as an element.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
@@ -103,12 +179,11 @@
 		 (<i>Adam Franco</i>)
 	</ul><br/><h2>Version 1.3.0</h2><h3>2004-09-30</h3><ul>
 		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
-			Various changes in Segue necessitate that you upgrade to a new config
-			file as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates'
-			to make several changes to Segue's database and file-storage structure.
-		 (<i>Adam Franco</i>)
-		
-		
+			Various changes in Segue necessitate that you upgrade to a new 
+			config file as well as run the '1.3.0 update' under 
+			'admin tools' --&gt; 'updates'	to make several changes to Segue's
+			database and file-storage structure.
+		 (<i>Adam Franco</i>)		
 		<li/> Bug Fix:
 	 
 			'...more.' links now don't print for stories if the extended content 
@@ -120,55 +195,58 @@
 		 (<i>Adam Franco</i>)
 		<li/> Change:  
 			Everyone and institute permissions are now not dropped on site-copy.
-			As well, when creating a group from an existing site, the permissions are 
-			now retained.
+			As well, when creating a group from an existing site, the 
+			permissions are now retained.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1036482&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1036482&amp;group_id=82171&amp;atid=565234">
         			#1036482</a> 
-			LDAP users are now syched with the database when they are given permissions.
+			LDAP users are now syched with the database when they are given 
+			permissions.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			When adding slots to a group, they now disapear from the site listing.
+			When adding slots to a group, they now disapear from the site
+			listing.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1036562&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1036562&amp;group_id=82171&amp;atid=565234">
         			#1036562</a> 
 			CopySite now copies all media, not just those referenced by stories.
 		 (<i>Adam Franco</i>)
 		<li/> New feature:  
 			Added a configuration checking function and some more helpful error
-			messages so that installing and configuring Segue is more straight forward.
+			messages so that installing and configuring Segue is more straight
+			forward.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=856465&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=856465&amp;group_id=82171&amp;atid=565234">
         			#856465</a> 
-			Have added notes and help to themes UI indicating the Popup Window blocker
-			software should be disabled for Segue.
+			Have added notes and help to themes UI indicating the Popup Window
+			blocker software should be disabled for Segue.
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
 	 
-			Improved navigation header display.  Fixed style of navigation header 
-			in bevelbox theme.
+			Improved navigation header display.  Fixed style of navigation
+			header in bevelbox theme.
 		 (<i>Alex Chapin</i>)
 		<li/> Change:  
-			Changed side sections navigational arrangement (see: theme settings) such
-			that links to pages of the current section appear in an indented list
-			below section name in left navigation.
+			Changed side sections navigational arrangement (see: theme settings)
+			such that links to pages of the current section appear in an
+			indented list below section name in left navigation.
 		 (<i>Alex Chapin</i>)				
 		<li/> Bug Fix:
 	 
-			Segue now checks that it can write to a site directory before attempting 
-			to copy media to it and prints out an informative message if it can't
-			instead of failing with confusing errors.
+			Segue now checks that it can write to a site directory before 
+			attempting to copy media to it and prints out an informative message
+			if it can't	instead of failing with confusing errors.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=879877&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=879877&amp;group_id=82171&amp;atid=565234">
         			#879877</a> 
 			Removed repeating titles for stories in the sitemap.
 		 (<i>Adam Franco</i>)
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1029412&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1029412&amp;group_id=82171&amp;atid=565237">
         			#1029412</a> 
 			When copying sites or other parts of a site, discussion posts can
 			now be coppied as well.
@@ -184,20 +262,20 @@
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			Segue now prints a nice error instructing the user to update thier links 
-			if a bad link tries to get a non-existant section or page and creates a 
-			corrupted section or page object.
+			Segue now prints a nice error instructing the user to update thier
+			links if a bad link tries to get a non-existant section or page and
+			creates a corrupted section or page object.
 		 (<i>Adam Franco</i>)
 		<li/> New feature:  
 			When copying a site, section, or page, links internal to that part 
 			(such as links in a	content block that point to another page in the 
-			site or section) are now updated to point to the appropriate place in 
-			the new version of the part.
+			site or section) are now updated to point to the appropriate place
+			in the new version of the part.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
 	 
-			When editing slots, information about whether the slot was in use not or not
-			is now accurate.
+			When editing slots, information about whether the slot was in use
+			not or not is now accurate.
 		 (<i>Alex Chapin</i>)
 		<li/> Change:  
 			Added new template to config.inc.php.
@@ -207,7 +285,7 @@
 			Lising&quot; to &quot;Public Sites&quot;.  Removed &quot;links&quot; header and removed header
 			formatting from help link.  Also added text to public site listing.
 		 (<i>Alex Chapin</i>)
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1036499&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1036499&amp;group_id=82171&amp;atid=565237">
         			#1036499</a> 
 			Added a config option to include registration link below login
 			fields when there has been no authentication.  Also added config option
@@ -252,7 +330,7 @@
 		<li/> Change:  
 			Changed Active-X editor so that it links to the Media Library for images.
 		 (<i>Alex Chapin</i>)		
-		<li/> Change: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=865093&amp;group_id=82171&amp;atid=565234">
+		<li/> Change: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=865093&amp;group_id=82171&amp;atid=565234">
         			#865093</a> 
 			View and activate permission settings on template sites now affect
 			who/when they appear for users creating sites.
@@ -338,11 +416,11 @@
 			Fixed bug in media library (filebrowser.php) that prevented getting custom
 			upload limits when called from add content block UI (add_story_form_1_item.inc)
 		 (<i>Alex Chapin</i>)
-		<li/> Change: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=982246&amp;group_id=82171&amp;atid=565237">
+		<li/> Change: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=982246&amp;group_id=82171&amp;atid=565237">
         			#982246</a> 
 			Link type pages no longer open in new window.
 		 (<i>Alex Chapin</i>)
-		<li/> Change: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=982246&amp;group_id=82171&amp;atid=565237">
+		<li/> Change: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=982246&amp;group_id=82171&amp;atid=565237">
         			#982246</a> 
 			Link type content blocks no longer print out urls greater than 70 characters
 			but instead truncate their display to avoid stretching their enclosing tables.
@@ -374,7 +452,7 @@
 			regardless of whether or not they have posted to discussions/assessments on the 
 			class site.
 		 (<i>Alex Chapin</i>)
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=956123&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=956123&amp;group_id=82171&amp;atid=565237">
         			#956123</a> 
 			Added visitor and guest usertypes.  Visitors can participate in public
 			discussions and can be assigned permissions.  Visitors cannot view 
@@ -386,7 +464,7 @@
 			Changed passwd.php to handle 1. changing passwords of users authenticated via
 			Segue's db 2. registering new visitor type users 3. Log in of existing users.
 		 (<i>Alex Chapin</i>)
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=957605&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=957605&amp;group_id=82171&amp;atid=565237">
         			#957605</a> 
 			Added user registration UI that appears in public discussions when posts
 			are made without authentication.  User registration UI requires unauthenticated
@@ -465,7 +543,7 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			UI now returns users back to this location (instead of page)
 		 (<i>Alex Chapin</i>)	
 	</ul><br/><h2>Version 1.2.0</h2><h3>2004-06-10</h3><ul>
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=957602&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=957602&amp;group_id=82171&amp;atid=565237">
         			#957602</a> 
 			Added HTMLarea version 3.0 to UI for adding content, editing site headers
 			and footers and discussion posts.  2 implementations of the editor are
@@ -478,7 +556,7 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			or Mac Internet Explorer.  For these browsers, a standard textarea is
 			available.			
 		 (<i>Alex Chapin</i>)
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=957602&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=957602&amp;group_id=82171&amp;atid=565237">
         			#957602</a> 
 			Added UI for discussion/assessment participation summary and moderation.  
 			This UI gives site owners a list of all the participants in a given 
@@ -544,7 +622,7 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			displayed to other users (e.g. author name, post content)
 			and what post information is available to the site owner. 
 		 (<i>Alex Chapin</i>)	
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888585&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888585&amp;group_id=82171&amp;atid=565237">
         			#888585</a> 
 			Added file upload UI to discussion/assessment post form.  This
 			feature will allow those who post to a discussion to attach a file.
@@ -555,13 +633,13 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			This new functionality will	allow the discussion/assessment UI to
 			function as an assignment/assessment dropbox.
 		 (<i>Alex Chapin</i>)
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888588&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888588&amp;group_id=82171&amp;atid=565237">
         			#888588</a> 
 			Added option to rate discussion/assessment posts.  This feature 
 			will allow site owners rate the quality of posts.  In assessment
 			mode this rating can be used as a grade.
 		 (<i>Alex Chapin</i>)
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888588&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888588&amp;group_id=82171&amp;atid=565237">
         			#888588</a> 
 			Added option to show or hide authors of discussion/assessment posts.
  			This feature will allow site owners to create publicly anonymous 
@@ -571,7 +649,7 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			allow site owners to let all users see then results of an assessment
 			without revealing identity of assessment post authors.
 		 (<i>Alex Chapin</i>)
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888588&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=888588&amp;group_id=82171&amp;atid=565237">
         			#888588</a> 
 			Added option to show or hide discussion/assessment posts.  This
 			feature will allow site owners to use discussions as assessments.
@@ -611,13 +689,13 @@ Mac Safari. Removed browser specific code from filebrowser.php
 		 (<i>Adam Franco</i>)
 	</ul><br/><h2>Version 1.0.6</h2><h3>2003-12-29</h3><ul>
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=750109&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=750109&amp;group_id=82171&amp;atid=565234">
         			#750109</a> 
 			Now doesn't attempt to perform operations on nonexistant LDAP
 			results.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=865065&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=865065&amp;group_id=82171&amp;atid=565234">
         			#865065</a> 
 			Now checks that the destination name is not the same as the source
 			name and is also not an empty string.
@@ -634,17 +712,17 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			results.
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=853466&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=853466&amp;group_id=82171&amp;atid=565234">
         			#853466</a> 
 			Classes now show up if the user is an admin.
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=853497&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=853497&amp;group_id=82171&amp;atid=565234">
         			#853497</a> 
 			Removed link to assessments on default.inc.php
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=853501&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=853501&amp;group_id=82171&amp;atid=565234">
         			#853501</a> 
 			Fixed a bug in add/edit classes UI so that classes existing classes 
 			can now be edit.
@@ -697,35 +775,35 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			searching and pagination.
 		 (<i>Alex Chapin</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=776452&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=776452&amp;group_id=82171&amp;atid=565234">
         			#776452</a> 
 			Anonymous/Unauthenticated discussions are now working.
 		 (<i>Gabe Schine</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=809335&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=809335&amp;group_id=82171&amp;atid=565234">
         			#809335</a> 
 			Class groups not listed from members
 		 (<i>Adam Franco</i>)
-		<li/> Change: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=804005&amp;group_id=82171&amp;atid=565237">
+		<li/> Change: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=804005&amp;group_id=82171&amp;atid=565237">
         			#804005</a> 
 			Editors of sections can now enable discussions for that section and
 			select which (of the already availible editors) can post to it.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=803899&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=803899&amp;group_id=82171&amp;atid=565234">
         			#803899</a> 
 			Co-Teaching profs now don't see site creation, grouping, or editing
 			links if they are not the owner for a site. They see editing links
 			as apropriate if they are editors.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=803894&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=803894&amp;group_id=82171&amp;atid=565234">
         			#803894</a> 
 			User's Full Names containing apostrophes now don't throw errors when
 			adding to the user table.
 		 (<i>Adam Franco</i>)
 	</ul><br/><h2>Version 1.0.2</h2><h3>2003-09-08</h3><ul>
-		<li/> Change: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=777065&amp;group_id=82171&amp;atid=565237">
+		<li/> Change: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=777065&amp;group_id=82171&amp;atid=565237">
         			#777065</a> 
 			The admin interface has been changed so that slot and their
 			properties can be changed along side the classes and users. Custom 
@@ -733,17 +811,17 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			editing the DB directly.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=802499&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=802499&amp;group_id=82171&amp;atid=565234">
         			#802499</a> 
 			Story problems with the [De]Activate dates have been fixed
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=795587&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=795587&amp;group_id=82171&amp;atid=565234">
         			#795587</a> 
 			Problems with the [De]Activate dates have been fixed
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=791954&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=791954&amp;group_id=82171&amp;atid=565234">
         			#791954</a> 
 			The Move/Copy UI now shows the sitename to differentiate between
 			similarly titled sites.
@@ -759,7 +837,7 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			library size for existing slots.
 		
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=784526&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=784526&amp;group_id=82171&amp;atid=565234">
         			#784526</a> 
 			Fixed upload of PHP files bug.
 		 (<i>Adam Franco</i>)
@@ -768,13 +846,13 @@ Mac Safari. Removed browser specific code from filebrowser.php
 			which is an INT(10), corresponding to the number of bytes of the
 			quota.
 		
-		<li/> New feature: <a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=777065&amp;group_id=82171&amp;atid=565237">
+		<li/> New feature: <a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=777065&amp;group_id=82171&amp;atid=565237">
         			#777065</a> 
 			Media Library quota can be adjusted on a per-site basis through the
 			slot database table. Add Slot interface upgraded too.
 		 (<i>Adam Franco</i>)
 		<li/> Bug Fix:
-	<a href="&#10;        &#9;&#9;&#9;&#9;http://sourceforge.net/tracker/index.php?func=detail&amp;aid=771969&amp;group_id=82171&amp;atid=565234">
+	<a href="&#10;        				http://sourceforge.net/tracker/index.php?func=detail&amp;aid=771969&amp;group_id=82171&amp;atid=565234">
         			#771969</a> 
 			Upon logout, the session, instead of being completely destroyed,
 			only unsets Segue-specific variables. The previous functionality was

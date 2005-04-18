@@ -1,4 +1,5 @@
 <? /* $Id$ */
+
 //echo "bla";
 class discussion {
 	var $storyid,$parentid,$id;
@@ -458,7 +459,7 @@ class discussion {
 
 			} else {
 				if (!$_SESSION[auser]) {
-					$newpostbar.="You must be logged in to do contribute to this discussion.\n";
+					$newpostbar.="You must be logged in to contribute to this discussion.\n";
 				} else {
 					$newpostbar.="Only specified groups or individuals can participant.\n";
 				}
@@ -857,9 +858,9 @@ class discussion {
 			$s = "<a href='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>\n";
 		//	printc ("</form>");
 	//		$s = $this->subject;
-	
+			//printpre($_SESSION);
 			$a = "";
-			if ($showallauthors == 1 || $o || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId) {
+			if ($_SESSION[auser] && ($showallauthors == 1 || $o || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId)) {
 				if ($this->opt("showauthor")) $a .= "by <span class=subject>".$this->authorfname."</span>\n";
 				if ($this->opt("showauthor") && $this->opt("showtstamp")) $a .= " on ";
 			} else {
@@ -1000,7 +1001,8 @@ class discussion {
 		}
 		
 		// send it!
-		mail($to,$subject,$body,"From: $from");
+		if (!mail($to,$subject,$body,"From: $from"))
+			print "ERROR: Sending message, '$subject', to '$to' failed.";
 	}
 		
 }
