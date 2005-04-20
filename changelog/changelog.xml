@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
+	<version number="1.3.5" date="the future">
+		<change author='alex'>
+			Fixed hide author bug so that authors in all discussions are not 
+			hidden to unauthenticated users. 
+		</change>
+	</version>
 	<version number="1.3.4" date="2005-04-18">
 		<change author='adam' ref='1185237' reftype='fr'>
 			Default page now focuses to username field.
