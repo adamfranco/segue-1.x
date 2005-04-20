@@ -34,7 +34,14 @@ class permissions {
 	
 		// ---- Editor actions ----
 		if ($_REQUEST[edaction] == 'add') {
-			$o->addEditor($_REQUEST[edname]);
+			if (isgroup($_REQUEST[edname])) {
+				$classes = group::getClassesFromName($_REQUEST[edname]);
+				foreach ($classes as $class) {
+					$o->addEditor($class);
+				}
+			} else {
+				$o->addEditor($_REQUEST[edname]);
+			}
 		}
 		
 		if ($_REQUEST[edaction] == 'del') {
@@ -121,8 +128,9 @@ class permissions {
 			printc("\n<tr><th colspan=".($a[$d]+1).">");
 			
 			$className = getNameOfClassForSite($sitename);
-			
-			if ( $className && !in_array($className,$edlist)) {
+			//$classgroup = isgroup($className);
+			//printpre($classgroup);
+			if (($className) && !in_array($className,$edlist)) {
 				printc("<a href='#' onClick='addClassEditor();'>Add students in ".$className."</a>");
 			} else {
 				printc("&nbsp;");
