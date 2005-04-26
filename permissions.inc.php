@@ -126,14 +126,26 @@ class permissions {
 		
 		if ($canAddEditors) {
 			printc("\n<tr><th colspan=".($a[$d]+1).">");
-			
-			$className = getNameOfClassForSite($sitename);
-			//$classgroup = isgroup($className);
-			//printpre($classgroup);
-			if (($className) && !in_array($className,$edlist)) {
-				printc("<a href='#' onClick='addClassEditor();'>Add students in ".$className."</a>");
+
+
+			$className= array();
+			if (isgroup($sitename)) {
+				$className = group::getClassesFromName($sitename);
 			} else {
-				printc("&nbsp;");
+				$className = getNameOfClassForSite($sitename);
+			}
+
+
+			//$className = getNameOfClassForSite($sitename);
+			//printpre($className);
+			
+			foreach ($className as $class) {
+				if (!in_array($class,$edlist)) {
+					printc("<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a><br>");
+					break;
+				} else {
+					printc("&nbsp;");
+				}
 			}
 			
 			printc("</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
