@@ -1437,13 +1437,18 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 					$r = db_query($query);
 					$arr = db_fetch_assoc($r);
 					$ed_id = $arr['user_id'];
+					$ed_type = 'user';
+					
+					if (!$ed_id) {
+						$ed_id = ugroup::getGroupID($e);
+						$ed_type = 'ugroup';
+					}
 					if ($ed_id) {
-						$query = "DELETE FROM site_editors WHERE FK_editor = $ed_id AND site_editors_type = 'user' AND FK_site = ".$this->id;
+						$query = "DELETE FROM site_editors WHERE FK_editor = $ed_id AND site_editors_type = '$ed_type' AND FK_site = ".$this->owningSiteObj->id;
 						$r = db_query($query);
 					}
 			}
 			$this->editorsToDelete = array();
-			
 			/*
 			foreach ($this->editorsToDeleteInScope as $e) {
 				db_query("delete from permissions where user='$e' and site='$site' and scope='$scope' and scopeid=$id");

@@ -150,12 +150,15 @@ if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
 	print "cancelling...";
 	if ($comingFrom) {	
-		header("Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+		$headerText = "Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page;
 	} else if ($_SESSION[settings][goback]) {
-		header("Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id);
+		$headerText = "Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id;
 	} else {
-		header("Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page);
+		$headerText = "Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page;
 	}
+	
+	unset($_SESSION[storyObj], $_SESSION[settings]);
+	header($headerText);
 }
 //printpre($_REQUEST[permissions]);
 //printpre($_REQUEST[discuss]);
@@ -264,22 +267,22 @@ if ($_REQUEST[save]) {
 			log_entry("edit_story","$_SESSION[auser] edited content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->id,"story");
 		}
 		
-/* 			log_entry("add_story",$_SESSION[settings][site],$_SESSION[settings][section],$page,"$auser added content id $newid to page $_SESSION[settings][page] in section $_SESSION[settings][section] of site $_SESSION[settings][site]"); */
-/* 		} */
-/* 		if ($_SESSION[settings][edit]) { */
-/* 			log_entry("edit_page",$_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page],"$auser edited content id $_SESSION[settings][story] in page $_SESSION[settings][page] of section $_SESSION[settings][section] of site $_SESSION[settings][site]"); */
-/* 			$newid=$_SESSION[settings][page]; */
-/* 		} */
+		$_SESSION[storyObj]->updatePermissionsDB(TRUE);
+		$_SESSION[storyObj]->deletePendingEditors();
+	
 		
 		/******************************************************************************
 		 * Go Back: edit url or content block detail url
 		 ******************************************************************************/
 
 		if ($_SESSION[settings][goback]) {
-			header("Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id);
+			$headerText = "Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id;
 		} else {
-			header("Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id);
+			$headerText = "Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id;
 		}
+		
+		unset($_SESSION[storyObj], $_SESSION[settings]);
+		header($headerText);
 		
 	/******************************************************************************
 	 * 	if error take them to page where error occured	
