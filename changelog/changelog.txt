@@ -3,6 +3,21 @@ Name: Segue ChangeLog
 
 
 
+v. 1.3.5 (2005-04-27) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    Session variables now properly unset after editing stories.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Editors can now be removed using discussion editor UI. (This bug was
+    introducedin version 1.3.4)
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed hide author bug so that authors in all discussions are not hidden to
+    unauthenticatedusers.
+	
+
 v. 1.3.4 (2005-04-18) 
 ----------------------------------------------------
 		

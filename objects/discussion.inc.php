@@ -860,7 +860,7 @@ class discussion {
 	//		$s = $this->subject;
 			//printpre($_SESSION);
 			$a = "";
-			if ($_SESSION[auser] && ($showallauthors == 1 || $o || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId)) {
+			if ($showallauthors == 1 || ($_SESSION[auser] && ($o || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId))) {
 				if ($this->opt("showauthor")) $a .= "by <span class=subject>".$this->authorfname."</span>\n";
 				if ($this->opt("showauthor") && $this->opt("showtstamp")) $a .= " on ";
 			} else {

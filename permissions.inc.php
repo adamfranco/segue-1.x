@@ -1,4 +1,5 @@
 <? /* $Id$ */
+
 	// holds permissions functions and checks for people's permissions in accessing certain pages
 
 define("SITE",0);
@@ -34,7 +35,14 @@ class permissions {
 	
 		// ---- Editor actions ----
 		if ($_REQUEST[edaction] == 'add') {
-			$o->addEditor($_REQUEST[edname]);
+			if (isgroup($_REQUEST[edname])) {
+				$classes = group::getClassesFromName($_REQUEST[edname]);
+				foreach ($classes as $class) {
+					$o->addEditor($class);
+				}
+			} else {
+				$o->addEditor($_REQUEST[edname]);
+			}
 		}
 		
 		if ($_REQUEST[edaction] == 'del') {
@@ -119,13 +127,26 @@ class permissions {
 		
 		if ($canAddEditors) {
 			printc("\n<tr><th colspan=".($a[$d]+1).">");
-			
-			$className = getNameOfClassForSite($sitename);
-			
-			if ( $className && !in_array($className,$edlist)) {
-				printc("<a href='#' onClick='addClassEditor();'>Add students in ".$className."</a>");
+
+
+			$className= array();
+			if (isgroup($sitename)) {
+				$className = group::getClassesFromName($sitename);
 			} else {
-				printc("&nbsp;");
+				$className = getNameOfClassForSite($sitename);
+			}
+
+
+			//$className = getNameOfClassForSite($sitename);
+			//printpre($className);
+			
+			foreach ($className as $class) {
+				if (!in_array($class,$edlist)) {
+					printc("<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a><br>");
+					break;
+				} else {
+					printc("&nbsp;");
+				}
 			}
 			
 			printc("</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");

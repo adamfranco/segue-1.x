@@ -13,7 +13,19 @@
 		<new author='adam'>
 			Added RSS publishing option for all Segue pages.
 		</new>
-
+	</version>
+	<version number="1.3.5" date="2005-04-27">
+		<fix author='adam'>
+			Session variables now properly unset after editing stories. 
+		</fix>
+		<fix author='alex'>
+			Editors can now be removed using discussion editor UI.  (This bug
+			was introduced in version 1.3.4)
+		</fix>
+		<fix author='alex'>
+			Fixed hide author bug so that authors in all discussions are not 
+			hidden to unauthenticated users. 
+		</fix>
 	</version>
 	<version number="1.3.4" date="2005-04-18">
 		<change author='adam' ref='1185237' reftype='fr'>
