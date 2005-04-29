@@ -640,7 +640,12 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 
 //$sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gschineATmiddleburyDOTedu'>Gabriel Schine</a>, <a href='mailto:achapinATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>, <a href='mailto:afrancoATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a> and <a href='mailto:dradichkATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Dobo Radichkov</a></div>";
 $_version = file_get_contents("version.txt");
-$sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>Segue v.$_version &copy;2004, Middlebury College: <a href='credits.php' target='credits' onClick='doWindow(\"credits\",400,300);'>credits</a></div>";?>
+$sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>
+	Segue v.
+	<a href='changelog/changelog.html' target='credits' onClick='doWindow(\"credits\",400,300);'>$_version</a>
+	&copy;2004, Middlebury College: 
+	<a href='credits.php' target='credits' onClick='doWindow(\"credits\",400,300);'>credits</a>
+	</div>";
 
 
-
+?>

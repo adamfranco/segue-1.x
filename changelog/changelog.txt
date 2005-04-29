@@ -3,6 +3,26 @@ Name: Segue ChangeLog
 
 
 
+v. 1.4 (The Nebulous Future) 
+----------------------------------------------------
+		
+    * New feature:  (Alex Chapin) 
+    Refined discussion summary and email UI. In Discussion summary, separated
+    lists of participants in roster(i.e. class) for participants not is roster.
+    Added option to add non-roster participants to roster. Also added option to
+    email all participants, only participants in class (regardless of whether
+    theyposted to discussion or not) or any subset of all participants.
+		
+    * New feature:  (Adam Franco) 
+    Added RSS publishing option for all Segue pages.
+		
+    * Bug Fix:  (Adam Franco) 
+    Removed call-time pass-by-reference usage.
+		
+    * Change:  (Adam Franco) 
+    The version number on the default page now links to this changelog.
+	
+
 v. 1.3.5 (2005-04-27) 
 ----------------------------------------------------
 		

@@ -961,9 +961,9 @@ class discussion {
 		$siteownerfname = $site->ownerfname;
 		$sitetitle = $site->title;
 		
-		$pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$sectionObj);
+		$pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], $sectionObj);
 		$pagetitle = $pageObj->getField('title');		
-		$storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$pageObj);
+		$storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], $pageObj);
 		$storytext = $storyObj->getField('shorttext');
 		
 		// send an email to the siteowner

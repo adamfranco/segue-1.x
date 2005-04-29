@@ -295,10 +295,10 @@ class story extends segue {
 			$this->owningSiteObj =& new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB();
 //			$this->owningSiteObj->buildPermissionsArray(1);
-			$this->owningSectionObj =& new section($this->owning_site,$this->owning_section,&$this->owningSiteObj);
+			$this->owningSectionObj =& new section($this->owning_site,$this->owning_section,$this->owningSiteObj);
 			$this->owningSectionObj->fetchFromDB();
 //			$this->owningSectionObj->buildPermissionsArray(1);
-			$this->owningPageObj =& new page($this->owning_site,$this->owning_section,$this->owning_page,&$this->owningSectionObj);
+			$this->owningPageObj =& new page($this->owning_site,$this->owning_section,$this->owning_page,$this->owningSectionObj);
 			$this->owningPageObj->fetchFromDB();
 //			$this->owningPageObj->buildPermissionsArray(1);
 			$this->fetchedup = 1;

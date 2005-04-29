@@ -183,7 +183,7 @@ class section extends segue {
 		$this->data[pages] = $d;
 		$this->changed[pages]=1;
 		if ($delete) {
-			$page =& new page($this->owning_site,$this->id,$id,&$this);
+			$page =& new page($this->owning_site,$this->id,$id,$this);
 			$page->delete();
 		}
 	}
@@ -193,7 +193,7 @@ class section extends segue {
 /* 			print "-->section fetchdown ".$this->id."<br />"; */
 			if (!$this->tobefetched || $full) $this->fetchFromDB(0,$full);
 			foreach ($this->getField("pages") as $p) {
-				$this->pages[$p] =& new page($this->owning_site,$this->id,$p,&$this);
+				$this->pages[$p] =& new page($this->owning_site,$this->id,$p,$this);
 				$this->pages[$p]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;

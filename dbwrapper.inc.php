@@ -266,7 +266,7 @@ function db_fetch_assoc($res) {
     return $ar;
   } else if ($db_type == "oracle") {
     $ar = array();
-    OCIFetchInto($res, &$ar, OCI_ASSOC+OCI_RETURN_LOBS);
+    OCIFetchInto($res, $ar, OCI_ASSOC+OCI_RETURN_LOBS);
 /*     if ($ar) { */
 /*       foreach($ar as $name=>$value) */
 /*         $arn[strtolower($name)] = $arn[strtoupper($name)] = $value; */
@@ -283,7 +283,7 @@ function db_fetch_array($res) {
     return $ar;
   } else if ($db_type == "oracle") {
     $ar = array();
-    OCIFetchInto($res, &$ar, OCI_NUM+OCI_RETURN_LOBS);
+    OCIFetchInto($res, $ar, OCI_NUM+OCI_RETURN_LOBS);
     return $ar;
   }
 }

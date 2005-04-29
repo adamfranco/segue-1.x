@@ -274,7 +274,7 @@ FROM
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r))
 			if ($a[section_id] != null) {
-				$section =& new section($this->name,$a[section_id],&$this);
+				$section =& new section($this->name,$a[section_id],$this);
 				$this->sections[$a[section_id]]  =& $section;
 				$this->data[sections][]  = $a[section_id];
 				$this->fetched[sections] = 1;
@@ -285,7 +285,7 @@ FROM
 		while ($a = db_fetch_assoc($r))
 			if ($a[section_id] != null && $a[page_id] != null)  {
 				$section =& $this->sections[$a[section_id]];
-				$page =& new page($this->name,$a[section_id],$a[page_id],&$section);
+				$page =& new page($this->name,$a[section_id],$a[page_id],$section);
 				$section->pages[$a[page_id]]  =& $page;
 				$section->data[pages][]  = $a[page_id];
 				$section->fetched[pages]  = 1;
@@ -297,7 +297,7 @@ FROM
 			if ($a[section_id] != null && $a[page_id] != null && $a[story_id] != null)  {
 				$section =& $this->sections[$a[section_id]];
 				$page =& $section->pages[$a[page_id]];
-				$story =& new story($this->name,$a[section_id],$a[page_id],$a[story_id],&$page);
+				$story =& new story($this->name,$a[section_id],$a[page_id],$a[story_id],$page);
 				$page->stories[$a[story_id]]  =& $story;
 				$page->data[stories][]  = $a[story_id];
 				$page->fetched[stories]  = 1;
@@ -834,7 +834,7 @@ FROM
 /* 			print "site fetchdown ".$this->name."<br />"; */
 			if (!$this->tobefetched) $this->fetchFromDB($full);
 			foreach ($this->getField("sections") as $s) {
-				$this->sections[$s] =& new section($this->name,$s,&$this);
+				$this->sections[$s] =& new section($this->name,$s,$this);
 				$this->sections[$s]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;
@@ -959,7 +959,7 @@ ORDER BY
 			exit;	
 		}
 		foreach ($templateObj->sections as $i=>$o) 
-			$o->copyObj(&$this);
+			$o->copyObj($this);
 	}
 	
 	function setSiteName($name, $copySite=0) {
@@ -1164,7 +1164,7 @@ WHERE
 		$this->data[sections] = $d;
 		$this->changed[sections] = 1;
 		if ($delete) {
-			$section =& new section($this->name,$id,&$this);
+			$section =& new section($this->name,$id,$this);
 			$section->delete();
 		}
 	}

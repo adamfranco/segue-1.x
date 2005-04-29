@@ -192,7 +192,7 @@ class page extends segue {
 //		print "<br /><br /> Deleting Page<br /><br />";
 		if (!$this->id) return false;
 		if ($deleteFromParent) {
-			$parentObj =& new section($this->owning_site,$this->owning_section,&$this->owningSectionObj->owningSiteObj);
+			$parentObj =& new section($this->owning_site,$this->owning_section,$this->owningSectionObj->owningSiteObj);
 			$parentObj->fetchDown();
 			$parentObj->delPage($this->id);
 			$parentObj->updateDB();
@@ -232,7 +232,7 @@ class page extends segue {
 		$this->changed[stories]=1;
 /* 		print "------------------------ <br /><pre>"; print_r($this); print "</pre>"; */
 		if ($delete) {
-			$story =& new story($this->owning_site,$this->owning_section,$this->owning_page,$id,&$this);
+			$story =& new story($this->owning_site,$this->owning_section,$this->owning_page,$id,$this);
 			$story->delete();
 		}
 	}
@@ -242,7 +242,7 @@ class page extends segue {
 			$this->owningSiteObj =& new site($this->owning_site);
 			$this->owningSiteObj->fetchFromDB();
 //			$this->owningSiteObj->buildPermissionsArray(1);
-			$this->owningSectionObj =& new section($this->owning_site,$this->owning_section,&$this->owningSiteObj);
+			$this->owningSectionObj =& new section($this->owning_site,$this->owning_section,$this->owningSiteObj);
 			$this->owningSectionObj->fetchFromDB();
 //			$this->owningSectionObj->buildPermissionsArray(1);
 			$this->fetchedup = 1;
@@ -255,7 +255,7 @@ class page extends segue {
 			if (!$this->tobefetched || $full) 
 				$this->fetchFromDB(0,$full);
 			foreach ($this->getField("stories") as $s) {
-				$this->stories[$s] =& new story($this->owning_site,$this->owning_section,$this->id,$s,&$this);
+				$this->stories[$s] =& new story($this->owning_site,$this->owning_section,$this->id,$s,$this);
 				$this->stories[$s]->fetchDown($full);
 			}
 			$this->fetcheddown = 1;
