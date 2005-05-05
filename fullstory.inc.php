@@ -33,9 +33,9 @@ if ($tmp = $_REQUEST['order']) {
 
 $partialstatus = 1;
 $siteObj =& new site($_REQUEST[site]);
-$sectionObj =& new section($_REQUEST[site],$_REQUEST[section], &$siteObj);
-$pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], &$sectionObj);
-$storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], &$pageObj);
+$sectionObj =& new section($_REQUEST[site],$_REQUEST[section], $siteObj);
+$pageObj =& new page($_REQUEST[site],$_REQUEST[section],$_REQUEST[page], $sectionObj);
+$storyObj =& new story($_REQUEST[site],$_REQUEST[section],$_REQUEST[page],$_REQUEST[story], $pageObj);
 $getinfo = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&story=".$storyObj->id."&detail=".$storyObj->id;
 $getinfo2 = "site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id;
 $editsettingsurl = "&site=".$siteObj->name."&section=".$sectionObj->id."&page=".$pageObj->id."&action=edit_story&edit_story=".$storyObj->id."&detail=".$storyObj->id."&step=4&goback=discuss&link=1";
@@ -268,7 +268,7 @@ if ($storyObj->getField("discuss")) {
  ******************************************************************************/
 	
 
-	$ds = & new discussion(&$storyObj);
+	$ds = & new discussion($storyObj);
 	if ($f) $ds->flat(); // must be called before _fetchchildren();
 	
 	if ($order == 1) {

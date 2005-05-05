@@ -61,7 +61,7 @@ if (!is_array($_SESSION[settings]) || !is_object($_SESSION[sectionObj])) {
 		"comingFrom" => $_REQUEST[comingFrom]
 	);
 	
-	$_SESSION[sectionObj] =& new section($thisSite->name,0,&$thisSite);
+	$_SESSION[sectionObj] =& new section($thisSite->name,0,$thisSite);
 	
 	if ($action == 'add_section') {
 		$_SESSION[settings][add]=1;

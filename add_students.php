@@ -54,12 +54,14 @@ if ($action == "add" && $addstudent) {
 //		print "<br />AUTH: trying ".$_auth ."..."; //debug
 		if ($x = $func($addstudent,"",1)) {
 			$valid = 1;
+			
 			break;
 		}
 	}
 	
 	if ($valid) {
 		// Get their db id
+		
 		$user_id = db_get_value("user","user_id","user_uname='$addstudent'");
 		
 		// add them to the ugroup

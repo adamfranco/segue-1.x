@@ -92,6 +92,7 @@ function getclassstudents($class_id) {
 		ORDER BY
 			user_type DESC, user_uname
 		";
+//		printpre($query);
 		$r = db_query($query);
 			
 		while ($a = db_fetch_assoc($r)) {
@@ -103,8 +104,7 @@ function getclassstudents($class_id) {
 			$participant[memberlist] = "db";
 			$db_participants[$user_uname]= $participant;
 		}
-		
-		
+
 		/******************************************************************************
 		 *  External member list source (e.g. LDAP group member
 		 *  LDAP Class info: queries LDAP for users in class group
@@ -251,6 +251,7 @@ function getclassstudents($class_id) {
 			}// end result count
 							
 		} // ends if bind
+		$external_memberlist_participant_unames = array();
 		$external_memberlist_participant_unames = array_unique($external_memberlist_participant_unames);
 	
 		/******************************************************************************
@@ -299,6 +300,7 @@ function getclassstudents($class_id) {
 		 * (relevant when a site is a group of classes...)
 		 ******************************************************************************/
 		$allparticipants = array_merge($allparticipants,$participants);
+
 
 	}
 	//return $participants;

@@ -86,7 +86,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 	
 	
 	
-	$_SESSION[storyObj] =& new story($thisSite->name,$thisSection->id,$thisPage->id, 0,&$thisPage);
+	$_SESSION[storyObj] =& new story($thisSite->name,$thisSection->id,$thisPage->id, 0,$thisPage);
 	
 	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > " . $thisPage->getField("title") . " > ";
 	

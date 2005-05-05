@@ -77,7 +77,7 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 		"comingFrom" => $comingFrom
 	);
 
-	$_SESSION[pageObj] =& new page($thisSite->name,$thisSection->id,0,&$thisSection);
+	$_SESSION[pageObj] =& new page($thisSite->name,$thisSection->id,0,$thisSection);
 	
 	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > ";
 	
