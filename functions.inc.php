@@ -1304,8 +1304,9 @@ function updateLinksToNewSite ($oldSitename, $patterns, $replacements, $text) {
 }
 
 function nameMatches($filename, $anArrayOfRegExs) {
-	printpre($filename);
-	printpre($anArrayOfRegExs);
+	printpre("see nameMatches function in functions.inc.php");
+	printpre("filename=".$filename);
+	printpre("array of extensions=".$anArrayOfRegExs);
 	preg_match("\.[^\.]+$", $filename, $filenameParts);
 	printpre("matching...");
 	$extension = $filenameParts[1];

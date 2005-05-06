@@ -137,7 +137,7 @@ if ($upload) {
 	
 	// Check for *.php *.php3 etc. files and prevent upload
 	
-	$isPHP = TRUE;	
+	$isPHP = FALSE;	
 //	if (ereg("\.php[0-9]?$",$filename)) {
 //		$isPHP = TRUE;
 //	} else if (ereg("\.phtml[0-9]?$",$filename)) {
@@ -150,7 +150,6 @@ if ($upload) {
 		$expressionsToCheck = $defaultBannedExtensions;
 	
 	if (nameMatches($filename, $expressionsToCheck)) {
-		printpre("matched found02...");
 		$isPHP = TRUE;	
 	}
 
