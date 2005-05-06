@@ -136,9 +136,11 @@ if ($upload) {
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	
 	// Check for *.php *.php3 etc. files and prevent upload
-	$isPHP = FALSE;
-	if (ereg("\.php[0-9]?$",$filename)) 
+	if (ereg("\.php[0-9]?$",$filename)) {
 		$isPHP = TRUE;
+	} else if (ereg("\.phtml[0-9]?$",$filename)) {
+		$isPHP = TRUE;
+	}
 	
 	// Check to see if the name is used.
 	$nameUsed = 0; 
