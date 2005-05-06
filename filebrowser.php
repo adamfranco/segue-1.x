@@ -136,23 +136,15 @@ if ($upload) {
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	
 	// Check for *.php *.php3 etc. files and prevent upload
+	if (is_array($cfg['bannedExtensions']))
+		$expressionsToCheck = array_merge($cfg['defaultBannedExtensions'], $cfg['bannedExtensions']);
+	else
+		$expressionsToCheck = $cfg['defaultBannedExtensions'];
 	
 	$isPHP = FALSE;	
-//	if (ereg("\.php[0-9]?$",$filename)) {
-//		$isPHP = TRUE;
-//	} else if (ereg("\.phtml[0-9]?$",$filename)) {
-//		$isPHP = TRUE;
-//	}
-
-	if (is_array($bannedExtensions))
-		$expressionsToCheck = array_merge($defaultBannedExtensions, $bannedExtensions);
-	else
-		$expressionsToCheck = $defaultBannedExtensions;
-	
 	if (nameMatches($filename, $expressionsToCheck)) {
 		$isPHP = TRUE;	
 	}
-
 	
 	// Check to see if the name is used.
 	$nameUsed = 0; 
@@ -193,7 +185,9 @@ if ($upload) {
 	} else if ($nameUsed) { 
 		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
 	} else if ($isPHP) { 
-		$upload_results = "<li>PHP scripts are not allowed. File, $filename, was not uploaded."; 
+		ereg("\.([^\.]+)$", $filename, $filenameParts);
+        	$extension = $filenameParts[1];
+		$upload_results = "<li>".strtoupper($extension)." and other executable files are not allowed. File, $filename, was not uploaded."; 
 	} else { 
 		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0);
 		if ($newID && $newID != 'ERROR') {

@@ -41,21 +41,27 @@
 	/******************************************************************************
 	 * Banned Extensions - To prevent PHP scripts from being uploaded to Segue
 	 * 					   no files with extensions that Apache associates with
-	 *					   PHP should be allowed to be uploaded.  
+	 *					   PHP should be allowed to be uploaded.
+	 * The following extentions are banned by default these can be modified in
+	 * config_defaults.inc.php.
+	 *
+	 *	'php.*',
+	 *	'phtml',
+	 *	'py',
+	 *	'sh',
+	 *	'exe',
+	 *	'ttml',
+	 *	'tcl',
+	 *	'phps'
+	 *	'pl',
+	 *	'crt',
+	 *	'crl',
+	 *	'cgi'
+ 	 *
+  	 * additional extentions can be added below
 	 ******************************************************************************/
-	$cfg['defaultBannedExtensions'] = $defaultBannedExtensions = array(
-		'php.*',
-		'phtml',
-		'py',
-		'sh',
-		'exe',
-		'ttml',
-		'tcl',
-		'phps'
-		'pl',
-		'crt',
-		'crl',
-		'cgi'
+	$cfg['bannedExtensions'] = $bannedExtensions = array(
+	
 	);
 
 	/******************************************************************************

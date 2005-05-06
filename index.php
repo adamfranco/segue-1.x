@@ -15,6 +15,7 @@ if (!file_exists("config.inc.php"))
 		Copy the 'config_sample.inc.php' in your segue directory to 'config.inc.php' 
 		and edit the values there to point to your directories, url, and database.");
 require_once("config.inc.php");
+require_once("config_defaults.inc.php");
 require_once("config_utils.inc.php");
 checkConfig();
 

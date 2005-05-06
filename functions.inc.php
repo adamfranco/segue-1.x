@@ -1304,18 +1304,11 @@ function updateLinksToNewSite ($oldSitename, $patterns, $replacements, $text) {
 }
 
 function nameMatches($filename, $anArrayOfRegExs) {
-	printpre("see nameMatches function in functions.inc.php");
-	printpre("filename=".$filename);
-	printpre("array of extensions=".$anArrayOfRegExs);
-	preg_match("\.[^\.]+$", $filename, $filenameParts);
-	printpre("matching...");
+	ereg("\.([^\.]+)$", $filename, $filenameParts);
 	$extension = $filenameParts[1];
-	printpre("extension = ".$extension);
 
 	foreach ($anArrayOfRegExs as $expression) {
-		//printpre("matching04");
-		if (ereg($expression, $extension)) {
-			printpre("match found01...");
+		if (eregi($expression, $extension)) {
 			return TRUE;
 		}
 	}
