@@ -136,11 +136,24 @@ if ($upload) {
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	
 	// Check for *.php *.php3 etc. files and prevent upload
-	if (ereg("\.php[0-9]?$",$filename)) {
-		$isPHP = TRUE;
-	} else if (ereg("\.phtml[0-9]?$",$filename)) {
-		$isPHP = TRUE;
+	
+	$isPHP = TRUE;	
+//	if (ereg("\.php[0-9]?$",$filename)) {
+//		$isPHP = TRUE;
+//	} else if (ereg("\.phtml[0-9]?$",$filename)) {
+//		$isPHP = TRUE;
+//	}
+
+	if (is_array($bannedExtensions))
+		$expressionsToCheck = array_merge($defaultBannedExtensions, $bannedExtensions);
+	else
+		$expressionsToCheck = $defaultBannedExtensions;
+	
+	if (nameMatches($filename, $expressionsToCheck)) {
+		printpre("matched found02...");
+		$isPHP = TRUE;	
 	}
+
 	
 	// Check to see if the name is used.
 	$nameUsed = 0; 

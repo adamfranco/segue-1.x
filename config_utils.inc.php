@@ -30,12 +30,14 @@ function checkConfig () {
 							"dbdb",
 							"network",
 							"programtheme",
-							"themesdir"
+							"themesdir",
+							"defaultBannedExtensions"
 						);
 	
 	$requiredArrays = array(
 							"vhosts",
 							"inst_ips",
+							"defaultBannedExtensions",
 							"auth_mods",
 							"templates",
 							"months",

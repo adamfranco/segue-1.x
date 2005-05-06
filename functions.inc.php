@@ -1302,3 +1302,21 @@ function updateLinksToNewSite ($oldSitename, $patterns, $replacements, $text) {
 	
 	return $text;
 }
+
+function nameMatches($filename, $anArrayOfRegExs) {
+	printpre($filename);
+	printpre($anArrayOfRegExs);
+	preg_match("\.[^\.]+$", $filename, $filenameParts);
+	printpre("matching...");
+	$extension = $filenameParts[1];
+	printpre("extension = ".$extension);
+
+	foreach ($anArrayOfRegExs as $expression) {
+		//printpre("matching04");
+		if (ereg($expression, $extension)) {
+			printpre("match found01...");
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
