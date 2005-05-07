@@ -135,68 +135,107 @@ if ($upload) {
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	
-	// Check for *.php *.php3 etc. files and prevent upload
-	if (is_array($cfg['bannedExtensions']))
-		$expressionsToCheck = array_merge($cfg['defaultBannedExtensions'], $cfg['bannedExtensions']);
-	else
-		$expressionsToCheck = $cfg['defaultBannedExtensions'];
 	
-	$isPHP = FALSE;	
-	if (nameMatches($filename, $expressionsToCheck)) {
-		$isPHP = TRUE;	
-	}
-	
-	// Check to see if the name is used.
-	$nameUsed = 0; 
-	while ($a = db_fetch_assoc($r)) { 
-		if ($a[media_tag] == $filename) {
-			$nameUsed = 1;
-			$usedId = $a[media_id];
-		}
-	}
-	
-	$q = "
-		SELECT 
-			slot_uploadlimit 
-		FROM 
-			slot 
-		WHERE 
-			slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'";
-	$res = db_query($q);
-	$b = db_fetch_assoc($res);
-	if ($b[slot_uploadlimit]) {
-		$dirlimit = $b[slot_uploadlimit];
-		
-	} else {
-		$dirlimit = $userdirlimit;
-	}
 	
 	if ($_FILES['file']['tmp_name'] == 'none') { 
-		$upload_results = "<li>No file selected"; 
-	} else if (($_FILES[file][size] + $totalsize) > $dirlimit) {
-		$upload_results = "<li>There is not enough room in your directory for $filename."; 
-	} else if ($overwrite && $nameUsed) {
-		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0);
-		if ($newID && $newID != 'ERROR') {
-			$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
-		} else {
-			$upload_results = "<li>An error occurred when trying to upload ".$filename.". <li>Please see above for any additional messages.";
+		$upload_results = "<li>No file selected";
+	} else {
+		
+	/*********************************************************
+	 * Check for file validity before uploading.
+	 * There are two modes that this can run in:
+	 *
+	 *		- Whitelist - Only file extensions specified are allowed. 
+	 *						All others are blocked.
+	 *
+	 *		- Blacklist - Only file extensions specified are blocked. 
+	 *						All others are allowed.
+	 *
+	 *********************************************************/
+	 
+		/*********************************************************
+		 * Blacklist mode
+		 *********************************************************/
+		if ($cfg['useBlacklistMode']) {
+			if (is_array($cfg['additionalBlacklist']))
+				$expressionsToCheck = array_merge($cfg['defaultBlacklist'], 
+												$cfg['additionalBlacklist']);
+			else
+				$expressionsToCheck = $cfg['defaultBlacklist'];
+			
+			$isBlocked = nameMatches($filename, $expressionsToCheck);
 		}
-	} else if ($nameUsed) { 
-		$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
-	} else if ($isPHP) { 
-		ereg("\.([^\.]+)$", $filename, $filenameParts);
-        	$extension = $filenameParts[1];
-		$upload_results = "<li>".strtoupper($extension)." and other executable files are not allowed. File, $filename, was not uploaded."; 
-	} else { 
-		$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0);
-		if ($newID && $newID != 'ERROR') {
-			$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
-		} else {
-			$upload_results = "<li>An error occurred when trying to upload ".$filename.". <li>Please see above for any additional messages.";
+		/*********************************************************
+		 * Whitelist (default) mode.
+		 *********************************************************/
+		else {
+			if (is_array($cfg['additionalWhitelist']))
+				$expressionsToCheck = array_merge($cfg['defaultWhitelist'], 
+												$cfg['additionalWhitelist']);
+			else
+				$expressionsToCheck = $cfg['defaultWhitelist'];
+			
+			$isBlocked = !(nameMatches($filename, $expressionsToCheck));
 		}
-	}	 
-} 
+		
+		if ($isBlocked) { 
+			ereg("\.([^\.]+)$", $filename, $filenameParts);
+				$extension = $filenameParts[1];
+			$upload_results = "
+			<li>For security reasons, file-upload types must be approved by the system administrator.
+			<br />".strtoupper($extension)." files have not [yet] been approved.
+			<br />Please contact the system administrator if you feel that this is in error.
+			<br /><b>File, $filename, was NOT uploaded.</b>"; 
+		} else {
+		
+		
+			// Check to see if the name is used.
+			$nameUsed = 0; 
+			while ($a = db_fetch_assoc($r)) { 
+				if ($a[media_tag] == $filename) {
+					$nameUsed = 1;
+					$usedId = $a[media_id];
+				}
+			}
+			
+			$q = "
+				SELECT 
+					slot_uploadlimit 
+				FROM 
+					slot 
+				WHERE 
+					slot_name='".(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]")."'";
+			$res = db_query($q);
+			$b = db_fetch_assoc($res);
+			if ($b[slot_uploadlimit]) {
+				$dirlimit = $b[slot_uploadlimit];
+			} else {
+				$dirlimit = $userdirlimit;
+			}
+			
+			
+			if (($_FILES[file][size] + $totalsize) > $dirlimit) {
+				$upload_results = "<li>There is not enough room in your directory for $filename."; 
+			} else if ($overwrite && $nameUsed) {
+				$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0);
+				if ($newID && $newID != 'ERROR') {
+					$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
+				} else {
+					$upload_results = "<li>An error occurred when trying to upload ".$filename.". <li>Please see above for any additional messages.";
+				}
+			} else if ($nameUsed) { 
+				$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
+			} else { 
+				$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0);
+				if ($newID && $newID != 'ERROR') {
+					$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
+				} else {
+					$upload_results = "<li>An error occurred when trying to upload ".$filename.". <li>Please see above for any additional messages.";
+				}
+			}
+		}
+	}
+}
 
 /******************************************************************************
  * clears filename search UI??
