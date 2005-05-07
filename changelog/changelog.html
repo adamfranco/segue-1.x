@@ -3,7 +3,35 @@
 	h1, h2 {color: #005;}
 	h1 {font-size: 18pt;}
 	li {padding-bottom: 3px;}
-	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.5</h2><h3>2005-04-27</h3><ul>
+	</style><div style="font-family: Verdana; font-size: 12px;"><h1>Segue ChangeLog</h1><h2>Version 1.3.6</h2><h3>2005-05-06</h3><ul>
+		<li/><span style="color: red">*** IMPORTANT ***</span> Change:  
+			Segue &lt; 1.3.6 contains a critical security hole which allows the upload
+			of php scripts with the .phtml extension to the userfiles directory. It is 
+			critical that you either update Segue to version 1.3.6 or greater AND/OR
+			edit your Apache configuration (httpd.conf) to prevent Apache from passing
+			the handling of .phtml files to PHP.
+		
+		<li/> Bug Fix:
+	 
+			File over-writes are now properly logged.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Log view now displays actions of user accounts that have been deleted.
+		 (<i>Adam Franco</i>)
+		<li/> Bug Fix:
+	 
+			Fixed security flaw in Media Library UI (filebrowser.php) such that
+			no php scripts can be uploaded to Media Library including files with
+			.phtml extension.
+		 (<i>Alex Chapin</i>) 
+		<li/> Bug Fix:
+	 
+			As well, uploading of other scripting and executable
+			files is prohibited by default. Configuration and addition is possible
+			in the config.
+		 (<i>Adam Franco</i>)
+	</ul><br/><h2>Version 1.3.5</h2><h3>2005-04-27</h3><ul>
 		<li/> Bug Fix:
 	 
 			Session variables now properly unset after editing stories. 

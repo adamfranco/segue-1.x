@@ -91,11 +91,11 @@ $query = "
 		slot
 			ON
 		log.FK_slot = slot.slot_id
-			INNER JOIN
+			LEFT JOIN
 		user AS user1
 			ON
 		log.FK_luser = user1.user_id
-			INNER JOIN
+			LEFT JOIN
 		user AS user2
 			ON
 		log.FK_auser = user2.user_id		
@@ -120,7 +120,9 @@ SELECT
 		FK_siteunit AS siteunit,
 		log_siteunit_type AS siteunit_type,
 		user1.user_uname AS luser,
+		log.FK_luser AS luser_id,
 		user2.user_uname AS auser,
+		log.FK_auser AS auser_id,
 		slot_name,
 		FK_site AS site_id
 	FROM 
@@ -129,17 +131,14 @@ SELECT
 		slot
 			ON
 		log.FK_slot = slot.slot_id
-			INNER JOIN
+			LEFT JOIN
 		user AS user1
 			ON
 		log.FK_luser = user1.user_id
-			INNER JOIN
+			LEFT JOIN
 		user AS user2
 			ON
-		log.FK_auser = user2.user_id
-	$where
-	$orderby
-	$limit";
+		log.FK_auser = user2.user_id";
 
 //print "<pre>".print_r($query)."</pre>";
 $r = db_query($query);
@@ -365,7 +364,7 @@ if (db_num_rows($r)) {
 			else
 				print "00C";
 		print "'>$a[log_luser]</span></td>";
-*/		print "<td class=td$color><a href=# onClick=\"selectLUser('".$a[luser]."')\"  style='color: #000;'>$a[luser]</a></td>";
+*/		print "<td class=td$color><a href=# onClick=\"selectLUser('".$a[luser]."')\"  style='color: #000;'>".(($a[luser])?$a[luser]:$a[luser_id])."</a></td>";
 /*		print "<td class=td$color><span style='color: #";
 			if (strstr("add_site, delete_site, classgroups",$a[type])) 
 				print "F90";
@@ -374,7 +373,7 @@ if (db_num_rows($r)) {
 			else
 				print "00C";
 		print "'>$a[auser]</span></td>";
-*/		print "<td class=td$color><a href=# onClick=\"selectAUser('".$a[auser]."')\"  style='color: #000;'>$a[auser]</a></td>";
+*/		print "<td class=td$color><a href=# onClick=\"selectAUser('".$a[auser]."')\"  style='color: #000;'>".(($a[auser])?$a[auser]:$a[auser_id])."</a></td>";
 		print "<td class=td$color>";
 			if ($a[site_id]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]\"'>";
 			print stripslashes($a[slot_name]);

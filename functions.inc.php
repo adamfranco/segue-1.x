@@ -147,7 +147,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		
 		$media_id = $replace_id;
 		
-		log_entry("media_update","$_SESSION[auser] updated file: $name, id: $media_id, in site $site",$site,$siteid,"site");
+		log_entry("media_upload","$_SESSION[auser] updated file: $name, id: $media_id, in site $site",$site,$siteid,"site");
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
