@@ -68,10 +68,9 @@ function getclassstudents($class_id) {
  			$owner_id = $class_array['class_owner_id'];
 
 		$ugroup_id = getClassUGroupId($class_id);
-			
+		$participant = array();	
 		$db_participants = array();
 		$external_memberlist_participants = array();
-		$participant = array();
 		$participants = array();
 		
 		$query = "
@@ -95,13 +94,14 @@ function getclassstudents($class_id) {
 		$r = db_query($query);
 			
 		while ($a = db_fetch_assoc($r)) {
+			
 			$participant[id] = $a[user_id];
 			$participant[fname] = $a[user_fname];
 			$participant[uname] = $a[user_uname];
 			$participant[email] = $a[user_email];
 			$participant[type] = $a[user_type];
 			$participant[memberlist] = "db";
-			$db_participants[$user_uname]= $participant;
+			$db_participants[$participant[id]]= $participant;
 		}
 		
 		
