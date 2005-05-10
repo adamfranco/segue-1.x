@@ -36,6 +36,8 @@ function checkConfig () {
 	$requiredArrays = array(
 							"vhosts",
 							"inst_ips",
+							"defaultBlacklist",
+							"defaultWhitelist",
 							"auth_mods",
 							"templates",
 							"months",
