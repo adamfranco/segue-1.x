@@ -9,6 +9,9 @@ v. 1.3.7 (2005-05-10)
     * Bug Fix:  (Adam Franco) 
     fixed config parameter checking to look for new whitelist parameter.
 		
+    * Bug Fix:  (Adam Franco) 
+    Fixed whitelist to not allow substrings to trigger validity.
+		
     * Bug Fix:  (Alex Chapin) 
     Fixed class-membership printing.
 	

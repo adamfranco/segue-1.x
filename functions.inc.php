@@ -1308,7 +1308,7 @@ function nameMatches($filename, $anArrayOfRegExs) {
 	$extension = $filenameParts[1];
 
 	foreach ($anArrayOfRegExs as $expression) {
-		if (eregi($expression, $extension)) {
+		if (eregi('^'.$expression.'$', $extension)) {
 			return TRUE;
 		}
 	}

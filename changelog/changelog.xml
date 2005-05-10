@@ -5,6 +5,9 @@
 		<fix author='adam'>
 			fixed config parameter checking to look for new whitelist parameter.
 		</fix>
+		<fix author='adam'>
+			Fixed whitelist to not allow substrings to trigger validity.
+		</fix>
 		<fix author='alex'>
 			Fixed class-membership printing.
 		</fix>
