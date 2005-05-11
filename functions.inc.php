@@ -110,8 +110,8 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	
 //	print "$userdir/$file[name]<br />";
 	if (!is_dir($userdir)) {
-		mkdir($userdir,0777); 
-		chmod($userdir,0775); 
+		mkdir($userdir,0700); 
+		chmod($userdir,0700); 
 	}
 	
 	if ($replace) {
@@ -147,7 +147,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		
 		$media_id = $replace_id;
 		
-		log_entry("media_update","$_SESSION[auser] updated file: $name, id: $media_id, in site $site",$site,$siteid,"site");
+		log_entry("media_upload","$_SESSION[auser] updated file: $name, id: $media_id, in site $site",$site,$siteid,"site");
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
@@ -171,8 +171,8 @@ function copy_media($id,$newsitename) {
 	$old_file_path = $sourcedir."/".$file_name;
 	$new_file_path = $destdir."/".$file_name;
 	if (!is_dir($destdir)) {
-		mkdir($destdir,0777); 
-		chmod($destdir,0775); 
+		mkdir($destdir,0700); 
+		chmod($destdir,0700); 
 	}
 	if (file_exists($new_file_path)) {
 		$newid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='$newsitename' && media_tag='$file_name'");
@@ -1301,4 +1301,16 @@ function updateLinksToNewSite ($oldSitename, $patterns, $replacements, $text) {
 	$text = preg_replace($patterns, $replacements, $text);
 	
 	return $text;
+}
+
+function nameMatches($filename, $anArrayOfRegExs) {
+	ereg("\.([^\.]+)$", $filename, $filenameParts);
+	$extension = $filenameParts[1];
+
+	foreach ($anArrayOfRegExs as $expression) {
+		if (eregi('^'.$expression.'$', $extension)) {
+			return TRUE;
+		}
+	}
+	return FALSE;
 }

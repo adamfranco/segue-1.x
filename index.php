@@ -1,6 +1,7 @@
 <? /* $Id$ */
 // error_reporting(E_PARSE | E_ERROR);
 
+
 	// this file controls pretty much the entire program, taking input and executing the correct scripts accordingly
 
 // we need to include object files before session_start() or registered
@@ -16,6 +17,7 @@ if (!file_exists("config.inc.php"))
 		Copy the 'config_sample.inc.php' in your segue directory to 'config.inc.php' 
 		and edit the values there to point to your directories, url, and database.");
 require_once("config.inc.php");
+require_once("config_defaults.inc.php");
 require_once("config_utils.inc.php");
 checkConfig();
 

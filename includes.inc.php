@@ -27,6 +27,7 @@ if (!ini_get("register_globals")) {
 
 include("functions.inc.php");
 require_once("config.inc.php");
+require_once("config_defaults.inc.php");
 require_once("dbwrapper.inc.php");
 require_once("error.inc.php");
 require_once("themes/themeslist.inc.php");

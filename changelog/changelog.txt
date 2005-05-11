@@ -23,6 +23,40 @@ v. 1.4 (The Nebulous Future)
     The version number on the default page now links to this changelog.
 	
 
+v. 1.3.7 (2005-05-10) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    fixed config parameter checking to look for new whitelist parameter.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed whitelist to not allow substrings to trigger validity.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed class-membership printing.
+	
+
+v. 1.3.6 (2005-05-06) 
+----------------------------------------------------
+		
+    **** IMPORTANT *** Change: 
+    Segue &lt; 1.3.6 contains a critical security hole which allows the upload of
+    php scripts with the .phtml extension to the userfiles directory. It is
+    critical that you either update Segue to version 1.3.6 or greater AND/OR
+    edit your Apache configuration (httpd.conf) to prevent Apache from passing
+    thehandling of .phtml files to PHP.
+		
+    * Bug Fix:  (Adam Franco) 
+    File over-writes are now properly logged.
+		
+    * Bug Fix:  (Adam Franco) 
+    Log view now displays actions of user accounts that have been deleted.
+		
+    * Bug Fix:  (Adam Franco) 
+    White-listing or black-listing of files by extension is now availible.
+    White-listing is the default. Please update your config from 
+	
+
 v. 1.3.5 (2005-04-27) 
 ----------------------------------------------------
 		

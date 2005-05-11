@@ -37,7 +37,7 @@
 	 * 			setting the cookie domain for session data. 
 	 ******************************************************************************/
 	$cfg['domain'] = "";					// "mydomain.com"
-	
+
 	/******************************************************************************
 	 * uploaddir - the local folder where userfiles are kept
 	 * uploadurl - the URL equivalent of the above folder
@@ -283,6 +283,81 @@
 		$cfg['coursefolders_year_column'] = "";	// year
 		$cfg['coursefolders_title_column'] = "";	// title
 		$cfg['coursefolders_url_column'] = "";	// url
+		
+	
+	
+	/******************************************************************************
+	 * To prevent the uploading of files that could potentially cause insecurities
+	 * in the server, Segue allows you to specify which files can be uploaded or
+	 * downloaded. 
+	 *
+	 * The default mode is 'whitelist', in which only files with extensions listed
+	 * in the whitelist are allowed.
+	 *
+	 * The alternative is blacklist mode, in which you specify which file extensions
+	 * to ban.
+	 *
+	 * You can add additional items to the lists below or remove defaults from
+	 * config_defaults.inc.php
+	 *
+	 *	Whitelist Mode:		$cfg['useBlacklistMode'] = FALSE; 
+	 *	Blacklist Mode:		$cfg['useBlacklistMode'] = TRUE; 
+	 ******************************************************************************/
+	 	$cfg['useBlacklistMode'] = FALSE; 
+
+	/******************************************************************************
+	 * Default Blacklist 
+	 *					- This is used if Segue is in Blacklist Mode. If it is in
+	 *						the [default] Whitelist Mode, then this list is ignored.
+	 *
+	 *					- To prevent PHP scripts from being uploaded to Segue
+	 * 					   no files with extensions that Apache associates with
+	 *					   PHP should be allowed to be uploaded.  
+	 *
+	 * 	'php.*',
+	 *	'phtml',
+	 *	'py',
+	 *	'sh',
+	 *	'exe',
+	 *	'ttml',
+	 *	'tcl',
+	 *	'phps',
+	 *	'pl',
+	 *	'crt',
+	 *	'crl',
+	 *	'cgi',
+	 *	'rb',
+	 *	'bat',
+	 *	'rl',
+	 *	'f77',
+	 *	'lisp',
+	 *
+	 * you can remove defaults in config_defaults.inc.php
+	 ******************************************************************************/
+		$cfg['additionalBlacklist'] = $additionalBlacklist = array(
+			'',
+			'',
+		);
+	
+	/******************************************************************************
+	 * Default Whitelist 
+	 *					- This is used if Segue is in Whitelist Mode. If it is in
+	 *						the Blacklist Mode, then this list is ignored.
+	 *
+	 *					- To prevent PHP scripts from being uploaded to Segue
+	 * 					   no files with extensions that Apache associates with
+	 *					   PHP should be allowed to be uploaded.  
+	 *
+	 * See http://www.wotsit.org/ for more info on file formats
+	 *
+	 * you can remove defaults in config_defaults.inc.php
+	 ******************************************************************************/
+		$cfg['additionalWhitelist'] = $additionalWhitelist = array(
+			'',
+			'',
+		);
+
+
 	
 	/******************************************************************************
 	 * pervasivethemes - 1 to use site's theme for add/edit pages
