@@ -138,7 +138,11 @@ SELECT
 			LEFT JOIN
 		user AS user2
 			ON
-		log.FK_auser = user2.user_id";
+		log.FK_auser = user2.user_id
+		
+	$where   	 
+        $orderby 	 
+        $limit";
 
 //print "<pre>".print_r($query)."</pre>";
 $r = db_query($query);
