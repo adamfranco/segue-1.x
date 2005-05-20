@@ -36,6 +36,26 @@ v. 1.3.7 (2005-05-10)
     Fixed class-membership printing.
 	
 
+v. 1.3.8 (The Nebulous Future) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    Previous security fixes broke log pagination and limiting. These now work 
+	
+
+v. 1.3.7 (2005-05-10) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    fixed config parameter checking to look for new whitelist parameter.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed whitelist to not allow substrings to trigger validity.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed class-membership printing.
+	
+
 v. 1.3.6 (2005-05-06) 
 ----------------------------------------------------
 		

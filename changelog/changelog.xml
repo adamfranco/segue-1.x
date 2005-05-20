@@ -31,6 +31,23 @@
 			Fixed class-membership printing.
 		</fix>
 	</version>
+	<version number="1.3.8" date="The Nebulous Future">
+		<fix author='adam'>
+			Previous security fixes broke log pagination and limiting. These
+			now work again.
+		</fix>
+	</version>
+	<version number="1.3.7" date="2005-05-10">
+		<fix author='adam'>
+			fixed config parameter checking to look for new whitelist parameter.
+		</fix>
+		<fix author='adam'>
+			Fixed whitelist to not allow substrings to trigger validity.
+		</fix>
+		<fix author='alex'>
+			Fixed class-membership printing.
+		</fix>
+	</version>
 	<version number="1.3.6" date="2005-05-06">
 		<important>
 			Segue &lt; 1.3.6 contains a critical security hole which allows the upload
