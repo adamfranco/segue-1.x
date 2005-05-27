@@ -2,6 +2,10 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.4" date="The Nebulous Future">
+		<fix author='alex'>
+			fixed various errors due to higher level PHP error checking (e.g. 
+			wrong datatypes, non-scalar values...etc)
+		</fix>
 		<new author='alex'>
 			Refined discussion summary and email UI.  In Discussion summary, 
 			separated lists of participants in roster(i.e. class) for participants

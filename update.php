@@ -78,7 +78,7 @@ include("themes/common/header.inc.php");
 if ($_SESSION['ltype']=='admin') {
 	print "<table width=100%  class='bg'><tr><td class='bg'>
 	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
-	 | <a href='viewusers.php?$sid&site=$site'>users</a>
+	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
 	</td><td align='right' class='bg'>
 	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
 	<a href='classes.php?$sid&site=$site'>add/edit classes</a> |  

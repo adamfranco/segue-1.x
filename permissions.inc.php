@@ -139,13 +139,14 @@ class permissions {
 
 			//$className = getNameOfClassForSite($sitename);
 			//printpre($className);
-			
-			foreach ($className as $class) {
-				if (!in_array($class,$edlist)) {
-					printc("<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a><br>");
-					break;
-				} else {
-					printc("&nbsp;");
+			if (is_array($className)) {
+				foreach ($className as $class) {
+					if (!in_array($class,$edlist)) {
+						printc("<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a><br>");
+						break;
+					} else {
+						printc("&nbsp;");
+					}
 				}
 			}
 			

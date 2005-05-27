@@ -852,6 +852,7 @@ print "</table><br />";
 			 * get # of posts and avg. rating
 			 ******************************************************************************/
 		 	$color = 0;
+		 	$logged_students_id = array();
 			 
 			if (is_array($students) && $curraction == 'list') {
 				$rostercount = count($students);
@@ -897,6 +898,8 @@ print "</table><br />";
 			
 			
 			if ($curraction == 'list' && is_array($students)) print "<tr><td colspan=4><b>Participants not in Roster</b></tr>";
+			
+			$logged_participants = array();
 			
 			while ($a = db_fetch_assoc($r)) {
 				
