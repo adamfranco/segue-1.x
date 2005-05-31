@@ -3,8 +3,12 @@ Name: Segue ChangeLog
 
 
 
-v. 1.4 (The Nebulous Future) 
+v. 1.4.0 (2005-05-31) 
 ----------------------------------------------------
+		
+    * Bug Fix:  (Alex Chapin) 
+    fixed various errors due to higher level PHP error checking (e.g. wrong
+    datatypes,non-scalar values...etc)
 		
     * New feature:  (Alex Chapin) 
     Refined discussion summary and email UI. In Discussion summary, separated
