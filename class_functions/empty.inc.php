@@ -1,7 +1,7 @@
 <? /* $Id$ */
 
 // include the common class functions
-require_once("class_functions/common.inc.php");
+require_once(dirname(__FILE__)."/common.inc.php");
 
 function isclass ($class) {
 	global $auser,$_isclass_cache;

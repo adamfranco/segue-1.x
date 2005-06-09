@@ -25,16 +25,17 @@ if (!ini_get("register_globals")) {
 	if (is_array($_SERVER)) foreach (array_keys($_SERVER) as $n) {$$n = $_SERVER[$n];}
 }
 
-include("functions.inc.php");
-require_once("config.inc.php");
-require_once("config_defaults.inc.php");
-require_once("dbwrapper.inc.php");
-require_once("error.inc.php");
-require_once("themes/themeslist.inc.php");
-require_once("dates.inc.php");
-require_once("help/include.inc.php");
-require_once("permissions.inc.php");
-require_once("htmleditor/editor.inc.php");
+$myDir = dirname(__FILE__)."/";
+require_once($myDir."functions.inc.php");
+require_once($myDir."config.inc.php");
+require_once($myDir."config_defaults.inc.php");
+require_once($myDir."dbwrapper.inc.php");
+require_once($myDir."error.inc.php");
+require_once($myDir."themes/themeslist.inc.php");
+require_once($myDir."dates.inc.php");
+require_once($myDir."help/include.inc.php");
+require_once($myDir."permissions.inc.php");
+require_once($myDir."htmleditor/editor.inc.php");
 
 
 
@@ -44,9 +45,13 @@ require_once("htmleditor/editor.inc.php");
 // - other pages will only require users to be authenticated if the site creator has specified it like that
 // - other pages can be either authenticated or not
 // --- this functionality will be handled by authentication.inc.php
-require_once("authentication.inc.php");
+require_once($myDir."authentication.inc.php");
 
 // include the appropriate class functions for this network (stored in $_network)
-$_f = "class_functions/" . $_network . ".inc.php";
-if (file_exists($_f)) include($_f);
-else include("class_functions/empty.inc.php");
+$_f = $myDir."class_functions/" . $_network . ".inc.php";
+
+if (file_exists($_f)) {
+	require_once($_f);
+} else {
+	require_once($myDir."class_functions/empty.inc.php");
+}

@@ -1,13 +1,13 @@
 <? /* $Id$ */
-require("objects/segue.inc.php");
-require("objects/site.inc.php");
-require("objects/section.inc.php");
-require("objects/page.inc.php");
-require("objects/story.inc.php");
-require("objects/slot.inc.php");
-require("objects/group.inc.php");
-require("objects/user.inc.php");
-require("objects/course.inc.php");
-require("objects/discussion.inc.php");
-require("objects/ugroup.inc.php");
-require("objects/update.inc.php");
+require(dirname(__FILE__)."/segue.inc.php");
+require(dirname(__FILE__)."/site.inc.php");
+require(dirname(__FILE__)."/section.inc.php");
+require(dirname(__FILE__)."/page.inc.php");
+require(dirname(__FILE__)."/story.inc.php");
+require(dirname(__FILE__)."/slot.inc.php");
+require(dirname(__FILE__)."/group.inc.php");
+require(dirname(__FILE__)."/user.inc.php");
+require(dirname(__FILE__)."/course.inc.php");
+require(dirname(__FILE__)."/discussion.inc.php");
+require(dirname(__FILE__)."/ugroup.inc.php");
+require(dirname(__FILE__)."/update.inc.php");

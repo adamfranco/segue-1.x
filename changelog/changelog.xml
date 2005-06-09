@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
+	<version number="1.4.1" date="The nebulous future">
+		<fix author='adam'>
+			Changed include paths to allow importing sites from XML backups to 
+			work.
+		</fix>
+	</version>
 	<version number="1.4.0" date="2005-05-31">
 		<fix author='alex'>
 			fixed various errors due to higher level PHP error checking (e.g. 

@@ -3,6 +3,13 @@ Name: Segue ChangeLog
 
 
 
+v. 1.4.1 (The nebulous future) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    Changed include paths to allow importing sites from XML backups to work.
+	
+
 v. 1.4.0 (2005-05-31) 
 ----------------------------------------------------
 		

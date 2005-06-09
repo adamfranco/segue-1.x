@@ -856,7 +856,8 @@ class DomitSiteImporter {
 	
 	function addMedia(& $site, & $siteElement) {
 		global $uploaddir;
-		$sitedir = $uploaddir.$site->name."/";
+		
+		$sitedir = $uploaddir.((ereg(".*/$", $uploaddir))?"":"/").$site->name."/";
 		
 		// media
 		$mediaList =& $siteElement->getElementsByPath("media");
