@@ -4,9 +4,13 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 //	print "hallooo!";
 	$name = strtolower($name);
 	global $cfg;
-	
+
 	// check if we already have an ldap connection... otherwise, open a new one
-	if (!($c = ldap_connect($cfg[ldap_server]))) $c = ldap_connect($cfg[ldap_server]);
+	if (!($c = ldap_connect($cfg[ldap_server]))) 
+		($c = ldap_connect($cfg[ldap_server])) || die("Could not connect to $cfg[ldap_server]");
+
+	ldap_set_option($c, LDAP_OPT_PROTOCOL_VERSION, 3)
+		or die ("Could not set ldap protocol");
 	
 	// bind as the admin and search for the proper name to bind as
 	$admin_ldap_user = $cfg[ldap_voadmin_user_dn];
@@ -59,8 +63,14 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		$searchFilter = "(".$cfg[ldap_username_attribute]."=".$name.")";
 		
 //		print "$name with $pass was in the LDAP database!<br />";//debug
-		
+
 		$sr = ldap_search($c,$userSearchDN,$searchFilter,$return);
+		if (!$sr) {
+			echo "LDAP-Errno: " . ldap_errno($c) . "<br />\n";
+			echo "LDAP-Error: " . ldap_error($c) . "<br />\n";
+			die("Argh!<br />\n");
+		}
+
 		$results = ldap_get_entries($c,$sr);
 		$results[0] = array_change_key_case($results[0], CASE_LOWER);
 		$numldap = ldap_count_entries($c,$sr);
@@ -75,8 +85,6 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 		$x[email] = $results[0][strtolower($cfg[ldap_email_attribute])][0];
 
 		// are they prof?
-		//printpre($results[0]);
-		
 		if (is_array($results[0][strtolower($cfg[ldap_group_attribute])])) {
 			$isProfSearchString = implode("|", $cfg[ldap_prof_groups]);
 			foreach ($results[0][strtolower($cfg[ldap_group_attribute])] as $item) {
@@ -92,11 +100,9 @@ function _valid_ldap($name,$pass,$admin_auser=0) {
 			$x[fullname] = $fname;
 		}
 		//printpre($x);
-	// 	exit;
 		// now check if they're in the database, add if necessary, and get id
 		$x = _auth_check_db($x,1);	
-		return $x;
-				
+		return $x;				
 	}
 	return 0;
 }
