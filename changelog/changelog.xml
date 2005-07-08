@@ -2,6 +2,9 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.4.1" date="The nebulous future">
+		<new author='gabe'>
+			Added some checks for 'no-name' sites deleting the entire userfiles directory!
+		</new>
 		<fix author='adam'>
 			Changed include paths to allow importing sites from XML backups to 
 			work.

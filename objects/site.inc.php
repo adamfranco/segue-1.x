@@ -1173,6 +1173,7 @@ WHERE
 		global $cfg;
 		if (!$this->id) return false;
 		$this->fetchDown();
+		$siteName = $this->getField("name");
 		$query = "DELETE FROM site WHERE site_id=".$this->id;
 		db_query($query);
 		$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='site';";
@@ -1199,8 +1200,10 @@ WHERE
 //		exit(0);
 
 		// delete the userfiles
-		$file_path = $cfg['uploaddir']."/".$this->getField("name");
-		deletePath($file_path);
+		if (ereg("[0-9a-zA-Z]", $siteName)) {
+			$file_path = $cfg['uploaddir']."/".$siteName;
+			deletePath($file_path);
+		}
 	}
 	
 	function createSQLArray($all=0) {
