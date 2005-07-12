@@ -8,7 +8,8 @@ session_start();
 include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-//printpre($_REQUEST);
+printpre($_REQUEST);
+printpre($_SESSION);
 
 /******************************************************************************
  * Add Associated Site: 
@@ -114,14 +115,11 @@ if ($_REQUEST[n]) {
  ******************************************************************************/
 
 if (isset($_REQUEST[name])) {
-	//printpre($name);
-	$class_external_id = $_REQUEST[name];
-	$ugroup_id = getClassUGroupId($class_external_id);
-	$site = $class_external_id;
+	$ugroup_name = $_REQUEST[name];
+	$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '$ugroup_name'");
+	$class_external_id = db_get_value("class","class_external_id","FK_ugroup = $ugroup_id");
 	$_REQUEST[ugroup_id] = $ugroup_id;
 	$participants = getclassstudents($class_external_id);
-	//printpre($class_external_id);
-	//printpre($participants);
 
 /******************************************************************************
  * Admin add student UI: get students in the class
