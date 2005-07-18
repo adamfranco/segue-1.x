@@ -2,6 +2,14 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.4.1" date="The nebulous future">
+		<change author='alex'>
+			removed getNameOfClassForSite function and changed all code that attempted
+			to get class info using the class_external_id
+		</fix>
+		<fix author='alex' ref='1235421' reftype='bug'>
+			Fixed bug in getclassstudents function that prevented getting students in
+			a class when the class_external_id is different from the slot_name
+		</fix>
 		<new author='gabe'>
 			Added some checks for 'no-name' sites deleting the entire userfiles directory!
 		</new>
