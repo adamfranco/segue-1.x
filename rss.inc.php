@@ -190,8 +190,9 @@ if ($error) {
 				if ($o->canview()) {
 					print "\t\t<item>\n";
 					print "\t\t\t<title>".$o->getField("title")."</title>\n";
-					print "\t\t\t<link>".$pagelink."</link>\n";
-					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink."</guid>\n";
+					$storylink = "#".$o->getField("id");
+					print "\t\t\t<link>".$pagelink.$storylink."</link>\n";
+					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink.$storylink."</guid>\n";
 					
 					print "\t\t\t<pubDate>";
 					print date("D, d M Y G:i:s T", strtotime(timestamp2usdate($o->getField("addedtimestamp"))));

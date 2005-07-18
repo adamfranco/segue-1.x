@@ -12,7 +12,7 @@ $st = convertTagsToInteralLinks($site, $st);
 if ($o->getField("texttype") == 'text')
 	$st = nl2br($st);
 
-if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
+if ($o->getField("title")) printc("<div class=leftmargin><b><a name=".$o->id."></a>".spchars($o->getField("title"))."</b></div>");
 printc("<table cellspacing='0' cellpadding='0' width=100%><tr><td>");
 printc(stripslashes($st));
 
