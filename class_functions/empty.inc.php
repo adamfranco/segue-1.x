@@ -29,27 +29,38 @@ function isclass ($class) {
 function getclassstudents($class_id) {
 	global $cfg;
 	
+	$whereClassParts = getClassWhereClauseForSitename($class_id);	
+		
 	$classes = array();
 	$query = "
 	SELECT
+		ugroup_name,
 		class_external_id,
+		class_department,
+		class_number,
+		class_section,
+		class_semester,
+		class_year,
 		class.FK_owner AS class_owner_id,
 		classgroup.FK_owner AS classgroup_owner_id
 	FROM 
 		class
 			LEFT JOIN 
 		classgroup ON FK_classgroup = classgroup_id
+			LEFT JOIN
+		ugroup ON FK_ugroup = ugroup_id
 	WHERE 
 		classgroup_name = '$class_id'
 		OR class_external_id = '$class_id'
+		OR $whereClassParts
 	";
-
+	
 	$r = db_query($query);
 	while ($resultArray = db_fetch_assoc($r)) {
 		$classes[] = array (
 			'class_owner_id' => $resultArray['class_owner_id'],
 			'classgroup_owner_id' => $resultArray['classgroup_owner_id'],
-			'class_id' => $resultArray['class_external_id']
+			'class_id' => $resultArray['ugroup_name']
 		);
 	}
 	

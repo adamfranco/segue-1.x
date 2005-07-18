@@ -52,7 +52,7 @@ class permissions {
 		printc("\n<input type=hidden name=edaction value=''>");
 		printc("\n<input type=hidden name=edname value=''>");
 		
-		if ($className = getNameOfClassForSite($sitename)) {
+		if ($className = $sitename) {
 			print "<script lang='javascript'>";
 			print "function addClassEditor() {";
 			print "	f = document.addform;";
@@ -131,14 +131,12 @@ class permissions {
 
 			$className= array();
 			if (isgroup($sitename)) {
-				$className = group::getClassesFromName($sitename);
+				$className = $sitename;
 			} else {
-				$className = getNameOfClassForSite($sitename);
+				$className = $sitename;
 			}
 
 
-			//$className = getNameOfClassForSite($sitename);
-			//printpre($className);
 			if (is_array($className)) {
 				foreach ($className as $class) {
 					if (!in_array($class,$edlist)) {

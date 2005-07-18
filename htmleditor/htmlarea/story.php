@@ -5,10 +5,10 @@
 <!-- <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> -->
 
 <!-- Configure the path to the editor.  We make it relative now, so that the
-    example ZIP file will work anywhere, but please NOTE THAT it's better to
+    example ZIP file will work anywhere, but please NOTE THAT its better to
     have it an absolute path, such as '/htmlarea/'. -->
 <? global $cfg;  ?>
-<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter.	
+<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enters.	
 
 <script type="text/javascript">
 /*   _editor_url = "../"; */

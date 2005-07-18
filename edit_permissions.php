@@ -58,6 +58,9 @@ if (!isset($_SESSION[editors])) $_SESSION[editors] = array();
 
 if ($error) { printerr2(); return; }
 
+//printpre($_SESSION[editors]);
+//printpre($_REQUEST);
+
 /******************************************************************************
  * Save changes to the DB
  ******************************************************************************/
@@ -103,7 +106,7 @@ if ($isOwner && $_REQUEST[edaction] == 'del') {
 	$_SESSION[obj]->delEditor($_REQUEST[edname]);
 }
 
-if ($isOwner && $className = getNameOfClassForSite($_SESSION[obj]->name)) {
+if ($isOwner && $className = $_SESSION[obj]->name) {
 	print "<script lang='javascript'>";
 	print "function addClassEditor() {";
 	print "	f = document.addform;";

@@ -89,7 +89,7 @@ if (!isset($_SESSION["settings"]) || !isset($_SESSION["siteObj"])) {
 		else if (!$_SESSION[siteObj]->getField("type") || $_SESSION[siteObj]->getField("type") == "") $_SESSION[siteObj]->setField("type","personal");
 	}
 	
-	$_SESSION[settings][className] = getNameOfClassForSite($_REQUEST[sitename]);
+	$_SESSION[settings][className] = $_REQUEST[sitename];
 	
 	if ($_REQUEST[action] == 'add_site') {
 		$_SESSION[settings][add]=1;

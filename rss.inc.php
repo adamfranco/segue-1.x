@@ -162,7 +162,7 @@ if ($error) {
 			// 
 			print "</description>\n";
 			
-			print "\t\t<lastBuildDate>".date("D, j M Y G:i:s T")."</lastBuildDate>\n";
+			print "\t\t<lastBuildDate>".date("D, d M Y G:i:s T")."</lastBuildDate>\n";
 			print "\t\t<generator>Segue RSS Generator</generator>\n";
 			
 		// handle archiving -- monthly, weekly, etc
@@ -194,12 +194,14 @@ if ($error) {
 					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink."</guid>\n";
 					
 					print "\t\t\t<pubDate>";
-					print date("D, j M Y G:i:s T", strtotime(timestamp2usdate($o->getField("addedtimestamp"))));
+					print date("D, d M Y G:i:s T", strtotime(timestamp2usdate($o->getField("addedtimestamp"))));
 					print "</pubDate>\n";
 					
 					print "\t\t\t<author>";
 					print $o->getField("addedbyfull");
-					print " (".$o->getField("addedby").")";
+					$user_uname = $o->getField("addedby");
+					$user_email = db_get_value("user","user_email","user_uname='$user_uname'");
+					print " (".$user_email.")";
 					print "</author>\n";
 					
 					if ($o->getField("category")) {
