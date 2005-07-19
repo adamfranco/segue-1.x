@@ -1,6 +1,9 @@
 <? /* $Id$ */
 
+$st = $o->getField("shorttext");
+$st = convertTagsToInteralLinks($site, $st);
+
 if ($o->getField("texttype"))
-	print nl2br($o->getField("shorttext"));
+	print nl2br($st);
 else
-	print $o->getField("shorttext");
+	print $st;
