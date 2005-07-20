@@ -522,6 +522,8 @@ WHERE
 				$this->setField("longertext",copy_media($media_id,$newsite));
 			} else if ($this->getField("type") == "story") {
 				$ids = segue::getMediaIDs("shorttext");
+				print "story -> insertdb (ID = $origid) --> Media-ids:";
+				printpre($ids);
 				segue::replaceMediaIDs($ids,"shorttext",$newsite);
 				$ids = segue::getMediaIDs("longertext");
 				segue::replaceMediaIDs($ids,"longertext",$newsite);

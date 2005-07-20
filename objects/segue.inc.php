@@ -415,6 +415,7 @@ FROM
 
 	function getMediaIDs($field) {
 		$string = stripslashes($this->getField($field));
+		print "\n\n\n\n".$string."\n\n\n\n";
 		$ids = array();
 		$string =  explode("####",$string);
 		for ($i=1; $i<count($string); $i=$i+2) {

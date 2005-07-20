@@ -229,6 +229,24 @@ if ($error) {
 					print "<description>";
 					print htmlspecialchars($description, ENT_COMPAT, 'utf-8');
 					print "</description>\n";
+					if ($o->getField("type") == "file") {
+						$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id=".$o->getField("longertext"));
+						$filename = $b[media_tag];
+						$filename = rawurlencode($filename);
+						if (ereg(".mp3", $filename)) {
+							$type = "audio/mpeg";
+						} else {
+							$type = "unknown";
+						}
+						/* 	print $filename; */
+						$dir = $b[slot_name];
+						$size = $b[media_size];
+						$fileurl = "$uploadurl/$dir/$filename";
+						$filepath = "$uploaddir/$dir/$filename";
+						$filesize = $size;
+						print "<enclosure url='$fileurl' length='$filesize' type='$type' />";					
+					}
+
 					
 					print "\t\t</item>\n";
 				}
