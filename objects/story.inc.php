@@ -525,9 +525,6 @@ WHERE
 			}
 		}
 		
-//		$this->parseMediaTextForDB("shorttext");
-//		$this->parseMediaTextForDB("longertext");
-		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
 			$a[] = "FK_createdby=".$_SESSION[aid];

@@ -610,11 +610,6 @@ FROM
 	function parseMediaTextForEdit($field) {
 		if (!$this->getField("$field")) return false;
 		
-		$bt = debug_backtrace();
-		printpre($bt);
-		print_r($this->getField($field));
-		die("parseMediaTextForEdit was called!");
-		
 		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->getField($field));
 		$textarray1 = explode("####", $this->getField($field));
 		if (count($textarray1) > 1) {
