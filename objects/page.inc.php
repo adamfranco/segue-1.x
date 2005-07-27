@@ -329,11 +329,6 @@ WHERE
 					// decode if necessary
 					if (in_array($field,$this->_encode)) 
 						$value = stripslashes(urldecode($value));
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	//				if (in_array($field,$this->_parse)) 
-	//					$value = $this->parseMediaTextForEdit($value);
 					$this->data[$field] = $value;
 					$this->fetched[$field] = 1;
 				}
