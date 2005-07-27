@@ -128,7 +128,10 @@ do {
 	// build the navbar
 	include ("output_modules/".$thisSite->getField("type")."/navbars.inc.php");
 	
-
+	if ((!is_object($thisSection) &&is_object($thisSite) && count($thisSite->sections == 0))) 
+	{
+		printc("Click the '+ add section' button to add a section to this site.\n<br/>");
+	}
 	
 	if ($thisPage) {
 		$thisPage->fetchDown();
@@ -210,9 +213,15 @@ do {
 				}
 				unset($o);
 			}
+		}else if ($thisPage && count($thisPage->stories) == 0) {
+			printc("Click the '+ add content' button to add a content block to this page.\n<br/>");
 		}
+		
 		$_b = array("","custom","addedasc","editedasc");
-		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) printc("<br /><hr class=block><div align='right'><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b)) 
+			printc("<br /><hr class=block><div align='right'><a href='$PHP_SELF?$sid&$envvars&action=add_story&comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+	} else if ($thisSection && count($thisSection->pages) == 0) {
+		printc("Click the '+ add item' button to add a page to this section.\n<br/>");
 	}
 } while (0);
 

@@ -23,7 +23,7 @@
 		<change author='alex'>
 			removed getNameOfClassForSite function and changed all code that attempted
 			to get class info using the class_external_id
-		</fix>
+		</change>
 		<fix author='alex' ref='1235421' reftype='bug'>
 			Fixed bug in getclassstudents function that prevented getting students in
 			a class when the class_external_id is different from the slot_name
@@ -34,6 +34,14 @@
 		<fix author='adam'>
 			Changed include paths to allow importing sites from XML backups to 
 			work.
+		</fix>
+		<fix author='adam' ref='1240466' reftype='bug'>
+			Fixed bug in which media files are not being copied to the destination
+			site when it was different from the originating site.
+		</fix>
+		<fix author='adam' ref='1239086' reftype='bug'>
+			Empty sites/sections/pages now display instructions to use the '+ add 
+			section', '+ add page', and '+ add story' buttons in edit mode.
 		</fix>
 	</version>
 	<version number="1.4.0" date="2005-05-31">
