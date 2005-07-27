@@ -3,7 +3,7 @@ Name: Segue ChangeLog
 
 
 
-v. 1.4.1 (The nebulous future) 
+v. 1.4.1 (2005-05-29) 
 ----------------------------------------------------
 		
     * New feature:  (Alex Chapin) 
