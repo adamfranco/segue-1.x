@@ -188,8 +188,28 @@ if ($error) {
 				//printc("<table><tr><td>";
 				
 				if ($o->canview()) {
+					//get type of content
+					$incfile = "output_modules/rss/".$o->getField("type").".inc.php";
+					
+					ob_start();
+					include($incfile);
+					$description = ob_get_contents();
+					ob_end_clean();
+					$description = str_replace("\n", "", $description);
+					$description = str_replace("\r", "", $description);
+
 					print "\t\t<item>\n";
-					print "\t\t\t<title>".$o->getField("title")."</title>\n";
+					if ($o->getField("title")) {
+						$title = $o->getField("title");
+					} else {
+						$title = strip_tags($description);						
+						if (strlen($title) > 25) {
+							$title = substr($title, 0, 50)."...";
+						}					
+					}
+					
+					print "\t\t\t<title>".$title."</title>\n";
+					
 					$storylink = "#".$o->getField("id");
 					print "\t\t\t<link>".$pagelink.$storylink."</link>\n";
 					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink.$storylink."</guid>\n";
@@ -217,14 +237,6 @@ if ($error) {
 						print "</comments>\n";
 					}
 					
-					$incfile = "output_modules/rss/".$o->getField("type").".inc.php";
-					
-					ob_start();
-					include($incfile);
-					$description = ob_get_contents();
-					ob_end_clean();
-					$description = str_replace("\n", "", $description);
-					$description = str_replace("\r", "", $description);
 					
 					print "<description>";
 					print htmlspecialchars($description, ENT_COMPAT, 'utf-8');

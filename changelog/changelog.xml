@@ -7,6 +7,10 @@
 			for content blocks that are files for download, enclosed url to these
 			files in enclosure tag
 		</new>
+		<change author='alex'>
+			Added support for more html tags in RSS description field. Specifically
+			allowed for images and link tags.
+		</change>
 		<fix author='alex' ref='1235422' reftype='bug'>
 			Fixed RSS feed publishing to be more valid.  In particular, changed
 			pubDate to be an RFC-822 date-time, included author email address,

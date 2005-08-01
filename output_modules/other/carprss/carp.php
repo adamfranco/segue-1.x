@@ -41,7 +41,7 @@ function CarpConfReset() {
 	'filterout'=>'',
 	'skipdups'=>1,
 
-	'descriptiontags'=>'b|/b|i|/i|br|p|/p|hr|span|/span|font|/font',
+	'descriptiontags'=>'b|/b|i|/i|br|p|/p|hr|span|/span|font|/font|a|/a|img',
 	'linktarget'=>0,
 
 	// replaced by cborder, bcb and acb - these will be removed eventually
