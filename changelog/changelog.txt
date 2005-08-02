@@ -3,13 +3,17 @@ Name: Segue ChangeLog
 
 
 
-v. 1.4.1 (2005-05-29) 
+v. 1.4.1 (2005-08-02) 
 ----------------------------------------------------
 		
     * New feature:  (Alex Chapin) 
     Added support for podcasting via RSS with enclosures. Specifically for
     content blocks that are files for download, enclosed url to these files in
     enclosuretag
+		
+    * Change:  (Alex Chapin) 
+    Added support for more html tags in RSS description field. Specifically
+    allowedfor images and link tags.
 		
     * Bug Fix: #1235422  (Alex Chapin) 
     Fixed RSS feed publishing to be more valid. In particular, changed pubDate

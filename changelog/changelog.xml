@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
-	<version number="1.4.1" date="2005-05-29">
+	<version number="1.4.1" date="2005-08-02">
 		<new author='alex'>
 			Added support for podcasting via RSS with enclosures.  Specifically
 			for content blocks that are files for download, enclosed url to these
