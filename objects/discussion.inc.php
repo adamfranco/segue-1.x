@@ -1,5 +1,6 @@
 <? /* $Id$ */
 
+
 //echo "bla";
 class discussion {
 	var $storyid,$parentid,$id;
@@ -881,8 +882,19 @@ class discussion {
 			if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
 				$b[] = " | <a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=edit#".$this->id."'>edit</a>\n";
 				
-			if ($o) 
-				$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>\n";
+			//if ($o) 
+			//	$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>\n";
+			
+			//printpre($_SESSION[auser]);
+			require_once("ratingClass/RatingClass.php");
+			require_once("ratingClass/process_rating.php");
+			
+			$user_id = db_get_value("user", "user_id", "user_uname = '".$_SESSION[auser]."'");
+			$ratingId = 1;
+			//$user_id = 1;
+			$itemId = $this->id;
+			
+
 			
 			/******************************************************************************
 			 * if there are dicussion actions (reply | del | edit | rate) then print 
@@ -899,7 +911,7 @@ class discussion {
 				printc ("\n<tr><td class=dheader3>\n");
 				
 				printc ("<table width=100% cellspacing='0px'>\n");
-				printc ("<tr><td align='left'>\n");
+				printc ("<tr><td align='left' valign='top'>\n");
 				printc ("<span class=subject>\n");
 				// subject
 				printc ($s);
@@ -908,7 +920,16 @@ class discussion {
 					printc (" (Rating: ".$this->rating.")");
 				printc ("</span></td>\n");
 				// link for rating
-				printc ("<td align='right'>$ratelink</td>\n");
+				printc ("<td align='right'>\n");
+				
+				$ratings  = new Ratings($user_id,'ratingClass/process_rating.php');	
+				$rating = get_value($user_id,$itemId,$ratingId);
+				$avg_rating = get_avg_rating($itemId,$ratingId);
+		    	
+				$ratings->outputRating($itemId,$ratingId,$rating,$avg_rating);
+			
+				printc("</td>");
+				
 				printc ("</tr><tr>\n");
 				printc ("<td align='left'>$a\n");
 				// link to media
