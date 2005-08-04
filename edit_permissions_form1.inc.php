@@ -38,6 +38,8 @@ $buttons .= "</th><th align='right'>";
 $buttons .= "<input type=submit name='editpermissions' value='Edit Permissions of Checked -&gt;'>";
 $buttons .= "</th></tr>";
 print $buttons;
+//printpre ($edlist);
+//printpre ($className);
 
 /******************************************************************************
  * editor table headings

@@ -224,7 +224,7 @@ do {
 
 ob_start();
 
-if ($thisPage->hasPermission("view", "everyone")) {
+if (is_object($thisPage) && $thisPage->hasPermission("view", "everyone")) {
 	print "<div align=right><a href='".preg_replace("/action=(viewsite|site)/","action=rss",$_SERVER['REQUEST_URI'])."'>\n<img border=0 src=$cfg[themesdir]/common/images/rss_icon01.gif>\n</a></div>";
 }
 

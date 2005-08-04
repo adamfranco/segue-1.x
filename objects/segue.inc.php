@@ -287,12 +287,6 @@ FROM
 				if (in_array($field,$this->_encode)) 
 					$val = stripslashes(urldecode($val));
 
-// UPDATE parseMediaTextForEdit *********************************************************************
-// UPDATE parseMediaTextForEdit *********************************************************************
-// UPDATE parseMediaTextForEdit *********************************************************************
-//				if (in_array($field,$this->_parse)) 
-//					$val = $this->parseMediaTextForEdit($val);
-
 				if (count($this->_datafields[$field][1]) == 1) { 
 					$valarray[] = $val;
 				} else {
@@ -614,6 +608,7 @@ FROM
 
 	function parseMediaTextForEdit($field) {
 		if (!$this->getField("$field")) return false;
+		
 		$this->data[$field] = ereg_replace("src=('{0,1})####('{0,1})","####",$this->getField($field));
 		$textarray1 = explode("####", $this->getField($field));
 		if (count($textarray1) > 1) {

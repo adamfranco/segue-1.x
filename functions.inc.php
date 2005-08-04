@@ -187,6 +187,11 @@ function copy_media($id,$newsitename) {
 	return $newid;
 }
 
+function copy_media_with_fname($fname, $oldsitename, $newsitename) {
+	$mediaid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='$oldsitename' AND media_tag='$fname'");
+	return copy_media($mediaid, $newsitename);
+}
+
 function deleteuserfile($fileid) {
 	global $uploaddir, $site, $settings;
 	$query = "

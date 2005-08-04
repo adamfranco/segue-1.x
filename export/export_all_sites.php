@@ -8,8 +8,7 @@ require_once(dirname(__FILE__).'/domit/xml_domit_parser.php');
 require_once(dirname(__FILE__).'/domit/xml_domit_utilities.php');
 
 require_once(dirname(__FILE__).'/../config.inc.php');
-require_once(dirname(__FILE__).'/../dbwrapper.inc.php');
-require_once(dirname(__FILE__).'/../functions.inc.php');
+require_once(dirname(__FILE__)."/../includes.inc.php");
 require_once(dirname(__FILE__).'/../objects/slot.inc.php');
 require_once(dirname(__FILE__).'/../objects/segue.inc.php');
 require_once(dirname(__FILE__).'/../objects/site.inc.php');

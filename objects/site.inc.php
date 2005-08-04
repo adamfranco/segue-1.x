@@ -336,9 +336,6 @@ FROM
 				// decode if necessary
 				if (in_array($field,$this->_encode)) 
 					$value = stripslashes(urldecode($value));
-// UPDATE parseMediaTextForEdit *********************************************************************
-//				if (in_array($field,$this->_parse)) 
-//					$value = $this->parseMediaTextForEdit($value);
 				$this->data[$field] = $value;
 				$this->fetched[$field] = 1;
 			}
@@ -381,11 +378,6 @@ SELECT
 					// decode if necessary
 					if (in_array($field,$section->_encode)) 
 						$value = stripslashes(urldecode($value));
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	//				if (in_array($field,$this->_parse)) 
-	//					$value = $this->parseMediaTextForEdit($value);
 					$section->data[$field] = $value;
 					$section->fetched[$field] = 1;
 				}
@@ -433,11 +425,6 @@ SELECT
 					// decode if necessary
 					if (in_array($field,$page->_encode))
 						$value = stripslashes(urldecode($value));
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	//				if (in_array($field,$this->_parse)) 
-	//					$value = $this->parseMediaTextForEdit($value);
 					$page->data[$field] = $value;
 					$page->fetched[$field] = 1;
 				}
@@ -504,11 +491,6 @@ SELECT
 					// decode if necessary
 					if (in_array($field,$story->_encode))
 						$value = stripslashes(urldecode($value));
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	//				if (in_array($field,$this->_parse)) 
-	//					$value = $this->parseMediaTextForEdit($value);
 					$story->data[$field] = $value;
 					$story->fetched[$field] = 1;
 				}
@@ -911,11 +893,6 @@ WHERE site_id = ".$this->id;
 					// decode if necessary
 					if (in_array($field,$this->_encode)) 
 						$value = stripslashes(urldecode($value));
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	//				if (in_array($field,$this->_parse)) 
-	//					$value = $this->parseMediaTextForEdit($value);
 					$this->data[$field] = $value;
 					$this->fetched[$field] = 1;
 				}
@@ -1173,6 +1150,7 @@ WHERE
 		global $cfg;
 		if (!$this->id) return false;
 		$this->fetchDown();
+		$siteName = $this->getField("name");
 		$query = "DELETE FROM site WHERE site_id=".$this->id;
 		db_query($query);
 		$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='site';";
@@ -1199,8 +1177,10 @@ WHERE
 //		exit(0);
 
 		// delete the userfiles
-		$file_path = $cfg['uploaddir']."/".$this->getField("name");
-		deletePath($file_path);
+		if (ereg("[0-9a-zA-Z]", $siteName)) {
+			$file_path = $cfg['uploaddir']."/".$siteName;
+			deletePath($file_path);
+		}
 	}
 	
 	function createSQLArray($all=0) {

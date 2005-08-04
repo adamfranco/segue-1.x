@@ -396,11 +396,6 @@ class story extends segue {
 					// decode if necessary
 					if (in_array($field,$this->_encode)) 
 						$value = stripslashes(urldecode($value));
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	// UPDATE parseMediaTextForEdit *********************************************************************
-	//				if (in_array($field,$this->_parse)) 
-	//					$value = $this->parseMediaTextForEdit($value);
 					$this->data[$field] = $value;
 //					print "$field] = $value<br />";
 					$this->fetched[$field] = 1;
@@ -521,15 +516,26 @@ WHERE
 				$media_id = $this->getField("longertext");
 				$this->setField("longertext",copy_media($media_id,$newsite));
 			} else if ($this->getField("type") == "story") {
+				// These do some moving of files based on a ####id##### syntax
+				// for storing inline images. 
+				// Adam 2005-06-27: I don't believe that these were ever used, but
+				// I'll leave them here so as not to break any old data that uses them.
 				$ids = segue::getMediaIDs("shorttext");
 				segue::replaceMediaIDs($ids,"shorttext",$newsite);
 				$ids = segue::getMediaIDs("longertext");
 				segue::replaceMediaIDs($ids,"longertext",$newsite);
+				
+				// Search for and copy images that use the "[[mediapath]]/filename.ext"
+				// syntax.
+				preg_match_all("/\[\[mediapath\]\]\/([^'\"]+)/",
+					$this->getField("shorttext").$this->getField("longertext"), 
+					$matches);
+				$fnames = array_unique($matches[1]);
+				foreach ($fnames as $fname) {
+					copy_media_with_fname($fname, $origsite, $newsite);
+				}
 			}
 		}
-		
-//		$this->parseMediaTextForDB("shorttext");
-//		$this->parseMediaTextForDB("longertext");
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {

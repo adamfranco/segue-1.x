@@ -1,5 +1,5 @@
 <? /* $Id$ */
-
+//error_reporting(E_ALL && ~E_NOTICE);
 require("objects/objects.inc.php");
 
 ob_start();

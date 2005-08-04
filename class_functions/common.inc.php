@@ -111,60 +111,27 @@ function synchronizeUserDB($user, $email, $fullname, $type, $loginMethod) {
 }
 
 /**
- * Gets the name of the class that is for this site.
- * 
- * @param string $sitename
- * @return string The name of the class that is for this site OR FALSE if there
- *					is no class for this site.
- * @access public
- * @date 9/17/04
+ * Break the sitename into parts for searching the classes table
+ * and return the where string.
+ *
+ * @param string sitename
+ * @return string
  */
-function getNameOfClassForSite ($sitename) {
-	// Check if the sitename is a classgroup. If so, then the name of the group
-	// is the name of the class.
-	if (isgroup($sitename)) {
-		return $sitename;
-	}
+ function getClassWhereClauseForSitename($sitename) {
+ 	// Break appart sitename into class parts
+	ereg("^([a-zA-Z]+)([0-9]+)([a-zA-Z]*)-([a-zA-Z]+)([0-9]{2,4})$", $sitename, $matches);
+	$class_department = $matches[1];
+	$class_number = $matches[2];
+	$class_section = $matches[3];
+	$class_semester = $matches[4];
+	$class_year = $matches[5];
 	
-	// Check if a class with the same name as the site is in the classes table.
-	$query = "
-		SELECT
-			class_external_id
-		FROM
-			class
-		WHERE
-			class_external_id='".$sitename."'";
-	$res = db_query($query);
-	if (db_num_rows($res)) {
-		return $sitename;
-	}
-	
-	// Check if a class with the same name as the assocsite is in the classes table.
-	$query = "
-		SELECT
-			class_external_id
-		FROM
-			slot
-				INNER JOIN
-			slot AS assoc_slot
-				ON
-					slot.FK_assocsite = assoc_slot.slot_id
-				INNER JOIN
-			class
-				ON
-					assoc_slot.slot_name = class_external_id
-		WHERE
-			slot.slot_name = '".$sitename."'";
-	$res = db_query($query);
-	if (db_num_rows($res)) {
-		$array = db_fetch_assoc($res);
-		if ($className = $array['class_external_id'])
-			return $className;
-	}
-	
-	// If we haven't found a class that matches, return false.
-	return FALSE;
-}
+ 	return "(class_department = '$class_department'
+				AND class_number = '$class_number'
+				AND class_section = '$class_section'
+				AND class_semester = '$class_semester'
+				AND class_year = '$class_year')";
+ }
 
 /**
  * Return the id of the ugroup for the specified class
@@ -177,7 +144,8 @@ function getNameOfClassForSite ($sitename) {
 function getClassUGroupId ($class_id) {
 	global $debug;
 	
-	$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_id'");
+	$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '$class_id'");
+	//$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_id'");
 	
 	// If we don't have a ugroup id, then maybe we were passed the segue version of
 	// the class Id instead of the external Id.

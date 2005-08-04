@@ -3,6 +3,54 @@ Name: Segue ChangeLog
 
 
 
+v. 1.4.1 (2005-08-02) 
+----------------------------------------------------
+		
+    * New feature:  (Alex Chapin) 
+    Added support for podcasting via RSS with enclosures. Specifically for
+    content blocks that are files for download, enclosed url to these files in
+    enclosuretag
+		
+    * Change:  (Alex Chapin) 
+    Added support for more html tags in RSS description field. Specifically
+    allowedfor images and link tags.
+		
+    * Bug Fix: #1235422  (Alex Chapin) 
+    Fixed RSS feed publishing to be more valid. In particular, changed pubDate
+    to be an RFC-822 date-time, included author email address, fixed links to
+    urlsinternal to site and make each story url unique
+		
+    * Bug Fix: #1235421  (Alex Chapin) 
+    Fixed bug in getclassstudents function that prevented getting students in a
+    classwhen the class_external_id is different from the slot_name
+		
+    * Bug Fix: #1235423  (Alex Chapin) 
+    Fixed bug that caused sections with no pages to not print out when viewing a
+    
+		
+    * Change:  (Alex Chapin) 
+    removed getNameOfClassForSite function and changed all code that attempted
+    toget class info using the class_external_id
+		
+    * Bug Fix: #1235421  (Alex Chapin) 
+    Fixed bug in getclassstudents function that prevented getting students in a
+    classwhen the class_external_id is different from the slot_name
+		
+    * New feature:  (Gabe Schine) 
+    Added some checks for 'no-name' sites deleting the entire userfiles 
+		
+    * Bug Fix:  (Adam Franco) 
+    Changed include paths to allow importing sites from XML backups to work.
+		
+    * Bug Fix: #1240466  (Adam Franco) 
+    Fixed bug in which media files are not being copied to the destination site
+    whenit was different from the originating site.
+		
+    * Bug Fix: #1239086  (Adam Franco) 
+    Empty sites/sections/pages now display instructions to use the '+ add
+    section','+ add page', and '+ add story' buttons in edit mode.
+	
+
 v. 1.4.0 (2005-05-31) 
 ----------------------------------------------------
 		
@@ -211,7 +259,7 @@ v. 1.3.1 (2004-10-05)
 		
     * Bug Fix:  (Alex Chapin) 
     If a section has a single page, that page link will not be displayed.
-    However, if that page is a &quot;link&quot; then it will be displayed to make it 
+    However, if that page is a "link" then it will be displayed to make it 
 		
     * Bug Fix:  (Adam Franco) 
     The side-sections navigation was all screwed up and not printing editing
@@ -314,8 +362,8 @@ v. 1.3.0 (2004-09-30)
     Added new template to config.inc.php.		
 		
     * Change:  (Alex Chapin) 
-    Changed display of links on home page. In particular, change &quot;Public Site
-    Lising&quot; to &quot;Public Sites&quot;. Removed &quot;links&quot; header and removed header
+    Changed display of links on home page. In particular, change "Public Site
+    Lising" to "Public Sites". Removed "links" header and removed header
     formattingfrom help link. Also added text to public site listing.
 		
     * New feature: #1036499  (Alex Chapin) 
@@ -327,7 +375,7 @@ v. 1.3.0 (2004-09-30)
     Added a config option to include forgot your password link below login
     fields when there has been no authentication. This allows users to request
     Segue to reset the passwords for their Segue user accounts (i.e. those
-    accountswhose authentication type is &quot;db&quot;)		
+    accountswhose authentication type is "db")		
 		
     * Bug Fix:  (Adam Franco) 
     HTMLAREA and plaintext box editing now behavies better with respect to line
@@ -378,7 +426,7 @@ v. 1.3.0 (2004-09-30)
 		
     * Change:  (Adam Franco) 
     The 'Site not availible' error is now more informative and includes links to
-    &quot;Home&quot; as well as a &quot;create site&quot; link if the active user is allowed to
+    "Home" as well as a "create site" link if the active user is allowed to
     create a site in that place. The latter is useful when taking advantage of
     thevhost functionality.
 		
@@ -415,7 +463,7 @@ v. 1.3.0 (2004-09-30)
 		
     * Bug Fix:  (Adam Franco) 
     Rating can now be set to zero. The default, NULL, -- set by an empty field
-    --is &quot;no rating&quot;.
+    --is "no rating".
 		
     * Bug Fix:  (Adam Franco) 
     Public Site Listing now prints next/previous links to additional pages.
@@ -448,7 +496,7 @@ v. 1.3.0 (2004-09-30)
 		
     * Change:  (Alex Chapin) 
     Have changed full text link (for content blocks with extended text) so that
-    it is appended at the end of short text as &quot;...more.&quot; Have put an anchor on
+    it is appended at the end of short text as "...more." Have put an anchor on
     title of discuss/assess UI and added reference to this anchor in the
     discuss/assesslink.
 		
@@ -538,8 +586,8 @@ v. 1.2.2 (2004-07-06)
 ----------------------------------------------------
 		
     * Bug Fix:  (Gabe Schine) 
-    Fixed a UI bug in which story timestamps/editors would display &quot;edited by
-    ...&quot;when nobody had done any editing.
+    Fixed a UI bug in which story timestamps/editors would display "edited by
+    ..."when nobody had done any editing.
 		
     * Bug Fix:  (Alex Chapin) 
     Fixed browser sniffer bug that prevented inclusion of html editor in
@@ -601,7 +649,7 @@ v. 1.1.1 (2004-04-23)
     preventing the discussion table from being created for new installs of 
 		
     * Bug Fix:  (Adam Franco) 
-    Fixed some missing quotation marks, &quot;, in &quot;admin tools&quot; --&gt; &quot;edit users&quot;
+    Fixed some missing quotation marks, ", in "admin tools" --&gt; "edit users"
     page that were causing problems with spaces in names. Thanks go to Steve
     fromNottingham Trent University, England, for finding this problem.
 	
@@ -754,11 +802,11 @@ v. 1.0.3 (2003-11-12)
 		
     * New feature:  (Adam Franco) 
     Addition of an update framework for applying database updates in Segue. When
-    templates/database updates are in a release, they will appear in the &quot;Segue
-    Updates&quot;section of the &quot;admin tools&quot;.
+    templates/database updates are in a release, they will appear in the "Segue
+    Updates"section of the "admin tools".
 		
     * Change:  (Alex Chapin) 
-    Two new site templates: &quot;Advanced: Single Section&quot; and &quot;Advanced: Blank&quot;.
+    Two new site templates: "Advanced: Single Section" and "Advanced: Blank".
 		
     **** IMPORTANT *** Change:  (Adam Franco) 
     New templates have been added. To create the new templates, log in as an
@@ -849,14 +897,14 @@ v. 1.0.0 rc1 (2003-07-14)
     Discussion links now displayed with statistics info.
 		
     * Change:  (Gabe Schine) 
-    By-line for default page now has a link to a &quot;credits&quot; page with more info
+    By-line for default page now has a link to a "credits" page with more info
     aboutthe authors.
 		
     * Change: 
     ChangeLog is now held in XML format &amp; converted with XSL!
 		
     * Change:  (Gabe Schine) 
-    &quot;Powered by Segue&quot; logo now takes you to the Segue page.
+    "Powered by Segue" logo now takes you to the Segue page.
 	
 
 v. 1.0.0 beta1 (2003-07-11) 
@@ -871,7 +919,7 @@ v. 1.0.0 beta1 (2003-07-11)
 		
     **** IMPORTANT *** Change:  (Adam Franco) 
     DATABASE CHANGE! The class_number field in the class table should be changed
-    intype from an int(11) to a varchar(15) and the default set to &quot;000&quot;.
+    intype from an int(11) to a varchar(15) and the default set to "000".
 		
     * Bug Fix:  (Gabe Schine) 
     When integrated with an LDAP server, Segue now correctly synchronizes the
@@ -882,8 +930,8 @@ v. 1.0.0 beta1 (2003-07-11)
     Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.
 		
     * Change:  (Gabe Schine) 
-    View/add slots interface: a used slot now displays a &quot;-&quot; under the delete
-    columninstead of non-linked &quot;delete&quot; text for clarity.
+    View/add slots interface: a used slot now displays a "-" under the delete
+    columninstead of non-linked "delete" text for clarity.
 	
 
 v. 1.0.0 alpha3 (2003-06-08) 
@@ -900,7 +948,7 @@ v. 1.0.0 alpha3 (2003-06-08)
     personwould see.
 		
     * Bug Fix:  (Gabe Schine) 
-    The &quot;default&quot; page now appropriately shows sites of which a group member is 
+    The "default" page now appropriately shows sites of which a group member is 
 		
     * Bug Fix:  (Adam Franco) 
     Move/Copy now shows sites properly when opened on first page load.

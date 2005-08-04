@@ -162,7 +162,7 @@ if ($error) {
 			// 
 			print "</description>\n";
 			
-			print "\t\t<lastBuildDate>".date("D, j M Y G:i:s T")."</lastBuildDate>\n";
+			print "\t\t<lastBuildDate>".date("D, d M Y G:i:s T")."</lastBuildDate>\n";
 			print "\t\t<generator>Segue RSS Generator</generator>\n";
 			
 		// handle archiving -- monthly, weekly, etc
@@ -188,18 +188,41 @@ if ($error) {
 				//printc("<table><tr><td>";
 				
 				if ($o->canview()) {
+					//get type of content
+					$incfile = "output_modules/rss/".$o->getField("type").".inc.php";
+					
+					ob_start();
+					include($incfile);
+					$description = ob_get_contents();
+					ob_end_clean();
+					$description = str_replace("\n", "", $description);
+					$description = str_replace("\r", "", $description);
+
 					print "\t\t<item>\n";
-					print "\t\t\t<title>".$o->getField("title")."</title>\n";
-					print "\t\t\t<link>".$pagelink."</link>\n";
-					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink."</guid>\n";
+					if ($o->getField("title")) {
+						$title = $o->getField("title");
+					} else {
+						$title = strip_tags($description);						
+						if (strlen($title) > 25) {
+							$title = substr($title, 0, 50)."...";
+						}					
+					}
+					
+					print "\t\t\t<title>".$title."</title>\n";
+					
+					$storylink = "#".$o->getField("id");
+					print "\t\t\t<link>".$pagelink.$storylink."</link>\n";
+					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink.$storylink."</guid>\n";
 					
 					print "\t\t\t<pubDate>";
-					print date("D, j M Y G:i:s T", strtotime(timestamp2usdate($o->getField("addedtimestamp"))));
+					print date("D, d M Y G:i:s T", strtotime(timestamp2usdate($o->getField("addedtimestamp"))));
 					print "</pubDate>\n";
 					
 					print "\t\t\t<author>";
 					print $o->getField("addedbyfull");
-					print " (".$o->getField("addedby").")";
+					$user_uname = $o->getField("addedby");
+					$user_email = db_get_value("user","user_email","user_uname='$user_uname'");
+					print " (".$user_email.")";
 					print "</author>\n";
 					
 					if ($o->getField("category")) {
@@ -214,18 +237,28 @@ if ($error) {
 						print "</comments>\n";
 					}
 					
-					$incfile = "output_modules/rss/".$o->getField("type").".inc.php";
-					
-					ob_start();
-					include($incfile);
-					$description = ob_get_contents();
-					ob_end_clean();
-					$description = str_replace("\n", "", $description);
-					$description = str_replace("\r", "", $description);
 					
 					print "<description>";
 					print htmlspecialchars($description, ENT_COMPAT, 'utf-8');
 					print "</description>\n";
+					if ($o->getField("type") == "file") {
+						$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id=".$o->getField("longertext"));
+						$filename = $b[media_tag];
+						$filename = rawurlencode($filename);
+						if (ereg(".mp3", $filename)) {
+							$type = "audio/mpeg";
+						} else {
+							$type = "unknown";
+						}
+						/* 	print $filename; */
+						$dir = $b[slot_name];
+						$size = $b[media_size];
+						$fileurl = "$uploadurl/$dir/$filename";
+						$filepath = "$uploaddir/$dir/$filename";
+						$filesize = $size;
+						print "<enclosure url='$fileurl' length='$filesize' type='$type' />";					
+					}
+
 					
 					print "\t\t</item>\n";
 				}
