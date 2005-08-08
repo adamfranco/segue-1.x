@@ -885,7 +885,8 @@ class discussion {
 			//if ($o) 
 			//	$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>\n";
 			
-			//printpre($_SESSION[auser]);
+			//printpre($_SERVER);
+			
 			require_once("ratingClass/RatingClass.php");
 			require_once("ratingClass/process_rating.php");
 			
@@ -922,11 +923,13 @@ class discussion {
 				// link for rating
 				printc ("<td align='right'>\n");
 				
-				$ratings  = new Ratings($user_id,'ratingClass/process_rating.php');	
+				$ratings  = new Ratings('ratingClass/',$user_id,'ratingClass/process_rating.php');	
 				$rating = get_value($user_id,$itemId,$ratingId);
 				$avg_rating = get_avg_rating($itemId,$ratingId);
-		    	
-				$ratings->outputRating($itemId,$ratingId,$rating,$avg_rating);
+		    	$num_votes = get_num_votes($itemId,$ratingId);
+				$titles = get_star_titles($ratingId);
+				
+				$ratings->outputRating($itemId,$ratingId,$rating,$avg_rating,$num_votes,$titles);
 			
 				printc("</td>");
 				
@@ -1027,6 +1030,3 @@ class discussion {
 	}
 		
 }
-
-
-
