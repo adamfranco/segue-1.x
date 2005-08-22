@@ -856,11 +856,27 @@ class discussion {
 
 			if (!$this->id) return false;
 			//printc ("\n<tr><td class=dheader3>");			
-			$s = "<a href='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>\n";
+
+			$user_id = db_get_value("user", "user_id", "user_uname = '".$_SESSION[auser]."'");
+			$ratingId = 1;
+			//$user_id = 1;
+			$itemId = $this->id;			
+
+			require_once("ratingClass/TaggingClass.php");
+			$recordType = "discussion";
+
+			$user_tags = new Tags($user_id,"discussion");
+
+			$tags = $user_tags->get_tags($itemId);
+
+			$tags = implode(" ",$tags);
+
+			$s = "<a href='".$_full_uri."/index.php?$sid&action=site&".$this->getinfo."&expand=".$this->id."' name='".$this->id."' rel='$tags'>".$this->subject."</a>\n";
 		//	printc ("</form>");
 	//		$s = $this->subject;
 			//printpre($_SESSION);
 			$a = "";
+
 			if ($showallauthors == 1 || ($_SESSION[auser] && ($o || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId))) {
 				if ($this->opt("showauthor")) $a .= "by <span class=subject>".$this->authorfname."</span>\n";
 				if ($this->opt("showauthor") && $this->opt("showtstamp")) $a .= " on ";
@@ -868,10 +884,12 @@ class discussion {
 				$a .= "posted on ";
 			}
 			if ($this->opt("showtstamp")) $a .= timestamp2usdate($this->tstamp);
+
 			
 			/******************************************************************************
 			 * 	 collect possible actions to current post (rely | del | edit | rate)
 			 ******************************************************************************/
+
 			$b = array();
 			if ($cr) 
 				$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&replyto=".$this->id."&action=site&discuss=reply#reply'>reply</a>\n";
@@ -886,25 +904,19 @@ class discussion {
 			//	$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&id=".$this->id."&action=site&discuss=rate#".$this->id."'>rate</a>\n";
 			
 			//printpre($_SERVER);
-			
-			require_once("ratingClass/RatingClass.php");
-			require_once("ratingClass/process_rating.php");
-			
-			$user_id = db_get_value("user", "user_id", "user_uname = '".$_SESSION[auser]."'");
-			$ratingId = 1;
-			//$user_id = 1;
-			$itemId = $this->id;
-			
 
+			require_once("ratingClass/RatingClass.php");
+			require_once("ratingClass/process_rating.php");			
 			
 			/******************************************************************************
 			 * if there are dicussion actions (reply | del | edit | rate) then print 
 			 ******************************************************************************/
-	
+
 			if ($a != "" || count($b)) {
 				$c = '';
 				if (count($b)) $c .= implode(" ",$b);
-				
+
+
 				/******************************************************************************
 				 * discussion post header info (subject=$s, author and timestamp=$a, options=$c)
 				 ******************************************************************************/
@@ -919,18 +931,43 @@ class discussion {
 				// rating
 				if ($this->rating !== NULL) 
 					printc (" (Rating: ".$this->rating.")");
-				printc ("</span></td>\n");
+				printc("</span><br>");
+
+
+				
+				//printc("<div style='font-size:9;display:inline;valign=top;cursor:pointer;' ");
+				//printc("onClick=\"window.open('ratingClass/tags_details.php?itemId=$itemId&recordType=$recordType','record_details','height=600,width=600,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,directories=no,status=no')\">\n");
+				printc("Tags:");
+				//printc("</div>");
+				printc("<div id='tagsText$itemId' style='display:inline'>$tags</div>");
+
+				printc("<input type=text size=".(strlen($tags)+5)." id='tags$itemId' value='$tags' style='display:none'>");				
+
+				printc(" <input type=button id='tagsSubmit$itemId' value='submit' class='button small' style='display:none' onClick=\"tagsSubmit('$itemId','$user_id','discussion')\">");
+
+				printc(" <input type=button id='tagsUpdate$itemId' style='font-size:10' class='button small' value='update' onClick=\"tagsClick('$itemId');\"> ");
+
+				printc("<input type=button id='allTags$itemId' style='font-size:10' class='button small' value='All tags' ");
+
+				printc("onClick=\"window.open('ratingClass/tags_details.php?itemId=$itemId&recordType=$recordType','record_details','height=600,width=600,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,directories=no,status=no')\">\n");
+
+
+				printc ("</td>\n");
 				// link for rating
 				printc ("<td align='right'>\n");
 				
 				$ratings  = new Ratings('ratingClass/',$user_id,'ratingClass/process_rating.php');	
+
 				$rating = get_value($user_id,$itemId,$ratingId);
 				$avg_rating = get_avg_rating($itemId,$ratingId);
 		    	$num_votes = get_num_votes($itemId,$ratingId);
 				$titles = get_star_titles($ratingId);
 				
-				$ratings->outputRating($itemId,$ratingId,$rating,$avg_rating,$num_votes,$titles);
-			
+				//three ways to create a Rating Block image
+				printc($ratings->outputInteractive($itemId,$ratingId,$rating,$titles));
+				//printc($ratings->outputSimple($avg_rating));
+				//printc($ratings->outputRating($itemId,$ratingId,$rating,$avg_rating,$num_votes,$titles));
+		 
 				printc("</td>");
 				
 				printc ("</tr><tr>\n");
