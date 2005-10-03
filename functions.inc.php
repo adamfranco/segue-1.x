@@ -464,16 +464,17 @@ function insite($site,$section,$page=0,$story=0) {
 $_isgroup_cache = array();
 function isgroup ($group) {
 	global $_isgroup_cache;
-	if (isset($_isgroup_cache[$group])) return $_isgroup_cache[$group];
-	$query = ("SELECT classgroup_id FROM classgroup WHERE classgroup_name='$group'");
+	if (isset($_isgroup_cache[$group])) 
+		return $_isgroup_cache[$group];
+	
+	$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id WHERE classgroup_name='$group'";
 	$r = db_query($query);
+	
 	if (db_num_rows($r)) {
-		$a = db_fetch_assoc($r);
-		$query = "SELECT class_id FROM class INNER JOIN classgroup ON classgroup_id = ".$a[classgroup_id];
-		$r = db_query($query);
 		$temp_c = array();
-		while ($a = db_fetch_assoc($r))
+		while ($a = db_fetch_assoc($r)) {
 			$temp_c[] = generateCourseCode($a[class_id]);
+		}
 		$_isgroup_cache[$group] = true;
 		return $temp_c;
 	}

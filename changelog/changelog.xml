@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
+	<version number="1.4.2" date="2005-10-03">
+		<fix author='adam'>
+			The old isgroup() algorithm was looping through ALL classes and generating 
+			codes for them when ANY classes were in a group. 
+
+			When a user has a group displayed on the homepage:
+				1 call is made for each class in existance
+				+ 2 calls for each class in the group
+			
+			Now only 2 calls are made for each class in the group.
+		</fix>
+	</version>
 	<version number="1.4.1" date="2005-08-02">
 		<new author='alex'>
 			Added support for podcasting via RSS with enclosures.  Specifically

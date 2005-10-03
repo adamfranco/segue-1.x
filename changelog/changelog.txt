@@ -3,6 +3,17 @@ Name: Segue ChangeLog
 
 
 
+v. 1.4.2 (2005-10-03) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    The old isgroup() algorithm was looping through ALL classes and generating
+    codes for them when ANY classes were in a group. When a user has a group
+    displayed on the homepage: 1 call is made for each class in existance + 2
+    calls for each class in the group Now only 2 calls are made for each class
+    inthe group.
+	
+
 v. 1.4.1 (2005-08-02) 
 ----------------------------------------------------
 		
