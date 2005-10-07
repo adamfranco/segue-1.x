@@ -217,7 +217,7 @@ function db_query ($query, $cid=-1) {
 	global $_totalQueries;
 	$_totalQueries++;
 	
-	global $db_type; global $debug;
+	global $db_type, $debug, $printAllQueries;
 	global $_connect_id;
 	if ($debug && $printAllQueries) {
 		// The $debug variable is set at the top of this script

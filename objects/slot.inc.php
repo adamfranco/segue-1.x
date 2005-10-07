@@ -255,29 +255,29 @@ class slot {
 			}
 
 				$query = "
-					SELECT 
-						slot.slot_id,
-						slot.slot_name,
-						user.user_uname,
-						slot.slot_type,
-						assocsite.slot_name AS assocsite_name,
-						slot.FK_site,
-						slot.slot_uploadlimit
-					FROM 
-						slot
-							LEFT JOIN
-						user
-							ON
-								slot.FK_owner = user_id
-							LEFT JOIN
-								slot AS assocsite
-							ON
-								slot.FK_assocsite = assocsite.slot_id
-					WHERE
-						$where
-					ORDER BY
-						slot.slot_name
-				";
+SELECT 
+	slot.slot_id,
+	slot.slot_name,
+	user.user_uname,
+	slot.slot_type,
+	assocsite.slot_name AS assocsite_name,
+	slot.FK_site,
+	slot.slot_uploadlimit
+FROM 
+	slot
+		LEFT JOIN
+	user
+		ON
+			slot.FK_owner = user_id
+		LEFT JOIN
+			slot AS assocsite
+		ON
+			slot.FK_assocsite = assocsite.slot_id
+WHERE
+	$where
+ORDER BY
+	slot.slot_name
+";
 
 
 		$r = db_query($query);
@@ -302,44 +302,44 @@ class slot {
 		if ($user == '') $user = $_SESSION[auser];
 
 		$query = "
-			SELECT
-				slot_name,
-				slot_type,
-				slot_owner.user_uname AS owner_uname,
-				(site_id IS NOT NULL) AS site_exists,
-				site_title,
-				(classgroup_id IS NOT NULL) AS is_classgroup,
-				createdby.user_uname AS site_addedby,
-				site_created_tstamp,
-				editedby.user_uname AS site_editedby,
-				site_updated_tstamp,
-				site_activate_tstamp,
-				site_deactivate_tstamp,
-				(	site_active = '1'
-					AND (site_activate_tstamp = '00000000000000'
-						OR site_activate_tstamp < CURRENT_TIMESTAMP())
-					AND (site_deactivate_tstamp = '00000000000000'
-						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
-				) AS is_active
-			FROM
-				slot
-					INNER JOIN
-						user AS slot_owner ON (
-												slot.FK_owner = slot_owner.user_id
-											AND
-												slot_owner.user_uname = '$user'
-											)
-					LEFT JOIN
-				site ON slot.FK_site = site_id
-					LEFT JOIN
-						user AS createdby ON site.FK_createdby = createdby.user_id
-					LEFT JOIN
-						user AS editedby ON site.FK_updatedby = editedby.user_id
-					LEFT JOIN
-						classgroup ON slot_name = classgroup_name
-			GROUP BY
-				slot_name
-					";
+SELECT
+	slot_name,
+	slot_type,
+	slot_owner.user_uname AS owner_uname,
+	(site_id IS NOT NULL) AS site_exists,
+	site_title,
+	(classgroup_id IS NOT NULL) AS is_classgroup,
+	createdby.user_uname AS site_addedby,
+	site_created_tstamp,
+	editedby.user_uname AS site_editedby,
+	site_updated_tstamp,
+	site_activate_tstamp,
+	site_deactivate_tstamp,
+	(	site_active = '1'
+		AND (site_activate_tstamp = '00000000000000'
+			OR site_activate_tstamp < CURRENT_TIMESTAMP())
+		AND (site_deactivate_tstamp = '00000000000000'
+			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+	) AS is_active
+FROM
+	slot
+		INNER JOIN
+			user AS slot_owner ON (
+									slot.FK_owner = slot_owner.user_id
+								AND
+									slot_owner.user_uname = '$user'
+								)
+		LEFT JOIN
+	site ON slot.FK_site = site_id
+		LEFT JOIN
+			user AS createdby ON site.FK_createdby = createdby.user_id
+		LEFT JOIN
+			user AS editedby ON site.FK_updatedby = editedby.user_id
+		LEFT JOIN
+			classgroup ON slot_name = classgroup_name
+GROUP BY
+	slot_name
+		";
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			while ($a = db_fetch_assoc($r))
@@ -358,53 +358,53 @@ class slot {
 			return $ar;
 
 		$query = "
-			SELECT
-				slot_name,
-				slot_type,
-				slot_owner.user_uname AS owner_uname,
-				(site_id IS NOT NULL) AS site_exists,
-				site_title,
-				(classgroup_id IS NOT NULL) AS is_classgroup,
-				createdby.user_uname AS site_addedby,
-				site_created_tstamp,
-				editedby.user_uname AS site_editedby,
-				site_updated_tstamp,
-				site_activate_tstamp,
-				site_deactivate_tstamp,
-				(	site_active = '1'
-					AND (site_activate_tstamp = '00000000000000'
-						OR site_activate_tstamp < CURRENT_TIMESTAMP())
-					AND (site_deactivate_tstamp = '00000000000000'
-						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
-				) AS is_active
-			FROM
-				slot
-					INNER JOIN
-						user AS slot_owner ON (
-												slot.FK_owner = slot_owner.user_id
-											AND
-												(";
+SELECT
+	slot_name,
+	slot_type,
+	slot_owner.user_uname AS owner_uname,
+	(site_id IS NOT NULL) AS site_exists,
+	site_title,
+	(classgroup_id IS NOT NULL) AS is_classgroup,
+	createdby.user_uname AS site_addedby,
+	site_created_tstamp,
+	editedby.user_uname AS site_editedby,
+	site_updated_tstamp,
+	site_activate_tstamp,
+	site_deactivate_tstamp,
+	(	site_active = '1'
+		AND (site_activate_tstamp = '00000000000000'
+			OR site_activate_tstamp < CURRENT_TIMESTAMP())
+		AND (site_deactivate_tstamp = '00000000000000'
+			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+	) AS is_active
+FROM
+	slot
+		INNER JOIN
+			user AS slot_owner ON (
+									slot.FK_owner = slot_owner.user_id
+								AND
+									(";
 			$i = 0;
 			foreach ($slotNameArray as $slot) {
-				$query .= "\t\t\t\t\t\t\t\t\t\t\t\t\t";
+				$query .= "\t\t\t\t\t\t\t\t\t\t";
 				if ($i > 0)
 					$query .= "OR ";
 				$query .= "slot.slot_name = '$slot'";
 				$i++;
 			}
-			$query .="												)
-											)
-					LEFT JOIN
-				site ON slot.FK_site = site_id
-					LEFT JOIN
-						user AS createdby ON site.FK_createdby = createdby.user_id
-					LEFT JOIN
-						user AS editedby ON site.FK_updatedby = editedby.user_id
-					LEFT JOIN
-						classgroup ON slot_name = classgroup_name
-			GROUP BY
-				slot_name
-					";
+			$query .="									)
+								)
+		LEFT JOIN
+	site ON slot.FK_site = site_id
+		LEFT JOIN
+			user AS createdby ON site.FK_createdby = createdby.user_id
+		LEFT JOIN
+			user AS editedby ON site.FK_updatedby = editedby.user_id
+		LEFT JOIN
+			classgroup ON slot_name = classgroup_name
+GROUP BY
+	slot_name
+		";
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			while ($a = db_fetch_assoc($r))
