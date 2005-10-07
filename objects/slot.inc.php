@@ -68,25 +68,30 @@ class slot {
 	}
 	
 	function getOwner($slot) {
-		global $dbuser, $dbpass, $dbdb, $dbhost;
+		global $dbuser, $dbpass, $dbdb, $dbhost, $slot_owner_cache;
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-		$query = "
-			SELECT 
-				user_uname 
-			FROM 
-				slot 
-					INNER JOIN 
-				user 
-					ON 
-						FK_owner = user_id 
-			WHERE 
-				slot_name = '$slot'
-		";
-		$r = db_query($query);
-		echo mysql_error();
-		if (!db_num_rows($r)) return false;
-		$a = db_fetch_assoc($r);
-		return $a[user_uname];
+		
+		if (!isset($slot_owner_cache[$slot])) {
+			$query = "
+				SELECT 
+					user_uname 
+				FROM 
+					slot 
+						INNER JOIN 
+					user 
+						ON 
+							FK_owner = user_id 
+				WHERE 
+					slot_name = '$slot'
+			";
+			$r = db_query($query);
+			echo mysql_error();
+			if (!db_num_rows($r)) return false;
+			$a = db_fetch_assoc($r);
+			$slot_owner_cache[$slot] = $a[user_uname];
+		}
+		
+		return $slot_owner_cache[$slot];
 	}
 	
 	function exists($name,$checkldap=0) {
@@ -290,5 +295,122 @@ class slot {
 			$i++;
 		}
 		return $allSlots;
+	}
+	
+	function getSlotInfoWhereUserOwner($user='') {
+		global $dbhost, $dbuser, $dbpass, $dbdb;
+		if ($user == '') $user = $_SESSION[auser];
+
+		$query = "
+			SELECT
+				slot_name,
+				slot_type,
+				slot_owner.user_uname AS owner_uname,
+				(site_id IS NOT NULL) AS site_exists,
+				site_title,
+				(classgroup_id IS NOT NULL) AS is_classgroup,
+				createdby.user_uname AS site_addedby,
+				site_created_tstamp,
+				editedby.user_uname AS site_editedby,
+				site_updated_tstamp,
+				site_activate_tstamp,
+				site_deactivate_tstamp,
+				(	site_active = '1'
+					AND (site_activate_tstamp = '00000000000000'
+						OR site_activate_tstamp < CURRENT_TIMESTAMP())
+					AND (site_deactivate_tstamp = '00000000000000'
+						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+				) AS is_active
+			FROM
+				slot
+					INNER JOIN
+						user AS slot_owner ON (
+												slot.FK_owner = slot_owner.user_id
+											AND
+												slot_owner.user_uname = '$user'
+											)
+					LEFT JOIN
+				site ON slot.FK_site = site_id
+					LEFT JOIN
+						user AS createdby ON site.FK_createdby = createdby.user_id
+					LEFT JOIN
+						user AS editedby ON site.FK_updatedby = editedby.user_id
+					LEFT JOIN
+						classgroup ON slot_name = classgroup_name
+			GROUP BY
+				slot_name
+					";
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			while ($a = db_fetch_assoc($r))
+				segue::addRowToSiteInfoArray($ar, $a);
+		}
+		
+		return $ar;
+	}
+	
+	function getSlotInfoForSlots($slotNameArray) {
+		global $dbhost, $dbuser, $dbpass, $dbdb;
+		
+		$ar = array();
+		
+		if (!count($slotNameArray))
+			return $ar;
+
+		$query = "
+			SELECT
+				slot_name,
+				slot_type,
+				slot_owner.user_uname AS owner_uname,
+				(site_id IS NOT NULL) AS site_exists,
+				site_title,
+				(classgroup_id IS NOT NULL) AS is_classgroup,
+				createdby.user_uname AS site_addedby,
+				site_created_tstamp,
+				editedby.user_uname AS site_editedby,
+				site_updated_tstamp,
+				site_activate_tstamp,
+				site_deactivate_tstamp,
+				(	site_active = '1'
+					AND (site_activate_tstamp = '00000000000000'
+						OR site_activate_tstamp < CURRENT_TIMESTAMP())
+					AND (site_deactivate_tstamp = '00000000000000'
+						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+				) AS is_active
+			FROM
+				slot
+					INNER JOIN
+						user AS slot_owner ON (
+												slot.FK_owner = slot_owner.user_id
+											AND
+												(";
+			$i = 0;
+			foreach ($slotNameArray as $slot) {
+				$query .= "\t\t\t\t\t\t\t\t\t\t\t\t\t";
+				if ($i > 0)
+					$query .= "OR ";
+				$query .= "slot.slot_name = '$slot'";
+				$i++;
+			}
+			$query .="												)
+											)
+					LEFT JOIN
+				site ON slot.FK_site = site_id
+					LEFT JOIN
+						user AS createdby ON site.FK_createdby = createdby.user_id
+					LEFT JOIN
+						user AS editedby ON site.FK_updatedby = editedby.user_id
+					LEFT JOIN
+						classgroup ON slot_name = classgroup_name
+			GROUP BY
+				slot_name
+					";
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			while ($a = db_fetch_assoc($r))
+				segue::addRowToSiteInfoArray($ar, $a);
+		}
+		
+		return $ar;
 	}
 }

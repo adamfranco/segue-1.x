@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
+	<version number="1.4.3" date="The Nebulous future">
+		<change author='adam'>
+			Added several functions which can return all data needed to display
+			a number of sites/slots in one query. The default page was reworked
+			to use these queries, dramatically reducing (by about 1000%) the number
+			of queries needed to display the default page.
+		</change>
+		<fix author='adam'>
+			Fixed ordering (for display) of class-codes.
+		</fix>
+		<fix author='adam'>
+			Fixed ordering (for display) of class-codes.
+		</fix>
+		<change author='adam'>
+			Now caches class membership info for the session since this data 
+			will not generally chage during a session. If it does change, such 
+			as an admin or prof adding students to a class, a simple log-out, 
+			log-in will update the data.
+		</change>
+	</version>
 	<version number="1.4.2" date="2005-10-03">
 		<fix author='adam'>
 			The old isgroup() algorithm was looping through ALL classes and generating 
