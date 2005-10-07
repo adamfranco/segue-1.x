@@ -188,9 +188,9 @@ if ($_loggedin) {
  * Class Sites for students
  *********************************************************/
 	if ($allowclasssites) {
-		$_class_list_titles = array("currentclasses"=>"Your Current Classes",
-									"futureclasses"=>"Upcoming Classes",
-									"oldclasses"=>"Previous Semesters");
+		$_class_list_titles = array("usersCurrentClasses"=>"Your Current Classes",
+									"usersFutureClasses"=>"Upcoming Classes",
+									"usersOldClasses"=>"Previous Semesters");
 		
 		// for students: print out list of classes
 		if ($_SESSION[atype]=='stud') {
@@ -207,7 +207,7 @@ if ($_loggedin) {
 					/******************************************************************************
 					 * expand/collapse link for previous sites listing
 					 ******************************************************************************/		
-					if ($timePeriod == "oldclasses") {
+					if ($timePeriod == "usersOldClasses") {
 						
 						if ($_SESSION[expand_pastclasses] == 0) {
 							printc("<div class=title><a href=$PHP_SELF?expand_pastclasses=1>+</a> $title</div>");
@@ -224,7 +224,7 @@ if ($_loggedin) {
 					/******************************************************************************
 					 * expand/collapse link for previous sites listing
 					 ******************************************************************************/		
-					if ($_SESSION[expand_pastclasses] == 0 && $timePeriod == "oldclasses") {
+					if ($_SESSION[expand_pastclasses] == 0 && $timePeriod == "usersOldClasses") {
 						// do nothing
 					} else {																			
 						printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
