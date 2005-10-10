@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
-	<version number="1.4.3" date="The Nebulous future">
+	<version number="1.4.3" date="2005-10-05">
 		<change author='adam'>
 			Added several functions which can return all data needed to display
 			a number of sites/slots in one query. The default page was reworked
-			to use these queries, dramatically reducing (by about 1000%) the number
-			of queries needed to display the default page.
+			to use these queries, dramatically reducing (by about 2000%) the number
+			of queries needed to display the default page for users who are
+			editors of many sites.
 		</change>
 		<fix author='adam'>
 			Fixed ordering (for display) of class-codes.

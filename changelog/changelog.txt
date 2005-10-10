@@ -3,6 +3,27 @@ Name: Segue ChangeLog
 
 
 
+v. 1.4.3 (2005-10-05) 
+----------------------------------------------------
+		
+    * Change:  (Adam Franco) 
+    Added several functions which can return all data needed to display a number
+    of sites/slots in one query. The default page was reworked to use these
+    queries, dramatically reducing (by about 2000%) the number of queries needed
+    todisplay the default page for users who are editors of many sites.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed ordering (for display) of class-codes.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed ordering (for display) of class-codes.
+		
+    * Change:  (Adam Franco) 
+    Now caches class membership info for the session since this data will not
+    generally chage during a session. If it does change, such as an admin or
+    prof adding students to a class, a simple log-out, log-in will update the 
+	
+
 v. 1.4.2 (2005-10-03) 
 ----------------------------------------------------
 		
