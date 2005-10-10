@@ -452,16 +452,14 @@ if ($_loggedin) {
 		$info =& $userOwnedSlots[$name];
 		
 		if (!in_array($name, $sitesprinted)) {
-			if ($allowclasssites 
-				&& !$allowpersonalsites 
-				&& $info['slot_type'] != 'personal')
-			{
-				$sites[$name] =& $info;
-			} else if (!$allowclasssites 
-				&& $allowpersonalsites 
-				&& $info['slot_type'] == 'personal')
-			{
-				$sites[$name] =& $info;
+			if ($allowclasssites && !$allowpersonalsites) {
+				if($info['slot_type'] != 'personal')
+					$sites[$name] =& $info;
+			
+			} else if (!$allowclasssites && $allowpersonalsites) {
+				if ($info['slot_type'] == 'personal')
+					$sites[$name] =& $info;
+
 			} else
 				$sites[$name] =& $info;
 		}
