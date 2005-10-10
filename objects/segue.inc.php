@@ -210,9 +210,7 @@ FROM
 		INNER JOIN 
 	site_editors ON (
 				site_id = site_editors.FK_site 
-				AND ((site_editors_type = 'ugroup'
-						AND (ugroup_user.FK_user = site_editors.FK_editor
-							AND ugroup_user.FK_user = '$userId'))
+				AND ((site_editors_type = 'ugroup')
 					OR (site_editors_type = 'user'
 						AND site_editors.FK_editor = '$userId'))
 				)
@@ -237,6 +235,11 @@ FROM
 			user AS createdby ON site.FK_createdby = createdby.user_id
 		INNER JOIN
 			user AS editedby ON site.FK_updatedby = editedby.user_id
+WHERE
+	(site_editors_type = 'ugroup'
+		AND ugroup_user.FK_user = '$userId')
+	OR (site_editors_type = 'user'
+		AND site_editors.FK_editor = '$userId')
 ";
 		$r = db_query($query);
 		if (db_num_rows($r))
@@ -292,9 +295,7 @@ FROM
 		INNER JOIN 
 	site_editors ON (
 				site_id = site_editors.FK_site 
-				AND ((site_editors_type = 'ugroup'
-						AND (ugroup_user.FK_user = site_editors.FK_editor
-							AND ugroup_user.FK_user = '$userId'))
+				AND ((site_editors_type = 'ugroup')
 					OR (site_editors_type = 'user'
 						AND site_editors.FK_editor = '$userId'))
 				)
@@ -331,6 +332,11 @@ FROM
 			user AS createdby ON site.FK_createdby = createdby.user_id
 		LEFT JOIN
 			user AS editedby ON site.FK_updatedby = editedby.user_id
+WHERE
+	(site_editors_type = 'ugroup'
+		AND ugroup_user.FK_user = '$userId')
+	OR (site_editors_type = 'user'
+		AND site_editors.FK_editor = '$userId')
 GROUP BY
 	slot_name, 
 	permission_value
