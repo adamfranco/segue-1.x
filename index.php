@@ -168,7 +168,8 @@ if ($_loggedin) {
 	// one array containing all user's classes
 	$allclasses[$_SESSION['auser']] = array_merge($classes,$oldclasses,$futureclasses);
 	
-	print "\n<br/>Queries in index.php, setting up classes lists: ".$_totalQueries;
+	if ($debug && $printTimedQueries)
+		print "\n<br/>Queries in index.php, setting up classes lists: ".$_totalQueries;
 } else {
 	// Be sure to unset the class membership so that it is re-populated on re-login
 	unset($_SESSION["__classMembership"]);
@@ -308,7 +309,6 @@ if (!ini_get("register_globals")) {
 	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = &$$n; }
 }
 
-global $debug, $printTimedQueries;
 if ($debug && $printTimedQueries) {
 	print "TotalQueries: ".$_totalQueries;
 	printf("<br/>TotalQueryTime: %4f seconds", $_totalQueryTime);

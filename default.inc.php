@@ -840,6 +840,7 @@ $sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>
 	<a href='credits.php' target='credits' onClick='doWindow(\"credits\",400,300);'>credits</a>
 	</div>";
 
-print "\n<br/>Queries run in default.inc.php: ".($_totalQueries - $defaultStartQueries)."";
+if ($debug && $printTimedQueries)
+	print "\n<br/>Queries run in default.inc.php: ".($_totalQueries - $defaultStartQueries)."";
 
 ?>
