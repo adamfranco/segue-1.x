@@ -388,12 +388,12 @@ if ($_loggedin) {
 			
 			//info/interface for groups
 			printc("<tr><th colspan=2 align='right'>add checked sites to group: <input type='text' name=newgroup size=10 class=textfield>");
-			$havegroups = count();
+			$havegroups = count($userOwnedGroups);
 			if ($havegroups) {
 				printc(" <select name='groupname' onChange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
 				printc("<option value=''>-choose-");
-				foreach ($grs as $g) {
-					printc("<option value='$g'>$g\n");
+				foreach ($userOwnedGroups as $group) {
+					printc("<option value='$group'>$group\n");
 				}
 				printc("</select>");
 			}
