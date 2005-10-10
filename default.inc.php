@@ -421,16 +421,14 @@ if ($_loggedin) {
 				|| $info['hasPermissionDownD'])
 			&& $_SESSION['auser'] !=  $info['slot_owner']) 
 		{
-			if ($allowclasssites 
-				&& !$allowpersonalsites 
-				&& $info['slot_type'] != 'personal')
-			{
-				$sites[$name] =& $info;
-			} else if (!$allowclasssites 
-				&& $allowpersonalsites 
-				&& $info['slot_type'] == 'personal')
-			{
-				$sites[$name] =& $info;
+			if ($allowclasssites && !$allowpersonalsites) {
+				if($info['slot_type'] != 'personal')
+					$sites[$name] =& $info;
+			
+			} else if (!$allowclasssites && $allowpersonalsites) {
+				if ($info['slot_type'] == 'personal')
+					$sites[$name] =& $info;
+
 			} else
 				$sites[$name] =& $info;
 		}
