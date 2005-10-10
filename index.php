@@ -308,6 +308,18 @@ if (!ini_get("register_globals")) {
 	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = &$$n; }
 }
 
-print "TotalQueries: ".$_totalQueries;
+global $debug, $printTimedQueries;
+if ($debug && $printTimedQueries) {
+	print "TotalQueries: ".$_totalQueries;
+	printf("<br/>TotalQueryTime: %4f seconds", $_totalQueryTime);
+	krsort($_queriesByTime);
+	array_walk($_queriesByTime, 'printQueryWithTime');
+}
 
+function printQueryWithTime($queryArray, $key) {
+	printf("\n<hr>QueryTime: %4s seconds", $key);
+	printf("\n<br/>NumQueries: %d", count($queryArray));
+	foreach($queryArray as $query)
+		printpre($query);
+}
 ?>
