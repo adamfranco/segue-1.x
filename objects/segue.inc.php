@@ -173,7 +173,9 @@ FROM
 	function getSiteInfoWhereUserIsSiteLevelEditor($user='') {
 		global $dbhost, $dbuser, $dbpass, $dbdb;
 		if ($user == '') $user = $_SESSION[auser];
-
+		
+		$userId = db_get_value("user","user_id","user_uname='$user'");
+		
 		$query = "
 SELECT
 	slot_name,
@@ -195,25 +197,36 @@ SELECT
 			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
 	) AS is_active,
 	permission_scope_type,
-	permission_value,
-	
-	ugroup_name, 
-	member.user_uname AS member_uname,
-	editor.user_uname AS editor_uname
+	permission_value
 FROM
 	slot
 		INNER JOIN
 	site ON slot.FK_site = site_id
 		INNER JOIN
 			user AS slot_owner ON (
-									slot.FK_owner = slot_owner.user_id
-								AND
-									slot_owner.user_uname != '$user'
+								slot.FK_owner != '$userId'
+								AND	slot.FK_owner = slot_owner.user_id
 								)
-		INNER JOIN
-			user AS createdby ON site.FK_createdby = createdby.user_id
-		INNER JOIN
-			user AS editedby ON site.FK_updatedby = editedby.user_id
+		INNER JOIN 
+	site_editors ON (
+				site_id = site_editors.FK_site 
+				AND (
+						(
+							site_editors_type = 'ugroup'
+						AND
+							ugroup_user.FK_user = '$userId'
+						)
+					OR  (
+							site_editors_type = 'user'
+						AND
+							site_editors.FK_editor = '$userId'
+						)
+					)
+				)
+		LEFT JOIN
+	ugroup_user ON (
+				site_editors_type = 'ugroup'
+				AND site_editors.FK_editor = FK_ugroup)
 		INNER JOIN
 	permission ON (
 				permission_scope_type = 'site'
@@ -221,42 +234,16 @@ FROM
 				AND FIND_IN_SET('a', permission_value) > 0
 				AND FIND_IN_SET('e', permission_value) > 0
 				AND FIND_IN_SET('d', permission_value) > 0
-				AND (
-						permission.FK_editor = ugroup_id
-					OR
-						permission.FK_editor = editor.user_id
-					)
+				AND (permission.FK_editor = FK_ugroup
+					OR permission.FK_editor = '$userId')
 				)
-		LEFT JOIN 
-	site_editors ON (
-				site_id = site_editors.FK_site 
-				AND (
-					site_editors_type = 'ugroup'
-					OR  site_editors_type = 'user'
-					)
-				)
-		LEFT JOIN
-	ugroup ON (
-				site_editors.FK_editor = ugroup_id
-				AND site_editors_type = 'ugroup'
-			)
-		LEFT JOIN
-	ugroup_user ON ugroup_id = FK_ugroup
-		LEFT JOIN
-	user AS member ON (
-						ugroup_user.FK_user = member.user_id
-						AND site_editors_type = 'ugroup'
-					)
-		LEFT JOIN
-	user AS editor ON (
-						site_editors.FK_editor = editor.user_id
-						AND site_editors_type = 'user'
-					)
 		LEFT JOIN
 			classgroup ON slot_name = classgroup_name
-WHERE
-	member.user_uname = '$user'
-	OR editor.user_uname ='$user'";
+		INNER JOIN
+			user AS createdby ON site.FK_createdby = createdby.user_id
+		INNER JOIN
+			user AS editedby ON site.FK_updatedby = editedby.user_id
+";
 		$r = db_query($query);
 		if (db_num_rows($r))
 			while ($a = db_fetch_assoc($r))
@@ -272,7 +259,10 @@ WHERE
  ******************************************************************************/
 	function getSiteInfoWhereUserIsEditor($user='') {
 		global $dbhost, $dbuser, $dbpass, $dbdb;
-		if ($user == '') $user = $_SESSION[auser];
+		if ($user == '') 
+			$user = $_SESSION[auser];
+		
+		$userId = db_get_value("user","user_id","user_uname='$user'");
 
 		$query = "
 SELECT
@@ -295,24 +285,16 @@ SELECT
 			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
 	) AS is_active,
 	permission_scope_type,
-	permission_value,
-	ugroup_name,
-	member.user_uname AS member_uname,
-	editor.user_uname AS editor_uname
+	permission_value
 FROM
 	slot
 		INNER JOIN
 	site ON slot.FK_site = site_id
 		INNER JOIN
 			user AS slot_owner ON (
-									slot.FK_owner = slot_owner.user_id
-								AND
-									slot_owner.user_uname != '$user'
+								slot.FK_owner != '$userId'
+								AND	slot.FK_owner = slot_owner.user_id
 								)
-		INNER JOIN
-			user AS createdby ON site.FK_createdby = createdby.user_id
-		INNER JOIN
-			user AS editedby ON site.FK_updatedby = editedby.user_id
 		INNER JOIN 
 	site_editors ON (
 				site_id = site_editors.FK_site 
@@ -320,32 +302,19 @@ FROM
 						(
 							site_editors_type = 'ugroup'
 						AND
-							member.user_uname = '$user'
+							ugroup_user.FK_user = '$userId'
 						)
 					OR  (
 							site_editors_type = 'user'
 						AND
-							editor.user_uname ='$user'
+							site_editors.FK_editor = '$userId'
 						)
 					)
 				)
 		LEFT JOIN
-	ugroup ON (
-				site_editors.FK_editor = ugroup_id
-				AND site_editors_type = 'ugroup'
-			)
-		LEFT JOIN
-	ugroup_user ON ugroup_id = FK_ugroup
-		LEFT JOIN
-	user AS member ON (
-						ugroup_user.FK_user = member.user_id
-						AND site_editors_type = 'ugroup'
-					)
-		LEFT JOIN
-	user AS editor ON (
-						site_editors.FK_editor = editor.user_id
-						AND site_editors_type = 'user'
-					)
+	ugroup_user ON (
+				site_editors_type = 'ugroup'
+				AND site_editors.FK_editor = FK_ugroup)
 		LEFT JOIN
 	section ON section.FK_site = site_id
 		LEFT JOIN
@@ -355,11 +324,20 @@ FROM
 		INNER JOIN
 	permission ON (
 				(
-					permission.FK_editor = ugroup_id
+					permission.FK_editor = FK_ugroup
 				OR
-					permission.FK_editor = editor.user_id
+					permission.FK_editor = '$userId'
 				)
-				AND (
+				 
+				)
+		LEFT JOIN
+			classgroup ON slot_name = classgroup_name
+		LEFT JOIN
+			user AS createdby ON site.FK_createdby = createdby.user_id
+		LEFT JOIN
+			user AS editedby ON site.FK_updatedby = editedby.user_id
+WHERE
+	(
 						(permission_scope_type = 'site'
 						AND permission.FK_scope_id = site_id)
 					OR
@@ -377,9 +355,6 @@ FROM
 					OR FIND_IN_SET('e', permission_value) > 0
 					OR FIND_IN_SET('d', permission_value) > 0
 					)
-				)
-		LEFT JOIN
-			classgroup ON slot_name = classgroup_name
 GROUP BY
 	slot_name, 
 	permission_value
