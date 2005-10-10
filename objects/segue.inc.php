@@ -210,18 +210,11 @@ FROM
 		INNER JOIN 
 	site_editors ON (
 				site_id = site_editors.FK_site 
-				AND (
-						(
-							site_editors_type = 'ugroup'
-						AND
-							ugroup_user.FK_user = '$userId'
-						)
-					OR  (
-							site_editors_type = 'user'
-						AND
-							site_editors.FK_editor = '$userId'
-						)
-					)
+				AND ((site_editors_type = 'ugroup'
+						AND (ugroup_user.FK_user = site_editors.FK_editor
+							AND ugroup_user.FK_user = '$userId'))
+					OR (site_editors_type = 'user'
+						AND site_editors.FK_editor = '$userId'))
 				)
 		LEFT JOIN
 	ugroup_user ON (
@@ -235,7 +228,8 @@ FROM
 				AND FIND_IN_SET('e', permission_value) > 0
 				AND FIND_IN_SET('d', permission_value) > 0
 				AND (permission.FK_editor = FK_ugroup
-					OR permission.FK_editor = '$userId')
+					OR (permission.FK_editor = site_editors.FK_editor
+						AND permission.FK_editor = '$userId'))
 				)
 		LEFT JOIN
 			classgroup ON slot_name = classgroup_name
@@ -292,24 +286,17 @@ FROM
 	site ON slot.FK_site = site_id
 		INNER JOIN
 			user AS slot_owner ON (
-								slot.FK_owner != '$userId'
-								AND	slot.FK_owner = slot_owner.user_id
+								slot.FK_owner = slot_owner.user_id
+								AND	slot.FK_owner != '$userId'	
 								)
 		INNER JOIN 
 	site_editors ON (
 				site_id = site_editors.FK_site 
-				AND (
-						(
-							site_editors_type = 'ugroup'
-						AND
-							ugroup_user.FK_user = '$userId'
-						)
-					OR  (
-							site_editors_type = 'user'
-						AND
-							site_editors.FK_editor = '$userId'
-						)
-					)
+				AND ((site_editors_type = 'ugroup'
+						AND (ugroup_user.FK_user = site_editors.FK_editor
+							AND ugroup_user.FK_user = '$userId'))
+					OR (site_editors_type = 'user'
+						AND site_editors.FK_editor = '$userId'))
 				)
 		LEFT JOIN
 	ugroup_user ON (
@@ -323,12 +310,20 @@ FROM
 	story ON story.FK_page = page_id
 		INNER JOIN
 	permission ON (
-				(
-					permission.FK_editor = FK_ugroup
-				OR
-					permission.FK_editor = '$userId'
-				)
-				 
+					(permission.FK_editor = FK_ugroup
+						OR (permission.FK_editor = site_editors.FK_editor
+							AND permission.FK_editor = '$userId'))
+					AND ((permission_scope_type = 'site'
+							AND permission.FK_scope_id = site_id)
+						OR (permission_scope_type = 'section'
+							AND permission.FK_scope_id = section_id)
+						OR (permission_scope_type = 'page'
+							AND permission.FK_scope_id = page_id)
+						OR (permission_scope_type = 'story'
+							AND permission.FK_scope_id = story_id))
+					AND (FIND_IN_SET('a', permission_value) > 0
+						OR FIND_IN_SET('e', permission_value) > 0
+						OR FIND_IN_SET('d', permission_value) > 0)
 				)
 		LEFT JOIN
 			classgroup ON slot_name = classgroup_name
@@ -336,25 +331,6 @@ FROM
 			user AS createdby ON site.FK_createdby = createdby.user_id
 		LEFT JOIN
 			user AS editedby ON site.FK_updatedby = editedby.user_id
-WHERE
-	(
-						(permission_scope_type = 'site'
-						AND permission.FK_scope_id = site_id)
-					OR
-						(permission_scope_type = 'section'
-						AND permission.FK_scope_id = section_id)
-					OR
-						(permission_scope_type = 'page'
-						AND permission.FK_scope_id = page_id)
-					OR
-						(permission_scope_type = 'story'
-						AND permission.FK_scope_id = story_id)
-					)
-				AND (
-					FIND_IN_SET('a', permission_value) > 0
-					OR FIND_IN_SET('e', permission_value) > 0
-					OR FIND_IN_SET('d', permission_value) > 0
-					)
 GROUP BY
 	slot_name, 
 	permission_value
