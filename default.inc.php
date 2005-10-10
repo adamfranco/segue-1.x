@@ -501,17 +501,17 @@ if ($_loggedin) {
 	foreach (array_merge($usersCurrentClasses, $usersFutureClasses) as $name) {
 		$info =& $usersAllClassesInfo[$name];
 		if (!$info['site_exits']
-			&& !$info['slot_owner']
-			&& $_SESSION['atype'] == 'prof')
+			&& (!$info['slot_owner'] || $info['slot_owner'] == $_SESSION['auser'])
+			&& ($_SESSION['atype'] == 'prof' || $_SESSION['atype'] == 'admin'))
 		{
 			$allExistingSlots[] = $name;
 		}
 	}
 	
 	$allExistingSites = array_unique($allExistingSites);
-	sort($allExistingSites);
+	natcasesort($allExistingSites);
 	$allExistingSlots = array_unique($allExistingSlots);
-	sort($allExistingSlots);
+	natcasesort($allExistingSlots);
 	
 	if (count($allExistingSites) && count($allExistingSlots)) {
 			printc("Copy Site: ");
