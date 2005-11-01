@@ -159,4 +159,64 @@ function getClassUGroupId ($class_id) {
 	return $ugroup_id;
 }
 
+function getClassgroupListsForGroupsContainingClasses($classesArray) {
+		global $dbhost, $dbuser, $dbpass, $dbdb;
+		
+		$classgroupLists = array();
+		
+		if (!count($classesArray))
+			return $classgroupLists;
+
+		$query = "
+SELECT
+	classgroup_name,
+	class_department,
+	class_number,
+	class_section,
+	class_semester,
+	class_year
+FROM
+	class
+		INNER JOIN
+			classgroup ON FK_classgroup = classgroup_id
+WHERE
+";
+			$i = 0;
+			foreach ($classesArray as $className) {
+				$query .= "\n\t";
+				if ($i > 0)
+					$query .= "OR ";
+				$query .= "(";
+				$query .= generateTermsFromCode($className);
+				$query .= ")";
+				$i++;
+			}
+			$query .="
+ORDER BY
+	classgroup_name
+";
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			while ($a = db_fetch_assoc($r)) {
+				if (!isset($classgroupLists[$a['classgroup_name']])) {
+					$classgroupLists[$a['classgroup_name']] = array();
+				}
+				$code = generateCodeFromData(
+							$a['class_department'],
+							$a['class_number'],
+							$a['class_section'],
+							$a['class_semester'],
+							$a['class_year']);
+				$classgroupLists[$a['classgroup_name']][$code] = array(
+						'code' => $a['class_department'].$a['class_number'],
+						'sect' => $a['class_section'],
+						'sem' => $a['class_semester'],
+						'year' => $a['class_year']
+					);
+			}
+		}
+		
+		return $classgroupLists;
+	}
+
 

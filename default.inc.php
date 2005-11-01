@@ -1,5 +1,6 @@
 <?
 // default page
+$defaultStartQueries = $_totalQueries;
 
 $pagetitle = "Segue";
 $color = 0;
@@ -34,10 +35,6 @@ END;
 if ($copysite && $newname && $origname) {
 	$origSite =& new site($origname);
 	$origSite->fetchDown(1);
-/*	print "Move: $origname to $newname  <br /> <pre>"; */
-/*	print_r($origSite); */
-/*	print "</pre>"; */
-/* $origSite->copySite($newname,$clearpermissions); */
 
 	/******************************************************************************
 	 * Check to make sure that the slot is not already in use.
@@ -83,25 +80,126 @@ if ($_loggedin) {
 	/******************************************************************************
 	 * List sites
 	 ******************************************************************************/
-	printc("<div align='right'><a href=email.php?$sid&action=user&from=home onClick='doWindow(\"email\",700,500)' target='email'>Your Posts</a></div>");
-	 
-	 // Sort the classes
-	$classes = sortClasses($classes);
-	$oldclasses = sortClasses($oldclasses);
-	$futureclasses = sortClasses($futureclasses);
-	$allclasses[$_SESSION['auser']] = sortClasses($allclasses[$_SESSION['auser']]);
+	printc("<div align='right'><a href=email.php?$sid&action=user&from=home onClick='doWindow(\"email\",700,500)' target='email'>Your Posts</a></div>");	
 
+	/*********************************************************
+	 * Fetch all of the info for all of the sites and slots
+	 * that the user is an editor or owner for, so we don't have
+	 * to get them again.
+	 *********************************************************/
+	// this should include all sites that the user owns as well.
+	$userOwnedSlots = slot::getSlotInfoWhereUserOwner($_SESSION['auser']);
+	if (!array_key_exists($_SESSION['auser'], $userOwnedSlots)) {
+		$userOwnedSlots[$_SESSION['auser']] = array();
+		$userOwnedSlots[$_SESSION['auser']]['slot_name'] = $_SESSION['auser'];
+		$userOwnedSlots[$_SESSION['auser']]['slot_type'] = 'personal';
+		$userOwnedSlots[$_SESSION['auser']]['slot_owner'] = $_SESSION['auser'];
+		$userOwnedSlots[$_SESSION['auser']]['site_exits'] = false;
+	}
+	
+	// Add any user-owned groups that aren't already in the slot list
+	$userOwnedGroups = group::getGroupsOwnedBy($_SESSION['auser']);
+	foreach ($userOwnedGroups as $classSiteName) {
+		if (!isset($userOwnedSlots[$classSiteName])) {
+			$userOwnedSlots[$classSiteName] = array();
+			$userOwnedSlots[$classSiteName]['slot_name'] = $classSiteName;
+			$userOwnedSlots[$classSiteName]['slot_type'] = 'class';
+			$userOwnedSlots[$classSiteName]['slot_owner'] = $_SESSION['auser'];
+			$userOwnedSlots[$classSiteName]['site_exits'] = false;
+		}
+	}
+	
+	$siteLevelEditorSites = segue::getSiteInfoWhereUserIsSiteLevelEditor($_SESSION['auser']);
+	
+	$anyLevelEditorSites = segue::getSiteInfoWhereUserIsEditor($_SESSION['auser']);
+	
+	
+	$usersCurrentClasses = $classes;
+	$usersOldClasses = $oldclasses;
+	$usersFutureClasses = $futureclasses;
+	$usersAllClasses = $allclasses[$_SESSION['auser']];
+	
+	// replace groupclasses with their groups
+	$classgroupLists = getClassgroupListsForGroupsContainingClasses(array_keys($usersAllClasses));
+	foreach ($classgroupLists as $groupName => $classgroupList) {
+		foreach ($classgroupList as $className => $classParts) {
+			// Make a virtual group-code to sort with.
+			// Note: this assumes (for ordering purposes), that all classes in the
+			// group are in the same semester/year.
+			$groupParts = array(
+						'code' => $groupName,
+						'sect' => '',
+						'sem' => $classParts['sem'],
+						'year' => $classParts['year']
+					);
+			
+			if (isset($usersCurrentClasses[$className])) {
+				unset($usersCurrentClasses[$className]);
+				if (!isset($usersCurrentClasses[$groupName]))
+					$usersCurrentClasses[$groupName] = $groupParts;
+			}
+			
+			if (isset($usersOldClasses[$className])) {
+				unset($usersOldClasses[$className]);
+				if (!isset($usersOldClasses[$groupName]))
+					$usersOldClasses[$groupName] = $groupParts;
+			}
+			
+			if (isset($usersFutureClasses[$className])) {
+				unset($usersFutureClasses[$className]);
+				if (!isset($usersFutureClasses[$groupName]))
+					$usersFutureClasses[$groupName] = $groupParts;
+			}
+			
+			if (isset($usersAllClasses[$className])) {
+				unset($usersAllClasses[$className]);
+				if (!isset($usersAllClasses[$groupName]))
+					$usersAllClasses[$groupName] = $groupParts;
+			}
+		}
+	}
+	
+	 // Sort the classes
+	$usersCurrentClasses = array_keys(sortClasses($usersCurrentClasses));
+	$usersOldClasses = array_keys(sortClasses($usersOldClasses));
+	$usersFutureClasses = array_keys(sortClasses($usersFutureClasses));
+	$usersAllClasses = array_keys(sortClasses($usersAllClasses));
+	
+	// Fetch all of the class info
+	$usersAllClassesInfo = slot::getSlotInfoForSlots($usersAllClasses);
+	foreach ($usersAllClasses as $classSiteName) {
+		if (!isset($usersAllClassesInfo[$classSiteName])) {
+			$usersAllClassesInfo[$classSiteName] = array();
+			$usersAllClassesInfo[$classSiteName]['slot_name'] = $classSiteName;
+			$usersAllClassesInfo[$classSiteName]['slot_type'] = 'class';
+			$usersAllClassesInfo[$classSiteName]['slot_owner'] =	null;
+			$usersAllClassesInfo[$classSiteName]['site_exits'] = false;
+		}
+	}
+	
+// 	print "classgroupLists = ";
+// 	printpre($classgroupLists);
+// 	print "siteLevelEditorSites = ";
+// 	printpre($siteLevelEditorSites);
+// 	print "anyLevelEditorSites = ";
+// 	printpre($anyLevelEditorSites);
+	
+/*********************************************************
+ * Class Sites for students
+ *********************************************************/
 	if ($allowclasssites) {
-		$_class_list_titles = array("classes"=>"Your Current Classes","futureclasses"=>"Upcoming Classes","oldclasses"=>"Previous Semesters");
+		$_class_list_titles = array("usersCurrentClasses"=>"Your Current Classes",
+									"usersFutureClasses"=>"Upcoming Classes",
+									"usersOldClasses"=>"Previous Semesters");
 		
 		// for students: print out list of classes
 		if ($_SESSION[atype]=='stud') {
 			printc("<table width=100%>");
 			
 			//loop through all classes in list
-			foreach ($_class_list_titles as $var=>$t) {
-
-				if (count($$var)) {
+			foreach ($_class_list_titles as $timePeriod => $title) {
+				
+				if (count($$timePeriod)) {
 
 					printc("<tr>");
 					printc("<td valign=top>");
@@ -109,49 +207,52 @@ if ($_loggedin) {
 					/******************************************************************************
 					 * expand/collapse link for previous sites listing
 					 ******************************************************************************/		
-					if ($t == "Previous Semesters") {
+					if ($timePeriod == "usersOldClasses") {
 						
 						if ($_SESSION[expand_pastclasses] == 0) {
-							printc("<div class=title><a href=$PHP_SELF?expand_pastclasses=1>+</a> $t</div>");
+							printc("<div class=title><a href=$PHP_SELF?expand_pastclasses=1>+</a> $title</div>");
 							//printc("<a href=$PHP_SELF?expand_pastclasses=1>show</a>");
 						} else {
-							printc("<div class=title><a href=$PHP_SELF?expand_pastclasses=0>-</a> $t</div>");
+							printc("<div class=title><a href=$PHP_SELF?expand_pastclasses=0>-</a> $title</div>");
 						}
 						
 					// if not previous, then must be current classes...	
 					} else {
-						printc("<div class=title>$t</div>");
+						printc("<div class=title>$title</div>");
 					}
 					
 					/******************************************************************************
 					 * expand/collapse link for previous sites listing
 					 ******************************************************************************/		
-					if ($_SESSION[expand_pastclasses] == 0 && $t == "Previous Semesters") {
+					if ($_SESSION[expand_pastclasses] == 0 && $timePeriod == "usersOldClasses") {
 						// do nothing
 					} else {																			
 						printc("<table width=100%><tr><th>class</th><th>site</th></tr>");
-						$c=0;
 						
-						// get all classes
-						foreach (array_keys($$var) as $cl) {	
-								printc("<tr><td class=td$c width= 150>$cl</td>");
-								$site =& new site($cl);
-		
-								if (($gr = inclassgroup($cl)) || ($site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true))) {
-									if ($gr) { $site =& new site($gr); $site->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true); }
-									if ($site->canview()) printc("<td align='left' class=td$c><a href='$PHP_SELF?$sid&action=site&site=".$site->name."'>".$site->getField("title")."</a></td>");
-									else printc("<td style='color: #999' class=td$c>created, not yet available</td>");
-									//check webcourses databases to see if course website was created in course folders (instead of Segue)
-								} else if ($course_site = coursefoldersite($cl)) {					  
-									$course_url = urldecode($course_site['url']);
-									$title = urldecode($course_site['title']);
-									printc("<td style='color: #999' class=td$c><a href='$course_url' target='new_window'>$title</td>");
-									db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-								} else printc("<td style='color: #999' class=td$c>not created</td>");
-								printc("</tr>");
-								$c = 1-$c;
+						$groupsPrinted = array();
+						foreach ($$timePeriod as $className) {
+							if ($classSiteName = group::getNameFromClass($className)) {
+								if ($groupsPrinted[$classSiteName])
+									continue;
+								
+								$groupsPrinted[$classSiteName] = true;
+							} else {
+								$classSiteName = $className;
+							}
 							
-						}					
+							if (isset($userOwnedSlots[$classSiteName]))
+								printStudentSiteLine($classSiteName, $userOwnedSlots[$classSiteName]);
+								
+							else if (isset($anyLevelEditorSites[$classSiteName]))
+								printStudentSiteLine($classSiteName, $anyLevelEditorSites[$classSiteName]);
+					
+							else if (isset($usersAllClassesInfo[$classSiteName]))
+								printStudentSiteLine($classSiteName, $usersAllClassesInfo[$classSiteName]);
+								
+							else
+								printc("<tr><td colspan=2 style='background-color: red; font-weight: bold'>There was an error loading information for site: ".$classSiteName."</td></tr>");
+						}
+						
 						printc("</tr></table>");
 					}
 					
@@ -166,9 +267,9 @@ if ($_loggedin) {
 		}
 	}
 
- /******************************************************************************
- * handle group adding backend here
- ******************************************************************************/
+	 /******************************************************************************
+	 * handle group adding backend here
+	 ******************************************************************************/
 	if (count($_REQUEST[group]) && ($_REQUEST[newgroup] || $_REQUEST[groupname])) { // they chose a group
 		if (!$_REQUEST[newgroup]) $_REQUEST[newgroup] = $_REQUEST[groupname];
 		if (ereg("^[a-zA-Z0-9_-]{1,20}$",$_REQUEST[newgroup])) {
@@ -199,9 +300,12 @@ if ($_loggedin) {
 	printc("<table width=100%>");
 	
 
+/*********************************************************
+ * Personal Sites
+ *********************************************************/
 	if ($allowpersonalsites) {
-		// print out the personal site
-		if ($_SESSION[auser] == slot::getOwner($_SESSION['auser']) || !slot::exists($_SESSION['auser'])) {
+		// print out the personal site if there is a slot for them that they own.
+		if ($userOwnedSlots[$_SESSION['auser']]['slot_owner'] == $_SESSION['auser']) {
 			// visitor are users who post to public discussions w/o logging in
 			// visitors are not allowed to create sites
 			if ($_SESSION[atype] == 'visitor') {
@@ -214,47 +318,82 @@ if ($_loggedin) {
 				printc("that are limited to users in the ".$cfg[inst_name]." community.<br /><br />");
 			} else {
 				printc("<tr><td class='inlineth' colspan=2>Personal Site</td></tr>");
-				printSiteLine(new site($_SESSION[auser]));
+				printSiteLine2($userOwnedSlots[$_SESSION['auser']]);
 			}
 		}
 	}
 	
-	if ($allowclasssites) {	       
+
+/*********************************************************
+ * Class sites for professors
+ *********************************************************/
+	if ($allowclasssites) {
 		//class sites for professors (for student see above)
-		if ($_SESSION[atype] == 'prof' || $_SESSION[atype] == 'admin') {
+		if ($_SESSION['atype'] == 'prof' || $_SESSION['atype'] == 'admin') {
+			
 			//current classes
 			if (count($classes)) {
 				printc("<tr><td class='inlineth' colspan=2>Current Class Sites</td></tr>");
-				$gs = array();
-				foreach ($classes as $c=>$a) {
-					if ($g = group::getNameFromClass($c)) {
-						if (!$gs[$g]) printSiteLine(new site($g),0,1,$_SESSION[atype]);
-						$gs[$g] = 1;
-					} else
-						printSiteLine(new site($c),0,1,$_SESSION[atype]);
+				$groupsPrinted = array();
+				foreach ($usersCurrentClasses as $className) {
+					if ($classSiteName = group::getNameFromClass($className)) {
+						if ($groupsPrinted[$classSiteName])
+							continue;
+						
+						$groupsPrinted[$classSiteName] = true;
+					} else {
+						$classSiteName = $className;
+					}
+					
+					if (isset($userOwnedSlots[$classSiteName]))
+						printSiteLine2($userOwnedSlots[$classSiteName], 0, 1, $_SESSION[atype]);
+						
+					else if (isset($anyLevelEditorSites[$classSiteName]))
+						printSiteLine2($anyLevelEditorSites[$classSiteName], 0, 1, $_SESSION[atype]);
+			
+					else if (isset($usersAllClassesInfo[$classSiteName]))
+						printSiteLine2($usersAllClassesInfo[$classSiteName], 0, 1, $_SESSION[atype]);
+						
+					else
+						printc("<tr><td colspan=2 style='background-color: red; font-weight: bold'>There was an error loading information for site: ".$classSiteName."</td></tr>");
 				}
 			}
+
 			//upcoming classes
-			if (count($futureclasses)) {		    
+			if (count($usersFutureClasses)) {		    
 				printc("<tr><td class='inlineth' colspan=2>Upcoming Classes</td></tr>");
-				$gs = array();
-				foreach ($futureclasses as $c=>$a) {
-					if ($g = group::getNameFromClass($c)) {
-						if (!$gs[$g]) printSiteLine(new site($g));
-						$gs[$g] = 1;
-					} else
-						printSiteLine(new site($c),0,1);
+				foreach ($usersFutureClasses as $className) {
+					if ($classSiteName = group::getNameFromClass($className)) {
+						if ($groupsPrinted[$classSiteName]) {
+							continue;
+						}
+						$groupsPrinted[$classSiteName] = true;
+					} else {
+						$classSiteName = $className;
+					}
+					
+					if (isset($userOwnedSlots[$classSiteName]))
+						printSiteLine2($userOwnedSlots[$classSiteName], 0, 1, $_SESSION[atype]);
+						
+					else if (isset($anyLevelEditorSites[$classSiteName]))
+						printSiteLine2($anyLevelEditorSites[$classSiteName], 0, 1, $_SESSION[atype]);
+			
+					else if (isset($usersAllClassesInfo[$classSiteName]))
+						printSiteLine2($usersAllClassesInfo[$classSiteName], 0, 1, $_SESSION[atype]);
+						
+					else
+						printc("<tr><td colspan=2>There was an error loading information for site: ".$classSiteName."</td></tr>");
 				}
 			}
 			
 			//info/interface for groups
 			printc("<tr><th colspan=2 align='right'>add checked sites to group: <input type='text' name=newgroup size=10 class=textfield>");
-			$havegroups = count(($grs = group::getGroupsOwnedBy($_SESSION[auser])));
+			$havegroups = count($userOwnedGroups);
 			if ($havegroups) {
 				printc(" <select name='groupname' onChange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
 				printc("<option value=''>-choose-");
-				foreach ($grs as $g) {
-					printc("<option value='$g'>$g\n");
+				foreach ($userOwnedGroups as $group) {
+					printc("<option value='$group'>$group\n");
 				}
 				printc("</select>");
 			}
@@ -270,104 +409,71 @@ if ($_loggedin) {
 
 	
 /******************************************************************************
- * output a list of the user's other sites
+ * sites where the user is an Editor
  ******************************************************************************/
-
 	$sites = array();
-	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor());
-	foreach ($esites as $n=>$s) {
-		if (!in_array($n,$sitesprinted) && $s->hasPermissionDown("add or edit or delete",$_SESSION[auser],0,1) && $_SESSION[auser] != slot::getOwner($s->name)) {
-			if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
-				$sites[] =& $esites[$n];
-			else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
-				$sites[] =& $esites[$n];
-			else
-				$sites[] =& $esites[$n];
+	if (is_array($anyLevelEditorSites)) {
+		foreach (array_keys($anyLevelEditorSites) as $name) {
+			$info =& $anyLevelEditorSites[$name];
+			
+			if (!in_array($name, $sitesprinted) 
+				&& ($info['hasPermissionDownA']
+					|| $info['hasPermissionDownE']
+					|| $info['hasPermissionDownD'])
+				&& $_SESSION['auser'] !=  $info['slot_owner']) 
+			{
+				if ($allowclasssites && !$allowpersonalsites) {
+					if($info['slot_type'] != 'personal')
+						$sites[$name] =& $info;
+				
+				} else if (!$allowclasssites && $allowpersonalsites) {
+					if ($info['slot_type'] == 'personal')
+						$sites[$name] =& $info;
+	
+				} else
+					$sites[$name] =& $info;
+			}
 		}
 	}
-
-	// if they are editors for any sites, they will be in the $sites[] array
-/*	   print "<pre>"; */
-/*	   print_r($sites); */
-/*	   print_r($esites); */
-/*	   print "</pre>"; */
 
 	if (count($sites)) {
 		printc("<tr><td class='inlineth' colspan=2>Sites to which you have editor permissions</td></tr>");
-		foreach (array_keys($sites) as $i=>$n)
-			printSiteLine($sites[$n],1);
+		foreach (array_keys($sites) as $name)
+			printSiteLine2($sites[$name]);
 	}
-
+	unset($sites);
+	
+	
+/*********************************************************
+ * Other sites where user is owner
+ *********************************************************/
 	$sites=array();
-	$esites=segue::buildObjArrayFromSites($all_sites); // variable $s was initiated in index.php and is equal to segue::getAllSites($_SESSION[auser])
-	foreach ($esites as $n=>$s) {
-		if ($allowclasssites && !$allowpersonalsites && $s->getField("type")!='personal')
-			$sites[] =& $esites[$n];
-		else if (!$allowclasssites && $allowpersonalsites && $s->getField("type")=='personal')
-			$sites[] =& $esites[$n];
-		else
-			$sites[] =& $esites[$n];
-	}
-
- /******************************************************************************
- * remove sites & slots if $allowclasssites or $allowpersonalsites is disabled.
- ******************************************************************************/
-	$slots_ = slot::getAllSlots($_SESSION[auser]);
-	$slots = array();
-/*	print_r($slots); */
-
-	if (!$allowclasssites || !$allowpersonalsites) {
-		$sites2 = array();
-		foreach (array_keys($sites) as  $i=>$n) {
-			$siteObj =& $sites[$n];
-			if (!$allowclasssites) {
-				if ($siteObj->getfield("type") == "personal") $sites2[] =& $siteObj;
-			}
-			if (!$allowpersonalsites) {
-				if ($siteObj->getfield("type") != "personal") $sites2[] =& $siteObj;
-			}
-		}
-
-		$sites = array();
-		foreach (array_keys($sites2) as $i=>$n)
-			$sites[] =& $sites2[$n];
+	foreach (array_keys($userOwnedSlots) as $name) {
+		$info =& $userOwnedSlots[$name];
 		
-		$slots2 = array();
+		if (!in_array($name, $sitesprinted)) {
+			if ($allowclasssites && !$allowpersonalsites) {
+				if($info['slot_type'] != 'personal')
+					$sites[$name] =& $info;
+			
+			} else if (!$allowclasssites && $allowpersonalsites) {
+				if ($info['slot_type'] == 'personal')
+					$sites[$name] =& $info;
 
-		foreach ($slots_ as  $s) {
-			$slotObj =& new slot($s);
-			if (!$allowclasssites) {
-				if ($slotObj->getfield("type") == "personal") $slots2[] =& new site($s);
-			}
-			if (!$allowpersonalsites) {
-				if ($slotObj->getfield("type") != "personal") $slots2[] =& new site($s);
-			}
+			} else
+				$sites[$name] =& $info;
 		}
-
-		$slots = array();
-		foreach (array_keys($slots2) as $i=>$n)
-			$slots[] =& $slots2[$n];
-	} 
-	else
-		foreach($slots_ as $n)
-			$slots[] =& new site($n);
-			
-			
-	$da_sites = array();
-	foreach (array_keys($sites) as $i=>$n)
-		$da_sites[] =& $sites[$n];
-	foreach (array_keys($slots) as $i=>$n)
-		$da_sites[] =& $slots[$n];
-
-	$sites =& removePrinted($da_sites);
+	}
 	
 	if (count($sites)) {
 		printc("<tr><td class='inlineth' colspan=2>");
 		
 		printc ("Other Sites".helplink("othersites","What are these?")."</td></tr>");
-			foreach (array_keys($sites) as $i=>$n)
-				printSiteLine($sites[$n]);
+			foreach (array_keys($sites) as $name)
+				printSiteLine2($sites[$name]);
 	}
+	unset($sites);
+	
 	
 /******************************************************************************
  * copy site bar
@@ -375,10 +481,44 @@ if ($_loggedin) {
 	printc("<tr><td class='inlineth'><form action=$PHP_SELF?$sid method=post name='copyform'><table width=100%><tr><td>");
 	
 // ******************************* THESE TWO
-	$allExistingSitesSlots = allSitesSlots($_SESSION[auser]);
-	$allExistingSites = array_unique($allExistingSitesSlots[0]);
-	$allExistingSlots = array_unique($allExistingSitesSlots[1]);
+// 	$allExistingSitesSlots = allSitesSlots($_SESSION[auser]);
+// 	 = array_unique($allExistingSitesSlots[0]);
+// 	$allExistingSlots = array_unique($allExistingSitesSlots[1]);
 // ******************************* THESE TWO
+	$allExistingSlots = array();
+	$allExistingSites = array();
+	
+	if (is_array($userOwnedSlots)) {	
+		foreach (array_keys($userOwnedSlots) as $name) {
+			$info =& $userOwnedSlots[$name];
+			if ($info['site_exits'])
+				$allExistingSites[] = $name;
+			else
+				$allExistingSlots[] = $name;
+		}
+	}
+	
+	if (is_array($siteLevelEditorSites)) {
+		foreach (array_keys($siteLevelEditorSites) as $name) {
+			$info =& $siteLevelEditorSites[$name];
+			$allExistingSites[] = $name;
+		}
+	}
+	
+	foreach (array_merge($usersCurrentClasses, $usersFutureClasses) as $name) {
+		$info =& $usersAllClassesInfo[$name];
+		if (!$info['site_exits']
+			&& (!$info['slot_owner'] || $info['slot_owner'] == $_SESSION['auser'])
+			&& ($_SESSION['atype'] == 'prof' || $_SESSION['atype'] == 'admin'))
+		{
+			$allExistingSlots[] = $name;
+		}
+	}
+	
+	$allExistingSites = array_unique($allExistingSites);
+	natcasesort($allExistingSites);
+	$allExistingSlots = array_unique($allExistingSlots);
+	natcasesort($allExistingSlots);
 	
 	if (count($allExistingSites) && count($allExistingSlots)) {
 			printc("Copy Site: ");
@@ -435,26 +575,47 @@ function printOptions($siteArray) {
 }
 
 
+
+/**
+ * Build an array of all of the sites and slots that the user
+ * is either the owner of or an editor (has permission add, edit, and delete) of
+ */
 function allSitesSlots ($user) {
-	global $classes, $futureclasses;
+	global $classes, $usersFutureClasses;
 	$allsites = array();
-	if ($user == slot::getOwner($user) || !slot::exists($user)) $allsites[] = $user;
-
-	$sitesOwnerOf = segue::getAllSites($user);
-	$slots = slot::getAllSlots($user);
-	$sitesEditorOf = array();
-	$esites = segue::buildObjArrayFromSites(segue::getAllSitesWhereUserIsEditor($user));
-
-	foreach ($esites as $o) {
-			if ($o->hasPermission("add and edit and delete",$user)) $sitesEditorOf[] = $o->name;
+	
+	// The user's personal site
+	if ($user == slot::getOwner($user) || !slot::exists($user)) {
+		$allsites[$user] = array();
+		$allsites[$user]['slot_name'] = $user;
+		$allsites[$user]['slot_type'] = 'personal';
+		$allsites[$user]['owner_uname'] = $user;
+		$allsites[$user]['site_exits'] = false;
 	}
-	$allclasses[$_SESSION['auser']] = array();
+	
+	// Add slots that the user is an owner of.
+	// This will include all of the created sites as well
+	
+	$allsites = array_merge($allsites, $slots);
+	
+	// Add the sites that the user is a Site-Level Editor for.
+	$allsites =  array_merge($allsites, segue::getSiteInfoWhereUserIsSiteLevelEditor($user));
+	
+	
+	$sitesEditorOf = segue::getSiteInfoWhereUserIsSiteLevelEditor($user);
+	
+	$usersAllClasses = array();
 	if ($_SESSION[atype] == 'prof') {
-		foreach ($classes as $n => $v) $allclasses[$_SESSION['auser']][] = $n;
-		foreach ($futureclasses as $n => $v) $allclasses[$_SESSION['auser']][] = $n;
+		foreach ($classes as $n => $v) $usersAllClasses[] = $n;
+		foreach ($usersFutureClasses as $n => $v) $usersAllClasses[] = $n;
 	}
-
-	$allsites = array_unique(array_merge($allsites,$allclasses[$_SESSION['auser']],$sitesOwnerOf,$sitesEditorOf,$slots));
+	
+	printpre($allsites);
+	printpre($usersAllClasses);
+	printpre($sitesEditorOf);
+	printpre($sitesOwnerOf);
+	printpre($slots);
+	$allsites = array_unique(array_merge($allsites,$usersAllClasses,$sitesOwnerOf,$sitesEditorOf,$slots));
 	
 	$allGroups = group::getGroupsOwnedBy($user);
 
@@ -469,7 +630,7 @@ function allSitesSlots ($user) {
 	$allsites = array_merge($allsites2,$allGroups);
 	asort($allsites);
 
-/*	print "<pre>"; print_r($allclasses[$_SESSION['auser']]); print "</pre>"; */
+/*	print "<pre>"; print_r($usersAllClasses); print "</pre>"; */
 	$sites = array();
 	$slots = array();
 	foreach ($allsites as $n=>$site) {
@@ -486,7 +647,7 @@ function allSitesSlots ($user) {
 
 
 // remove already printed sites from array of site objects
-function & removePrinted(& $sites) {
+function &removePrinted(&$sites) {
 	global $sitesprinted;
 	$s = array();
 	foreach (array_keys($sites) as $i => $key) {
@@ -497,9 +658,8 @@ function & removePrinted(& $sites) {
 	return $s;
 }
 
-
 // prints one site
-function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
+function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 	// The $ed parameter is a bunch of crap and makes assumptions about 
 	// editor permissions that don't exist, such as profs of a class 
 	// always being the owner. It should have no effect in this function.
@@ -508,35 +668,37 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	global $sitesprinted;
 	global $_full_uri;
 
-	$obj =& $site;
-	$name = $obj->getField("name");
+	$name = $siteInfo['slot_name'];
 	
 
 	if (in_array($name,$sitesprinted)) return;
 	$sitesprinted[]=$name;
 
-	$isgroup = ($classlist = group::getClassesFromName($name))?1:0;
-
-	$exists = $obj->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,0,true);
+	$exists = $siteInfo['site_exits'];
 	
-/*	print "<pre>"; */
-/*	print_r($obj); */
-/*	print "</pre>"; */
+
 
 	$namelink = ($exists)?"$PHP_SELF?$sid&action=site&site=$name":"$PHP_SELF?$sid&action=add_site&sitename=$name";
 	$namelink2 = ($exists)?"$PHP_SELF?$sid&action=viewsite&site=$name":"$PHP_SELF?$sid&action=add_site&sitename=$name";
-/*	if ($exists) $a = db_get_line("sites","name='$name'"); */
 	
 	printc("<tr>");
 	printc("<td class=td$color colspan=2>");
 	$status = ($exists)?"Created":"Not Created";
 	if ($exists) {
-		if ($obj->canview("anyuser")) $active = "<span class=green>active</span>";
-		else $active = "<span class=red>(inactive)</span>";
+		if ($siteInfo['site_active']) 
+			$active = "<span class=green>active</span>";
+		else
+			$active = "<span class=red>(inactive)</span>";
 	}
+	
 	printc("<table width=100% cellpadding='0' cellspacing='0'><tr><td align='left'>");
 	
-	if ($isclass && ((!$exists && (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name))) || ($exists && $_SESSION[auser] == slot::getOwner($obj->name)))) {
+	if ($isclass 
+		&& ((!$exists 
+			&& (!$siteInfo['slot_owner'] 
+				|| $_SESSION[auser] == $siteInfo['slot_owner'])) 
+			|| ($exists && $_SESSION[auser] == $siteInfo['slot_owner']))) 
+	{
 		// if:
 		//		isclass - is a class
 		//		if it doesn't exist, either there is no owner or we are the owner.
@@ -546,10 +708,9 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	
 	printc("$name - ");	
 	
-	//printc("<td align='right' style='font-size: 11px; color: #777;'>");
 	if ($exists) {
-		printc("<span style ='font-size:14px;'><a href='$namelink'>".$obj->getField("title")."</a></span>");
-	} else if (!slot::getOwner($obj->name) || $_SESSION[auser] == slot::getOwner($obj->name)) {
+		printc("<span style ='font-size:14px;'><a href='$namelink'>".$siteInfo['site_title']."</a></span>");
+	} else if (!$siteInfo['slot_owner'] || $_SESSION[auser] == $siteInfo['slot_owner']) {
 	// if the slot doesn't have an owner or we are the owner.
 		if ($_SESSION[atype] == 'prof' && $isclass) {
 			printc("<span style ='font-size:10px;'>");
@@ -560,7 +721,7 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 		}
 	} else {
 	// if the slot does have an owner that isn't us
-		printc("<span style ='font-size:10px;'>This site is owned by user \"".slot::getOwner($obj->name)."\". Contact your system administrator if you feel you should own this site.</span>");
+		printc("<span style ='font-size:10px;'>This site is owned by user \"".$siteInfo['slot_owner']."\". Contact your system administrator if you feel you should own this site.</span>");
 	
 	}
 	
@@ -570,28 +731,24 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	//printc("<div style='padding-left: 20px;'>");
 	
 	
-	if ($isgroup) {
+	// Class Group printing
+	if ($siteInfo['is_classgroup']) {
+		$classlist = group::getClassesFromName($name);
 		$list = implode(", ",$classlist);
 		printc("<div style='padding-left: 20px; font-size: 10px;'>this is a group and contains the following classes: <b>$list</b><br /></div>");
 		$sitesprinted = array_merge($sitesprinted,$classlist);
 	}
 	if ($exists) {
-		$addedby = $obj->getField("addedby");
+		$addedby = $siteInfo['site_addedby'];
 /*		$viewpermissions=$a[viewpermissions]; */
-		$added = timestamp2usdate($obj->getField("addedtimestamp"));
-		$edited = $obj->getField("editedtimestamp");
-		$editedby = $obj->getField("editedby");
+		$added = timestamp2usdate($siteInfo['site_added_timestamp']);
+		$edited = $siteInfo['site_edited_timestamp'];
+		$editedby = $siteInfo['site_editedby'];
 		printc("<div style='padding-left: 20px; font-size: 10px;'>added by $addedby on $added".(($editedby)?", edited on ".timestamp2usdate($edited):"")."<br /></div>");
 		
-		if ($obj->getField("activatedate") != '0000-00-00' || $obj->getField("deactivatedate") != '0000-00-00') {
+		if (!ereg("^0000", $siteInfo['activatedate']) || !ereg("^0000", $siteInfo['deactivatedate'])) {
 			printc("<div style='padding-left: 20px; font-size: 10px;'>available: ");
-			printc(txtdaterange($obj->getField("activatedate"),$obj->getField("deactivatedate")));
-/*			if ($viewpermissions != 'anyone') { */
-/*				printc(" to "); */
-/*				if ($viewpermissions == 'midd') printc("$cfg[inst_name] users"); */
-/*				if ($viewpermissions == 'class') printc("students in this class"); */
-/*				 */
-/*			} */
+			printc(txtdaterange($siteInfo['activatedate'], $siteInfo['deactivatedate']));
 			printc("</div>");
 		}
 
@@ -602,22 +759,33 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 		
 		printc("<div align='right'>");
 		
-		if ($_SESSION[auser] == slot::getOwner($obj->name) || $obj->isEditor($_SESSION[auser])) {
+		if ($_SESSION[auser] == $siteInfo['slot_owner'] 
+			|| $siteInfo['hasPermissionDownA']
+			|| $siteInfo['hasPermissionDownE']
+			|| $siteInfo['hasPermissionDownD']) 
+		{
 			// if the user is an editor or the owner			
 			printc(" <a href='$PHP_SELF?$sid&action=viewsite&site=$name'>edit</a> | ");
 		}
 		
-		if ($obj->hasPermission("edit")) {
+		if ($_SESSION[auser] == $siteInfo['slot_owner'] 
+			|| ($siteInfo['hasSitePermissionA']
+				&& $siteInfo['hasSitePermissionE']
+				&& $siteInfo['hasSitePermissionD']))
+		{
 			// if the user is the owner or a site-level editor...
 			printc(" <a href='$PHP_SELF?$sid&action=edit_site&sitename=$name'>settings</a> | ");
 		}
 		
-		if ($_SESSION[auser] == slot::getOwner($obj->name)) { 
+		if ($_SESSION[auser] == $siteInfo['slot_owner']) { 
 			// if the user is the owner, not an editor
 			printc(" <a href='$PHP_SELF?$sid&action=delete_site&name=$name'>delete</a> | ");
 			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>permissions</a>");
 			
-		} else if ($obj->hasPermissionDown("add or edit or delete",$_SESSION[auser],0,1) && $_SESSION[auser] != slot::getOwner($obj->name)) {	
+		} else if (($siteInfo['hasPermissionDownA']
+				|| $siteInfo['hasPermissionDownE']
+				|| $siteInfo['hasPermissionDownD'])
+			&& $_SESSION[auser] != $siteInfo['slot_owner']) {	
 			// if the user is an editor
 			printc(" <a href='edit_permissions.php?$sid&site=$name' onClick='doWindow(\"permissions\",600,400)' target='permissions'>your permissions</a>");
 		}
@@ -638,6 +806,34 @@ function printSiteLine(& $site,$ed=0,$isclass=0,$atype='stud') {
 	$color=1-$color;
 }
 
+function printStudentSiteLine($className, $siteInfo) {
+	global $studentSitesColor;
+	if (!isset($studentSitesColor))
+		$studentSitesColor=0;
+						
+
+	printc("<tr><td class=td$studentSitesColor width= 150>$className</td>");
+
+	if ($siteInfo['site_exits']) {
+		if ($siteInfo['site_active']) 
+			printc("<td align='left' class=td$studentSitesColor><a href='$PHP_SELF?$sid&action=site&site=".$siteInfo['slot_name']."'>".$siteInfo['site_title']."</a></td>");
+		else 
+			printc("<td style='color: #999' class=td$studentSitesColor>created, not yet available</td>");
+	
+	//check webcourses databases to see if course website was created in course folders (instead of Segue)
+	} else if ($course_site = coursefoldersite($className)) {
+		$course_url = urldecode($course_site['url']);
+		$title = urldecode($course_site['title']);
+		printc("<td style='color: #999' class=td$studentSitesColor><a href='$course_url' target='new_window'>$title</td>");
+	} else 
+		printc("<td style='color: #999' class=td$studentSitesColor>not created</td>");
+	
+	printc("</tr>");
+	
+	
+	$studentSitesColor = 1-$studentSitesColor;
+}
+
 //$sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gschineATmiddleburyDOTedu'>Gabriel Schine</a>, <a href='mailto:achapinATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>, <a href='mailto:afrancoATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a> and <a href='mailto:dradichkATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Dobo Radichkov</a></div>";
 $_version = file_get_contents("version.txt");
 $sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>
@@ -647,5 +843,7 @@ $sitefooter .= "<div align='right' style='color: #999; font-size: 10px;'>
 	<a href='credits.php' target='credits' onClick='doWindow(\"credits\",400,300);'>credits</a>
 	</div>";
 
+if ($debug && $printTimedQueries)
+	print "\n<br/>Queries run in default.inc.php: ".($_totalQueries - $defaultStartQueries)."";
 
 ?>

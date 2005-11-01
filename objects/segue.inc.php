@@ -166,6 +166,311 @@ FROM
 	}
 
 /******************************************************************************
+ * getAllSitesWhereUserIsSiteLevelEditor - gets all sites where $user is an editor
+ * Like the previous function, but selects only the sites/slots
+ * where the user has add, edit, and delete permission on the site level
+ ******************************************************************************/
+	function getSiteInfoWhereUserIsSiteLevelEditor($user='') {
+		global $dbhost, $dbuser, $dbpass, $dbdb;
+		if ($user == '') $user = $_SESSION[auser];
+		
+		$userId = db_get_value("user","user_id","user_uname='$user'");
+		
+		$query = "
+SELECT
+	slot_name,
+	(site_id IS NOT NULL) AS site_exists,
+	slot_owner.user_uname AS owner_uname,
+	(site_id IS NOT NULL) AS site_exists,
+	site_title,
+	(classgroup_id IS NOT NULL) AS is_classgroup,
+	createdby.user_uname AS site_addedby,
+	site_created_tstamp,
+	editedby.user_uname AS site_editedby,
+	site_updated_tstamp,
+	site_activate_tstamp,
+	site_deactivate_tstamp,
+	(	site_active = '1'
+		AND (site_activate_tstamp = '00000000000000'
+			OR site_activate_tstamp < CURRENT_TIMESTAMP())
+		AND (site_deactivate_tstamp = '00000000000000'
+			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+	) AS is_active,
+	permission_scope_type,
+	permission_value
+FROM
+	slot
+		INNER JOIN
+	site ON slot.FK_site = site_id
+		INNER JOIN
+			user AS slot_owner ON (
+								slot.FK_owner != '$userId'
+								AND	slot.FK_owner = slot_owner.user_id
+								)
+		INNER JOIN 
+	site_editors ON (
+				site_id = site_editors.FK_site 
+				AND ((site_editors_type = 'ugroup')
+					OR (site_editors_type = 'user'
+						AND site_editors.FK_editor = '$userId'))
+				)
+		LEFT JOIN
+	ugroup_user ON (
+				site_editors_type = 'ugroup'
+				AND site_editors.FK_editor = FK_ugroup)
+		INNER JOIN
+	permission ON (
+				permission_scope_type = 'site'
+				AND permission.FK_scope_id = site_id
+				AND FIND_IN_SET('a', permission_value) > 0
+				AND FIND_IN_SET('e', permission_value) > 0
+				AND FIND_IN_SET('d', permission_value) > 0
+				AND (permission.FK_editor = FK_ugroup
+					OR (permission.FK_editor = site_editors.FK_editor
+						AND permission.FK_editor = '$userId'))
+				)
+		LEFT JOIN
+			classgroup ON slot_name = classgroup_name
+		INNER JOIN
+			user AS createdby ON site.FK_createdby = createdby.user_id
+		INNER JOIN
+			user AS editedby ON site.FK_updatedby = editedby.user_id
+WHERE
+	(site_editors_type = 'ugroup'
+		AND ugroup_user.FK_user = '$userId')
+	OR (site_editors_type = 'user'
+		AND site_editors.FK_editor = '$userId')
+";
+		$r = db_query($query);
+		if (db_num_rows($r))
+			while ($a = db_fetch_assoc($r))
+				segue::addRowToSiteInfoArray($ar, $a);
+			
+		return $ar;
+	}
+	
+/******************************************************************************
+ * getSiteInfoWhereUserIsEditor
+ * 		Answers an array of site information for sites where $user is an editor
+ * 		
+ ******************************************************************************/
+	function getSiteInfoWhereUserIsEditor($user='') {
+		global $dbhost, $dbuser, $dbpass, $dbdb;
+		if ($user == '') 
+			$user = $_SESSION[auser];
+		
+		$userId = db_get_value("user","user_id","user_uname='$user'");
+
+		$query = "
+SELECT
+	slot_name,
+	slot_type,
+	slot_owner.user_uname AS owner_uname,
+	(site_id IS NOT NULL) AS site_exists,
+	site_title,
+	(classgroup_id IS NOT NULL) AS is_classgroup,
+	createdby.user_uname AS site_addedby,
+	site_created_tstamp,
+	editedby.user_uname AS site_editedby,
+	site_updated_tstamp,
+	site_activate_tstamp,
+	site_deactivate_tstamp,
+	(	site_active = '1'
+		AND (site_activate_tstamp = '00000000000000'
+			OR site_activate_tstamp < CURRENT_TIMESTAMP())
+		AND (site_deactivate_tstamp = '00000000000000'
+			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+	) AS is_active,
+	permission_scope_type,
+	permission_value
+FROM
+	slot
+		INNER JOIN
+	site ON slot.FK_site = site_id
+		INNER JOIN
+			user AS slot_owner ON (
+								slot.FK_owner = slot_owner.user_id
+								AND	slot.FK_owner != '$userId'	
+								)
+		INNER JOIN 
+	site_editors ON (
+				site_id = site_editors.FK_site 
+				AND ((site_editors_type = 'ugroup')
+					OR (site_editors_type = 'user'
+						AND site_editors.FK_editor = '$userId'))
+				)
+		LEFT JOIN
+	ugroup_user ON (
+				site_editors_type = 'ugroup'
+				AND site_editors.FK_editor = FK_ugroup)
+		LEFT JOIN
+	section ON section.FK_site = site_id
+		LEFT JOIN
+	page ON page.FK_section = section_id
+		LEFT JOIN
+	story ON story.FK_page = page_id
+		INNER JOIN
+	permission ON (
+					(permission.FK_editor = FK_ugroup
+						OR (permission.FK_editor = site_editors.FK_editor
+							AND permission.FK_editor = '$userId'))
+					AND ((permission_scope_type = 'site'
+							AND permission.FK_scope_id = site_id)
+						OR (permission_scope_type = 'section'
+							AND permission.FK_scope_id = section_id)
+						OR (permission_scope_type = 'page'
+							AND permission.FK_scope_id = page_id)
+						OR (permission_scope_type = 'story'
+							AND permission.FK_scope_id = story_id))
+					AND (FIND_IN_SET('a', permission_value) > 0
+						OR FIND_IN_SET('e', permission_value) > 0
+						OR FIND_IN_SET('d', permission_value) > 0)
+				)
+		LEFT JOIN
+			classgroup ON slot_name = classgroup_name
+		LEFT JOIN
+			user AS createdby ON site.FK_createdby = createdby.user_id
+		LEFT JOIN
+			user AS editedby ON site.FK_updatedby = editedby.user_id
+WHERE
+	(site_editors_type = 'ugroup'
+		AND ugroup_user.FK_user = '$userId')
+	OR (site_editors_type = 'user'
+		AND site_editors.FK_editor = '$userId')
+GROUP BY
+	slot_name, 
+	permission_value
+		";
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			while ($a = db_fetch_assoc($r))
+				segue::addRowToSiteInfoArray($ar, $a);
+		}
+		
+		return $ar;
+	}
+
+/******************************************************************************
+ * getSiteInfoWhereUserIsEditor
+ * 		Answers an array of site information for sites where $user is an editor
+ * 		
+ ******************************************************************************/
+	function getSiteInfoWhereUserOwner($user='') {
+		global $dbhost, $dbuser, $dbpass, $dbdb;
+		if ($user == '') $user = $_SESSION[auser];
+
+		$query = "
+SELECT
+	slot_name,
+	slot_type,
+	slot_owner.user_uname AS owner_uname,
+	(site_id IS NOT NULL) AS site_exists,
+	site_title,
+	(classgroup_id IS NOT NULL) AS is_classgroup,
+	createdby.user_uname AS site_addedby,
+	site_created_tstamp,
+	editedby.user_uname AS site_editedby,
+	site_updated_tstamp,
+	site_activate_tstamp,
+	site_deactivate_tstamp,
+	(	site_active = '1'
+		AND (site_activate_tstamp = '00000000000000'
+			OR site_activate_tstamp < CURRENT_TIMESTAMP())
+		AND (site_deactivate_tstamp = '00000000000000'
+			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+	) AS is_active
+FROM
+	slot
+		INNER JOIN
+			user AS slot_owner ON (
+									slot.FK_owner = slot_owner.user_id
+								AND
+									slot_owner.user_uname = '$user'
+								)
+		INNER JOIN
+	site ON slot.FK_site = site_id
+		INNER JOIN
+			user AS createdby ON site.FK_createdby = createdby.user_id
+		INNER JOIN
+			user AS editedby ON site.FK_updatedby = editedby.user_id
+		LEFT JOIN
+			classgroup ON slot_name = classgroup_name
+GROUP BY
+	slot_name
+		";
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			while ($a = db_fetch_assoc($r))
+				segue::addRowToSiteInfoArray($ar, $a);
+		}
+		
+		return $ar;
+	}
+
+	function addRowToSiteInfoArray( &$infoArray, &$a ) {
+	
+		if (!isset($infoArray[$a['slot_name']])) {
+			$infoArray[$a['slot_name']] = array();
+			$infoArray[$a['slot_name']]['slot_name'] = $a['slot_name'];
+			$infoArray[$a['slot_name']]['slot_type'] = $a['slot_type'];
+			$infoArray[$a['slot_name']]['slot_owner'] = $a['owner_uname'];
+			$infoArray[$a['slot_name']]['site_exits'] = ($a['site_exists'] == '1')?true:false;
+			$infoArray[$a['slot_name']]['site_title'] = stripslashes($a['site_title']);
+			$infoArray[$a['slot_name']]['is_classgroup'] = ($a['is_classgroup'] == '1')?true:false;
+			$infoArray[$a['slot_name']]['site_addedby'] = $a['site_addedby'];
+			$infoArray[$a['slot_name']]['site_added_timestamp'] = $a['site_created_tstamp'];
+			$infoArray[$a['slot_name']]['site_editedby'] = $a['site_editedby'];
+			$infoArray[$a['slot_name']]['site_edited_timestamp'] = $a['site_updated_tstamp'];
+			$infoArray[$a['slot_name']]['activatedate'] = $a['site_activate_tstamp'];
+			$infoArray[$a['slot_name']]['deactivatedate'] = $a['site_deactivate_tstamp'];
+			$infoArray[$a['slot_name']]['site_active'] = ($a['is_active'] == '1')?true:false;
+			
+			$infoArray[$a['slot_name']]['hasSitePermissionV'] = false;
+			$infoArray[$a['slot_name']]['hasSitePermissionA'] = false;
+			$infoArray[$a['slot_name']]['hasSitePermissionE'] = false;
+			$infoArray[$a['slot_name']]['hasSitePermissionD'] = false;
+			$infoArray[$a['slot_name']]['hasSitePermissionDI'] = false;
+			
+			$infoArray[$a['slot_name']]['hasPermissionDownV'] = false;
+			$infoArray[$a['slot_name']]['hasPermissionDownA'] = false;
+			$infoArray[$a['slot_name']]['hasPermissionDownE'] = false;
+			$infoArray[$a['slot_name']]['hasPermissionDownD'] = false;
+			$infoArray[$a['slot_name']]['hasPermissionDownDI'] = false;
+		}
+		
+		if (ereg('v', $a['permission_value']) !== FALSE) {
+			$infoArray[$a['slot_name']]['hasPermissionDownV'] = true;
+			if ($a['permission_scope_type'] == 'site')
+				$infoArray[$a['slot_name']]['hasSitePermissionV'] = true;
+		}
+		
+		if (ereg('a', $a['permission_value']) !== FALSE) {
+			$infoArray[$a['slot_name']]['hasPermissionDownA'] = true;
+			if ($a['permission_scope_type'] == 'site')
+				$infoArray[$a['slot_name']]['hasSitePermissionA'] = true;
+		}
+		
+		if (ereg('e', $a['permission_value']) !== FALSE) {
+			$infoArray[$a['slot_name']]['hasPermissionDownE'] = true;
+			if ($a['permission_scope_type'] == 'site')
+				$infoArray[$a['slot_name']]['hasSitePermissionE'] = true;
+		}
+		
+		if (ereg('d([^i]*)', $a['permission_value']) !== FALSE) {
+			$infoArray[$a['slot_name']]['hasPermissionDownD'] = true;
+			if ($a['permission_scope_type'] == 'site')
+				$infoArray[$a['slot_name']]['hasSitePermissionD'] = true;
+		}
+		
+		if (ereg('di', $a['permission_value']) !== FALSE) {
+			$infoArray[$a['slot_name']]['hasPermissionDownDI'] = true;
+			if ($a['permission_scope_type'] == 'site')
+				$infoArray[$a['slot_name']]['hasSitePermissionDI'] = true;
+		}
+		
+	}
+
+/******************************************************************************
  * getAllValues - returns all values of $name in $scope in the current tree
  ******************************************************************************/
 

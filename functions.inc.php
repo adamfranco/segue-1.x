@@ -464,16 +464,17 @@ function insite($site,$section,$page=0,$story=0) {
 $_isgroup_cache = array();
 function isgroup ($group) {
 	global $_isgroup_cache;
-	if (isset($_isgroup_cache[$group])) return $_isgroup_cache[$group];
-	$query = ("SELECT classgroup_id FROM classgroup WHERE classgroup_name='$group'");
+	if (isset($_isgroup_cache[$group])) 
+		return $_isgroup_cache[$group];
+	
+	$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id WHERE classgroup_name='$group'";
 	$r = db_query($query);
+	
 	if (db_num_rows($r)) {
-		$a = db_fetch_assoc($r);
-		$query = "SELECT class_id FROM class INNER JOIN classgroup ON classgroup_id = ".$a[classgroup_id];
-		$r = db_query($query);
 		$temp_c = array();
-		while ($a = db_fetch_assoc($r))
+		while ($a = db_fetch_assoc($r)) {
 			$temp_c[] = generateCourseCode($a[class_id]);
+		}
 		$_isgroup_cache[$group] = true;
 		return $temp_c;
 	}
@@ -886,26 +887,40 @@ function _error_handler($num, $str, $file, $line, $context) {
 function sortClasses ( $classes, $direction=SORT_DESC) {
 	global $cfg;
 	
-	// get the year-classkey relation.
-	$years = array();
-	foreach($classes as $key => $class) {
-		$years[$key] = $class['year'];
-	}
 	
-	// get the semesterorder-classkey relation
+	$years = array();
+	
 	$semesterOrder = array_keys($cfg['semesters']);
 	$semesters = array();
-	foreach($classes as $key => $class) {
-		$semesters[$key] = array_search($class['sem'], $semesterOrder);
-	}
 	
-	// get the year-classkey relation.
 	$codes = array();
+	$sections = array();
+	
 	foreach($classes as $key => $class) {
+		// get the year-classkey relation.
+		if ($class['year'] < 100)
+			$years[$key] = '20'.$class['year'];
+		else
+			$years[$key] = $class['year'];
+		
+		// get the semesterorder-classkey relation
+		$semesters[$key] = array_search($class['sem'], $semesterOrder);
+		
+		// get the code-classkey relation.
 		$codes[$key] = $class['code'];
+		
+		$sections[$key] = $class['sect'];
 	}
 	
-	array_multisort($years, $direction, SORT_NUMERIC, $semesters, $direction, SORT_NUMERIC, $codes, SORT_ASC, $classes);
+// 	print "<hr>";
+// 	printpre($classes);
+// 	printpre($years);
+// 	printpre($semesters);
+// 	printpre($codes);
+
+	array_multisort($years, $direction, SORT_NUMERIC, $semesters, $direction, SORT_NUMERIC, $codes, SORT_ASC, SORT_STRING, $sections, SORT_ASC, SORT_STRING, $classes);
+	
+// 	printpre($classes);
 
 	return $classes;
 }

@@ -143,35 +143,36 @@ include("includes.inc.php");
 $classes=array();
 $oldclasses=array();
 $futureclasses=array();
-$oldsites=array();
 
 /* --------------- eventually, this command will be gone... unneeded and handled by ADOdb */
 // connect to the database
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-
 // ------ Build arrays of all classes and sites ----------
 if ($_loggedin) {
-	// below if statement should be changed to check a config variable that states
-	// if classes should be check, and what routine to use to get that	
-	$classes = getuserclasses($auser,"now");
-	$oldclasses = getuserclasses($auser,"past");
-	$futureclasses = getuserclasses($auser,"future");
-		
+	if (!isset($_SESSION["__classMembership"]))
+		$_SESSION["__classMembership"] = array();
+	
+	if (!isset($_SESSION["__classMembership"][$_SESSION['auser']])) {
+		$_SESSION["__classMembership"][$_SESSION['auser']] = array(
+				'currentclasses' => getuserclasses($auser,"now"),
+				'oldclasses' => getuserclasses($auser,"past"),
+				'futureclasses' => getuserclasses($auser,"future")
+			);
+	}
+	
+	$classes = $_SESSION["__classMembership"][$_SESSION['auser']]['currentclasses'];
+	$oldclasses = $_SESSION["__classMembership"][$_SESSION['auser']]['oldclasses'];
+	$futureclasses = $_SESSION["__classMembership"][$_SESSION['auser']]['futureclasses'];
+	
 	// one array containing all user's classes
 	$allclasses[$_SESSION['auser']] = array_merge($classes,$oldclasses,$futureclasses);
 	
-	// Sort the classes arrays only if that is needed, IE, on the default page.
-		
-	// get other sites they have added, but which aren't in the classes list
-	if ($all_sites = segue::getAllSites($_SESSION[auser])) {
-		foreach ($all_sites as $n) {
-/* 			$n = $a['name']; */
-			if (!is_array($allclasses[$_SESSION['auser']][$n]) && isclass($n)) {
-				$oldsites[]=$n;
-			}
-		}
-	}
+	if ($debug && $printTimedQueries)
+		print "\n<br/>Queries in index.php, setting up classes lists: ".$_totalQueries;
+} else {
+	// Be sure to unset the class membership so that it is re-populated on re-login
+	unset($_SESSION["__classMembership"]);
 }
 
 
@@ -308,4 +309,17 @@ if (!ini_get("register_globals")) {
 	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = &$$n; }
 }
 
+if ($debug && $printTimedQueries) {
+	print "TotalQueries: ".$_totalQueries;
+	printf("<br/>TotalQueryTime: %4f seconds", $_totalQueryTime);
+	krsort($_queriesByTime);
+	array_walk($_queriesByTime, 'printQueryWithTime');
+}
+
+function printQueryWithTime($queryArray, $key) {
+	printf("\n<hr>QueryTime: %4s seconds", $key);
+	printf("\n<br/>NumQueries: %d", count($queryArray));
+	foreach($queryArray as $query)
+		printpre($query);
+}
 ?>

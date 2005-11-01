@@ -80,7 +80,7 @@
 	 * user_notice - This notice will be displayed in a large red box at the top of
 	 * 		every screen, useful for testing messages, etc.
 	 ******************************************************************************/
-	$cf['user_notice'] = "";
+	$cfg['user_notice'] = "";
 	
 	/******************************************************************************
 	 * defaulttheme - the theme used for non site-specific pages (ie, login page)
