@@ -412,25 +412,27 @@ if ($_loggedin) {
  * sites where the user is an Editor
  ******************************************************************************/
 	$sites = array();
-	foreach (array_keys($anyLevelEditorSites) as $name) {
-		$info =& $anyLevelEditorSites[$name];
-		
-		if (!in_array($name, $sitesprinted) 
-			&& ($info['hasPermissionDownA']
-				|| $info['hasPermissionDownE']
-				|| $info['hasPermissionDownD'])
-			&& $_SESSION['auser'] !=  $info['slot_owner']) 
-		{
-			if ($allowclasssites && !$allowpersonalsites) {
-				if($info['slot_type'] != 'personal')
-					$sites[$name] =& $info;
+	if (is_array($anyLevelEditorSites)) {
+		foreach (array_keys($anyLevelEditorSites) as $name) {
+			$info =& $anyLevelEditorSites[$name];
 			
-			} else if (!$allowclasssites && $allowpersonalsites) {
-				if ($info['slot_type'] == 'personal')
+			if (!in_array($name, $sitesprinted) 
+				&& ($info['hasPermissionDownA']
+					|| $info['hasPermissionDownE']
+					|| $info['hasPermissionDownD'])
+				&& $_SESSION['auser'] !=  $info['slot_owner']) 
+			{
+				if ($allowclasssites && !$allowpersonalsites) {
+					if($info['slot_type'] != 'personal')
+						$sites[$name] =& $info;
+				
+				} else if (!$allowclasssites && $allowpersonalsites) {
+					if ($info['slot_type'] == 'personal')
+						$sites[$name] =& $info;
+	
+				} else
 					$sites[$name] =& $info;
-
-			} else
-				$sites[$name] =& $info;
+			}
 		}
 	}
 
@@ -485,17 +487,22 @@ if ($_loggedin) {
 // ******************************* THESE TWO
 	$allExistingSlots = array();
 	$allExistingSites = array();
-	foreach (array_keys($userOwnedSlots) as $name) {
-		$info =& $userOwnedSlots[$name];
-		if ($info['site_exits'])
-			$allExistingSites[] = $name;
-		else
-			$allExistingSlots[] = $name;
+	
+	if (is_array($userOwnedSlots)) {	
+		foreach (array_keys($userOwnedSlots) as $name) {
+			$info =& $userOwnedSlots[$name];
+			if ($info['site_exits'])
+				$allExistingSites[] = $name;
+			else
+				$allExistingSlots[] = $name;
+		}
 	}
 	
-	foreach (array_keys($siteLevelEditorSites) as $name) {
-		$info =& $siteLevelEditorSites[$name];
-		$allExistingSites[] = $name;
+	if (is_array($siteLevelEditorSites)) {
+		foreach (array_keys($siteLevelEditorSites) as $name) {
+			$info =& $siteLevelEditorSites[$name];
+			$allExistingSites[] = $name;
+		}
 	}
 	
 	foreach (array_merge($usersCurrentClasses, $usersFutureClasses) as $name) {
