@@ -80,9 +80,9 @@ if ($_REQUEST['order']) {
 $orderby = " ORDER BY $order";
 
 /******************************************************************************
- * Username and id:
- * 
+ * Username and id or findall
  ******************************************************************************/
+ 
 if ($_REQUEST['findall']) {
 	$userid = "'%'";
 	$useruname = "";
@@ -228,7 +228,7 @@ if ($action == "review" || $action == "user") {
 
 
 /******************************************************************************
- * Query: NUMBER of post (i.e. number of posts for WHERE clause) 
+ * Query: NUMBER of post for given user (i.e. number of posts for WHERE clause) 
  ******************************************************************************/
  
 	$query = "
@@ -249,13 +249,8 @@ if ($action == "review" || $action == "user") {
 	$numrows = db_num_rows($r);
 	
 
-	if (!isset($lowerlimit)) $lowerlimit = 0;
-	if (!isset($range)) $range = 30;
-	if ($lowerlimit < 0) $lowerlimit = 0;
-	$limit = " LIMIT $lowerlimit,$range";
-
 /******************************************************************************
- * Query: NUMBER of participants (i.e. distinct users)
+ * Query: NUMBER and ID's of participants (i.e. distinct users)
  ******************************************************************************/
 	
 	$query = "
@@ -274,39 +269,40 @@ if ($action == "review" || $action == "user") {
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
 	$numparticipants = db_num_rows($r);
+	$logged_participants = db_query($query);
 	//print $numparticipants."<br />";
 	
 	if ($action == "list") $numrows = $numparticipants;
 	//print $numrows."<br />";
 
-/******************************************************************************
- * Query: GET all discussion post information based on select
- * select summary info for each user
- * select all post info for all specified users
- ******************************************************************************/
-
-	$query = "
-	SELECT 
-		$select
-	FROM 
-		discussion
-	INNER JOIN story ON FK_story = story_id
-	INNER JOIN page ON FK_page = page_id
-	INNER JOIN section ON FK_section = section_id
-	INNER JOIN site ON section.FK_site = site.site_id
-	INNER JOIN slot ON slot.FK_site = site.site_id
-	INNER JOIN user ON FK_author = user_id
-	WHERE 
-		$where $orderby $limit
-	";	
-		
-	//printpre($_REQUEST);
-	//printpre("where: ".$where);	
-	//printpre($query);
-	//printpre($curraction);
-	$r = db_query($query);
-	$r2 = db_query($query);
-	$logged_participants = db_query($query);
+///******************************************************************************
+// * Query: GET ids of all participants discussion post information based on select:
+// * 1. select summary info for each user
+// * 2. select all post info for all specified users
+// ******************************************************************************/
+//
+//	$query = "
+//	SELECT 
+//		$select
+//	FROM 
+//		discussion
+//	INNER JOIN story ON FK_story = story_id
+//	INNER JOIN page ON FK_page = page_id
+//	INNER JOIN section ON FK_section = section_id
+//	INNER JOIN site ON section.FK_site = site.site_id
+//	INNER JOIN slot ON slot.FK_site = site.site_id
+//	INNER JOIN user ON FK_author = user_id
+//	WHERE 
+//		$where $orderby
+//	";	
+//		
+//	//printpre($_REQUEST);
+//	//printpre("where: ".$where);	
+//	//printpre($query);
+//	//printpre($curraction);
+//	//$r = db_query($query);
+//	//$r2 = db_query($query);
+//	$logged_participants = db_query($query);
 
 	
 printerr();
@@ -332,6 +328,51 @@ while ($a = db_fetch_assoc($logged_participants)) {
 //printpre($roster_ids);
 //printpre($non_roster_ids);
 //printpre($_SESSION[editors]);
+
+/******************************************************************************
+ * define limits for pagination of results
+ ******************************************************************************/
+
+if (!isset($lowerlimit)) $lowerlimit = 0;
+if (!isset($range)) $range = 2;
+if ($lowerlimit < 0) $lowerlimit = 0;
+
+if ($action != "list") $limit = " LIMIT $lowerlimit,$range";
+
+
+/******************************************************************************
+ * Query: GET all discussion post information based on select:
+ * 1. select summary info for each user
+ * 2. select all post info for all specified users
+ ******************************************************************************/
+
+	$query = "
+	SELECT 
+		$select
+	FROM 
+		discussion
+	INNER JOIN story ON FK_story = story_id
+	INNER JOIN page ON FK_page = page_id
+	INNER JOIN section ON FK_section = section_id
+	INNER JOIN site ON section.FK_site = site.site_id
+	INNER JOIN slot ON slot.FK_site = site.site_id
+	INNER JOIN user ON FK_author = user_id
+	WHERE 
+		$where $orderby $limit
+	";	
+		
+	//printpre($_REQUEST);
+	//printpre("where: ".$where);	
+	//printpre($query);
+	//printpre($curraction);
+	$r = db_query($query);
+	$r2 = db_query($query);
+	//$logged_participants = db_query($query);
+
+	
+printerr();
+
+
 
 
 /******************************************************************************
@@ -555,12 +596,25 @@ print "</table><br />";
 		$next = $lowerlimit+$range;
 		if ($next >= $numrows) $next = $numrows-$range;
 		if ($next < 0) $next = 0;
+		
+		if ($action != "list") {
 		print "$curr of $tpages ";
-		//print "(prev=$prev lowerlimit=$lowerlimit next=$next )";
+		
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables&action=$curraction&findall=$findall\"'>\n";
+			if (!$userfname) {
+				print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables&action=$curraction\"'>\n";
+			} else {
+				//$userfname = urlencode($userfname);
+				print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables&action=$curraction&userfname=$userfname&userid=$userid\"'>\n";
+			}
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction&findall=$findall\"'>\n";
+			if (!$userfname) {
+				print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction\"'>\n";
+			} else {
+				print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction&userfname=$userfname&userid=$userid\"'>\n";
+			}
+		}
+
 		?>
 
 	
@@ -568,7 +622,7 @@ print "</table><br />";
 	</table>
 	
 	<? 
-	if (!db_num_rows($r)) {
+	if ($numparticipants == 0) {
 		print "No participants found. Try extending the scope to all participants in the site";
 	}
 		
@@ -764,7 +818,7 @@ print "</table><br />";
 			<input type=hidden name='headers' value='<? echo $headers ?>'>
 			</form>
 			<?
-			$r = db_query($query);
+		//	$r = db_query($query);
 			exit();
 			
 		/******************************************************************************
@@ -905,9 +959,10 @@ print "</table><br />";
 				
 				$userid = $a['user_id'];
 				$e = $a['user_id'];
+				
 				/******************************************************************************
 				 * if listing participants and site has roster, 
-				 * include only non-roster participants
+				 * include here only non-roster participants (roster participants listed above)
 				 * for each participant get # of posts and avg. rating
 				 ******************************************************************************/
 				 
@@ -1012,7 +1067,7 @@ function getNumPosts ($userid) {
 	INNER JOIN site ON FK_site = site_id
 	INNER JOIN user ON FK_author = user_id
 	WHERE 
-		$where AND user_id = $userid $orderby $limit
+		$where AND user_id = $userid 
 	";		
 	$r2 = db_query($query2);
 	//$a2 = db_fetch_assoc($r2);
@@ -1035,7 +1090,7 @@ function getAvgRating ($userid) {
 	INNER JOIN site ON FK_site = site_id
 	INNER JOIN user ON FK_author = user_id
 	WHERE 
-		$where AND user_id = $userid $orderby $limit
+		$where AND user_id = $userid 
 	";		
 	$r2 = db_query($query2);
 	$postcount = db_num_rows($r2);

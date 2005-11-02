@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
+	<version number="1.4.4" date="the future">
+		<fix author='alex' ref='1345320' reftype='bug'>
+			Fixed summaries of discussion posts when number of participants
+			is greater than 30 (query limits) Also fixed display of a given
+			users discussion posts when these exceed query limit.
+		</fix>
+		<fix author='alex' ref='1330176' reftype='bug'>
+			Fixed typo in config.sample.inc.php file.
+		</fix>
+		<fix author='alex' ref='1313096' reftype='bug'>
+			Fixed internal links in image content blocks by adding convertlinks function.
+		</fix>
+	</version>
 	<version number="1.4.3" date="2005-10-05">
 		<change author='adam'>
 			Added several functions which can return all data needed to display
