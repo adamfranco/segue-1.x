@@ -273,7 +273,7 @@ if ($curraction == "edit" || $class_external_id || $class_name || $class_dept ||
 	
 	$r = db_query($query);
 }
-
+//print $where;
 printerr();
 
 ?>
