@@ -2,6 +2,13 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.4.4" date="the future">
+		<fix author='alex' ref='1348393' reftype='bug'>
+			Fixed RSS feeds so that they do not re-downloaded in certain RSS
+			readers like Safari and iTunes.
+		</fix>
+		<change author='alex' ref='1212787' reftype='bug'>
+			Class sections can now be designated by either letters or numbers.
+		</change>
 		<fix author='alex' ref='1345320' reftype='bug'>
 			Fixed summaries of discussion posts when number of participants
 			is greater than 30 (query limits) Also fixed display of a given
