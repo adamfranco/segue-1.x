@@ -8,9 +8,18 @@
 			immediately uses the browser back button to return and then clicks
 			continue and finish...).  This bug has been eliminated.
 		</fix>
-		<fix author='alex' ref='1348393' reftype='bug'>
-			Fixed RSS feeds so that they do not re-downloaded in certain RSS
-			readers like Safari and iTunes.
+		<fix author='alex' ref='877774' reftype='bug'>
+			If certain steps are taken when creating a site it was possible
+			to create a site with no name (if a user creates a site and then
+			immediately uses the browser back button to return and then clicks
+			continue and finish...).  This bug has been eliminated.
+		</fix>
+		<fix author='alex' ref='1353196' reftype='bug'>
+			Mispelling of password in "Forgot your password" as been fixed.
+		</fix>
+		<fix author='alex' ref='1363156' reftype='bug'>
+			Editing button styles now specify a text color. (fixes bug caused
+			by themes with white text color)
 		</fix>
 		<change author='alex' ref='1212787' reftype='bug'>
 			Class sections can now be designated by either letters or numbers.

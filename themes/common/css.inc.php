@@ -39,6 +39,7 @@ div, p, td, span, input {
 .button {
 	border: 1px solid #<? echo $c['input-borders']; ?>;
 	background-color: #FFFFFF;
+	color: #000000; ?>;
 }
 
 /*     TEXTFIELDS    */
