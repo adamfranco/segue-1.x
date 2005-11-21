@@ -2,6 +2,12 @@
 
 <changelog name="Segue ChangeLog">
 	<version number="1.4.4" date="the future">
+		<fix author='alex' ref='877774' reftype='bug'>
+			If certain steps are taken when creating a site it was possible
+			to create a site with no name (if a user creates a site and then
+			immediately uses the browser back button to return and then clicks
+			continue and finish...).  This bug has been eliminated.
+		</fix>
 		<fix author='alex' ref='1348393' reftype='bug'>
 			Fixed RSS feeds so that they do not re-downloaded in certain RSS
 			readers like Safari and iTunes.

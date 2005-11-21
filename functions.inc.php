@@ -416,40 +416,17 @@ function htmlbr($string) {
 }
 
 function sitenamevalid($name) {
-	// sitenamevalid doen't really check if the sitename is valid and throws errors.
-	// its purpose needs to be clarified and the function rewritten
-	
-/*	global $_SESSION[auser],$atype,$classes,$ltype, $settings;
-	$_SESSION[auser] = strtolower($_SESSION[auser]);
-	$name = strtolower($name);
-	if ($name == $_SESSION[auser]) return 1;
-	if ($ltype=='admin') return 1;
-	// look at the classes list.. if the site is in the classes list, then it's valid
-// 	print "$atype -- $name"; 
-// 	print_r($classes); 
-	if ($settings[type]=="other" && $_SESSION[auser]==$settings[addedby]) return 1; 
-	if ($atype == 'prof' && is_array($classes[$name])) return 1;
-	if ($atype == 'prof') {
-		$query = "
-SELECT
-	classgroup_id
-FROM
-	classgroup
-		INNER JOIN
-	user
-		ON FK_owner = user_id AND user_uname = '$_SESSION[auser]'
-WHERE
-	classgroup_name = '$name'
-";
-		$r = db_query($query);
-		$a = db_fetch_assoc($r);
-		if (count($a) > 0)
-			return 1;			
-	 }
-	
-	return 0;
-*/
-	return 1;
+	/******************************************************************************
+	 * sitenamevalid checks to see if $name has a value
+	 * it is possible for $name to become null and a no name site to be created
+	 * when a user creates a site and then immediately uses the browser back
+	 * to tweak the appearance...
+	 ******************************************************************************/	
+	if ($name =='') { 
+		return 0; 
+	} else { 
+		return 1; 
+	} 
 }
 
 function insite($site,$section,$page=0,$story=0) {
