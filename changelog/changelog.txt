@@ -3,6 +3,37 @@ Name: Segue ChangeLog
 
 
 
+v. 1.4.4 (2005-11-22) 
+----------------------------------------------------
+		
+    * Bug Fix: #877774  (Alex Chapin) 
+    If certain steps are taken when creating a site it was possible to create a
+    site with no name (if a user creates a site and then immediately uses the
+    browser back button to return and then clicks continue and finish...). This
+    bughas been eliminated.
+		
+    * Bug Fix: #1353196  (Alex Chapin) 
+    Mispelling of password in "Forgot your password" as been fixed.
+		
+    * Bug Fix: #1363156  (Alex Chapin) 
+    Editing button styles now specify a text color. (fixes bug caused by themes
+    withwhite text color)
+		
+    * Change: #1212787  (Alex Chapin) 
+    Class sections can now be designated by either letters or numbers.
+		
+    * Bug Fix: #1345320  (Alex Chapin) 
+    Fixed summaries of discussion posts when number of participants is greater
+    than 30 (query limits) Also fixed display of a given users discussion posts
+    whenthese exceed query limit.
+		
+    * Bug Fix: #1330176  (Alex Chapin) 
+    Fixed typo in config.sample.inc.php file.
+		
+    * Bug Fix: #1313096  (Alex Chapin) 
+    Fixed internal links in image content blocks by adding convertlinks 
+	
+
 v. 1.4.3 (2005-10-05) 
 ----------------------------------------------------
 		

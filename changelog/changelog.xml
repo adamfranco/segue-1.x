@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <changelog name="Segue ChangeLog">
-	<version number="1.4.4" date="the future">
+	<version number="1.4.4" date="2005-11-22">
 		<fix author='alex' ref='877774' reftype='bug'>
 			If certain steps are taken when creating a site it was possible
 			to create a site with no name (if a user creates a site and then
