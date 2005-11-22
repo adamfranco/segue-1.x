@@ -10,7 +10,8 @@ v. 1.4.4 (2005-11-22)
     If certain steps are taken when creating a site it was possible to create a
     site with no name (if a user creates a site and then immediately uses the
     browser back button to return and then clicks continue and finish...). This
-    bughas been eliminated.
+    bug has been eliminated. Thanks to Jim Witte (jwitte@uiuc.edu) for tracking
+    thisbug down!
 		
     * Bug Fix: #1353196  (Alex Chapin) 
     Mispelling of password in "Forgot your password" as been fixed.

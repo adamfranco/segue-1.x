@@ -7,6 +7,7 @@
 			to create a site with no name (if a user creates a site and then
 			immediately uses the browser back button to return and then clicks
 			continue and finish...).  This bug has been eliminated.
+			Thanks to Jim Witte (jwitte@uiuc.edu) for tracking this bug down!
 		</fix>
 		<fix author='alex' ref='1353196' reftype='bug'>
 			Mispelling of password in "Forgot your password" as been fixed.
