@@ -89,12 +89,14 @@ if ($_loggedin) {
 	 *********************************************************/
 	// this should include all sites that the user owns as well.
 	$userOwnedSlots = slot::getSlotInfoWhereUserOwner($_SESSION['auser']);
-	if (!array_key_exists($_SESSION['auser'], $userOwnedSlots)) {
-		$userOwnedSlots[$_SESSION['auser']] = array();
-		$userOwnedSlots[$_SESSION['auser']]['slot_name'] = $_SESSION['auser'];
-		$userOwnedSlots[$_SESSION['auser']]['slot_type'] = 'personal';
-		$userOwnedSlots[$_SESSION['auser']]['slot_owner'] = $_SESSION['auser'];
-		$userOwnedSlots[$_SESSION['auser']]['site_exits'] = false;
+	if (is_array($userOwnedSlots)) {
+		if (!array_key_exists($_SESSION['auser'], $userOwnedSlots)) {
+			$userOwnedSlots[$_SESSION['auser']] = array();
+			$userOwnedSlots[$_SESSION['auser']]['slot_name'] = $_SESSION['auser'];
+			$userOwnedSlots[$_SESSION['auser']]['slot_type'] = 'personal';
+			$userOwnedSlots[$_SESSION['auser']]['slot_owner'] = $_SESSION['auser'];
+			$userOwnedSlots[$_SESSION['auser']]['site_exits'] = false;
+		}
 	}
 	
 	// Add any user-owned groups that aren't already in the slot list
@@ -448,20 +450,22 @@ if ($_loggedin) {
  * Other sites where user is owner
  *********************************************************/
 	$sites=array();
-	foreach (array_keys($userOwnedSlots) as $name) {
-		$info =& $userOwnedSlots[$name];
-		
-		if (!in_array($name, $sitesprinted)) {
-			if ($allowclasssites && !$allowpersonalsites) {
-				if($info['slot_type'] != 'personal')
-					$sites[$name] =& $info;
+	if (is_array($userOwnedSlots)) {
+		foreach (array_keys($userOwnedSlots) as $name) {
+			$info =& $userOwnedSlots[$name];
 			
-			} else if (!$allowclasssites && $allowpersonalsites) {
-				if ($info['slot_type'] == 'personal')
+			if (!in_array($name, $sitesprinted)) {
+				if ($allowclasssites && !$allowpersonalsites) {
+					if($info['slot_type'] != 'personal')
+						$sites[$name] =& $info;
+				
+				} else if (!$allowclasssites && $allowpersonalsites) {
+					if ($info['slot_type'] == 'personal')
+						$sites[$name] =& $info;
+	
+				} else
 					$sites[$name] =& $info;
-
-			} else
-				$sites[$name] =& $info;
+			}
 		}
 	}
 	
