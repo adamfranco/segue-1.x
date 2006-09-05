@@ -964,9 +964,9 @@ class discussion {
 				$titles = get_star_titles($ratingId);
 				
 				//three ways to create a Rating Block image
-				printc($ratings->outputInteractive($itemId,$ratingId,$rating,$titles));
+				//printc($ratings->outputInteractive($itemId,$ratingId,$rating,$titles));
 				//printc($ratings->outputSimple($avg_rating));
-				//printc($ratings->outputRating($itemId,$ratingId,$rating,$avg_rating,$num_votes,$titles));
+				printc($ratings->outputRating($itemId,$ratingId,$rating,$avg_rating,$num_votes,$titles));
 		 
 				printc("</td>");
 				

@@ -150,8 +150,12 @@ function db_line_exists($table, $where) {
 function db_connect ($host_db, $username, $password, $db='', $port=0) {
 	global $_connect_id;
 	global $db_type; global $debug;
-
+	//print "dbwrapper db_type: ".$db_type."<br>";
+	//print "dbwrapper db: ".$db."<br>";
+	//$db_type="mysql";
+	//$db="segue";
 	if ($db_type == "mysql") {
+//		print " - ok";
 		if ($port != 0) 
 			$host_db .= ":$port";
 		
@@ -211,58 +215,30 @@ function ocidie ($t) {
  * for counting the number of queries done.
  ******************************************************************************/
 $_totalQueries = 0;
-$_totalQueryTime = 0;
-$_queriesByTime = array();
 
 function db_query ($query, $cid=-1) {
 	// for counting the total number of queries
-	global $_totalQueries, $_totalQueryTime, $_queriesByTime;
+	global $_totalQueries;
 	$_totalQueries++;
 	
-	global $db_type, $debug, $printAllQueries;
+	global $db_type; global $debug;
 	global $_connect_id;
 	if ($debug && $printAllQueries) {
 		// The $debug variable is set at the top of this script
 		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-		echo "\n\n<hr /><br />QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".printpre($query, TRUE);
+		echo "\n\n<br /><br />QUERY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".printpre($query, TRUE);
 	}
-	
 	if ($cid==-1) 
 		$cid = $_connect_id;
 	if ($db_type == "mysql") {
-		
-		if ($debug)
-			$start = microtime_float();		
-		
 		$res = mysql_query($query, $cid);
-		
-		if ($debug) {
-			$end = microtime_float();
-			
-			$calibrate_begin = microtime_float();
-			$calibrate_end = microtime_float();
-			$overhead_time = $calibrate_end - $calibrate_begin;
-			
-			$queryTime += ($end - $start - $overhead_time);
-			$_totalQueryTime += $queryTime;
-			
-			if (!isset($_queriesByTime[sprintf("%f", $queryTime)]))
-				$_queriesByTime[sprintf("%f", $queryTime)] = array();
-				
-			$_queriesByTime[sprintf("%f", $queryTime)][] = $query;
-		}
-		
-		if ($debug && $printAllQueries) {						
-			// The $debug variable is set at the top of this script	
-			// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
-			echo "\n\n<br /><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$res."</b>";
-			
-			printf ("\n<br/>Query time: %4f seconds", $queryTime);
-			
-		}
-		if (mysql_error() && $debug)
-			printError(mysql_error());
-		
+	if ($debug && $printAllQueries) {
+		// The $debug variable is set at the top of this script	
+		// The $debug variable also prints a lot of other crap that clutters the screen and I don't want to see ;)
+		echo "\n\n<br /><b>RESULT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n".$res."</b>";
+	}
+	if (mysql_error() && $debug)
+		printError(mysql_error());
 		return $res;
 		
 	} else if ($db_type == "oracle") {
@@ -270,17 +246,6 @@ function db_query ($query, $cid=-1) {
 		OCIExecute($stmt) or ocidie("db_query: could not execute the OCI statement");
 		return $stmt;
 	}
-}
-
-/**
- * Simple function to replicate PHP 5 behaviour
- * From PHP.net documentation:
- * http://www.php.net/manual/en/function.microtime.php
- */
-function microtime_float()
-{
-   list($usec, $sec) = explode(" ", microtime());
-   return ((float)$usec + (float)$sec);
 }
 
 function db_fetch_assoc($res) {

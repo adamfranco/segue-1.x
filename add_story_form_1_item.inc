@@ -1,5 +1,5 @@
 <? /* $Id$ */
-
+//printpre ($_SESSION);
 printc("<form action='index.php?$sid&action=add_story' method=post name='addform'>");
 printc("<input type=hidden name='step'>");
 
@@ -72,6 +72,13 @@ if ($_SESSION[settings][add] || $_SESSION[storyObj]->getField("type") == 'rss') 
 	printc(" RSS</b>".(($_SESSION[storyObj]->getField("type")=='rss')?" - displays an RSS feed.":"")."</div>");
 }
 
+if ($_SESSION[settings][add] || $_SESSION[storyObj]->getField("type") == 'moodle') {
+	printc("<div class=desc><b>");
+	printc("<input type=radio name=type ".(($_SESSION[settings][add])?"onClick='typeChange()'":"")." value='moodle'".(($_SESSION[storyObj]->getField("type")=='moodle')?" checked":"").">");
+	printc(" Module</b>".(($_SESSION[storyObj]->getField("type")=='moodle')?" - links to a module.":"")."</div>");
+}
+
+
 /******************************************************************************
  * Content Type instructions
  ******************************************************************************/
@@ -92,6 +99,10 @@ if ($_SESSION[storyObj]->getField("type")=='rss') {
 	printc("<div class=title>RSS Feed</div>");
 	printc("<div class=desc>Enter the URL (internet address) of the desired RSS feed.</div>");
 }
+if ($_SESSION[storyObj]->getField("type")=='moodle') {
+	printc("<div class=title>Module</div>");
+	printc("<div class=desc>Choose the module you would like to use.</div>");
+}
 if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("<div class=title>Text Block</div>");
 	printc("<div class=desc>Enter the content for your story below. Title and full content are optional. If you enter full content on the next screen, the shorter content (or Abstract) will be displayed on your page with a link to the full content, in a new window.</div>");
@@ -107,7 +118,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 printc("<br /><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
 
 
-if ($_SESSION[storyObj]->getField("type")!='rss') {
+if ($_SESSION[storyObj]->getField("type")!='rss'  && $_SESSION[storyObj]->getField("type")!='moodle' ) {
 	printc("<tr>");
 	printc("<td>Title:</td><td><input type='text' size=50 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
 	if ($_SESSION[storyObj]->getField("type") == 'file') {
@@ -122,6 +133,8 @@ if ($_SESSION[storyObj]->getField("type")!='rss') {
 	printc("<td>URL:</td><td><input type='text' name=url value='".$_SESSION[storyObj]->getField("url")."' size=75></td>");
 	printc("</tr>");
 	
+} else if ($_SESSION[storyObj]->getField("type")=='moodle') {
+	printc("<td>Title:</td><td><input type='text' class='textfield' readonly size=75 name=title value='".spchars($_SESSION[storyObj]->getField("title"))."'>");
 }
 
 if ($_SESSION[storyObj]->getField("type")=='link') {
@@ -135,10 +148,8 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 	
 	$url = convertTagsToInteralLinks($_SESSION[settings][site], $url);
 
-
 	printc("<tr>");
 	printc("<td>URL:<td><input type='text' name=url value='".$url."' size=75></td>");
-
 }
 
 printc("</td></tr>");
@@ -174,7 +185,6 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 /******************************************************************************
  * File/Image Block: Media Library Upload UI
  ******************************************************************************/
-
 if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->getField("type") == 'file') {
 
 	printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
@@ -197,6 +207,60 @@ if ($_SESSION[storyObj]->getField("type") == 'image' || $_SESSION[storyObj]->get
 
 }
 
+/******************************************************************************
+ * Moodle Module: link to moodle module creation UI
+ ******************************************************************************/
+//printpre($_SESSION);
+
+if ($_SESSION[storyObj]->getField("type") == 'moodle') {
+	unset($moodle_id);
+	$slot_name = $_SESSION[settings][site];
+	$site_id = db_get_value("slot", "FK_site", "slot_name = '$slot_name'");
+	$user_id = $_SESSION[aid];
+	$module_id = $_SESSION[storyObj]->getField("FK_module");
+	$mod = $_SESSION[storyObj]->getField("longertext");
+	$description = $_SESSION[storyObj]->getField("shorttext");
+	
+//	printpre($moodleid);
+//	printpre($module_id);
+	//printpre($user_id);
+	//printpre($_SESSION[settings][moodleid]);
+
+	printc("<div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 0px solid gray'>");
+	printc("<tr><td colspan=2>");
+	printc("<input type=hidden name='moodleid' value=".$_SESSION[settings][moodleid].">");
+	
+	// if module_id then updating
+	if ($module_id) {
+		printc("<input type=button name='moodle' value='Update Module' onClick='sendWindow(\"moodle\",700,600,\"moodle_auth.inc.php?site_id=$site_id&user_id=$user_id&module_id=$module_id&mod=$mod&action=update\")' target='filebrowser' style='text-decoration: none'>");	
+	
+	// adding new module
+	} else {		
+		$site_title = db_get_value("site", "site_title", "site_id = $site_id");
+		$moodle_id = db_get_value("moodle", "FK_moodle", "site_id = $site_id");
+		if (isset($moodle_id)) {		
+			$course_id = $moodle_id;
+		} else {
+			$course_id = $site_id;
+		}
+		$section = $_SESSION[settings][section];  //needed?
+		$shortname = $slot_name;
+		$fullname = $site_title;		
+		printc("<input type=button name='moodle' value='Add Module' onClick='sendWindow(\"moodle\",700,600,\"moodle_auth.inc.php?site_id=$site_id&user_id=$user_id&section=1&shortname=$shortname\")' target='filebrowser' style='text-decoration: none'>");	
+	}
+	
+	
+	printc("<input type='hidden' class='textfield' small name='moodletype' value='".$_SESSION[settings][moodletype]."' size=75 readonly>");
+
+//	printc("</td></tr>");
+//	printc("<tr><td>");
+//	printc("<div style='font-size:10px; color:#003399'>1. Create Moodle module. <br />");
+// 	printc("2. Add optional description</div>");
+//	printc("</td></tr>");
+	printc("</table></div>");
+//	printc("<input type='hidden' class='textfield' small name='shorttext' value='".urldecode($description)."' rows='60' cols='20' size=75 readonly>");	
+
+}
 
 /******************************************************************************
  * HTML Area

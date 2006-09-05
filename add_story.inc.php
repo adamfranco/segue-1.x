@@ -52,12 +52,16 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	if ($_SESSION[settings][step] == 2 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("longertext",$_REQUEST[longertext]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][libraryfilename] = $_REQUEST[libraryfilename];
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][libraryfileid] = $_REQUEST[libraryfileid];
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][moodleid] = $_REQUEST[moodleid];
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][moodletype] = $_REQUEST[moodletype];
 
 	//---- If switching type, take values to defaults ----
 	if ($_REQUEST[typeswitch]) {
 		$_SESSION[settings][ediscussion] = $thisPage->getField("ediscussion");
 		$_SESSION[settings][libraryfilename] = "";
 		$_SESSION[settings][libraryfileid] = "";
+		$_SESSION[settings][moodleid] = "";
+		$_SESSION[settings][moodletype] = "";		
 		$_SESSION[storyObj]->init(1);
 		
 		if ($_SESSION[settings][add]) {
@@ -116,6 +120,13 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 			$_SESSION[settings][libraryfileid] = $_SESSION[storyObj]->getField("longertext");
 			$_SESSION[settings][libraryfilename] = db_get_value("media","media_tag","media_id=".$_SESSION[settings][libraryfileid]);
 		}
+
+		if ($_SESSION[storyObj]->getField("type") == "moodle") {
+			$_SESSION[settings][moodleid] = $_SESSION[storyObj]->getField("FK_module");
+			$_SESSION[settings][moodletype] = $_SESSION[storyObj]->getField("longertext");
+		}
+		
+		
 	}
 	
 	$_SESSION[settings][categories]=array_unique($thisSite->getAllValues("story","category"));
@@ -180,6 +191,8 @@ if ($_REQUEST[save]) {
 		error("You must select a file to upload.");
 	if ($_SESSION[storyObj]->getField("type")=='file' && (!$_SESSION[storyObj]->getField("title") || $_SESSION[storyObj]->getField("title") == ''))
 		error("You must enter a title.");
+	if ($_SESSION[storyObj]->getField("type")=='moodle' && (!$_SESSION[storyObj]->getField("title") || $_SESSION[storyObj]->getField("title") == ''))
+		error("You must enter a title.");
 	if ($_SESSION[storyObj]->getField("type")=='image' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
 		error("You must select an image to upload.");
 		
@@ -201,10 +214,18 @@ if ($_REQUEST[save]) {
 	if (!$error) { // save it to the database
 				
 		/******************************************************************************
-		 * put image id into the longer text field
+		 * put image, file or moodle id into the longer text field
 		 ******************************************************************************/
 		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
 			$_SESSION[storyObj]->setField("longertext",$_SESSION[settings][libraryfileid]);
+		}
+		
+		/******************************************************************************
+		 * put moodle type into the module type field and its id into FK_module
+		 ******************************************************************************/
+		if ($_SESSION[storyObj]->getField("type") == "moodle") {
+			$_SESSION[storyObj]->setField("FK_module",$_SESSION[settings][moodleid]);
+			$_SESSION[storyObj]->setField("longertext",$_SESSION[settings][moodletype]);
 		}
 		
 		/******************************************************************************

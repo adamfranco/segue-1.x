@@ -9,7 +9,7 @@ class story extends segue {
 	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp", "addedbyfull", "editedbyfull",
 							"editedby","editedtimestamp","shorttext","longertext",
 							"activatedate","deactivatedate","discuss","discussdisplay","discussauthor","discussemail","discusslabel",
-							"locked","category","discussions","texttype","type","url","active");
+							"locked","category","discussions","texttype","type","url","active","FK_module");
 	
 	// fields listed in $_datafields are stored in the database.
 	// the first element is the table join syntax required to pull the data.
@@ -187,7 +187,13 @@ class story extends segue {
 			"story",
 			array("story_text_long"),
 			"story_id"
+		),
+		"FK_module" => array(
+			"story",
+			array("FK_module"),
+			"story_id"
 		)
+
 
 	);
 
@@ -222,6 +228,7 @@ class story extends segue {
 /* 		$this->data[discuss] = 0; */
 		$this->data[texttype] = "text";
 		$this->data[category] = "";
+		$this->data[FK_module] = 0;
 		$this->data[url] = "http://";
 		$this->data[locked] = 0;
 		if ($this->id) $this->fetchFromDB();
@@ -692,7 +699,6 @@ WHERE
 	function createSQLArray($all=0) {
 		$d = $this->data;
 		$a = array();
-
 /* 		if (!isset($this->owningSiteObj)) $this->owningSiteObj =& new site($this->owning_site); */
 /* 		if ($all) $a[] = $this->_datafields[site_id][1][0]."='".$this->owningSiteObj->getField("id")."'"; */
 /* 		if (!isset($this->owningSectionObj)) $this->owningSectionObj = new section($this->owning_site,$this->owning_section); */
@@ -731,7 +737,7 @@ WHERE
 		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='$d[category]'";
 		if ($all || $this->changed[shorttext]) $a[] = $this->_datafields[shorttext][1][0]."='".urlencode($d[shorttext])."'";
 		if ($all || $this->changed[longertext]) $a[] = $this->_datafields[longertext][1][0]."='".urlencode($d[longertext])."'";
-//		if ($all || $this->changed[discussions]) $a[] = "discussions='".encode_array($d[discussions])."'";
+		if ($all || $this->changed[FK_module]) $a[] = $this->_datafields[FK_module][1][0]."=$d[FK_module]";
 		
 		return $a;
 	}
