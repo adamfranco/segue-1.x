@@ -689,6 +689,132 @@ function save_record_tags($save_record_tags,$delete_record_tags,$record_id,$user
 }
 
 /******************************************************************************
+ * Saves previous version to version table
+ ******************************************************************************/
+function save_version ($version_short, $version_long, $story_id) {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+
+	// make sure number of versions is within limit
+	$num_versions = count(get_versions($story_id));
+//	printpre($num_versions);
+	//exit;
+	if ($num_versions > 30) {
+		$query = "
+			SELECT
+				version_order
+			FROM
+				version
+			WHERE
+				FK_parent = '".addslashes($story_id)."'
+			ORDER BY
+				version_created_tstamp ASC
+			LIMIT
+				0,1
+		";
+		$r = db_query($query);
+		$a = db_fetch_assoc($r);
+		$last_version_num = $a['version_order'];
+	
+		$query = "
+			DELETE FROM
+				version
+			WHERE
+				FK_parent = '".addslashes($story_id)."'
+				AND
+				version_order = '".addslashes($last_version_num)."'		
+		";
+	
+		$r = db_query($query);
+	}
+	
+	// get the last version number
+	$query = "
+		SELECT
+			version_order
+		FROM
+			version
+		WHERE
+			FK_parent = '".addslashes($story_id)."'
+		ORDER BY
+			version_order DESC
+		LIMIT
+			0,1
+	";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	$last_version_num = $a['version_order'];
+	//printpre($last_version_num);
+	// exit;
+		
+	$version_number = $last_version_num + 1;
+	
+	$query = " 
+	INSERT INTO
+		version
+	SET
+		FK_parent = '".addslashes($story_id)."', 
+		FK_createdby ='".addslashes($_SESSION[aid])."',
+		version_order = '".addslashes($version_number)."', 
+		version_created_tstamp = NOW(), 
+		version_text_short = '".addslashes($version_short)."', 
+		version_text_long = '".addslashes($version_long)."'
+	";
+	printpre($query);
+	//exit;
+	$r = db_query($query);
+
+}
+
+/******************************************************************************
+ * Gets previous version(s) and returns a list
+ * if no version_id is passed then gets all versions
+ ******************************************************************************/
+function get_versions ($story_id, $version_num = 0) {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+	
+	$versions = array();
+	
+	if ($version_num == 0) {	
+		$where = "FK_parent = '".addslashes($story_id)."'";
+	} else {
+		$where = "
+			FK_parent = '".addslashes($story_id)."'
+			AND
+			version_order = '".addslashes($version_num)."'
+		";
+	}
+	$query = "
+		SELECT
+			*
+		FROM
+			version
+		WHERE
+			$where	
+		ORDER BY
+			version_created_tstamp DESC
+	";
+//	printpre($query);
+	//exit;
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$version_author = $a[FK_createdby];
+		$version_authorname = db_get_value("user", "user_fname", "user_id = '".addslashes($version_author)."'");
+		$version_created = timestamp2usdate($a[version_created_tstamp]);
+		$version[FK_createdby]= $version_authorname;
+		$version[version_order]= $a[version_order];
+		$version[version_created_tstamp]= $version_created;
+		$version[version_text_short]= $a[version_text_short];
+		$version[version_text_long]= $a[version_text_long];
+		$version[version_id]= $a[version_id];
+		$versions[] = $version;
+	}
+	return $versions;
+
+}
+
+
+/******************************************************************************
  * Get all records with a given tag
  * returns array with story, page and section ids
  ******************************************************************************/

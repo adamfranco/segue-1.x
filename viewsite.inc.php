@@ -427,7 +427,14 @@ do {
 						} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor")) {
 							printc("updated by ".$o->getField("editedbyfull"));
 						}
-													
+						
+												
+						// if versioning then show link to versions
+						if ($o->getField("versioning") == 1) {
+							printc(" | <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;versioning=".$o->id."'>");
+							printc("versions</a>\n");								
+						}
+
 						printc("</div>");
 						//printc("<hr size='1' noshade /><br />");
 					}						

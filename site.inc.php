@@ -278,6 +278,10 @@ do {
 			if ($detail) {
 				$o =& $thisPage->stories[$detail];
 				include("fullstory.inc.php");
+			} else if ($_REQUEST['versioning'] || $_REQUEST['version']) {
+				$o =& $thisPage->stories[$detail];
+				include("fullstory.inc.php");			
+
 			
 			//if not detail, then print all stories
 			
@@ -461,6 +465,14 @@ do {
 							} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor")) {
 								printc("updated by ".$o->getField("editedbyfull"));
 							}
+							
+														
+							// if versioning then show link to versions
+							if ($o->getField("versioning") == 1) {
+								printc(" | <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;versioning=".$o->id."'>");
+								printc("versions</a>\n");								
+							}
+
 							printc(" | <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id."'>");
 							printc("permalink</a>\n");		
 							printc("</div>");

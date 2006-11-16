@@ -30,6 +30,7 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
 	if ($_REQUEST[type]) $_SESSION[storyObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]  && $_REQUEST[versioning]) $_SESSION[storyObj]->setField("versioning",$_REQUEST[versioning]);	
 	$_SESSION[storyObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[storyObj]->setField("active",$_REQUEST[active]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setPermissions($_REQUEST[permissions]);
@@ -319,6 +320,18 @@ if ($_REQUEST[save]) {
 		
 		$_SESSION[storyObj]->updatePermissionsDB(TRUE);
 		$_SESSION[storyObj]->deletePendingEditors();
+		
+		/******************************************************************************
+		 * if versioning, then save this current version to version table
+		 ******************************************************************************/
+		if ($_SESSION[storyObj]->getField("versioning") == '1') {		 	
+			$version_short = $_SESSION[storyObj]->getField("shorttext");
+			$version_long = $_SESSION[storyObj]->getField("longertext");
+			$story_id = $_SESSION[storyObj]->id;
+			// printpre($version_short);
+			save_version($version_short, $version_long, $story_id);
+		 }
+
 
 		/******************************************************************************
 		 * if tags, then save to tag table

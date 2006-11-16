@@ -297,6 +297,7 @@ if (!$allTablesExist) {
 		  story_display_type enum('story','image','file','link','rss') NOT NULL default 'story',
 		  FK_media int(10) unsigned default NULL,
 		  story_locked enum('0','1') NOT NULL default '0',
+		  story_versioning enum('0','1') NOT NULL default '0',
 		  PRIMARY KEY  (story_id),
 		  KEY FK_page (FK_page),
 		  KEY story_order (story_order),
@@ -350,6 +351,18 @@ if (!$allTablesExist) {
 		  KEY record_type (record_type(7)),
 		  KEY record_tag (record_tag(10))
 		) TYPE=MyISAM
+		
+		CREATE TABLE version (
+		  version_id int(10) unsigned NOT NULL auto_increment,
+		  FK_parent int(10) unsigned NOT NULL default '0',
+		  FK_createdby int(10) unsigned NOT NULL default '0',
+		  version_order INT( 10 ) unsigned NOT NULL  default '0',
+		  version_created_tstamp timestamp(14) NOT NULL,
+		  version_text_short mediumblob NOT NULL,
+		  version_text_long mediumblob NOT NULL,
+		  PRIMARY KEY  (version_id)
+		) TYPE=MyISAM;
+
 	";
 	$queryArray = explode(";",$query);
 	foreach ($queryArray AS $query) {

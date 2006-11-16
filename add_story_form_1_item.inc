@@ -139,16 +139,21 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 printc("\n</td></tr>");
 printc("\n</table>");
 
-///******************************************************************************
-// * Include option for versioning if type is new content
-// ******************************************************************************/
-//printc("\n<br /><table cellpadding='5' cellspacing='0' style='border: 1px solid gray'>");
-//printc("\n<tr>");
-//printc("\n<td><input type='checkbox' name='version' value='1' ".(($_SESSION[storyObj]->getField("story_versioning")=='1')?" checked":"")." /></td>");
-//printc("\n<td>Versioning</td>");
-//
-//printc("\n</td></tr>");
-//printc("\n</table>");
+/******************************************************************************
+ * Include option for versioning if type is new content
+******************************************************************************/
+printc("<br /><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
+printc("<tr>");
+printc("<td><input type='checkbox' name='versioning' value='1' ");
+printc(($_SESSION[storyObj]->getField("versioning")=='1')?" checked":"");
+if ($_SESSION[auser] != $thisSite->owningSiteObj->owner) {
+	printc(" disabled");
+}
+printc("></td>");
+printc("<td>Versioning</td>");
+
+printc("</td></tr>");
+printc("</table>");
 
 /******************************************************************************
  * Determine the editor and if not set, set to default (i.e. fckeditor)
@@ -288,9 +293,22 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 		
 	printc("\n<table width='100%'><tr><td style='padding-left: 5px'>");
 	
-	//printc("\n<br />");
-			
-	$text = $_SESSION[storyObj]->getField("shorttext");
+	/******************************************************************************
+	 * 	if particular version is selected, then get the selected version
+	 ******************************************************************************/
+	if ($_REQUEST['version']) {
+		$version_id = $_REQUEST['version'];
+		$story_id = $_REQUEST['edit_story'];
+		$version = get_versions($story_id, $version_id);
+		$text = urldecode($version[0]['version_text_short']);
+		$fulltext = urldecode($version[0]['version_text_long']);
+		$_SESSION[storyObj]->setField("shorttext",$text);
+		$_SESSION[storyObj]->setField("longertext",$fulltext);
+	} else {
+	
+		$text = $_SESSION[storyObj]->getField("shorttext");
+	}
+
 	
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)

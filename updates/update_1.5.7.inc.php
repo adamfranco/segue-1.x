@@ -7,10 +7,11 @@
  ******************************************************************************/
 
 
-class Update157
+class Update156
 	extends Update {
 	
 	var $field01Exists = FALSE;
+	var $table01Exists = FALSE;
 	
 	/**
      * Returns the name of the update
@@ -18,7 +19,7 @@ class Update157
      * @return string Name of the update
 	 */
 	function getName() {
-		return "Segue 1.5.7 Update";
+		return "Segue 1.5.6 Update";
 	}
 	
     /**
@@ -27,8 +28,8 @@ class Update157
      * @return string Description of the update
 	 */
 	function getDescription() {
-		return "This update modifies Segue's tables in order to allow users
-		to add metadata to files they upload.
+		return "This update modifies Segue's tables in order to add support for
+		versioning content blocks
 	";
 	}
 	
@@ -40,10 +41,10 @@ class Update157
 	function hasRun() {
 		$hasRun = TRUE;
 		
-		// check for title_part field in media table
+		// check for story_versioning field in story table
 		$query = "
 		DESCRIBE
-			media title_part
+			story story_versioning
 		";
 		$r = db_query($query);
 		if (db_num_rows($r)) {
@@ -51,7 +52,21 @@ class Update157
 			$hasRun = TRUE;
 		} else {
 			$hasRun = FALSE;
-			print "\n Needs metadata fields in media table.<br />";
+			print "\n Needs story_versioning field in story table.<br />";
+		}
+
+		// check for version table
+		$query = "
+		DESCRIBE
+			version
+		";
+		$r = db_query($query);
+		if (db_num_rows($r)) {
+			$this->table01Exists = TRUE;
+			$hasRun = TRUE;
+		} else {
+			$hasRun = FALSE;
+			print "\n Needs version table.<br />";
 		}
 						
 		return $hasRun;	
@@ -62,24 +77,40 @@ class Update157
 	 */
 	function run() {
 	
-	 	// modify the section_hide_sidebar option
+	 	// modify the story_versioning field 
 	 	$query = "
 		DESCRIBE
-			media title_part
+			story story_versioning
 		";
 		$r = db_query($query);
 		if (db_num_rows($r) < 1) {
 			$query = "
 			ALTER TABLE 
-				media
-			ADD `is_published` TINYINT( 1 ) DEFAULT '0' NOT NULL AFTER `media_size` ,
-			ADD `title_whole` VARCHAR( 255 ) AFTER `is_published` ,
-			ADD `title_part` VARCHAR( 255 ) AFTER `title_whole` ,
-			ADD `author` VARCHAR( 255 ) AFTER `title_part` ,
-			ADD `pagerange` VARCHAR( 255 ) AFTER `author` ,
-			ADD `publisher` VARCHAR( 255 ) AFTER `pagerange` ,
-			ADD `pubyear` INT( 4 ) AFTER `publisher` ,
-			ADD `isbn` VARCHAR( 100 ) AFTER `pubyear` 			
+				story
+			ADD 
+				story_versioning enum('0','1') NOT NULL default '0' AFTER story_locked
+			";
+			$r = db_query($query);
+		}
+
+	 	// add version table 
+	 	$query = "
+		DESCRIBE
+			version
+		";
+		$r = db_query($query);
+		if (db_num_rows($r) < 1) {
+			$query = "
+				CREATE TABLE version (
+				  version_id int(10) unsigned NOT NULL auto_increment,
+				  FK_parent int(10) unsigned NOT NULL default '0',
+				  FK_createdby int(10) unsigned NOT NULL default '0',
+				  version_order INT( 10 ) unsigned NOT NULL  default '0',
+				  version_created_tstamp timestamp(14) NOT NULL,
+				  version_text_short mediumblob NOT NULL,
+				  version_text_long mediumblob NOT NULL,
+				  PRIMARY KEY  (version_id)
+				) TYPE=MyISAM;
 			";
 			$r = db_query($query);
 		}
