@@ -2,9 +2,9 @@
 
 $descriptions = array (
 	"template0"=>"A basic site with explanations, good for getting started with a personal site."
-	,"template3"=>"A basic course site with sections for <i>Course Description</i> and <i>Syllabus</i>."
-	,"template2"=>"A course site with predefined sections for <i>Introduction</i>, <i>Assignments</i>, <i>Syllabus</i>, and <i>Links</i>."
-	,"template1"=>"Similar to the standard course site, but adds a section for <i>Discussions</i>."
+	,"template3"=>"A basic course site with pages for <i>Course Description</i>, <i>Syllabus</i> and information about the instructor."
+	,"template2"=>"A site set up for use as a personal or group weblog."
+	,"template1"=>"A course site with predefined sections for <i>Introduction</i>, <i>Assignments</i>, <i>Discussions</i>, a <i>Blog</i> and <i>Presentations</i>."
 	,"template4"=>"Useful for quick start to sites."
 	,"template5"=>"Blank site for starting from scratch."
 );

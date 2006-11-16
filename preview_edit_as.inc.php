@@ -21,7 +21,7 @@ if ($_SESSION['auser'] == $thisSite->owner) {
 	print "<div style='border: 2px solid red; text-align: center; font-size: large;'>Previewing Edit Mode as '$previewUser'.</div>";
 
 	$_SESSION['auser'] = $previewUser;
-	$_REQUEST['action'] = $_REQUEST['action']."&previewuser=".$previewUser;
+	$_REQUEST['action'] = $_REQUEST['action']."&amp;previewuser=".$previewUser;
 	$action = $_REQUEST['action'];
 	$_SESSION['__no_inst_ips'] = TRUE;
 	$_REQUEST['nostatus'] = TRUE;

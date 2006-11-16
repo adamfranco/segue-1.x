@@ -75,6 +75,7 @@ $_theme_colors = array(
 			"td0"=>					"e6e6ff",
 			"td1"=>					"f6f6ff",
 			"header"=>				"FFCC00",
+			"dheader"=>				"000000",
 			"contentarea"=>			"000000",
 			"contentinfo"=>			"999"
 	),
@@ -166,5 +167,8 @@ $_linkcolor = array(
 	"green"=>					"006633",
 	"yellow"=>					"FFCC00",
 );
+
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
 
 include("$themesdir/common/nav.inc.php");

@@ -137,4 +137,7 @@ $_linkcolor = array(
 	"green"=>					"006633"
 );
 
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+
 include("$themesdir/common/nav.inc.php");

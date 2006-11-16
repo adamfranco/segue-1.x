@@ -16,7 +16,7 @@
 	 * inst_name - the name of your institute (ie, 'Middlebury College')
 	 ******************************************************************************/
 	$cfg['inst_name'] = "";						// "The Best Institute"
-	
+		
 	/******************************************************************************
 	 * full_uri - Segue's full URL path (ie, http://segue.middlebury.edu)
 	 *		Don't put a slash "/" at the end of the url!
@@ -63,18 +63,22 @@
 	 * defaultmessage - the message to be displayed. can contain HTML
 	 * defaultlinks - an associative array of links to display on the left navigation
 	 *				  bar for quick access to other sites in your institution
-	 * inst_logo_url - the url to the logo that will appear in the upper right of
+	 * inst_logo_url - the url to the logo that will appear in the upper right and left of
 	 *					the login screen
 	 ******************************************************************************/
 	$cfg['defaulttitle'] = $defaulttitle = "Segue";
 	$cfg['defaultmessage'] = $defaultmessage = "<p>Welcome to Segue! To access your personal and class websites, please login with your username and password above.</p><p>With Segue, you can quickly and easily create websites for yourself and, if you are a professor, for your classes.</p>";
 	$cfg['defaultlinks'] = $defaultlinks = array(
+		"&nbsp;"=>"&nbsp;",
 		"Educational Technology"=>"segue.middlebury.edu/sites/ET",
 		"Academic Programs"=>"www.middlebury.edu/academics/",
 		"Libraries"=>"www.middlebury.edu/~lib/",
-		"Middlebury College"=>"www.middlebury.edu"
+		"Middlebury College"=>"www.middlebury.edu",
+		"&nbsp;"=>"&nbsp;"
 	);
 	$cfg['inst_logo_url'] = $inst_logo_url = "themes/program/images/gray/midd.gif";
+	$cfg['inst_logo_url_leftlogo_tophalf'] = $inst_logo_url_leftlogo_tophalf = "themes/program/images/gray/leftlogo_tophalf.gif";
+	$cfg['inst_logo_url_leftlogo_bottomhalf'] = $inst_logo_url_leftlogo_bottomhalf = "themes/program/images/gray/leftlogo_bottomhalf.gif";
 	
 	/******************************************************************************
 	 * user_notice - This notice will be displayed in a large red box at the top of
@@ -248,17 +252,17 @@
 		
 	/******************************************************************************
 	 * Segue Authentication help
-	 * if Segue is your primary means of authentication then turn password reset on
-	 * to allow users to self register visitor account then turn auth_registration on
+	 * If Segue is your primary means of authentication then turn password reset on
+	 * To allow users to self register visitor account turn auth_registration on
 	 * if you use an external authentication system then include help instructions
-	 * for creating user accounts
+	 * for creating user accounts in the auth_help variable.
 	 ******************************************************************************/
 	 
 		$cfg['auth_reset_on'] = $auth_reset_on = TRUE;		// displays password reset link
 		$cfg['auth_register_on'] = $auth_register_on = TRUE;	// displays visitor registration link
-		$cfg['auth_help_on'] = $auth_help_on = TRUE;			// displays custom authentication help info
-		$cfg['auth_help'] .= "Users should manage their user accounts at:";
-		$cfg['auth_help'] .= " <a href=http://www/mydomain.com/help/users>User Accounts</a>";	
+		$cfg['auth_help_on'] = $auth_help_on = FALSE;			// displays custom authentication help info
+		$cfg['auth_help'] = "Users should manage their user accounts at:"; // appears only if auth_help_on is TRUE
+		$cfg['auth_help'] .= " <a href='http://www/mydomain.com/help/users'>User Accounts</a>";	
 
 	
 	/******************************************************************************
@@ -443,7 +447,7 @@
 	$cfg['templates'] = $_templates = array(
 						"template0"=>"Default",
 						"template1"=>"Extensive Course Site",
-						"template2"=>"Standard Course Site",
+						"template2"=>"Weblog",
 						"template3"=>"Brief Course Site",
 						"template4"=>"Advanced: Single Section",
 						"template5"=>"Advanced: Blank"

@@ -52,8 +52,24 @@ if ($curraction == 'add') {
 	if (!array_key_exists($_REQUEST['semester'], $cfg['semesters'])) error("You must enter a semester.");
 	if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
 	if (!$_REQUEST['owner']) error("You must assign a owner to this class site.");
-	$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
+	$owner_id = db_get_value("user","user_id","user_uname='".addslashes($_REQUEST['owner'])."'");
 	if (!$owner_id) error("The class owner you selected is not a register Segue user.");
+	
+	$external_id = $_REQUEST['external_id'];
+	$duplicate_ids_num = 0;
+	$query = "
+		SELECT class_external_id
+		FROM
+			class
+		WHERE
+			class_external_id = '".addslashes($external_id)."'
+	";
+	$duplicate_ids = db_query($query);
+	$duplicate_ids_num = db_num_rows($duplicate_ids);
+	
+	if ($duplicate_ids_num != 0) {
+		error("A class with this external ID has already been created.  You must select a unique external ID.");
+	}
 	
 	// all good
 	if (!$error) {
@@ -73,11 +89,12 @@ if ($curraction == 'add') {
 				INSERT INTO
 					ugroup_user
 				SET
-					FK_ugroup = $ugroup_id,
-					FK_user = $owner_id
+					FK_ugroup = '".addslashes($ugroup_id)."',
+					FK_user = '".addslashes($owner_id)."'
 			";
 			db_query($query);
 		}
+		
 		
 		$obj = &new course();
 		$obj->external_id = $_REQUEST['external_id'];
@@ -102,10 +119,10 @@ if ($curraction == 'edit') {
 	if ($_REQUEST['commit']==1) {
 		if (!ereg("^[a-zA-Z]{1,}$",$_REQUEST['department'])) error("You must enter a department. Only charactors \"a-z\" and \"A-Z\" are allowed.");
 		if (!ereg("^[0-9]{1,}$",$_REQUEST['number'])) error("You must enter a numeric number.");
-		if (!ereg("^[a-zA-Z]{0,}$",$_REQUEST['section'])) error("Your course section must be letters \"a-z\" and \"A-Z\" only");
+		if (!ereg("^[a-zA-Z0-9]{0,}$",$_REQUEST['section'])) error("Your course section must be letters \"a-z\" and \"A-Z\" only");
 		if (!array_key_exists($_REQUEST['semester'], $cfg['semesters'])) error("You must enter a semester.");
 		if (!ereg("^[0-9]{4}$",$_REQUEST['year'])) error("You must enter a valid 4-digit year.");
-		$owner_id = db_get_value("user","user_id","user_uname='".$_REQUEST['owner']."'");
+		$owner_id = db_get_value("user","user_id","user_uname='".addslashes($_REQUEST['owner'])."'");
 		if (!$owner_id) error("The class owner you selected is not a register Segue user.");
 
 		if (!$error) {
@@ -130,17 +147,17 @@ if ($curraction == 'edit') {
 				SET
 					ugroup_name='".generateCodeFromData($_REQUEST['department'],$_REQUEST['number'],$_REQUEST['section'],$_REQUEST['semester'],$_REQUEST['year'])."'
 				WHERE
-					ugroup_id='".$obj->ugroup."'
+					ugroup_id='".addslashes($obj->ugroup)."'
 			";
 			db_query($query);
 			
-			if ($owner_id && !db_get_line("ugroup_user","FK_user=$owner_id AND FK_ugroup = ".$obj->ugroup)) {
+			if ($owner_id && !db_get_line("ugroup_user","FK_user='".addslashes($owner_id)."' AND FK_ugroup = '".addslashes($obj->ugroup)."'")) {
 				$query = "
 					INSERT INTO
 						ugroup_user
 					SET
-						FK_ugroup = ".$obj->ugroup.",
-						FK_user = $owner_id
+						FK_ugroup = '".addslashes($obj->ugroup)."',
+						FK_user = '".addslashes($owner_id)."'
 				";
 				db_query($query);
 			}
@@ -173,21 +190,21 @@ $class_dept = $_REQUEST['class_dept'];
 $semester = $_REQUEST['semester'];
 
 if ($curraction == 'edit') {
-	$where = "class_id =$id";
+	$where = "class_id ='".addslashes($id)."'";
 } else {
 	$where = "class_external_id LIKE '%'";
 }
 		
-if ($class_external_id) $where = "class_external_id LIKE '$class_external_id%'";
-if ($class_name) $where .= " AND class_name LIKE '%$class_name%'";
-if ($class_dept) $where .= " AND class_department LIKE '$class_dept%'";
+if ($class_external_id) $where = "class_external_id LIKE '".addslashes($class_external_id)."%'";
+if ($class_name) $where .= " AND class_name LIKE '%".addslashes($class_name)."%'";
+if ($class_dept) $where .= " AND class_department LIKE '".addslashes($class_dept)."%'";
 if ($semester == "any") {
 	$where .= " AND class_semester LIKE '%'";
 } else if ($semester) {
-	$where .= " AND class_semester = '$semester'";
+	$where .= " AND class_semester = '".addslashes($semester)."'";
 }
-if ($class_year) $where .= " AND class_year LIKE '$class_year%'";
-if ($class_owner) $where .= " AND (classowner.user_uname LIKE '%$class_owner%' OR classowner.user_fname LIKE '%$class_owner%')";
+if ($class_year) $where .= " AND class_year LIKE '".addslashes($class_year)."%'";
+if ($class_owner) $where .= " AND (classowner.user_uname LIKE '%".addslashes($class_owner)."%' OR classowner.user_fname LIKE '%".addslashes($class_owner)."%')";
 
 if ($findall) {
 	$class_external_id = "%";
@@ -229,10 +246,18 @@ if ($curraction == "edit" || $class_external_id || $class_name || $class_dept ||
 	$a = db_fetch_assoc($r);
 	$numclasses = $a[class_count];
 	
-	if (!isset($lowerlimit)) $lowerlimit = 0;
-	if ($lowerlimit < 0) $lowerlimit = 0;
 	
-	$limit = " LIMIT $lowerlimit,30";
+	if (isset($_REQUEST['lowerlimit']))
+		$lowerlimit = intval($_REQUEST['lowerlimit']);
+	else
+		$lowerlimit = 0;
+	
+	if ($lowerlimit < 0) 
+		$lowerlimit = 0;
+	
+	$limit = " limit $lowerlimit,30";
+	
+
 
 	$query = "
 		SELECT
@@ -273,7 +298,7 @@ if ($curraction == "edit" || $class_external_id || $class_name || $class_dept ||
 	
 	$r = db_query($query);
 }
-
+//print $where;
 printerr();
 
 ?>
@@ -288,8 +313,7 @@ include("themes/common/logs_css.inc.php");
 include("themes/common/header.inc.php");
 ?>
 </head>
-<!-- <body onLoad="document.addform.external_id.focus()"> -->
-<body onLoad="document.searchform.name.focus()">
+<body onload="document.searchform.name.focus()">
 <?
 /******************************************************************************
  * Get site id for links to participation section
@@ -299,21 +323,21 @@ include("themes/common/header.inc.php");
 	$siteid = $siteObj->id;
 
 if ($_SESSION['ltype']=='admin') {
-	print "<table width=100%  class='bg'><tr><td class='bg'>
-	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
-	 | <a href='viewusers.php?$sid&site=$site'>users</a>
+	print "<table width='100%'  class='bg'><tr><td class='bg'>
+	Logs: <a href='viewsites.php?$sid&amp;site=$site'>sites</a>
+	 | <a href='viewusers.php?$sid&amp;site=$site'>users</a>
 	</td><td align='right' class='bg'>
-	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
+	<a href='users.php?$sid&amp;site=$site'>add/edit users</a> | 
 	  add/edit classes | 
-	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
-	<a href='update.php?$sid&site=$site'>segue updates</a>
+	<a href='add_slot.php?$sid&amp;site=$site'>add/edit slots</a> |
+	<a href='update.php?$sid&amp;site=$site'>segue updates</a>
 	</td></tr></table>";
 }
 
 if ($site) {
 	print "<div align='right'>";
-	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
-	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
+	print "<a href='add_students.php?$sid&amp;name=$site'>Roster</a>";
+	print " | <a href='email.php?$sid&amp;siteid=$siteid&amp;site=$site&amp;action=list&amp;scope=site'>Participation</a>";
 	print " | Logs";
 	print "</div><br />";
 }
@@ -323,29 +347,30 @@ if ($site) {
 
 <?=$content?>
 
-<table cellspacing=1 width='100%' id='maintable'>
+<table cellspacing='1' width='100%' id='maintable'>
 <tr><td>
-	<table cellspacing=1 width='100%'>
+	<table cellspacing='1' width='100%'>
 		<tr><td>
-			<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-			Code: <input type='text' name='class_external_id' size=10 value='<?echo $class_external_id?>'> 
-			Name: <input type='text' name='class_name' size=10 value='<?echo $class_name?>'>
-			Dept: <input type='text' name='class_dept' size=3 value='<?echo $class_dept?>'>
+			<form action="<? echo $PHP_SELF ?>" method='get' name='searchform'>
+			Code: <input type='text' name='class_external_id' size='10' value='<?echo $class_external_id?>' /> 
+			Name: <input type='text' name='class_name' size='10' value='<?echo $class_name?>' />
+			Dept: <input type='text' name='class_dept' size='3' value='<?echo $class_dept?>' />
 			Semester:
-			<select name=semester>
-				<option<?=($semester=='any')?" selected":""?> value='any'>Any</option>
+			<select name='semester'>
+				<option<?=($semester=='any')?" selected='selected'":""?> value='any'>Any</option>
 				<?
 					foreach (array_keys($cfg['semesters']) as $semesterKey) {
-						print "<option".(($semester == $semesterKey)?" selected":"")." value='".$semesterKey."'>";
+						print "<option".(($semester == $semesterKey)?" selected='selected'":"")." value='".$semesterKey."'>";
 						print $cfg['semesters'][$semesterKey]['name'];
 						print "</option>";
 					}
 				?>
 			</select>
-			Year: <input type='text' name='class_year' size=5 value='<?echo $class_year?>'>
-			Owner: <input type='text' name='class_owner' size=7 value='<?echo $class_owner?>'>
-			<input type=submit name='search' value='Find'>
-			<input type=submit name='findall' value='Find All'>
+			Year: <input type='text' name='class_year' size='5' value='<?echo $class_year?>' />
+			Owner: <input type='text' name='class_owner' size='7' value='<?echo $class_owner?>' />
+			<input type='submit' name='search' value='Find' />
+			<input type='submit' name='findall' value='Find All' />
+			</form>
 			</td>
 			<td align='right'>
 			<?
@@ -359,11 +384,11 @@ if ($site) {
 			print "$curr of $tpages ";
 	//		print "$prev $lowerlimit $next ";
 			if ($prev != $lowerlimit)
-				print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&class_external_id=$class_external_id&class_name=$class_name&class_dept=$class_dept&semester=$semester&order=$order&class_year=$class_year&class_owner=$class_owner\"'>\n";
+				print "<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&class_external_id=$class_external_id&class_name=$class_name&class_dept=$class_dept&semester=$semester&order=$order&class_year=$class_year&class_owner=$class_owner\"' />\n";
 			if ($next != $lowerlimit && $next > $lowerlimit)
-				print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&class_external_id=$class_external_id&class_name=$class_name&class_dept=$class_dept&semester=$semester&order=$order&class_year=$class_year&class_owner=$class_owner\"'>\n";
+				print "<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&class_external_id=$class_external_id&class_name=$class_name&class_dept=$class_dept&semester=$semester&order=$order&class_year=$class_year&class_owner=$class_owner\"' />\n";
 			?>
-			</form>
+			
 
 		</td></tr>
 		</table>
@@ -375,7 +400,8 @@ if ($site) {
 			print "Total classes found: ".$numclasses;
 		}	 				 
 		?>
-	
+
+		<form method='post' name='addform' action="<? echo $PHP_SELF ?>">
 		<table width='100%'>
 			<tr>
 			<th>id</th>
@@ -415,57 +441,58 @@ if ($site) {
 						print "<td>".$a['class_year']."</td>";
 						print "<td>".(($a['classowner_id'])?$a['classowner_fname']." (".$a['classowner_uname'].")":"")."</td>";
 						print "<td>".$a['classgroup_name']."</td>";
-						print "<td align='center'><nobr>";
-						print "<a href='classes.php?$sid&action=del&id=".$a['class_id']."'>del</a> | \n";
-						print "<a href='classes.php?$sid&action=edit&id=".$a['class_id']."'>edit</a> | \n";
-						print "<a href=\"Javascript:sendWindow('addstudents',500,350,'add_students.php?$sid&ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
-						print "</nobr></td>";
+						print "<td align='center'><span style='white-space: nowrap;'>";
+						print "<a href='classes.php?$sid&amp;action=del&amp;id=".$a['class_id']."'>del</a> | \n";
+						print "<a href='classes.php?$sid&amp;action=edit&amp;id=".$a['class_id']."'>edit</a> | \n";
+						print "<a href=\"Javascript:sendWindow('addstudents',500,350,'add_students.php?$sid&amp;ugroup_id=".$a['ugroup_id']."')\">students</a>\n";
+						print "</span></td>";
 						print "</tr>";
 					}
 				}
 			?>
 			
 		</table>
+		</form>
 	</td>
 </tr>
 </table>
 
 <br />
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type='button' value='Close Window' onclick='window.close()' /></div>
 <?
 function doClassForm($a,$p='',$e=0) {
 	global $cfg;
 	?>
-		<form method='post' name='addform'>
+		
 		<tr>
-		<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
+		<td><?=($e)?$a[$p.'id']:"&nbsp;"?></td>
   		<td><?=($e)?generateCourseCode($a[$p.'id']):""?></td>
-		<td><input type='text' name='external_id' size=10 value="<?=$a[$p.'external_id']?>"></td>
-		<td><input type='text' name='name' size=20 value="<?=$a[$p.'name']?>"></td>
-		<td><input type='text' name='department' size=3 value="<?=$a[$p.'department']?>"></td>
-		<td><input type='text' name='number' size=3 value="<?=$a[$p.'number']?>"></td>
-		<td><input type='text' name='section' size=1 value="<?=$a[$p.'section']?>"></td>
-		<td><select name=semester>
+		<td><input type='text' name='external_id' size='10' value="<?=$a[$p.'external_id']?>" /></td>
+		<td><input type='text' name='name' size='20' value="<?=$a[$p.'name']?>" /></td>
+		<td><input type='text' name='department' size='3' value="<?=$a[$p.'department']?>" /></td>
+		<td><input type='text' name='number' size='3' value="<?=$a[$p.'number']?>" /></td>
+		<td><input type='text' name='section' size='1' value="<?=$a[$p.'section']?>" /></td>
+		<td><select name='semester'>
 		<?
 		foreach (array_keys($cfg['semesters']) as $semesterKey) {
-			print "<option".(($a[$p.'semester'] == $semesterKey)?" selected":"")." value='".$semesterKey."'>";
+			print "<option".(($a[$p.'semester'] == $semesterKey)?" selected='selected'":"")." value='".$semesterKey."'>";
 			print $cfg['semesters'][$semesterKey]['name'];
 			print "</option>";
 		}
 		?>
 		</select>
 		</td>
-		<td><input type='text' name='year' size=4 value="<?=$a[$p.'year']?>"></td>
-		<td><input type='text' name='owner' size=8 value="<?=$a['classowner_uname']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
+		<td><input type='text' name='year' size='4' value="<?=$a[$p.'year']?>" /></td>
+		<td><input type='text' name='owner' size='8' value="<?=$a['classowner_uname']?>" /> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&amp;comingfrom=classes')">choose</a></td>
 		<td><?=$a[classgroup_name]?></td>
 		<td align='center'>
-		<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
-		<?=($e)?"<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>":""?>
-		<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add class"?></a>
+		<input type='hidden' name='action' value='<?=($e)?"edit":"add"?>' />
+		<?=($e)?"<input type='hidden' name='id' value='".$a[$p."id"]."' /><input type='hidden' name='commit' value='1' />":""?>
+		<a href='#' onclick='document.addform.submit()'><?=($e)?"update":"add class"?></a>
 		<!-- | <a href='classes.php'>cancel</a> -->
 		</td>
 		</tr>
-		</form>
+
 	<?
 }
 
@@ -479,3 +506,6 @@ function doClassForm($a,$p='',$e=0) {
 /* print "\n\n"; */
 /* print "</pre>"; */
 ?>
+
+</body>
+</html>

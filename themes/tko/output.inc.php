@@ -11,6 +11,9 @@
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");;
+
 include("$themesdir/common/functions.inc.php");
 
 if (file_exists("$themesdir/$theme/colors.inc.php"))
@@ -18,6 +21,13 @@ if (file_exists("$themesdir/$theme/colors.inc.php"))
 
 
 /* ------------------- END THEME SETTINGS---------------------	*/
+
+/*********************************************************
+ * get all of the existing output buffers and place them inside our body
+ *********************************************************/
+$obContent = '';
+while (ob_get_level())
+	$obContent .= ob_get_clean();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -39,18 +49,21 @@ include("themes/$theme/css.inc.php");
 </head>
 
 <body style='margin: 0px'>
-<table border=0 width=700 cellpadding='0' cellspacing='0'>
+
+<? print $obContent; ?>
+
+<table border='0' width='700' cellpadding='0' cellspacing='0'>
 <tr>
-<td width=700 height=150 background='<? echo "$themesdir/$theme/images/banner.gif"; ?>'>
-	<img src='<? echo "$themesdir/$theme/images/150spacer.gif"; ?>' border=0 height=120 width=1><br />
+<td width='700' height='150' background='<? echo "$themesdir/$theme/images/banner.gif"; ?>'>
+	<img src='<? echo "$themesdir/$theme/images/150spacer.gif"; ?>' border='0' height='120' width='1' /><br />
 	<!-- main header content -->
-	<table border=0 width=100% height=30 cellpadding='0' cellspacing='0'>
+	<table border='0' width='100%' style='height: 30px' cellpadding='0' cellspacing='0'>
 	<tr>
-	<td class=topbar width=180 align='center' valign=middle>
+	<td class='topbar' width='180' align='center' valign='middle'>
 	&nbsp; <!-- search bar -->
 	</td>
-	<td class=topnav>
-	<table border=0 width=100% height=30 cellpadding='0' cellspacing='0'>
+	<td class='topnav'>
+	<table border='0' width='100%'  style='height: 30px' cellpadding='0' cellspacing='0'>
 	<tr>
 	<?
 /******************************************************************************
@@ -58,16 +71,16 @@ include("themes/$theme/css.inc.php");
  ******************************************************************************/
 
 //	print "<div class='sectionnav'>";
-	//print "<div class=$navlinka>";
+	//print "<div class='$navlinka'>";
 	foreach ($topnav as $item) {
 		$samepage = (isset($navtype) && ($page == $item[id]))?1:0;
 		if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-		print "<td class=topbar width=180 align='center' valign=middle><nobr><b>";
+		print "<td class='topbar' width='180' align='center' valign='middle'><span style='white-space: nowrap;'><b>";
 		print makelink($item,$samepage, " class='navlink' ");
-		print "</b></nobr></td>";
+		print "</b></span></td>";
 		$next=$next+1;
 	}
-	if ($topnav_extra) print "<td class=topbar align='center' valign=middle><nobr>$topnav_extra</nobr></td>";
+	if ($topnav_extra) print "<td class='topbar' align='center' valign='middle'><span style='white-space: nowrap;'>$topnav_extra</span></td>";
 //	print "</div>";
 
 	?>
@@ -81,13 +94,13 @@ include("themes/$theme/css.inc.php");
 
 
 <tr>
-<td width=100%>
+<td width='100%'>
 <!-- content and nav bar -->
-	<table border=0 cellpadding='0' cellspacing='0' width=100%>
+	<table border='0' cellpadding='0' cellspacing='0' width='100%'>
 	<tr>
-	<td width=180 class=leftnav valign=top>
+	<td width='180' class='leftnav' valign='top'>
 	
-	<table border=0 cellpadding='0' cellspacing='0' width=100%>
+	<table border='0' cellpadding='0' cellspacing='0' width='100%'>
 	<!-- left navbar -->
 	<?
 	foreach ($leftnav as $item) {
@@ -96,16 +109,16 @@ include("themes/$theme/css.inc.php");
 			$samepage = (isset($page) && ($page == $item[id]))?1:0;
 			if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
 			$gif = "$themesdir/$theme/images/". (($samepage)?"lis.gif":"li.gif");
-			print "<td valign=middle><img src=$gif border=0 style='padding-right: 4px; padding-top: 1px'></td>";
+			print "<td valign='middle'><img src='$gif' border='0' style='padding-right: 4px; padding-top: 1px' /></td>";
 			print "<td class='nav'>";
 			print tkoMakelink($item,0," class='navlink' ",1);
 			print "</td>";
 		}
 		if ($item[type] == 'divider') {
-			print "<td colspan=2>$item[extra]<br /></td>";
+			print "<td colspan='2'>$item[extra]<br /></td>";
 		}
 		if ($item[type] == 'heading') {
-			print "<td colspan=2><div class='leftmargin bottommargin5'>$item[name]</div>";
+			print "<td colspan='2'><div class='leftmargin bottommargin5'>$item[name]</div>";
 			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			print "</td>";
 		}
@@ -118,16 +131,16 @@ include("themes/$theme/css.inc.php");
 			$samepage = (isset($section) && ($section == $item[id]))?1:0;
 			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
 			$gif = "$themesdir/$theme/images/". (($samepage)?"lis.gif":"li.gif");
-			print "<td valign=middle><img src=$gif border=0 style='padding-right: 4px; padding-top: 1px'></td>";
+			print "<td valign='middle'><img src='$gif' border='0' style='padding-right: 4px; padding-top: 1px' /></td>";
 			print "<td class='nav'>";
 			print tkoMakelink($item,0," class='navlink' ",1);
 			print "</td>";
 		}
 		if ($item[type] == 'divider') {
-			print "<td colspan=2>$item[extra]<br /></td>";
+			print "<td colspan='2'>$item[extra]<br /></td>";
 		}
 		if ($item[type] == 'heading') {
-			print "<td colspan=2><div class='leftmargin bottommargin5'>$item[name]</div>";
+			print "<td colspan='2'><div class='leftmargin bottommargin5'>$item[name]</div>";
 			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			print "</td>";
 		}
@@ -142,7 +155,7 @@ include("themes/$theme/css.inc.php");
 	<!-- end left navbar -->
 	</td>
 	
-	<td width=520 class=content valign=top>
+	<td width='520' class='content' valign='top'>
 	<!-- content goes here -->
 	<? include("themes/common/status.inc.php"); ?>
 	<? /* print $sitecrumbs; */ ?>
@@ -163,7 +176,7 @@ include("themes/$theme/css.inc.php");
 <?
 function tkoMakelink($i,$samepage=0,$e='',$newline=0) {
 	$s = '';
-	$s=(!$samepage&&$i[url])?"<a href='$i[url]' target='$i[target]'".(($e)?" $e":"").">":"";
+	$s=(!$samepage&&$i[url])?"<a href='$i[url]'".(($i['target'])?" target='$i[target]'":"").(($e)?" $e":"").">":"";
 	$s.=$i[name];
 	$s.=(!$samepage&&$i[url])?"</a>":"";
 	$s.=($i[extra])?(($newline)?"</td></tr><tr><td></td><td class='nav'><div align='right'>":" ").$i[extra].(($newline)?"</div>":""):"";

@@ -32,7 +32,6 @@ if (count($usernames)) {
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<body onLoad="document.searchform.name.focus()">
 
 <title>Username Lookup</title>
 
@@ -40,39 +39,46 @@ if (count($usernames)) {
 
 <?
 ?>
+</head>
+<body onload="document.searchform.name.focus()">
 
-<table cellspacing=1 width='100%' id='maintable'>
-<tr><td>
-<table cellspacing=1 width='100%'>
-<tr>
-	<td colspan=3>
-		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		Name: <input type='text' name='name' size=20 value='<?echo $name?>'> <input type=submit value='Find'>
-		</form>
-		<? if (!$usernames) print "No matching names found. Enter a name or part of a name above."; ?>
-	</td>
-</tr>
-<tr>
-	<th>Num</th>
-	<th>Full Name</th>
-	<th>Username</th>
-</tr>
-<?
-if (count($usernames)) {
-	$c = 1;
-	foreach ($usernames as $u=>$f) {
-		if (!$u || $u=='') next;
-		if (!ereg("[a-z]",$u)) next;
-		print "<tr>";
-		print "<td align='center'>$c</td><td>$f</td><td>$u</td>";
-		print "</tr>";
-		$c++;
-	}
-} else {
-	//print "<tr><td colspan=3>No usernames. Enter a name or part of a name above.</td></tr>";
-}
-?>
-</table>
-</td></tr></table>
-<br />
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+	<table cellspacing='1' width='100%' id='maintable'>
+		<tr>
+			<td colspan='3'>
+				<form action="<? echo $PHP_SELF ?>" method='get' name='searchform'>
+				Name: <input type='text' name='name' size='20' value='<?echo $name?>'/> <input type='submit' value='Find' />
+				</form>
+				<? if (!$usernames) print "No matching names found. Enter a name or part of a name above."; ?>
+			</td>
+		</tr>
+		<tr>
+			<th>Num</th>
+			<th>Full Name</th>
+			<th>Username</th>
+		</tr>
+		<?
+		if (count($usernames)) {
+			$c = 1;
+			foreach ($usernames as $u=>$f) {
+				if (!$u || $u=='') next;
+				if (!ereg("[a-z]",$u)) next;
+				print "\n\t\t<tr>";
+				print "\n\t\t\t<td align='center'>$c</td>";
+				print "\n\t\t\t<td>".htmlentities($f)."</td>";
+				print "\n\t\t\t<td>".htmlentities($u)."</td>";
+				print "\n\t\t</tr>";
+				$c++;
+			}
+		} else {
+			//print "<tr><td colspan='3'>No usernames. Enter a name or part of a name above.</td></tr>";
+		}
+		?>
+		
+	</table>
+	<br />
+	<div align='right'>
+		<input type='button' value='Close Window' onclick='window.close()' />
+	</div>
+
+</body>
+</html>

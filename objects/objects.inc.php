@@ -11,3 +11,4 @@ require(dirname(__FILE__)."/course.inc.php");
 require(dirname(__FILE__)."/discussion.inc.php");
 require(dirname(__FILE__)."/ugroup.inc.php");
 require(dirname(__FILE__)."/update.inc.php");
+require(dirname(__FILE__)."/OrderedSet.class.php");

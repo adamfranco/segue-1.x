@@ -56,11 +56,11 @@ function btnOKClick() {
 }
 </SCRIPT>
 </HEAD>
-<BODY id=bdy onload="Init()" style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll=no>
+<BODY id='bdy' onload="Init()" style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll='no'>
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
  <tr>
   <td><FIELDSET style="text-align: center"><LEGEND>Insert Date & Time&nbsp;</LEGEND>
-   <table border=0 cellspacing='0' cellpadding=5 style="margin: 5 5 5 5;">
+   <table border='0' cellspacing='0' cellpadding='5' style="margin: 5 5 5 5;">
     <tr>
      <td>Please Pick A Format: &nbsp;</td>
          <td><select name="date" size="1" style="width: 220px">
@@ -75,7 +75,7 @@ function btnOKClick() {
              </select>
     </tr>
     <tr>
-     <td colspan="2" valign="middle" align="center"><BUTTON style="width: 7em; height: 2.2em;" type=submit onclick="btnOKClick()" tabindex=3>OK</BUTTON> <BUTTON style="width: 7em; height: 2.2em; " type=reset onClick="window.close();" tabindex=4>Cancel</BUTTON></td>
+     <td colspan="2" valign="middle" align="center"><BUTTON style="width: 7em; height: 2.2em;" type='submit' onclick="btnOKClick()" tabindex='3'>OK</BUTTON> <BUTTON style="width: 7em; height: 2.2em; " type='reset' onclick="window.close();" tabindex='4'>Cancel</BUTTON></td>
     </tr>
    </table>
    </FIELDSET>

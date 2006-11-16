@@ -14,18 +14,31 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 if ($del = $_REQUEST[del]) { // we're deleting something
 //	print $del;
 	if ($del=='group') {
-		$query = "UPDATE class SET FK_classgroup=NULL WHERE FK_classgroup=$group";
+		$query = "UPDATE class SET FK_classgroup=NULL WHERE FK_classgroup='".addslashes($group)."'";
 		db_query($query);
-		$query = "DELETE FROM classgroup WHERE classgroup_id=$group";
+		$query = "DELETE FROM classgroup WHERE classgroup_id='".addslashes($group)."'";
 		db_query($query);
-		log_entry("classgroups","$auser removed group ".db_get_value("classgroup","classgroup_name","classgroup_id=$group"),"NULL",$group,"classgroup");
+		log_entry("classgroups","$auser removed group ".db_get_value("classgroup","classgroup_name","classgroup_id='".addslashes($group)."'"),"NULL",'".addslashes($group)."',"classgroup");
 	}
 	if ($del=='class') {
-		$query = "UPDATE class SET FK_classgroup=NULL WHERE class_id=$class";
+		$query = "UPDATE class SET FK_classgroup=NULL WHERE class_id='".addslashes($class)."'";
 		db_query($query);
 		log_entry("classgroup","$auser removed $class from group ".db_get_value("classgroup","classgroup_name","classgroup_id=$group"),"NULL",$group,"classgroup");
 	}
-	print "<script lang='JavaScript'>function updater() { opener.window.location=\"index.php?$sid\"; }</script>";
+	print<<<END
+
+<script type='text/javascript'>
+// <![CDATA[
+
+	function updater() {
+		opener.window.location="index.php?$sid"; 
+	}
+
+// ]]>
+</script>
+
+END;
+
 }
 print mysql_error();
 
@@ -40,7 +53,7 @@ $query = "
 			ON
 				classgroup.FK_owner = user_id 
 	WHERE 
-		user_uname='$auser'
+		user_uname='".addslashes($auser)."'
 ";
 /* echo $query; */
 $r = db_query($query);
@@ -57,7 +70,7 @@ $query = "
 			ON
 				classgroup.FK_owner = user_id 
 	WHERE 
-		user_uname='$auser'
+		user_uname='".addslashes($auser)."'
 ";
 /* echo $query; */
 $r = db_query($query);
@@ -109,14 +122,14 @@ input {
 </style>
 
 <?
-print "<body".(($del)?" onLoad='updater()'":"").">";
+print "<body".(($del)?" onload='updater()'":"").">";
 ?>
 
 <? print $content; ?>
 
-<table cellspacing=1 width='100%'>
+<table cellspacing='1' width='100%'>
 <tr>
-	<td colspan=2 style='font-variant: small-caps'>
+	<td colspan='2' style='font-variant: small-caps'>
 		Class groups for <?echo $auser?>
 	</td>
 </tr>
@@ -132,7 +145,7 @@ if ($numGroups) {
 		print "$a[classgroup_name]";
 		print "</td>";
 		print "<td align='center'>";
-		print "<a href='$PHP_SELF?$sid&del=group&group=$a[classgroup_id]'>[del]</a>";
+		print "<a href='$PHP_SELF?$sid&amp;del=group&amp;group=$a[classgroup_id]'>[del]</a>";
 		print "</td>";
 		
 		print "</tr>";
@@ -153,14 +166,14 @@ if ($numGroups) {
 			print "-&gt; ".generateCourseCode($b[class_id])."</a>";
 			print "</td>";
 			print "<td align='center'>";
-			print "<a href='$PHP_SELF?$sid&del=class&group=$a[classgroup_id]&class=$b[class_id]'>[remove]</a>";
+			print "<a href='$PHP_SELF?$sid&amp;del=class&amp;group=$a[classgroup_id]&amp;class=$b[class_id]'>[remove]</a>";
 			print "</td>";
 			print "</tr>";
 		}
 	}
 } else {
-	print "<tr><td colspan=2>No class groups.</td></tr>";
+	print "<tr><td colspan='2'>No class groups.</td></tr>";
 }
 ?>
 </table><br />
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type='button' value='Close Window' onclick='window.close()' /></div>

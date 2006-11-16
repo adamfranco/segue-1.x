@@ -1,3 +1,9 @@
+<?php
+
+if (!isset($bordercolor))
+	$bordercolor = '000000';
+	
+?>
 
 /* ------------------------------------------ */
 /*  REQUIRED CLASSES    */
@@ -13,36 +19,62 @@ a {
 	font-size: <? echo $sectionnavsize; ?>px;
 }
 
+.sidesectionnav { 
+	font-size: <? echo $sectionnavsize; ?>px;
+	border-top: 1px solid #<? echo $bordercolor; ?>; 
+	border-bottom: 1px solid #<? echo $bordercolor; ?>;
+	padding-top: 2px; 
+	padding-bottom: 2px;
+}
+
 .nav { 
 	font-size: <? echo $navsize; ?>px;
 }
 
 .subnav { 
-	font-size: <? echo ($navsize-2); ?>px;
 	margin-left: 7px;
+	font-size: <? echo $navsize; ?>px;
 }
 
 a:hover {
 	text-decoration: underline;
-	color: #<? echo $linkcolor; ?>;
 }
 
 div, p, td, span, input { 
-	color: #<? echo $textcolor; ?>;
+<?php
+	if (isset($textcolor) && $textcolor)
+		print "\tcolor: #".$textcolor.";";
+?>
+
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: <? echo $c['font-size']; ?>;
+}
+
+div.hr {
+	height: 1px;
+	color: #<? echo $bordercolor; ?>;
+    background-color: #<? echo $bordercolor; ?>;
+    margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+ div.hr hr {
+  display: none;
 }
 
 
 
 /*    INPUT BUTTONS    */
 .button {
+	color: #000000;
 	border: 1px solid #<? echo $c['input-borders']; ?>;
 	background-color: #FFFFFF;
+	color: #000000;
 }
 
 /*     TEXTFIELDS    */
 .textfield {
+	color: #000000;
 	border: 1px solid #<? echo $c['input-borders']; ?>;
 	background-color: #fff;
 }
@@ -66,17 +98,14 @@ select, textarea, input {
 }
 
 
-table, td { border: 0px solid black }
-
 
 /*     THE BUTTONS IN EDIT MODE (for delete, edit, etc)    */
 .btnlink {
-	color: #<? echo $c['btnlink-color']; ?>;
-	font-weight: bold;
-	font-size: 11px;
-	border: 1px solid #<? echo $c['btnlink-border-color']; ?>;
-	padding-left: 0px;
-	padding-right: 0px;
+	color: #<? echo $linkcolor; ?>;
+	font-size: 10px;
+	border: 1px solid #<? echo $linkcolor; ?>;
+	padding-left: 1px;
+	padding-right: 1px;
 /* 	width: 15px; */
 	margin-right: 0px;
 }
@@ -93,11 +122,11 @@ table, td { border: 0px solid black }
 /*     TITLES           */
 .title {
 	color: #<? echo $c['title-color']; ?>;
-	border-bottom: 1px solid #<? echo $c['title-under-color']; ?>;
+	border-bottom: 1px solid #<? echo $c['title-color']; ?>;
 	padding: 5px;
 	font-size: 16px;
-	padding-left: 40px;
-	margin-bottom: 2px;
+	padding-left: 0px;
+	margin-bottom: 7px;
 	font-variant: small-caps;
 	font-weight: bolder;
 }
@@ -144,10 +173,49 @@ th {
 /*      THE, UH, I FORGOT (oh yeah... the download bar thingy)  */
 .downloadbar {
 	<? if ($c['text']) echo "color: #".$c['text'].";"; ?>
-	background-color: #<? echo $c['box-color']; ?>;
 	border: 1px solid #<? echo $c['box-border-color']; ?>;
 	padding: 5px;
 	padding-left: 15px;
 }
 
+/*********************************************************
+ * Discussion Styles
+ *********************************************************/
+.subject { 
+	font-weight: bolder; 
+}
 
+.dtext {
+	padding-top: 0px;
+	padding-bottom: 20px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.dheader {
+	font-size: 14px;
+	border-bottom: 1px solid #000;
+	background: #EAEAEA;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+.dheader2 {
+	border-bottom: 1px solid #000;
+	background: #EAEAEA;
+	padding-right: 5px;
+	padding-top: 5px;
+}
+
+.dheader3 {
+	border-top: 0px solid #000;
+	background: #EAEAEA;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.dinfo1 {
+	border: 1px solid #000;
+	padding-left: 2px;
+	padding-right: 2px;
+}

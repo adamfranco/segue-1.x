@@ -12,9 +12,17 @@ $st = convertTagsToInteralLinks($site, $st);
 if ($o->getField("texttype") == 'text')
 	$st = nl2br($st);
 
-if ($o->getField("title")) printc("<div class=leftmargin><b><a name=".$o->id."></a>".spchars($o->getField("title"))."</b></div>");
-printc("<table cellspacing='0' cellpadding='0' width=100%><tr><td>");
+
+/******************************************************************************
+ * print out story content
+ ******************************************************************************/
+printc("<table width='100%' cellpadding='0' cellspacing='0'><tr><td>");
 printc(stripslashes($st));
+
+
+/******************************************************************************
+ * Append link to more and discussion
+ ******************************************************************************/
 
 if ($o->getField("discuss") || $o->getField("longertext")) {
 	
@@ -26,11 +34,17 @@ if ($o->getField("discuss") || $o->getField("longertext")) {
 		else
 			$discussAction = 'site';
 			
-		$link = "index.php?$sid&action=".$discussAction."&site=$site&section=$section&page=$page&story=".$o->id."&detail=".$o->id;
-		printc("<a href='".$link."'>"." ...more.</a>");
+		$link = "index.php?$sid&amp;action=".$discussAction."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id;
+		printc("<a href='".$link."'>"." ...more</a>\n");
+
 	}
-		
+	printc("</td></tr></table>");	
 	include (dirname(__FILE__)."/discussionLink.inc.php");
 	
+} else {
+	printc("</td></tr></table>");
 }
-printc("</td></tr></table><br />");
+
+
+if ($tagged_section) $section = $source_section;
+if ($tagged_page) $page = $source_page;

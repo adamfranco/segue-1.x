@@ -3,6 +3,486 @@ Name: Segue ChangeLog
 
 
 
+v. 1.5.11 (2006-11-15) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    Added a check for a non-zero length password to prevent login from occuring
+    without a password when the LDAP server is configured to allow anonymous
+    binding. Thank you to Melanie Hoag and her team at Southwestern University
+    forhelp locating this bug.
+	
+
+v. 1.5.10 (2006-10-25) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    Added exit() statements after sending redirect headers to prevent continued
+    execution that was resulting in an authentication race-condition that had
+    the effect of populating empty class-lists for students and professors.
+    Thank you to Melanie Hoag and her team at Southwestern University for help
+    locatingthis bug.
+	
+
+v. 1.5.9 (2006-10-24) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed reorder content block UI so it only appears to users who have edit
+    permissonto the page containing content blocks.
+		
+    * Bug Fix:  (Adam Franco) 
+    Patched a vulnerability in dynamic includes that allowed the execution of
+    arbitraryremote code when register_globals was turned on.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed an error in permissions setting and loading in which permissions for
+    everyone and institute where quotes were being added around NULL editor ids
+    andcausing view permissions for everyone and institute to not show up.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed an error in permissions in which invalid permissions commands were
+    being run when a user or group name contained the sting 'add', 'edit',
+    'delete',or 'view'. i.e. 'pheditram-w06'.
+	
+
+v. 1.5.8 (2006-10-19) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed extra borders showing in the torn pieces theme.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed theme issue in which text color stayed black when choosing a black
+    backgroundin the "Minimal Colors" theme.
+		
+    * Bug Fix:  (Adam Franco) 
+    Added global parameter reference into newly refactored Download Bar function
+    tonow generate the correct link.
+	
+
+v. 1.5.7 (2006-10-18) 
+----------------------------------------------------	
+		
+    **** IMPORTANT *** Change:  (Alex Chapin) 
+    Various changes in Segue necessitate that you run the '1.5.7 update' under
+    'admintools' &gt; 'updates' to make several changes to Segue's database.
+		
+    * New feature:  (Adam Franco) 
+    Fields have been added to the media table to enable users to add and edit
+    metadatato files they upload to the Media Library.
+		
+    * New feature:  (Adam Franco) 
+    File metadata is now displayed in the file download bar.
+	
+
+v. 1.5.6 (2006-10-16) 
+----------------------------------------------------			
+		
+    * Change:  (Alex Chapin) 
+    Changed the toolbar in the HTML editor used for emailing participants to be
+    thesame toolbar as is used for discussions/assessments.
+		
+    * Change:  (Alex Chapin) 
+    Updated the FCKeditor from version 2.2 to version 2.3.2.
+		
+    * Change:  (Alex Chapin) 
+    Fixed Segue CSS so that table borders created in the HTML Editor will
+    displayproperly.
+		
+    * Change:  (Alex Chapin) 
+    Added documentation re: changes that need to be made to the FCKeditor source
+    codein order to integrate it with Segue.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed errors in logging function (introduced in version 1.5.5).
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed roster and participation UI such that links and information about
+    rostersis displayed only if the site is a class site.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed email/roster/participation/logs UI such that relevant information from
+    eachof these are saved when navigating between them.
+		
+    * Change:  (Adam Franco) 
+    Segue's RSS reader (CaRP) was modified to handle RSS feeds in any encoding.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed editing of content blocks on pages set to display one content block
+    per page such that users are returned to that content block (instead of
+    beingreturned to the first content block)
+		
+    * Bug Fix:  (Adam Franco) 
+    Content block categories now copied when a page is moved/copied.
+		
+    * Bug Fix:  (Adam Franco) 
+    Segue now generates valid XHTML 1.0 Transitional output. Some user-supplied
+    contentmay not be valid, but the Segue-generated content is.
+		
+    * Bug Fix:  (Adam Franco) 
+    Themes all now generate valid CSS. This fixes a problem with the BevelBox
+    themenot rendering properly in Safari.
+		
+    * Bug Fix:  (Adam Franco) 
+    Removed a number of PHP warnings from the add_editor script.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed display of groups for everyone and institute in add editor UI.
+		
+    * Change:  (Alex Chapin) 
+    Added a link to page display options beside the page title.
+		
+    * Change:  (Alex Chapin) 
+    Changed the UI for reordering pages.
+		
+    * Change:  (Alex Chapin) 
+    Changed edit UI to always show page title.
+	
+
+v. 1.5.5 (the future) 
+----------------------------------------------------	
+		
+    * Change:  (Alex Chapin) 
+    Moved editing UI for lower right for participant, category, rss and content
+    soit is consistent with positioning of other editing UI's
+		
+    * Change:  (Alex Chapin) 
+    Changed all SQL queries to prevent SQL injection.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed sorting of site and user logs so they now can be sorted by any of the
+    columnsdisplayed.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed sorting of discussion posts so they now sort properly by recent first,
+    recentlast, by author and by rating.
+		
+    * New feature:  (Alex Chapin) 
+    Added a function for adding all groups from LDAP that a given user is a
+    member of into the Segue ugroup table. Once added these groups will appear
+    inthe user directory and permissions can be assigned to them
+	
+
+v. 1.5.4 (2006-06-13) 
+----------------------------------------------------	
+		
+    * Bug Fix:  (Alex Chapin) 
+    Page pagination was not displaying on top of page for full content view when
+    hidesidebars was checked.
+		
+    * Change:  (Alex Chapin) 
+    Changed spacing between sidebar navigation items that had been
+    inadvertantelychanged in version 1.5.3.
+	
+
+v. 1.5.3 (2006-06-08) 
+----------------------------------------------------	
+		
+    * Change:  (Alex Chapin) 
+    Added the gsp mime type for files created with Geometer's sketchpad.
+		
+    * Change:  (Alex Chapin) 
+    Changed how RSS feed links are displayed in the pop up window for more RSS.
+    Specifically added RSS icon and made the description of the RSS feed the
+    linkto that RSS feed.
+		
+    * Change:  (Alex Chapin) 
+    Added the text RSS to the right of the RSS icon for the link to page RSS. As
+    well added the RSS icon to the left of the more RSS link for additional RSS 
+		
+    * Change:  (Adam Franco) 
+    There has been a problem with inadvertant session-hijacking. This is caused
+    when a user (with cookies diabled and the PHP Session ID passed in their
+    URL) copy/pastes a Segue url containing the session ID into an email or
+    external website. When students (or others click on that link, they are now
+    using the session with the id specified in the url. Multiple users clicking
+    such a link would all end up using the same session, causing login/logout
+    actions of one user to apply to state of all users who clicked that link. As
+    there is no technological trick in PHP that would allow the continued
+    passing of the Session ID in the URL without this problem, Segue will now
+    forcethe use of cookies for authenticated users.
+		
+    * Change:  (Alex Chapin) 
+    Changed display of sections with single pages. Specifically, when a section
+    has only one page, a sidebar link is still created. (this change undoes a
+    new feature introduced in version 1.5 whereby sections with only one page
+    would not display a link to that page in the left sidebar). To avoid
+    confusion as well as inform users of options, when a section has only one
+    page, a note is displayed at the top of the sidebar indicating the section
+    has only one page and a link is provided to change the section display
+    settingsto hide the sidebar.
+		
+    * New feature: 
+    Added section display options. Specifically added a display option to hide
+    sidebars. When this option is selected, both the left and right sidebars are
+    hidden and if the section has more than one page, links are displayed to the
+    previous and next pages. If this section setting to hide sidebars is turned
+    on, then a note is displayed at the top of each sidebar indicated this and a
+    linkis provided to change the section display settings to show the sidebar.		
+		
+    * Bug Fix:  (Alex Chapin) 
+    removed extra spacing in RSS output.		
+		
+    * Bug Fix:  (Alex Chapin) 
+    Added missing enclosure tags to all-content RSS outputs.		
+		
+    * Bug Fix:  (Alex Chapin) 
+    Removed page and section titles from category RSS title field		
+		
+    * Change:  (Alex Chapin) 
+    Increased number of items in all-content and all-discussion RSS outputs from
+    10to 20 items
+		
+    * Change:  (Alex Chapin) 
+    Added category tags to all Segue RSS output
+		
+    * Change:  (Alex Chapin) 
+    Added the rel attribute with the category/tag name to category/tag links
+		
+    * Bug Fix:  (Alex Chapin) 
+    RSS feeds no longer will include RSS content blocks as items (i.e. no RSS
+    feedsof RSS feeds)
+		
+    * Change:  (Alex Chapin) 
+    The attribution link for content blocks now displays a link to that content
+    blocksurl
+		
+    * Change:  (Alex Chapin) 
+    Addedsupport for displaying table tags in the display of RSS feeds in Segue
+		
+    * Bug Fix:  (Alex Chapin) 
+    Set encoding of RSS feeds that are displayed in Segue (via CARP) to be utf-8
+    (hadbeen set to ISO 8859-1)		
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed spacing between content blocks to make more consistent. Specifically,
+    if no attribution or no horizontal rule, then a single space is put between
+    content blocks. If horizontal rules specified, then no space is put between
+    contentblocks.		
+		
+    * Change:  (Alex Chapin) 
+    The title for image type content blocks now only displayed below the image
+    center justified and no longer is displayed above the image. As well, the
+    add/edit UI for image type content blocks no longer refers to Title and
+    Caption/Descriptionbut instead refers to Caption and Description
+		
+    * Change:  (Alex Chapin) 
+    Changed FCKEditor config so that the link tool included advanced options
+    suchas specifying link target.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed missing scrollbars in the filebrowser window that is opened from the 		
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed problem with category UI on PC IE. Specifically, fixed javascript so
+    thatcategories can be added and deleted from site tags by clicking on them.		
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed problem with paths to filetype icons in the FCKEditor version of the
+    Seguefilebrowser.		
+	
+
+v. 1.5.2 (2006-02-21) 
+----------------------------------------------------	
+		
+    * Change:  (Alex Chapin) 
+    The 1st page link of any section no longer uses the heading style that was
+    introducedin version 1.5
+		
+    * Change:  (Alex Chapin) 
+    Content blocks without titles display a link to their detail view (i.e.
+    unique URL) to the right of attribution and timestamp display (this link
+    used to display above attribution display). This means that the url for a
+    given content block without a title will be displayed only if
+    attribution/timestamp is set to display and/or discussion/assessment is
+    enabled and/or there is extended content. (content blocks with titles use
+    thetitle itself as the unique link for that content block)
+		
+    * New feature:  (Alex Chapin) 
+    RSS for all recently added content blocks and recent discussions.
+		
+    * New feature:  (Alex Chapin) 
+    RSS for content block detail will include just that content block and all
+    itsdiscussion posts.
+		
+    * Bug Fix: #1432407  (Alex Chapin) 
+    Fixed category RSS feeds so now they have proper page and section ids	
+		
+    * Bug Fix: #1431633  (Alex Chapin) 
+    Fixed Javascript error related to the FCKEditor	
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed secure/non-secure dialog warnings caused by the HTMLArea editor in PC
+    IE when Segue is running on a secure server. Thanks to Mark Pyfrom for
+    findinga solution to this problem	
+	
+
+v. 1.5.1 (2006-02-09) 
+----------------------------------------------------	
+		
+    * Change:  (Alex Chapin) 
+    Changed the RSS icon to use the Firefox RSS icon.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Parts of the discussion UI were unreadable if the mimimal theme used white
+    text on a black background. I have reworked the discussion UI styles so that
+    they used theme border and bg color information to ensure compatible colors
+    andlegible text.	
+		
+    * Bug Fix: #1425388  (Alex Chapin) 
+    Fixed bug that did not warn admin users that they were entering a duplicate
+    externalclass id.	
+		
+    * Change:  (Alex Chapin) 
+    Removed unnecessary references to Segue in help topics. Also allowed for
+    customization of Segue logo adding config options for right side logo in
+    programtheme
+		
+    * Change:  (Alex Chapin) 
+    Changed how RSS content blocks are displayed making them look more like
+    othercontent blocks.
+		
+    * Bug Fix: #1423624  (Alex Chapin) 
+    Fixed bug that prevented personal slots from being displayed	
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed various tag display problems related to special characters such as
+    apersands,single quotes and so on.	
+		
+    * New feature:  (Alex Chapin) 
+    Have added the FCKeditor as Segue's default HTML editor.
+		
+    * Change:  (Alex Chapin) 
+    Added .m4v and .swf to default upload whitelist	
+	
+
+v. 1.5.0 (2005-12-18) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    fixed file copy errors when copying site
+		
+    * Change:  (Alex Chapin) 
+    The 1st page link of any section uses the heading style.
+		
+    * Change:  (Alex Chapin) 
+    Page display options have been changed so that added by and edited by
+    timestampscan be displayed independently.
+		
+    * Change:  (Alex Chapin) 
+    Content block page titles are now links to detail or in-depth view which
+    display only the given content block and its extended text and/or
+    discussions when these exist. If a content block has no title, a link
+    labeled "link" is displayed below the content block above links to
+    discussionand attribution.
+		
+    * Change:  (Alex Chapin) 
+    If the current date is not within the active dates range of a content block
+    then the active dates range will be displayed in edit mode and the content
+    block will not be displayed (even to the site owner) in view mode. If a page
+    is hidden or inactive, "[hidden]" and/or "[inactive]" will be displayed
+    belowthe page title in edit mode.
+		
+    * Change:  (Alex Chapin) 
+    Heading page type style have been changed to use colors from theme settings
+    tocreate a more consistent UI. As well the hr tag also uses theme colors.
+		
+    * Change:  (Alex Chapin) 
+    Have changed how page and content types are selected, replacing radio
+    buttonswith a select menu.
+		
+    * Change:  (Alex Chapin) 
+    Content block archiving has been changed such that content blocks are now
+    archived by specifying the number of blocks to display on a page. If the
+    number of content blocks exceeds the number per page setting, pagination
+    will be displayed. If the number per page is set to one then the page title
+    will not be displayed and a select menu with links to all content blocks on
+    thepage will be displayed.
+		
+    * Change:  (Alex Chapin) 
+    Categories have been reimplemented such that a given content block can be
+    added to more than one category. Category select UI changed from select menu
+    to an alphabetical list of categories that are links that populate the
+    categoryfield and that highlighted currently selected categories.
+		
+    * New feature:  (Alex Chapin) 
+    Added new page type called Participant list. This page type allows users to
+    display a list of the names of all participants in the site in the left or
+    right sidebar including the Site Owner, Roster participants (for class
+    sites) and all site editors. For class sites, if an associated site has been
+    created by a given roster participant, their name will be a link to this
+    associated site. The Participant list type does not have children (i.e. do
+    nothave stories)
+		
+    * New feature:  (Alex Chapin) 
+    Added new page type called Categories. This page type allows users to
+    display all the content block categories they have created for a given site
+    as a list in the left or right sidebar. Each item in the list is then a link
+    which retrieves all content blocks of that category and displays them
+    chronologically. The Category page type does not have children (i.e. do not
+    havestories)
+		
+    * New feature:  (Alex Chapin) 
+    Added new page type called RSS feed. This page type allows users to add an
+    RSS feed to the left or right sidebar. Only the RSS page types do not have
+    children(i.e. do not have stories)
+		
+    * New feature:  (Alex Chapin) 
+    Added new page type called sidebar content. This page type allows users to
+    add content to left or right sidebar. Sidebar content page types do not have
+    children(i.e. do not have stories)
+		
+    * Change:  (Alex Chapin) 
+    if a section has only one page, then display only the stories on that page,
+    donot display a link to the page in either sidebar.
+		
+    * New feature:  (Alex Chapin) 
+    Activated a right column navigation area so that any page link can be
+    displayedon the left or right side of a Segue page.
+		
+    * Bug Fix:  (Alex Chapin) 
+    Changed the display range of discussion summaries from 2 to 30. (this
+    display range was reduced to 2 from 30 in Version 1.4.4 for testing purposes
+    andwas not set back to 30 before release!)
+		
+    * Bug Fix: #1348393  (Alex Chapin) 
+    Fixed RSS feeds so that they do not re-downloaded in certain RSS readers
+    likeSafari and iTunes.
+	
+
+v. 1.4.4 (2005-11-22) 
+----------------------------------------------------
+		
+    * Bug Fix: #877774  (Alex Chapin) 
+    If certain steps are taken when creating a site it was possible to create a
+    site with no name (if a user creates a site and then immediately uses the
+    browser back button to return and then clicks continue and finish...). This
+    bug has been eliminated. Thanks to Jim Witte (jwitte@uiuc.edu) for tracking
+    thisbug down!
+		
+    * Bug Fix: #1353196  (Alex Chapin) 
+    Mispelling of password in "Forgot your password" as been fixed.
+		
+    * Bug Fix: #1363156  (Alex Chapin) 
+    Editing button styles now specify a text color. (fixes bug caused by themes
+    withwhite text color)
+		
+    * Change: #1212787  (Alex Chapin) 
+    Class sections can now be designated by either letters or numbers.
+		
+    * Bug Fix: #1345320  (Alex Chapin) 
+    Fixed summaries of discussion posts when number of participants is greater
+    than 30 (query limits) Also fixed display of a given users discussion posts
+    whenthese exceed query limit.
+		
+    * Bug Fix: #1330176  (Alex Chapin) 
+    Fixed typo in config.sample.inc.php file.
+		
+    * Bug Fix: #1313096  (Alex Chapin) 
+    Fixed internal links in image content blocks by adding convertlinks 
+	
+
 v. 1.4.3 (2005-10-05) 
 ----------------------------------------------------
 		

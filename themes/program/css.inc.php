@@ -15,6 +15,39 @@ a:hover {
 	color: #<? echo $c['a:hover']; ?>;
 }
 
+.tagused {
+	color: #<? echo $c['a']; ?>;
+	border: 1px solid;
+	padding: 1px;
+}
+
+.level_four {
+ 	color: #<? echo $c['a']; ?>;
+	font-size: 12px;
+}
+
+.level_three {
+ 	color: #<? echo $c['a']; ?>;
+	font-size: 12px;
+}
+
+.level_two {
+ 	color: #<? echo $c['a']; ?>;
+	font-size: 12px;
+
+}
+
+.level_one {
+ 	color: #<? echo $c['tag01']; ?>;
+	font-size: 12px;
+}
+
+.tagcloud {
+	font-size: 12px;
+	line-height: 19px;
+	text-align: justify;
+}
+
 div, p, td, span, input { 
 	color: #<? echo $c['text']; ?>;
 	font-family: Arial, Verdana, Helvetica, sans-serif;
@@ -245,6 +278,7 @@ body {
 
 .topleft2 {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft2.gif"; ?>') no-repeat;
+	background-color: #<? echo $c[bgcolor] ?>;
 	width: 160px;
 	height: 36px;
 }
@@ -269,7 +303,7 @@ body {
 }
 
 .right2 {
-	background color: "#003366";
+	background-color: #003366;
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/right2.gif"; ?>') repeat-y;
 	width: 9px;
 	vertical-align: top;

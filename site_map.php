@@ -71,7 +71,7 @@ input {
 <? 
 $sections = decode_array($sa['sections']);
 	
-print "<table cellspacing=1 width='100%'>";	
+print "<table cellspacing='1' width='100%'>";	
 print "<tr>";
 	print "<th>Site Map - ".$siteObj->getField("title")."</th>";
 print "</tr>";
@@ -109,14 +109,14 @@ if ($sections) {
 		}
 	}
 } else {
-	print "<tr><td class=td$color colspan=4>No sections in this site.</td></tr>";
+	print "<tr><td class='td$color' colspan='4'>No sections in this site.</td></tr>";
 }
 
 print "</table><br />";
 
 ?>
 
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type='button' value='Close Window' onclick='window.close()' /></div>
 
 <? 
 /******************************************************************************
@@ -148,7 +148,7 @@ function doEditorLine(&$o) {
 		print "\"'>";
 	}
 	if ($o->getField("type") == "url") 
-		print "\n\t<a href='#' onClick='opener.window.location=\"".$o->getField("url")."\"'>";
+		print "\n\t<a href='#' onclick='opener.window.location=\"".$o->getField("url")."\"'>";
 		
 	if ($o->getField("type") == "divider") 
 		print " &nbsp; ";

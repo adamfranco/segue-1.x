@@ -5,6 +5,10 @@
 /*		handle the $themesettings array					*/
 //print "$themesdir/$theme";
 //exit();
+
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+
 if (file_exists("$themesdir/$theme/colors.inc.php"))
 	include("$themesdir/$theme/colors.inc.php");
 
@@ -15,6 +19,13 @@ if (!$use) $use = 'gray';
 $c = $_theme_colors[$use];
 
 /* ------------------- END ---------------------------	*/
+
+/*********************************************************
+ * get all of the existing output buffers and place them inside our body
+ *********************************************************/
+$obContent = '';
+while (ob_get_level())
+	$obContent .= ob_get_clean();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -33,13 +44,15 @@ $m = date("i");
 $h++;$m++;
 /* if (($m >= 3 && $m < 6) && !($m%15)) $_timefunctions=1; */
 if (($m >= 3 && $m < 6) && !($m%15)) $_timefunctions=1;
-if ($_timefunctions) { include("themes/common/timefunctions.inc.php"); $_ol = " onLoad='init()'"; }
+if ($_timefunctions) { include("themes/common/timefunctions.inc.php"); $_ol = " onload='init()'"; }
 
 if (!$_REQUEST[nostatus]) {
 	if (!$_loggedin) {
 		print <<<END
 		
-		<script lang='JavaScript'>
+		<script type='text/javascript'>
+		// <![CDATA[
+
 			function focusLogin() {
 				forms = document.forms;
 				for (i=0; i<forms.length; i++) {
@@ -59,10 +72,12 @@ if (!$_REQUEST[nostatus]) {
 					}
 				}
 			}
+			
+		// ]]>
 		</script>
 		
 END;
-		$_ol = " onLoad='focusLogin()'";
+		$_ol = " onload='focusLogin()'";
 	}
 }
 
@@ -78,6 +93,8 @@ include("themes/$theme/css.inc.php");
 
 <body<? echo $_ol; ?>>
 
+<? print $obContent; ?>
+
 <? if ($_timefunctions) include("themes/common/timeoutput.inc.php"); ?>
 
 <?/* ------------------------------------------- */
@@ -86,22 +103,22 @@ include("themes/$theme/css.inc.php");
 //include("themes/common/status.inc.php"); ?>
 <br />
 
-<table width=90% align='center' cellpadding='0' cellspacing='0'>
+<table width='90%' align='center' cellpadding='0' cellspacing='0'>
   <tr> 
-    <td class="topleft">&nbsp;</td>
+    <td class="topleft" ><? if ($cfg['inst_logo_url_leftlogo_tophalf']) print "<img src='".$cfg['inst_logo_url_leftlogo_tophalf']."' alt='Institution Logo, upper half'/>"; ?></td>
     <td class="top"> 
-    <div align="right"><? if ($cfg[inst_logo_url]) print "<img src='".$cfg[inst_logo_url]."'>"; ?></div>
+    <div align="right"><? if ($cfg['inst_logo_url']) print "<img src='".$cfg['inst_logo_url']."' alt='Institution Logo' />"; ?></div>
     </td>
-    <td class="top">
+    <td class="top"></td>
     <td class="topright">&nbsp;</td>
    </tr>
    
    <tr>
-    <td class="topleft2">&nbsp;</td>
+    <td class="topleft2" valign='top' style="background-color: #<? echo $c[bgcolor] ?>"><? if ($cfg['inst_logo_url_leftlogo_bottomhalf']) print "<img src='".$cfg['inst_logo_url_leftlogo_bottomhalf']."' alt='Institution Logo, bottom half' />"; ?></td>
     <td style="background-color: #<? echo $c[bgcolor] ?>">
     <? include("themes/common/status.inc.php");?>
 
-       <div class=topnav align='center'>
+       <div class='topnav' align='center'>
 	<div class='nav'>
 	<?
 	/* ------------------------------------------- */
@@ -144,12 +161,12 @@ include("themes/$theme/css.inc.php");
 
 <tr>
 
-<td class="left" width=160 height="100%">
+<td class="left" width='160' height="100%">
 
 
-<table width=100% cellpadding=5 cellspacing='0'>
-<td class=leftnav height="100%">
-<div class='nav'>
+<table width='100%' cellpadding='5' cellspacing='0'>
+	<tr>
+		<td class='leftnav' height="100%">
 	<?
 /* ------------------------------------------- */
 /* -------------- LEFT NAV   ----------------- */
@@ -159,27 +176,34 @@ include("themes/$theme/css.inc.php");
 		if ($item[type] == 'normal') {
 			$samepage = (isset($page) && ($page == $item[id]))?1:0;
 			if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-			print "<div class='nav'>";
-			print makelink($item,$samepage,'',1);
-			print "</div>";
+			print "\n\t\t\t<div class='nav'>";
+			print "\n\t\t\t\t".makelink($item,$samepage,'',1);
+			print "\n\t\t\t</div>";
 		}
 		if ($item[type] == 'divider') {
-			print "$item[extra]<br />";
+			print "\n\t\t\t\t".$item[extra]."<br />";
 		}
 		if ($item[type] == 'heading') {
-			print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
-			if ($item[extra]) print "<div align='right'>$item[extra]</div>";
+			print "\n\t\t\t\t<img src='$themesdir/breadloaf/images/bullet.gif' border='0' align='absmiddle' alt='bullet icon' /> $item[name] :";
+			if ($item[extra]) {
+				print "\n\t\t\t\t<div align='right'>";
+				print "\n\t\t\t\t\t".$item[extra];
+				print "\n\t\t\t\t</div>";
+			}
 		}
 	}
-	print "<br />$leftnav_extra";
+	print "\n\t\t\t<div class='nav'>";
+	print "\n\t\t\t\t<br />$leftnav_extra";
+	print "\n\t\t\t</div>";
 	?>
-</div>
-</td>
+
+		</td>
+	</tr>
 </table>
 
 </td>
 
-<td class=contentarea>
+<td class='contentarea'>
 
 <? print $content; ?>
 
@@ -200,7 +224,7 @@ if (count($rightnav)) {
 <tr> 
     <td class="bottomleft">&nbsp;</td>
     <td class="bottom">
-<div class=topnav align='center'>
+<div class='topnav' align='center'>
 <div class='nav'>
 </div>
 </div> 
@@ -212,7 +236,7 @@ if (count($rightnav)) {
 </table>
 <br />
 
-<table width=90% align='center' cellpadding='0' cellspacing='0'>
+<table width='90%' align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?/* ------------------------------------------- */
 /* -------------- FOOTER     ----------------- */
@@ -222,4 +246,5 @@ print $sitefooter ?>
 </table>
 <br />
 
-	
+</body>
+</html>

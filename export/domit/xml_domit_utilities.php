@@ -1,101 +1,129 @@
 <?php
-//*******************************************************************
-//DOMIT_Utilities is a set of XML utilities to be used with DOMIT!
-//*******************************************************************
-//by John Heinstein
-//jheinstein@engageinteractive.com
-//johnkarl@nbnet.nb.ca
-//*******************************************************************
-//Version 0.2
-//copyright 2004 Engage Interactive
-//http://www.engageinteractive.com/domit/
-//All rights reserved
-//*******************************************************************
-//Licensed under the GNU General Public License (GPL)
-//
-//This program is free software; you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation; either version 2 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-//*******************************************************************
-//see GPL details at http://www.gnu.org/copyleft/gpl.html
-//and also in file license.txt included with DOMIT! 
-//*******************************************************************
+/**
+* DOMIT Utilities are a set of utilities for the DOMIT! parser
+* @package domit-xmlparser
+* @copyright (C) 2004 John Heinstein. All rights reserved
+* @license http://www.gnu.org/copyleft/lesser.html LGPL License
+* @author John Heinstein <johnkarl@nbnet.nb.ca>
+* @link http://www.engageinteractive.com/domit/ DOMIT! Home Page
+* DOMIT! is Free Software
+**/
 
+/**
+*@global Array Translation table for predefined XML entities
+*/
+$GLOBALS['DOMIT_PREDEFINED_ENTITIES'] = array('&' => '&amp;', '<' => '&lt;', '>' => '&gt;',
+											'"' => '&quot;', "'" => '&apos;');
+/**
+* A set of utilities for the DOMIT! parser
+* 
+* These methods are intended to be called statically
+*
+* @package domit-xmlparser
+* @author John Heinstein <johnkarl@nbnet.nb.ca>
+*/
 class DOMIT_Utilities {
-
+	/**
+	* Raises an error if an attempt to instantiate the class is made
+	*/
 	function DOMIT_Utilities() {		
 	    die("DOMIT_Utilities Error: this is a static class that should never be instantiated.\n" . 
 		    "Please use the following syntax to access methods of this class:\n" .
-		    "DOMIT_Utilities::methodName(parameters)");
-	} //DOMIT_Utilities
-	
+		    'DOMIT_Utilities::methodName(parameters)');
+	} //DOMIT_Utilities	
 
-	function toNormalizedString (&$node) {
+	/**
+	* Generates a normalized (formatted for readability) representation of the node and its children
+	* @param Object The root node of the narmalization
+	* @param boolean True if illegal xml characters in text nodes and attributes should be converted to entities
+	* @return string The formatted string representation 
+	*/
+	function toNormalizedString (&$node, $subEntities=false, $definedEntities) {
 		$node_level = 0;
-		
-		return DOMIT_Utilities::getNormalizedString($node, $node_level);
-	} //toNormalizedString	
-	
-		
-	function getNormalizedString(&$node, $node_level) {
-		$response = "";
+		$response = '';
 		
 		//$node is a DOMIT_Document
 		if ($node->nodeType == DOMIT_DOCUMENT_NODE) { 
-			$response .= $node->xmlDeclaration . "\n" .
-							$node->doctype . "\n";
-							
-			$node =& $node->documentElement;
+			$total = $node->childCount;
+
+			for ($i = 0; $i < $total; $i++) {
+				$response .= DOMIT_Utilities::getNormalizedString($node->childNodes[$i], 
+											$node_level, $subEntities, $definedEntities);
+			}
+			
+			return $response;
 		}
+		else {
+			return ($response . DOMIT_Utilities::getNormalizedString($node, 
+								$node_level, $subEntities, $definedEntities));
+		}
+	} //toNormalizedString		
+	
+	/**
+	* Converts illegal XML characters to their entity representations
+	* @param string The text to be formatted
+	* @param array User defined translation table for entities
+	* @return string The formatted text 
+	*/
+	function convertEntities($text, $definedEntities) {
+		global $DOMIT_PREDEFINED_ENTITIES;
+		$result = strtr($text, $DOMIT_PREDEFINED_ENTITIES);
+		$result = strtr($result, $definedEntities);
+		return $result;
+	} //convertEntities($text)
+	
+	/**
+	* Gets a normalized (formatted for readability) representation of the current node
+	* @param Object The node to be normalized
+	* @param int The level in the DOM hierarchy where the node is located
+	* @param boolean True if illegal xml characters in text nodes and attributes should be converted to entities
+	* @param array User defined translation table for entities
+	* @return string The normalized string representation 
+	*/
+	function getNormalizedString(&$node, $node_level, $subEntities=false, $definedEntities) {
+		$response = '';
 
 		switch ($node->nodeType)  {
-			case DOMIT_ELEMENT_NODE; //element
-				$response .= "<" . $node->nodeName;
-				
-				//get attributes text
-				if (count($node->attributes) != 0) {
-					foreach ($node->attributes as $key => $value) {
-						$response .= " $key=\"$value\"";
-					}
-				}
-				
-				$node_level++;
-				
-				//if node is childless
-				if (($node->childNodes == null) || (count($node->childNodes) == 0)) {
-					$response .= " />";
-				}
-				else {
-					$response .= ">";						
-										
-					$response .= DOMIT_Utilities::getIndentation($node_level);
-					
-					//get children
-					$myNodes =& $node->childNodes;
-					$total = count($myNodes);
-	
-					if ($total != 0) {
-						for ($i = 0; $i < $total; $i++) {
-							$child =& $myNodes[$i];
-							$response .= DOMIT_Utilities::getNormalizedString($child, $node_level);
-						}
-					}
+			case DOMIT_ELEMENT_NODE: 
+				$response .= DOMIT_Utilities::getNormalizedElementString($node, $response, 
+									 		$node_level, $subEntities, $definedEntities);								
+				break;
 			
-					$response .= "</" . $node->nodeName . ">";
+			case DOMIT_TEXT_NODE: 
+				if ($node->nextSibling == null) {
+					$node_level--;
 				}
+					
+				$response .= ($subEntities ? 
+								DOMIT_Utilities::convertEntities($node->nodeValue, $definedEntities) : 
+								$node->nodeValue);
+				break;
+			
+			case DOMIT_CDATA_SECTION_NODE:
+				if ($node->nextSibling == null) {
+					$node_level--;
+				}
+				
+				$response .= '<![CDATA[' . $node->nodeValue . ']]>';
+				break;
+				
+			case DOMIT_ATTRIBUTE_NODE:
+				$response .= $node->toString(false, $subEntities);
+				break;
+				
+			case DOMIT_DOCUMENT_FRAGMENT_NODE: 
+				$total = $node->childCount;
+				
+				for ($i = 0; $i < $total; $i++) {
+					$response .= DOMIT_Utilities::getNormalizedString($node->childNodes[$i], $node_level,
+															$subEntities, $definedEntities);
+				}
+				
+				break;
+				
+			case DOMIT_COMMENT_NODE: 
+				$response .= '<!--' . $node->nodeValue . '-->';
 
-				$node_level--;
-	
 				if ($node->nextSibling == null) {
 					$node_level--;
 				}
@@ -103,31 +131,127 @@ class DOMIT_Utilities {
 				$response .= DOMIT_Utilities::getIndentation($node_level) ;
 				
 				break;
-			
-			case DOMIT_TEXT_NODE: //text node
-				if ($node->nextSibling == null) {
-					$node_level--;
-				}
-						
-				$response .= $node->nodeValue . DOMIT_Utilities::getIndentation($node_level);
-				break;
-			
-			case DOMIT_CDATA_SECTION_NODE: //CData node
-				if ($node->nextSibling == null) {
-					$node_level--;
-				}
 				
-				$response .= ("<![CDATA[" . $node->nodeValue . "]]>" . 
-									DOMIT_Utilities::getIndentation($node_level));
+			case DOMIT_PROCESSING_INSTRUCTION_NODE: 
+				$response .= '<' . '?' . $node->nodeName . ' ' . $node->nodeValue . '?' . '>';
+
+				if ($node->nextSibling == null) {
+					$node_level--;
+				}
+								
+				$response .= DOMIT_Utilities::getIndentation($node_level) ;
+				
+				break;
+				
+			case DOMIT_DOCUMENT_TYPE_NODE:
+				$response .= $node->toString() . "\n";
 				break;
 		} 
-		
+
 		return $response;
 	} //getNormalizedString
 	
+	/**
+	* Gets a normalized (formatted for readability) representation of the current element
+	* @param Object The node to be normalized
+	* @param string The current normalized text
+	* @param int The level in the DOM hierarchy where the node is located
+	* @param boolean True if illegal xml characters in text nodes and attributes should be converted to entities
+	* @param array User defined translation table for entities
+	* @return string The normalized string representation 
+	*/
+	function getNormalizedElementString(&$node, $response, $node_level,  
+											$subEntities, $definedEntities) {
+		$response .= '<' . $node->nodeName;
+				
+		//get attributes text
+		if (is_object($node->attributes)) { //DOMIT
+			$response .= $node->attributes->toString(false, $subEntities);
+		}
+		else { //DOMIT_Lite
+			foreach ($node->attributes as $key => $value) {
+				$response .= ' ' . $key . '="';
+				$response .= ($subEntities ? DOMIT_Utilities::convertEntities($value, 
+														$definedEntities) : $value); 
+				$response .= '"';
+			}
+		}
+		
+		$node_level++;
+		
+		//if node is childless
+		if ($node->childCount == 0) {
+            if ($node->ownerDocument->doExpandEmptyElementTags) { 
+				if (in_array($node->nodeName, $node->ownerDocument->expandEmptyElementExceptions)) {
+					$response .= ' />';
+				}
+				else {
+                	$response .= '></' . $node->nodeName . '>';
+				}
+		    }
+		    else {
+				if (in_array($node->nodeName, $node->ownerDocument->expandEmptyElementExceptions)) {
+					$response .= '></' . $node->nodeName . '>';
+				}
+				else {
+					$response .= ' />';
+				}
+		    }
+		}
+		else {
+			$response .= '>';						
+			
+			//get children
+			$myNodes =& $node->childNodes;
+			$total = $node->childCount;
+			
+			//no indentation if first child is a text node 
+			if (!DOMIT_Utilities::isTextNode($node->firstChild)) {
+				$response .= DOMIT_Utilities::getIndentation($node_level); 
+			 } 
+
+			for ($i = 0; $i < $total; $i++) {
+				$child =& $myNodes[$i];
+				$response .= DOMIT_Utilities::getNormalizedString($child, $node_level,
+												$subEntities, $definedEntities);
+			}
 	
+			$response .= '</' . $node->nodeName . '>';
+		}
+
+		$node_level--;
+
+		if ($node->nextSibling == null) {
+			$node_level--;
+			$response .= DOMIT_Utilities::getIndentation($node_level);
+		}
+		else {				
+			//no indentation if next sibling is a text node 
+			if (!DOMIT_Utilities::isTextNode($node->nextSibling)) {
+				$response .= DOMIT_Utilities::getIndentation($node_level); 
+			}
+		} 
+		
+		return $response;
+	} //getNormalizedElementString
+	
+	/**
+	* Determines whether the specified node is a Text node
+	* @param Object The node to be tested
+	* @return boolean True if the node is a Text node 
+	*/
+	function isTextNode(&$node) {
+		$type = $node->nodeType;
+		return (($type == DOMIT_TEXT_NODE) || ($type == DOMIT_CDATA_SECTION_NODE));
+	} //isTextNode
+	
+	/**
+	* Returns the indentation required for the specified node level
+	* @param int The current node level
+	* @return string The indentation required for the specified node level
+	*/
 	function getIndentation($node_level) {
-		$INDENT_LEN = "    ";
+		$INDENT_LEN = '    ';
 		$indentation = "\n";
 
 		for ($i = 0; $i < $node_level; $i++) {
@@ -137,7 +261,33 @@ class DOMIT_Utilities {
 		return $indentation;
 	} //getIndentation
 	
+	/**
+	* Removes the extension from the specified file name
+	* @param string The file name
+	* @return string The file name, stripped of its extension
+	*/
+	function removeExtension($fileName) {
+		$total = strlen($fileName);
+		$index = -1;
+		
+		for ($i = ($total - 1); $i >= 0; $i--) {
+			if ($fileName{$i} == '.') {
+				$index = $i;
+			}
+		}
+		
+		if ($index == -1) {
+			return $fileName;
+		}
+		
+		return (substr($fileName, 0, $index));
+	} //removeExtension	
 	
+	/**
+	* Determines whether the XML string is valid (NOT FULLY IMPLEMENTED!)
+	* @param string The XML text
+	* @return boolean True if the XML text is valid
+	*/
 	function validateXML($xmlText) {
 		//this does only rudimentary validation
 		//at this point in time
@@ -147,7 +297,7 @@ class DOMIT_Utilities {
 			$text = trim($xmlText);
 			
 			switch ($text) {
-				case "":
+				case '':
 					$isValid = false;
 					break;
 			}
@@ -159,39 +309,64 @@ class DOMIT_Utilities {
 		return $isValid;
 	} //validateXML
 	
+	/**
+	* Set the browser header to interpret data as UTF-8 formatted
+	* @param string The content type of the data
+	*/
+	function printUTF8Header($contentType = 'text/html') {
+		echo header('Content-type: ' . $contentType . '; charset=utf-8');
+	} //printUTF8Header
 	
-	function printNode(&$node) {
-		return " id: " . $node->uid . "\n" .
-				"nodeName: " . $node->nodeName . "\n" .
-				"nodeType: " . $node->nodeType . "\n" .
-				"nodeValue: " . $node->nodeValue;
-	} //printNode
-	
-	
-	function printNodeAndSiblings(&$node) {
-		$ns = "";
-		
-		if ($node != null) {
-			$ns = "\n\n************************\nNODE: \n" . DOMIT_Utilities::printNode($node);
-		
-			if ($node->previousSibling != null) {
-				$ns .= "\n\nPREVIOUS SIBLING:\n" . DOMIT_Utilities::printNode($node->previousSibling);
-			}
-			else {
-				$ns .= "\n\nPREVIOUS SIBLING:\nnull"; 
-			}
-			
-			if ($node->nextSibling != null) {
-				$ns .= "\n\nNEXT SIBLING:\n" . DOMIT_Utilities::printNode($node->nextSibling);
-			}
-			else {
-				$ns .= "\n\nNEXT SIBLING:\nnull"; 
-			}
+	/**
+	* Formats a string for presentation as HTML
+	* @param string The string to be formatted
+	* @param boolean True if the string is to be sent directly to output
+	* @return string The HTML formatted string  
+	*/
+	function forHTML($text, $doPrint = false) {
+		if ($doPrint) {
+			print ('<pre>' . htmlspecialchars($text) . '</pre>');
 		}
-		
-		$ns .= "\n************************\n";
-		
-		return $ns;
-	} //printNodeAndSiblings
+		else {
+			return ('<pre>' . htmlspecialchars($text) . '</pre>');
+		}		
+	} //forHTML
+	
+	/**
+	* Generates a node tree from an array and appends it to the specified document or node
+	* @param object The document or node to which the child nodes should be appended
+	* @param array An associative multidimensional array of elements and values
+	*/
+	function fromArray (&$node, &$myArray) {
+		if ($node->nodeType == DOMIT_DOCUMENT_NODE) {
+			$docNode =& $node;
+		}
+		else {
+			$docNode =& $node->ownerDocument;
+		}
+
+		foreach ($myArray as $key => $value) {			
+			if (is_array($value)) {
+				//check for numeric indices
+				$total = count($value);
+				
+				if (($total > 0)  && isset($value[0])){
+					for ($i = 0; $i < $total; $i++) {
+						$node->appendChild($docNode->createElement($key));
+						DOMIT_Utilities::fromArray($node->lastChild, $value[$i]);					
+					}
+				}
+				else {
+					//generate child elements
+					$node->appendChild($docNode->createElement($key));
+					DOMIT_Utilities::fromArray($node->lastChild, $value);
+				}
+			}
+			else {
+				$node->appendChild($docNode->createElement($key));
+				$node->lastChild->appendChild($docNode->createTextNode($value));
+			}			
+		}		
+	} //fromArray
 } //DOMIT_Utilities
 ?>

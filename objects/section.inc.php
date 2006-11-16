@@ -4,7 +4,7 @@ class section extends segue {
 	var $pages;
 	var $_allfields = array("site_id","title","editedtimestamp","addedby","editedby","addedtimestamp",
 						"activatedate","deactivatedate","active","pages","type",
-						"url","locked");
+						"url","locked","hide_sidebar");
 	
 	// fields listed in $_datafields are stored in the database.
 	// the first element is the table join syntax required to pull the data.
@@ -92,6 +92,11 @@ class section extends segue {
 			array("section_created_tstamp"),
 			"section_id"
 		),
+		"hide_sidebar" => array(
+			"section",
+			array("section_hide_sidebar"),
+			"section_id"
+		),
 		"pages" => array(
 			"section
 				INNER JOIN
@@ -137,9 +142,9 @@ class section extends segue {
 				}
 			}
 
-			$query = "DELETE FROM section WHERE section_id=".$this->id;
+			$query = "DELETE FROM section WHERE section_id='".addslashes($this->id)."'";
 			db_query($query);
-			$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='section';";
+			$query = "DELETE FROM permission WHERE FK_scope_id='".addslashes($this->id)."' AND permission_scope_type='section';";
 			db_query($query);
 			
 			
@@ -154,6 +159,7 @@ class section extends segue {
 		$this->data[title] = "";
 		$this->data[activatedate] = $this->data[deactivatedate] = "0000-00-00";
 		$this->data[active] = 1;
+		$this->data[hide_sidebar] = 0;
 		$this->data[url] = "http://";
 		$this->data[locked] = 0;
 		if ($this->id) $this->fetchFromDB();
@@ -227,30 +233,31 @@ class section extends segue {
 
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
-SELECT  
-	section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
-	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
-	section_created_tstamp AS addedtimestamp,
-	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
-	media_tag AS url
-FROM 
-	section
-		INNER JOIN
-	user AS user_createdby
-		ON section.FK_createdby = user_createdby.user_id
-		INNER JOIN
-	user AS user_updatedby
-		ON section.FK_updatedby = user_updatedby.user_id
-		INNER JOIN
-	 site
-		ON section.FK_site = site.site_id
-		INNER JOIN
-	 slot
-		ON site.site_id = slot.FK_site
-		LEFT JOIN
-	media
-		ON FK_media = media_id
-WHERE section_id = ".$this->id;
+				SELECT  
+					section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+					section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
+					section_created_tstamp AS addedtimestamp, section_hide_sidebar AS hide_sidebar,
+					user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
+					media_tag AS url
+				FROM 
+					section
+						INNER JOIN
+					user AS user_createdby
+						ON section.FK_createdby = user_createdby.user_id
+						INNER JOIN
+					user AS user_updatedby
+						ON section.FK_updatedby = user_updatedby.user_id
+						INNER JOIN
+					 site
+						ON section.FK_site = site.site_id
+						INNER JOIN
+					 slot
+						ON site.site_id = slot.FK_site
+						LEFT JOIN
+					media
+						ON FK_media = media_id
+				WHERE section_id = '".addslashes($this->id)."'
+			";
 
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);
@@ -272,17 +279,18 @@ WHERE section_id = ".$this->id;
 			// now fetch the sections (they are part of a 1-to-many relationship and therefore
 			// we cannot fetch them along with the other fields)			
 			$query = "
-SELECT
-	page_id
-FROM
-	section
-		INNER JOIN
-	page
-		ON section_id = FK_section
-WHERE section_id = ".$this->id."
-ORDER BY
-	page_order
-";
+				SELECT
+					page_id
+				FROM
+					section
+						INNER JOIN
+					page
+						ON section_id = FK_section
+				WHERE 
+					section_id = '".addslashes($this->id)."'
+				ORDER BY
+					page_order
+			";
 
 			$r = db_query($query);
 			$this->data[pages] = array();
@@ -301,11 +309,11 @@ ORDER BY
 			$a = $this->createSQLArray();
 			
 			if ($keepEditHistory) {
-				$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+				$a[] = $this->_datafields[editedtimestamp][1][0]."='".addslashes($this->getField("editedtimestamp"))."'";
 			} else
-				$a[] = "FK_updatedby=".$_SESSION[aid];
+				$a[] = "FK_updatedby='".addslashes($_SESSION[aid])."'";
 			
-			$query = "UPDATE section SET ".implode(",",$a)." WHERE section_id=".$this->id;
+			$query = "UPDATE section SET ".implode(",",$a)." WHERE section_id='".addslashes($this->id)."'";
 /* 			print "<pre>Section->UpdateDB: $query<br />"; */
 			db_query($query);
 			
@@ -319,25 +327,36 @@ ORDER BY
 				// Urls are now stored in the media table
 				// get id of media item
 				$query = "
-SELECT
-	FK_media
-FROM
-	section
-WHERE
-	section_id = ".$this->id;
+					SELECT
+						FK_media
+					FROM
+						section
+					WHERE
+						section_id = '".addslashes($this->id)."'
+				";
 
 				$a = db_fetch_assoc(db_query($query));
 				$media_id = $a[FK_media];
-							
+				
+			if ($media_id) {
 				$query = "
-UPDATE
-	media
-SET
-	media_tag = '".$this->data[url]."',
-	FK_updatedby = ".$_SESSION[aid]."
-WHERE
-	media_id = $media_id
-";
+					UPDATE
+						media
+					SET
+						media_tag = '".addslashes($this->data[url])."',
+						FK_updatedby = '".addslashes($_SESSION[aid])."'
+					WHERE
+						media_id = '".addslashes($media_id)."'
+					";
+			} else {
+				$query = "
+					INSERT INTO
+						media
+					SET
+						media_tag = '".addslashes($this->data[url])."',
+						FK_updatedby = '".addslashes($_SESSION[aid])."'
+					";
+				}
 
 				db_query($query);
 
@@ -387,50 +406,53 @@ WHERE
 
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
-			$a[] = "FK_createdby=".$_SESSION[aid];
+			$a[] = "FK_createdby='".addslashes($_SESSION[aid])."'";
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
-			$a[] = "FK_updatedby=".$_SESSION[aid];
+			$a[] = "FK_updatedby='".addslashes($_SESSION[aid])."'";
 		} else {
-			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".$this->getField("addedby")."'");
-			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
-			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".$this->getField("editedby")."'");
-			$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".addslashes($this->getField("addedby"))."'");
+			$a[] = $this->_datafields[addedtimestamp][1][0]."='".addslashes($this->getField("addedtimestamp"))."'";
+			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".addslashes($this->getField("editedby"))."'");
+			$a[] = $this->_datafields[editedtimestamp][1][0]."='".addslashes($this->getField("editedtimestamp"))."'";
 		}
 
 		// insert media (url)
 		if ($this->data[url]) {
 			// first see, if media item already exists in media table
 			$query = "
-SELECT
-	media_id
-FROM
-	media
-WHERE
-	FK_site = ".$this->owningSiteObj->id." AND
-	FK_createdby = ".$_SESSION[aid]." AND
-	media_tag = '".$this->data[url]."' AND
-	media_location = 'remote'";
+				SELECT
+					media_id
+				FROM
+					media
+				WHERE
+					FK_site = '".addslashes($this->owningSiteObj->id)."' AND
+					FK_createdby = '".addslashes($_SESSION[aid])."' AND
+					media_tag = '".addslashes($this->data[url])."' AND
+					media_location = 'remote'
+			";
+			
 			$r = db_query($query);
 			
 			// if not in media table insert it
 			if (!db_num_rows($r)) {
 				$query = "
-INSERT
-INTO media
-SET
-	FK_site = ".$this->owningSiteObj->id.",
-	FK_createdby = ".$_SESSION[aid].",
-	media_tag = '".$this->data[url]."',
-	media_location = 'remote',
-	FK_updatedby = ".$_SESSION[aid]."
-";
+					INSERT
+					INTO media
+					SET
+						FK_site = '".addslashes($this->owningSiteObj->id)."',
+						FK_createdby = '".addslashes($_SESSION[aid])."',
+						media_tag = '".addslashes($this->data[url])."',
+						media_location = 'remote',
+						FK_updatedby = '".addslashes($_SESSION[aid])."'
+				";
+				
 				db_query($query);
 				$a[] = "FK_media=".lastid();
 			}
 			// if in media table, assign the media id
 			else {
 				$arr = db_fetch_assoc($r);
-				$a[] = "FK_media=".$arr[media_id];
+				$a[] = "FK_media='".addslashes($arr[media_id])."'";
 			}
 		}
 		
@@ -504,13 +526,14 @@ SET
 		}
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-		if ($all || $this->changed[activatedate]) $a[] = "section_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[deactivatedate]) $a[] = "section_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
-		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
+		if ($all || $this->changed[activatedate]) $a[] = "section_activate_tstamp ='".addslashes(ereg_replace("-","",$d[activatedate]))."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = "section_deactivate_tstamp ='".addslashes(ereg_replace("-","",$d[deactivatedate]))."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".addslashes((($d[active])?1:0))."'";
+		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='".addslashes($d[type])."'";
 //		if ($all || $this->changed[pages]) $a[] = "pages='".encode_array($this->getField("pages"))."'";
 //		if ($all || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
-		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
+		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".addslashes((($d[locked])?1:0))."'";
+		if ($all || $this->changed[hide_sidebar]) $a[] = $this->_datafields[hide_sidebar][1][0]."='".addslashes((($d[hide_sidebar])?1:0))."'";
 		
 		return $a;
 	}

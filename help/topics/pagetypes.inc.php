@@ -1,6 +1,10 @@
 <? $title = "Page Types"; ?>
 
-<div class=desc><b>Content Page</b> - will allow you to add content to your site, along with user discussions if necessary.</div>
-<div class=desc><b>Link/URL</b> - is a link to a page outside of your site (like <i>http://www.middlebury.edu/</i>). URLs will open in a new window, allowing users to continue browsing your site.</div>
-<div class=desc><b>Heading</b> - appears in the navigation area, but with no link attached. It is useful to categorize your pages or links. Organization is sometimes a good thing.</div>
-<div class=desc><b>Divider</b> - will put some sort of dividing space between items in your navigation list. This may just be some white space, or a thin line, depending on what theme you chose for your site.</div>
+<div class='desc'><b>New Page</b> - New pages allows you to add content blocks to your site.  These content blocks can be blog entries, assignments, news, images and so on. User discussion can be enbled on any of these.</div>
+<div class='desc'><b>Sidebar Content</b> - Sidebar Content allows you to add content in either the left or right sidebar of your site.  This content can be text or HTML.</div>
+<div class='desc'><b>RSS Feed</b> - RSS feeds allow you to add RSS feeds to the left or right sidebar from any site that offers these.  Only the title of the channel and each item in the feed will be displayed.  Maximum entries allows you to limit how many RSS items are displayed</div>
+<div class='desc'><b>Categories</b> - Categories pages will display a list of all the categories you have used in your site in the left or right sidebar along with the number of content blocks in each category.  As well the category names become links that display all the content blocks in the category.</div>
+<div class='desc'><b>Link/URL</b> - is a link to a page outside of your site (like <i><? echo $_full_uri?></i>). URLs will open in a new window, allowing users to continue browsing your site.</div>
+<div class='desc'><b>Heading</b> - appears in the navigation area, but with no link attached. It is useful to categorize your pages or links. Organization is sometimes a good thing.</div>
+<div class='desc'><b>Divider</b> - will put some sort of dividing space between items in your navigation list. This may just be some white space, or a thin line, depending on what theme you chose for your site.</div>
+<div class='desc'><b>Participant List</b> - Participant list displays a list of all the participants in your site including the site owner, editors and if it is a class site, all the participants in the roster.</div>

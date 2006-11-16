@@ -1,11 +1,14 @@
 <style type='text/css'>
 div, p, td, span, input { 
-	color: #<? echo $textcolor; ?>;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 }
 </style>
 <?
+
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+
 include("$themesdir/$theme/colors.inc.php");
 
 $bgcolors = array_keys($_bgcolor);
@@ -49,10 +52,10 @@ if ($themesettings[theme] == 'tornpieces') {
 <b>Torn Pieces</b><br />
 This theme is meant to look like a pieces of torn paper.  Edges are a random pattern.
 Also see Torn Paper theme.
-<hr noshade size=1>
+<hr noshade size='1' />
 <table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>
 Background Color:</td><td> 
-<select name='bgcolor' onChange="document.settings.submit()">
+<select name='bgcolor' onchange="document.settings.submit()">
 <?
 foreach ($bgcolors as $s) {
 	print "<option value='$s'".(($bgcolor==$s)?" selected":"").">$s\n";
@@ -60,7 +63,7 @@ foreach ($bgcolors as $s) {
 ?>
 </select>
 </td></tr>
-<input name="colorscheme" type="hidden" value="white"><!--
+<input name="colorscheme" type="hidden" value="white" /><!--
 <tr><td align='left'>
 Foreground Color:</td><td> 
 <select name='colorscheme'>
@@ -95,7 +98,7 @@ foreach ($bordercolors as $s) {
 -->
 <tr><td align='left'>
 Text Color:</td><td>
-<select name='textcolor' onChange="document.settings.submit()">
+<select name='textcolor' onchange="document.settings.submit()">
 <?
 foreach ($textcolors as $s) {
 	print "<option value='$s'".(($textcolor==$s)?" selected":"").">$s\n";
@@ -105,7 +108,7 @@ foreach ($textcolors as $s) {
 </td></tr>
 <tr><td align='left'>
 Link Color:</td><td>
-<select name='linkcolor' onChange="document.settings.submit()">
+<select name='linkcolor' onchange="document.settings.submit()">
 <?
 foreach ($linkcolors as $s) {
 	print "<option value='$s'".(($linkcolor==$s)?" selected":"").">$s\n";
@@ -114,7 +117,7 @@ foreach ($linkcolors as $s) {
 </select>
 </table>
 Note: Make sure that your text stands out from background and that your text and link colors are contrasting.
-<hr noshade size=1>
+<hr noshade size='1' />
 <?
 
 //All settings for Navigation are included here

@@ -14,12 +14,12 @@ function printerr() {
 	if ($numerrs) {
 		$string .="<div class='error' align='left'>The following errors occured:<ul>\n";
 		foreach ($errors as $id) {
-			$string .="<li class=smaller>" . $id . "\n";
+			$string .="<li class='smaller'>" . $id . "</li>\n";
 		}
 		$string .="</ul></div>";
 	}
 	if ($message) {
-		$string .="<div class=desc><b>$message</b><br /></div>";
+		$string .="<div class='desc'><b>$message</b><br /></div>";
 	}
 	preprintc($string);
 }
@@ -31,12 +31,12 @@ function printerr2() {
 	if ($numerrs) {
 		$string .="<div class='error' align='left'>The following errors occured:<ul>\n";
 		foreach ($errors as $id) {
-			$string .="<li class=smaller>" . $id . "\n";
+			$string .="<li class='smaller'>" . $id . "</li>\n";
 		}
 		$string .="</ul></div>";
 	}
 	if ($message) {
-		$string .="<div class=desc><b>$message</b><br /></div>";
+		$string .="<div class='desc'><b>$message</b><br /></div>";
 	}
 	print $string;
 }

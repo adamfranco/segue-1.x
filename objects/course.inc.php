@@ -28,7 +28,9 @@ class course {
 				FK_classgroup
 			FROM
 				class
-			WHERE class_id=".$this->id;
+			WHERE class_id='".addslashes($this->id)."'
+		";
+			
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
@@ -48,16 +50,16 @@ class course {
 	}
 	
 	function _insert() {
-		$data = "class_external_id='".$this->external_id."'";
-		$data .= ",class_name='".$this->name."'";
-		$data .= ",class_department='".$this->department."'";
-		$data .= ",class_number='".$this->number."'";
-		$data .= ",class_section='".$this->section."'";
-		$data .= ",class_semester='".$this->semester."'";
-		$data .= ",class_year='".$this->year."'";
-		$data .= ",FK_owner='".$this->owner."'";
-		$data .= ",FK_ugroup='".$this->ugroup."'";
-		$data .= ",FK_classgroup='".$this->classgroup."'";
+		$data = "class_external_id='".addslashes($this->external_id)."'";
+		$data .= ",class_name='".addslashes($this->name)."'";
+		$data .= ",class_department='".addslashes($this->department)."'";
+		$data .= ",class_number='".addslashes($this->number)."'";
+		$data .= ",class_section='".addslashes($this->section)."'";
+		$data .= ",class_semester='".addslashes($this->semester)."'";
+		$data .= ",class_year='".addslashes($this->year)."'";
+		$data .= ",FK_owner='".addslashes($this->owner)."'";
+		$data .= ",FK_ugroup='".addslashes($this->ugroup)."'";
+		$data .= ",FK_classgroup='".addslashes($this->classgroup)."'";
 		
 		if ($this->id) { // are we updating?
 			$query = "
@@ -65,7 +67,8 @@ class course {
 					class
 				SET 
 					$data
-				WHERE class_id=".$this->id;
+				WHERE class_id='".addslashes($this->id)."'
+			";
 		} else 
 			$query = "
 				INSERT INTO 
@@ -88,7 +91,9 @@ class course {
 			FROM
 				class
 			WHERE
-				".generateTermsFromCode($c);
+				'".addslashes(generateTermsFromCode($c))."'
+		";
+		
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
 		if ($a['count'] != 0) return true;
@@ -96,26 +101,31 @@ class course {
 	}
 	
 	function delCourse($id) {
-		$ugroup_id = db_get_value("class","FK_ugroup","class_id=$id");
+		$ugroup_id = db_get_value("class","FK_ugroup","class_id='".addslashes($id)."'");
+		
 		$query = "
 			DELETE FROM
 				class
 			WHERE
-				class_id=$id";
+				class_id='".addslashes($id)."'
+		";
+		
 		db_query($query);
 		$query = "
 			DELETE FROM
 				ugroup_user
 			WHERE
-				FK_ugroup=$ugroup_id
+				FK_ugroup='".addslashes($ugroup_id)."'
 		";
+		
 		db_query($query);
 		$query = "
 			DELETE FROM
 				ugroup
 			WHERE
-				ugroup_id=$ugroup_id
+				ugroup_id='".addslashes($ugroup_id)."'
 		";
+		
 		db_query($query);
 	}
 		

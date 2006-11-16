@@ -164,11 +164,15 @@ if ($domove) {
 		else $removeOrigional = 1;
 		log_entry($actionlc."_page","$_SESSION[auser] ".$actionlc."d page ".$partObj->id." from site ".$_SESSION[origSite].", section ".$_SESSION[origSection]." to site ".$parentObj->owning_site.", section ".$parentObj->id,$parentObj->owning_site,$parentObj->id,"section");
 	}
-	else if ($_SESSION[type] == "story") {
+	else if ($_SESSION[type] == "story") {	
 		$partObj = $_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]];
 		$parentObj = $siteObj->sections[$section]->pages[$page];
-		if ($action == "COPY" && $parentObj->id == $_SESSION[origPage]) $removeOrigional = 0;
-		else $removeOrigional = 1;
+		if ($action == "COPY" && $parentObj->id == $_SESSION[origPage]) {
+			$removeOrigional = 0;
+		} else {
+			$removeOrigional = 1;
+		}
+		
 		log_entry($actionlc."_story","$_SESSION[auser] ".$actionlc."d story ".$partObj->id." from site ".$_SESSION[origSite].", section ".$_SESSION[origSection].", page ".$_SESSION[origPage]." to site ".$parentObj->owning_site.", section ".$parentObj->owning_section.", page ".$parentObj->id,$parentObj->owning_site,$parentObj->id,"story");
 	} else 
 		print "Major Error!!!!!!!!!!!!!!!!!!!!!!  AHHHHHhhhhhhhh!!!!!!!!!!!!!!!!!!!!";
@@ -217,6 +221,7 @@ if ($domove) {
 	if ($action == "MOVE") {
 		/* print "<pre>"; print_r($origPartObj); print "</pre>"; */
 		$origPartObj->delete(1);
+		delete_record_tags($_SESSION[origSiteObj]->name,$_SESSION[origStory],"story");
 	}
 	
 }
@@ -287,7 +292,8 @@ input,select {
  
 </style> 
 
-<script lang="JavaScript"> 
+<script type="text/javascript">
+// <![CDATA[ 
  
 function updateForm(type) { 
 	f = document.moveform; 
@@ -312,47 +318,48 @@ function finishUp(action) {
 }
 
 function followLink(url) {
-	opener.location=url;
+	opener.location=url.replace(/&amp;/, '&');
 	window.close();
 }
- 
+
+// ]]> 
 </script> 
 
 </head>
 
 <?
 if ($domove)
-	print "<body onLoad=\"finishUp('$action')\">";
+	print "<body onload=\"finishUp('$action')\">";
 else
 	print "<body>";
  
 print "<form action='$PHP_SELF?$sid' name='moveform' method='post'>";
-/* print "<input type=hidden name='origionalsite' value='$origionalsite'>"; */
-/* print "<input type=hidden name='origionalsection' value='$origionalsection'>"; */
-/* print "<input type=hidden name='origionalpage' value='$origionalpage'>"; */
-print "<input type=hidden name='selecttype'>";
-/* print "<input type=hidden name='sites' value='".encode_array($sites)."'>"; */
+/* print "<input type='hidden' name='origionalsite' value='$origionalsite' />"; */
+/* print "<input type='hidden' name='origionalsection' value='$origionalsection' />"; */
+/* print "<input type='hidden' name='origionalpage' value='$origionalpage' />"; */
+print "<input type='hidden' name='selecttype' />";
+/* print "<input type='hidden' name='sites' value='".encode_array($sites)."' />"; */
 if ($_SESSION[type] == "story")
-	print "<input type=hidden name='story' value='$story'>";
+	print "<input type='hidden' name='story' value='$story' />";
 if ($_SESSION[type] == "page")
-	print "<input type=hidden name='page' value='$page'>";
+	print "<input type='hidden' name='page' value='$page' />";
 if ($_SESSION[type] == "section")
-	print "<input type=hidden name='section' value='$section'>";
+	print "<input type='hidden' name='section' value='$section' />";
 
-print "<table cellspacing=1 width='100%'>";
+print "<table cellspacing='1' width='100%'>";
 
 if (!$domove) {
 	print "<tr> ";
-		print "<td colspan=2>";
-			print "<input type=radio value='COPY' name='action'".(($action=="COPY")?" checked":"")." onClick=\"updateForm('move')\"> Copy &nbsp; &nbsp; ";
+		print "<td colspan='2'>";
+			print "<input type='radio' value='COPY' name='action'".(($action=="COPY")?" checked='checked'":"")." onclick=\"updateForm('move')\" /> Copy &nbsp; &nbsp; ";
 			if (!$_SESSION[onlyCopy])
-				print "<input type=radio value='MOVE' name='action'".(($action=="MOVE")?" checked":"")." onClick=\"updateForm('move')\"> Move";
+				print "<input type='radio' value='MOVE' name='action'".(($action=="MOVE")?" checked='checked'":"")." onclick=\"updateForm('move')\" /> Move";
 		print "</td>";
 	print "</tr> ";
 }
 
 print "<tr>";
-	print "<th style='text-align: left;' colspan=1>";
+	print "<th style='text-align: left;' colspan='1'>";
 	if (!$domove) {
 		print ucwords($actionlc)." ".ucwords($_SESSION[type]);
 		print " to:";
@@ -372,7 +379,7 @@ print "<tr>";
 	print "<td style='text-align: left;'>Site: </td>";
 	print "<td style='text-align: left'>";
 	if (!$domove) {
-		print "<select name='site' onChange=\"updateForm('site')\" style='";
+		print "<select name='site' onchange=\"updateForm('site')\" style='";
 		if ($siteObj->name == $_SESSION[origSite] && $action=="MOVE" && $_SESSION[type] == "section") {
 			print "background-color: #F33;";
 			$cantmovehere=1;
@@ -414,7 +421,7 @@ if ($_SESSION[type] != "section") {
 		print "<td style='text-align: left'>";
 		if (!$domove) {
 			if (count($siteObj->sections)) {
-				print "<select name='section' onChange=\"updateForm('section')\" style='";
+				print "<select name='section' onchange=\"updateForm('section')\" style='";
 				if ($siteObj->sections[$section]->id == $_SESSION[origSection] && $action=="MOVE" && $_SESSION[type] == "page") {
 					print "background-color: #F33;";
 					$cantmovehere=1;
@@ -464,7 +471,7 @@ if ($_SESSION[type] == "story") {
 		print "<td style='text-align: left'>";
 		if (!$domove) {
 			if (count($siteObj->sections[$section]->pages)) {
-				print "<select name='page' onChange=\"updateForm('page')\" style='";
+				print "<select name='page' onchange=\"updateForm('page')\" style='";
 				if ($siteObj->sections[$section]->pages[$page]->id == $_SESSION[origPage] && $action=="MOVE") {
 					print "background-color: #F33;";
 					$cantmovehere=1;
@@ -507,31 +514,31 @@ if ($_SESSION[type] == "story") {
 }
 
 if (!$domove) {
-	print "\n<tr><td colspan=2>";
+	print "\n<tr><td colspan='2'>";
 	print "\n".(($action == "COPY")?"Copy":"Move")." discussions? ";
-	print "\nYes: <input type='radio' name='keep_discussions' value='yes' ".(($_REQUEST['keep_discussions'] != 'no')?"checked='checked'":"").">";
-	print "\nNo: <input type='radio' name='keep_discussions' value='no' ".(($_REQUEST['keep_discussions'] == 'no')?"checked='checked'":"").">";
+	print "\nYes: <input type='radio' name='keep_discussions' value='yes' ".(($_REQUEST['keep_discussions'] != 'no')?"checked='checked'":"")." />";
+	print "\nNo: <input type='radio' name='keep_discussions' value='no' ".(($_REQUEST['keep_discussions'] == 'no')?"checked='checked'":"")." />";
 	print "\n</td></tr>";
 }
 /******************************************************************************
  * print buttons
  ******************************************************************************/
 print "\n<tr>";
-	print "<td colspan=2>";
+	print "<td colspan='2'>";
 	if (!$domove) {
 		if (!$cantmovehere)
-			print "<input type=submit name='domove' value='$action'>";
+			print "<input type='submit' name='domove' value='$action' />";
 		else 
-			print "<input type=button value='$action' style='background-color: #F33;' onClick=\"alert('$cantmovereason')\">";				
+			print "<input type='button' value='$action' style='background-color: #F33;' onclick=\"alert('$cantmovereason')\" />";				
 	} else {
-		print "<input type=button value='Go To ".(($action=="MOVE")?"Moved":"Copied")." $_SESSION[type]' onClick=\"followLink('";
+		print "<input type=button value='Go To ".(($action=="MOVE")?"Moved":"Copied")." $_SESSION[type]' onclick=\"followLink('";
 		if ($_SESSION[type] == "story")
-			print "index.php?$sid&action=viewsite&site=$site&section=$section&page=$page";
+			print "index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page";
 		if ($_SESSION[type] == "page")
-			print "index.php?$sid&action=viewsite&site=$site&section=$section&page=".$partObj->id;
+			print "index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=".$partObj->id;
 		if ($_SESSION[type] == "section")
-			print "index.php?$sid&action=viewsite&site=$site&section=".$partObj->id;
-		print "')\">";
+			print "index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=".$partObj->id;
+		print "')\" />";
 	}
 	print "</td>";
 print "</tr>";
@@ -541,7 +548,7 @@ print "</tr>";
 </table>
 </form>
  
-<div align='right'><input type=button value='Cancel' onClick='window.close()' align='right'></div><br /> 
+<div align='right'><input type='button' value='Cancel' onclick='window.close()' align='right' /></div><br /> 
 
 <?
 // debug output -- handy :)

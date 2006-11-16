@@ -41,7 +41,7 @@ function CarpConfReset() {
 	'filterout'=>'',
 	'skipdups'=>1,
 
-	'descriptiontags'=>'b|/b|i|/i|br|p|/p|hr|span|/span|font|/font|a|/a|img',
+	'descriptiontags'=>'b|/b|i|/i|br|p|/p|hr|span|/span|font|/font|a|/a|img|table|/table|tr|/tr|td|/td|tbody|/tbody',
 	'linktarget'=>0,
 
 	// replaced by cborder, bcb and acb - these will be removed eventually
@@ -117,7 +117,7 @@ function CarpConfReset() {
 	'setiimageh'=>0,
 
 	'encodingin'=>'',
-	'encodingout'=>'ISO-8859-1',
+	'encodingout'=>'utf-8',
 	'maxredir'=>10,
 	'timeout'=>15,
 	'sendhost'=>1,

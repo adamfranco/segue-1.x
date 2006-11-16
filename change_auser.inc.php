@@ -37,6 +37,7 @@ foreach ($_GET as $key => $val) {
 		$getVars .= "&".$key."=".$val;
 	}
 header("Location: index.php?$sid".$getVars);
+exit;
 
 ?>
 	

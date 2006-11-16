@@ -37,7 +37,7 @@ if ($_SESSION['ltype'] != 'admin') {
   print "This scripts searches the slots table for all records where:<br />";
   print "slot_uploadlimit = $userdirlimit<br />";
   print "and updates these records so that slot_uploadlimit = 'NULL'<br /><br />";
-  print "For more information, see: <a href=https://sourceforge.net/tracker/index.php?func=detail&aid=874014&group_id=82171&atid=565234 target=new_window>Segue bug tracker [ 874014 ] Media Library size issue</a><br /><br />";
+  print "For more information, see: <a href='https://sourceforge.net/tracker/index.php?func=detail&amp;aid=874014&amp;group_id=82171&amp;atid=565234' target='new_window'>Segue bug tracker [ 874014 ] Media Library size issue</a><br /><br />";
 
 
 if ($_REQUEST['Update']) {
@@ -109,12 +109,12 @@ if ($_REQUEST['Update']) {
 	} 
 
 } else {
-	print "<form><input type=submit name='Update' value='update'></form>";
+	print "<form><input type='submit' name='Update' value='update' /></form>";
 }
-print "<hr>";
+print "<hr />";
 
 ?>
-<table width='100%' border=1>
+<table width='100%' border='1'>
 <tr>
 <th>Update</th>
 <th>id</th>
@@ -122,7 +122,7 @@ print "<hr>";
 <th>owner</th>
 <th>type</th>
 <th>assoc site</th>
-<th colspan=2>uploadlimit<br />(Default = <? print $default_uploadlimit ?> Bytes)</th>
+<th colspan='2'>uploadlimit<br />(Default = <? print $default_uploadlimit ?> Bytes)</th>
 </tr>
 <?
 $count = 0;	
@@ -153,5 +153,5 @@ while ($a = db_fetch_assoc($r)) {
 	}
 }
 print "</table>";
-print "<hr>";
+print "<hr />";
 print "Total slots updated: $count";

@@ -12,114 +12,200 @@ $nav = array(
 		etc...
 		);
 */
+
+/*********************************************************
+ * get all of the existing output buffers and place them inside our body
+ *********************************************************/
+$obContent = '';
+while (ob_get_level())
+	$obContent .= ob_get_clean();
+
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<? include("themes/common/header.inc.php"); ?>
-<? include("themes/default/css.inc.php"); ?>
 <title><? echo $pagetitle; ?></title>
+
+<?
+/******************************************************************************
+ * Commom header stuff
+ ******************************************************************************/
+include("themes/common/header.inc.php");
+include("themes/$theme/css.inc.php"); 
+?>
 </head>
+<body>
 
-<table width=700 align='center'>
-<tr>
-	<td>
-	
-	<? include("themes/common/status.inc.php"); ?>
-	
-	<? print ($siteheader)?"$siteheader":""; ?>
-	<? print $sitecrumbs; ?>
-	
-	<table width=100% cellspacing='0'>
+<? print $obContent; ?>
+
+<table width='95%' align='center'>
 	<tr>
-		<td align='center' class='toppadding'>
-		&nbsp;
-		</td>
-		
+		<td>
 		<?
-		// ---------------------------------------
-		// top nav
-		foreach ($topnav as $item) {
-			$samepage = (isset($section) && ($section == $item[id]))?1:0;
-			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-			print "<td class='toptab' style='".(($samepage)?"border-bottom: 0px;":"background-color: #eee") . "' align='center'>";
-			print "<nobr>";
-			print makelink($item,$samepage);
-			print "</nobr></td>";
-			print "<td class='toppadding'>&nbsp;</td>";
-		}
-		
-		print "<td class='toppadding' align='right' width=100%>&nbsp; " . $topnav_extra . "</td>";
-		
+		/******************************************************************************
+		 * Site Header, Status bar, crumbs
+		 ******************************************************************************/ 	
+		include("themes/common/status.inc.php");
+		print ($siteheader)?"$siteheader":"";
+		print $sitecrumbs;
 		?>
+		
+			<table width='100%' cellspacing='0'>
+				<tr>
+					<td align='center' class='toppadding'>&nbsp;</td>
+					
+					<?
+					/******************************************************************************
+					 * Section Navigation
+					 ******************************************************************************/
+					foreach ($topnav as $item) {
+						$samepage = (isset($section) && ($section == $item[id]))?1:0;
+						if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
+						print "\n\t\t\t\t\t<td class='toptab' style='white-space: nowrap; ".(($samepage)?"border-bottom: 0px;":"background-color: #eee;") . "' align='center'>";
+						print "\n\t\t\t\t\t\t".makelink($item,$samepage);
+						print "\n\t\t\t\t\t</td>";
+						print "\n\t\t\t\t\t<td class='toppadding'>&nbsp;</td>";
+					}		
+					print "\n\t\t\t\t\t<td class='toppadding' align='right' width='100%'>\n\t\t\t\t\t\t&nbsp; " . $topnav_extra . "\n\t\t\t\t\t</td>";
+					?>
+					
+				</tr>
+				<tr>
+					<?
+					/******************************************************************************
+					 * Determine cols needed for sections
+					 ******************************************************************************/
+					$numtopnavs = count($topnav);
+					$colspan = ($numtopnavs)?$numtopnavs*2:1;
+					$colspan+=2;		
+					?>
+					
+					<td class='contentarea' colspan='<?echo $colspan?>'>
+						<table cellpadding='0' cellspacing='0' width='100%'>
+							<tr>
+								<td valign='top'>			
+									<table cellpadding='0' cellspacing='0' style='height: 100%'>
+									<?
+			/******************************************************************************
+									 * Left Column
+									 ******************************************************************************/			
+									foreach ($leftnav as $item) {
+										if ($item[type] == 'normal') {
+											$samepage = (isset($page) && ($page == $item[id]))?1:0;
+											if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td align='right' valign='middle' class='".(($samepage)?"leftnavsel":"leftnav")."' style='white-space: nowrap;'>";
+											print "\n\t\t\t\t\t\t\t\t\t\t\t\t".makelink($item,$samepage,'',1);
+											print "\n\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+										}
+										
+										if ($item[type] == 'content' || $item[type] == 'rss' || $item[type] == 'tags' || $item[type] == 'participants') {
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td align='right' valign='middle' class='".(($samepage)?"leftnavsel":"leftnavsel")."'>";
+											if ($action == "viewsite") {
+												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<table width='150' cellspacing='0' cellpadding='1' style='border: 1px solid #$bordercolor; white-space: nowrap;'>";
+											} else {
+												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<table width='150' cellspacing='0' cellpadding='0' style='white-space: nowrap;'>";
+											}
+											if ($item[name]) print "\n\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<td style='border-top: 1px solid #$bordercolor; border-bottom: 1px solid #$bordercolor; padding-top: 2px; padding-bottom: 2px;'>$item[name]</td>\n\t\t\t\t\t\t\t\t\t\t\t\t</tr>";
+											if ($item[type] == 'content') {
+												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<td>$item[content]<br />";
+											} else {
+												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<td>$item[content]";				
+											}
+											//print "<tr><td style='border-bottom: 1px solid #$bordercolor; padding-bottom: 2px;'></td></tr>";
+											if ($action == "viewsite") print "$item[extra]<br />";
+											print "\n\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t</table>";
+											print "\n\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t</tr>";
+									}
+										if ($item[type] == 'divider') {
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='leftpadding' align='right'>&nbsp;$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+										}
+										if ($item[type] == 'heading') {
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='leftpadding' align='right'>\n\t\t\t\t\t\t\t\t\t\t\t\t<div class='heading'>$item[name]</div>$item[extra]\n\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+										}
+									}
+									print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='leftpadding' valign='top' height='100%'>".$leftnav_extra."&nbsp;</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+									?>
+									
+									</table>
+								</td>
+								<td class='smallercontentarea' width='100%' valign='top'>
+								
+								
+								<?
+								/******************************************************************************
+								 * Center Column
+								 ******************************************************************************/
+								print "$content";
+								?>
+								
+								
+								</td>		
+								<td valign='top' style='padding-left: 0px'>
+									<table cellpadding='0' cellspacing='0' style='height: 100%'>
+									<?
+									/******************************************************************************
+									 * Right Column
+									 ******************************************************************************/
+									foreach ($rightnav as $item) {
+										if ($item[type] == 'normal') {
+											$samepage = (isset($page) && ($page == $item[id]))?1:0;
+											if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td align='left' valign='middle' class=".(($samepage)?"rightnavsel":"rightnav")." style='white-space: nowrap;'>";
+											print makelink($item,$samepage,'',1);
+											print "</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+										}
+										
+										if ($item[type] == 'content' || $item[type] == 'rss' || $item[type] == 'tags' || $item[type] == 'participants') {
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td align='right' valign='middle' class='".(($samepage)?"leftnavsel":"leftnavsel")."'>";
+											if ($action == "viewsite") {
+												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<table width='150' cellspacing='0' cellpadding='1' style='border: 1px solid #$bordercolor; white-space: normal;'>";
+											} else {
+												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<table width='150' cellspacing='0' cellpadding='0' style='white-space: normal;'>";
+											}
+											if ($item[name]) print "\n\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td style='border-top: 1px solid #$bordercolor; border-bottom: 1px solid #$bordercolor; padding-top: 2px; padding-bottom: 2px;'>$item[name]</td>\n\t\t\t\t\t\t\t\t\t\t\t\t</tr>";
+											if ($item[type] == 'content') {
+												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<td>$item[content]<br />";
+											} else {
+												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<td>$item[content]";				
+											}
+											//print "<tr><td style='border-bottom: 1px solid #$bordercolor; padding-bottom: 2px;'></td></tr>";
+											if ($action == "viewsite") print "$item[extra]<br />";
+											print "</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t</table>";
+											print "\n\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+										}
+						
+										if ($item[type] == 'divider') {
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='rightpadding' align='right'>&nbsp;$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+										}
+										if ($item[type] == 'heading') {
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='rightpadding' align='right'><div style='font-size: 12px; font-weight: bold;' align='left'>$item[name]</div>$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+										}
+									}
+									print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='rightpadding' valign='top' height='100%'>".$leftnav_extra."&nbsp;</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+									
+									?>
 
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>	
+			<br />
+			
+			<? 
+			/******************************************************************************
+			 * Footer
+			 ******************************************************************************/	
+			print $sitefooter 	
+			?>	
 		</td>
 	</tr>
-	<tr>
-		<?
-		$numtopnavs = count($topnav);
-		$colspan = ($numtopnavs)?$numtopnavs*2:1;
-		$colspan+=2;
-		
-		?>
-		
-		<td class='contentarea' colspan=<?echo $colspan?>>
-		<table cellpadding='0' cellspacing='0' width=100%>
-		<tr>
-			<td valign=top>
-			
-			<table cellpadding='0' cellspacing='0' height=100%>
-			<?
-			
-			// ----------------------
-			// left nav
-			
-			foreach ($leftnav as $item) {
-				if ($item[type] == 'normal') {
-					$samepage = (isset($page) && ($page == $item[id]))?1:0;
-					if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-					print "<tr><td align='right' valign=middle class=".(($samepage)?"leftnavsel":"leftnav")."><nobr>";
-					print makelink($item,$samepage,'',1);
-					print "</nobr></td></tr>";
-				}
-				if ($item[type] == 'divider') {
-					print "<tr><td class=leftpadding align='right'>&nbsp;$item[extra]</td></tr>";
-				}
-				if ($item[type] == 'heading') {
-					print "<tr><td class=leftpadding align='right'><div style='font-size: 14px; font-weight: bold;' align='left'>$item[name]</div>$item[extra]</td></tr>";
-				}
-			}
-			print "<tr><td class=leftpadding valign=top height=100%>".$leftnav_extra."&nbsp;</tr>";
-			?>
-			</table>
-			</td>
-			<td class=smallercontentarea width=100% valign=top>
-			<?
-//			print "<pre>";print_r($leftnav);print "</pre>";
-			print "$content";
-			?>
-			</td>
-			
-		
-			<td valign=top style='padding-left: 10px'>
-			<?
-			foreach ($rightnav as $item) {
-				if ($item[type]=='heading')
-					print "<div style='padding-left:10px'><nobr><b><li>$item[name]</b></nobr></div>";
-				else print "<div><nobr><a href='$item[url]'>$item[name]</a></nobr></div>";
-			}
-			?>
-			</td>
-		
-		</table>
-	
-	</tr></table>
-	
-	<br />
-
-	<? print $sitefooter ?>
-	
-	</td>
-</tr>
 </table>
+</body>
+</html>

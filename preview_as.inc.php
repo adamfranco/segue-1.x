@@ -18,9 +18,9 @@ if ($_SESSION['auser'] == $thisSite->owner) {
 	$previewUser = $_REQUEST['previewuser'];
 	
 	// Change the auser temporarily
-	print "<div style='border: 2px solid red; text-align: center; font-size: large;'>Previewing View Mode as '$previewUser'.</div>";
+	print "<div style='border: 2px solid red; text-align: center; font-size: large; color: #000000; background-color: #FFFFFF;'>Previewing View Mode as '$previewUser'.</div>";
 	$_SESSION['auser'] = $previewUser;
-	$_REQUEST['action'] = $_REQUEST['action']."&previewuser=".$previewUser;
+	$_REQUEST['action'] = $_REQUEST['action']."&amp;previewuser=".$previewUser;
 	$action = $_REQUEST['action'];
 	$_SESSION['__no_inst_ips'] = TRUE;
 	$_REQUEST['nostatus'] = TRUE;

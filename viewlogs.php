@@ -26,8 +26,9 @@ if ($cfg[logexpiration] && !$_SESSION['__logs_cleaned']) {
 			"DELETE FROM
 				log
 			WHERE
-				log_tstamp < $date
-			";
+				log_tstamp < '".addslashes($date)."'
+		";
+		
 		db_query($query);	
 		$_SESSION['__logs_cleaned'] = TRUE;
 	}
@@ -55,13 +56,13 @@ if ($clear) {
 }
 
 $w = array();
-if ($_REQUEST[type]) $w[]="log_type='$type'";
-if ($_REQUEST[user]) $w[]="log_desc like '%$user%'";
-if ($_REQUEST[_luser]) $w[]="FK_luser='$_luser'";
-if ($_REQUEST[_auser]) $w[]="FK_auser='$_auser'";
+if ($_REQUEST[type]) $w[]="log_type='".addslashes($type)."'";
+if ($_REQUEST[user]) $w[]="log_desc like '%".addslashes($user)."%'";
+if ($_REQUEST[_luser]) $w[]="FK_luser='".addslashes($_luser)."'";
+if ($_REQUEST[_auser]) $w[]="FK_auser='".addslashes($_auser)."'";
 
 if ($_SESSION[ltype] != 'admin') {
-	$w[]="slot_name LIKE '%$site%'";
+	$w[]="slot_name LIKE '%".addslashes($site)."%'";
 	
 } else {
 	if ($_REQUEST[site] != "") $w[]="slot_name LIKE '%$site%'";
@@ -75,8 +76,13 @@ if ($_SESSION[ltype] != 'admin') {
 	}
 }
 
-if (!$order) $order = "log_tstamp DESC";
-$orderby = " order by $order";
+//if (!$order) $order = "log_tstamp DESC";
+
+if (!isset($order)
+	|| !preg_match('/^[a-z0-9_.]+( (ASC|DESC))?$/i', $order))
+	$order = "log_tstamp DESC";
+
+$orderby = " ORDER BY $order";
 
 
 if ($_REQUEST[hideadmin]) $w[]="log_type NOT LIKE 'change_auser'";
@@ -106,10 +112,15 @@ $r=db_query($query);
 $a = db_fetch_assoc($r);
 $numlogs = $a[log_count];
 
-//if (!isset($lowerlimit) && $order == 'log_tstamp DESC') $lowerlimit = $numlogs-30;
-//if (!isset($lowerlimit) && $order != 'log_tstamp DESC') $lowerlimit = 0;
-if (!isset($lowerlimit)) $lowerlimit = 0;
-if ($lowerlimit < 0) $lowerlimit = 0;
+
+if (isset($_REQUEST['lowerlimit']))
+	$lowerlimit = intval($_REQUEST['lowerlimit']);
+else
+	$lowerlimit = 0;
+
+if ($lowerlimit < 0) 
+	$lowerlimit = 0;
+
 
 $limit = " LIMIT $lowerlimit,30";
 
@@ -145,256 +156,256 @@ SELECT
         $orderby 	 
         $limit";
 
-//print "<pre>".print_r($query)."</pre>";
+//printpre($query);
 $r = db_query($query);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>View Logs</title>
-<? include("themes/common/logs_css.inc.php"); ?>
-<script lang="JavaScript">
-
-function selectAUser(user) {
-	f = document.searchform;
-	f._auser.value=user;
-	f._luser.value="";
-	f.submit();
-}
-
-function selectLUser(user) {
-	f = document.searchform;
-	f._luser.value=user;
-	f._auser.value="";
-	f.submit();
-}
-
-function changeOrder(order) {
-	f = document.searchform;
-	f.order.value=order;
-	f.submit();
-}
-
-</script>
-
-<table width='100%' class='bg'>
-<td align='right' class='bg'>
-<?
-/******************************************************************************
- * Get site id for links to participation section
- ******************************************************************************/
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>View Logs</title>
+	<? include("themes/common/logs_css.inc.php"); ?>
+	<script type="text/JavaScript">
+	// <![CDATA[
 	
-$siteObj =&new site($site);
-$siteid = $siteObj->id;
-
-
-if ($_SESSION['ltype']=='admin') {
-	print "<table width=100%  class='bg'><tr><td class='bg'>
-	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
-	 | users
-	</td><td align='right' class='bg'>
-	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
-	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
-	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
-	<a href='update.php?$sid&site=$site'>segue updates</a>
-	</td></tr></table>";
-}
-if ($site) {
-	if (isclass($site)) print "<a href=add_students.php?$sid&name=$site>Roster</a> |";
-	print " <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&order=user_fname&scope=site'>Participation</a>";
-	print " | Logs";
-}
-
-?>
-
-</td></tr>
-<tr><td class='bg'>
-	<? print $content; ?>
-
-</td></tr>
-</table>
-
-<table cellspacing=1 width='100%' id='maintable'>
-<tr>
-	<td colspan=6>
-		<table width='100%'>
-		<tr><td>
-		<form action=<?echo "$PHP_SELF?$sid"?> method=post name='searchform'>
-		<?
-		if ($ltype != 'admin') {
-			print "<input type=hidden name=site value='$site'>";
-			print "Logs of $site <br />";
-		}
-		
-		$r1 = db_query("SELECT DISTINCT log_type FROM log ORDER BY log_type asc");
-		?>
-		type: <select name=type>
-		<option value=''>all
-		<?
-		while ($a=db_fetch_assoc($r1))
-			print "<option".(($type==$a[log_type])?" selected":"").">$a[log_type]\n";
-		?>
-		</select>
- 	
-		<?
-		if ($ltype == 'admin') {
-		?>
-			user: <input type='text' name=user size=15 value='<?echo $user?>'>
-			site: <input type='text' name=site size=15 value='<?echo $site?>'>
-			<? print "hide admin: <input type=checkbox name=hideadmin value=1".(($hideadmin)?" checked":"").">"; ?><br />
-			start date (yyyymmdd): <input type='text' name=startdate size=10 value='<?echo $startdate?>'> 
-			end date (yyyymmdd): <input type='text' name=enddate size=10 value='<?echo $enddate?>'> 
-
-		<? } ?>	
-		<input type=submit value='go'>
-		<input type=submit name='clear' value='clear'>
-		<input type=hidden name='order' value='<? echo $order ?>'>
-		<input type=hidden name='_auser' value='<? echo $_auser ?>'>
-		<input type=hidden name='_luser' value='<? echo $_luser ?>'>
-		<? print "<br />Total log entries:".$numlogs; ?>
-		</form>
-		</td>
-		<td align='right'>
-		
-		<?
-		$tpages = ceil($numlogs/30);
-		$curr = ceil(($lowerlimit+30)/30);
-		$prev = $lowerlimit-30;
-		if ($prev < 0) $prev = 0;
-		$next = $lowerlimit+30;
-		if ($next >= $numlogs) $next = $numlogs-30;
-		if ($next < 0) $next = 0;
-		print "$curr of $tpages ";
-//		print "$prev $lowerlimit $next ";
-		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&enddate=$enddate&startdate=$startdate&lowerlimit=$prev&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
-		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&enddate=$enddate&startdate=$startdate&lowerlimit=$next&type=$type&user=$user&hideadmin=$hideadmin&site=$site&order=$order&_auser=$_auser&_luser=$_luser\"'>\n";
-		
-		?>
-		</td>
-		</tr>
-		</table>
-	</td>
-</tr>
-<tr>
-
-<?
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='log_tstamp asc') print "log_tstamp desc";
-	else print "log_tstamp asc";
-	print "')\" style='color: #000'>Time";
-	if ($order =='log_tstamp asc') print " &or;";
-	if ($order =='log_tstamp desc') print " &and;";	
-	print "</a></th>";
-	
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='log_type asc') print "log_type desc";
-	else print "log_type asc";
-	print "')\" style='color: #000'>Type";
-	if ($order =='log_type asc') print " &or;";
-	if ($order =='log_type desc') print " &and;";	
-	print "</a></th>";
-	
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='luser asc') print "luser desc";
-	else print "luser asc";
-	print "')\" style='color: #000'>luser";
-	if ($order =='luser asc') print " &or;";
-	if ($order =='luser desc') print " &and;";	
-	print "</a></th>";
-	
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='auser asc') print "auser desc";
-	else print "auser asc";
-	print "')\" style='color: #000'>auser";
-	if ($order =='auser asc') print " &or;";
-	if ($order =='auser desc') print " &and;";	
-	print "</a></th>";
-	
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='slot_name asc') print "slot_name desc";
-	else print "slot_name asc";
-	print "')\" style='color: #000'>Site";
-	if ($order =='slot_name asc') print " &or;";
-	if ($order =='slot_name desc') print " &and;";	
-	print "</a></th>";
-
-	print "<th><a href=# onClick=\"changeOrder('";
-	if ($order =='log_desc asc') print "log_desc desc";
-	else print "log_desc asc";
-	print "')\" style='color: #000'>Text";
-	if ($order =='log_desc asc') print " &or;";
-	if ($order =='log_desc desc') print " &and;";	
-	print "</a></th>";
-?>
-</tr>
-<?
-$color = 0;
-$today = date(Ymd);
-$yesterday = date(Ymd)-1;
-
-if (db_num_rows($r)) {
-	while ($a=db_fetch_assoc($r)) {
-		print "<tr>";
-		print "<td class=td$color><span style='color: #";
-			if (strstr("add_site, delete_site, classgroups",$a[log_type])) 
-				print "F90";
-			else if (strstr("login, change_auser",$a[log_type])) 
-				print "000";
-			else
-				print "00C";
-		print "'><nobr>";
-//		print "<td class=td$color><nobr>";
-		if (strncmp($today, $a[log_tstamp], 8) == 0 || strncmp($yesterday, $a[log_tstamp], 8) == 0) print "<b>";
-		print timestamp2usdate($a[log_tstamp],1);
-		if (strncmp($today, $a[log_tstamp], 8) == 0 || strncmp($yesterday, $a[log_tstamp], 8) == 0) print "</b>";
-		print "</nobr></span></td>";
-//		print "</nobr></td>";
-		print "<td class=td$color><span style='color: #";
-			if (strstr("add_site, delete_site, classgroups",$a[log_type])) 
-				print "F90";
-			else if (strstr("login, change_auser",$a[log_type])) 
-				print "000";
-			else
-				print "00C";
-		print "'>$a[log_type]</span></td>";
-/*		print "<td class=td$color><span style='color: #";
-			if (strstr("add_site, delete_site, classgroups",$a[log_type])) 
-				print "F90";
-			else if (strstr("login, change_auser",$a[log_type])) 
-				print "000";
-			else
-				print "00C";
-		print "'>$a[log_luser]</span></td>";
-*/		print "<td class=td$color><a href=# onClick=\"selectLUser('".$a[luser]."')\"  style='color: #000;'>".(($a[luser])?$a[luser]:$a[luser_id])."</a></td>";
-/*		print "<td class=td$color><span style='color: #";
-			if (strstr("add_site, delete_site, classgroups",$a[type])) 
-				print "F90";
-			else if (strstr("login, change_auser",$a[type])) 
-				print "000";
-			else
-				print "00C";
-		print "'>$a[auser]</span></td>";
-*/		print "<td class=td$color><a href=# onClick=\"selectAUser('".$a[auser]."')\"  style='color: #000;'>".(($a[auser])?$a[auser]:$a[auser_id])."</a></td>";
-		print "<td class=td$color>";
-			if ($a[site_id]) print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]\"'>";
-			print stripslashes($a[slot_name]);
-			if ($a[site_id]) print "</a>";
-		print "</td>";
-		print "<td class=td$color>";
-			if ($a[siteunit_type] == "section") print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[slot_name]&section=$a[siteunit]\"'>";
-			print "$a[log_desc]";
-			if ($a[siteunit_type] == "section") print "</a>";
-		print "</td>";
-		print "</tr>";
-		$color = 1-$color;
+	function selectAUser(user) {
+		f = document.searchform;
+		f._auser.value=user;
+		f._luser.value="";
+		f.submit();
 	}
-} else {
-	print "<tr><td colspan=6>No log entries.</td></tr>";
-}
-?>
-</table><br />
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+	
+	function selectLUser(user) {
+		f = document.searchform;
+		f._luser.value=user;
+		f._auser.value="";
+		f.submit();
+	}
+	
+	function changeOrder(order) {
+		f = document.searchform;
+		f.order.value=order;
+		f.submit();
+	}
+	
+	// ]]>
+	</script>
+</head>
+<body>
+	
+	<div align='right' class='bg'>
+	<?
+	/******************************************************************************
+	 * Get site id for links to participation section
+	 ******************************************************************************/
+		
+	$siteObj =&new site($site);
+	$siteid = $siteObj->id;
+	
+	
+	if ($_SESSION['ltype']=='admin') {
+		print "<table width='100%'  class='bg'><tr><td class='bg'>
+		Logs: <a href='viewsites.php?$sid&amp;site=$site'>sites</a>
+		 | users
+		</td><td align='right' class='bg'>
+		<a href='users.php?$sid&amp;site=$site'>add/edit users</a> | 
+		<a href='classes.php?$sid&amp;site=$site'>add/edit classes</a> | 
+		<a href='add_slot.php?$sid&amp;site=$site'>add/edit slots</a> |
+		<a href='update.php?$sid&amp;site=$site'>segue updates</a>
+		</td></tr></table>";
+	}
+	if ($site) {
+		if (isclass($site)) print "<a href='add_students.php?$sid&amp;name=$site&amp;scope=".$_REQUEST['scope']."&amp;storyid=".$_REQUEST['storyid']."'>Roster</a> |";
+		print " <a href='email.php?$sid&amp;siteid=$siteid&amp;site=$site&amp;action=list&amp;order=user_fname&amp;scope=".$_REQUEST['scope']."&amp;storyid=".$_REQUEST['storyid']."'>Participation</a>";
+		print " | Logs";
+	}
+	
+	?>
+	
+	</div>
+	<div class='bg'>
+		<? print $content; ?>
+		
+	</div>
+	
+	<table cellspacing='1' width='100%' id='maintable' style='margin-top: 5px;'>
+		<tr>
+			<td colspan='6'>
+				<table width='100%'>
+					<tr>
+						<td>
+							<form action='<?echo "$PHP_SELF?$sid"?>/' method='post' name='searchform'>
+								<?
+								if ($ltype != 'admin') {
+									print "\n\t\t\t\t\t\t\t\t<input type='hidden' name='site' value='$site' />";
+									print "\n\t\t\t\t\t\t\t\tLogs of $site <br />";
+								}
+								print "\n\t\t\t\t\t\t\t\t<input type='hidden' name='scope' value='".$_REQUEST['scope']."' />";
+								print "\n\t\t\t\t\t\t\t\t<input type='hidden' name='storyid' value='".$_REQUEST['storyid']."' />";
+								
+								$r1 = db_query("SELECT DISTINCT log_type FROM log ORDER BY log_type asc");
+								?>
+								
+								type: 
+								<select name='type'>
+									<option value=''>all</option>
+								<?
+								while ($a=db_fetch_assoc($r1))
+									print "\n\t\t\t\t\t\t\t\t\t<option".(($type==$a[log_type])?" selected":"").">$a[log_type]</option>";
+								?>
+								
+								</select>
+							
+								<?
+								if ($ltype == 'admin') {
+								?>
+								
+									user: <input type='text' name='user' size='15' value='<?echo $user?>' />
+									site: <input type='text' name='site' size='15' value='<?echo $site?>' />
+									<? print "\n\t\t\t\t\t\t\t\thide admin: <input type='checkbox' name='hideadmin' value='1'".(($hideadmin)?" checked='checked'":"")." />"; ?>
+									
+									<br />
+									start date (yyyymmdd): <input type='text' name='startdate' size='10' value='<?echo $startdate?>' /> 
+									end date (yyyymmdd): <input type='text' name='enddate' size='10' value='<?echo $enddate?>' /> 
+						
+								<? } ?>	
+								<input type='submit' value='go' />
+								<input type='submit' name='clear' value='clear' />
+								<input type='hidden' name='order' value='<? echo $order ?>' />
+								<input type='hidden' name='_auser' value='<? echo $_auser ?>' />
+								<input type='hidden' name='_luser' value='<? echo $_luser ?>' />
+								<? print "\n\t\t\t\t\t\t\t\t<br />Total log entries:".$numlogs; ?>
+							</form>
+						</td>
+						<td align='right'>
+						
+							<?
+							$tpages = ceil($numlogs/30);
+							$curr = ceil(($lowerlimit+30)/30);
+							$prev = $lowerlimit-30;
+							if ($prev < 0) $prev = 0;
+							$next = $lowerlimit+30;
+							if ($next >= $numlogs) $next = $numlogs-30;
+							if ($next < 0) $next = 0;
+							print "\n\t\t\t\t\t\t\t\t$curr of $tpages ";
+							if ($prev != $lowerlimit)
+								print "\n\t\t\t\t\t\t\t\t<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&amp;enddate=$enddate&amp;startdate=$startdate&amp;lowerlimit=$prev&amp;type=$type&amp;user=$user&amp;hideadmin=$hideadmin&amp;site=$site&amp;order=$order&amp;_auser=$_auser&amp;_luser=$_luser\"' />";
+							if ($next != $lowerlimit && $next > $lowerlimit)
+								print "\n\t\t\t\t\t\t\t\t<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&amp;enddate=$enddate&amp;startdate=$startdate&amp;lowerlimit=$next&amp;type=$type&amp;user=$user&amp;hideadmin=$hideadmin&amp;site=$site&amp;order=$order&amp;_auser=$_auser&amp;_luser=$_luser\"' />";
+							?>
+							
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+		
+		<?
+			print "\n\t\t\t<th><a href='#' onclick=\"changeOrder('";
+			if ($order =='log_tstamp asc') print "log_tstamp desc";
+			else print "log_tstamp asc";
+			print "')\" style='color: #000'>Time";
+			if ($order =='log_tstamp asc') print " &or;";
+			if ($order =='log_tstamp desc') print " &and;";	
+			print "</a></th>";
+			
+			print "\n\t\t\t<th><a href='#' onclick=\"changeOrder('";
+			if ($order =='log_type asc') print "log_type desc";
+			else print "log_type asc";
+			print "')\" style='color: #000'>Type";
+			if ($order =='log_type asc') print " &or;";
+			if ($order =='log_type desc') print " &and;";	
+			print "</a></th>";
+			
+			print "\n\t\t\t<th><a href='#' onclick=\"changeOrder('";
+			if ($order =='luser asc') print "luser desc";
+			else print "luser asc";
+			print "')\" style='color: #000'>luser";
+			if ($order =='luser asc') print " &or;";
+			if ($order =='luser desc') print " &and;";	
+			print "</a></th>";
+			
+			print "\n\t\t\t<th><a href='#' onclick=\"changeOrder('";
+			if ($order =='auser asc') print "auser desc";
+			else print "auser asc";
+			print "')\" style='color: #000'>auser";
+			if ($order =='auser asc') print " &or;";
+			if ($order =='auser desc') print " &and;";	
+			print "</a></th>";
+			
+			print "\n\t\t\t<th><a href='#' onclick=\"changeOrder('";
+			if ($order =='slot_name asc') print "slot_name desc";
+			else print "slot_name asc";
+			print "')\" style='color: #000'>Site";
+			if ($order =='slot_name asc') print " &or;";
+			if ($order =='slot_name desc') print " &and;";	
+			print "</a></th>";
+		
+			print "\n\t\t\t<th><a href='#' onclick=\"changeOrder('";
+			if ($order =='log_desc asc') print "log_desc desc";
+			else print "log_desc asc";
+			print "')\" style='color: #000'>Text";
+			if ($order =='log_desc asc') print " &or;";
+			if ($order =='log_desc desc') print " &and;";	
+			print "</a></th>";
+		?>
+		</tr>
+		<?
+		$color = 0;
+		$today = date(Ymd);
+		$yesterday = date(Ymd)-1;
+		
+		if (db_num_rows($r)) {
+			while ($a=db_fetch_assoc($r)) {
+				print "\n\t\t<tr>";
+				print "\n\t\t\t<td class='td$color' style='white-space: nowrap; color: #";
+					if (strstr("add_site, delete_site, classgroups",$a[log_type])) 
+						print "F90";
+					else if (strstr("login, change_auser",$a[log_type])) 
+						print "000";
+					else
+						print "00C";
+				print "'>";
+				if (strncmp($today, $a[log_tstamp], 8) == 0 || strncmp($yesterday, $a[log_tstamp], 8) == 0) print "<b>";
+				print timestamp2usdate($a[log_tstamp],1);
+				if (strncmp($today, $a[log_tstamp], 8) == 0 || strncmp($yesterday, $a[log_tstamp], 8) == 0) print "</b>";
+				print "</td>";
+				print "\n\t\t\t<td class='td$color' style='color: #";
+					if (strstr("add_site, delete_site, classgroups",$a[log_type])) 
+						print "F90";
+					else if (strstr("login, change_auser",$a[log_type])) 
+						print "000";
+					else
+						print "00C";
+				print "'>$a[log_type]</td>";
+				
+				print "\n\t\t\t<td class='td$color'><a href='#' onclick=\"selectLUser('".$a[luser]."')\"  style='color: #000;'>".(($a[luser])?$a[luser]:$a[luser_id])."</a></td>";
+				
+				print "\n\t\t\t<td class='td$color'><a href='#' onclick=\"selectAUser('".$a[auser]."')\"  style='color: #000;'>".(($a[auser])?$a[auser]:$a[auser_id])."</a></td>";
+				print "\n\t\t\t<td class='td$color'>";
+					if ($a[site_id]) print "<a href='#' onclick='opener.window.location=\"index.php?$sid&amp;action=site&amp;site=$a[slot_name]\"'>";
+					print stripslashes($a[slot_name]);
+					if ($a[site_id]) print "</a>";
+				print "</td>";
+				print "\n\t\t\t<td class='td$color'>";
+					if ($a[siteunit_type] == "section") print "<a href='#' onclick='opener.window.location=\"index.php?$sid&amp;action=site&amp;site=$a[slot_name]&amp;section=$a[siteunit]\"'>";
+					print "$a[log_desc]";
+					if ($a[siteunit_type] == "section") print "</a>";
+				print "</td>";
+				print "\n\t\t</tr>";
+				$color = 1-$color;
+			}
+		} else {
+			print "\n\t\t<tr>\n\t\t\t<td colspan='6'>No log entries.</td>\n\t\t</tr>";
+		}
+		?>
+	
+	</table>
+	<br />
+	<div align='right'>
+		<input type='button' value='Close Window' onclick='window.close()' />
+	</div>
+</body>
+</html>

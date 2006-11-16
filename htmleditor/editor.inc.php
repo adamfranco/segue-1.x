@@ -16,17 +16,27 @@ function addeditor($textarea,$cols,$rows,$text,$context="story", $texttype = NUL
 			editor_activex($textarea,$cols,$rows,$text);
 		} else if ($context=="story" && $_SESSION[settings][editor]=='htmlarea') {
 			editor_htmlarea($textarea,$text,$context);
+		} else if ($context=="story" && $_SESSION[settings][editor]=='fckeditor') {
+			editor_fck($textarea,$text,$context);			
 		} else if ($context=="discuss") {
-			editor_htmlarea($textarea,$text,$context);
+			editor_fck($textarea,$text,$context);
 		} else {
-			editor_htmlarea($textarea,$text,$context);
+			editor_fck($textarea,$text,$context);
 		}
 		
 	} else if ($supported == 0) {
 		$replaceBRs = ($texttype == 'html')?FALSE:TRUE;
 		editor_txt($textarea,$cols,$rows,$text, $replaceBRs);
 	} else {
-		editor_htmlarea($textarea,$text,$context);
+		if ($_SESSION[settings][editor]=='fckeditor') {	
+			editor_fck($textarea,$text,$context);
+		} else if ($_SESSION[settings][editor]=='htmlarea') {
+			editor_htmlarea($textarea,$text,$context);
+		} else {
+			editor_fck($textarea,$text,$context);
+		}
+		//editor_htmlarea($textarea,$text,$context);
+		//editor_fck($textarea,$text,$context);
 	}
 	
 	//return $editorType;
@@ -75,7 +85,10 @@ function editor_htmlarea($textarea,$text,$context="story") {
 		include("htmlarea/story.php");	
 	} else if ($context == "discuss" || $context == "email") {
 		include("htmlarea/discuss.php");	
+	} else if ($context == "page") {
+		include("htmlarea/discuss.php");
 	}
+
 	$neweditor=ob_get_contents();
 	ob_end_clean();ob_start();
 	printc($neweditor);
@@ -86,7 +99,7 @@ function editor_htmlarea($textarea,$text,$context="story") {
  ******************************************************************************/
 
 function editor_txt($textarea,$cols,$rows,$text,$replaceBRs=TRUE) {		   
-	printc("<textarea name=$textarea id=$textarea cols=$cols rows=$rows>");
+	printc("<textarea name='$textarea' id='$textarea' cols='$cols' rows='$rows'>");
 	// Replace the <br /> and <br /> tags with \n's for the textarea.
 	if ($replaceBRs)
 		printc(preg_replace("/<br(\s\/)?>/", "\n", $text));
@@ -94,6 +107,20 @@ function editor_txt($textarea,$cols,$rows,$text,$replaceBRs=TRUE) {
 		printc($text);
 	printc("</textarea>");
 }
+
+/******************************************************************************
+ * includes FCKeditor
+ ******************************************************************************/
+
+function editor_fck($textarea,$text,$context="story") {	
+	ob_start();	
+	include("fckeditor_create.php");
+		
+	$neweditor=ob_get_contents();
+	ob_end_clean();ob_start();
+	printc($neweditor);
+}
+
 
 
 ?>

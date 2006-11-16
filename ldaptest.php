@@ -8,10 +8,10 @@
 <div align="left">
   <form name="form1" method="get" action="<? echo $PHP_SELF ?>">
      <p> username: 
-      <input type="text" name="userid" value=""> <input type="submit" name="ldap" value="lookup">
+      <input type="text" name="userid" value="" /> <input type="submit" name="ldap" value="lookup" />
     </p>
   </form>
-  <hr>
+  <hr />
 </div>
 </body>
 </html>
@@ -66,6 +66,6 @@ if ($userid) {
 	}
 }
 ?>
-<hr>
+<hr />
 </body>
 </html>

@@ -358,6 +358,7 @@ function OpenRSSFeed($url) {
 			}
 		} else CarpError("$errstr ($errno)");
 	} else if ($fp=fopen($url,'r')) {
+		//print $fp;
 		if ($stat=fstat($fp)) $carpconf['lastmodified']=$stat['mtime'];
 	} else CarpError("Failed to open file: $url");
 	return $fp;
@@ -447,17 +448,58 @@ function GetRSSFeed($url,$cache,$showit) {
 		}
 	} else $rss_parser->filterout=array();
 
+/*********************************************************
+ * Note (2006-10-13, Adam Franco)
+ *
+ * I have reworked this code so that the data is fetched
+ * first and the character encoding checked before the 
+ * parser is created. As well, if a non-PHP-Supported 
+ * encoding is found, the data will first be converted to
+ * UTF-8 using iconv.
+ *********************************************************/
 	if ($fp=OpenRSSFeed($url)) {
-		$xml_parser=xml_parser_create(strtoupper($carpconf['encodingin']));
-
-		if (strlen($carpconf['encodingout'])) xml_parser_set_option($xml_parser,XML_OPTION_TARGET_ENCODING,$carpconf['encodingout']);
-		xml_set_object($xml_parser,$rss_parser);
-		xml_set_element_handler($xml_parser,"startElement","endElement");
-		xml_set_character_data_handler($xml_parser,"characterData");
-		$CarpRedirs=array();
-
-		$rss_parser->PrepTagPairs($carpconf['desctags']);
-		while ($data=preg_replace("/&(?!lt|gt|amp|apos|quot)(.*\b)/is","&amp;\\1\\2",fread($fp,4096))) {
+		while ($data = fread($fp,4096)) {
+			// Set up the XML Parser
+			if (!isset($xml_parser)) {
+				// If an input enconding is specified, use that
+				if ($carpconf['encodingin']) {
+					$xml_parser=xml_parser_create(strtoupper($carpconf['encodingin']));
+				}
+				// Read the first line of the file and try to find an xml encoding tag. for this particular feed.
+				else {
+					if (preg_match('/<\?xml[^>]*encoding=[\'"]([^\'"]+)[\'"][^>]*\?>/i', $data, $matches)) {
+						$sourceEncoding = strtoupper($matches[1]);
+// 						print "<pre>".basename(__FILE__)." Line ".__LINE__.":\nEncoding found: ".$sourceEncoding."</pre>";
+						if ($sourceEncoding == 'UTF-8' || $sourceEncoding == 'ISO-8859-1' || $sourceEncoding == 'ASCII') {
+							$xml_parser=xml_parser_create($sourceEncoding);
+							unset($sourceEncoding);
+						} else {
+							$xml_parser=xml_parser_create("UTF-8");
+						}
+					} else {
+// 						print "<pre>".basename(__FILE__)." Line ".__LINE__.":\nNo encoding found, assuming UTF-8</pre>";
+						$xml_parser=xml_parser_create("UTF-8");
+					}
+				}
+		
+				if (strlen($carpconf['encodingout'])) 
+					xml_parser_set_option($xml_parser,XML_OPTION_TARGET_ENCODING,$carpconf['encodingout']);
+				xml_set_object($xml_parser,$rss_parser);
+				xml_set_element_handler($xml_parser,"startElement","endElement");
+				xml_set_character_data_handler($xml_parser,"characterData");
+				$CarpRedirs=array();
+		
+				$rss_parser->PrepTagPairs($carpconf['desctags']);
+			}
+			
+			if (isset($sourceEncoding) && function_exists("iconv")) {
+// 				print "<pre>Converting $sourceEncoding to UTF-8</pre>";
+				$data = iconv($sourceEncoding, "UTF-8", $data);
+			}
+			
+			// Doubly escape any necessary ampersands.
+			$data = preg_replace("/&(?!lt|gt|amp|apos|quot|nbsp)(.*\b)/is","&amp;\\1\\2", $data);
+			
 			if (!xml_parse($xml_parser,$data,feof($fp))) {
 				CarpError("XML error: ".xml_error_string(xml_get_error_code($xml_parser))." at line ".xml_get_current_line_number($xml_parser));
 				fclose($fp);

@@ -30,11 +30,16 @@ if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-		if ($_REQUEST[type]) $_SESSION[sectionObj]->setField("type",$_REQUEST[type]);
+	if ($_REQUEST[type]) $_SESSION[sectionObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1) $_SESSION[sectionObj]->setField("title",$_REQUEST[title]);
+	
+	
 	// handle de/activate dates
-	$_SESSION[sectionObj]->handleFormDates();
+	$_SESSION[sectionObj]->handleFormDates();	
 	if ($_REQUEST[active] != "") $_SESSION[sectionObj]->setField("active",$_REQUEST[active]);
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setField("hide_sidebar",$_REQUEST[hide_sidebar]);
+	
+	
 /* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setPermissions($_REQUEST[permissions]); */
 /* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setField("locked",$_REQUEST[locked]); */
 /* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions]; */
@@ -118,10 +123,13 @@ if ($_REQUEST[cancel]) {
 /* 	unset($_SESSION[sectionObj],$_SESSION[settings]); */
 	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site".(($section)?"&section=$section":""));
 	else header("Location: index.php?$sid");
+	
+	exit;
 }
 
 if ($_REQUEST[save]) {
-	
+	//printpre ($_SESSION);
+	//exit();
 	// error checking
 	if ($_SESSION[sectionObj]->getField("type")=='section' && (!$_SESSION[sectionObj]->getField("title") || $_SESSION[sectionObj]->getField("title")==''))
 		error("You must enter a section title.");
@@ -193,6 +201,7 @@ if ($_REQUEST[save]) {
 /* 		} */
 		
 		header("Location: index.php?$sid&action=viewsite&site=".$_SESSION[sectionObj]->owning_site.(($_SESSION[sectionObj]->getField("type")=='section')?"&section=".$_SESSION[sectionObj]->id:""));
+		exit;
 		
 	} else {
 		$_SESSION[settings][step] = 1;
@@ -205,7 +214,7 @@ $leftlinks = "_________________<br /><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href='#' onClick=\"submitFormLink(1)\">";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href='#' onclick=\"submitFormLink(1)\">";
 $leftlinks .= "Item";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
@@ -214,13 +223,25 @@ if ($_SESSION[sectionObj]->getField("type") == "section" || $_SESSION[sectionObj
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href='#' onClick=\"submitFormLink(2)\">";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href='#' onclick=\"submitFormLink(2)\">";
 	$leftlinks .= "Activation";
 	if ($_SESSION[settings][step] != 2) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-$leftlinks .= "</table>_________________<br /><a href=$PHP_SELF?$sid&action=add_section&cancel=1>Cancel</a>";
+if ($_SESSION[sectionObj]->getField("type") == "section") {
+	$leftlinks .= "<tr><td>";
+	if ($_SESSION[settings][step] == 3) $leftlinks .= "&rArr; ";
+	$leftlinks .= "</td><td>";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href='#' onclick=\"submitFormLink(3)\">";
+	$leftlinks .= "Display Options";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "</a>";
+	$leftlinks .= "</td></tr>";
+}
+
+
+
+$leftlinks .= "</table>_________________<br /><a href='$PHP_SELF?$sid&amp;action=add_section&amp;cancel=1'>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
 
@@ -230,6 +251,10 @@ if ($_SESSION[settings][step] == 1) {
 if ($_SESSION[settings][step] == 2) {
 	include("add_section_form_2_activation.inc");
 }
+if ($_SESSION[settings][step] == 3) {
+	include("add_section_form_3_show.inc");
+}
+
 
 // End of New Code
 //--------------------------------------------------------------------------------------------------------

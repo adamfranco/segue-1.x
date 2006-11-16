@@ -33,26 +33,26 @@ function getclassstudents($class_id) {
 		
 	$classes = array();
 	$query = "
-	SELECT
-		ugroup_name,
-		class_external_id,
-		class_department,
-		class_number,
-		class_section,
-		class_semester,
-		class_year,
-		class.FK_owner AS class_owner_id,
-		classgroup.FK_owner AS classgroup_owner_id
-	FROM 
-		class
-			LEFT JOIN 
-		classgroup ON FK_classgroup = classgroup_id
-			LEFT JOIN
-		ugroup ON FK_ugroup = ugroup_id
-	WHERE 
-		classgroup_name = '$class_id'
-		OR class_external_id = '$class_id'
-		OR $whereClassParts
+		SELECT
+			ugroup_name,
+			class_external_id,
+			class_department,
+			class_number,
+			class_section,
+			class_semester,
+			class_year,
+			class.FK_owner AS class_owner_id,
+			classgroup.FK_owner AS classgroup_owner_id
+		FROM 
+			class
+				LEFT JOIN 
+			classgroup ON FK_classgroup = classgroup_id
+				LEFT JOIN
+			ugroup ON FK_ugroup = ugroup_id
+		WHERE 
+			classgroup_name = '".addslashes($class_id)."'
+			OR class_external_id = '".addslashes($class_id)."'
+			OR $whereClassParts
 	";
 	
 	$r = db_query($query);
@@ -85,23 +85,24 @@ function getclassstudents($class_id) {
 		$participants = array();
 		
 		$query = "
-		SELECT
-			user_id,
-			user_fname,
-			user_uname,
-			user_email,
-			user_type
-		FROM
-			ugroup_user
-				INNER JOIN
-			user
-				ON
-			FK_user = user_id
-		WHERE
-			FK_ugroup = $ugroup_id
-		ORDER BY
-			user_type DESC, user_uname
+			SELECT
+				user_id,
+				user_fname,
+				user_uname,
+				user_email,
+				user_type
+			FROM
+				ugroup_user
+					INNER JOIN
+				user
+					ON
+				FK_user = user_id
+			WHERE
+				FK_ugroup = '".addslashes($ugroup_id)."'
+			ORDER BY
+				user_type DESC, user_uname
 		";
+		
 //		printpre($query);
 		$r = db_query($query);
 			
@@ -220,7 +221,7 @@ function getclassstudents($class_id) {
 							//printpre($userSearchFilter);
 							// search ldap with filter set to full name...
 							//$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
-							//print "<hr>";
+							//print "<hr />";
 							//printpre("$sr2 = ldap_search($c :: $userSearchDN :: $userSearchFilter :: $return2);");
 							//printpre($return2);
 							$sr2 = ldap_search($c,$userSearchDN,$userSearchFilter,$return2);
@@ -319,7 +320,6 @@ function getclassstudents($class_id) {
 
 }
 
-
 function getuserclasses($user,$time="all") {
 	$user = strtolower($user);
 	global $cfg;
@@ -366,19 +366,19 @@ function getuserclasses($user,$time="all") {
 	/* 						print_r($r); */
 	/* 						print "</pre>"; */
 							$class = $r[1].$r[2].$r[3]."-".$r[4].$r[5];
-	/******************************************************************************
-	 * update the classes table with the ldap information
-	 ******************************************************************************/
+							/******************************************************************************
+							 * update the classes table with the ldap information
+							 ******************************************************************************/
 							$sem = $r[4];
 							$year = $r[5];					
-							$user_id = db_get_value("user","user_id","user_uname = '$user'");
-							$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='$class'");
+							$user_id = db_get_value("user","user_id","user_uname = '".addslashes($user)."'");
+							$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='".addslashes($class)."'");
 							$classinfo = db_get_line("class","
-										class_department='$r[1]' AND
-										class_number='$r[2]' AND
-										class_section='$r[3]' AND
-										class_semester='$sem' AND
-										class_year='20$r[5]'");
+										class_department='".addslashes($r[1])."' AND
+										class_number='".addslashes($r[2])."' AND
+										class_section='".addslashes($r[3])."' AND
+										class_semester='".addslashes($sem)."' AND
+										class_year='20".addslashes($r[5])."'");
 							
 							if (!$ugroup_id) {
 															
@@ -386,7 +386,7 @@ function getuserclasses($user,$time="all") {
 									INSERT INTO
 										ugroup
 									SET
-										ugroup_name = '$class',
+										ugroup_name = '".addslashes($class)."',
 										ugroup_type = 'class'
 								";
 								db_query($query);
@@ -398,35 +398,37 @@ function getuserclasses($user,$time="all") {
 									INSERT INTO
 										class
 									SET
-										class_external_id='$class',
-										class_department='$r[1]',
-										class_number='$r[2]',
-										class_section='$r[3]',
-										class_semester='$sem',
-										class_year='20$r[5]',
+										class_external_id='".addslashes($class)."',
+										class_department='".addslashes($r[1])."',
+										class_number='".addslashes($r[2])."',
+										class_section='".addslashes($r[3])."',
+										class_semester='".addslashes($sem)."',
+										class_year='20".addslashes($r[5])."',
 										class_name='',
 										FK_owner=NULL,
-										FK_ugroup=$ugroup_id
+										FK_ugroup='".addslashes($ugroup_id)."'
 								";
+								
 								db_query($query);
 							}
 							
-							$ugroup_userinfo = db_get_line("ugroup_user","FK_ugroup=$ugroup_id AND FK_user=$user_id");
+							$ugroup_userinfo = db_get_line("ugroup_user","FK_ugroup='".addslashes($ugroup_id)."' AND FK_user='".addslashes($user_id)."'");
 	
 							if (!$ugroup_userinfo) {
 								$query = "
 									INSERT INTO
 										ugroup_user
 									SET
-										FK_ugroup = $ugroup_id,
-										FK_user = $user_id
+										FK_ugroup = '".addslashes($ugroup_id)."',
+										FK_user = '".addslashes($user_id)."'
 								";
+								
 								db_query($query);
 							}
 							
-	/******************************************************************************
-	 * end update
-	 ******************************************************************************/
+							/******************************************************************************
+							 * end update
+							 ******************************************************************************/
 							
 							
 							if ($time == "now" && isSemesterNow($r[4], $r[5])) {
@@ -441,6 +443,63 @@ function getuserclasses($user,$time="all") {
 							} else if ($time == "all") {
 								$classes[$r[1].$r[2].$r[3]."-".$r[4].$r[5]] = array("code"=>"$r[1]$r[2]","sect"=>$r[3],"sem"=>$r[4],"year"=>$r[5]);
 							}
+						
+						/******************************************************************************
+						 * if not a class group then get group name and add to ugroup table
+						 ******************************************************************************/
+						
+						} else if (eregi('^'.$cfg[ldap_groupname_attribute].'=(.+)$', $p, $matches)) {
+							$group_name = $matches[1];
+							
+							$user_id = db_get_value("user","user_id","user_uname = '".addslashes($user)."'");
+							$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='".addslashes($group_name)."'");
+
+							/******************************************************************************
+							 * insert group_name into ugroup table with group if not already in table
+							 ******************************************************************************/
+							
+							if (!$ugroup_id) {
+															
+								$query = "
+									INSERT INTO
+										ugroup
+									SET
+										ugroup_name = '".addslashes($group_name)."',
+										ugroup_type = 'other'
+								";
+								
+								//printpre($query);
+								
+								db_query($query);
+								$ugroup_id = lastid();
+							}
+								
+							/******************************************************************************
+							 * if user not part of group then add to ugroup_user table
+							 ******************************************************************************/
+						 
+							$ugroup_userinfo = db_get_line("ugroup_user","FK_ugroup='".addslashes($ugroup_id)."' AND FK_user='".addslashes($user_id)."'");
+	
+							if (!$ugroup_userinfo) {
+								$query = "
+									INSERT INTO
+										ugroup_user
+									SET
+										FK_ugroup = '".addslashes($ugroup_id)."',
+										FK_user = '".addslashes($user_id)."'
+								";
+								
+								//printpre($query);
+								db_query($query);
+							}
+
+						/******************************************************************************
+						 * get other members of this ugroup and add to ugroup_user table
+						 * (this may not be necessary since users will be added when they log in...)
+						 ******************************************************************************/
+						
+							
+							
 						}
 					}
 				}
@@ -466,10 +525,12 @@ function getuserclasses($user,$time="all") {
 				ON
 			class.FK_ugroup = ugroup_user.FK_ugroup
 		WHERE
-			user_uname = '$user'
+			user_uname = '".addslashes($user)."'
 	";
+	
 	$semester = currentsemester ();
 	$r = db_query($query);
+	
 	while ($a = db_fetch_assoc($r)) {
 		$class_code = generateCodeFromData($a[class_department],$a[class_number],$a[class_section],$a[class_semester],$a[class_year]);
 		if (!$classes[$class_code]) {
@@ -490,6 +551,39 @@ function getuserclasses($user,$time="all") {
 	return $classes;
 }
 
+function getusergroups($user) {
+	global $cfg;
+	$user = strtolower($user);
+	//printpre($user);
+	if (!$user)
+		return array();
+
+	$groups = array();
+
+	$user_id = db_get_value("user","user_id","user_uname = '".addslashes($user)."'");
+	$query = "
+		SELECT
+			ugroup_id, ugroup_name
+		FROM
+			ugroup
+				INNER JOIN
+			ugroup_user
+				ON
+			FK_ugroup = ugroup_id
+		WHERE
+			FK_user = '".addslashes($user_id)."'
+	";
+	//printpre($query);
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$groups[] = $a[ugroup_name];
+	}
+		
+	return $groups;
+}
+
+
 function generateCourseCode($id) {
 	$query = "
 		SELECT
@@ -501,10 +595,12 @@ function generateCourseCode($id) {
 		FROM
 			class
 		WHERE
-			class_id = $id
+			class_id = '".addslashes($id)."'
 	";
+	
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
+	
 	$code = $a[class_department].$a[class_number].$a[class_section]."-".$a[class_semester].substr($a[class_year],2);
 	return $code;
 }
@@ -523,11 +619,11 @@ function generateTermsFromCode($code) {
 	$year = "20".$r[5];
 	
 	$terms = "
-		class_department='$department' AND
-		class_number='$number' AND
-		class_section='$section' AND
-		class_semester='$semester' AND
-		class_year='$year'
+		class_department='".addslashes($department)."' AND
+		class_number='".addslashes($number)."' AND
+		class_section='".addslashes($section)."' AND
+		class_semester='".addslashes($semester)."' AND
+		class_year='".addslashes($year)."'
 	";
 	return $terms;
 }
@@ -535,6 +631,9 @@ function generateTermsFromCode($code) {
 //This function checks for non-Segue sites (those in web courses database created in course folders)
 function coursefoldersite($cl) {
 	global $cfg;
+	
+	if (!$cfg[coursefolders_host])
+		return null;
 	db_connect($cfg[coursefolders_host],$cfg[coursefolders_username],$cfg[coursefolders_password],$cfg[coursefolders_db]);
 	if (ereg("([a-zA-Z]{2})([0-9]{3})([a-zA-Z]{0,1})-([a-zA-Z]{1,})([0-9]{2})",$cl,$regs)) {
 		$class = $regs[1].$regs[2].$regs[3];
@@ -557,8 +656,19 @@ function coursefoldersite($cl) {
 			$year = "20".$curr_year;
 		}	
 	}
-	$query = ("select * from ".$cfg[coursefolders_table]." where ".$cfg[coursefolders_coursecode_column]." = '$class' and ".$cfg[coursefolders_semester_column]." = '$semester' and ".$cfg[coursefolders_year_column]." = '$year'");
-	$r = db_query($query);	
+	$query = ("
+		select 
+			* 
+		from 
+			".$cfg[coursefolders_table]." 
+		where 
+			".$cfg[coursefolders_coursecode_column]." = '".addslashes($class)."' 
+			and ".$cfg[coursefolders_semester_column]." = '".addslashes($semester)."' 
+			and ".$cfg[coursefolders_year_column]." = '".addslashes($year)."'"
+		);
+	
+	$r = db_query($query);
+	
 	if (db_num_rows($r)) {
 		$a = db_fetch_assoc($r);
 		$title = $a[$cfg[coursefolders_title_column]];
@@ -572,7 +682,7 @@ function ldapfname($uname) {
 	$uname = strtolower($uname);
 	if (isgroup($uname)) return "Students in group";
 	if (isclass($uname)) return "Students in class";
-	if ($fname = db_get_value("user","user_fname","user_uname='$uname'")) return $fname;
+	if ($fname = db_get_value("user","user_fname","user_uname='".addslashes($uname)."'")) return $fname;
 	$r = userlookup($uname,LDAP_USER,LDAP_EXACT,LDAP_LASTNAME,1);
 	return $r[$uname];
 }
@@ -662,12 +772,13 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 		FROM
 			user
 		WHERE
-			user_uname LIKE '%$name%'
+			user_uname LIKE '%".addslashes($name)."%'
 				OR
-			user_fname LIKE '%$name%'
+			user_fname LIKE '%".addslashes($name)."%'
 	";
 	global $dbhost, $dbuser,$dbpass, $dbdb;
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
+	
 	$r = db_query($query);
 	$db_users = array();
 	while ($a = db_fetch_assoc($r)) {
@@ -683,9 +794,10 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 		FROM
 			ugroup
 		WHERE
-			ugroup_name LIKE '%$name%'
+			ugroup_name LIKE '%".addslashes($name)."%'
 	";
-		$r = db_query($query);
+	$r = db_query($query);
+		
 	$ugroups = array();
 	while ($a = db_fetch_assoc($r)) {
 		$ugroups[$a[ugroup_name]] = $a[ugroup_name]." (Group)";

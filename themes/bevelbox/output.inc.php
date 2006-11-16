@@ -8,6 +8,9 @@
  -needs to call horizontal and vertical navigation function
  for both Top Sections and Side Sections navigation arrangements 
  */
+ 
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
 
 //$nav_arrange = 2;	
 /* -------------- THEME SETTINGS ---------------------	*/
@@ -25,6 +28,7 @@ if ($themesettings[theme] == 'bevelbox') {   // indeed these settings are for th
 	$usenav = $themesettings[nav_arrange];
 	$usesectionnavsize = $themesettings[sectionnav_size];	
 	$usenavsize = $themesettings[nav_size];	
+	$usebordercolor = $themesettings[bordercolor];
 
 }
 if (!$use) $use = 'gray';
@@ -32,6 +36,9 @@ $c = $_theme_colors[$use];
 
 if (!$uselinkcolor) $uselinkcolor = 'red';
 $linkcolor = $_linkcolor[$uselinkcolor];
+
+if (!$usebordercolor) $usebordercolor = 'black';
+$bordercolor = '000000';
 
 if (!$usenav) $usenav = 'Top Sections';
 $nav_arrange = $_nav_arrange[$usenav];
@@ -45,18 +52,27 @@ $navsize = $_nav_size[$usenavsize];
 
 /* ------------------- END THEME SETTINGS---------------------	*/
 
+
+/*********************************************************
+ * get all of the existing output buffers and place them inside our body
+ *********************************************************/
+$obContent = '';
+while (ob_get_level())
+	$obContent .= ob_get_clean();
+
+
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <?
-/* ------------------------------------------- */
-/* ------------- COMMON HEADER --------------- */
-/* ------------------------------------------- */
+/******************************************************************************
+ * Commom header stuff
+ ******************************************************************************/
 include("themes/common/header.inc.php");
-include("themes/$theme/css.inc.php");
-
+include("themes/$theme/css.inc.php"); 
 /* ------------------------------------------- */
 /* -------------- PAGE TITLE ----------------- */
 /* ------------------------------------------- */?>
@@ -64,29 +80,36 @@ include("themes/$theme/css.inc.php");
 </head>
 
 <body style='margin: 0px'>
+
+<? print $obContent; ?>
+
 <br />
-<table width=90% align='center' cellpadding='0' cellspacing='0'>
+<table width='90%' align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?
-/* ------------------------------------------- */
-/* ------SITE HEADER ------- */
-/* ------------------------------------------- */
+/******************************************************************************
+ * Site Header
+ ******************************************************************************/ 
 print $siteheader; 
 ?>
 </td></tr>
 </table>
-
-<table width=90% align='center' cellpadding='0' cellspacing='0'>
+<table width='90%' align='center' cellpadding='0' cellspacing='0'>
   <tr> 
-    <td class="topleft" height=43></td>
-    <td class="top" height=43> 
-	<table width=100% align='center' cellpadding='0' cellspacing='0'>
+    <td class="topleft" height='43'></td>
+    <td class="top" height='43'> 
+	<table width='100%' align='center' cellpadding='0' cellspacing='0'>
     <tr>
-    <td class="sitetitle" height=43>
+	<?
+	/******************************************************************************
+	 * Site Header
+	 ******************************************************************************/ 
+	?>
+    <td class="sitetitle" height='43'>
     <? echo $title ?>
 	</td>
 	<td>
-    <div align="right"><img src='<? echo "$themesdir/$theme/images/$c[bg]/midd.gif" ?>' width="121" height="43"></div>
+    <div align="right"><img src='<? echo "$themesdir/$theme/images/$c[bg]/midd.gif" ?>' alt='midd' width="121px" height="43px" /></div>
     </td>
     </tr>
     </table>
@@ -99,27 +122,24 @@ print $siteheader;
     <td style="background-color: #<? echo $c[bgcolor] ?>">
     <div class='nav'>
    <?
-	/* ------------------------------------------- */
-	/* -----------STATUS BAR/CRUMBS --------------- */
-	/* ------------------------------------------- */
-	
+	/******************************************************************************
+	 * Status Bar, crumbs
+	 ******************************************************************************/	
 	include("themes/common/status.inc.php");
 	print $sitecrumbs; 
 	
  	?>
 	</div>
-    <div class=topnav align='center'>
+    <div class='topnav' align='center'>
 	<div class='nav'>
 	<?
-	/* ------------------------------------------- */
-	/* --------- TOP SECTION NAV ---------------- */
-	/* ------------------------------------------- */
-	if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
-	
+	/******************************************************************************
+	 * Section Navigation
+	 ******************************************************************************/
+	if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);	
 	?>	
 	</div>
-	</div>
-    
+	</div>    
     </td>
    <td style="background-color: #<? echo $c[bgcolor] ?>">&nbsp;</td>
     <td class="right">&nbsp;</td>
@@ -132,79 +152,88 @@ print $siteheader;
   </tr>
 <tr>
 
-<td class="left" valign=top>
-
-<table width=100% cellpadding=5 cellspacing='0' align=top>
-<td class=leftnav>
+<td class="left" valign='top'>
+	<table width='100%' cellpadding='5' cellspacing='0'>
+		<tr>
+			<td class='leftnav'>
 <?
 
-/* ------------------------------------------- */
-/* --------------- LEFT NAV ------------------ */
-/* ------------------------------------------- */
+/******************************************************************************
+ * Left Column
+ ******************************************************************************/
+$hide_sidebar = 2;
 if ($nav_arrange==1) {
-	vertical_nav($page, $leftnav, $leftnav_extra);		
-} else { 
-	side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra);
+	vertical_nav($page, $leftnav, $leftnav_extra, $bordercolor, $hide_sidebar);		
+} else {
+	side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra, $bordercolor);
 }
 ?>
+			</td>
+		</tr>
+	</table>
 </td>
-</table>
 
-</td>
-
-<td class=contentarea>
-<div class=topnav align='center'>
+<td valign='top'>
+	<table width='100%' cellspacing='0' cellpadding='0' border='0'>
+		<tr>
+			<td class='contentarea'>
+			
 <?
-/* ------------------------------------------- */
-/* ------------ TOP PAGE NAV ---------------- */
-/* ------------------------------------------- */
-//if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra,'navlink2','navlink2 a');
-?>
-</div>
-<?
-/* ------------------------------------------- */
-/* -------------- CONTENT AREA   ------------- */
-/* ------------------------------------------- */
+/******************************************************************************
+ * Center Column
+ ******************************************************************************/
 print $content; 
-
 ?>
-<div class=topnav align='center'>
-<?
-/* ------------------------------------------- */
-/* ------------ BOTTOM PAGE NAV -------------- */
-/* ------------------------------------------- */
-//if ($nav_arrange==2) horizontal_nav($page, $leftnav2, $leftnav2_extra);
-?>
-</div>
-</td>
 
+			</td>
 <?
-/* ------------------------------------------- */
-/* -------------- RIGHT NAV (OPT)  ----------- */
-/* ------------------------------------------- */
-if (count($rightnav)) {
-	print "<td style='margin-left: 20px'>";
-	horizontal_nav('pages',$rightnav, $rightnav_extra);
-	print "</td>";
+/******************************************************************************
+ * Right Column
+ ******************************************************************************/
+if ($rightnav) {
+	print<<<END
+			<td class='rightnav'>
+				<table width='100%' cellspacing='0' cellpadding='2' border='0'>
+					<tr>
+						<td valign='top' class='rightnavcolor'>
+						
+END;
+	vertical_nav($page, $rightnav, $leftnav_extra, $bordercolor, $hide_sidebar);
+	print<<<END
+						
+						</td>
+					</tr>
+				</table>
+			</td>
+
+END;
+} else {
+	print "\n\t\t\t<td></td>";
 }
+
 ?>
+
+		</tr>
+	</table>
+</td>
 <td class="right2">&nbsp;</td>
 <td class="right">&nbsp;</td>
+
 </tr>
 <tr> 
-    <td class="bottomleft">&nbsp;</td>
-    <td class="bottom">
-<div class=topnav align='center'>
+
+<td class="bottomleft">&nbsp;</td>
+<td class="bottom">
+<div class='topnav' align='center'>
 <div class='nav'>
 <?
-/* ------------------------------------------- */
-/* ------------ BOTTOM SECTION NAV ----------- */
-/* ------------------------------------------- */
+/******************************************************************************
+ * Bottom section navigation
+ ******************************************************************************/
 if ($nav_arrange==1) horizontal_nav($section, $topnav2, $topnav2_extra);
 ?>
 </div>
-</div>
-       
+</div>      
 </td>
 <td class="bottomright1">&nbsp;</td>
 <td class="bottomright2">&nbsp;</td>
@@ -212,16 +241,18 @@ if ($nav_arrange==1) horizontal_nav($section, $topnav2, $topnav2_extra);
 </table>
 <br />
 
-<table width=90% align='center' cellpadding='0' cellspacing='0'>
+<table width='90%' align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?
-/* ------------------------------------------- */
-/* -------------- FOOTER     ----------------- */
-/* ------------------------------------------- */
+/******************************************************************************
+ * Footer
+ ******************************************************************************/
 print $sitefooter 
 ?>
 </td></tr>
 </table>
 <br />
+</body>
+</html>
 
 	

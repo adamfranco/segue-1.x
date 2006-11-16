@@ -1,11 +1,14 @@
 <style type='text/css'>
 div, p, td, span, input { 
-	color: #<? echo $textcolor; ?>;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 }
 </style>
 <?
+
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+
 include("$themesdir/$theme/colors.inc.php");
 
 $colorschemes = array_keys($_theme_colors);
@@ -13,6 +16,7 @@ $linkcolors = array_keys($_linkcolor);
 $nav_arranges = array_keys($_nav_arrange);
 $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
+$nav_widths = array();
 
 
 if ($themesettings[theme] == 'bevelbox') {
@@ -35,10 +39,10 @@ if ($themesettings[theme] == 'bevelbox') {
 <b>Bevel Box</b><br />
 This theme creates the illusion of a box overlaying the page.  
 This illusion is created by surrounding box with a bevelled edge.
-<hr noshade size=1>
+<hr noshade size='1' />
 <table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>
 Box Color:</td><td> 
-<select name='colorscheme' onChange="document.settings.submit()">
+<select name='colorscheme' onchange="document.settings.submit()">
 <?
 foreach ($colorschemes as $s) {
 	print "<option value='$s'".(($colorscheme==$s)?" selected":"").">$s\n";

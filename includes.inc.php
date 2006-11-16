@@ -1,7 +1,7 @@
 <? /* $Id$ */
 
 // set the $sid var for easy use
-$sid = SID;
+// $sid = SID;
 
 // what kind of error reporting do we want? (how cluttered do we want our site to be?)
 //error_reporting(0);				// none
@@ -36,6 +36,14 @@ require_once($myDir."dates.inc.php");
 require_once($myDir."help/include.inc.php");
 require_once($myDir."permissions.inc.php");
 require_once($myDir."htmleditor/editor.inc.php");
+
+// Define a constant so that we can test for proper application flow (including
+// this file and other configs).
+// One potential attack is to directly call a sub-include, bypassing defining of
+// config parameters and overriding them with values from request if register_globals
+// is on. Checking for this constant can test for propper flow.
+if (!defined("CONFIGS_INCLUDED"))
+	define ("CONFIGS_INCLUDED", true);
 
 
 

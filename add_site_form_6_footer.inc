@@ -40,24 +40,25 @@ printc("<br />");
 * NOTE: this Media Library link is NOT the same as in the Image/File Block UI
 ******************************************************************************/
 
-printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
-printc("<tr><td colspan=2>");
+//printc("<br /><div class=leftmargin><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
+//printc("<tr><td colspan=2>");
 if ($_SESSION[settings][edit]) {
-	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
-	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
-	printc(" <input type='text' name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
+//	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' onClick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?&editor=html\")' target='filebrowser' style='text-decoration: none'>");
+//	printc("<input type=hidden name='mediaimg_url' value='".$_SESSION[settings][mediaimg_url]."'>");
+//	printc(" <input type='text' name='media_url' class='textfield small' value='".$_SESSION[settings][media_url]."' size=75 readonly>");
 }
 // We can't add media if we don't have a site id yet
 else {
-	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' style='text-decoration: none' disabled>");
-	printc(" <input type='text' name='media_url' class='textfield small' value='You must save the site before you can add media to it.' size=75 readonly>");
+	printc("If you want to add an image to your footer, you must save this site first.  Once saved, you can return here by choosing to edit site settings.</ br></ br>");
+//	printc("<div style='font-size:10px; color:#gray'><input type=button name='browsefiles' value='Media Library' style='text-decoration: none' disabled>");
+//	printc(" <input type='text' name='media_url' class='textfield small' value='You must save the site before you can add media to it.' size=75 readonly>");
 }
-printc(" (media file URL)");
-printc("</div></td></tr>");
-printc("<tr><td>");
-printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br />2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
-printc("</td></tr>");
-printc("</table></div><br /><br />");
+//printc(" (media file URL)");
+//printc("</div></td></tr>");
+//printc("<tr><td>");
+//printc("<div style='font-size:10px; color:#003399'>1. Browse your Media Library for media files. <br />2. Copy the media file URL from field above and paste into link tool (files) or image tool (images)</div>");
+//printc("</td></tr>");
+//printc("</table></div><br /><br />");
 
 
 //if ($_SESSION[siteObj]->getField("header")) printc("<input type=submit name=copyheader value='Copy From Header'>");
@@ -73,7 +74,11 @@ require_once("htmleditor/editor.inc.php");
  ******************************************************************************/
 $mod_footer = convertTagsToInteralLinks($_SESSION[settings][sitename], $_SESSION[siteObj]->getField("footer"));
 
-printc(addeditor("footer",60,8,$mod_footer));
+if ($_SESSION[settings][edit]) {
+	printc(addeditor("footer",60,8,$mod_footer));
+} else {
+	printc(addeditor("footer",60,8,$mod_footer,"initsite"));
+}
 
 //printc(addeditor("footer",60,8,$_SESSION[siteObj]->getField("footer")));
 

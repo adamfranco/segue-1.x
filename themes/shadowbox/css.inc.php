@@ -4,7 +4,14 @@ body {
 	 background-color: #<? echo $bg['bg']; ?>; 
 }
 
-<? include("$themesdir/common/css.inc.php"); ?>
+<?
+
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+
+include("$themesdir/common/css.inc.php"); 
+
+?>
 
 
 /* ------------------------------------------ */
@@ -21,6 +28,17 @@ body {
 	margin-bottom: 0px;
 }
 
+.heading {
+	border-top: 1px solid #<? echo $bordercolor; ?>; 
+	border-bottom: 1px solid #<? echo $bordercolor; ?>; 
+	padding-top: 2px; padding-bottom: 2px;
+}
+
+.heading2 {
+	padding-top: 2px; padding-bottom: 2px;
+}
+
+
 .topnav {
 	padding: 5px;
 /* 	background-color: #<? echo $c['topnav']; ?>; */
@@ -35,6 +53,15 @@ body {
 	vertical-align: top;
 }
 
+.rightnav {
+/* 	float: left; */
+	width: <? echo $navwidth; ?>px;
+	padding: 10px;
+	margin-left: 20px;
+	border-left: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
+	vertical-align: top;
+}
+
 .contentarea {
 	vertical-align: top;
 	padding: 10px;
@@ -44,6 +71,7 @@ body {
 	border-bottom: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
 	border-top: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
 }
+
 
 .content {
 	padding: 10px;
@@ -104,6 +132,4 @@ body {
 	height: 22px;
 	border: 0px solid gray;
 }
-
-
 </style>

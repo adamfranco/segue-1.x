@@ -9,7 +9,7 @@
     have it an absolute path, such as '/htmlarea/'. -->
     
 <? global $cfg;  ?>
-<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter.	
+<div class='desc'><b>Note:</b> To get a single line break, hold down SHIFT while pressing enter.	
 
 <script type="text/javascript">
 /*   _editor_url = "../"; */
@@ -45,7 +45,7 @@ function highlight() {
 }
 </script>
 
-<body onLoad="initEditor();">
+<body onload="initEditor();">
 
 <!-- use <body onload="HTMLArea.replaceAll()" if you don't care about
      customizing the editor.  It's the easiest way! :) -->
@@ -53,7 +53,7 @@ function highlight() {
 <!-- <form action="test.cgi" method="post" id="edit" name="edit"> -->
 
 <!-- <textarea id="ta" name="ta" style="width:100%" rows="20" cols="80"> -->
-<textarea id="<? echo $textarea ?>" name="<? echo $textarea ?>" style="width:100%" rows=<? echo $rows ?> cols=<? echo $cols ?>><? print spchars($text); ?></textarea>
+<textarea id="<? echo $textarea ?>" name="<? echo $textarea ?>" style="width:100%" rows="<? echo $rows ?>" cols="<? echo $cols ?>"><? print spchars($text); ?></textarea>
 
 <!-- <script> -->
 <!-- initEditor(); -->

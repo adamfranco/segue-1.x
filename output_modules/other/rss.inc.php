@@ -5,7 +5,7 @@ include("output_modules/common.inc.php");
 include_once (dirname(__FILE__)."/carprss/carp.php");
 /*  */
 /* if ($a[category]) { */
-/* 	printc("<div class=contentinfo align='right'>"); */
+/* 	printc("<div class='contentinfo' align='right'>"); */
 /* 	printc("Category: <b>".spchars($a[category])."</b>"); */
 /* 	printc("</div>"); */
 /* } */
@@ -15,6 +15,7 @@ include_once (dirname(__FILE__)."/carprss/carp.php");
 //  print "</pre>";
  
 ob_start();
+print "\n\n";
 
 $url = $o->getField("url");
 // if (ereg("^".$cfg[full_uri], $url)
@@ -24,6 +25,9 @@ $url = $o->getField("url");
 // 	$replacement = "index.php?".session_name()."=".session_id();
 // 	$url = ereg_replace("index.php\?", $replacement, $url);
 // }
+
+MyCarpConfReset();
+MyCarpConfReset('rss_contentblock');
 
 // If we have an auser, create a cache just for them.
 if ($_SESSION['auser']) {
@@ -58,9 +62,13 @@ printc (ob_get_contents());
 ob_clean();
 
 
-if ($o->getField("title")) printc("<div class=leftmargin><b>".spchars($o->getField("title"))."</b></div>");
+if ($o->getField("title")) {
+
+	printc("\n\n<div class='contentinfo' align='right'>".spchars($o->getField("title"))."</div>\n");
 // printc("<div><a href='".$o->getField("url")."' target='_blank'>".$o->getField("url")."</a></div>");
-// if ($o->getField("shorttext")) printc("<div class=desc>".stripslashes($o->getField("shorttext"))."</div>");
+// if ($o->getField("shorttext")) printc("<div class='desc'>".stripslashes($o->getField("shorttext"))."</div>");
+
+}
 if ($o->getField("discuss")) {
 	include (dirname(__FILE__)."/discussionLink.inc.php");
 }

@@ -25,9 +25,16 @@ if ($clear) {
 	//$active = "%";
 }
 
-if ($_REQUEST[order]) $order = $_REQUEST[order];
-if (!isset($order)) $order = "editedtimestamp DESC";
+if ($_REQUEST[order]) 
+	$order = $_REQUEST[order];
+	
+if (!isset($order)
+	|| !preg_match('/^[a-z0-9_.]+( (ASC|DESC))?$/i', $order))
+	$order = "editedtimestamp DESC";
+
 $orderby = " ORDER BY $order";
+
+
 
 $w = array();$wExtra=array();
 //if ($_REQUEST[type]) $w[]="slot_type like '%$type%'";
@@ -35,9 +42,9 @@ if ($cfg[allowpersonalsites] && $cfg[allowclasssites])
 	$w[]="(slot_type='personal' OR slot_type='class' OR slot_type='other')";
 else if ($cfg[allowpersonalsites]) $w[]="(slot_type='personal' OR slot_type='other')";
 else if ($cfg[allowclasssites]) $w[]="slot_type='class'";
-if ($_REQUEST[user]) $wExtra[]="user_uname like '%$user%'";
-if ($_REQUEST[site]) $wExtra[]="slot_name like '%$site%'";
-if ($_REQUEST[title]) $wExtra[]="site_title like '%$title%'";
+if ($_REQUEST[user]) $wExtra[]="user_uname like '%".addslashes($user)."%'";
+if ($_REQUEST[site]) $wExtra[]="slot_name like '%".addslashes($site)."%'";
+if ($_REQUEST[title]) $wExtra[]="site_title like '%".addslashes($title)."%'";
 $w[] = "site_active='1'";
 $w[] = "site_listed='1'";
 //if ($_REQUEST[active]) $w[]="site_active like '%$active%'";
@@ -59,6 +66,7 @@ $query = "
 			ON
 		FK_owner = user_id	
 	$where";
+	
 $r=db_query($query); 
 $a = db_fetch_assoc($r);
 $totalNumSites = $a[log_count];
@@ -81,10 +89,24 @@ $r=db_query($query);
 $a = db_fetch_assoc($r);
 $numSites = $a[log_count];
 
-if (!isset($lowerlimit)) $lowerlimit = 0;
-if ($lowerlimit < 0) $lowerlimit = 0;
+//if (!isset($lowerlimit)) $lowerlimit = 0;
+//if ($lowerlimit < 0) $lowerlimit = 0;
+//
+//$lowerlimit = addslashes($lowerlimit);
+//$limit = " limit $lowerlimit,$numPerPage";
+
+
+
+if (isset($_REQUEST['lowerlimit']))
+	$lowerlimit = intval($_REQUEST['lowerlimit']);
+else
+	$lowerlimit = 0;
+
+if ($lowerlimit < 0) 
+	$lowerlimit = 0;
 
 $limit = " limit $lowerlimit,$numPerPage";
+
 
 $query = "
 	SELECT 
@@ -121,7 +143,8 @@ $r = db_query($query);
 
 <? include("themes/common/logs_css.inc.php"); ?>
 
-<script lang="JavaScript">
+<script type="text/javascript">
+// <![CDATA[
 
 function changeOrder(order) {
 	f = document.searchform;
@@ -129,15 +152,16 @@ function changeOrder(order) {
 	f.submit();
 }
 
+// ]]>
 </script>
 
 <table width='100%' class='bg'>
 <tr><td class='bg'>
 	<? print $content; ?>
-	<div align='center' style='font-size: 14px;'><b><? echo $cfg[inst_name] ?> Segue</b></div><br />
+	<div align='center' style='font-size: 14px;'><b><? echo $cfg[inst_name] ?> <? echo $site_name?> </b></div><br />
 	<div align='left' style='font-size: 10px;'>
 	Included here are all <b>class</b> sites and any other sites that requested to be included in this public listing of
-	<? echo $cfg[inst_name] ?> Segue. These are sorted by those that have been most recently updated.<br />
+	<? echo $cfg[inst_name] ?> sites. These are sorted by those that have been most recently updated.<br />
 	<i>(Note: not all sites listed here are viewable to all users)</i>
 	</div>
 	<br />
@@ -147,16 +171,16 @@ function changeOrder(order) {
 </td></tr>
 </table>
 
-<table cellspacing=1 width='100%' id='maintable'>
+<table cellspacing='1' width='100%' id='maintable'>
 <tr>
-	<td colspan=8>
+	<td colspan='8'>
 		<table width='100%'>
 		<tr><td>
-		<form action=<?echo "$PHP_SELF?$sid"?> method=post name='searchform'>
+		<form action='<?echo "$PHP_SELF?$sid"?>' method='post' name='searchform'>
 		<?
 		// $r1 = db_query("select distinct type from sites order by type asc");
 		?>
-		<!-- type: <select name=type>
+		<!-- type: <select name='type'>
 		<option value=''>all -->
 		<?
 		//while ($a=db_fetch_assoc($r1))
@@ -165,11 +189,11 @@ function changeOrder(order) {
 		if (true) {
 		?>
 			<!-- </select> -->
-			site: <input type='text' name=site size=10 value='<?echo $site?>'>
-			title: <input type='text' name=title size=10 value='<?echo $title?>'>
-			user: <input type='text' name=user size=10 value='<?echo $user?>'>
+			site: <input type='text' name='site' size='10' value='<?echo $site?>' />
+			title: <input type='text' name='title' size='10' value='<?echo $title?>' />
+			user: <input type='text' name='user' size='10' value='<?echo $user?>' />
 			<!--
-			type: <select name=type>
+			type: <select name='type'>
 				<option<?=($type=='%')?" selected":""?>>all
 				<option<?=($type=='class')?" selected":""?>>class
 				<option<?=($type=='other')?" selected":""?>>other
@@ -177,9 +201,9 @@ function changeOrder(order) {
 				<option<?=($type=='system')?" selected":""?>>system
 				</select>
 			-->
-			<input type=submit value='go'>
-			<input type=submit name='clear' value='clear'>
-			<input type=hidden name='order' value='<? echo $order ?>'>
+			<input type='submit' value='go' />
+			<input type='submit' name='clear' value='clear' />
+			<input type='hidden' name='order' value='<? echo $order ?>' />
 		<? } ?>
 		</form>
 		</td>
@@ -195,9 +219,9 @@ function changeOrder(order) {
 		print "$curr of $tpages ";
 // 		print "(Prev: $prev LL: $lowerlimit Next: $next )";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
+			print "<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site&order=$order\"' />\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
+			print "<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&title=$title&site=$site&order=$order\"' />\n";
 		?>
 		</td>
 		</tr>
@@ -206,7 +230,7 @@ function changeOrder(order) {
 </tr>
 <tr>
 <?
-	print "<th><a href=# onClick=\"changeOrder('";
+	print "<th><a href=# onclick=\"changeOrder('";
 	if ($order =='editedtimestamp desc') print "editedtimestamp asc";
 	else print "editedtimestamp desc";
 	print "')\" style='color: #000'>Time";
@@ -214,7 +238,7 @@ function changeOrder(order) {
 	if ($order =='editedtimestamp desc') print " &and;";	
 	print "</a></th>";
 	
-	print "<th><a href=# onClick=\"changeOrder('";
+	print "<th><a href=# onclick=\"changeOrder('";
 	if ($order =='name asc') print "name desc";
 	else print "name asc";
 	print "')\" style='color: #000'>Site";
@@ -222,7 +246,7 @@ function changeOrder(order) {
 	if ($order =='name desc') print " &and;";	
 	print "</a></th>";
 	
-//	print "<th><a href=# onClick=\"changeOrder('";
+//	print "<th><a href=# onclick=\"changeOrder('";
 //	if ($order =='active asc') print "active desc";
 //	else print "active asc";
 //	print "')\" style='color: #000'>Active";
@@ -230,7 +254,7 @@ function changeOrder(order) {
 //	if ($order =='active desc') print " &and;";	
 //	print "</a></th>";
 	
-	print "<th><a href=# onClick=\"changeOrder('";
+	print "<th><a href=# onclick=\"changeOrder('";
 	if ($order =='type asc') print "type desc";
 	else print "type asc";
 	print "')\" style='color: #000'>Type";
@@ -238,7 +262,7 @@ function changeOrder(order) {
 	if ($order =='type desc') print " &and;";	
 	print "</a></th>";
 	
-/* 	print "<th><a href=# onClick=\"changeOrder('"; */
+/* 	print "<th><a href=# onclick=\"changeOrder('"; */
 /* 	if ($order =='viewpermissions asc') print "viewpermissions desc"; */
 /* 	else print "viewpermissions asc"; */
 /* 	print "')\" style='color: #000'>View"; */
@@ -246,7 +270,7 @@ function changeOrder(order) {
 /* 	if ($order =='viewpermissions desc') print " &and;";	 */
 /* 	print "</a></th>"; */
 
-//	print "<th><a href=# onClick=\"changeOrder('";
+//	print "<th><a href=# onclick=\"changeOrder('";
 //	if ($order =='theme asc') print "theme desc";
 //	else print "theme asc";
 //	print "')\" style='color: #000'>Theme";
@@ -254,7 +278,7 @@ function changeOrder(order) {
 //	if ($order =='theme desc') print " &and;";	
 //	print "</a></th>";
 	
-	print "<th><a href=# onClick=\"changeOrder('";
+	print "<th><a href=# onclick=\"changeOrder('";
 	if ($order =='title asc') print "title desc";
 	else print "title asc";
 	print "')\" style='color: #000'>Title";
@@ -262,7 +286,7 @@ function changeOrder(order) {
 	if ($order =='title desc') print " &and;";	
 	print "</a></th>";
 	
-	print "<th><a href=# onClick=\"changeOrder('";
+	print "<th><a href=# onclick=\"changeOrder('";
 	if ($order =='addedby asc') print "addedby desc";
 	else print "addedby asc";
 	print "')\" style='color: #000'>Owner";
@@ -279,38 +303,38 @@ $yesterday = date(Ymd)-1;
 if (db_num_rows($r)) {
 	while ($a=db_fetch_assoc($r)) {
 		print "<tr>";
-		print "<td class=td$color><nobr>";
+		print "<td class='td$color'><span style='white-space: nowrap;'>";
 			if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "<b>";
 			print timestamp2usdate($a[editedtimestamp],1);
 			if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "</b>";
-			print "</nobr>";
+			print "</span>";
 		print "</td>";
-		print "<td class=td$color>$a[name]</td>";
-//		print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
-		print "<td class=td$color>".((group::getClassesFromName($a[name]))?"group - ":"")."$a[type]</td>";
-/* 		print "<td class=td$color><span style='color: #"; */
+		print "<td class='td$color'>$a[name]</td>";
+//		print "<td class='td$color'><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
+		print "<td class='td$color'>".((group::getClassesFromName($a[name]))?"group - ":"")."$a[type]</td>";
+/* 		print "<td class='td$color'><span style='color: #"; */
 /* 			if ($a[viewpermissions] == 'anyone') print "000"; */
 /* 			if ($a[viewpermissions] == 'midd') print "00c"; */
 /* 			if ($a[viewpermissions] == 'class') print "900"; */
 /* 		print "'>$a[viewpermissions]</span></td>"; */
-//		print "<td class=td$color>$a[theme]</td>";
-		print "<td class=td$color>";
-		print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
+//		print "<td class='td$color'>$a[theme]</td>";
+		print "<td class='td$color'>";
+		print "<a href='#' onclick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
 		print stripslashes($a[title]);
 		print "</a>";
 		print "</td>";
-		print "<td class=td$color>";
+		print "<td class='td$color'>";
 		print "$a[addedbyfull] ($a[addedby])";
 		print "</td>";
 		print "</tr>";
 		$color = 1-$color;
 	}
 } else {
-	print "<tr><td colspan=5>No sites found based on above criteria.</td></tr>";
+	print "<tr><td colspan='5'>No sites found based on above criteria.</td></tr>";
 }
 ?>
 </table><br />
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type='button' value='Close Window' onclick='window.close()' /></div>
 
 <?
 // debug output -- handy :)

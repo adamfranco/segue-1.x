@@ -8,7 +8,7 @@
     example ZIP file will work anywhere, but please NOTE THAT its better to
     have it an absolute path, such as '/htmlarea/'. -->
 <? global $cfg;  ?>
-<div class=desc><b>Note:</b> To get a single line break, hold down SHIFT while pressing enters.	
+<div class='desc'><b>Note:</b> To get a single line break, hold down SHIFT while pressing enters.	
 
 <script type="text/javascript">
 /*   _editor_url = "../"; */
@@ -68,7 +68,7 @@ function highlight() {
 <!-- <form action="test.cgi" method="post" id="edit" name="edit"> -->
 
 <!-- <textarea id="ta" name="ta" style="width:100%" rows="20" cols="80"> -->
-<textarea id="<? echo $textarea ?>" name="<? echo $textarea ?>" style="width:100%" rows=<? echo $rows ?> cols=<? echo $cols ?>><? print spchars($text); ?></textarea>
+<textarea id="<? echo $textarea ?>" name="<? echo $textarea ?>" style="width:100%" rows="<? echo $rows ?>" cols="<? echo $cols ?>"><? print spchars($text); ?></textarea>
 
 <!-- <script> -->
 <!-- initEditor(); -->

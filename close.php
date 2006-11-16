@@ -1,10 +1,10 @@
 <head>
-<script lang = javascript>
+<script lang = 'javascript'>
 function closeWindow() {
 	window.close();
 }
 </script>
 </head>
-<body onLoad='closeWindow();'>
+<body onload='closeWindow();'>
 Window is closing...
 </body>

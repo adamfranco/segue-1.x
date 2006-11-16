@@ -6,7 +6,8 @@
 // - but adds functionality specific to segue. i may eventually combine these two into one
 
 // include the authentication modules
-foreach ($_auth_mods as $i) include("auth_mods/$i.inc.php");
+foreach ($_auth_mods as $i) 
+	include("auth_mods/".urlencode($i).".inc.php");
 
 $loginerror=0;
 $_loggedin=0;
@@ -25,6 +26,45 @@ if ($_SESSION[luser]) {
 if (!$_loggedin) {
 	if ($_REQUEST[loginform]) {	// they just entered their name & pass
 	
+		if (!isset($_SERVER['HTTP_COOKIE']) || !$_SERVER['HTTP_COOKIE']) {
+			error("You must have cookies enabled in your browser.
+			<ul >
+				<li style='margin-bottom: 15px;'><strong>FireFox/Mozilla:</strong>
+					<ol>
+						<li>Open the FireFox Preferences
+							<ul>
+								<li>Windows: <strong>Tools</strong> -&gt; <strong>Options...</strong></li>
+								<li>Mac: <strong>FireFox</strong> -&gt; <strong>Preferences...</strong></li>
+							</ul>
+						</li>
+						<li>In the preferences window, go to <strong>Privacy</strong> -&gt; <strong>Cookies</strong></li>
+						
+						<li>Check the <strong>Allow sites to set Cookies/Enable Cookies</strong> box.</li>
+						<li>Refresh this page at least once, this error should go away.</li>
+					</ol>
+				</li>
+				
+				<li style='margin-bottom: 15px;'><strong>Internet Explorer (IE):</strong>
+					<ol>
+						<li>Open the Internet Options: <strong>Tools</strong> -&gt; <strong>Internet Options</strong></li>
+						<li>Click on the <strong>Privacy</strong> tab.</li>
+						<li>Change the privacy setting to <strong>Medium High</strong> or less</li>
+						<li>Refresh this page at least once, this error should go away.</li>
+					</ol>
+				</li>
+				<li style='margin-bottom: 15px;'><strong>Safari:</strong>
+					<ol>
+						<li>Open the Safari Preferences: <strong>Safari</strong> -&gt; <strong>Preferences...</strong></li>
+						<li>In the preferences window, go to the <strong>Security</strong> tab.</li>
+						
+						<li>Select <strong>Only from sites you navigate to</strong> option under <strong>Accept Cookies</strong>.</li>
+						<li>Refresh this page at least once, this error should go away.</li>
+					</ol>
+				</li>
+			</ul>
+			<br />");
+		} else
+	
 		// now, assuming they were successful
 		if (loginvalid($_REQUEST[name],$_REQUEST[password])) {
 			$newquerystring = ereg_replace("PHPSESSID","OLDID",urldecode($_REQUEST[getquery]));
@@ -34,6 +74,7 @@ if (!$_loggedin) {
 			if (!ereg('\?',$newurl)) $g = '?';
 			//print "$newurl$g&$sid";
 			header("Location: $newurl$g&$sid");
+			exit;
 		} else {
 		// username or passwd incorrect
 			$loginerror=1;
@@ -118,9 +159,18 @@ function _auth_check_db($x,$add_to_db=0) {
 	// $x[user] and $x[method] must be set
 	global $dbuser,$dbhost,$dbpass,$dbdb;
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-//	$query = "SELECT * FROM user WHERE user_uname='".$x[user]."' AND user_authtype='".$x[method]."'";
-	$query = "SELECT * FROM user WHERE user_uname='".$x[user]."'";
-	$r = db_query($query);	
+
+	$query = "
+		SELECT 
+			* 
+		FROM 
+			user 
+		WHERE 
+			user_uname='".addslashes($x[user])."'
+	";
+		
+	$r = db_query($query);
+	
 	if (db_num_rows($r)) {		// they have an entry already -- pull down their info
 		$a = db_fetch_assoc($r);
 		
@@ -133,21 +183,21 @@ function _auth_check_db($x,$add_to_db=0) {
 					&& $a[user_type] != "admin")
 			)
 		) {
-			$x[fullname] = addslashes($x[fullname]);
+			//$x[fullname] = addslashes($x[fullname]);
 			$query = "
 				UPDATE
 					user 
 				SET  
-					user_email='$x[email]', 
-					user_fname='$x[fullname]'
+					user_email='".addslashes($x[email])."', 
+					user_fname='".addslashes($x[fullname])."'
 			";
 			if ($a[user_type] != "admin") {
-				$query .= ", user_type='$x[type]'";
+				$query .= ", user_type='".addslashes($x[type])."'";
 			}
 			
 			$query .="
 				WHERE
-					user_uname='$x[user]'
+					user_uname='".addslashes($x[user])."'
 			";
 			$r = db_query($query);
 		}
@@ -161,8 +211,19 @@ function _auth_check_db($x,$add_to_db=0) {
 		return $x;
 	} else {					// they have no database entry
 		if ($add_to_db) {		// add them to the database and return new id
-			$x[fullname] = addslashes($x[fullname]);
-			$query = "INSERT INTO user SET user_uname='$x[user]', user_email='$x[email]', user_fname='$x[fullname]', user_type='$x[type]', user_pass='".strtoupper($x[method])." PASS', user_authtype='$x[method]'";
+			//$x[fullname] = addslashes($x[fullname]);
+			$query = "
+				INSERT INTO 
+					user 
+				SET 
+					user_uname='".addslashes($x[user])."',
+					user_email='".addslashes($x[email])."', 
+					user_fname='".addslashes($x[fullname])."', 
+					user_type='".addslashes($x[type])."', 
+					user_pass='".addslashes(strtoupper($x[method]))." PASS',
+					user_authtype='".addslashes($x[method])."'								
+			";
+			
 			$r = db_query($query);
 			
 			// the query could fail if a user with that username is already in the database, but:

@@ -36,3 +36,4 @@ if ($thisSite->hasPermission("delete",$_SESSION[auser])) {
 } else log_entry("delete_section","$_SESSION[auser] deleting section id $_REQUEST[delete_section] failed",$_REQUEST[site],$_REQUEST[delete_section],"section");
 
 header("Location: $PHP_SELF?$sid&site=$_REQUEST[site]&action=viewsite");
+exit;

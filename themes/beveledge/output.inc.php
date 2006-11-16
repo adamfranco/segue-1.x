@@ -8,6 +8,9 @@
  -needs to call horizontal and vertical navigation function
  for both Top Sections and Side Sections navigation arrangements 
  */
+ 
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
@@ -67,133 +70,129 @@ $navsize = $_nav_size[$usenavsize];
 
 /* ------------------- END THEME SETTINGS---------------------	*/
 
+/*********************************************************
+ * get all of the existing output buffers and place them inside our body
+ *********************************************************/
+$obContent = '';
+while (ob_get_level())
+	$obContent .= ob_get_clean();
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
 <?
-/* ------------------------------------------- */
-/* ------------- COMMON HEADER --------------- */
-/* ------------------------------------------- */
+/******************************************************************************
+ * Commom header stuff
+ ******************************************************************************/
+
 include("themes/common/header.inc.php");
 include("themes/$theme/css.inc.php"); 
-/* ------------------------------------------- */
-/* -------------- PAGE TITLE ----------------- */
-/* ------------------------------------------- */
 ?>
 <title><? echo $pagetitle; ?></title>
 </head>
-
 <body style='margin: 0px'>
 
-<table width=95% cellpadding='0' cellspacing='0' align='center'>
-<tr>
-<td class=topleft></td>
-<td class=top></td>
-<td class=topright></td>
-</tr>
-<tr>
-<td class=left><img class=lefttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>'></td>
-<td class=content>
+<? print $obContent; ?>
 
-<div class=header>
+<table width='95%' cellpadding='0' cellspacing='0' align='center'>
+	<tr>
+		<td class='topleft'></td>
+		<td class='top'></td>
+		<td class='topright'></td>
+	</tr>
+	<tr>
+		<td class='left'><img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' /></td>
+		<td class='content'>
+			<div class='header'>
+			
 <?
-/* ------------------------------------------- */
-/* ------SITE HEADER/STATUS BAR/CRUMBS ------- */
-/* ------------------------------------------- */
+
+/******************************************************************************
+ * Site Header, Status bar, crumbs
+ ******************************************************************************/ 
 print $siteheader; 
 include("themes/common/status.inc.php"); 
 print $sitecrumbs;
 ?>
-</div>
+			</div>
 
-<div class=topnav align='center'>
+			<div class='topnav' align='center'>
 <?
-/* ------------------------------------------- */
-/* --------- TOP SECTION NAV ---------------- */
-/* ------------------------------------------- */
-if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra);
-
+/******************************************************************************
+ * Section Navigation
+ ******************************************************************************/
+if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra, $hide_sidebar);
 ?>
-</div>
-
-<table width=100% class=contenttable>
-<tr>
-<td class=leftnav>
+			</div>
+			<table width='100%' class='contenttable'>
+				<tr>
 <?
+/******************************************************************************
+ * Left Column
+ ******************************************************************************/
+ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)) {
+	print "\n\t\t\t\t\t<td class='leftnav'>\n";
+	if ($nav_arrange==1) {
+		vertical_nav($page, $leftnav, $leftnav_extra, $bordercolor, $hide_sidebar);		
+	} else {
+		side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra, $bordercolor);
+	}
+	print "\n\t\t\t\t\t</td>";	
+} 
 
-/* ------------------------------------------- */
-/* --------------- LEFT NAV ------------------ */
-/* ------------------------------------------- */
-if ($nav_arrange==1) {
-	vertical_nav($page, $leftnav, $leftnav_extra);		
-} else { 
-	side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra);
+/******************************************************************************
+ * Center Column
+ ******************************************************************************/
+?>
+					<td class='contentarea'>
+<?
+print $content;
+?>
+
+					</td>
+<?
+/******************************************************************************
+ * Right Column
+ ******************************************************************************/
+ 
+if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
+	print "\n\t\t\t\t\t<td class='rightnav'>\n";
+	print vertical_nav($page, $rightnav, $leftnav_extra, $bordercolor, $hide_sidebar);
+	print "\n\t\t\t\t\t</td>";
 }
 ?>
-</td>
-<td class=contentarea>
-<div class=topnav align='center'>
-<?
-/* ------------------------------------------- */
-/* ------------ TOP PAGE NAV ---------------- */
-/* ------------------------------------------- */
-//if ($nav_arrange==2) horizontal_nav($page, $leftnav, $leftnav_extra);
-?>
-</div>
-<?
-/* ------------------------------------------- */
-/* -------------- CONTENT AREA   ------------- */
-/* ------------------------------------------- */
+				</tr>
+			</table>
 
-print $content; 
+			<div class='topnav' align='center'>
+<?
+/******************************************************************************
+ * Bottom section navigation
+ ******************************************************************************/
+if ($nav_arrange==1) 
+	horizontal_nav($section, $topnav2, $topnav2_extra, $hide_sidebar);
+?>
 
-?>
-<div class=topnav align='center'>
+			</div>
 <?
-/* ------------------------------------------- */
-/* ------------ BOTTOM PAGE NAV -------------- */
-/* ------------------------------------------- */
-//if ($nav_arrange==2) horizontal_nav($page, $leftnav2, $leftnav2_extra);
+/******************************************************************************
+ * Footer
+ ******************************************************************************/
+print $sitefooter 
 ?>
-</div>
-</td>
-<?
-/* ------------------------------------------- */
-/* -------------- RIGHT NAV (OPT)  ----------- */
-/* ------------------------------------------- */
-if (count($rightnav)) {
-	print "<td style='margin-left: 20px'>";
-	horizontal_nav('pages',$rightnav, $rightnav_extra);
-	print "</td>";
-}
-?>
-</tr>
+		</td> 
+<!-- end content table cell -->
+		<td class='right'>
+			<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='rightop' />
+		</td>
+	</tr>
+	<tr>
+		<td class='bottomleft'>&nbsp;</td>
+		<td class='bottom'>&nbsp;</td>
+		<td class='bottomright'>&nbsp;</td>
+	</tr>
 </table>
-<div class=topnav align='center'>
-<?
-/* ------------------------------------------- */
-/* ------------ BOTTOM SECTION NAV ----------- */
-/* ------------------------------------------- */
-if ($nav_arrange==1) horizontal_nav($section, $topnav2, $topnav2_extra);
-?>
-</div>
-<?
-/* ------------------------------------------- */
-/* -------------- FOOTER     ----------------- */
-/* ------------------------------------------- */
-print $sitefooter ?>
-
-</td> <!-- end content table cell -->
-<td class=right><img class=righttop src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>'></td>
-</tr>
-<tr>
-<td class=bottomleft>&nbsp;</td>
-<td class=bottom>&nbsp;</td>
-<td class=bottomright>&nbsp;</td>
-</tr>
-
-</table>
-
-	
+</body>
+</html>

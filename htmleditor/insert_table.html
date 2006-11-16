@@ -93,20 +93,20 @@ for (var y=0; y<document.all.cols.value; y++) {
 }
 </SCRIPT>
 </HEAD>
-<BODY id=bdy onload="Init()" style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll=no>
+<BODY id='bdy' onload="Init()" style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll='no'>
 
-<table border=0 cellspacing='0' cellpadding='0' style="margin: 0 0 8 0">
+<table border='0' cellspacing='0' cellpadding='0' style="margin: 0 0 8 0">
  <tr>
   <td>Rows: &nbsp;</td>
-  <td><input type="text" name="rows" value="4"  style="width: 50px" maxlength=4></td>
+  <td><input type="text" name="rows" value="4"  style="width: 50px" maxlength='4' /></td>
  </tr>
  <tr>
   <td>Cols:</td>
-  <td><input type="text" name="cols" value="3"  style="width: 50px" maxlength=4></td>
-  <td width=10>&nbsp;</td>
+  <td><input type="text" name="cols" value="3"  style="width: 50px" maxlength='4' /></td>
+  <td width='10'>&nbsp;</td>
   <td>Width: &nbsp;</td>
   <td>
-   <input type="text" name="width" value="100" style="width: 50px" maxlength=4>
+   <input type="text" name="width" value="100" style="width: 50px" maxlength='4' />
    <select name="widthExt">
     <option value="">Pixels</option>
     <option value="%" selected>Percent</option>
@@ -119,11 +119,11 @@ for (var y=0; y<document.all.cols.value; y++) {
 <FIELDSET style="width: 1%; text-align: center">
 <LEGEND>Layout</LEGEND>
 
-<table border=0 cellspacing=6 cellpadding='0'>
+<table border='0' cellspacing='6' cellpadding='0'>
  <tr>
-  <td height=21>Alignment:</td>
+  <td height='21'>Alignment:</td>
   <td>
-   <select name="alignment" size=1>
+   <select name="alignment" size='1'>
    <option value="">Not set</option>
    <option value="left">Left</option>
    <option value="right">Right</option>
@@ -138,8 +138,8 @@ for (var y=0; y<document.all.cols.value; y++) {
   </td>
  </tr>
  <tr>
-  <td><nobr>Border Thickness:</nobr></td>
-  <td><input type="text" name="border" value="1" size=4 style="width: 100%"></td>
+  <td><span style='white-space: nowrap;'>Border Thickness:</span></td>
+  <td><input type="text" name="border" value="1" size='4' style="width: 100%" /></td>
  </tr>
 </table>
 </FIELDSET>
@@ -148,22 +148,22 @@ for (var y=0; y<document.all.cols.value; y++) {
 <FIELDSET style="width: 1%; text-align: center">
 <LEGEND>Spacing</LEGEND>
 
-<table border=0 cellspacing=6 cellpadding='0'>
+<table border='0' cellspacing='6' cellpadding='0'>
  <tr>
-  <td><nobr>Cell Spacing:</nobr></td>
-  <td><input type="text" name="cellspacing" value="1" style="width: 50px" maxlength=4></td>
+  <td><span style='white-space: nowrap;'>Cell Spacing:</span></td>
+  <td><input type="text" name="cellspacing" value="1" style="width: 50px" maxlength='4' /></td>
  </tr>
  <tr>
-  <td><nobr>Cell Padding:</nobr></td>
-  <td><input type="text" name="cellpadding" value="2" style="width: 50px" maxlength=4></td>
+  <td><span style='white-space: nowrap;'>Cell Padding:</span></td>
+  <td><input type="text" name="cellpadding" value="2" style="width: 50px" maxlength='4' /></td>
  </tr>
 </table>
 </FIELDSET>
 
 
 <div style="left: 274px; top: 8px; position: absolute">
- <BUTTON style="width: 7em; height: 2.2em; margin: 0 0 3 0" type=submit onclick="btnOKClick()">OK</BUTTON><br />
- <BUTTON style="width: 7em; height: 2.2em; " type=reset onClick="window.close();">Cancel</BUTTON>
+ <BUTTON style="width: 7em; height: 2.2em; margin: 0 0 3 0" type='submit' onclick="btnOKClick()">OK</BUTTON><br />
+ <BUTTON style="width: 7em; height: 2.2em; " type='reset' onclick="window.close();">Cancel</BUTTON>
 </div>
 
 </BODY>

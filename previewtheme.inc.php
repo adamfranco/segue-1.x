@@ -13,4 +13,4 @@ add_link(leftnav,"Page #2","#",'','1');
 
 printc("This is some sample content. Here you can enter any information you want, including links and pictures (or any HTML).");
 printc("<br /><br />");
-printc("<input type=button value='Close This Window' onClick='window.close()' class='button'>");
+printc("<input type='button' value='Close This Window' onclick='window.close()' class='button' />");

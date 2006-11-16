@@ -673,6 +673,7 @@ HTMLArea.prototype.generate = function () {
 
 	// create the IFRAME
 	var iframe = document.createElement("iframe");
+	iframe.src = _editor_url + "blank.html";
 	htmlarea.appendChild(iframe);
 
 	this._iframe = iframe;

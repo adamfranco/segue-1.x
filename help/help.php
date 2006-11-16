@@ -1,11 +1,14 @@
 <? /* $Id$ */
 
-if (!ini_get("register_globals")) $helptopic = $_GET["helptopic"];
+include("../config.inc.php");
+
+$helptopic = urlencode($_REQUEST["helptopic"]);
 
 $file = "topics/$helptopic.inc.php";
 //print $file;
 if (!file_exists($file))
 	$file = "topics/notfound.inc.php";
+
 
 ob_start();
 include($file);
@@ -16,7 +19,7 @@ ob_end_clean();
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Segue Help: <?echo $title?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title><? echo $site_name ?> Help: <?echo $title?></title>
 <?/*include("css.php");*/?>
 <style type='text/css'>
 .title {
@@ -52,9 +55,9 @@ body { background-color: white; }
 </style>
 </head>
 <body style='margin: 0px'>
-<div align='right' class=content><a href='help.php?&helptopic=index'>Index</a></div>
-<div class=title>Help Topic: <?echo $title?></div>
-<div class=content><?echo $content?></div>
-<div align='right'><input type=button class=button value='close' onClick='window.close()'></div>
+<div align='right' class='content'><a href='help.php?&amp;helptopic=index'>Index</a></div>
+<div class='title'>Help Topic: <?echo $title?></div>
+<div class='content'><?echo $content?></div>
+<div align='right'><input type='button' class='button' value='close' onclick='window.close()' /></div>
 </body>
 </html>

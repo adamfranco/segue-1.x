@@ -26,3 +26,4 @@ if ($thisPage->hasPermission("delete",$_SESSION[auser])) {
 } else log_entry("delete_story","$_SESSION[auser] deleting story id $_REQUEST[delete_story] failed",$thisPage->owning_site,$_REQUEST[story],"story");
 
 header("Location: $PHP_SELF?$sid&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]&action=viewsite");
+exit;

@@ -1,6 +1,471 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
 <changelog name="Segue ChangeLog">
+	<version number="1.5.11" date="2006-11-15">
+		<fix author='adam'>
+			Added a check for a non-zero length password to prevent login from
+			occuring without a password when the LDAP server is configured to allow
+			anonymous binding. Thank you to Melanie Hoag and her team
+			at Southwestern University for help locating this bug.
+		</fix>
+	</version>
+	<version number="1.5.10" date="2006-10-25">
+		<fix author='adam'>
+			Added exit() statements after sending redirect headers to prevent
+			continued execution that was resulting in an authentication
+			race-condition that had the effect of populating empty class-lists
+			for students and professors. Thank you to Melanie Hoag and her team
+			at Southwestern University for help locating this bug.
+		</fix>
+	</version>
+	<version number="1.5.9" date="2006-10-24">
+		<fix author='alex'>
+			Fixed reorder content block UI so it only appears to users who have 
+			edit permisson to the page containing content blocks.
+		</fix>
+		<fix author='adam'>
+			Patched a vulnerability in dynamic includes that allowed the execution
+			of arbitrary remote code when register_globals was turned on.
+		</fix>
+		<fix author='adam'>
+			Fixed an error in permissions setting and loading in which permissions
+			for everyone and institute where quotes were being added around NULL
+			editor ids and causing view permissions for everyone and institute
+			to not show up.
+		</fix>
+		<fix author='adam'>
+			Fixed an error in permissions in which invalid permissions commands
+			were being run when a user or group name contained the sting 'add', 
+			'edit', 'delete', or 'view'. i.e. 'pheditram-w06'.
+		</fix>
+	</version>
+	<version number="1.5.8" date="2006-10-19">
+		<fix author='alex'>
+			Fixed extra borders showing in the torn pieces theme.
+		</fix>
+		<fix author='alex'>
+			Fixed theme issue in which text color stayed black when choosing 
+			a black background in the "Minimal Colors" theme.
+		</fix>
+		<fix author='adam'>
+			Added global parameter reference into newly refactored Download Bar
+			function to now generate the correct link.
+		</fix>
+	</version>
+	<version number="1.5.7" date="2006-10-18">	
+		<important author='alex'>
+			Various changes in Segue necessitate that you run the '1.5.7 update' 
+			under 'admin tools' > 'updates' to make several changes to Segue's 
+			database.
+		</important>
+		<new author='adam'>
+			Fields have been added to the media table to enable users to add and 
+			edit metadata to files they upload to the Media Library.		
+		</new>
+		<new author='adam'>
+			File metadata is now displayed in the file download bar.
+		</new>
+	</version>
+	<version number="1.5.6" date="2006-10-16">			
+		<change author='alex'>
+			Changed the toolbar in the HTML editor used for emailing participants
+			to be the same toolbar as is used for discussions/assessments.
+		</change>
+		<change author='alex'>
+			Updated the FCKeditor from version 2.2 to version 2.3.2.
+		</change>
+		<change author='alex'>
+			Fixed Segue CSS so that table borders created in the HTML Editor will 
+			display properly.
+		</change>
+		<change author='alex'>
+			Added documentation re: changes that need to be made to the FCKeditor
+			source code in order to integrate it with Segue.
+		</change>
+		<fix author='adam'>
+			Fixed errors in logging function (introduced in version 1.5.5).
+		</fix>
+		<fix author='alex'>
+			Fixed roster and participation UI such that links and information
+			about rosters is displayed only if the site is a class site.
+		</fix>
+		<fix author='adam'>
+			Fixed email/roster/participation/logs UI such that relevant information
+			from each of these are saved when navigating between them.
+		</fix>
+		<change author='adam'>
+			Segue's RSS reader (CaRP) was modified to handle RSS feeds in any
+			encoding.
+		</change>
+		<fix author='alex'>
+			Fixed editing of content blocks on pages set to display one content
+			block per page such that users are returned to that content block 
+			(instead of being returned to the first content block)
+		</fix>
+		<fix author='adam'>
+			Content block categories now copied when a page is moved/copied.
+		</fix>
+		<fix author='adam'>
+			Segue now generates valid XHTML 1.0 Transitional output. Some 
+			user-supplied content may not be valid, but the Segue-generated content
+			is.
+		</fix>
+		<fix author='adam'>
+			Themes all now generate valid CSS. This fixes a problem with the
+			BevelBox theme not rendering properly in Safari.
+		</fix>
+		<fix author='adam'>
+			Removed a number of PHP warnings from the add_editor script.
+		</fix>
+		<fix author='adam'>
+			Fixed display of groups for everyone and institute in add editor UI.
+		</fix>
+		<change author='alex'>
+			Added a link to page display options beside the page title.
+		</change>
+		<change author='alex'>
+			Changed the UI for reordering pages.
+		</change>
+		<change author='alex'>
+			Changed edit UI to always show page title.
+		</change>
+	</version>		
+	<version number="1.5.5" date="the future">	
+		<change author='alex'>
+			Moved editing UI for lower right for participant, category, rss and
+			content so it is consistent with positioning of other editing UI's
+		</change>
+		<change author='alex'>
+			Changed all SQL queries to prevent SQL injection.
+		</change>
+		<fix author='alex'>
+			Fixed sorting of site and user logs so they now can be sorted by
+			any of the columns displayed.
+		</fix>
+		<fix author='alex'>
+			Fixed sorting of discussion posts so they now sort properly by
+			recent first, recent last, by author and by rating.
+		</fix>
+		<new author='alex'>
+			Added a function for adding all groups from LDAP that a given user is
+			a member of into the Segue ugroup table.  Once added these groups will 
+			appear in the user directory and permissions can be assigned to them
+		</new>
+	</version>		
+	<version number="1.5.4" date="2006-06-13">	
+		<fix author='alex'>
+			Page pagination was not displaying on top of page for full content 
+			view when hide sidebars was checked.
+		</fix>
+		<change author='alex'>
+			Changed spacing between sidebar navigation items that had been
+			inadvertantely changed in version 1.5.3.
+		</change>
+	</version>	
+	<version number="1.5.3" date="2006-06-08">	
+		<change author='alex'>
+			Added the gsp mime type for files created with Geometer's sketchpad.
+		</change>
+		<change author='alex'>
+			Changed how RSS feed links are displayed in the pop up window for
+			more RSS.  Specifically added RSS icon and made the description
+			of the RSS feed the link to that RSS feed.
+		</change>
+		<change author='alex'>
+			Added the text RSS to the right of the RSS icon for the link to page
+			RSS.  As well added the RSS icon to the left of the more RSS link for 
+			additional RSS feeds.
+		</change>
+		<change author='adam'>
+			There has been a problem with inadvertant session-hijacking. This is
+			caused when a user (with cookies diabled and the PHP Session ID passed
+			in their URL) copy/pastes a Segue url containing the session ID into
+			an email or external website. When students (or others click on that
+			link, they are now using the session with the id specified in the url.
+			Multiple users clicking such a link would all end up using the same
+			session, causing login/logout actions of one user to apply to state
+			of all users who clicked that link. As there is no technological trick
+			in PHP that would allow the continued passing of the Session ID in the
+			URL without this problem, Segue will now force the use of cookies
+			for authenticated users.
+		</change>
+		<change author='alex'>
+			Changed display of sections with single pages.  Specifically, when
+			a section has only one page, a sidebar link is still created.
+			(this change undoes a new feature introduced in version 1.5 whereby 
+			sections with only one page would not display a link to that page
+			in the left sidebar).  To avoid confusion as well as inform users of
+			options, when a section has only one page, a note is displayed at 
+			the top of the sidebar indicating the section has only one page and
+			a link is provided to change the section display settings to hide the sidebar.			
+		</change>
+		<new authoer='alex'>
+			Added section display options.  Specifically added a display option
+			to hide sidebars.  When this option is selected, both the left and right
+			sidebars are hidden and if the section has more than one page, links 
+			are displayed to the previous and next pages.  If this section setting
+			to hide sidebars is turned on, then a note is displayed at the top
+			of each sidebar indicated this and a link is provided to change the
+			section display settings to show the sidebar.		
+		</new>		
+		<fix author='alex'>
+			removed extra spacing in RSS output.
+		</fix>		
+		<fix author='alex'>
+			Added missing enclosure tags to all-content RSS outputs.
+		</fix>		
+		<fix author='alex'>
+			Removed page and section titles from category RSS title field
+		</fix>		
+		<change author='alex'>
+			Increased number of items in all-content and all-discussion RSS outputs
+			from 10 to 20 items
+		</change>
+		<change author='alex'>
+			Added category tags to all Segue RSS output
+		</change>
+		<change author='alex'>
+			Added the rel attribute with the category/tag name to category/tag links
+		</change>
+		<fix author='alex'>
+			RSS feeds no longer will include RSS content blocks as items (i.e.
+			no RSS feeds of RSS feeds)
+		</fix>
+		<change author='alex'>
+			The attribution link for content blocks now displays a link to that
+			content blocks url
+		</change>
+		<change author='alex'>
+			Added support for displaying table tags in the display of RSS feeds
+			in Segue
+		</change>
+		<fix author='alex'>
+			Set encoding of RSS feeds that are displayed in Segue (via CARP)
+			to be utf-8 (had been set to ISO 8859-1)
+		</fix>		
+		<fix author='alex'>
+			Fixed spacing between content blocks to make more consistent.  
+			Specifically, if no attribution or no horizontal rule, then a single
+			space is put between content blocks.  If horizontal rules specified, 
+			then no space is put between content blocks.
+		</fix>		
+		<change author='alex'>
+			The title for image type content blocks now only displayed below 
+			the image center justified and no longer is displayed above the image.
+			As well, the add/edit UI for image type content blocks no longer refers
+			to Title and Caption/Description but instead refers to Caption and 
+			Description
+		</change>
+		<change author='alex'>
+			Changed FCKEditor config so that the link tool included advanced
+			options such as specifying link target.
+		</change>
+		<fix author='alex'>
+			Fixed missing scrollbars in the filebrowser window that is opened
+			from the FCKEditor.
+		</fix>		
+		<fix author='alex'>
+			Fixed problem with category UI on PC IE.  Specifically, fixed javascript
+			so that categories can be added and deleted from site tags by clicking
+			on them.
+		</fix>		
+		<fix author='alex'>
+			Fixed problem with paths to filetype icons in the FCKEditor version of the
+			Segue filebrowser.
+		</fix>		
+	</version>	
+	<version number="1.5.2" date="2006-02-21">	
+		<change author='alex'>
+			The 1st page link of any section no longer uses the heading style
+			that was introduced in version 1.5
+		</change>
+		<change author='alex'>
+			Content blocks without titles display a link to their detail view 
+			(i.e. unique URL) to the right of attribution and timestamp display
+			(this link used to display above attribution display).  This means 
+			that the url for a given content block without a title will be displayed 
+			only if attribution/timestamp is set to display and/or discussion/assessment
+			is enabled and/or there is extended content. (content blocks with
+			titles use the title itself as the unique link for that content block)
+		</change>
+		<new author='alex'>
+			RSS for all recently added content blocks and recent discussions.
+		</new>
+		<new author='alex'>
+			RSS for content block detail will include just that content block
+			and all its discussion posts.
+		</new>
+		<fix author='alex' ref='1432407' reftype='bug'>
+			Fixed category RSS feeds so now they have proper page and section ids
+		</fix>	
+		<fix author='alex' ref='1431633' reftype='bug'>
+			Fixed Javascript error related to the FCKEditor
+		</fix>	
+		<fix author='alex' reftype='bug'>
+			Fixed secure/non-secure dialog warnings caused by the HTMLArea editor
+			in PC IE when Segue is running on a secure server.  Thanks to Mark Pyfrom
+			for finding a solution to this problem
+		</fix>	
+	</version>
+	<version number="1.5.1" date="2006-02-09">	
+		<change author='alex'>
+			Changed the RSS icon to use the Firefox RSS icon.
+		</change>
+		<fix author='alex' reftype='bug'>
+			Parts of the discussion UI were unreadable if the mimimal theme used
+			white text on a black background.  I have reworked the discussion UI styles
+			so that they used theme border and bg color information to ensure 
+			compatible colors and legible text.
+		</fix>	
+		<fix author='alex' ref='1425388' reftype='bug'>
+			Fixed bug that did not warn admin users that they were entering a 
+			duplicate external class id.
+		</fix>	
+		<change author='alex'>
+			Removed unnecessary references to Segue in help topics.  Also allowed
+			for customization of Segue logo adding config options for right
+			side logo in program theme
+		</change>
+		<change author='alex'>
+			Changed how RSS content blocks are displayed making them look more
+			like other content blocks.
+		</change>
+		<fix author='alex' ref='1423624' reftype='bug'>
+			Fixed bug that prevented personal slots from being displayed
+		</fix>	
+		<fix author='alex'>
+			Fixed various tag display problems related to special characters
+			such as apersands, single quotes and so on.
+		</fix>	
+		<new author='alex'>
+			Have added the FCKeditor as Segue's default HTML editor.
+		</new>
+		<change author='alex'>
+			Added .m4v and .swf to default upload whitelist	
+		</change>	
+	</version>
+	<version number="1.5.0" date="2005-12-18">
+		<fix author='adam'>
+			fixed file copy errors when copying site
+		</fix>
+		<change author='alex'>
+			The 1st page link of any section uses the heading style.
+		</change>
+		<change author='alex'>
+			Page display options have been changed so that added by and edited by
+			timestamps can be displayed independently.
+		</change>
+		<change author='alex'>
+			Content block page titles are now links to detail or in-depth view 
+			which display only the given content block and its extended text and/or
+			discussions when these exist.  If a content block has no title,
+			a link labeled "link" is displayed below the content block above links
+			to discussion and attribution.
+		</change>
+		<change author='alex'>
+			If the current date is not within the active dates range of a content
+			block then the active dates range will be displayed in edit mode
+			and the content block will not be displayed (even to the site owner)
+			in view mode.  If a page is hidden or inactive, "[hidden]" and/or 
+			"[inactive]" will be displayed below the page title in edit mode.
+		</change>
+		<change author='alex'>
+			Heading page type style have been changed to use colors from theme settings to
+			create a more consistent UI.  As well the hr tag also uses theme colors.
+		</change>
+		<change author='alex'>
+			Have changed how page and content types are selected, replacing
+			radio buttons with a select menu.
+		</change>
+		<change author='alex'>
+			Content block archiving has been changed such that content blocks are
+			now archived by specifying the number of blocks to display on a page.
+			If the number of content blocks exceeds the number per page setting,
+			pagination will be displayed.  If the number per page is set to one 
+			then the page title will not be displayed and a select menu with
+			links to all content blocks on the page will be displayed.
+		</change>
+		<change author='alex'>
+			Categories have been reimplemented such that a given content block
+			can be added to more than one category. Category select UI changed
+			from select menu to an alphabetical list of categories that are links 
+			that populate the category field and that highlighted currently 
+			selected categories.
+		</change>
+		<new author='alex'>
+			Added new page type called Participant list.  This page type allows
+			users to display a list of the names of all participants in the site 
+			in the left or right sidebar including the Site Owner, Roster participants 
+			(for class sites) and all site editors.  For class sites, if an 
+			associated site has been created by a given roster participant, their
+			name will be a link to this associated site.  The Participant list type
+			does not have children (i.e. do not have stories)
+		</new>
+		<new author='alex'>
+			Added new page type called Categories.  This page type allows
+			users to display all the content block categories they have created for
+			a given site as a list in the left or right sidebar. Each item in the
+			list is then a link which retrieves all content blocks of that
+			category and displays them chronologically.  The Category page type
+			does not have children (i.e. do not have stories)
+		</new>
+		<new author='alex'>
+			Added new page type called RSS feed.  This page type allows
+			users to add an RSS feed to the left or right sidebar. Only the  RSS page
+			types do not have children (i.e. do not have stories)
+		</new>
+		<new author='alex'>
+			Added new page type called sidebar content.  This page type allows
+			users to add content to left or right sidebar.  Sidebar content page
+			types do not have children (i.e. do not have stories)
+		</new>
+		<change author='alex'>
+			if a section has only one page, then display only the stories on that
+			page, do not display a link to the page in either sidebar.
+		</change>
+		<new author='alex'>
+			Activated a right column navigation area so that any page link can
+			be displayed on the left or right side of a Segue page.
+		</new>
+		<fix author='alex'>
+			Changed the display range of discussion summaries from 2 to 30.
+			(this display range was reduced to 2 from 30 in Version 1.4.4 for 
+			testing purposes and was not set back to 30 before release!)
+		</fix>
+		<fix author='alex' ref='1348393' reftype='bug'>
+			Fixed RSS feeds so that they do not re-downloaded in certain RSS
+			readers like Safari and iTunes.
+		</fix>
+	</version>
+	<version number="1.4.4" date="2005-11-22">
+		<fix author='alex' ref='877774' reftype='bug'>
+			If certain steps are taken when creating a site it was possible
+			to create a site with no name (if a user creates a site and then
+			immediately uses the browser back button to return and then clicks
+			continue and finish...).  This bug has been eliminated.
+			Thanks to Jim Witte (jwitte@uiuc.edu) for tracking this bug down!
+		</fix>
+		<fix author='alex' ref='1353196' reftype='bug'>
+			Mispelling of password in "Forgot your password" as been fixed.
+		</fix>
+		<fix author='alex' ref='1363156' reftype='bug'>
+			Editing button styles now specify a text color. (fixes bug caused
+			by themes with white text color)
+		</fix>
+		<change author='alex' ref='1212787' reftype='bug'>
+			Class sections can now be designated by either letters or numbers.
+		</change>
+		<fix author='alex' ref='1345320' reftype='bug'>
+			Fixed summaries of discussion posts when number of participants
+			is greater than 30 (query limits) Also fixed display of a given
+			users discussion posts when these exceed query limit.
+		</fix>
+		<fix author='alex' ref='1330176' reftype='bug'>
+			Fixed typo in config.sample.inc.php file.
+		</fix>
+		<fix author='alex' ref='1313096' reftype='bug'>
+			Fixed internal links in image content blocks by adding convertlinks function.
+		</fix>
+	</version>
 	<version number="1.4.3" date="2005-10-05">
 		<change author='adam'>
 			Added several functions which can return all data needed to display

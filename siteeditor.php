@@ -7,13 +7,16 @@ ob_start();
 session_start();
 
 // include all necessary files
-include("includes.inc.php");
+include_once("includes.inc.php");
 
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+	
 include("$themesdir/common/header.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-$sitea=db_get_line("sites","name='$site'");
+$sitea=db_get_line("sites","name='".addslashes($site)."'");
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -71,14 +74,14 @@ input,select {
 
 <? print $content; ?>
 
-<table cellspacing=1 width='100%'>
+<table cellspacing='1' width='100%'>
 <tr>
-	<th colspan=5>
+	<th colspan='5'>
 		SiteMap for <? echo $sitea[title] ?>
 	</th>
 	<?
 	print "<tr>";
-	print "<td colspan=5 class=pad>";
+	print "<td colspan='5' class='pad'>";
 	$addedby = $sitea[addedby];
 	$viewpermissions=$sitea[viewpermissions];
 	$added = timestamp2usdate($sitea[addedtimestamp]);
@@ -91,11 +94,11 @@ input,select {
 	if ($auser == $site_owner) {
 		$edlist = explode(",",$sitea[editors]);
 		if (count($edlist)) {
-			print "<tr><td colspan=5 class=pad>";
+			print "<tr><td colspan='5' class='pad'>";
 			print "editors (click on name to see privileges): ";
 			$l = array();
 			foreach ($edlist as $e) {
-				$l[] = "<a href='editor_access.php?$sid&site=$site&user=$e' target='privileges' onClick='doWindow(\"privileges\",400,400)'>$e</a>";
+				$l[] = "<a href='editor_access.php?$sid&amp;site=$site&amp;user=$e' target='privileges' onclick='doWindow(\"privileges\",400,400)'>$e</a>";
 			}
 			print implode(", ",$l);
 			print "</td></tr>";
@@ -115,18 +118,18 @@ input,select {
 $sections = decode_array($sitea[sections]);
 if (count($sections)) {
 	foreach ($sections as $s) {
-		$sa = db_get_line("sections","id=$s");
+		$sa = db_get_line("sections","id='".addslashes($s)."'");
 		print "<tr>";
 		print "<td>$sa[title]</td>";
 		print "<td>$sa[type]</td>";
 		print "<td align='center'>".(($sa[active])?"yes":"no")."</td>";
 		print "<td align='center'>".(($sa[locked])?"yes":"no")."</td>";
 		print "<td align='center'>";
-		if ($sa[type]=='section') print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s\"'>[view]</a>";
+		if ($sa[type]=='section') print "<a href='#' onclick='opener.window.location=\"index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$s\"'>[view]</a>";
 		print "</td>";
 		print "</tr>";
 		print "<tr>";
-		print "<td colspan=5 class=pad>";
+		print "<td colspan='5' class='pad'>";
 		$addedby = $sa[addedby];
 		$viewpermissions=$sa[viewpermissions];
 		$added = timestamp2usdate($sa[addedtimestamp]);
@@ -136,7 +139,7 @@ if (count($sections)) {
 		print "</td>";
 		print "</tr>";
 		if ($sa[type]=='url') {
-			print "<tr><td colspan=5 class=pad>";
+			print "<tr><td colspan='5' class='pad'>";
 			print "url: <i>$sa[url]</i>";
 			print "</td></tr>";
 		}
@@ -144,26 +147,26 @@ if (count($sections)) {
 		
 		$pages = decode_array($sa[pages]);
 		foreach ($pages as $p) {
-			$pa = db_get_line("pages","id=$p");
+			$pa = db_get_line("pages","id='".addslashes($p)."'");
 			$stories = decode_array($pa[stories]);
 			$nums = count($stories);
 			$nlocked = 0;
 			foreach ($stories as $st) {
-				$sta = db_get_line("stories","id=$st");
+				$sta = db_get_line("stories","id='".addslashes($st)."'");
 				if ($sta[locked]) $nlocked++;
 			}
 			
 			print "<tr>";
-			print "<td class=pad><li>$pa[title]</td>";
+			print "<td class='pad'><li>$pa[title]</td>";
 			print "<td>$pa[type]</td>";
 			print "<td align='center'>".(($sa[active])?"yes":"no")."</td>";
 			print "<td align='center'>".(($pa[locked])?"yes":"no")."</td>";
 			print "<td align='center'>";
-			if ($pa[type]=='page') print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=viewsite&site=$site&section=$s&page=$p\"'>[view]</a>";
+			if ($pa[type]=='page') print "<a href='#' onclick='opener.window.location=\"index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$s&amp;page=$p\"'>[view]</a>";
 			print "</td>";
 			print "</tr>";
 			print "<tr>";
-			print "<td colspan=5 class=pad2>";
+			print "<td colspan='5' class='pad2'>";
 			$addedby = $pa[addedby];
 			$viewpermissions=$pa[viewpermissions];
 			$added = timestamp2usdate($pa[addedtimestamp]);
@@ -173,16 +176,16 @@ if (count($sections)) {
 			print "</td>";
 			print "</tr>";
 			print "<tr>";
-			print "<td class=pad2 colspan=5>";
+			print "<td class='pad2' colspan='5'>";
 			if ($pa[type]=='page') print "# stories: $nums ($nlocked locked)";
 			if ($pa[type]=='url') print "url: <i>$pa[url]</i>";
 			print "</td></tr>";
 		}
 	}
 } else {
-	print "<tr><td colspan=5>No sections.</td></tr>";
+	print "<tr><td colspan='5'>No sections.</td></tr>";
 }
 ?>
 </table><br />
 A = active, L = locked
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type='button' value='Close Window' onclick='window.close()' /></div>

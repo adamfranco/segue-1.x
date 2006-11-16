@@ -251,7 +251,7 @@ class DomitSiteExporter {
 			$shorttext->setAttribute('text_type', $texttype);
  		}
  		
- 		if ($story->getField('longtext')) {
+ 		if ($story->getField('longertext')) {
  			$longertext =& $this->_document->createElement('longertext');
 			$storyElement->appendChild($longertext);
 			$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('longertext'))));
@@ -421,7 +421,7 @@ class DomitSiteExporter {
 // 		print "\npermissions:";
 // 		print_r($permissions);
 		
-		if ($isLocked = $obj->getField('locked')) {
+		if (get_class($obj) != 'site' && $isLocked = $obj->getField('locked')) {
 			$locked =& $this->_document->createElement('locked');
 			$permissionsElement->appendChild($locked);
 		}
@@ -545,7 +545,7 @@ class DomitSiteExporter {
 		
 		// permissions
 		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($partObj, $permissions);
+		$hasPerms =& $this->getPermissions($partObj, $permissions);
 		if ($hasPerms)
 			$element->appendChild($permissions);
 	}

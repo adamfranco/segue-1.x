@@ -51,7 +51,7 @@ class slot {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		// find if this slot exists in the db, if yes, get the id
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-		$q = "SELECT slot_id FROM slot WHERE slot_name = '$name'";
+		$q = "SELECT slot_id FROM slot WHERE slot_name = '".addslashes($name)."'";
 //		echo $q;
 		$r = db_query($q);
 		if (db_num_rows($r)) {
@@ -82,7 +82,7 @@ class slot {
 						ON 
 							FK_owner = user_id 
 				WHERE 
-					slot_name = '$slot'
+					slot_name = '".addslashes($slot)."'
 			";
 			$r = db_query($query);
 			echo mysql_error();
@@ -95,7 +95,7 @@ class slot {
 	}
 	
 	function exists($name,$checkldap=0) {
-		$query = "SELECT slot_id FROM slot WHERE slot_name='$name'";
+		$query = "SELECT slot_id FROM slot WHERE slot_name='".addslashes($name)."'";
 		if (db_num_rows(db_query($query)) > 0) return 1;
 		// check the ldap
 /* 		print "ldapfname '".ldapfname($name)."'"; */
@@ -140,7 +140,7 @@ class slot {
 	
 	function delete() {	// delete from db
 		if (!$this->id) return false;
-		$query = "DELETE FROM slot WHERE slot_id=".$this->id;
+		$query = "DELETE FROM slot WHERE slot_id='".addslashes($this->id)."'";
 		db_query($query);
 	}
 
@@ -151,7 +151,7 @@ class slot {
 		if (!$error) {
 		
 			// get id for owner of slot
-			$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
+			$query = "SELECT user_id FROM user WHERE user_uname = '".addslashes($this->owner)."'";
 /* 			echo $query."<br />"; */
 			$r = db_query($query);
 			if (!db_num_rows($r)) return false;
@@ -159,7 +159,7 @@ class slot {
 			$owner_id = $a[user_id];			
 			
 			if ($this->site)
-				$site = "'".$this->site."'";
+				$site = "'".addslashes($this->site)."'";
 			else
 				$site = "NULL";
 			if ($this->assocSite) {
@@ -168,11 +168,26 @@ class slot {
 /* 				echo $query."<br />"; */
 				$r = db_query($query);
 				$a = db_fetch_assoc($r);
-				$assocSite = $a[slot_id];
+				$assocSite = "'".addslashes($a[slot_id])."'";
 			} else
 				$assocSite = "NULL";
 			
-			$query = "UPDATE slot SET FK_owner= $owner_id, FK_assocsite=".$assocSite.",slot_uploadlimit=".$this->uploadlimit." WHERE slot_id=".$this->id;
+			if (preg_match('/^[0-9]*$/', $this->uploadlimit))
+				$uploadLimit = $this->uploadlimit;
+			else
+				$uploadLimit = "NULL";
+			
+			$query = "
+				UPDATE 
+					slot 
+				SET 
+					FK_owner= '".addslashes($owner_id)."',
+					FK_assocsite=".$assocSite.",
+					slot_uploadlimit=".$uploadLimit."
+				WHERE 
+					slot_id='".addslashes($this->id)."'
+			";
+			
 /* 			print $query; */
 			db_query($query);
 			echo mysql_error();
@@ -186,7 +201,7 @@ class slot {
 		if (!$error) {
 		
 			// get id for owner of slot
-			$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
+			$query = "SELECT user_id FROM user WHERE user_uname = '".addslashes($this->owner)."'";
 /* 			echo $query."<br />"; */
 			$r = db_query($query);
 			if (!db_num_rows($r)) return false;
@@ -194,25 +209,41 @@ class slot {
 			$owner_id = $a[user_id];			
 			
 			if ($this->site)
-				$site = "'".$this->site."'";
+				$site = "'".addslashes($this->site)."'";
 			else
 				$site = "NULL";
 			if ($this->assocSite) {
 				// get id for assoc_site of slot
-				$query = "SELECT slot_id FROM slot WHERE slot_name = '".$this->assocSite."'";
+				$query = "SELECT slot_id FROM slot WHERE slot_name = '".addslashes($this->assocSite)."'";
 /* 				echo $query."<br />"; */
 				$r = db_query($query);
 				$a = db_fetch_assoc($r);
-				$assocSite = $a[slot_id];
+				$assocSite = "'".addslashes($a[slot_id])."'";
 			} else
 				$assocSite = "NULL";
+				
+			if (preg_match('/^[0-9]*$/', $this->uploadlimit))
+				$uploadLimit = $this->uploadlimit;
+			else
+				$uploadLimit = "NULL";
 			
 			if (!$this->name) {
 				error ("Slot name not specified. Please notify the administrator of the steps that took you to this point.");
 				print "Slot name not specified. Please notify the administrator of the steps that took you to this point.";
 				exit;
 			}
-			$query = "INSERT INTO slot SET FK_owner= $owner_id, slot_name='".$this->name."',slot_type='".$this->type."',FK_site=".$site.",FK_assocsite=".$assocSite.",slot_uploadlimit=".$this->uploadlimit;
+			$query = "
+				INSERT INTO 
+					slot 
+				SET 
+					FK_owner= '".addslashes($owner_id)."',
+					slot_name='".addslashes($this->name)."',
+					slot_type='".addslashes($this->type)."',
+					FK_site=".$site.",
+					FK_assocsite=".$assocSite.",
+					slot_uploadlimit=".$this->uploadlimit."
+			";
+			
 /* 			print $query; */
 			db_query($query);
 			echo mysql_error();
@@ -224,7 +255,19 @@ class slot {
 		$allSlots = array();
 		
 		if ($owner != "") {
-			$query = "SELECT slot_id, slot_name FROM slot INNER JOIN user ON FK_owner=user_id WHERE user_uname='$owner' OR slot_name='$slot_name'";
+			$query = "
+			SELECT 
+				slot_id, slot_name 
+			FROM 
+				slot 
+				INNER JOIN 
+				user ON FK_owner=user_id 
+			WHERE 
+				user_uname='".addslashes($owner)."' 
+				OR 
+				slot_name='".addslashes($slot_name)."'
+		";
+		
 			/* echo $query."<br />"; */
 		} else {
 			$query = "SELECT slot_id, slot_name FROM slot";
@@ -244,40 +287,40 @@ class slot {
 		$allSlots = array();
 		
 		
-			$where = "slot.slot_name LIKE '%'";
-			if ($slot_name) $where = "slot.slot_name LIKE '%$slot_name%'";
-			if ($slot_owner) $where .= " AND user.user_uname LIKE '%$slot_owner%'";
-			if ($slot_id) $where .= " AND slot.slot_id=$slot_id";
-			if ($slot_type != "all"  && !$slot_id) $where .= " AND slot.slot_type = '$slot_type'";
-			if ($slot_use != "all"  && !$slot_id) {
-				if ($slot_use == "yes") $where .= " AND slot.FK_site IS NOT NULL";
-				if ($slot_use == "no") $where .= " AND slot.FK_site IS NULL";
-			}
+		$where = "slot.slot_name LIKE '%'";
+		if ($slot_name) $where = "slot.slot_name LIKE '%".addslashes($slot_name)."%'";
+		if ($slot_owner) $where .= " AND user.user_uname LIKE '%".addslashes($slot_owner)."%'";
+		if ($slot_id) $where .= " AND slot.slot_id='".addslashes($slot_id)."'";
+		if ($slot_type != "all"  && !$slot_id) $where .= " AND slot.slot_type = '".addslashes($slot_type)."'";
+		if ($slot_use != "all"  && !$slot_id) {
+			if ($slot_use == "yes") $where .= " AND slot.FK_site IS NOT NULL";
+			if ($slot_use == "no") $where .= " AND slot.FK_site IS NULL";
+		}
 
-				$query = "
-SELECT 
-	slot.slot_id,
-	slot.slot_name,
-	user.user_uname,
-	slot.slot_type,
-	assocsite.slot_name AS assocsite_name,
-	slot.FK_site,
-	slot.slot_uploadlimit
-FROM 
-	slot
-		LEFT JOIN
-	user
-		ON
-			slot.FK_owner = user_id
-		LEFT JOIN
-			slot AS assocsite
-		ON
-			slot.FK_assocsite = assocsite.slot_id
-WHERE
-	$where
-ORDER BY
-	slot.slot_name
-";
+		$query = "
+		SELECT 
+			slot.slot_id,
+			slot.slot_name,
+			user.user_uname,
+			slot.slot_type,
+			assocsite.slot_name AS assocsite_name,
+			slot.FK_site,
+			slot.slot_uploadlimit
+		FROM 
+			slot
+				LEFT JOIN
+			user
+				ON
+					slot.FK_owner = user_id
+				LEFT JOIN
+					slot AS assocsite
+				ON
+					slot.FK_assocsite = assocsite.slot_id
+		WHERE
+			$where
+		ORDER BY
+			slot.slot_name
+		";
 
 
 		$r = db_query($query);
@@ -302,44 +345,45 @@ ORDER BY
 		if ($user == '') $user = $_SESSION[auser];
 
 		$query = "
-SELECT
-	slot_name,
-	slot_type,
-	slot_owner.user_uname AS owner_uname,
-	(site_id IS NOT NULL) AS site_exists,
-	site_title,
-	(classgroup_id IS NOT NULL) AS is_classgroup,
-	createdby.user_uname AS site_addedby,
-	site_created_tstamp,
-	editedby.user_uname AS site_editedby,
-	site_updated_tstamp,
-	site_activate_tstamp,
-	site_deactivate_tstamp,
-	(	site_active = '1'
-		AND (site_activate_tstamp = '00000000000000'
-			OR site_activate_tstamp < CURRENT_TIMESTAMP())
-		AND (site_deactivate_tstamp = '00000000000000'
-			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
-	) AS is_active
-FROM
-	slot
-		INNER JOIN
-			user AS slot_owner ON (
-									slot.FK_owner = slot_owner.user_id
-								AND
-									slot_owner.user_uname = '$user'
-								)
-		LEFT JOIN
-	site ON slot.FK_site = site_id
-		LEFT JOIN
-			user AS createdby ON site.FK_createdby = createdby.user_id
-		LEFT JOIN
-			user AS editedby ON site.FK_updatedby = editedby.user_id
-		LEFT JOIN
-			classgroup ON slot_name = classgroup_name
-GROUP BY
-	slot_name
-		";
+			SELECT
+				slot_name,
+				slot_type,
+				slot_owner.user_uname AS owner_uname,
+				(site_id IS NOT NULL) AS site_exists,
+				site_title,
+				(classgroup_id IS NOT NULL) AS is_classgroup,
+				createdby.user_uname AS site_addedby,
+				site_created_tstamp,
+				editedby.user_uname AS site_editedby,
+				site_updated_tstamp,
+				site_activate_tstamp,
+				site_deactivate_tstamp,
+				(	site_active = '1'
+					AND (site_activate_tstamp = '00000000000000'
+						OR site_activate_tstamp < CURRENT_TIMESTAMP())
+					AND (site_deactivate_tstamp = '00000000000000'
+						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+				) AS is_active
+			FROM
+				slot
+					INNER JOIN
+						user AS slot_owner ON (
+												slot.FK_owner = slot_owner.user_id
+											AND
+												slot_owner.user_uname = '".addslashes($user)."'
+											)
+					LEFT JOIN
+				site ON slot.FK_site = site_id
+					LEFT JOIN
+						user AS createdby ON site.FK_createdby = createdby.user_id
+					LEFT JOIN
+						user AS editedby ON site.FK_updatedby = editedby.user_id
+					LEFT JOIN
+						classgroup ON slot_name = classgroup_name
+			GROUP BY
+				slot_name
+			";
+		
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			while ($a = db_fetch_assoc($r))
@@ -358,53 +402,53 @@ GROUP BY
 			return $ar;
 
 		$query = "
-SELECT
-	slot_name,
-	slot_type,
-	slot_owner.user_uname AS owner_uname,
-	(site_id IS NOT NULL) AS site_exists,
-	site_title,
-	(classgroup_id IS NOT NULL) AS is_classgroup,
-	createdby.user_uname AS site_addedby,
-	site_created_tstamp,
-	editedby.user_uname AS site_editedby,
-	site_updated_tstamp,
-	site_activate_tstamp,
-	site_deactivate_tstamp,
-	(	site_active = '1'
-		AND (site_activate_tstamp = '00000000000000'
-			OR site_activate_tstamp < CURRENT_TIMESTAMP())
-		AND (site_deactivate_tstamp = '00000000000000'
-			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
-	) AS is_active
-FROM
-	slot
-		INNER JOIN
-			user AS slot_owner ON (
-									slot.FK_owner = slot_owner.user_id
-								AND
-									(";
-			$i = 0;
-			foreach ($slotNameArray as $slot) {
-				$query .= "\t\t\t\t\t\t\t\t\t\t";
-				if ($i > 0)
-					$query .= "OR ";
-				$query .= "slot.slot_name = '$slot'";
-				$i++;
-			}
-			$query .="									)
-								)
-		LEFT JOIN
-	site ON slot.FK_site = site_id
-		LEFT JOIN
-			user AS createdby ON site.FK_createdby = createdby.user_id
-		LEFT JOIN
-			user AS editedby ON site.FK_updatedby = editedby.user_id
-		LEFT JOIN
-			classgroup ON slot_name = classgroup_name
-GROUP BY
-	slot_name
-		";
+			SELECT
+				slot_name,
+				slot_type,
+				slot_owner.user_uname AS owner_uname,
+				(site_id IS NOT NULL) AS site_exists,
+				site_title,
+				(classgroup_id IS NOT NULL) AS is_classgroup,
+				createdby.user_uname AS site_addedby,
+				site_created_tstamp,
+				editedby.user_uname AS site_editedby,
+				site_updated_tstamp,
+				site_activate_tstamp,
+				site_deactivate_tstamp,
+				(	site_active = '1'
+					AND (site_activate_tstamp = '00000000000000'
+						OR site_activate_tstamp < CURRENT_TIMESTAMP())
+					AND (site_deactivate_tstamp = '00000000000000'
+						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+				) AS is_active
+			FROM
+				slot
+					INNER JOIN
+						user AS slot_owner ON (
+												slot.FK_owner = slot_owner.user_id
+											AND
+												(";
+						$i = 0;
+						foreach ($slotNameArray as $slot) {
+							$query .= "\t\t\t\t\t\t\t\t\t\t";
+							if ($i > 0)
+								$query .= "OR ";
+							$query .= "slot.slot_name = '".addslashes($slot)."'";
+							$i++;
+						}
+						$query .="									)
+											)
+					LEFT JOIN
+				site ON slot.FK_site = site_id
+					LEFT JOIN
+						user AS createdby ON site.FK_createdby = createdby.user_id
+					LEFT JOIN
+						user AS editedby ON site.FK_updatedby = editedby.user_id
+					LEFT JOIN
+						classgroup ON slot_name = classgroup_name
+			GROUP BY
+				slot_name
+					";
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			while ($a = db_fetch_assoc($r))

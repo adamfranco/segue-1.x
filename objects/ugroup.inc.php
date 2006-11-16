@@ -14,7 +14,7 @@ class ugroup {
 			FROM
 				ugroup
 			WHERE
-				ugroup_name='$name'
+				ugroup_name='".addslashes($name)."'
 		";
 //		echo $query;
 		$r = db_query($query);

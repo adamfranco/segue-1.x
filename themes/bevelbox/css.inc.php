@@ -1,29 +1,48 @@
 <style type='text/css'>
 
-a {
-  color: #<? echo $c['a']; ?>;
-	text-decoration: none;
-}
+<? 
 
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
 
-a:hover {
-	text-decoration: underline;
-	color: #<? echo $c['a:hover']; ?>;
-}
-
-body {
-	 background-color: #<? echo $bg['bg']; ?>; 
-}
-
-<? include("$themesdir/common/css.inc.php"); ?>
-
-
-
+include("$themesdir/common/css.inc.php"); ?>
 
 /* ------------------------------------------ */
 /* THEME-SPECIFIC CLASSES */
 /* ------------------------------------------ */
 
+a {
+  	color: #<? echo $c['nav']; ?>;
+	text-decoration: none;
+}
+
+.contentarea a {
+  	color: #<? echo $c['a']; ?>;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+body {
+	 background-color: #<? echo $c['bgcolor']; ?>; 
+	 color: #FFF;
+}
+
+.contentarea {
+	color: #000;
+}
+
+
+.btnlink {
+	color: #<? echo $c['nav']; ?>;
+	border: 1px solid #<? echo $c['nav']; ?>;
+}
+
+.contentarea  .btnlink {
+	color: #<? echo $linkcolor; ?>;
+	border: 1px solid #<? echo $linkcolor; ?>;
+}
 
 .navlink a {
 	color: #<? echo $c['nav']; ?>;
@@ -35,19 +54,8 @@ body {
 	text-decoration: none;
 }
 
-.navlink2 a {
-	color: #<? echo $c['a']; ?>;
-	text-decoration: none;
-}
-
-.navlink2 {
-	color: #<? echo $c['a']; ?>;
-	text-decoration: none;
-}
-
 
 .nav a:hover {
-	color: #<? echo $c['nav']; ?>;
 	text-decoration: underline;
 }
 
@@ -57,7 +65,6 @@ body {
 }
 
 .subnav a:hover {
-	color: #<? echo $c['nav']; ?>;
 	text-decoration: underline;
 }
 
@@ -66,13 +73,11 @@ body {
 	text-decoration: none;
 }
 
-
 .sitetitle {
 	color: #<? echo $c['navtext']; ?>;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 16px;
 }
-
 
 .header {
 /* 	background-color: #<? echo $c['header']; ?>; */
@@ -81,6 +86,21 @@ body {
 /* 	margin-right: 25px; */
 	margin-bottom: 5px;
 }
+
+.heading {
+	color: #<? echo $c['navtext']; ?>;
+	border-top: 1px solid #<? echo $c['nav']; ?>; 
+	border-bottom: 1px solid #<? echo $c['nav']; ?>; 
+	padding-top: 2px; 
+	padding-bottom: 2px;
+}
+
+.heading2 {
+	border-top: 1px solid #<? echo $bordercolor; ?>; 
+	padding-top: 2px; 
+	padding-bottom: 2px;
+}
+
 
 .topnav {
 	padding: 0px;
@@ -95,9 +115,28 @@ body {
 	vertical-align: top;
 }
 
+.rightnav {
+/* 	float: left; */
+	width: 125px;
+	padding: 10px;
+	margin-left: 20px;
+	vertical-align: top;
+}
+
+.rightnavcolor {
+	background-color: #<? echo $c['bgcolor']; ?>;
+}
+
+
 .contentarea {
 	vertical-align: top;
 	padding: 10px;
+}
+
+.contentarea2 {
+	vertical-align: top;
+	padding: 10px;
+	border-right: 1px solid #<? echo $c['borders']; ?>;
 }
 
 .contenttable {
@@ -158,7 +197,7 @@ body {
 }
 
 .topleft2 {
-	background color: "#003366";
+	background-color: #003366;
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft2.gif"; ?>') no-repeat;
 	width: 147px;
 	height: 64px;
@@ -176,7 +215,6 @@ body {
 	vertical-align: top;
 }
 
-
 .right {
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/right.gif"; ?>') repeat-y;
 	width: 9px;
@@ -184,7 +222,7 @@ body {
 }
 
 .right2 {
-	background color: "#003366";
+	background-color: #003366;
 	background: url('<? echo "$themesdir/$theme/images/$c[bg]/right2.gif"; ?>') repeat-y;
 	width: 11px;
 	vertical-align: top;
@@ -213,5 +251,6 @@ body {
 	width: 9px;
 	height: 76px;
 }
+
 
 </style>

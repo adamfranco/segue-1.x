@@ -12,6 +12,17 @@ $nav = array(
 		etc...
 		);
 */
+
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+
+/*********************************************************
+ * get all of the existing output buffers and place them inside our body
+ *********************************************************/
+$obContent = '';
+while (ob_get_level())
+	$obContent .= ob_get_clean();
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -24,16 +35,18 @@ $nav = array(
 
 <body style='margin: 0px'>
 
-<table width=100% cellpadding='0' cellspacing='0'>
+<? print $obContent; ?>
+
+<table width='100%' cellpadding='0' cellspacing='0'>
 <tr>
-<td class=header align='center'>
+<td class='header' align='center'>
 <? include("themes/common/status.inc.php"); ?>
 <? print $siteheader ?>
 
 </td>
 </tr>
 <tr>
-<td class=topnav align='center'>
+<td class='topnav' align='center'>
 
 	<?
 	// ---------------------------------------
@@ -51,9 +64,9 @@ $nav = array(
 </td>
 <tr>
 <tr>
-<td class=contentarea>
-	<table width=750 align='center'>
-	<tr><td class=leftnav width=175 valign=top>
+<td class='contentarea'>
+	<table width='750' align='center'>
+	<tr><td class='leftnav' width='175' valign='top'>
 		<?
 		// ----------------------
 		// left nav
@@ -70,20 +83,22 @@ $nav = array(
 				print "$item[extra]<br />";
 			}
 			if ($item[type] == 'heading') {
-				print "<img src='$themesdir/breadloaf/images/bullet.gif' border=0 align=absmiddle> $item[name] :";
+				if (!defined("CONFIGS_INCLUDED"))
+					die("Error: improper application flow. Configuration must be included first.");
+				print "<img src='$themesdir/breadloaf/images/bullet.gif' border='0' align='absmiddle' /> $item[name] :";
 				if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			}
 		}
 		print "<br />$leftnav_extra";
 		?>
 	</td>
-	<td class=content valign=top>
+	<td class='content' valign='top'>
 		<? print $content; ?>
 	</td>
 	
 	<?
 	if (count($rightnav)) {
-		print "<td align='right' class=rightnav>";
+		print "<td align='right' class='rightnav'>";
 		foreach ($rightnav as $item) {
 			print "<a href='$item[url]'>$item[name]</a><br />";
 		}

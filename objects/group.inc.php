@@ -10,7 +10,15 @@ class group {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		// find if this classgroup exists in the db, if yes, get the id
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
-		$q = "SELECT classgroup_id FROM classgroup WHERE classgroup_name = '$name'";
+		$q = "
+			SELECT 
+				classgroup_id 
+			FROM 
+				classgroup 
+			WHERE 
+				classgroup_name = '".addslashes($name)."'
+		";
+		
 /* 		echo $q."<br />"; */
 		$r = db_query($q);
 		if (db_num_rows($r)) {
@@ -26,9 +34,15 @@ class group {
 	function fetchFromDB() {
 		// get id
 		$query = "
-SELECT
-	classgroup_id AS id, classgroup_name AS name
-FROM classgroup WHERE classgroup_id=".$this->id;
+			SELECT
+				classgroup_id AS id, 
+				classgroup_name AS name
+			FROM 
+				classgroup 
+			WHERE 
+			classgroup_id='".addslashes($this->id)."'
+		";
+		
 //		echo $query."<br />";
 			
 		$r = db_query($query);
@@ -39,12 +53,16 @@ FROM classgroup WHERE classgroup_id=".$this->id;
 
 		// get owner		
 		$query = "
-SELECT
-	user_uname
-FROM
-	classgroup
-		INNER JOIN
-	user ON FK_owner = user_id AND classgroup_id = ".$this->id;
+			SELECT
+				user_uname
+			FROM
+				classgroup
+					INNER JOIN
+				user ON FK_owner = user_id 
+				AND 
+				classgroup_id = '".addslashes($this->id)."'
+		";
+			
 //		echo $query."<br />";
 
 		$r = db_query($query);
@@ -54,7 +72,16 @@ FROM
 		} else return false;
 			
 		// get classes for that group<br />
-		$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_id=".$this->id;
+		$query = "
+			SELECT class_id 
+			FROM 
+				class 
+				INNER JOIN 
+				classgroup ON FK_classgroup = classgroup_id 
+				AND 
+				classgroup_id='".addslashes($this->id)."'
+		";
+		
 //		echo $query."<br />";
 
 		$r = db_query($query);
@@ -69,7 +96,7 @@ FROM
 	
 	function updateDB() {
 		// get owner id
-		$query = "SELECT user_id FROM user WHERE user_uname = '".$this->owner."'";
+		$query = "SELECT user_id FROM user WHERE user_uname = '".addslashes($this->owner)."'";
 //		echo $query."<br />";
 		$r = db_query($query);
 		if (db_num_rows($r)==0) return false;
@@ -79,23 +106,45 @@ FROM
 		}	
 
 		// if this classgroup has not been inserted into the db yet, do it!
-		if (!$this->exists($this->name))
-        {
-			$query = "INSERT INTO classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
+		if (!$this->exists($this->name)) {
+		
+			$query = "
+				INSERT INTO 
+					classgroup 
+				SET 
+					FK_owner = '".addslashes($owner_id)."',
+					classgroup_name = '".addslashes($this->name)."'
+			";
+			
 //			echo $query."<br />";
 			$r = db_query($query);
     		$this->id = lastid();
 		}
 		// else just update it
 		else {
-			$query = "UPDATE classgroup SET FK_owner = $owner_id, classgroup_name = '".$this->name."'";
+			$query = "
+				UPDATE
+					classgroup 
+				SET 
+					FK_owner = '".addslashes($owner_id)."', 
+					classgroup_name = '".addslashes($this->name)."'
+			";
+			
 //			echo $query."<br />";
 		}
 
 		// now that the group is in the db, update the foreign key for the classes
 
 		// first, reset classes that used to be part of this classgroup
-		$query = "UPDATE class SET FK_classgroup = NULL WHERE FK_classgroup = ".$this->id;
+		$query = "
+			UPDATE 
+				class 
+			SET 
+				FK_classgroup = NULL 
+			WHERE 
+				FK_classgroup = '".addslashes($this->id)."'
+		";
+		
 //		echo $query."<br />";
 		$r = db_query($query);
 		
@@ -108,7 +157,7 @@ FROM
 					UPDATE
 						class
 					SET
-						FK_classgroup = ".$this->id."
+						FK_classgroup = '".addslashes($this->id)."'
 					WHERE
 						".generateTermsFromCode($class_code)."
 				";		
@@ -119,7 +168,7 @@ FROM
 	}
 	
 	function exists($name) {
-		$query = "SELECT classgroup_id FROM classgroup WHERE classgroup_name='$name'";
+		$query = "SELECT classgroup_id FROM classgroup WHERE classgroup_name='".addslashes($name)."'";
 /* 		echo $query."<br />"; */
 		if (db_num_rows(db_query($query))) return true;
 		return false;
@@ -127,7 +176,7 @@ FROM
 	
 	function getClassesFromName($name) {
 		if (group::exists($name)) {
-			$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_name='$name'";
+			$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id AND classgroup_name='".addslashes($name)."'";
 //			echo $query."<br />";
 			$r = db_query($query);
 			$classes = array();
@@ -150,12 +199,12 @@ FROM
 	}
 	
 	function getGroupsOwnedBy($owner) {
-		$query = "SELECT user_id FROM user WHERE user_uname = '".$owner."'";
+		$query = "SELECT user_id FROM user WHERE user_uname = '".addslashes($owner)."'";
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
 		$owner_id = $a[user_id];
 
-		$query = "SELECT classgroup_name FROM classgroup WHERE FK_owner=$owner_id";
+		$query = "SELECT classgroup_name FROM classgroup WHERE FK_owner='".addslashes($owner_id)."'";
 		$a = array();
 		$r = db_query($query);
 		while ($x = db_fetch_assoc($r)) {
@@ -198,6 +247,6 @@ FROM
 	}
 	
 	function delete() {
-		db_query("DELETE FROM classgroup WHERE classgroup_name='".$this->name."'");
+		db_query("DELETE FROM classgroup WHERE classgroup_name='".addslashes($this->name)."'");
 	}	
 }

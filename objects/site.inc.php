@@ -135,9 +135,25 @@ class site extends segue {
 		global $dbuser, $dbpass, $dbdb, $dbhost;
 		db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 		
-		$q = "SELECT site_id, site_title, user_email, user_uname, user_fname FROM site INNER JOIN slot ON site_id = FK_site AND slot_name = '$name' INNER JOIN user ON user_id = FK_owner";
-		// echo $q;
-		$r = db_query($q);
+		$query = "
+			SELECT 
+				site_id, site_title, user_email, user_uname, user_fname 
+			FROM 
+				site
+			INNER JOIN 
+				slot 
+			ON 
+				site_id = FK_site AND slot_name = '".addslashes($name)."' 
+			INNER JOIN 
+				user 
+			ON
+				user_id = FK_owner
+		";
+				
+		// printpre($query);
+		
+		$r = db_query($query);
+		
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
 			$this->id = $a[site_id];
@@ -202,68 +218,72 @@ class site extends segue {
 		
 		// all stories for this site
 		$query = "
-CREATE TEMPORARY TABLE t_stories(
-	UNIQUE uniq (site_id,section_id,page_id,story_id),
-	KEY site_id (site_id),
-	KEY section_id (section_id),
-	KEY page_id (page_id),
-	KEY story_id (story_id)
-) TYPE=MyISAM
-SELECT
-	site_id, section_id, page_id, story_id, section_order, page_order, story_order
-FROM
-	site
-		LEFT JOIN
-	section ON FK_site = site_id
-		LEFT JOIN
-	page ON FK_section = section_id
-		LEFT JOIN
-	story ON FK_page = page_id
-WHERE
-	site_id = ".$this->id." 
-";		
+			CREATE TEMPORARY TABLE t_stories(
+				UNIQUE uniq (site_id,section_id,page_id,story_id),
+				KEY site_id (site_id),
+				KEY section_id (section_id),
+				KEY page_id (page_id),
+				KEY story_id (story_id)
+			) TYPE=MyISAM
+			SELECT
+				site_id, section_id, page_id, story_id, section_order, page_order, story_order
+			FROM
+				site
+					LEFT JOIN
+				section ON FK_site = site_id
+					LEFT JOIN
+				page ON FK_section = section_id
+					LEFT JOIN
+				story ON FK_page = page_id
+			WHERE
+				site_id = '".addslashes($this->id)."' 
+		";	
+		
 		db_query($query);
 
 		// all pages for this site
 		$query = "
-CREATE TEMPORARY TABLE t_pages (
-	UNIQUE uniq (site_id, section_id, page_id),
-	KEY site_id (site_id),
-	KEY section_id (section_id),
-	KEY page_id (page_id)
-)
-SELECT
-	DISTINCT site_id, section_id, page_id, section_order, page_order
-FROM
-	t_stories
-";		
+			CREATE TEMPORARY TABLE t_pages (
+				UNIQUE uniq (site_id, section_id, page_id),
+				KEY site_id (site_id),
+				KEY section_id (section_id),
+				KEY page_id (page_id)
+			)
+			SELECT
+				DISTINCT site_id, section_id, page_id, section_order, page_order
+			FROM
+				t_stories
+		";	
+		
 		db_query($query);
 
 		// all sections for this site
 		$query = "
-CREATE TEMPORARY TABLE t_sections (
-	UNIQUE uniq (site_id, section_id),
-	KEY site_id (site_id),
-	KEY section_id (section_id)
-)
-SELECT
-	DISTINCT site_id, section_id, section_order
-FROM
-	t_pages
-";
+			CREATE TEMPORARY TABLE t_sections (
+				UNIQUE uniq (site_id, section_id),
+				KEY site_id (site_id),
+				KEY section_id (section_id)
+			)
+			SELECT
+				DISTINCT site_id, section_id, section_order
+			FROM
+				t_pages
+		";
+		
 		db_query($query);
 
 		// all sites for this site, i.e. just this site
 		$query = "
-CREATE TEMPORARY TABLE t_sites (
-	UNIQUE uniq (site_id),
-	KEY site_id (site_id)
-)
-SELECT
-	DISTINCT site_id
-FROM
-	t_sections
-";
+			CREATE TEMPORARY TABLE t_sites (
+				UNIQUE uniq (site_id),
+				KEY site_id (site_id)
+			)
+			SELECT
+				DISTINCT site_id
+			FROM
+				t_sections
+		";
+		
 		db_query($query);
 	
 		// create the object hierarchy
@@ -305,26 +325,26 @@ FROM
 		
 		// first, fetch the site
 		$query = "
-SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
-		site_active AS active, site_listed AS listed, ".
-		(($quick) ? "" : "site_theme AS theme, site_themesettings AS themesettings, site_header AS header, site_footer AS footer, ")
-		."site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
-		user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
-FROM 
-	t_sites
-		INNER JOIN
-	site
-		ON t_sites.site_id = site.site_id
-		INNER JOIN
-	user AS user_createdby
-		ON FK_createdby = user_createdby.user_id
-		INNER JOIN
-	user AS user_updatedby
-		ON FK_updatedby = user_updatedby.user_id
-		INNER JOIN
-	slot
-		ON site.site_id = slot.FK_site
-";
+			SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+					site_active AS active, site_listed AS listed, ".
+					(($quick) ? "" : "site_theme AS theme, site_themesettings AS themesettings, site_header AS header, site_footer AS footer, ")
+					."site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
+					user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
+			FROM 
+				t_sites
+					INNER JOIN
+				site
+					ON t_sites.site_id = site.site_id
+					INNER JOIN
+				user AS user_createdby
+					ON FK_createdby = user_createdby.user_id
+					INNER JOIN
+				user AS user_updatedby
+					ON FK_updatedby = user_updatedby.user_id
+					INNER JOIN
+				slot
+					ON site.site_id = slot.FK_site
+		";
 		
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
@@ -346,29 +366,30 @@ FROM
 					
 		// now, create section objects and fetch them
 		$query = "
-SELECT  
-	section.section_id AS section_id".
-	(($quick) ? " " : 	
-	", section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
-	section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
-	section_created_tstamp AS addedtimestamp,
-	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id,
-	media_tag AS url ")
-."FROM 
-	t_sections
-		INNER JOIN
-	section
-		ON t_sections.section_id = section.section_id
-		INNER JOIN
-	user AS user_createdby
-		ON section.FK_createdby = user_createdby.user_id
-		INNER JOIN
-	user AS user_updatedby
-		ON section.FK_updatedby = user_updatedby.user_id
-		LEFT JOIN
-	media
-		ON FK_media = media_id
-";	
+			SELECT  
+				section.section_id AS section_id".
+				(($quick) ? " " : 	
+				", section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+				section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
+				section_created_tstamp AS addedtimestamp,
+				user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".addslashes($this->name)."' as site_id,
+				media_tag AS url ")
+			."FROM 
+				t_sections
+					INNER JOIN
+				section
+					ON t_sections.section_id = section.section_id
+					INNER JOIN
+				user AS user_createdby
+					ON section.FK_createdby = user_createdby.user_id
+					INNER JOIN
+				user AS user_updatedby
+					ON section.FK_updatedby = user_updatedby.user_id
+					LEFT JOIN
+				media
+					ON FK_media = media_id
+		";	
+			
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r)) {
 			$section =& $this->sections[$a[section_id]];
@@ -389,31 +410,49 @@ SELECT
 
 		// now, create page objects and fetch them
 		$query = "
-SELECT
-	t_pages.section_id AS section_id, page.page_id AS page_id".
-	(($quick) ? " " : 
-	", page_display_type AS type, page_title AS title, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
-	page_active AS active, page_story_order AS storyorder, page_show_creator AS showcreator, 
-	page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
-	page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
-	page_ediscussion AS ediscussion,
-	user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, '".$this->name."' as site_id, media_tag AS url ")
-."FROM 
-	t_pages
-		INNER JOIN 
-	page
-		ON t_pages.page_id = page.page_id
-		INNER JOIN
-	user AS user_createdby
-		ON page.FK_createdby = user_createdby.user_id
-		INNER JOIN
-	user AS user_updatedby
-		ON page.FK_updatedby = user_updatedby.user_id
-		LEFT JOIN
-	media
-		ON page.FK_media = media_id
-";
-		if ($_section_id) $query = $query." WHERE section_id = $_section_id";
+			SELECT
+				t_pages.section_id AS section_id, page.page_id AS page_id".
+				(($quick) ? " " : 
+				", 
+				page_display_type AS type, 
+				page_title AS title, 
+				page_text AS text, 
+				DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, 
+				DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+				page_active AS active, 
+				page_story_order AS storyorder, 
+				page_show_creator AS showcreator, 
+				page_show_date AS showdate, 
+				page_show_hr AS showhr,	
+				page_archiveby AS archiveby, 
+				page_locked AS locked,
+				page_updated_tstamp AS editedtimestamp, 
+				page_created_tstamp AS addedtimestamp,
+				page_ediscussion AS ediscussion,
+				user_createdby.user_uname AS addedby, 
+				user_updatedby.user_uname AS editedby, 
+				'".addslashes($this->name)."' as site_id, 
+				media_tag AS url, 
+				page_location AS location,
+				page_show_editor AS showeditor")
+			."
+			FROM 
+				t_pages
+					INNER JOIN 
+				page
+					ON t_pages.page_id = page.page_id
+					INNER JOIN
+				user AS user_createdby
+					ON page.FK_createdby = user_createdby.user_id
+					INNER JOIN
+				user AS user_updatedby
+					ON page.FK_updatedby = user_updatedby.user_id
+					LEFT JOIN
+				media
+					ON page.FK_media = media_id
+		";
+			
+		if ($_section_id) $query = $query." WHERE section_id = '".addslashes($_section_id)."'";
 	
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r)) {
@@ -436,52 +475,55 @@ SELECT
 
 		// now, create story objects and fetch them
 		$query = "
-SELECT
-	t_stories.section_id AS section_id, 
-	t_stories.page_id AS page_id, 
-	story.story_id AS story_id".
-	(($quick) ? " " : 
-	", story_display_type AS type, 
-	story_title AS title, 
-	DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, 
-	DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
-	story_active AS active, 
-	story_locked AS locked, 
-	story_updated_tstamp AS editedtimestamp, 
-	story_created_tstamp AS addedtimestamp,
-	story_discussable AS discuss, 
-	story_discussemail AS discussemail,
-	story_discusslabel AS discusslabel,
-	story_discussdisplay AS discussdisplay, 
-	story_discussauthor AS discussauthor, 
-	story_category AS category, 
-	story_text_type AS texttype, 
-	story_text_short AS shorttext,
-	story_text_long AS longertext,
-	media_tag AS url,
-	user_createdby.user_uname AS addedby, 
-	user_updatedby.user_uname AS editedby, 
-	'".$this->name."' as site_id ")
-."FROM
-	t_stories
-		INNER JOIN
-	story
-		ON t_stories.story_id = story.story_id
-		INNER JOIN
-	user AS user_createdby
-		ON story.FK_createdby = user_createdby.user_id
-		INNER JOIN
-	user AS user_updatedby
-		ON story.FK_updatedby = user_updatedby.user_id
-		LEFT JOIN
-	media
-		ON story.FK_media = media_id		
-";
+			SELECT
+				t_stories.section_id AS section_id, 
+				t_stories.page_id AS page_id, 
+				story.story_id AS story_id".
+				(($quick) ? " " : 
+				", story_display_type AS type, 
+				story_title AS title, 
+				DATE_FORMAT(story_activate_tstamp, '%Y-%m-%d') AS activatedate, 
+				DATE_FORMAT(story_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+				story_active AS active, 
+				story_locked AS locked, 
+				story_updated_tstamp AS editedtimestamp, 
+				story_created_tstamp AS addedtimestamp,
+				story_discussable AS discuss, 
+				story_discussemail AS discussemail,
+				story_discusslabel AS discusslabel,
+				story_discussdisplay AS discussdisplay, 
+				story_discussauthor AS discussauthor, 
+				story_category AS category, 
+				story_text_type AS texttype, 
+				story_text_short AS shorttext,
+				story_text_long AS longertext,
+				media_tag AS url,
+				user_createdby.user_uname AS addedby, 
+				user_updatedby.user_uname AS editedby, 
+				'".$this->name."' as site_id ")
+			."FROM
+				t_stories
+					INNER JOIN
+				story
+					ON t_stories.story_id = story.story_id
+					INNER JOIN
+				user AS user_createdby
+					ON story.FK_createdby = user_createdby.user_id
+					INNER JOIN
+				user AS user_updatedby
+					ON story.FK_updatedby = user_updatedby.user_id
+					LEFT JOIN
+				media
+					ON story.FK_media = media_id		
+		";
+		
 		if ($_section_id) {
-			$query = $query." WHERE section_id = $_section_id";
-			if ($_page_id) $query = $query." AND page_id = $_page_id";		
+			$query = $query." WHERE section_id = '".addslashes($_section_id)."'";
+			if ($_page_id) $query = $query." AND page_id = '".addslashes($_page_id)."'";		
 		}
+		
 		$r = db_query($query);
+		
 		while ($a = db_fetch_assoc($r)) {
 			array_change_key_case($a); // make all keys lower case
 			$story =& $this->sections[$a[section_id]]->pages[$a[page_id]]->stories[$a[story_id]];
@@ -501,30 +543,31 @@ SELECT
 		}
 		
 		$query = "
-SELECT
-	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
-FROM
-	t_sites
-		INNER JOIN
-	site_editors ON
-		site_id = FK_site
-		LEFT JOIN
-	user
-		ON site_editors.FK_editor = user_id
-		LEFT JOIN
-	ugroup
-		ON site_editors.FK_editor = ugroup_id
-		LEFT JOIN
-	permission ON
-		site_id  = FK_scope_id
-			AND
-		permission_scope_type = 'site'
-			AND
-		permission.FK_editor <=> site_editors.FK_editor
-			AND
-		permission_editor_type = site_editors_type
-";
+			SELECT
+				user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
+				MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+			FROM
+				t_sites
+					INNER JOIN
+				site_editors ON
+					site_id = FK_site
+					LEFT JOIN
+				user
+					ON site_editors.FK_editor = user_id
+					LEFT JOIN
+				ugroup
+					ON site_editors.FK_editor = ugroup_id
+					LEFT JOIN
+				permission ON
+					site_id  = FK_scope_id
+						AND
+					permission_scope_type = 'site'
+						AND
+					permission.FK_editor <=> site_editors.FK_editor
+						AND
+					permission_editor_type = site_editors_type
+		";
+		
 		$r = db_query($query);
 
 		$this->editors = array();
@@ -551,16 +594,17 @@ FROM
 			else
 				$t_editor = $row[editor_type];
 			
-//			echo "<br /><br />Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; On the Site";
+// 			echo "<br /><br />Editor: $t_editor; Add: $a[a]; Edit: $a[e]; Delete: $a[d]; View: $a[v];  Discuss: $a[di]; On the Site";
 				
 			// set the permissions for this editor
 			$this->permissions[$t_editor] = array(
-				permissions::ADD()=>$a[a], 
-				permissions::EDIT()=>$a[e], 
-				permissions::DELETE()=>$a[d], 
-				permissions::VIEW()=>$a[v], 
-				permissions::DISCUSS()=>$a[di]
+				permissions::ADD()=>($a[a] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::ADD()])), 
+				permissions::EDIT()=>($a[e] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::EDIT()])), 
+				permissions::DELETE()=>($a[d] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::DELETE()])), 
+				permissions::VIEW()=>($a[v] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::VIEW()])), 
+				permissions::DISCUSS()=>($a[di] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::DISCUSS()]))
 			);
+			
 			if ($a[v])
 				$this->canview[$t_editor] = 1;
 /*			$this->cachedPermissions = array(
@@ -585,30 +629,30 @@ FROM
 		$this->builtPermissions=1;
 		
 		$query = "
-SELECT
-	section_id, user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
-FROM
-	t_sections
-		INNER JOIN
-	site_editors ON
-		site_id = site_editors.FK_site
-		LEFT JOIN
-	user ON
-		site_editors.FK_editor = user_id
-		LEFT JOIN
-	ugroup ON
-		site_editors.FK_editor = ugroup_id
-		INNER JOIN
-	permission ON
-		section_id  = FK_scope_id
-			AND
-		permission_scope_type = 'section'
-			AND
-		permission.FK_editor <=> site_editors.FK_editor
-			AND
-		permission_editor_type = site_editors_type
-";
+			SELECT
+				section_id, user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
+				MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+			FROM
+				t_sections
+					INNER JOIN
+				site_editors ON
+					site_id = site_editors.FK_site
+					LEFT JOIN
+				user ON
+					site_editors.FK_editor = user_id
+					LEFT JOIN
+				ugroup ON
+					site_editors.FK_editor = ugroup_id
+					INNER JOIN
+				permission ON
+					section_id  = FK_scope_id
+						AND
+					permission_scope_type = 'section'
+						AND
+					permission.FK_editor <=> site_editors.FK_editor
+						AND
+					permission_editor_type = site_editors_type
+		";
 				
 		$r = db_query($query);
 
@@ -650,32 +694,30 @@ FROM
 		}
 
 		$query = "
-SELECT
-	section_id, page_id, user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
-FROM
-	t_pages
-		INNER JOIN
-	site_editors ON
-		site_id = site_editors.FK_site
-		LEFT JOIN
-	user ON
-		site_editors.FK_editor = user_id
-		LEFT JOIN
-	ugroup ON
-		site_editors.FK_editor = ugroup_id
-		INNER JOIN
-	permission ON
-		page_id  = FK_scope_id
-			AND
-		permission_scope_type = 'page'
-			AND
-		permission.FK_editor <=> site_editors.FK_editor
-			AND
-		permission_editor_type = site_editors_type
-";
-
-
+			SELECT
+				section_id, page_id, user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
+				MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+			FROM
+				t_pages
+					INNER JOIN
+				site_editors ON
+					site_id = site_editors.FK_site
+					LEFT JOIN
+				user ON
+					site_editors.FK_editor = user_id
+					LEFT JOIN
+				ugroup ON
+					site_editors.FK_editor = ugroup_id
+					INNER JOIN
+				permission ON
+					page_id  = FK_scope_id
+						AND
+					permission_scope_type = 'page'
+						AND
+					permission.FK_editor <=> site_editors.FK_editor
+						AND
+					permission_editor_type = site_editors_type
+		";
 
 		$r = db_query($query);
 
@@ -720,30 +762,30 @@ FROM
 
 
 		$query = "
-SELECT
-	section_id, page_id, story_id, user_uname as editor, ugroup_name as editor2,  site_editors_type as editor_type, permission_id,
-	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
-FROM
-	t_stories
-		INNER JOIN
-	site_editors ON
-		site_id = site_editors.FK_site
-		LEFT JOIN
-	user ON
-		site_editors.FK_editor = user_id
-		LEFT JOIN
-	ugroup ON
-		site_editors.FK_editor = ugroup_id
-		INNER JOIN
-	permission ON
-		story_id = FK_scope_id
-			AND
-		permission_scope_type = 'story'
-			AND
-		permission.FK_editor <=> site_editors.FK_editor
-			AND
-		permission_editor_type = site_editors_type
-";
+			SELECT
+				section_id, page_id, story_id, user_uname as editor, ugroup_name as editor2,  site_editors_type as editor_type, permission_id,
+				MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+			FROM
+				t_stories
+					INNER JOIN
+				site_editors ON
+					site_id = site_editors.FK_site
+					LEFT JOIN
+				user ON
+					site_editors.FK_editor = user_id
+					LEFT JOIN
+				ugroup ON
+					site_editors.FK_editor = ugroup_id
+					INNER JOIN
+				permission ON
+					story_id = FK_scope_id
+						AND
+					permission_scope_type = 'story'
+						AND
+					permission.FK_editor <=> site_editors.FK_editor
+						AND
+					permission_editor_type = site_editors_type
+		";
 
 		$r = db_query($query);
 
@@ -783,9 +825,9 @@ FROM
 					$this->owningSiteObj->updatePermissionsDB(TRUE);
 					if (is_numeric($row[permission_id])) {
 						if ($row[permissions]!='d')
-							$cleanupQuery = "UPDATE permission SET  permission_value='di' WHERE permission_id=".$row[permission_id];
+							$cleanupQuery = "UPDATE permission SET  permission_value='di' WHERE permission_id='".addslashes($row[permission_id])."'";
 						else
-							$cleanupQuery = "DELETE FROM permission WHERE permission_id=".$row[permission_id];
+							$cleanupQuery = "DELETE FROM permission WHERE permission_id='".addslashes($row[permission_id])."'";
 						$cleanupResult = db_query($cleanupQuery);
 					}
 				}		
@@ -856,22 +898,22 @@ FROM
 
 			// first fetch all fields that are not part of a 1-to-many relationship
  			$query = "
-SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
-		site_active AS active, site_listed AS listed, site_theme AS theme, site_themesettings AS themesettings,
-		site_header AS header, site_footer AS footer, site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
-		user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
-FROM 
-	site
-		INNER JOIN
-	user AS user_createdby
-		ON FK_createdby = user_createdby.user_id
-		INNER JOIN
-	user AS user_updatedby
-		ON FK_updatedby = user_updatedby.user_id
-		INNER JOIN
-	slot
-		ON site_id = FK_site
-WHERE site_id = ".$this->id;
+				SELECT  site_title AS title, DATE_FORMAT(site_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(site_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
+						site_active AS active, site_listed AS listed, site_theme AS theme, site_themesettings AS themesettings,
+						site_header AS header, site_footer AS footer, site_updated_tstamp AS editedtimestamp, site_created_tstamp AS addedtimestamp,
+						user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as name, slot_type AS type
+				FROM 
+					site
+						INNER JOIN
+					user AS user_createdby
+						ON FK_createdby = user_createdby.user_id
+						INNER JOIN
+					user AS user_updatedby
+						ON FK_updatedby = user_updatedby.user_id
+						INNER JOIN
+					slot
+						ON site_id = FK_site
+				WHERE site_id = '".addslashes($this->id)."'";
 
 /* 			print "<pre>"; */
 /* 			print_r ($this); */
@@ -903,17 +945,17 @@ WHERE site_id = ".$this->id;
 			// now fetch the sections (they are part of a 1-to-many relationship and therefore
 			// we cannot fetch them along with the other fields)			
 			$query = "
-SELECT
-	section_id
-FROM
-	site
-		INNER JOIN
-	section
-		ON site_id = FK_site
-WHERE site_id = ".$this->id."
-ORDER BY
-	section_order
-";
+				SELECT
+					section_id
+				FROM
+					site
+						INNER JOIN
+					section
+						ON site_id = FK_site
+				WHERE site_id = '".addslashes($this->id)."'
+				ORDER BY
+					section_order
+			";
 
 			$r = db_query($query);
 			$this->data[sections] = array();
@@ -935,8 +977,32 @@ ORDER BY
 			print ("Site doesn't exist. Can't add template to it. Please contact the administrator with the steps that you did to get to this point.");
 			exit;	
 		}
-		foreach ($templateObj->sections as $i=>$o) 
-			$o->copyObj($this);
+		
+		// Make a list of all of the parts in the site
+		makeSiteHash($templateObj);
+		
+		foreach ($templateObj->sections as $i=>$oldSection) {
+			$oldSectionId = $oldSection->id;
+			
+			// Flag our old Id as the one that will be set in the next call to
+			// section::updateDB(). This is awful, but the way it works.
+			$GLOBALS['__site_hash']['sections'][$oldSectionId] = 'NEXT';
+			
+			// Do the copy, this will change the id of the object to the new one
+			// and in the process, update the global __site_hash relationship.
+			$oldSection->copyObj($this);
+			$newSectionId = $oldSection->id;
+			
+			// re-fetch the site to get a reference to a clean instance of our new
+			// site and section.
+			$newSiteObj =& new site($this->name);
+			$newSiteObj->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen();
+			$newPartObj =& $newSiteObj->sections[$newSectionId];
+			
+			// Convert internall links to our section based on the __site_hash
+			updateSiteLinksFromHash($newSiteObj, $newPartObj);
+			$newSiteObj->updateDB(1,1);
+		}
 	}
 	
 	function setSiteName($name, $copySite=0) {
@@ -970,16 +1036,20 @@ ORDER BY
 		
 		// Copy all the media
 		$query = "
-SELECT
-	media_id
-FROM
-	media
-		INNER JOIN
-	slot
-		ON
-			media.FK_site = slot.FK_site
-WHERE
-	slot_name='".$oldName."'";
+			SELECT
+				media_id
+			FROM
+				media
+					INNER JOIN
+				slot
+					ON
+						media.FK_site = slot.FK_site
+			WHERE
+				slot_name='".addslashes($oldName)."'
+				AND 
+				media_type != 'other'
+		";
+				
 		$r = db_query($query);
 		while ($a = db_fetch_assoc($r)) {
 			copy_media($a['media_id'], $newName);
@@ -1013,11 +1083,11 @@ WHERE
 		// the easy step: update the fields in the table
 			$a = $this->createSQLArray();
 			if ($keepEditHistory) {
-				$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+				$a[] = $this->_datafields[editedtimestamp][1][0]."='".addslashes($this->getField("editedtimestamp"))."'";
 			} else
-				$a[] = "FK_updatedby=".$_SESSION[aid];
+				$a[] = "FK_updatedby='".addslashes($_SESSION[aid])."'";
 				
-			$query = "UPDATE site SET ".implode(",",$a)." WHERE site_id=".$this->id;
+			$query = "UPDATE site SET ".implode(",",$a)." WHERE site_id='".addslashes($this->id)."'";
 /*  			print "site->updateDB: $query<br />"; */
 			db_query($query);
 /* 			print mysql_error()."<br />"; */
@@ -1027,7 +1097,7 @@ WHERE
 			// first update 'slot_name' in the slot table, if the latter has changed
 			if ($this->changed[name] && $this->data[name]) {
 				$new_name = $this->data[name];
-				$query = "UPDATE slot SET slot_name = '$new_name' WHERE FK_site=".$this->id;
+				$query = "UPDATE slot SET slot_name = '$new_name' WHERE FK_site='".addslashes($this->id)."'";
 				db_query($query);
 			}
 
@@ -1064,14 +1134,14 @@ WHERE
 	function insertDB($down=0,$copysite=0,$importing=0, $keepDiscussions=0) {
 		$a = $this->createSQLArray(1);
 		if (!$importing) {
-			$a[] = "FK_createdby=".$_SESSION[aid];
+			$a[] = "FK_createdby='".addslashes($_SESSION[aid])."'";
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
-			$a[] = "FK_updatedby=".$_SESSION[aid];
+			$a[] = "FK_updatedby='".addslashes($_SESSION[aid])."'";
 		} else {
-			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".$this->data[addedby]."'");
-			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
-			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".$this->data[editedby]."'");
-			$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".addslashes($this->data[addedby])."'");
+			$a[] = $this->_datafields[addedtimestamp][1][0]."='".addslashes($this->getField("addedtimestamp"))."'";
+			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".addslashes($this->data[editedby])."'");
+			$a[] = $this->_datafields[editedtimestamp][1][0]."='".addslashes($this->getField("editedtimestamp"))."'";
 		}
 
 		// insert into the site table
@@ -1086,12 +1156,18 @@ WHERE
 		// update the name for that slot
 		if (slot::exists($this->data[name])) {
 			$query = "UPDATE slot";
-			$where = " WHERE slot_name = '".$this->data[name]."' AND FK_owner = ".$_SESSION[aid];
+			$where = " WHERE slot_name = '".addslashes($this->data[name])."' AND FK_owner = '".addslashes($_SESSION[aid])."'";
 		} else {
 			$query = "INSERT INTO slot";
 			$where = "";
 		}
-		$query .= " SET slot_name = '".$this->data[name]."',FK_owner=".$_SESSION[aid].",slot_type='".$this->data[type]."', FK_site = ".$this->id.$where;
+		$query .= " 
+			SET 
+				slot_name = '".addslashes($this->data[name])."',
+				FK_owner = '".addslashes($_SESSION[aid])."',
+				slot_type = '".addslashes($this->data[type])."',
+				FK_site = '".addslashes($this->id)."'".$where;
+				
 /* 		echo $query."<br />"; */
 		db_query($query);
 		
@@ -1151,13 +1227,13 @@ WHERE
 		if (!$this->id) return false;
 		$this->fetchDown();
 		$siteName = $this->getField("name");
-		$query = "DELETE FROM site WHERE site_id=".$this->id;
+		$query = "DELETE FROM site WHERE site_id= '".addslashes($this->id)."'";
 		db_query($query);
-		$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='site';";
+		$query = "DELETE FROM permission WHERE FK_scope_id='".addslashes($this->id)."' AND permission_scope_type='site';";
 		db_query($query);
-		$query = "DELETE FROM media WHERE FK_site=".$this->id;
+		$query = "DELETE FROM media WHERE FK_site='".addslashes($this->id)."'";
 		db_query($query);
-		$query = " UPDATE slot SET FK_site=NULL WHERE FK_site=".$this->id;
+		$query = " UPDATE slot SET FK_site=NULL WHERE FK_site='".addslashes($this->id)."'";
 		db_query($query);
 		
 		// remove sections
@@ -1192,15 +1268,15 @@ WHERE
 		$a = array();
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-		if ($all || $this->changed[listed]) $a[] = $this->_datafields[listed][1][0]."='$d[listed]'";
-		if ($all || $this->changed[activatedate]) $a[] = "site_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[deactivatedate]) $a[] = "site_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='$d[active]'";
+		if ($all || $this->changed[listed]) $a[] = $this->_datafields[listed][1][0]."='".addslashes($d[listed])."'";
+		if ($all || $this->changed[activatedate]) $a[] = "site_activate_tstamp ='".addslashes(ereg_replace("-","",$d[activatedate]))."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = "site_deactivate_tstamp ='".addslashes(ereg_replace("-","",$d[deactivatedate]))."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".addslashes($d[active])."'";
 //		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
-		if ($all || $this->changed[theme]) $a[] = $this->_datafields[theme][1][0]."='$d[theme]'";
-		if ($all || $this->changed[themesettings]) $a[] = $this->_datafields[themesettings][1][0]."='$d[themesettings]'";
-		if ($all || $this->changed[header]) $a[] = $this->_datafields[header][1][0]."='".urlencode($d[header])."'";
-		if ($all || $this->changed[footer]) $a[] = $this->_datafields[footer][1][0]."='".urlencode($d[footer])."'";
+		if ($all || $this->changed[theme]) $a[] = $this->_datafields[theme][1][0]."='".addslashes($d[theme])."'";
+		if ($all || $this->changed[themesettings]) $a[] = $this->_datafields[themesettings][1][0]."='".addslashes($d[themesettings])."'";
+		if ($all || $this->changed[header]) $a[] = $this->_datafields[header][1][0]."='".addslashes(urlencode($d[header]))."'";
+		if ($all || $this->changed[footer]) $a[] = $this->_datafields[footer][1][0]."='".addslashes(urlencode($d[footer]))."'";
 
 		return $a;
 	}

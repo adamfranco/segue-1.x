@@ -131,4 +131,46 @@ th {
 	border-left: 1px dashed black;
 }
 
+/*********************************************************
+ * Discussion Styles
+ *********************************************************/
+.subject { 
+	font-weight: bolder; 
+}
+
+.dtext {
+	padding-top: 0px;
+	padding-bottom: 20px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.dheader {
+	font-size: 14px;
+	border-bottom: 1px solid #000;
+	background: #EAEAEA;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+.dheader2 {
+	border-bottom: 1px solid #000;
+	background: #EAEAEA;
+	padding-right: 5px;
+	padding-top: 5px;
+}
+
+.dheader3 {
+	border-top: 0px solid #000;
+	background: #EAEAEA;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.dinfo1 {
+	border: 1px solid #000;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
 </style>

@@ -17,9 +17,19 @@ class user {
 	function _fetch() {
 		$query = "
 			SELECT
-				user_uname,user_fname,user_email,user_type,user_authtype
-			FROM user WHERE user_id=".$this->id;
+				user_uname,
+				user_fname,
+				user_email,
+				user_type,
+				user_authtype
+			FROM 
+				user 
+			WHERE 
+				user_id='".addslashes($this->id)."'
+		";
+		
 		$r = db_query($query);
+		
 		if (db_num_rows($r)) {
 			$a = db_fetch_assoc($r);
 		} else return false;
@@ -40,24 +50,28 @@ class user {
 		// Segue expects unames to be lowercase, so lets force that.
 		$this->uname = strtolower($this->uname);
 		
-		$data = "user_uname='".$this->uname."'";
+		$data = "user_uname='".addslashes($this->uname)."'";
 		$data .= ",user_fname='".addslashes($this->fname)."'";
-		$data .= ",user_email='".$this->email."'";
-		$data .= ",user_type='".$this->type."'";
-		$data .= ",user_authtype='".$this->authtype."'";
-		if ($this->randpassgen) $data .= ",user_pass='".$this->pass."'";
+		$data .= ",user_email='".addslashes($this->email)."'";
+		$data .= ",user_type='".addslashes($this->type)."'";
+		$data .= ",user_authtype='".addslashes($this->authtype)."'";
+		if ($this->randpassgen) $data .= ",user_pass='".addslashes($this->pass)."'";
 		//$data .= ",user_authtype='db'";
 		
 		if ($this->id) { // are we updating?
 			$query = "
 				UPDATE
 					user
-					SET $data
-					WHERE user_id=".$this->id;
+				SET 
+					$data
+				WHERE 
+					user_id='".addslashes($this->id)."'"
+			;
 		} else $query = "
 				INSERT
 					INTO user
-					SET $data";
+					SET $data
+				";
 		
 //		print $query;
 		return db_query($query);
@@ -108,12 +122,14 @@ class user {
 	function userExists($u) {
 		if (!$u) return false;
 		$query = "
-	SELECT
-		COUNT(*) as count
-	FROM
-		user
-	WHERE
-		user_uname='$u'";
+			SELECT
+				COUNT(*) as count
+			FROM
+				user
+			WHERE
+				user_uname='".addslashes($u)."'
+		";
+		
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
 		if ($a['count'] != 0) return true;
@@ -123,12 +139,14 @@ class user {
 	function userEmailExists($u) {
 		if (!$u) return false;
 		$query = "
-	SELECT
-		COUNT(*) as count
-	FROM
-		user
-	WHERE
-		user_email='$u'";
+			SELECT
+				COUNT(*) as count
+			FROM
+				user
+			WHERE
+				user_email='".addslashes($u)."'
+		";
+		
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
 		if ($a['count'] != 0) return true;
@@ -138,21 +156,25 @@ class user {
 	
 	function delUser($id) {
 		$query = "
-	DELETE FROM
-		user
-	WHERE
-		user_id=$id";
+			DELETE FROM
+				user
+			WHERE
+				user_id='".addslashes($id)."'
+		";
+		
 		db_query($query);
 	}
 	
 	function numDBUsers() {
 		$query = "
-	SELECT
-		COUNT(*) as count
-	FROM
-		user
-	WHERE
-		user_authtype='db'";
+			SELECT
+				COUNT(*) as count
+			FROM
+				user
+			WHERE
+				user_authtype='db'
+		";
+		
 		$r = db_query($query);
 		if ($r) {
 			$a = db_fetch_assoc($r);

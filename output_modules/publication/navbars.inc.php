@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-//if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
+//if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 
 $isediting = 0;
 if ($action == 'viewsite') $isediting=1;
@@ -9,7 +9,7 @@ if ($action == 'viewsite') $isediting=1;
 $_ids = array_keys($thisSite->sections);
 /* print_r($_ids); */
 /* print "hello?"; */
-$link = "$PHP_SELF?$sid&site=$site&action=$action&supplement=listissues";
+$link = "$PHP_SELF?$sid&amp;site=$site&amp;action=$action&amp;supplement=listissues";
 add_link(topnav,"ISSUES",$link,$extra,'',$target);
 add_link(topnav2,"ISSUES",$link,$extra,'',$target);
 if (count($_ids)) {
@@ -22,11 +22,11 @@ if (count($_ids)) {
 	/* print_r($so->pages); */
 	foreach ($first->pages as $p=>$o) {
 /* 		print_r($o); */
-		$link = "$PHP_SELF?$sid&site=$site&section=$section&page=$p&action=$action";
+		$link = "$PHP_SELF?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;action=$action";
 		add_link(topnav,$o->getField("title"),$link,$extra,'',$target);
 		add_link(topnav2,$o->getField("title"),$link,$extra,'',$target);
 	}
-	add_link(leftnav,"<span class=smaller><i>".strtoupper($last->getField("title"))."</i></span>");
+	add_link(leftnav,"<span class='smaller'><i>".strtoupper($last->getField("title"))."</i></span>");
 	
 
 	$pdfname = createPdfName($last->getField("title"));
@@ -38,13 +38,13 @@ if (count($_ids)) {
 	
 	$i=0;$total = count($last->pages);
 	foreach ($last->pages as $p=>$o) {
-		$link = "$PHP_SELF?$sid&site=$site&section=$section&page=$p&action=$action";
+		$link = "$PHP_SELF?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;action=$action";
 		$extra = $list = '';
 		if (($author = $o->getField("url")) && $author != "http://") $extra .= "<div class='leftmargin small' align='left'>by $author</div>";
 		if ($isediting) {
-			$list .= ($last->hasPermission("edit"))?"<a href='$PHP_SELF?$sid&action=edit_page&site=$site&section=$section&page=$p&edit_page=$p&comingFrom=$action'>edit</a>\n":"";
-			$list .= ($last->hasPermission("delete"))?"<a href='$PHP_SELF?$sid&action=delete_page&site=$site&section=$section&page=$p&delete_page=$p&comingFrom=$action'>del</a>\n":"";
-			if ($list != '') $extra .= "<div class=small align='right'>".$list."</div>";
+			$list .= ($last->hasPermission("edit"))?"<a href='$PHP_SELF?$sid&amp;action=edit_page&amp;site=$site&amp;section=$section&amp;page=$p&amp;edit_page=$p&amp;comingFrom=$action'>edit</a>\n":"";
+			$list .= ($last->hasPermission("delete"))?"<a href='$PHP_SELF?$sid&amp;action=delete_page&amp;site=$site&amp;section=$section&amp;page=$p&amp;delete_page=$p&amp;comingFrom=$action'>del</a>\n":"";
+			if ($list != '') $extra .= "<div class='small' align='right'>".$list."</div>";
 		}
 		if ($i == $total-1) $extra .= $putonlast;
 		add_link(leftnav,$o->getField("title"),$link,$extra,$p,$target);
@@ -58,11 +58,11 @@ if (count($_ids)) {
 $i=0;
 $total=count($thisSite->sections);
 if ($thisSite->sections) {
-	add_link(leftnav2,"<span class=smaller>ISSUES</span>");
+	add_link(leftnav2,"<span class='smaller'>ISSUES</span>");
 	foreach (array_reverse($thisSite->sections,TRUE) as $s=>$o) {
 		if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 			if ($i!=$total-1 || ($action=='viewsite' && $_SESSION[atype]=='admin')) {
-				if ($o->getField("type") == 'section') $link = "$PHP_SELF?$sid&site=$site&section=$s&action=$action&supplement=listarticles";
+				if ($o->getField("type") == 'section') $link = "$PHP_SELF?$sid&amp;site=$site&amp;section=$s&amp;action=$action&amp;supplement=listarticles";
 				if ($o->getField("type") == 'url') { $link = $o->getField("url"); $target="_self";}
 				$extra = '';
 				$pdfname = $filename=$fileurl = '';
@@ -73,7 +73,7 @@ if ($thisSite->sections) {
 					$extra .= "<div align='center' class='leftmargin smaller'>".pdflink($filename,$fileurl,2)."</div>";
 				}
 				if ($isediting) {
-					$extra .= ($thisSite->hasPermission("edit"))?"\n<a href='$PHP_SELF?$sid&site=$site&section=$s&action=edit_section&edit_section=$s&comingFrom=viewsite' class='small' title='Edit the title and properties of this section'>edit</a>":"";
+					$extra .= ($thisSite->hasPermission("edit"))?"\n<a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$s&amp;action=edit_section&amp;edit_section=$s&amp;comingFrom=viewsite' class='small' title='Edit the title and properties of this section'>edit</a>":"";
 					$extra .= ($thisSite->hasPermission("delete"))?"\n<a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHP_SELF?$sid&$envvars&action=delete_section&delete_section=$s\")' class='small' title='Delete this section'>del</a>":"";
 				}
 				add_link(leftnav2,$o->getField("title"),$link,$extra,$s,$target);
@@ -85,7 +85,7 @@ if ($thisSite->sections) {
 }
 
 if ($isediting) {
-	$leftnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&action=add_section&comingFrom=viewsite' class='small' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add issue</a>":"";
+	$leftnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='small' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add issue</a>":"";
 }
 
 /******************************************************************************
@@ -115,7 +115,7 @@ function filesizestr($filename) {
 
 function pdflink($filename,$fileurl,$sm=0) {
 	$size = filesizestr($filename);
-	return "<a href='$fileurl'>".(($sm!=2)?"<img src='images/pdficon".(($sm)?"_sm":"").".gif' align=absmiddle border=0 alt='Download PDF'>":"") . (($sm==1)?" ":(($sm==2)?"":"<br />") . "Download PDF ")."</a>($size)";
+	return "<a href='$fileurl'>".(($sm!=2)?"<img src='images/pdficon".(($sm)?"_sm":"").".gif' align='absmiddle' border='0' alt='Download PDF' />":"") . (($sm==1)?" ":(($sm==2)?"":"<br />") . "Download PDF ")."</a>($size)";
 }
 
 

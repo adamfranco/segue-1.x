@@ -1,56 +1,60 @@
 <?php
-//*******************************************************************
-//DOMIT_GetElementsByPath is a simply utility for 
-//path-based access to nodes in a DOMIT! document .
-//*******************************************************************
-//by John Heinstein
-//jheinstein@engageinteractive.com
-//johnkarl@nbnet.nb.ca
-//*******************************************************************
-//Version 0.3
-//copyright 2004 Engage Interactive
-//http://www.engageinteractive.com/domit/
-//All rights reserved
-//*******************************************************************
-//Licensed under the GNU General Public License (GPL)
-//
-//This program is free software; you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation; either version 2 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-//*******************************************************************
-//see GPL details at http://www.gnu.org/copyleft/gpl.html
-//and also in file license.txt included with DOMIT! 
-//*******************************************************************
+/**
+* @package domit-xmlparser
+* @copyright (C) 2004 John Heinstein. All rights reserved
+* @license http://www.gnu.org/copyleft/lesser.html LGPL License
+* @author John Heinstein <johnkarl@nbnet.nb.ca>
+* @link http://www.engageinteractive.com/domit/ DOMIT! Home Page
+* DOMIT! is Free Software
+**/
 
-define("GET_ELEMENTS_BY_PATH_SEPARATOR", "/");
-define("GET_ELEMENTS_BY_PATH_SEARCH_ABSOLUTE", 0);
-define("GET_ELEMENTS_BY_PATH_SEARCH_RELATIVE", 1);
-define("GET_ELEMENTS_BY_PATH_SEARCH_VARIABLE", 2);
+if (!defined('DOMIT_INCLUDE_PATH')) {
+	define('DOMIT_INCLUDE_PATH', (dirname(__FILE__) . "/"));
+}
 
+/** Separator for elements path */
+define('GET_ELEMENTS_BY_PATH_SEPARATOR', '/');
+/** Constant for an absolute path search (starting at the document root) */
+define('GET_ELEMENTS_BY_PATH_SEARCH_ABSOLUTE', 0);
+/** Constant for a relative path search (starting at the level of the calling node) */
+define('GET_ELEMENTS_BY_PATH_SEARCH_RELATIVE', 1);
+/** Constant for a variable path search (finds all matches, regardless of place in the hierarchy) */
+define('GET_ELEMENTS_BY_PATH_SEARCH_VARIABLE', 2);
+
+/**
+* getElementsByPath is a simple utility for path-based access to nodes in a DOMIT! document.
+*/
 class DOMIT_GetElementsByPath {
+    /** @var Object The node from which the search is called */
 	var $callingNode;
+	/** @var int The type of search to be performed, i.e., relative, absolute, or variable */
 	var $searchType;
+	/** @var Object The node that is the current parent of the search */
 	var $contextNode;
+	/** @var array An array containing a series of path segments for which to search */
 	var $arPathSegments = array();
+	/** @var Object A DOMIT_NodeList of matching nodes */
 	var $nodeList;
+	/** @var Object The index of the current node of the search */
 	var $targetIndex;
+	/** @var Object if true, the search will be aborted once the first match is found */
 	var $abortSearch = false;
 	
+	/**
+	* Constructor - creates an empty DOMIT_NodeList to store matching nodes
+	*/
 	function DOMIT_GetElementsByPath() {
-		require_once("xml_domit_nodemaps.php");
+		require_once(DOMIT_INCLUDE_PATH . 'xml_domit_nodemaps.php');
 		$this->nodeList =& new DOMIT_NodeList();
 	} //DOMIT_GetElementsByPath
 	
+	/**
+	* Parses the supplied "path"-based pattern
+	* @param Object The node from which the search is called
+	* @param string The pattern
+	* @param int The node level of the current search
+	* @return Object The NodeList containing matching nodes
+	*/
 	function &parsePattern(&$node, $pattern, $nodeIndex = 0) {
 		$this->callingNode =& $node;		 
 		$pattern = trim($pattern);	
@@ -100,7 +104,10 @@ class DOMIT_GetElementsByPath {
 		return $this->nodeList;
 	} //parsePattern
 	
-	
+	/**
+	* Determines the type of search to be performed: absolute, relative, or variable
+	* @param string The pattern
+	*/
 	function determineSearchType($pattern) {
 		$firstChar = $pattern{0};
 		
@@ -123,6 +130,9 @@ class DOMIT_GetElementsByPath {
 	} //determineSearchType
 	
 	
+	/**
+	* Sets the context node, i.e., the node from which the search begins
+	*/
 	function setContextNode() {
 		switch($this->searchType) {
 			case GET_ELEMENTS_BY_PATH_SEARCH_ABSOLUTE:
@@ -144,7 +154,10 @@ class DOMIT_GetElementsByPath {
 		}
 	} //setContextNode
 	
-	
+	/**
+	* Splits the supplied pattern into searchable segments
+	* @param string The pattern
+	*/
 	function splitPattern($pattern) {
 		switch($this->searchType) {
 			case GET_ELEMENTS_BY_PATH_SEARCH_ABSOLUTE:
@@ -161,13 +174,16 @@ class DOMIT_GetElementsByPath {
 		}
 	} //splitPattern
 	
-	
-	
+	/**
+	* Matches the current path segment against the child nodes of the current context node
+	* @param Object The context node
+	* @param int The index in the arPathSegments array of the current path segment
+	*/
 	function selectNamedChild(&$node, $pIndex) {	
 		if (!$this->abortSearch) {
 			if ($pIndex < count($this->arPathSegments)) { //not at last path segment
 				$name = $this->arPathSegments[$pIndex];
-				$numChildren = count($node->childNodes);
+				$numChildren = $node->childCount;
 			
 				for ($i = 0; $i < $numChildren; $i++) {
 					$currentChild =& $node->childNodes[$i];
@@ -187,4 +203,73 @@ class DOMIT_GetElementsByPath {
 		}
 	} //selectNamedChild
 } //DOMIT_GetElementsByPath
+
+
+
+/**
+* getElementsByAttributePath is a temporary utility requested by a DOMIT! user for path-based access to attributes in a DOMIT! document.
+* This class may be absent from future versions of DOMIT!
+*/
+class DOMIT_GetElementsByAttributePath {
+    /** @var Object A DOMIT_NodeList of matching attribute nodes */
+	var $nodeList;
+
+    /**
+	* Constructor - creates an empty DOMIT_NodeList to store matching nodes
+	*/
+	function DOMIT_GetElementsByAttributePath() {
+		require_once(DOMIT_INCLUDE_PATH . 'xml_domit_nodemaps.php');
+		$this->nodeList =& new DOMIT_NodeList();
+	} //DOMIT_GetElementsByAttributePath
+	
+	/**
+	* Matches the current path segment against the child nodes of the current context node
+	* @param Object The context node
+	* @param string The pattern
+	* @param int The index of the current path segment
+	*/
+	function &parsePattern(&$node, $pattern, $nodeIndex = 0) {
+		$beginSquareBrackets = strpos($pattern, '[');
+		
+		if ($beginSquareBrackets != 0) {
+			$path = substr($pattern, 0, $beginSquareBrackets);
+			
+			$attrPattern =  substr($pattern, (strpos($pattern, '@') + 1));
+			$attrPattern = substr($attrPattern, 0, strpos($attrPattern, ')'));
+
+			$commaIndex = strpos($attrPattern, ',');
+			$key = trim(substr($attrPattern, 0, $commaIndex));
+			$value = trim(substr($attrPattern, ($commaIndex + 1)));
+			$value = substr($value, 1, (strlen($value) - 2));
+
+			$gebp = new DOMIT_GetElementsByPath();
+			$myResponse =& $gebp->parsePattern($node, $path);
+
+
+			$total = $myResponse->getLength();
+			for ($i = 0; $i < $total; $i++) {
+				$currNode =& $myResponse->item($i);
+				
+				if ($currNode->hasAttribute($key)) {
+					if ($currNode->getAttribute($key) == $value) {
+						$this->nodeList->appendNode($currNode);
+					}
+				}
+			}	
+		}
+
+		if ($nodeIndex == 0) {
+			return $this->nodeList;
+		}
+		else {
+			if ($nodeIndex <= $this->nodeList->getLength()) {
+				return $this->nodeList->item(($nodeIndex - 1));
+			}
+			else {
+				$this->nodeList = new DOMIT_NodeList();
+				return $this->nodeList;
+			}
+		}
+	} //parsePattern
+} //DOMIT_GetElementsByAttributePath
 ?>

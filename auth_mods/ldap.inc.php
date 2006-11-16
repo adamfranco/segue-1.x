@@ -1,6 +1,10 @@
 <? /* $Id$ */
 
 function _valid_ldap($name,$pass,$admin_auser=0) {
+	// Check that a password is given to prevent anonymous binds
+	if (!strlen($pass))
+		return false;
+	
 //	print "hallooo!";
 	$name = strtolower($name);
 	global $cfg;

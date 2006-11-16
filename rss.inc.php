@@ -1,7 +1,7 @@
 <? /* $Id$ */
 
 header("Content-Type: text/xml; charset=utf-8");
-print "<"."?xml version=\"1.0\"?".">\n";
+print "<"."?xml version=\"1.0\" encoding=\"utf-8\"  ?".">\n";
 ?>
 <rss version="2.0">
 	<channel>
@@ -54,24 +54,195 @@ if ($error) {
 	print "\t\t<title>Error</title>\n";
 	ob_start();
 	print $errorString;
-	$description = htmlspecialchars(ob_get_contents());
+	$description = htmlspecialchars(ob_get_contents(), ENT_QUOTES);
 	ob_end_clean();
 	print "\t\t<description>";
 	print $description;
 	print "</description>\n";
 
-} else {
+/******************************************************************************
+ * if scope then either all content blocks or all discussion posts
+ ******************************************************************************/
+
+} else if (isset($_REQUEST['scope'])) {
+
+	$link = $cfg[full_uri];			
+	$link .= "/index.php?&amp;action=site";
+	$link .= "&amp;site=".$thisSite->name;
+	$link = htmlspecialchars($link, ENT_QUOTES);
+	if ($_REQUEST['scope'] == "allcontent") {
+		print "\t\t<title>".htmlspecialchars($thisSite->title)." > All Posts</title>\n";	
+	} else {
+		print "\t\t<title>".$thisSite->title." > All Discussion</title>\n";
+	}
+	print "\t\t<link>".$link."</link>\n";		
+	print "\t\t<description>";
+	// 
+	print "</description>\n";		
+	print "\t\t<lastBuildDate>".date("D, j M Y h:i:s O")."</lastBuildDate>\n";
+	print "\t\t<generator>Segue RSS Generator</generator>\n";
+			
+	if ($_REQUEST['scope'] == "allcontent") {
+		$recent_site_edits = recent_site_edits($thisSite->name);
+		
+		while ($a = db_fetch_assoc($recent_site_edits)) {
+		
+			$thisSection =& new section($_REQUEST[site],$a['section_id'], $thisSite);
+			$thisPage =& new page($_REQUEST[site],$a['section_id'],$a['page_id'], $thisSection);
+			
+			if ($thisPage->canview("everyone") && $a['story_display_type'] != "rss") {
+				print "\t\t<item>\n";
+			//	$title = $a["story_title"];
+			
+				if ($a["story_title"]) {
+					$title = $a["story_title"];
+				} else {
+					$title2 = strip_tags(urldecode($a["story_text_short"]));
+					if (strlen($title2) > 25) {
+						$title = substr($title2, 0, 25)."...";
+					}					
+				}
+				
+				print "\t\t\t<title>".htmlspecialchars(urldecode($title), ENT_QUOTES, 'utf-8')."</title>\n";
+				
+				$storylink = "&amp;story=".$a["story_id"]."&amp;detail=".$a["story_id"]."#".$a["discussion_id"];
+				$pagelink = "&amp;page=".$a["page_id"];
+				$sectionlink = "&amp;section=".$a["section_id"];
+				$discusslink = $a["discussion_id"];	
+				$linkpath = htmlspecialchars($link.$sectionlink.$pagelink.$storylink, ENT_QUOTES);
+				
+				print "\t\t\t<link>".$linkpath."</link>\n";
+				print "\t\t\t<guid isPermaLink=\"true\">".$linkpath."</guid>\n";
+				
+				print "\t\t\t<pubDate>";
+				print date("D, j M Y G:i:s O", strtotime(timestamp2usdate($a["story_created_tstamp"])));
+				print "</pubDate>\n";
+				
+				print "\t\t\t<author>";
+				print $a["user_fname"];
+				print " ".$a['user_email']."";
+				print "</author>\n";
+				
+				$tags = get_record_tags($a["story_id"]);
+				
+				if ($tags) {
+					print "\t\t\t<category>";
+					foreach ($tags as $urltag) {
+						$tag = ereg_replace("_", " ", $urltag);
+						print $tag;
+						if ($urltag != end($tags)) print ", ";
+					}
+					print "</category>\n";
+				}
+				
+				$spacing = htmlspecialchars("<br /><br />");
+				$description = "<a href='".$link.$sectionlink.$pagelink.$storylink."'>".$a['page_title']." > ".$a['story_title']."</a><br /><br />";
+				$description .= urldecode($a["story_text_short"]);
+				$description = convertTagsToInteralLinks($_REQUEST[site], $description);
+				//$description = str_replace("\[\[linkpath\]\]","$cfg[full_uri]", $description);
+				$description = str_replace("\n", "", $description);
+				$description = str_replace("\r", "", $description);
+				$description = htmlspecialchars(urldecode($description), ENT_QUOTES, 'utf-8');
+				
+				print "<description>";
+				print $description;
+				print "</description>\n";
+
+				if ($a['story_display_type'] == "file") {
+					$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id='".addslashes($a["story_text_long"])."'");
+					$filename = $b[media_tag];
+					$filename = rawurlencode($filename);
+					if (ereg(".mp3", $filename)) {
+						$type = "audio/mpeg";
+					} else {
+						$type = "unknown";
+					}
+					/* 	print $filename; */
+					$dir = $b[slot_name];
+					$size = $b[media_size];
+					$fileurl = "$uploadurl/$dir/$filename";
+					$filepath = "$uploaddir/$dir/$filename";
+					$filesize = $size;
+					print "<enclosure url='$fileurl' length='$filesize' type='$type' />\n";					
+				}
+				
+				
+				print "\t\t</item>\n";
+			}
+								
+		}
 	
+	} else if ($_REQUEST['scope'] == "alldiscuss") {
+
+		$recent_discussion = recent_discussion($thisSite->name);
+		
+		while ($a = db_fetch_assoc($recent_discussion)) {
+		
+			$thisSection =& new section($_REQUEST[site],$a['section_id'], $thisSite);
+			$thisPage =& new page($_REQUEST[site],$a['section_id'],$a['page_id'], $thisSection);
+			
+			if ($thisPage->canview("everyone")) {
+
+				print "\t\t<item>\n";
+				$title = $a["discussion_subject"];
+				print "\t\t\t<title>".htmlspecialchars(urldecode($title), ENT_QUOTES, 'utf-8')."</title>\n";
+				
+				$storylink = "&amp;story=".$a["story_id"]."&amp;detail=".$a["story_id"]."#".$a["discussion_id"];
+				$pagelink = "&amp;page=".$a["page_id"];
+				$sectionlink = "&amp;section=".$a["section_id"];
+				$discusslink = $a["discussion_id"];	
+				$linkpath = htmlspecialchars($link.$sectionlink.$pagelink.$storylink, ENT_QUOTES);
+				
+				print "\t\t\t<link>".$linkpath."</link>\n";
+				print "\t\t\t<guid isPermaLink=\"true\">".$linkpath."</guid>\n";
+				
+				print "\t\t\t<pubDate>";
+				print date("D, j M Y G:i:s O", strtotime(timestamp2usdate($a["discussion_tstamp"])));
+				print "</pubDate>\n";
+				
+				print "\t\t\t<author>";
+				print $a["user_fname"];
+				print " ".$a['user_email']."";
+				print "</author>\n";
+				
+				$spacing = htmlspecialchars("<br /><br />");
+				$description = "<a href='".$link.$sectionlink.$pagelink.$storylink."'>".$a['story_title']." > ".$a['discussion_subject']."</a><br /><br />";						
+				$description .= $a["discussion_content"];
+				$description = convertTagsToInteralLinks($_REQUEST[site], $description);
+				$description = str_replace("\n", "", $description);
+				$description = str_replace("\r", "", $description);
+				$description = htmlspecialchars(urldecode($description), ENT_QUOTES, 'utf-8');
+				
+				print "<description>";
+				print $description;
+				print "</description>\n";
+				print "\t\t</item>\n";
+			}
+
+		}
+	
+	}
+	
+		
+/******************************************************************************
+ * if no scope then RSS of a given page or tag
+ ******************************************************************************/
+		
+} else {
 	
 	// check for proper instance of scripts
 	if ($allowclasssites != $allowpersonalsites) {
 		$type = $thisSite->getField("type");
 		if ($allowclasssites && !$allowpersonalsites) {
-			if ($type == 'personal')
+			if ($type == 'personal') {
 				header("Location: $personalsitesurl/index.php?action=rss&site=$site&section=$section&page=$page");
+				exit;
+			}
 		} else if (!$allowclasssites && $allowpersonalsites) {
-			if ($type != 'personal' && $type != 'system')
+			if ($type != 'personal' && $type != 'system') {
 				header("Location: $classsitesurl/index.php?action=rss&site=$site&section=$section&page=$page");
+				exit;
+			}
 		}
 	}
 	
@@ -120,7 +291,7 @@ if ($error) {
 					)
 				) 
 			{
-				print "<br /><a href='$PHP_SELF?$sid&action=add_site&sitename=".$thisSite->name."'>Create Site</a>";
+				print "<br /><a href='$PHP_SELF?$sid&amp;action=add_site&amp;sitename=".$thisSite->name."'>Create Site</a>";
 			}
 			print "</li>";
 		} else if (!$thisPage) {
@@ -131,7 +302,7 @@ if ($error) {
 		}
 		print "</ul>";
 		
-		$description = htmlspecialchars(ob_get_contents());
+		$description = htmlspecialchars(ob_get_contents(), ENT_QUOTES);
 		ob_end_clean();
 		print "\t\t<description>";
 		print $description;
@@ -144,47 +315,85 @@ if ($error) {
 		// Generate the feed if we can view it.
 		//
 		//---------------------------------------
-	
-	
+		
 		$thisPage->fetchDown();
 		if ($thisPage->hasPermissionDown("view"))
-			print "\t\t<title>".$thisPage->getField("title")."</title>\n";
 			
-			$pagelink = $cfg[full_uri]."/index.php?$sid&action=site";
-			$pagelink .= "&site=".$thisSite->name;
-			if ($thisSection) $pagelink .= "&section=".$thisSection->id;
-			if ($thisPage) $pagelink .= "&page=".$thisPage->id;
-			$pagelink = htmlspecialchars($pagelink);
 			
-			print "\t\t<link>".$pagelink."</link>\n";
+			if ($_REQUEST["tag"]) {
+				print "\t\t<title>".$thisSite->title." > ".$_REQUEST["tag"];
+			} else {
+				print "\t\t<title>".$thisSite->title." > ".$thisSection->getField("title")." > ".$thisPage->getField("title");
+			}
+			print "</title>\n";
+			
+			$link = $cfg[full_uri];			
+			$link .= "/index.php?&amp;action=site";
+			$link .= "&amp;site=".$thisSite->name;
+			
+			if ($thisSection) $sectionlink = "&amp;section=".$thisSection->id;			
+			if ($thisPage) $pagelink = "&amp;page=".$thisPage->id;
+			
+			$link = htmlspecialchars($link, ENT_QUOTES);
+			$pagelink = htmlspecialchars($pagelink, ENT_QUOTES);
+			$sectionlink = htmlspecialchars($sectionlink, ENT_QUOTES);
+						
+			print "\t\t<link>".$link.$sectionlink.$pagelink."</link>\n";
 			
 			print "\t\t<description>";
 			// 
 			print "</description>\n";
-			
-			print "\t\t<lastBuildDate>".date("D, d M Y G:i:s T")."</lastBuildDate>\n";
+			print "\t\t<lastBuildDate>".date("D, j M Y h:i:s O")."</lastBuildDate>\n";
 			print "\t\t<generator>Segue RSS Generator</generator>\n";
 			
 		// handle archiving -- monthly, weekly, etc
-		$thisPage->handleStoryArchive();
+		// $thisPage->handleStoryArchive();
 	
 		// handle ordering of stories
 		$thisPage->handleStoryOrder();
+					
 
 /******************************************************************************
  * If page has stories then print them
  ******************************************************************************/
 		
-		if ($thisPage->stories) {
+		if ($thisPage->stories || $_REQUEST["tag"]) {
+			
+			if ($_REQUEST["tag"]) {
+				$tagged_stories = get_tagged_stories($site,$section,$page,$_REQUEST["tag"]);
+				$stories = $tagged_stories[story_id];
+				//printpre($stories);
+				
+			} else if ($_REQUEST["detail"]) {
+				$stories = array();
+				$stories[] = $_REQUEST["detail"];
+				
+			} else {
+				$stories = $thisPage->data[stories];
+			}
+
 			$i=0;
-			foreach ($thisPage->data[stories] as $s) {
-				$i++;
-				
-				if ($i > 10)
-					break;
+			//printpre($stories);
+			
+			foreach ($stories as $s) {
+								
+				if ($_REQUEST["tag"]) {
+					$tagged_page = $tagged_stories[page_id][$i];
+					$pagelink = "&amp;page=".$tagged_page;
+					$pagelink = htmlspecialchars($pagelink, ENT_QUOTES);
+					$tagged_section = $tagged_stories[section_id][$i];					
+					$sectionlink = "&amp;section=".$tagged_section;
+					$sectionlink = htmlspecialchars($sectionlink, ENT_QUOTES);
+					$o =& new story($site,$tagged_section,$tagged_page,$s, $thisPage);
 					
-				$o =& $thisPage->stories[$s];
-				
+				} else {
+					$o = & $thisPage->stories[$s];
+				}
+
+				$i++;
+				if ($i > 20)
+					break;
+									
 				//printc("<table><tr><td>";
 				
 				if ($o->canview()) {
@@ -197,52 +406,58 @@ if ($error) {
 					ob_end_clean();
 					$description = str_replace("\n", "", $description);
 					$description = str_replace("\r", "", $description);
+					
+					$tags = get_record_tags($o->getField("id"));
 
 					print "\t\t<item>\n";
 					if ($o->getField("title")) {
 						$title = $o->getField("title");
 					} else {
-						$title = strip_tags($description);						
+						$title = strip_tags($description);
 						if (strlen($title) > 25) {
-							$title = substr($title, 0, 50)."...";
+							$title = substr($title, 0, 25)."...";
 						}					
 					}
 					
 					print "\t\t\t<title>".$title."</title>\n";
 					
-					$storylink = "#".$o->getField("id");
-					print "\t\t\t<link>".$pagelink.$storylink."</link>\n";
-					print "\t\t\t<guid isPermaLink=\"true\">".$pagelink.$storylink."</guid>\n";
+					$storylink = "&amp;story=".$o->getField("id")."&amp;detail=".$o->getField("id");
+					print "\t\t\t<link>".$link.$sectionlink.$pagelink.$storylink."</link>\n";
+					print "\t\t\t<guid isPermaLink=\"true\">".$link.$sectionlink.$pagelink.$storylink."</guid>\n";
 					
 					print "\t\t\t<pubDate>";
-					print date("D, d M Y G:i:s T", strtotime(timestamp2usdate($o->getField("addedtimestamp"))));
+					print date("D, j M Y G:i:s O", strtotime(timestamp2usdate($o->getField("addedtimestamp"))));
 					print "</pubDate>\n";
 					
 					print "\t\t\t<author>";
 					print $o->getField("addedbyfull");
 					$user_uname = $o->getField("addedby");
-					$user_email = db_get_value("user","user_email","user_uname='$user_uname'");
-					print " (".$user_email.")";
+					$user_email = db_get_value("user","user_email","user_uname='".addslashes($user_uname)."'");
+					print " ".$user_email."";
 					print "</author>\n";
 					
-					if ($o->getField("category")) {
+					if ($tags) {
 						print "\t\t\t<category>";
-						print $o->getField("category");
+						foreach ($tags as $urltag) {
+							$tag = ereg_replace("_", " ", $urltag);
+							print $tag;
+							if ($urltag != end($tags)) print ", ";
+						}
 						print "</category>\n";
 					}
 					
 					if ($o->getField("discuss")) {
 						print "\t\t\t<comments>";
-						print $pagelink.htmlspecialchars("&story=".$o->id."&detail=".$o->id);
+						print $link.$sectionlink.$pagelink.htmlspecialchars("&amp;story=".$o->id."&amp;detail=".$o->id, ENT_QUOTES);
 						print "</comments>\n";
 					}
 					
 					
 					print "<description>";
-					print htmlspecialchars($description, ENT_COMPAT, 'utf-8');
+					print htmlspecialchars($description, ENT_QUOTES, 'utf-8');
 					print "</description>\n";
 					if ($o->getField("type") == "file") {
-						$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id=".$o->getField("longertext"));
+						$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id='".addslashes($o->getField("longertext"))."'");
 						$filename = $b[media_tag];
 						$filename = rawurlencode($filename);
 						if (ereg(".mp3", $filename)) {
@@ -256,11 +471,77 @@ if ($error) {
 						$fileurl = "$uploadurl/$dir/$filename";
 						$filepath = "$uploaddir/$dir/$filename";
 						$filesize = $size;
-						print "<enclosure url='$fileurl' length='$filesize' type='$type' />";					
+						print "<enclosure url='$fileurl' length='$filesize' type='$type' />\n";					
 					}
 
 					
 					print "\t\t</item>\n";
+					
+					/******************************************************************************
+					 * If detail then 1st item is story and rest is discussion...
+					 ******************************************************************************/
+					if ($_REQUEST["detail"]) {
+						//$ds = & new discussion($o);
+						$story_id = $o->getField("id");
+						$query = "
+							SELECT
+								discussion_id,discussion_tstamp,discussion_content,
+								discussion_subject,user_uname,user_fname,FK_story,
+								FK_author,FK_parent,media_tag
+							FROM
+								discussion
+							INNER JOIN
+								user
+							ON
+								FK_author = user_id
+							LEFT JOIN
+								media
+							ON
+								FK_media = media_id
+							WHERE
+								FK_story='".addslashes($story_id)."'
+						";
+				
+						$r = db_query($query);
+						
+						while ($a = db_fetch_assoc($r)) {
+							print "\t\t<item>\n";
+							$title = $a["discussion_subject"];
+							print "\t\t\t<title>".htmlspecialchars(urldecode($title), ENT_QUOTES, 'utf-8')."</title>\n";
+							
+							$storylink = "&amp;story=".$story_id."&amp;detail=".$story_id."#".$a["discussion_id"];
+							$storylink = $storylink = htmlspecialchars($storylink, ENT_QUOTES);
+							$discusslink = $a["discussion_id"];								
+							print "\t\t\t<link>".$link.$sectionlink.$pagelink.$storylink."</link>\n";
+							print "\t\t\t<guid isPermaLink=\"true\">".$link.$sectionlink.$pagelink.$storylink."</guid>\n";
+							
+							print "\t\t\t<pubDate>";
+							print date("D, j M Y G:i:s O", strtotime(timestamp2usdate($a["discussion_tstamp"])));
+							print "</pubDate>\n";
+							
+							print "\t\t\t<author>";
+							print $a["user_fname"];
+							$user_uname = $a["user_uname"];
+							$user_email = db_get_value("user","user_email","user_uname='".addslashes($user_uname)."'");
+							print " ".$user_email."";
+							print "</author>\n";
+							
+							print "\t\t\t<comments>";
+							print $link.$sectionlink.$pagelink.$storylink;
+							print "</comments>\n";
+							
+							$description = $a["discussion_content"];
+							$description = convertTagsToInteralLinks($_REQUEST[site], $description);
+							$description = str_replace("\n", "", $description);
+							$description = str_replace("\r", "", $description);
+							$description = htmlspecialchars(urldecode($description), ENT_QUOTES, 'utf-8');
+							print "<description>";
+							print $description;
+							print "</description>\n";
+							print "\t\t</item>\n";
+														
+						}													
+					}					
 				}
 			} //end foreach stories
 		}

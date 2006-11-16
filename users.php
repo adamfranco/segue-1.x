@@ -93,18 +93,18 @@ $order = $_REQUEST['authtype'];
 
 
 $where = "user_uname LIKE '%'";	
-if ($name) $where = "(user_uname LIKE '%$name%' OR user_fname LIKE '%$name%')";
+if ($name) $where = "(user_uname LIKE '%".addslashes($name)."%' OR user_fname LIKE '%".addslashes($name)."%')";
 
 if ($type == "Any") {
 	$where .= " AND user_type LIKE '%'";
 } else if ($type) {
-	$where .= " AND user_type = '$type'";
+	$where .= " AND user_type = '".addslashes($type)."'";
 }
 
 if ($authtype == "All") {
 	$where .= " AND user_authtype LIKE '%'";
 } else if ($authtype) {
-	$where .= " AND user_authtype = '$authtype'";
+	$where .= " AND user_authtype = '".addslashes($authtype)."'";
 }
 	
 if ($findall) {
@@ -124,14 +124,16 @@ if ($findall) {
 //if $id then editing a user
  if ($id) {	
 	$query = "
-	SELECT
-		user_id,user_uname,user_fname,user_email,user_type,user_authtype
-	FROM
-		user
-	WHERE
-		user_id = $id
-	ORDER BY
-		user_uname ASC";
+		SELECT
+			user_id,user_uname,user_fname,user_email,user_type,user_authtype
+		FROM
+			user
+		WHERE
+			user_id = ".addslashes($id)."
+		ORDER BY
+			user_uname ASC
+	";
+	
 	$r = db_query($query);
 
 //if not editing then get all users by name or type	or authtype
@@ -149,10 +151,25 @@ if ($findall) {
 	$a = db_fetch_assoc($r);
 	$numusers = $a[user_count];
 	
-	if (!isset($lowerlimit)) $lowerlimit = 0;
-	if (!isset($range)) $range = 30;
-	if ($lowerlimit < 0) $lowerlimit = 0;
-	$limit = " LIMIT $lowerlimit,$range";
+	
+	if (isset($_REQUEST['range']))
+		$range = intval($_REQUEST['range']);
+	else
+		$range = 30;
+	
+	
+	if (isset($_REQUEST['lowerlimit']))
+		$lowerlimit = intval($_REQUEST['lowerlimit']);
+	else
+		$lowerlimit = 0;
+		
+		
+	
+	if ($lowerlimit < 0) 
+		$lowerlimit = 0;
+	
+	$limit = " limit $lowerlimit,$range";
+
 
 	
 	$query = "
@@ -164,7 +181,8 @@ if ($findall) {
 		$where
 	ORDER BY
 		user_uname ASC
-	$limit";
+	$limit
+	";
 	
 	$r = db_query($query);
 }
@@ -181,8 +199,8 @@ printerr();
 <title>Users</title>
 <? include("themes/common/logs_css.inc.php"); ?>
 </head>
-<!-- <body onLoad="document.addform.uname.focus()">  -->
-<body onLoad="document.searchform.name.focus()">
+<!-- <body onload="document.addform.uname.focus()">  -->
+<body onload="document.searchform.name.focus()">
 
 <?
 /******************************************************************************
@@ -193,22 +211,22 @@ printerr();
 	$siteid = $siteObj->id;
 
 if ($_SESSION['ltype']=='admin') {
-	print "<table width=100%  class='bg'><tr><td class='bg'>
-	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a> 
-	 | <a href='viewlogs.php?$sid&site=$site'>users</a>
+	print "<table width='100%'  class='bg'><tr><td class='bg'>
+	Logs: <a href='viewsites.php?$sid&amp;site=$site'>sites</a> 
+	 | <a href='viewlogs.php?$sid&amp;site=$site'>users</a>
 	</td><td align='right' class='bg'>
 	add/edit users | 
-	<a href='classes.php?$sid&site=$site'>add/edit classes</a> | 
-	<a href='add_slot.php?$sid&site=$site'>add/edit slots</a> |
-	<a href='update.php?$sid&site=$site'>segue updates</a>
+	<a href='classes.php?$sid&amp;site=$site'>add/edit classes</a> | 
+	<a href='add_slot.php?$sid&amp;site=$site'>add/edit slots</a> |
+	<a href='update.php?$sid&amp;site=$site'>segue updates</a>
 	</td></tr></table>";
 }
 
 if ($site) {
 	print "<div align='right'>";
-	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
-	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
-	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
+	print "<a href='add_students.php?$sid&amp;name=$site'>Roster</a>";
+	print " | <a href='email.php?$sid&amp;siteid=$siteid&amp;site=$site&amp;action=list&amp;scope=site'>Participation</a>";
+	print " | <a href='viewusers.php?$sid&amp;site=$site'>Logs</a>";
 	print "</div><br />";
 }
 
@@ -217,44 +235,48 @@ if ($site) {
 
 <?=$content?>
 
-<table cellspacing=1 width='100%' id='maintable'>
+<table cellspacing='1' width='100%' id='maintable'>
 <tr><td>
 
-	<table cellspacing=1 width='100%'>
+	<table cellspacing='1' width='100%'>
 	<tr><td>
-		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		Name: <input type='text' name='name' size=20 value='<?echo $name?>'> 
+		<form action="<? echo $PHP_SELF ?>" method='get' name='searchform'>
+		Name: <input type='text' name='name' size='20' value='<?echo $name?>' /> 
 		User Type:
-		<select name=type>
-		<option<?=($type=='Any')?" selected":""?>>Any
-		<option<?=($type=='stud')?" selected":""?>>stud
-		<option<?=($type=='prof')?" selected":""?>>prof
-		<option<?=($type=='staff')?" selected":""?>>staff
-		<option<?=($type=='visitor')?" selected":""?>>visitor
-		<option<?=($type=='guest')?" selected":""?>>guest
-		<option<?=($type=='admin')?" selected":""?>>admin
+		<select name='type'>
+			<option<?=($type=='Any')?" selected='selected'":""?>>Any</option>
+			<option<?=($type=='stud')?" selected='selected'":""?>>stud</option>
+			<option<?=($type=='prof')?" selected='selected'":""?>>prof</option>
+			<option<?=($type=='staff')?" selected='selected'":""?>>staff</option>
+			<option<?=($type=='visitor')?" selected='selected'":""?>>visitor</option>
+			<option<?=($type=='guest')?" selected='selected'":""?>>guest</option>
+			<option<?=($type=='admin')?" selected='selected'":""?>>admin</option>
 		</select>
 		<?
 		$query = "
-		SELECT
-			DISTINCT user_authtype
-		FROM
-			user";			
+			SELECT
+				DISTINCT user_authtype
+			FROM
+				user
+		";	
+		
 		$r2 = db_query($query);
 		?>
 		Auth Type:
-		<select name=authtype>
-		<option<?=($authtype=='All')?" selected":""?>>All
+		<select name='authtype'>
+			<option<?=($authtype=='All')?" selected='selected'":""?>>All</option>
 		<?
 		while ($a = db_fetch_assoc($r2)) {
-			print "<option ";
-			($authtype==$a['user_authtype'])? print "selected": print "";
-			print ">".$a['user_authtype'];		
+			print "\n\t\t\t\t<option ";
+			($authtype==$a['user_authtype'])? print "selected='selected'": print "";
+			print ">".$a['user_authtype']."</option>";
 		}	
 		?>
+
 		</select>
-		<input type=submit name='search' value='Find'>
-		<input type=submit name='findall' value='Find All'>
+		<input type='submit' name='search' value='Find' />
+		<input type='submit' name='findall' value='Find All' />
+		</form>
 		</td>
 		<td align='right'>
 		<?
@@ -273,12 +295,10 @@ if ($site) {
 		print "$curr of $tpages ";
 	//	print "(prev=$prev lowerlimit=$lowerlimit next=$next )";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&authtype=$authtype&name=$name&order=$order\"'>\n";
+			print "<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&authtype=$authtype&name=$name&order=$order\"' />\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&authtype=$authtype&name=$name&order=$order\"'>\n";
+			print "<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&authtype=$authtype&name=$name&order=$order\"' />\n";
 		?>
-
-		</form>
 	
 	</td></tr>
 	</table>
@@ -291,7 +311,7 @@ if ($site) {
 	} 
 	
 	?>
-		
+<form method='post' name='addform' action='<? echo $PHP_SELF ?>'>
 	<table width='100%'>
 		<tr>
 		<th>id</th>
@@ -318,67 +338,70 @@ if ($site) {
 				print "<td>".$a['user_email']."</td>";
 				print "<td>".$a['user_type']."</td>";
 				print "<td>".$a['user_authtype']."</td>";
-				print "<td align='center'><nobr>";
+				print "<td align='center'><span style='white-space: nowrap;'>";
 				if ($a['user_authtype'] == "db") {
-					print "<a href='users.php?$sid&name=$name&type=$type&action=del&id=".$a['user_id']."&delname=".$a['user_uname']."'>del</a> | \n";
+					print "<a href='users.php?$sid&amp;name=$name&amp;type=$type&amp;action=del&amp;id=".$a['user_id']."&amp;delname=".$a['user_uname']."'>del</a> | \n";
 				} else {
 					print "del | \n";
 				}
-				print "<a href='users.php?$sid&name=$name&type=$type&action=edit&id=".$a['user_id']."'>edit</a>\n";
+				print "<a href='users.php?$sid&amp;name=$name&amp;type=$type&amp;action=edit&amp;id=".$a['user_id']."'>edit</a>\n";
 				if ($a['user_authtype'] == "db") {
-					print " | <a href='users.php?$sid&name=$name&type=$type&action=resetpw&id=".$a['user_id']."'>reset pwd</a>\n";
+					print " | <a href='users.php?$sid&amp;name=$name&amp;type=$type&amp;action=resetpw&amp;id=".$a['user_id']."'>reset pwd</a>\n";
 				} else {
 					print " | reset pwd\n";
 				}
-				print "</nobr></td>";
+				print "</span></td>";
 				print "</tr>";
 			}
 		}
 		?>
-	</table>	
+	</table>
+</form>
 </td></tr>
 </table>
 
 <br />
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type='button' value='Close Window' onclick='window.close()' /></div>
 <?
 function doUserForm($a,$p='',$e=0) {
 	?>
-	<form method='post' name='addform'>
+	
 	<tr>
-	<td><?=($e)?$a[$p.'id']:"&nbsp"?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='uname' size=10 value=\"".$a[$p.'uname']."\">":$a[$p.'uname']?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='fname' size=20 value=\"".$a[$p.'fname']."\">":$a[$p.'fname']?></td>
-	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='email' size=30 value=\"".$a[$p.'email']."\">":$a[$p.'email']?></td>
-	<td><select name=type>
-		<option<?=($a[$p.'type']=='stud')?" selected":""?>>stud
-		<option<?=($a[$p.'type']=='prof')?" selected":""?>>prof
-		<option<?=($a[$p.'type']=='staff')?" selected":""?>>staff
-		<option<?=($a[$p.'type']=='visitor')?" selected":""?>>visitor
-		<option<?=($a[$p.'type']=='guest')?" selected":""?>>guest
-		<option<?=($a[$p.'type']=='admin')?" selected":""?>>admin
+	<td><?=($e)?$a[$p.'id']:"&nbsp;"?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='uname' size='10' value=\"".$a[$p.'uname']."\" />":$a[$p.'uname']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='fname' size='20' value=\"".$a[$p.'fname']."\" />":$a[$p.'fname']?></td>
+	<td><?=($a[$p.'authtype'] == "db" || !$e)?"<input type='text' name='email' size='30' value=\"".$a[$p.'email']."\" />":$a[$p.'email']?></td>
+	<td><select name='type'>
+		<option<?=($a[$p.'type']=='stud')?" selected='selected'":""?>>stud</option>
+		<option<?=($a[$p.'type']=='prof')?" selected='selected'":""?>>prof</option>
+		<option<?=($a[$p.'type']=='staff')?" selected='selected'":""?>>staff</option>
+		<option<?=($a[$p.'type']=='visitor')?" selected='selected'":""?>>visitor</option>
+		<option<?=($a[$p.'type']=='guest')?" selected='selected'":""?>>guest</option>
+		<option<?=($a[$p.'type']=='admin')?" selected='selected'":""?>>admin</option>
 	</select>
 	</td>
 	<td><?=($e)?$a[$p.'authtype']:"db"?></td>
 	<td align='center'>
-	<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
+	<input type='hidden' name='action' value='<?=($e)?"edit":"add"?>' />
 	<?
 	if ($e) {
-		print "<input type=hidden name='id' value='".$a[$p."id"]."'><input type=hidden name=commit value=1>";
+		print "<input type='hidden' name='id' value='".$a[$p."id"]."' /><input type='hidden' name='commit' value='1' />";
 		if ($a[$p.'authtype'] != "db") {
-			print "<input type=hidden name='uname' value=\"".$a[$p.'uname']."\">";
-			print "<input type=hidden name='fname' value=\"".$a[$p.'fname']."\">";
-			print "<input type=hidden name='email' value=\"".$a[$p.'email']."\">";
+			print "<input type='hidden' name='uname' value=\"".$a[$p.'uname']."\" />";
+			print "<input type='hidden' name='fname' value=\"".$a[$p.'fname']."\" />";
+			print "<input type='hidden' name='email' value=\"".$a[$p.'email']."\" />";
 		}
 	} else {
 		print "";
 	}	
 	?>
-	<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add user"?></a>
+	<a href='#' onclick='document.addform.submit()'><?=($e)?"update":"add user"?></a>
 	<!-- | <a href='users.php'>cancel</a> -->
 	</td>
 	</tr>
-	</form>
 	<?
 }
 ?>
+
+</body>
+</html>

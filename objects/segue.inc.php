@@ -42,7 +42,7 @@ class segue {
 		$query = "
 SELECT site_id
 	FROM slot INNER JOIN site
-		ON FK_site = site_id AND slot_name='$site'
+		ON FK_site = site_id AND slot_name='".addslashes($site)."'
 ";
 
 //		echo $query."<br />";
@@ -87,7 +87,7 @@ FROM
 	user
 		ON FK_owner = user_id
 			AND
-		user_uname = '$user'
+		user_uname = '".addslashes($user)."'
 ";
 
 		if (db_num_rows($r = db_query($query)))
@@ -121,7 +121,7 @@ FROM
 					site_editors_type = 'user'
 				)
 					INNER JOIN
-				user ON FK_editor = user_id AND user_uname='$user'
+				user ON FK_editor = user_id AND user_uname='".addslashes($user)."'
 			WHERE
 				slot.FK_owner != user_id
 		";
@@ -153,7 +153,9 @@ FROM
 					INNER JOIN
 				ugroup_user ON ugroup_id = FK_ugroup
 					INNER JOIN
-				user ON FK_user = user_id AND user_uname='$user'";
+				user ON FK_user = user_id AND user_uname='".addslashes($user)."'
+		";
+		
 		$r = db_query($query);
 		if (db_num_rows($r))
 			while ($a = db_fetch_assoc($r)) {
@@ -174,73 +176,74 @@ FROM
 		global $dbhost, $dbuser, $dbpass, $dbdb;
 		if ($user == '') $user = $_SESSION[auser];
 		
-		$userId = db_get_value("user","user_id","user_uname='$user'");
+		$userId = db_get_value("user","user_id","user_uname='".addslashes($user)."'");
 		
 		$query = "
-SELECT
-	slot_name,
-	(site_id IS NOT NULL) AS site_exists,
-	slot_owner.user_uname AS owner_uname,
-	(site_id IS NOT NULL) AS site_exists,
-	site_title,
-	(classgroup_id IS NOT NULL) AS is_classgroup,
-	createdby.user_uname AS site_addedby,
-	site_created_tstamp,
-	editedby.user_uname AS site_editedby,
-	site_updated_tstamp,
-	site_activate_tstamp,
-	site_deactivate_tstamp,
-	(	site_active = '1'
-		AND (site_activate_tstamp = '00000000000000'
-			OR site_activate_tstamp < CURRENT_TIMESTAMP())
-		AND (site_deactivate_tstamp = '00000000000000'
-			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
-	) AS is_active,
-	permission_scope_type,
-	permission_value
-FROM
-	slot
-		INNER JOIN
-	site ON slot.FK_site = site_id
-		INNER JOIN
-			user AS slot_owner ON (
-								slot.FK_owner != '$userId'
-								AND	slot.FK_owner = slot_owner.user_id
-								)
-		INNER JOIN 
-	site_editors ON (
-				site_id = site_editors.FK_site 
-				AND ((site_editors_type = 'ugroup')
-					OR (site_editors_type = 'user'
-						AND site_editors.FK_editor = '$userId'))
-				)
-		LEFT JOIN
-	ugroup_user ON (
-				site_editors_type = 'ugroup'
-				AND site_editors.FK_editor = FK_ugroup)
-		INNER JOIN
-	permission ON (
-				permission_scope_type = 'site'
-				AND permission.FK_scope_id = site_id
-				AND FIND_IN_SET('a', permission_value) > 0
-				AND FIND_IN_SET('e', permission_value) > 0
-				AND FIND_IN_SET('d', permission_value) > 0
-				AND (permission.FK_editor = FK_ugroup
-					OR (permission.FK_editor = site_editors.FK_editor
-						AND permission.FK_editor = '$userId'))
-				)
-		LEFT JOIN
-			classgroup ON slot_name = classgroup_name
-		INNER JOIN
-			user AS createdby ON site.FK_createdby = createdby.user_id
-		INNER JOIN
-			user AS editedby ON site.FK_updatedby = editedby.user_id
-WHERE
-	(site_editors_type = 'ugroup'
-		AND ugroup_user.FK_user = '$userId')
-	OR (site_editors_type = 'user'
-		AND site_editors.FK_editor = '$userId')
-";
+			SELECT
+				slot_name,
+				(site_id IS NOT NULL) AS site_exists,
+				slot_owner.user_uname AS owner_uname,
+				(site_id IS NOT NULL) AS site_exists,
+				site_title,
+				(classgroup_id IS NOT NULL) AS is_classgroup,
+				createdby.user_uname AS site_addedby,
+				site_created_tstamp,
+				editedby.user_uname AS site_editedby,
+				site_updated_tstamp,
+				site_activate_tstamp,
+				site_deactivate_tstamp,
+				(	site_active = '1'
+					AND (site_activate_tstamp = '00000000000000'
+						OR site_activate_tstamp < CURRENT_TIMESTAMP())
+					AND (site_deactivate_tstamp = '00000000000000'
+						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+				) AS is_active,
+				permission_scope_type,
+				permission_value
+			FROM
+				slot
+					INNER JOIN
+				site ON slot.FK_site = site_id
+					INNER JOIN
+						user AS slot_owner ON (
+											slot.FK_owner != '".addslashes($userId)."'
+											AND	slot.FK_owner = slot_owner.user_id
+											)
+					INNER JOIN 
+				site_editors ON (
+							site_id = site_editors.FK_site 
+							AND ((site_editors_type = 'ugroup')
+								OR (site_editors_type = 'user'
+									AND site_editors.FK_editor = '".addslashes($userId)."'))
+							)
+					LEFT JOIN
+				ugroup_user ON (
+							site_editors_type = 'ugroup'
+							AND site_editors.FK_editor = FK_ugroup)
+					INNER JOIN
+				permission ON (
+							permission_scope_type = 'site'
+							AND permission.FK_scope_id = site_id
+							AND FIND_IN_SET('a', permission_value) > 0
+							AND FIND_IN_SET('e', permission_value) > 0
+							AND FIND_IN_SET('d', permission_value) > 0
+							AND (permission.FK_editor = FK_ugroup
+								OR (permission.FK_editor = site_editors.FK_editor
+									AND permission.FK_editor = '".addslashes($userId)."'))
+							)
+					LEFT JOIN
+						classgroup ON slot_name = classgroup_name
+					INNER JOIN
+						user AS createdby ON site.FK_createdby = createdby.user_id
+					INNER JOIN
+						user AS editedby ON site.FK_updatedby = editedby.user_id
+			WHERE
+				(site_editors_type = 'ugroup'
+					AND ugroup_user.FK_user = '".addslashes($userId)."')
+				OR (site_editors_type = 'user'
+					AND site_editors.FK_editor = '".addslashes($userId)."')
+		";
+		
 		$r = db_query($query);
 		if (db_num_rows($r))
 			while ($a = db_fetch_assoc($r))
@@ -259,88 +262,89 @@ WHERE
 		if ($user == '') 
 			$user = $_SESSION[auser];
 		
-		$userId = db_get_value("user","user_id","user_uname='$user'");
+		$userId = db_get_value("user","user_id","user_uname='".addslashes($user)."'");
 
 		$query = "
-SELECT
-	slot_name,
-	slot_type,
-	slot_owner.user_uname AS owner_uname,
-	(site_id IS NOT NULL) AS site_exists,
-	site_title,
-	(classgroup_id IS NOT NULL) AS is_classgroup,
-	createdby.user_uname AS site_addedby,
-	site_created_tstamp,
-	editedby.user_uname AS site_editedby,
-	site_updated_tstamp,
-	site_activate_tstamp,
-	site_deactivate_tstamp,
-	(	site_active = '1'
-		AND (site_activate_tstamp = '00000000000000'
-			OR site_activate_tstamp < CURRENT_TIMESTAMP())
-		AND (site_deactivate_tstamp = '00000000000000'
-			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
-	) AS is_active,
-	permission_scope_type,
-	permission_value
-FROM
-	slot
-		INNER JOIN
-	site ON slot.FK_site = site_id
-		INNER JOIN
-			user AS slot_owner ON (
-								slot.FK_owner = slot_owner.user_id
-								AND	slot.FK_owner != '$userId'	
-								)
-		INNER JOIN 
-	site_editors ON (
-				site_id = site_editors.FK_site 
-				AND ((site_editors_type = 'ugroup')
-					OR (site_editors_type = 'user'
-						AND site_editors.FK_editor = '$userId'))
-				)
-		LEFT JOIN
-	ugroup_user ON (
-				site_editors_type = 'ugroup'
-				AND site_editors.FK_editor = FK_ugroup)
-		LEFT JOIN
-	section ON section.FK_site = site_id
-		LEFT JOIN
-	page ON page.FK_section = section_id
-		LEFT JOIN
-	story ON story.FK_page = page_id
-		INNER JOIN
-	permission ON (
-					(permission.FK_editor = FK_ugroup
-						OR (permission.FK_editor = site_editors.FK_editor
-							AND permission.FK_editor = '$userId'))
-					AND ((permission_scope_type = 'site'
-							AND permission.FK_scope_id = site_id)
-						OR (permission_scope_type = 'section'
-							AND permission.FK_scope_id = section_id)
-						OR (permission_scope_type = 'page'
-							AND permission.FK_scope_id = page_id)
-						OR (permission_scope_type = 'story'
-							AND permission.FK_scope_id = story_id))
-					AND (FIND_IN_SET('a', permission_value) > 0
-						OR FIND_IN_SET('e', permission_value) > 0
-						OR FIND_IN_SET('d', permission_value) > 0)
-				)
-		LEFT JOIN
-			classgroup ON slot_name = classgroup_name
-		LEFT JOIN
-			user AS createdby ON site.FK_createdby = createdby.user_id
-		LEFT JOIN
-			user AS editedby ON site.FK_updatedby = editedby.user_id
-WHERE
-	(site_editors_type = 'ugroup'
-		AND ugroup_user.FK_user = '$userId')
-	OR (site_editors_type = 'user'
-		AND site_editors.FK_editor = '$userId')
-GROUP BY
-	slot_name, 
-	permission_value
+			SELECT
+				slot_name,
+				slot_type,
+				slot_owner.user_uname AS owner_uname,
+				(site_id IS NOT NULL) AS site_exists,
+				site_title,
+				(classgroup_id IS NOT NULL) AS is_classgroup,
+				createdby.user_uname AS site_addedby,
+				site_created_tstamp,
+				editedby.user_uname AS site_editedby,
+				site_updated_tstamp,
+				site_activate_tstamp,
+				site_deactivate_tstamp,
+				(	site_active = '1'
+					AND (site_activate_tstamp = '00000000000000'
+						OR site_activate_tstamp < CURRENT_TIMESTAMP())
+					AND (site_deactivate_tstamp = '00000000000000'
+						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+				) AS is_active,
+				permission_scope_type,
+				permission_value
+			FROM
+				slot
+					INNER JOIN
+				site ON slot.FK_site = site_id
+					INNER JOIN
+						user AS slot_owner ON (
+											slot.FK_owner = slot_owner.user_id
+											AND	slot.FK_owner != '".addslashes($userId)."'	
+											)
+					INNER JOIN 
+				site_editors ON (
+							site_id = site_editors.FK_site 
+							AND ((site_editors_type = 'ugroup')
+								OR (site_editors_type = 'user'
+									AND site_editors.FK_editor = '".addslashes($userId)."'))
+							)
+					LEFT JOIN
+				ugroup_user ON (
+							site_editors_type = 'ugroup'
+							AND site_editors.FK_editor = FK_ugroup)
+					LEFT JOIN
+				section ON section.FK_site = site_id
+					LEFT JOIN
+				page ON page.FK_section = section_id
+					LEFT JOIN
+				story ON story.FK_page = page_id
+					INNER JOIN
+				permission ON (
+								(permission.FK_editor = FK_ugroup
+									OR (permission.FK_editor = site_editors.FK_editor
+										AND permission.FK_editor = '$userId'))
+								AND ((permission_scope_type = 'site'
+										AND permission.FK_scope_id = site_id)
+									OR (permission_scope_type = 'section'
+										AND permission.FK_scope_id = section_id)
+									OR (permission_scope_type = 'page'
+										AND permission.FK_scope_id = page_id)
+									OR (permission_scope_type = 'story'
+										AND permission.FK_scope_id = story_id))
+								AND (FIND_IN_SET('a', permission_value) > 0
+									OR FIND_IN_SET('e', permission_value) > 0
+									OR FIND_IN_SET('d', permission_value) > 0)
+							)
+					LEFT JOIN
+						classgroup ON slot_name = classgroup_name
+					LEFT JOIN
+						user AS createdby ON site.FK_createdby = createdby.user_id
+					LEFT JOIN
+						user AS editedby ON site.FK_updatedby = editedby.user_id
+			WHERE
+				(site_editors_type = 'ugroup'
+					AND ugroup_user.FK_user = '".addslashes($userId)."')
+				OR (site_editors_type = 'user'
+					AND site_editors.FK_editor = '".addslashes($userId)."')
+			GROUP BY
+				slot_name, 
+				permission_value
 		";
+					
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			while ($a = db_fetch_assoc($r))
@@ -360,44 +364,45 @@ GROUP BY
 		if ($user == '') $user = $_SESSION[auser];
 
 		$query = "
-SELECT
-	slot_name,
-	slot_type,
-	slot_owner.user_uname AS owner_uname,
-	(site_id IS NOT NULL) AS site_exists,
-	site_title,
-	(classgroup_id IS NOT NULL) AS is_classgroup,
-	createdby.user_uname AS site_addedby,
-	site_created_tstamp,
-	editedby.user_uname AS site_editedby,
-	site_updated_tstamp,
-	site_activate_tstamp,
-	site_deactivate_tstamp,
-	(	site_active = '1'
-		AND (site_activate_tstamp = '00000000000000'
-			OR site_activate_tstamp < CURRENT_TIMESTAMP())
-		AND (site_deactivate_tstamp = '00000000000000'
-			OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
-	) AS is_active
-FROM
-	slot
-		INNER JOIN
-			user AS slot_owner ON (
-									slot.FK_owner = slot_owner.user_id
-								AND
-									slot_owner.user_uname = '$user'
-								)
-		INNER JOIN
-	site ON slot.FK_site = site_id
-		INNER JOIN
-			user AS createdby ON site.FK_createdby = createdby.user_id
-		INNER JOIN
-			user AS editedby ON site.FK_updatedby = editedby.user_id
-		LEFT JOIN
-			classgroup ON slot_name = classgroup_name
-GROUP BY
-	slot_name
+			SELECT
+				slot_name,
+				slot_type,
+				slot_owner.user_uname AS owner_uname,
+				(site_id IS NOT NULL) AS site_exists,
+				site_title,
+				(classgroup_id IS NOT NULL) AS is_classgroup,
+				createdby.user_uname AS site_addedby,
+				site_created_tstamp,
+				editedby.user_uname AS site_editedby,
+				site_updated_tstamp,
+				site_activate_tstamp,
+				site_deactivate_tstamp,
+				(	site_active = '1'
+					AND (site_activate_tstamp = '00000000000000'
+						OR site_activate_tstamp < CURRENT_TIMESTAMP())
+					AND (site_deactivate_tstamp = '00000000000000'
+						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+				) AS is_active
+			FROM
+				slot
+					INNER JOIN
+						user AS slot_owner ON (
+												slot.FK_owner = slot_owner.user_id
+											AND
+												slot_owner.user_uname = '".addslashes($user)."'
+											)
+					INNER JOIN
+				site ON slot.FK_site = site_id
+					INNER JOIN
+						user AS createdby ON site.FK_createdby = createdby.user_id
+					INNER JOIN
+						user AS editedby ON site.FK_updatedby = editedby.user_id
+					LEFT JOIN
+						classgroup ON slot_name = classgroup_name
+			GROUP BY
+				slot_name
 		";
+					
 		$r = db_query($query);
 		if (db_num_rows($r)) {
 			while ($a = db_fetch_assoc($r))
@@ -696,12 +701,14 @@ GROUP BY
 			$this->insertDB(1, $owning_site, $owning_section, $removeOrigional, $keepaddedby, $copyDiscussions);
 		}
 		if ($thisClass == 'story') {
+			$record_tags = get_record_tags($this->id);
+			
 			$owning_site = $newParent->owning_site;
 			$owning_section = $newParent->owning_section;
 			$owning_page = $newParent->id;
 			$this->id = 0;	// createSQLArray uses this to tell if we are inserting or updating
 /* 			print "insertDB: 1,$owning_site,$owning_section,$owning_page,$keepaddedby<br />"; */
-			$this->insertDB(1, $owning_site, $owning_section, $owning_page, $removeOrigional, $keepaddedby, $copyDiscussions);
+			$this->insertDB(1, $owning_site, $owning_section, $owning_page, $removeOrigional, $keepaddedby, $copyDiscussions, $record_tags);
 		}
 
 /* 		print_r($newParent); */
@@ -785,10 +792,10 @@ GROUP BY
 	function outputDateForm() {
 		global $months, $months_values;
 	//	print_r($_SESSION[settings][activatedate]);
-		printc("<input type=hidden name='setformdates' value=1>");
+		printc("<input type='hidden' name='setformdates' value='1' />");
 		printc("<table>");
 		printc("<tr><td align='right'>");
-		printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>");
+		printc("Activate date:</td><td><input type='checkbox' name='activatedate' value='1'".(($_SESSION[settings][activatedate])?" checked='checked'":"")." /> <select name='activateday'>");
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">".$i."\n");
 		}
@@ -808,7 +815,7 @@ GROUP BY
 		printc("</td></tr>");
 		
 		printc("<tr><td align='right'>");
-		printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>");
+		printc("Deactivate date:</td><td><input type='checkbox' name='deactivatedate' value='1'".(($_SESSION[settings][deactivatedate])?" checked='checked'":"")." /> <select name='deactivateday'>");
 		for ($i=1;$i<=31;$i++) {
 			printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">".$i."\n");
 		}
@@ -919,19 +926,19 @@ GROUP BY
 		if (count($textarray1) > 1) {
 			for ($i=1; $i < count($textarray1); $i+=2) {
 				$id = $textarray1[$i];
-				$filename = db_get_value("media","media_tag","media_id=$id");
+				$filename = db_get_value("media","media_tag","media_id='".addslashes($id)."'");
 				$query = "
-SELECT 
-	slot_name 
-FROM
-	media 
-		INNER JOIN 
-	site ON media.FK_site = site_id
-		INNER JOIN
-	slot ON site_id = slot.FK_site
-WHERE
-	media_id = $id
-";
+					SELECT 
+						slot_name 
+					FROM
+						media 
+							INNER JOIN 
+						site ON media.FK_site = site_id
+							INNER JOIN
+						slot ON site_id = slot.FK_site
+					WHERE
+						media_id = '".addslashes($id)."'
+				";
 				$a = db_fetch_assoc(db_query($query));
 				$dir = $a[slot_name];
 				$filepath = $uploadurl."/".$dir."/".$filename;
@@ -1001,8 +1008,16 @@ WHERE
 		if (strtolower($user) == strtolower($owner)) return 1;
 		$toCheck = array(strtolower($user));
 		$toCheck = array_merge($toCheck,$this->returnEditorOverlap(getuserclasses($user,"all")));
+		$toCheck = array_merge($toCheck, getusergroups($user,"all"));
+		
+		$toCheck = array_unique($toCheck);
+		
+//		printpre("-----------------------------\nDebugging:");
+//		printpre(__FILE__.": ".__LINE__);
 // 		printpre($toCheck);
 // 		printpre($this->editors);
+// 		printpre("-----------------------------");
+
 		foreach ($this->editors as $e) {
 			if (in_array($e,$toCheck)) return 1;
 		}
@@ -1047,7 +1062,7 @@ WHERE
 	function getEditors() {
 		if (!$this->builtPermissions && $this->id)
 			$this->buildPermissionsArray(0,0);
-		return $this->editors;
+		return array_unique($this->editors);
 	}
 	
 	function setPermissions($p) {
@@ -1304,69 +1319,69 @@ FROM
 
 		// CASE 4: scope is PAGE
 		else if ($scope == 'story') {
-		$query = "
-SELECT
-	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0) | IFNULL(p4.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
-FROM
-	site
-		INNER JOIN
-	section
-		ON site_id = section.FK_site
-		INNER JOIN
-	page
-		ON section_id = page.FK_section
-		INNER JOIN
-	story
-		ON page_id = story.FK_page
-			AND
-		story_id = ".$this->id."
-		INNER JOIN
-	site_editors ON
-		site_id = site_editors.FK_site
-		LEFT JOIN
-	user ON
-		site_editors.FK_editor = user_id
-		LEFT JOIN
-	ugroup ON
-		site_editors.FK_editor = ugroup_id
-		LEFT JOIN
-	permission as p1 ON
-		site_id  = p1.FK_scope_id
-			AND
-		p1.permission_scope_type = 'site'
-			AND
-		p1.FK_editor <=> site_editors.FK_editor
-			AND
-		p1.permission_editor_type = site_editors_type
-		LEFT JOIN 
-	permission as p2 ON
-		section_id  = p2.FK_scope_id
-			AND
-		p2.permission_scope_type = 'section'
-			AND
-		p2.FK_editor <=> site_editors.FK_editor
-			AND
-		p2.permission_editor_type = site_editors_type
-		LEFT JOIN
-	permission as p3 ON
-		page_id  = p3.FK_scope_id
-			AND
-		p3.permission_scope_type = 'page'
-			AND
-		p3.FK_editor <=> site_editors.FK_editor
-			AND
-		p3.permission_editor_type = site_editors_type
-		LEFT JOIN
-	permission as p4 ON
-		story_id = p4.FK_scope_id
-			AND
-		p4.permission_scope_type = 'story'
-			AND
-		p4.FK_editor <=> site_editors.FK_editor
-			AND
-		p4.permission_editor_type = site_editors_type
-";
+			$query = "
+				SELECT
+					user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
+					MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0) | IFNULL(p4.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+				FROM
+					site
+						INNER JOIN
+					section
+						ON site_id = section.FK_site
+						INNER JOIN
+					page
+						ON section_id = page.FK_section
+						INNER JOIN
+					story
+						ON page_id = story.FK_page
+							AND
+						story_id = '".addslashes($this->id)."'
+						INNER JOIN
+					site_editors ON
+						site_id = site_editors.FK_site
+						LEFT JOIN
+					user ON
+						site_editors.FK_editor = user_id
+						LEFT JOIN
+					ugroup ON
+						site_editors.FK_editor = ugroup_id
+						LEFT JOIN
+					permission as p1 ON
+						site_id  = p1.FK_scope_id
+							AND
+						p1.permission_scope_type = 'site'
+							AND
+						p1.FK_editor <=> site_editors.FK_editor
+							AND
+						p1.permission_editor_type = site_editors_type
+						LEFT JOIN 
+					permission as p2 ON
+						section_id  = p2.FK_scope_id
+							AND
+						p2.permission_scope_type = 'section'
+							AND
+						p2.FK_editor <=> site_editors.FK_editor
+							AND
+						p2.permission_editor_type = site_editors_type
+						LEFT JOIN
+					permission as p3 ON
+						page_id  = p3.FK_scope_id
+							AND
+						p3.permission_scope_type = 'page'
+							AND
+						p3.FK_editor <=> site_editors.FK_editor
+							AND
+						p3.permission_editor_type = site_editors_type
+						LEFT JOIN
+					permission as p4 ON
+						story_id = p4.FK_scope_id
+							AND
+						p4.permission_scope_type = 'story'
+							AND
+						p4.FK_editor <=> site_editors.FK_editor
+							AND
+						p4.permission_editor_type = site_editors_type
+				";
 		}
 
 		// execute the query
@@ -1432,11 +1447,11 @@ FROM
 			// set the permissions for this editor
 //			$this->permissions[strtolower($t_editor)] = array(
 			$this->permissions[$t_editor] = array(
-				permissions::ADD()=>$a[a], 
-				permissions::EDIT()=>$a[e], 
-				permissions::DELETE()=>$a[d], 
-				permissions::VIEW()=>$a[v], 
-				permissions::DISCUSS()=>$a[di]
+				permissions::ADD()=>($a[a] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::ADD()])), 
+				permissions::EDIT()=>($a[e] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::EDIT()])), 
+				permissions::DELETE()=>($a[d] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::DELETE()])), 
+				permissions::VIEW()=>($a[v] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::VIEW()])), 
+				permissions::DISCUSS()=>($a[di] || ($this->permissions[$t_editor] && $this->permissions[$t_editor][permissions::DISCUSS()]))
 			);
 			
 			// now add the editor to the editor array
@@ -1614,7 +1629,7 @@ FROM
 				}
 				else if ($ugroup_id = ugroup::getGroupID($editor)) {
 					$ed_type = 'ugroup';
-					$ed_id = $ugroup_id;
+					$ed_id = "'".addslashes($ugroup_id)."'";
 				}
 				else {
 					$ed_type = 'user';
@@ -1623,7 +1638,7 @@ FROM
 					synchronizeLocalUserAndClassDB($editor);
 					
 					// need to fetch the id from the user table
-					$query = "SELECT user_id FROM user WHERE user_uname = '$editor'";
+					$query = "SELECT user_id FROM user WHERE user_uname = '".addslashes($editor)."'";
 					$r = db_query($query);
 					if (!db_num_rows($r)) {
 						echo $query."<br />";
@@ -1631,7 +1646,7 @@ FROM
 					}
 					
 					$arr = db_fetch_assoc($r);
-					$ed_id = $arr['user_id'];
+					$ed_id = "'".addslashes($arr['user_id'])."'";
 				}
 
 //				echo "<br /><br /><b>***** New permissions in $scope #$id with editor $editor: '".$p_new_str."'</b><br />";
@@ -1643,29 +1658,29 @@ FROM
 					$site_id = $id;
 				else
 					$site_id = $this->owningSiteObj->id;
-					
-					
+										
 					$query = "
-SELECT
-	FK_editor
-FROM
-	site_editors
-WHERE
-	FK_editor <=> $ed_id AND
-	site_editors_type = '$ed_type' AND
-	FK_site = $site_id
-";
+						SELECT
+							FK_editor
+						FROM
+							site_editors
+						WHERE
+							FK_editor <=> ".$ed_id." AND
+							site_editors_type = '".addslashes($ed_type)."' AND
+							FK_site = '".addslashes($site_id)."'
+					";
+					
 //					echo $query."<br />";
 					$r_editor = db_query($query); // this query checks to see if the editor is in the site_editors table
 					// if the editor is not in the site_editors then insert him
 					if (!db_num_rows($r_editor)) {
 						$query = "
-INSERT
-INTO site_editors
-	(FK_site, FK_editor, site_editors_type)
-VALUES
-	($site_id, $ed_id, '$ed_type')
-";					
+							INSERT
+							INTO site_editors
+								(FK_site, FK_editor, site_editors_type)
+							VALUES
+								('".addslashes($site_id)."', ".$ed_id.", '".addslashes($ed_type)."')
+						";					
 
 //					echo $query."<br />";
 						db_query($query);
@@ -1679,15 +1694,16 @@ VALUES
 				// if not, insert it
 				
 				$query = "
-SELECT 
-	permission_id 
-FROM permission 
-WHERE 
-	permission_scope_type='$scope' AND 
-	FK_scope_id=$id AND 
-	FK_editor <=> $ed_id AND 
-	permission_editor_type = '$ed_type'
-";
+					SELECT 
+						permission_id 
+					FROM 
+						permission 
+					WHERE 
+						permission_scope_type='".addslashes($scope)."' AND 
+						FK_scope_id='".addslashes($id)."' AND 
+						FK_editor <=> ".$ed_id." AND 
+						permission_editor_type = '".addslashes($ed_type)."'
+				";
 				
 
 //				echo $query."<br />";
@@ -1698,13 +1714,29 @@ WHERE
 					$a = db_fetch_assoc($r_perm);
 					// if we are changing the permissions, update the db
 					if ($p_new_str) {
-						$query = "UPDATE permission SET permission_value='$p_new_str' WHERE permission_id = ".$a[permission_id];
+					
+						$query = "
+							UPDATE 
+								permission 
+							SET 
+								permission_value='".addslashes($p_new_str)."' 
+							WHERE 
+								permission_id = '".addslashes($a[permission_id])."'
+						";
+						
 //						echo $query."<br />";
 						db_query($query);
 					}
 					// if we are clearing the permissions, delete the entry from the db
 					else {
-						$query = "DELETE FROM permission WHERE permission_id = ".$a[permission_id];
+					
+						$query = "
+							DELETE FROM 
+								permission 
+							WHERE 
+								permission_id = '".addslashes($a[permission_id])."'
+						";
+						
 						db_query($query);
 					}
 				}
@@ -1712,11 +1744,11 @@ WHERE
 				else if ($p_new_str) {
 					// need to insert permissions
 					$query = "
-INSERT
-INTO permission
-	(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
-VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
-";
+						INSERT
+						INTO permission
+							(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
+						VALUES (".$ed_id.", '".addslashes($ed_type)."', '".addslashes($id)."', '".addslashes($scope)."', '".addslashes($p_new_str)."')
+					";
 //						echo $query."<br />";
 					db_query($query);
 				}
@@ -1733,7 +1765,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 	function deletePendingEditors() {
 			// if user wants to delete editors, remove their permissions from site_editors
 			foreach ($this->editorsToDelete as $e) {
-					$query = "SELECT user_id FROM user WHERE user_uname = '$e'";
+					$query = "SELECT user_id FROM user WHERE user_uname = '".addslashes($e)."'";
 					$r = db_query($query);
 					$arr = db_fetch_assoc($r);
 					$ed_id = $arr['user_id'];
@@ -1744,7 +1776,18 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 						$ed_type = 'ugroup';
 					}
 					if ($ed_id) {
-						$query = "DELETE FROM site_editors WHERE FK_editor = $ed_id AND site_editors_type = '$ed_type' AND FK_site = ".$this->owningSiteObj->id;
+						$query = "
+							DELETE FROM 
+								site_editors
+							WHERE 
+								FK_editor = $ed_id 
+								AND 
+								site_editors_type = '".addslashes($ed_type)."' 
+								AND 
+								FK_site = '".addslashes($this->owningSiteObj->id)."'
+						";
+						
+						
 						$r = db_query($query);
 					}
 			}
@@ -1984,7 +2027,7 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 			
 			// ----- classes ------
 			$classesUserIsIn = $this->returnEditorOverlap($allclasses[$_SESSION['auser']]);
-			$entitiesToCheck = array_merge($classesUserIsIn, $entitiesToCheck);
+			$entitiesToCheck = array_merge($classesUserIsIn, $entitiesToCheck, getusergroups($_SESSION['auser']));
 		}
 		
 		$entitiesToCheck = array_unique($entitiesToCheck);
@@ -1995,7 +2038,16 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		foreach ($entitiesToCheck as $entity) {
 			$evalString = $perms;
 			foreach ($validGrants as $grant) {
-				$evalString = str_replace($grant,'$permissions[\''.$entity.'\'][permissions::'.strtoupper($grant).'()]',$evalString);
+				$replacement = ' $permissions[\''.addslashes($entity).'\'][permissions::'.strtoupper($grant).'()] ';
+				
+				// check for just the grant in a string
+				$evalString = preg_replace('/^'.$grant.'$/', $replacement, $evalString);
+				// check for the grant at the begining of a string
+				$evalString = preg_replace('/^'.$grant.'\\s/', $replacement, $evalString);
+				// check for the grant in the middle of the string
+				$evalString = preg_replace('/\\s'.$grant.'\\s/', $replacement, $evalString);
+				// check for the grant at the end of the string
+				$evalString = preg_replace('/\\s'.$grant.'$/', $replacement, $evalString);
 			}
 			$evalStrings[] = "(".$evalString.")";
 		}
@@ -2009,8 +2061,11 @@ VALUES ($ed_id, '$ed_type', $id, '$scope', '$p_new_str')
 		$hasPermission = FALSE;
 		// 'OR' the permissions of each entity together so that if one is valid,
 		// the user has permission.
-		$condition = '$hasPermission = ('.implode(' || ',$evalStrings).')?TRUE:FALSE;';
+		$condition = '$hasPermission = ('.implode(" || ",$evalStrings).')?TRUE:FALSE;';
+// 		printOb0("\n<hr/>");
+// 		printOb0(printpre($condition, true));
 		eval($condition);
+// 		printOb0("<br/><br/>HasPermission=".var_dumpPre($hasPermission, true));
 		
 		// Cache the permissions
 		if ($useronly)

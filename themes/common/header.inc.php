@@ -1,4 +1,28 @@
-<script lang='JavaScript'>
+<script type='text/javascript'>
+// <![CDATA[
+
+
+function addTag(tag) { 
+	o = document.addform; 
+	tags = o.story_tags.value;
+	while (tags.substring(tags.length-1, tags.length) == ' ') {
+		tags = tags.substring(0,tags.length-1);
+	}	
+	tags = tags + " " + tag + " ";
+	o.story_tags.value=tags; 
+	document.addform.submit();
+} 
+
+function deleteTag(tag) { 
+	o = document.addform; 
+	tags = o.story_tags.value;
+	newtags = tags.replace(tag,"");
+	o.story_tags.value=newtags;
+	o.tag_update.value=1;
+	document.addform.submit();
+} 
+
+
 function doconfirm(text,url) {
 	if (confirm(text)) document.location = url;
 }
@@ -10,7 +34,7 @@ function doWindow(name,width,height) {
 
 function sendWindow(name,width,height,url) {
 	var win = window.open("",name,"toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,resizable=yes,copyhistory=no,width="+width+",height="+height);
-	win.document.location=url;
+	win.document.location=url.replace(/&amp;/, '&');
 	win.focus();
 }
 
@@ -69,6 +93,29 @@ function delEditor(n) {
 	}
 }
 
+/*
+    Copyright Robert Nyman, http://www.robertnyman.com
+    Free to use if this text is included
+*/
+function getElementsByAttribute(oElm, strTagName, strAttributeName, strAttributeValue){
+    var arrElements = (strTagName == "*" && oElm.all)? oElm.all : oElm.getElementsByTagName(strTagName);
+    var arrReturnElements = new Array();
+    var oAttributeValue = (typeof strAttributeValue != "undefined")? new RegExp("(^|\\s)" + strAttributeValue + "(\\s|$)") : null;
+    var oCurrent;
+    var oAttribute;
+    for(var i=0; i<arrElements.length; i++){
+        oCurrent = arrElements[i];
+        oAttribute = oCurrent.getAttribute(strAttributeName);
+        if(typeof oAttribute == "string" && oAttribute.length > 0){
+            if(typeof strAttributeValue == "undefined" || (oAttributeValue && oAttributeValue.test(oAttribute))){
+                arrReturnElements.push(oCurrent);
+            }
+        }
+    }
+    return arrReturnElements;
+}
+
+// ]]>
 </script>
 <style type="text/css">
 .desc {
@@ -92,11 +139,6 @@ input.small {
 .contenttitle {font-weight: bolder;}
 .contentinfo {
 	margin-top: 10px;
-	font-size: 10px;
-}
-
-#contentinfo2 {
-	margin-top: 0px;
 	font-size: 10px;
 }
 

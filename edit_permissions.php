@@ -18,6 +18,7 @@ require("includes.inc.php");
 if ($_REQUEST[cancel]) {
 	unset($_SESSION[obj],$_SESSION[editors]);
 	header("Location: close.php");
+	exit;
 }
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
@@ -84,7 +85,7 @@ if ($_REQUEST[savechanges]) {
 //		print_r($_SESSION[obj]);
 		unset($_SESSION[obj],$_SESSION[editors]);
 		Header("Location: close.php");
-		return;
+		exit;
 	}
 }
 
@@ -106,25 +107,24 @@ if ($isOwner && $_REQUEST[edaction] == 'del') {
 	$_SESSION[obj]->delEditor($_REQUEST[edname]);
 }
 
-if ($isOwner && $className = $_SESSION[obj]->name) {
-	print "<script lang='javascript'>";
-	print "function addClassEditor() {";
-	print "	f = document.addform;";
-	print "	f.edaction.value='add';";
-	print "	f.edname.value='".$className."';";
-	print "	f.submit();";
-	print "}";
-	print "</script>";
-}
-
-
 /******************************************************************************
  * switch between forms 1 and 2
  ******************************************************************************/
 if (!$isOwner && $isEditor) {
 	if (!count($_SESSION[editors])) {
-		if (in_array($_SESSION[auser],$_SESSION[obj]->getEditors())) $_SESSION[editors][] = $_SESSION[auser];
-		$_SESSION[editors] = array_merge($_SESSION[editors],$_SESSION[obj]->returnEditorOverlap(getuserclasses($_SESSION[auser],"all")));
+		if (in_array($_SESSION[auser],$_SESSION[obj]->getEditors())) 
+			$_SESSION[editors][] = $_SESSION[auser];
+		
+		$groupsAndClasses = array_unique(
+								array_merge(
+									$_SESSION[obj]->returnEditorOverlap(
+										getuserclasses($_SESSION[auser],"all")), 
+									getusergroups($_SESSION[auser])));
+		foreach ($groupsAndClasses as $groupOrClass) {
+			if (in_array($groupOrClass, $_SESSION[obj]->getEditors()))
+				$_SESSION[editors][] = $groupOrClass;
+		}
+		
 		// done... now send them to step 2
 		$step = 2;
 	}
@@ -142,6 +142,9 @@ if($isOwner && $_REQUEST[editpermissions]) {
 if ($isOwner && $_REQUEST[chooseeditors]) {
 	$step = 1;
 }
+
+if (!$isOwner)
+	$step = 2;
 
 /******************************************************************************
  * catch any change field functionality
@@ -214,7 +217,7 @@ th, td {
 	background-color: #ecc;
 }
 
-#collabel {
+.collabel {
 	text-align: center;
 	background-color: #bbb;
 }
@@ -253,7 +256,8 @@ input {
 
 </style>
 
-<script lang='JavaScript'>
+<script type='text/javascript'>
+// <![CDATA[
 
 function doWindow(name,width,height) {
 	var win = window.open("",name,"toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,resizable=yes,copyhistory=no,width="+width+",height="+height);
@@ -262,7 +266,7 @@ function doWindow(name,width,height) {
 
 function sendWindow(name,width,height,url) {
 	var win = window.open("",name,"toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,resizable=yes,copyhistory=no,width="+width+",height="+height);
-	win.document.location=url;
+	win.document.location=url.replace(/&amp;/, '&');
 	win.focus();
 }
 
@@ -301,9 +305,26 @@ function doFieldChange(user,scope,site,section,page,story,field,what) {
 	f.submit();
 }
 
+// ]]>
 </script>
 
+<?
+if ($isOwner && $className = $_SESSION[obj]->name) {
+	print "\n<script type='text/javascript'>";
+	print "\n// <![CDATA[";
+	print "\n\nfunction addClassEditor() {";
+	print "\n	f = document.addform;";
+	print "\n	f.edaction.value='add';";
+	print "\n	f.edname.value='".$className."';";
+	print "\n	f.submit();";
+	print "\n}";
+	print "\n\n// ]]>";
+	print "\n</script>";
+}
+?>
+
 </head>
+<body>
 
 <? 
 
@@ -338,3 +359,7 @@ else require("edit_permissions_form1.inc.php");
 /* 	print_r($thisSite); */
 /* } */
 /* print "</pre>"; */
+
+?>
+</body>
+</html>

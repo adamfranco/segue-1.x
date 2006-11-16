@@ -15,13 +15,13 @@
  */
 function synchronizeClassDB($department, $number, $section, $semester, $year) {
 	$class = $department.$number.$section."-".$semester.$year;				
-	$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='$class'");
+	$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name='".addslashes($class)."'");
 	$classinfo = db_get_line("class","
-				class_department='$department' AND
-				class_number='$number' AND
-				class_section='$section' AND
-				class_semester='$semester' AND
-				class_year='20$year'");
+				class_department='".addslashes($department)."' AND
+				class_number='".addslashes($number)."' AND
+				class_section='".addslashes($section)."' AND
+				class_semester='".addslashes($semester)."' AND
+				class_year='20".addslashes($year)."'");
 	
 	if (!$ugroup_id) {
 									
@@ -29,9 +29,10 @@ function synchronizeClassDB($department, $number, $section, $semester, $year) {
 			INSERT INTO
 				ugroup
 			SET
-				ugroup_name = '$class',
+				ugroup_name = '".addslashes($class)."',
 				ugroup_type = 'class'
 		";
+		
 		db_query($query);
 		$ugroup_id = lastid();
 	}
@@ -41,15 +42,15 @@ function synchronizeClassDB($department, $number, $section, $semester, $year) {
 			INSERT INTO
 				class
 			SET
-				class_external_id='$class',
-				class_department='$department',
-				class_number='$number',
-				class_section='$section',
-				class_semester='$semester',
-				class_year='20$year',
+				class_external_id='".addslashes($class)."',
+				class_department='".addslashes($department)."',
+				class_number='".addslashes($number)."',
+				class_section='".addslashes($section)."',
+				class_semester='".addslashes($semester)."',
+				class_year='20".addslashes($year)."'',
 				class_name='',
 				FK_owner=NULL,
-				FK_ugroup=$ugroup_id
+				FK_ugroup='".addslashes($ugroup_id)."'
 		";
 		db_query($query);
 	}
@@ -93,12 +94,34 @@ function synchronizeLocalUserAndClassDB($systemName) {
  * add user to the DB if necessary
  */
 function synchronizeUserDB($user, $email, $fullname, $type, $loginMethod) {
-	$query = "SELECT * FROM user WHERE user_uname='".$user."'";
-	$r = db_query($query);	
+	
+	$query = "
+		SELECT 
+			* 
+		FROM 
+			user 
+		WHERE 
+			user_uname='".addslashes($user)."'
+	";
+	
+	$r = db_query($query);
+	
 	if (!db_num_rows($r)) {		// add the user to the DB with $loginMethod
-		$fullname = addslashes($fullname);
-		$query = "INSERT INTO user SET user_uname='$user', user_email='$email', user_fname='$fullname',
-				 user_type='$type', user_pass='".strtoupper($loginMethod)." PASS', user_authtype='$loginMethod'";
+		
+		//$fullname = addslashes($fullname);
+		
+		$query = "
+			INSERT INTO 
+				user 
+			SET 
+				user_uname='".addslashes($user)."', 
+				user_email='".addslashes($email)."', 
+				user_fname='".addslashes($fullname)."',
+				user_type='".addslashes($type)."', 
+				user_pass='".addslashes(strtoupper($loginMethod))." PASS', 
+				user_authtype='".addslashes($loginMethod)."'
+		";
+		
 		$r = db_query($query);
 		
 		// the query could fail if a user with that username is already in the database, but: (?)
@@ -144,13 +167,13 @@ function synchronizeUserDB($user, $email, $fullname, $type, $loginMethod) {
 function getClassUGroupId ($class_id) {
 	global $debug;
 	
-	$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '$class_id'");
+	$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '".addslashes($class_id)."'");
 	//$ugroup_id = db_get_value("class","FK_ugroup","class_external_id = '$class_id'");
 	
 	// If we don't have a ugroup id, then maybe we were passed the segue version of
 	// the class Id instead of the external Id.
 	if (!$ugroup_id) {
-		$ugroup_id = db_get_value("class","FK_ugroup",generateTermsFromCode($class_id));
+		$ugroup_id = db_get_value("class","FK_ugroup", generateTermsFromCode($class_id));
 	}
 	
 	if ($debug && !$ugroup_id)

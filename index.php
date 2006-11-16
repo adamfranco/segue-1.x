@@ -55,9 +55,14 @@ if (isset($cfg["vhosts"]) && count($cfg["vhosts"])) {
 // vhost setting) as that would make the cookie inaccessible.
 if ($cfg[domain] && ereg($cfg['domain'], $_SERVER["SERVER_NAME"]))
 	ini_set("session.cookie_domain",$cfg[domain]);
-	
-//ini_set("session.name","SeguePHPSESSID");
+
+// In order to prevent User's from including their SESSION IDs in urls that they
+// copy/paste for others, we will force the usage of cookies. This will prevent
+// inadvertant session fixation problems.
+ini_set('session.use_cookies', '1');
+ini_set('session.use_only_cookies', '1');
 session_start();// start the session manager :) -- important, as we just learned
+
 
 header("Content-type: text/html; charset=utf-8");
 
@@ -96,6 +101,7 @@ if (ereg("^login",getenv("QUERY_STRING"))) {
 		}
 	}
 	header("Location: index.php?".$getVars);
+	exit;
 }
 
 // actions for which we use pervasive themes (if enabled)
@@ -167,6 +173,7 @@ if ($_loggedin) {
 	
 	// one array containing all user's classes
 	$allclasses[$_SESSION['auser']] = array_merge($classes,$oldclasses,$futureclasses);
+	//printpre ($allclasses[$_SESSION['auser']]); 
 	
 	if ($debug && $printTimedQueries)
 		print "\n<br/>Queries in index.php, setting up classes lists: ".$_totalQueries;
@@ -191,10 +198,10 @@ if ($_REQUEST[site]) {						// we are in a site
 //	$thisSite->buildPermissionsArray(1,1);
 	
 	$site_owner = $thisSlot->getField("owner");
-	if ($_GET[theme]) $sid .= "&theme=$_REQUEST[theme]";
-	if ($_GET[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&themesettings=$themesettings";}
-	if ($_REQUEST[nostatus]) $sid .= "&nostatus=1";
-	if ($_REQUEST[themepreview]) $sid .= "&themepreview=1";
+	if ($_GET[theme]) $sid .= "&amp;theme=$_REQUEST[theme]";
+	if ($_GET[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&amp;themesettings=$themesettings";}
+	if ($_REQUEST[nostatus]) $sid .= "&amp;nostatus=1";
+	if ($_REQUEST[themepreview]) $sid .= "&amp;themepreview=1";
 	if (!isset($theme)) $theme = $thisSite->getField("theme");
 	if (!isset($themesettings)) $themesettings = $thisSite->getField("themesettings");
 
@@ -230,7 +237,8 @@ if ($_REQUEST[page]) {
 }
 
 // compatibility:
-if (isset($_REQUEST[action])) $action = $_REQUEST[action];
+if (isset($_REQUEST[action])) 
+	$action = preg_replace('/[^a-z0-9_-]/i', '', $_REQUEST[action]);
 //print"ok"; exit();
 
 // if we don't already have content (probably login error messages), then output some shite
@@ -251,7 +259,7 @@ if (!$loginerror) {
 }
 
 if ($cfg['user_notice'] && $action != 'rss') {
-	print "<div style='border: 4px solid red; font-size: large;'>";
+	print "<div align='center' style='border: 2px solid red; font-size: 14px; color: #000000; background-color: #FFFFFF;'>";
 	print $cfg['user_notice'];
 	print "</div>";
 }
@@ -266,14 +274,15 @@ printerr();
 
 $t = $action;
 if ($t != 'site') $t = 'viewsite';
-if ($thisSite) $st = ($thisSite->getField("type")=='publication')?"$t&supplement=listarticles":$t;
-if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&action=$st&site=$_REQUEST[site]&section=$_REQUEST[section]' class='navlink'>".$thisSection->getField("title")."</a>";
-if ($thisPage) $pn = " &gt; <a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]&section=$_REQUEST[section]&page=$_REQUEST[page]' class='navlink'>".$thisPage->getField("title")."</a>";
+if ($thisSite) $st = ($thisSite->getField("type")=='publication')?"$t&amp;supplement=listarticles":$t;
+if ($thisSection) $sn = " &gt; <a href='$PHP_SELF?$sid&amp;action=$st&amp;site=$_REQUEST[site]&amp;section=$_REQUEST[section]' class='navlink'>".$thisSection->getField("title")."</a>";
+if ($thisPage) $pn = " &gt; <a href='$PHP_SELF?$sid&amp;action=$t&amp;site=$_REQUEST[site]&amp;section=$_REQUEST[section]&amp;page=$_REQUEST[page]' class='navlink'>".$thisPage->getField("title")."</a>";
+if ($_REQUEST[tag]) $tn = " &gt; <a href='$PHP_SELF?$sid&amp;action=$t&amp;site=$_REQUEST[site]&amp;section=$_REQUEST[section]&amp;page=$_REQUEST[page]&amp;tag=$_REQUEST[tag]' class='navlink'>".urldecode($_REQUEST[tag])."</a>";
 if ($thisSite) {
-	$nav = "<a href='$PHP_SELF?$sid&action=$t&site=$_REQUEST[site]' class='navlink'>".$thisSite->getField("title")."</a>";
+	$nav = "<a href='$PHP_SELF?$sid&amp;action=$t&amp;site=$_REQUEST[site]' class='navlink'>".$thisSite->getField("title")."</a>";
 	$title = $thisSite->getField("title");
 }
-$nav .= $sn.$pn;
+$nav .= $sn.$pn.$tn;
 if ($nav) {
 	$sitecrumbs = "<div align='left' style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
 }
@@ -297,7 +306,8 @@ if (!$theme) {
 if ($themesettings) $themesettings = decode_array($themesettings);
 
 //output the HTML
-
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
 include("$themesdir/$theme/output.inc.php");
 
 // ------------------
@@ -317,7 +327,7 @@ if ($debug && $printTimedQueries) {
 }
 
 function printQueryWithTime($queryArray, $key) {
-	printf("\n<hr>QueryTime: %4s seconds", $key);
+	printf("\n<hr />QueryTime: %4s seconds", $key);
 	printf("\n<br/>NumQueries: %d", count($queryArray));
 	foreach($queryArray as $query)
 		printpre($query);

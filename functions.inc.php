@@ -1,24 +1,89 @@
 <? /* $Id$ */
 
 function makedownloadbar($o) {
-	global $site,$uploaddir,$uploadurl;
+	global $site,$section,$page,$uploaddir,$uploadurl;
 	if ($o->getField("type")!='file') return;
 	
-	$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id=".$o->getField("longertext"));
-	$filename = urldecode($b[media_tag]);
+	$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id='".addslashes($o->getField("longertext"))."'");
+	
+	ob_start();
+	print "\n";
+	print "\n<div class='downloadbar' style='margin-bottom: 10px'>";
+	print "\n\t<table width='100%' cellpadding='0' cellspacing='0'>\n\t<tr>\n\t\t<td>";
+	if ($o->getField("title")) {
+		print "\n\t\t\t<strong><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id."'>";
+		print "".spchars($o->getField("title"))."</a></strong>\n\t\t\t<br />";
+	}
+	
+	printDownloadLink($b);
+	
+	print "\n\t\t\t\t\t<div style='font-size: smaller; margin-bottom: 10px;'>";
+	printCitation($b);
+	print "\n\t\t\t\t\t</div>";
+	
+//	print "<hr size='1' />";
+	if ($o->getField("shorttext")) print "".stripslashes($o->getField("shorttext"));
+	print "\n\t\t</td>\n\t</tr>\n\t</table>\n</div>\n";
+	return ob_get_clean();
+}
+
+function printDownloadLink($mediaRow) {
+	global $site,$section,$page,$uploaddir,$uploadurl;
+	$filename = urldecode($mediaRow[media_tag]);
 /* 	print $filename; */
-	$dir = $b[slot_name];
-	$size = $b[media_size];
+	$dir = $mediaRow[slot_name];
+	$size =$mediaRow[media_size];
 	$fileurl = "$uploadurl/$dir/$filename";
 	$filepath = "$uploaddir/$dir/$filename";
 	$filesize = convertfilesize($size);
-	$t = '';
-	$t .= "<div class=downloadbar style='margin-bottom: 10px'>";
-	if ($o->getField("title")) $t.="<b>".spchars($o->getField("title"))."</b><br />";
-	$t .= "<table width=70% cellpadding='0' cellspacing='0' style='margin: 0px; border: 0px;'><tr><td class=leftmargin align='left'><a href='$fileurl' target='new_window'><img src='downarrow.gif' border=0 width=15 height=15 align=absmiddle> $filename</a></td><td align='right'><b>$filesize</b></td></tr></table>";
-	if ($o->getField("shorttext")) $t .= "".stripslashes($o->getField("shorttext"));
-	$t.="</div>";
-	return $t;
+	
+	print "\n\t\t\t<table width='100%' cellpadding='0' cellspacing='0' style='margin: 0px; border: 0px;'>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class='leftmargin' align='left'>\n\t\t\t\t\t\t<a href='$fileurl' target='new_window'>\n\t\t\t\t\t\t\t<img src='downarrow.gif' border='0' width='15' height='15' align='middle' alt='Download Arrow' />\n\t\t\t\t\t\t\t $filename\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td align='right' style='padding-right: 10px;'><b>$filesize</b></td>\n\t\t\t\t</tr>\n\t\t\t</table>";
+}
+
+/**
+ * Print a citation from a row of the media table
+ * 
+ * @param array $mediaRow
+ * @return <##>
+ * @access public
+ * @since 10/18/06
+ */
+function printCitation ($mediaRow) {
+	// Citation
+	
+	ob_start();
+	if ($mediaRow['author'])
+		print $mediaRow['author'].". ";
+	
+	if ($mediaRow['title_part'])
+		print '"'.$mediaRow['title_part'].'"';
+	
+	if ($mediaRow['title_part'] && $mediaRow['title_whole'])
+		print " ";
+	else if ($mediaRow['title_part'])
+		print ". ";
+	
+	if ($mediaRow['title_whole'])
+		print '<em>'.$mediaRow['title_whole'].'</em>. ';
+		
+	if ($mediaRow['publisher'])
+		print $mediaRow['publisher'];
+	
+	if ($mediaRow['publisher'] && $mediaRow['pubyear'])
+		print ", ";
+	else if ($mediaRow['publisher'])
+		print ". ";
+	
+	if ($mediaRow['pubyear'])
+		print $mediaRow['pubyear'].". ";
+		
+	if ($mediaRow['pagerange'])
+		print "(".$mediaRow['pagerange'].") ";
+	
+// 	if ($mediaRow['is_published'])
+// 		print " &copy; ";
+	
+	print trim(ob_get_clean());
 }
 	
 function mkfilesize($filename) {
@@ -76,10 +141,11 @@ function get_sizes($pic,$maxsize) {
 }
 
 function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
+
 	global $uploaddir;
 	
 	$sitename = $site;
-	$query = "SELECT FK_site FROM slot WHERE slot_name='$site'";
+	$query = "SELECT FK_site FROM slot WHERE slot_name='".addslashes($site)."'";
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
 	$siteid = $a[FK_site];
@@ -140,7 +206,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
-		$query = "UPDATE media SET media_updated_tstamp=NOW(),FK_updatedby='".$_SESSION[aid]."',media_size='$size' WHERE media_id='$replace_id'";
+		$query = "UPDATE media SET media_updated_tstamp=NOW(),FK_updatedby='".addslashes($_SESSION[aid])."',media_size='".addslashes($size)."' WHERE media_id='".addslashes($replace_id)."'";
 		/* print $query."<br />"; */
 		db_query($query);
 		print mysql_error()."<br />";
@@ -151,7 +217,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
-		$query = "INSERT INTO media SET media_tag='$name',FK_site='$siteid',FK_createdby='".$_SESSION[aid]."',FK_updatedby='".$_SESSION[aid]."',media_type='$type',media_size='$size'";
+		$query = "INSERT INTO media SET media_tag='".addslashes($name)."',FK_site='".addslashes($siteid)."',FK_createdby='".addslashes($_SESSION[aid])."',FK_updatedby='".addslashes($_SESSION[aid])."',media_type='".addslashes($type)."',media_size='".addslashes($size)."'";
 //		print $query."<br />";
 		db_query($query);
 //		print mysql_error()."<br />";
@@ -164,8 +230,8 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 
 function copy_media($id,$newsitename) {
 	global $uploaddir;
-	$oldsitename = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id=$id");
-	$file_name = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_tag","media_id=$id");
+	$oldsitename = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id='".addslashes($id)."'");
+	$file_name = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_tag","media_id='".addslashes($id)."'");
 	$sourcedir  = "$uploaddir/$oldsitename";
 	$destdir = "$uploaddir/$newsitename";
 	$old_file_path = $sourcedir."/".$file_name;
@@ -175,7 +241,7 @@ function copy_media($id,$newsitename) {
 		chmod($destdir,0700); 
 	}
 	if (file_exists($new_file_path)) {
-		$newid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='$newsitename' && media_tag='$file_name'");
+		$newid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='".addslashes($newsitename)."' && media_tag='".addslashes($file_name)."'");
 	} else {
 		$file = array();
 		$file[name] = $file_name;
@@ -188,7 +254,7 @@ function copy_media($id,$newsitename) {
 }
 
 function copy_media_with_fname($fname, $oldsitename, $newsitename) {
-	$mediaid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='$oldsitename' AND media_tag='$fname'");
+	$mediaid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='".addslashes($oldsitename)."' AND media_tag='".addslashes($fname)."'");
 	return copy_media($mediaid, $newsitename);
 }
 
@@ -204,7 +270,7 @@ function deleteuserfile($fileid) {
 					ON
 				media.FK_site = slot.FK_site
 			WHERE 
-				media_id='$fileid'
+				media_id='".addslashes($fileid)."'
 	";
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
@@ -219,7 +285,7 @@ function deleteuserfile($fileid) {
 		$success = unlink($file_path);
 //		print "success = $success <br />";
 		if ($success) {
-			$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
+			$query = "DELETE FROM media WHERE media_id='".addslashes($fileid)."' LIMIT 1";
 			db_query($query);
 			log_entry("media_delete","$_SESSION[auser] deleted file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name"),$siteObj->name,$siteObj->id,"site");
 		} else {
@@ -229,7 +295,7 @@ function deleteuserfile($fileid) {
 	} else {
 		log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $_SESSION[auser]. File does not exist. Removed entry.",$siteObj->name,$siteObj->id,"site");
 		error("File does not exist. Its Entry was deleted");
-		$query = "DELETE FROM media WHERE media_id='$fileid' LIMIT 1";
+		$query = "DELETE FROM media WHERE media_id='".addslashes($fileid)."' LIMIT 1";
 		db_query($query);
 	}
 }
@@ -332,13 +398,12 @@ function encode_array($array) {
 }
 
 // adds a link entry onto topnav, leftnav or rightnav
-function add_link($array,$name="",$url="",$extra='',$id=0,$target='_self') {
+function add_link($array,$name="",$url="",$extra='',$id=0,$target="_self",$type='normal',$content='') {
 	global $$array;
-	$type = 'normal';
-	if ($url=='') $type='heading';
-	if ($name=='') $type='divider';
-	if (!$target) $target='_self';
-	array_push($$array,array("type"=>$type,"name"=>$name,"url"=>$url,"extra"=>$extra,"id"=>$id,"target"=>$target));
+	if ($type == "page" || $type == "link") {
+		$type = 'normal';
+	}
+	array_push($$array,array("type"=>$type,"name"=>$name,"url"=>$url,"extra"=>$extra,"id"=>$id,"target"=>$target,"content"=>$content));
 //	return $array;
 }
 
@@ -349,7 +414,7 @@ function add_link($array,$name="",$url="",$extra='',$id=0,$target='_self') {
 // $bold = if on story detail then bold link
 function makelink($i,$samepage=0,$e='',$newline=0,$bold=0) {
 	$s = '';
-	$s=(!$samepage&&$i[url])?"<a href='$i[url]' target='$i[target]'".(($e)?" $e":"").">":"";
+	$s=(!$samepage&&$i[url])?"<a href='$i[url]'".(($i['target'])?" target='$i[target]'":"").(($e)?" $e":"").">":"";
 	
 	if (!$bold) {
 		$s.=$i[name];
@@ -357,8 +422,8 @@ function makelink($i,$samepage=0,$e='',$newline=0,$bold=0) {
 		$s.="<b>".$i[name]."</b>";
 	}
 	
-	$s.=(!$samepage&&$i[url])?"</a>":"";
-	$s.=($i[extra])?(($newline)?"<div align='right'>":" ").$i[extra].(($newline)?"</div>":""):"";
+	$s.=(!$samepage&&$i[url])?"</a>\n":"";
+	$s.=($i[extra])?(($newline)?"<div align='right'>":" ").$i[extra].(($newline)?"</div>\n":""):"";
 	return $s;
 }
 
@@ -388,26 +453,299 @@ function log_entry($type,$content,$site=0,$siteunit=0,$siteunit_type="site") {
 			FROM
 				slot
 			WHERE
-				slot_name = '$site'
+				slot_name = '".addslashes($site)."'
 		";
 		$r = db_query($query);
 		$a = db_fetch_assoc($r);
-		$slot_id = "'".$a[slot_id]."'";
+		$slot_id = "'".addslashes($a[slot_id])."'";
 	} else {
 		$slot_id = "NULL";
 	}
 	
 	db_connect($dbhost,$dbuser,$dbpass, $dbdb);
 	db_query("insert into log set 
-		log_type='$type',
-		log_desc='$content',
-		FK_luser='".$_SESSION[lid]."',
-		FK_auser='".$_SESSION[aid]."',
-		FK_slot=$slot_id,
-		FK_siteunit='$siteunit',
-		log_siteunit_type='$siteunit_type'
+		log_type='".addslashes($type)."',
+		log_desc='".addslashes($content)."',
+		FK_luser='".addslashes($_SESSION[lid])."',
+		FK_auser='".addslashes($_SESSION[aid])."',
+		FK_slot=".$slot_id.",
+		FK_siteunit='".addslashes($siteunit)."',
+		log_siteunit_type='".addslashes($siteunit_type)."'
 	");
 }
+
+/******************************************************************************
+ * Get all tags for a given site (or section or page...)
+ ******************************************************************************/
+
+function get_tags($site,$section,$page, $record_type="story") {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+	$tags = array();
+	// Validate that the record type is safe.
+	if (!preg_match("/^[a-z]+$/i", $record_type))
+		die("Invalid record type - line: ".__LINE__." in  ".__FILE__);
+
+	$record_type_id = $record_type."_id";
+	
+	if ($site && $record_type == "story") {	
+		$query = " 
+			SELECT
+				DISTINCT record_tag
+			FROM
+				tags
+			INNER JOIN
+				$record_type
+				ON FK_record_id = $record_type_id
+			INNER JOIN
+				page
+				ON FK_page = page_id
+			INNER JOIN
+				section
+				ON FK_section = section_id
+			INNER JOIN
+				site
+				ON section.FK_site = site.site_id
+			INNER JOIN
+			 slot
+				ON site.site_id = slot.FK_site
+			WHERE
+				slot_name = '".addslashes($site)."'
+			ORDER BY
+				record_tag ASC
+		";
+	
+		$r = db_query($query);
+		
+		while ($a = db_fetch_assoc($r)) {
+			$record_tag = $a[record_tag];
+			$query2 = " 
+			SELECT
+				COUNT(*) AS num_stories
+			FROM
+				tags
+			INNER JOIN
+				$record_type
+				ON FK_record_id = $record_type_id
+			INNER JOIN
+				page
+				ON FK_page = page_id
+			INNER JOIN
+				section
+				ON FK_section = section_id
+			INNER JOIN
+				site
+				ON section.FK_site = site.site_id
+			INNER JOIN
+				slot
+				ON site.site_id = slot.FK_site
+			WHERE
+				slot_name = '".addslashes($site)."'
+			AND
+				record_tag = '".addslashes($record_tag)."'
+			";
+			$r2 = db_query($query2);
+			$a2 = db_fetch_assoc($r2);
+			$tags[$a[record_tag]] = $a2[num_stories];
+
+		}
+	}
+//	printpre($tags);
+//	printpre($tags[tag]);
+	//exit();
+	return $tags;
+}
+
+/******************************************************************************
+ * Gets all tags for a given record (story or discussion or...)
+ ******************************************************************************/
+
+function get_record_tags($record_id) {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+
+	$tags = array();
+	$query = " 
+		SELECT
+			record_tag
+		FROM
+			tags
+		WHERE
+			FK_record_id = '".addslashes($record_id)."'
+		";
+	$r = db_query($query);
+	while ($a = db_fetch_assoc($r)) {
+		$tags[]= $a[record_tag];
+	}
+
+	return $tags;
+}
+
+/******************************************************************************
+ * deletes all tags for a given record (story or discussion or...)
+ ******************************************************************************/
+
+function delete_record_tags($site,$record_id,$record_type,$user_id='') {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+
+	if ($site && $record_id) {
+		$query = " 
+		DELETE
+		FROM
+			tags
+		WHERE
+			FK_record_id = '".addslashes( $record_id)."'
+		AND
+			record_type = '".addslashes($record_type)."'
+		";
+		$r = db_query($query);
+	}
+}
+
+/******************************************************************************
+ * saves all tags for a given record (story or discussion or...)
+ * save_record_tags = urlencoded array of tags to save
+ * delete_record_tags = urlencoded array of tags to delete
+ * record_type = story or discussions or...
+ * record_id = story_id or discussion_id or ...
+ ******************************************************************************/
+
+function save_record_tags($save_record_tags,$delete_record_tags,$record_id,$user_id,$record_type) {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+
+	if ($record_id) {
+	
+		//check if record_tag to be saved already exists...
+		if (is_array($save_record_tags)) {
+			foreach ($save_record_tags as $record_tag) {
+				$query = "
+				SELECT
+					record_tag
+				FROM
+					tags
+				WHERE
+					FK_record_id = '".addslashes($record_id)."'
+				AND
+					record_tag = '".addslashes($record_tag)."'				
+				";
+				$r = db_query($query);
+				//printpre($query);
+	
+				//if record tag doesn't exist then add
+				if (db_num_rows($r) == 0) {
+					$query = " 
+					INSERT INTO
+						tags
+					SET
+						record_type = '".addslashes($record_type)."', 
+						FK_record_id = '".addslashes($record_id)."', 
+						FK_user_id = '".addslashes($user_id)."', 
+						record_tag = '".addslashes($record_tag)."', 
+						record_tag_added = NOW();
+					";
+					$r = db_query($query);
+				}
+		
+			}
+		}
+//		printpre(count($delete_record_tags));
+//		printpre(count($save_record_tags));
+
+		//check again that record tag to be deleted exists	
+		if (is_array($delete_record_tags)) {
+			foreach ($delete_record_tags as $record_tag) {
+				$query = "
+				SELECT
+					record_tag
+				FROM
+					tags
+				WHERE
+					FK_record_id = '".addslashes($record_id)."'
+				AND
+					record_tag = '".addslashes($record_tag)."'				
+				";
+				$r = db_query($query);
+				
+				// if record tag does exist, then delete
+				if (db_num_rows($r)) {
+					$query = " 
+					DELETE FROM
+						tags
+					WHERE
+						record_type = '".addslashes($record_type)."'
+					AND
+						FK_record_id = '".addslashes($record_id)."'
+					AND
+						FK_user_id = '".addslashes($user_id)."' 
+					AND
+						record_tag = '".addslashes($record_tag)."' 
+					";
+					$r = db_query($query);
+				}
+		
+			}
+		}
+		
+		
+	}
+}
+
+/******************************************************************************
+ * Get all records with a given tag
+ * returns array with story, page and section ids
+ ******************************************************************************/
+
+function get_tagged_stories ($site,$section,$page,$tag,$record_type="story") {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+	$tagged_stories = array();
+	$story_id = array();
+	$page_id = array();
+	$section_id = array();
+	
+	// Validate that the record type is safe.
+	if (!preg_match("/^[a-z]+$/i", $record_type))
+		die("Invalid record type - line: ".__LINE__." in  ".__FILE__);
+		
+	$record_type_id = $record_type."_id";
+	
+	if ($site) {
+		$query = " 
+		SELECT
+			story_id, page_id, section_id
+		FROM
+			tags
+		INNER JOIN
+			$record_type
+			ON FK_record_id = $record_type_id
+		INNER JOIN
+			page
+			ON FK_page = page_id
+		INNER JOIN
+		 	section
+			ON FK_section = section_id
+		INNER JOIN
+			site
+			ON section.FK_site = site.site_id
+		INNER JOIN
+		 slot
+			ON site.site_id = slot.FK_site
+		WHERE
+			slot_name = '".addslashes($site)."'
+		AND
+			record_tag = '".addslashes($tag)."'
+		ORDER BY
+			record_tag_added DESC
+		";
+		
+	//	printpre($query);
+		$r = db_query($query);
+		while ($a = db_fetch_assoc($r)) {
+			$tagged_stories[story_id][]= $a[story_id];
+			$tagged_stories[page_id][]= $a[page_id];
+			$tagged_stories[section_id][]= $a[section_id];
+		}
+	}
+	return $tagged_stories;
+}
+
 
 function htmlbr($string) {
 	// It seems that Safari (at least) submits line returns that are \r\n instead
@@ -416,47 +754,24 @@ function htmlbr($string) {
 }
 
 function sitenamevalid($name) {
-	// sitenamevalid doen't really check if the sitename is valid and throws errors.
-	// its purpose needs to be clarified and the function rewritten
-	
-/*	global $_SESSION[auser],$atype,$classes,$ltype, $settings;
-	$_SESSION[auser] = strtolower($_SESSION[auser]);
-	$name = strtolower($name);
-	if ($name == $_SESSION[auser]) return 1;
-	if ($ltype=='admin') return 1;
-	// look at the classes list.. if the site is in the classes list, then it's valid
-// 	print "$atype -- $name"; 
-// 	print_r($classes); 
-	if ($settings[type]=="other" && $_SESSION[auser]==$settings[addedby]) return 1; 
-	if ($atype == 'prof' && is_array($classes[$name])) return 1;
-	if ($atype == 'prof') {
-		$query = "
-SELECT
-	classgroup_id
-FROM
-	classgroup
-		INNER JOIN
-	user
-		ON FK_owner = user_id AND user_uname = '$_SESSION[auser]'
-WHERE
-	classgroup_name = '$name'
-";
-		$r = db_query($query);
-		$a = db_fetch_assoc($r);
-		if (count($a) > 0)
-			return 1;			
-	 }
-	
-	return 0;
-*/
-	return 1;
+	/******************************************************************************
+	 * sitenamevalid checks to see if $name has a value
+	 * it is possible for $name to become null and a no name site to be created
+	 * when a user creates a site and then immediately uses the browser back
+	 * to tweak the appearance...
+	 ******************************************************************************/	
+	if ($name =='') { 
+		return 0; 
+	} else { 
+		return 1; 
+	} 
 }
 
 function insite($site,$section,$page=0,$story=0) {
 	$ok=1;
-	if (!in_array($section,decode_array(db_get_value("sites","sections","name='$site'")))) $ok=0;
-	if ($page && !in_array($page,decode_array(db_get_value("sections","pages","id=$section")))) $ok=0;
-	if ($story && !in_array($story,decode_array(db_get_value("pages","stories","id=$page")))) $ok=0;
+	if (!in_array($section,decode_array(db_get_value("sites","sections","name='".addslashes($site)."'")))) $ok=0;
+	if ($page && !in_array($page,decode_array(db_get_value("sections","pages","id='".addslashes($section)."'")))) $ok=0;
+	if ($story && !in_array($story,decode_array(db_get_value("pages","stories","id='".addslashes($page)."'")))) $ok=0;
 	return $ok;
 }
 
@@ -467,7 +782,7 @@ function isgroup ($group) {
 	if (isset($_isgroup_cache[$group])) 
 		return $_isgroup_cache[$group];
 	
-	$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id WHERE classgroup_name='$group'";
+	$query = "SELECT class_id FROM class INNER JOIN classgroup ON FK_classgroup = classgroup_id WHERE classgroup_name='".addslashes($group)."'";
 	$r = db_query($query);
 	
 	if (db_num_rows($r)) {
@@ -552,13 +867,13 @@ function semorder($semester) {
 
 function inclassgroup($class) {
 	$query = "
-SELECT
-	classgroup_name
-FROM
-	classgroup
-		INNER JOIN
-	class ON classgroup_id = FK_classgroup AND ".generateTermsFromCode($class)."
-";
+		SELECT
+			classgroup_name
+		FROM
+			classgroup
+				INNER JOIN
+			class ON classgroup_id = FK_classgroup AND ".addslashes(generateTermsFromCode($class))."
+	";
 	$r = db_query($query);
 	if (db_num_rows($r)) { 
 		$a = db_fetch_assoc($r); 
@@ -724,7 +1039,9 @@ function canview($a,$type=SITE) {
 	return 1;
 }
 
-// the reorder function -- recieves an array, id and a direction... and then returns the new array
+/******************************************************************************
+ * the reorder function -- recieves an array, id and a direction... and then returns the new array
+ ******************************************************************************/
 function reorder($array,$id,$d) {
 	$num = count($array)-1;
 	for ($i=0; $i<=$num; $i++) {
@@ -762,8 +1079,8 @@ function handlearchive($stories,$pa) {
 	printc("<div>");
 //	printc("<b>Search:</b> ");
 	printc("Display content in date rage: ");
-	printc("<form action='$PHP_SELF?$sid&action=site&site=$site&section=$section&page=$page' method=post>");
-	printc("<input type=hidden name=usesearch value=1>");
+	printc("<form action='$PHP_SELF?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page' method='post'>");
+	printc("<input type='hidden' name='usesearch' value='1' />");
 
 	printc("<select name='startday'>");
 	for ($i=1;$i<=31;$i++) {
@@ -795,7 +1112,7 @@ function handlearchive($stories,$pa) {
 		printc("<option" . (($endyear == $i)?" selected":"") . ">$i\n");
 	}
 	printc("</select>");
-	printc(" <input type=submit class=button value='go'>");
+	printc(" <input type='submit' class='button' value='go' />");
 	printc("</form></div>");
 
 	$start = mktime(1,1,1,$startmonth,$startday,$startyear);
@@ -821,7 +1138,7 @@ function handlearchive($stories,$pa) {
 	$txtstart = date("n/j/y",$start);
 	$txtend = date("n/j/y",$end);
 	foreach ($stories as $s) {
-		$a = db_get_line("stories","id=$s");
+		$a = db_get_line("stories","id='".addslashes($s)."'");
 		$added = $a[addedtimestamp];
 		ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})",$added,$regs);
 		$year = (integer)$regs[1];
@@ -853,15 +1170,67 @@ function handlestoryorder($stories,$order) {
 }
 
 function printpre($array, $return=FALSE) {
-	$string = "\n<pre>";
-	$string .= print_r($array, TRUE);
-	$string .= "\n</pre>";
+	ob_start();
+	print "\n<pre>";
+	print_r($array);
+	print "\n</pre>";
 	
 	if ($return)
-		return $string;
+		return ob_get_clean();
 	else
-		print $string;
+		ob_end_flush();
 }
+
+/**
+ * Var dump a variable inside of <pre> tags.
+ * 
+ * @param <##>
+ * @return <##>
+ * @access public
+ * @since 10/24/06
+ */
+function var_dumpPre($array, $return=FALSE) {
+	ob_start();
+	print "\n<pre>";
+	var_dump($array);
+	print "\n</pre>";
+	
+	if ($return)
+		return ob_get_clean();
+	else
+		ob_end_flush();
+}
+
+/**
+ * print a string outside of any output buffers
+ * 
+ * @param string $string
+ * @return void
+ * @access public
+ * @since 10/24/06
+ */
+function printOb0 ($string) {
+	// move the output buffers out of the way
+	$outputBuffers = array();
+	$level = ob_get_level();
+	while ($level > 0) {
+		$outputBuffers[$level] = ob_get_clean();
+		$level = ob_get_level();
+	}
+	
+	// Print out the string
+	print $string;
+	flush();
+	
+	// rebuild the output buffers
+	ksort($outputBuffers);
+	foreach ($outputBuffers as $level => $data) {
+		ob_start();
+		print $data;
+		unset($outputBuffers[$level]);
+	}
+}
+
 
 function _error_handler($num, $str, $file, $line, $context) {
 	if ($num & E_NOTICE) return;
@@ -912,7 +1281,7 @@ function sortClasses ( $classes, $direction=SORT_DESC) {
 		$sections[$key] = $class['sect'];
 	}
 	
-// 	print "<hr>";
+// 	print "<hr />";
 // 	printpre($classes);
 // 	printpre($years);
 // 	printpre($semesters);
@@ -1149,24 +1518,24 @@ function updateSiteLinksFromHash (& $site, & $nodeToStartOn) {
 	// Add all the sections that we have matches for.
 	foreach ($GLOBALS['__site_hash']['sections'] as $oldId => $newId) {
 		if ($oldId && $newId) {
-			$patterns[] = "/&section=".$oldId."/";
-			$replacements[] = "&section=".$newId;
+			$patterns[] = "/&amp;section=".$oldId."/";
+			$replacements[] = "&amp;section=".$newId;
 		}
 	}
 	
 	// Add all the pages that we have matches for.
 	foreach ($GLOBALS['__site_hash']['pages'] as $oldId => $newId) {
 		if ($oldId && $newId) {
-			$patterns[] = "/&page=".$oldId."/";
-			$replacements[] = "&page=".$newId;
+			$patterns[] = "/&amp;page=".$oldId."/";
+			$replacements[] = "&amp;page=".$newId;
 		}
 	}
 	
 	// Add all the pages that we have matches for.
 	foreach ($GLOBALS['__site_hash']['stories'] as $oldId => $newId) {
 		if ($oldId && $newId) {
-			$patterns[] = "/&story=".$oldId."/";
-			$replacements[] = "&story=".$newId;
+			$patterns[] = "/&amp;story=".$oldId."/";
+			$replacements[] = "&amp;story=".$newId;
 		}
 	}
 	
@@ -1333,4 +1702,114 @@ function nameMatches($filename, $anArrayOfRegExs) {
 		}
 	}
 	return FALSE;
+}
+
+function associatedSiteExists($uname, $class_id) {
+	$assoc_site = "false";
+	$slotname = $class_id."-".$uname;
+	
+	$query = "
+	SELECT 
+		slot.slot_name AS name,
+		user.user_uname AS owner,
+		slot.slot_type AS type,
+		assocsite.slot_name AS assocsite_name,
+		slot.FK_site as inuse,
+		slot.slot_uploadlimit AS uploadlimit
+	FROM 
+		slot
+			LEFT JOIN
+		user
+			ON
+				slot.FK_owner = user_id
+			LEFT JOIN
+				slot AS assocsite
+			ON
+				slot.FK_assocsite = assocsite.slot_id
+	WHERE
+		slot.slot_name = '".addslashes($slotname)."'
+	";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	
+	// if associated site slot  exists, print add to array
+	if (db_num_rows($r)) {
+		$assoc_site = "true";
+		return $assoc_site;
+	}
+}
+
+function get_story_title($story_id) {
+	$story_title = db_get_value("story", "story_title", "story_id ='".addslashes($story_id)."'");
+	return $story_title;
+}
+		
+function recent_site_edits($site) {
+	$query = "		
+		SELECT
+			slot_name, user_fname, site_title, section_id, page_id, story_id,
+			story_created_tstamp, story_title, page_title, user_fname, user_uname, 
+			story_text_short, user_email, story_display_type, story_text_long
+		FROM
+			story
+				INNER JOIN
+			page
+				ON FK_page = page_id
+				INNER JOIN
+			section
+				ON FK_section = section_id
+				INNER JOIN
+			site
+				ON section.FK_site = site_id
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site
+				INNER JOIN
+			user
+				ON story.FK_createdby = user_id
+		WHERE
+			slot_name = '".addslashes($site)."'
+		Order BY
+			story_created_tstamp  DESC
+		LIMIT 0,20
+	";		
+	$recent_edits = db_query($query); 	
+	return $recent_edits;
+}
+
+function recent_discussion($site) {
+	$query = "
+		SELECT
+			discussion_tstamp, discussion_subject, discussion_id, user_fname, user_uname,
+			slot_name, site_title, story_id, story_title, page_id, section_id, 
+			FK_author, discussion_content, user_email
+		FROM
+			discussion
+				INNER JOIN
+			story
+				ON FK_story = story_id
+				INNER JOIN
+			page
+				ON FK_page = page_id
+				INNER JOIN
+			section
+				ON FK_section = section_id
+				INNER JOIN
+			site
+				ON section.FK_site = site_id
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site
+				INNER JOIN
+			user
+				ON discussion.FK_author = user_id
+		WHERE
+			slot_name = '".addslashes($site)."'
+		Order BY
+			discussion_tstamp DESC
+		LIMIT 0,20
+	";
+	
+	$recent_discussions = db_query($query); 
+	return $recent_discussions;
 }

@@ -55,6 +55,7 @@ $cfg['defaultWhitelist'] = $defaultWhitelist = array(
 	'raw',			// 
 	'tif',			// 
 	'tiff',			// 
+	'gsp',			// geometer's sketchpad
 
 	
 // Audio/Video Formats
@@ -67,6 +68,7 @@ $cfg['defaultWhitelist'] = $defaultWhitelist = array(
 	'mp2',			// 
 	'mp3',			// 
 	'mp4',			// 
+	'm4v',			// 
 	'mpg',			// 
 	'ogg',			// 
 	'ram',			// 
@@ -74,6 +76,7 @@ $cfg['defaultWhitelist'] = $defaultWhitelist = array(
 	'wav',			// 
 	'wma',			// 
 	'wmv',			// 
+	'swf',			// 
 
 
 // Text/Document

@@ -17,6 +17,7 @@ require("includes.inc.php");
 
 if ($_REQUEST[cancel]) {
 	header("Location: close.php");
+	exit;
 }
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
@@ -34,14 +35,14 @@ if ($site_owner != $_SESSION[auser]) {
 } else {
 	$editors = $siteObj->getEditors();
 	
-	$previousLocation = urldecode($_REQUEST['query']);
+	$previousLocation = htmlentities(urldecode($_REQUEST['query']));
 	
 	
 	/******************************************************************************
 	 * common styles/javascripts:
 	 ******************************************************************************/
 	?>
-	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -49,7 +50,9 @@ if ($site_owner != $_SESSION[auser]) {
 	
 	<? include("themes/common/logs_css.inc.php"); ?>
 	
-	<script lang='JavaScript'>
+	<script type='text/javascript'>
+	// <![CDATA[
+
 	
 	function sendWindow(name,width,height,url) {
 		var win = window.open("",name,"toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,resizable=yes,copyhistory=no,width="+width+",height="+height);
@@ -57,9 +60,11 @@ if ($site_owner != $_SESSION[auser]) {
 		win.focus();
 	}
 	
+	// ]]>
 	</script>
 	
 	</head>
+	<body>
 	
 	<? 
 	
@@ -80,7 +85,7 @@ if ($site_owner != $_SESSION[auser]) {
 	$color = 0;
 	foreach ($editors as $e) {
 		print "\n<tr>";
-		print "\n\t<td class=td$color>";
+		print "\n\t<td class='td$color'>";
 				
 		print "\n\tPreview &nbsp; ";
 		
@@ -89,11 +94,11 @@ if ($site_owner != $_SESSION[auser]) {
 							"preview_edit_as" => "Edit Mode");
 		$i=0;
 		foreach ($actions as $previewAction => $name) {
-			$url = ereg_replace("&action=[^&]*", "&action=".$previewAction."&previewuser=$e", $startingUrl);
+			$url = ereg_replace("&(amp;)?action=[^&]*", "&amp;action=".$previewAction."&amp;previewuser=$e", $startingUrl);
 			
 			if ($i > 0)
 				print " &nbsp; | &nbsp; ";
-			print "\n\t<a href='#' onClick=\"sendWindow('sitepreview',800,600,'".$url."')\">";
+			print "\n\t<a href='#' onclick=\"sendWindow('sitepreview',800,600,'".$url."')\">";
 			print $name;
 			print "</a>";
 			$i++;
@@ -120,3 +125,5 @@ if ($site_owner != $_SESSION[auser]) {
 <?
 }
 ?>
+</body>
+</html>

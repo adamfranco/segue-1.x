@@ -3,8 +3,10 @@ $content = '';
  
 session_start(); 
  
-// include all necessary files 
-include("includes.inc.php"); 
+include_once("includes.inc.php");
+ 
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
  
 include("$themesdir/common/header.inc.php"); 
  
@@ -40,7 +42,7 @@ if (file_exists($filename)) {
  
  
 if ($submitted) { 
-	$onLoad = ' onLoad="'; 
+	$onLoad = ' onload="'; 
 	$themesettings = encode_array($themesettings); 
 	if ($updatemethod == 'javascript') { 
 		$onLoad .= 'update()'; 
@@ -52,15 +54,15 @@ if ($submitted) {
 	$onLoad .= '"'; 
 } else { 
 	// print out theme form 
-	printc("<form action='$PHP_SELF?$sid' method=post name='settings'>"); 
-	printc("<input type=hidden name='submitted' value=1>"); 
-	printc("<input type=hidden name='updatemethod' value='$updatemethod'>"); 
-	printc("<input type=hidden name='site' value='$site'>"); 
-	printc("<input type=hidden name='theme' value='$theme'>"); 
+	printc("<form action='$PHP_SELF?$sid' method='post' name='settings'>"); 
+	printc("<input type='hidden' name='submitted' value='1' />"); 
+	printc("<input type='hidden' name='updatemethod' value='$updatemethod' />"); 
+	printc("<input type='hidden' name='site' value='$site' />"); 
+	printc("<input type='hidden' name='theme' value='$theme' />"); 
 	printc($settings_form); 
 	printc("<div align='right'>");
-//	printc("<input type=submit value='Update' class=button>
-	printc("<input type=button value='Close' class=button onclick=\"closeAll()\"></div>"); 
+//	printc("<input type='submit' value='Update' class='button' />
+	printc("<input type='button' value='Close' class='button' onclick=\"closeAll()\" /></div>"); 
 	 
 	printc("</form>"); 
 } 
@@ -72,7 +74,9 @@ if ($submitted) {
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script lang='JavaScript'> 
+
+<script type='text/javascript'>
+// <![CDATA[ 
  
 function closeAll() {
 	window.close();
@@ -85,7 +89,9 @@ function update() {
 	opener.doPreviewWin("<?echo $theme?>", "settings"); 
 	preview.focus(); 
 	window.close(); 
-} 
+}
+
+// ]]>
 </script> 
 <style type='text/css'> 
 .title { 
@@ -127,9 +133,9 @@ select {font-size: 10px; }
 </head> 
  
 <body<?echo $onLoad?> style='margin: 0px'> 
-<div class=title>Theme Settings</div> 
+<div class='title'>Theme Settings</div> 
  
-<div class=content> 
+<div class='content'> 
 <? print $content ?> 
 </div> 
 </body>

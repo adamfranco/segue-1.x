@@ -33,16 +33,16 @@ foreach ($alphabet as $letter) {
 	}
 }
 
-/* print "<hr>"; */
+/* print "<hr />"; */
 foreach ($index as $letter => $contents) {
 	if (count($contents)) {
 /* 		print "<h3> $letter </h3>"; */
 		print "<ul>";
 		foreach ($contents as $topic => $title) {
-			print "<li><a href='$_SERVER[PHP_SELF]?&helptopic=$topic'>$title</a>\n";
+			print "<li><a href='$_SERVER[PHP_SELF]?&amp;helptopic=$topic'>$title</a>\n";
 		}
 		print "</ul>";
-/* 		print "<hr>"; */
+/* 		print "<hr />"; */
 	}
 }
 

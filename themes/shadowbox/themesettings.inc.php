@@ -1,11 +1,14 @@
 <style type='text/css'>
 div, p, td, span, input { 
-	color: #<? echo $textcolor; ?>;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 }
 </style>
 <?
+
+if (!defined("CONFIGS_INCLUDED"))
+	die("Error: improper application flow. Configuration must be included first.");
+
 include("$themesdir/$theme/colors.inc.php");
 
 $bgcolors = array_keys($_bgcolor);
@@ -49,10 +52,10 @@ if ($themesettings[theme] == 'shadowbox') {
 <b>Shadow Box</b><br />
 This theme creates the illusion of a page that is cast out of a flat surface.  
 This illusion is created by surrounding boxes each of which is larger and less opaque.
-<hr noshade size=1>
+<hr noshade size='1' />
 <table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>
 Background Color:</td><td> 
-<select name='bgcolor' onChange="document.settings.submit()">
+<select name='bgcolor' onchange="document.settings.submit()">
 <?
 foreach ($bgcolors as $s) {
 	print "<option value='$s'".(($bgcolor==$s)?" selected":"").">$s\n";
@@ -62,7 +65,7 @@ foreach ($bgcolors as $s) {
 </td></tr>
 <tr><td align='left'>
 Foreground Color:</td><td> 
-<select name='colorscheme' onChange="document.settings.submit()">
+<select name='colorscheme' onchange="document.settings.submit()">
 <?
 foreach ($colorschemes as $s) {
 	print "<option value='$s'".(($colorscheme==$s)?" selected":"").">$s\n";
@@ -72,7 +75,7 @@ foreach ($colorschemes as $s) {
 </td></tr>
 <tr><td align='left'>
 Border Style:</td><td>
-<select name='borderstyle' onChange="document.settings.submit()">
+<select name='borderstyle' onchange="document.settings.submit()">
 <?
 foreach ($borderstyles as $s) {
 	print "<option value='$s'".(($borderstyle==$s)?" selected":"").">$s\n";
@@ -82,7 +85,7 @@ foreach ($borderstyles as $s) {
 </td></tr>
 <tr><td align='left'>
 Border Color:</td><td>
-<select name='bordercolor' onChange="document.settings.submit()">
+<select name='bordercolor' onchange="document.settings.submit()">
 <?
 foreach ($bordercolors as $s) {
 	print "<option value='$s'".(($bordercolor==$s)?" selected":"").">$s\n";
@@ -92,7 +95,7 @@ foreach ($bordercolors as $s) {
 </td></tr>
 <tr><td align='left'>
 Text Color:</td><td>
-<select name='textcolor' onChange="document.settings.submit()">
+<select name='textcolor' onchange="document.settings.submit()">
 <?
 foreach ($textcolors as $s) {
 	print "<option value='$s'".(($textcolor==$s)?" selected":"").">$s\n";
@@ -102,7 +105,7 @@ foreach ($textcolors as $s) {
 </td></tr>
 <tr><td align='left'>
 Link Color:</td><td>
-<select name='linkcolor' onChange="document.settings.submit()">
+<select name='linkcolor' onchange="document.settings.submit()">
 <?
 foreach ($linkcolors as $s) {
 	print "<option value='$s'".(($linkcolor==$s)?" selected":"").">$s\n";
@@ -111,7 +114,7 @@ foreach ($linkcolors as $s) {
 </select>
 </table>
 Note: Make sure that your text stands out from background and that your text and link colors are contrasting.
-<hr noshade size=1>
+<hr noshade size='1' />
 <?
 
 //All settings for Navigation are included here

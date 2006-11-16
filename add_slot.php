@@ -44,7 +44,7 @@ if ($curraction == 'add') {
 	
 	// all good
 	if (!$error) {
-		$obj = &new slot($_REQUEST['name']);
+		$obj = & new slot($_REQUEST['name']);
 		$obj->owner = strtolower($_REQUEST['owner']);
 		$obj->assocSite = strtolower($_REQUEST['assocsite']);
 		$obj->type = $_REQUEST['type'];
@@ -91,7 +91,7 @@ if ($curraction == 'edit') {
 		
 		// all good
 		if (!$error) {
-			$obj = &new slot($_REQUEST['name']);
+			$obj =& new slot($_REQUEST['name']);
 			$obj->owner = strtolower($_REQUEST['owner']);
 			$obj->assocSite = strtolower($_REQUEST['assocsite']);
 			$obj->type = $_REQUEST['type'];
@@ -150,10 +150,10 @@ if ($findall) {
  ******************************************************************************/
 
 	$where = "slot.slot_name LIKE '%'";
-	if ($slot_name) $where = "slot.slot_name LIKE '%$slot_name%'";
-	if ($slot_owner) $where .= " AND user.user_uname LIKE '%$slot_owner%'";
+	if ($slot_name) $where = "slot.slot_name LIKE '%".addslashes($slot_name)."%'";
+	if ($slot_owner) $where .= " AND user.user_uname LIKE '%".addslashes($slot_owner)."%'";
 	if ($slot_id) $where .= " AND slot.slot_id=$slot_id";
-	if ($slot_type != "all"  && !$slot_id) $where .= " AND slot.slot_type = '$slot_type'";
+	if ($slot_type != "all"  && !$slot_id) $where .= " AND slot.slot_type = '".addslashes($slot_type)."'";
 	if ($slot_use != "all"  && !$slot_id) {
 		if ($slot_use == "yes") $where .= " AND slot.FK_site IS NOT NULL";
 		if ($slot_use == "no") $where .= " AND slot.FK_site IS NULL";
@@ -182,9 +182,18 @@ if ($findall) {
 	$a = db_fetch_assoc($r);
 	$numslots = $a[slot_count];
 	
-	if (!isset($lowerlimit)) $lowerlimit = 0;
-	if ($lowerlimit < 0) $lowerlimit = 0;
-	$limit = " LIMIT $lowerlimit,30";
+	
+	if (isset($_REQUEST['lowerlimit']))
+		$lowerlimit = intval($_REQUEST['lowerlimit']);
+	else
+		$lowerlimit = 0;
+	
+	if ($lowerlimit < 0) 
+		$lowerlimit = 0;
+	
+	$limit = " limit $lowerlimit,30";
+
+
 		
 	$query = "
 		SELECT 
@@ -230,34 +239,33 @@ include("themes/common/logs_css.inc.php");
 include("themes/common/header.inc.php");
 ?>
 </head>
-<!-- <body onLoad="document.addform.<?=($curraction == 'edit')?"owner":"name"?>.focus()"> -->
-<body onLoad="document.searchform.name.focus()">
+<body onload="document.searchform.name.focus()">
 
 <?
 /******************************************************************************
  * Get site id for links to participation section
  ******************************************************************************/
 	
-	$siteObj =&new site($site);
+	$siteObj =& new site($site);
 	$siteid = $siteObj->id;
 
 if ($_SESSION['ltype']=='admin') {
-	print "<table width=100%  class='bg'><tr><td class='bg'>
-	Logs: <a href='viewsites.php?$sid&site=$site'>sites</a>
-	 | <a href='viewusers.php?$sid&site=$site'>users</a>
+	print "<table width='100%'  class='bg'><tr><td class='bg'>
+	Logs: <a href='viewsites.php?$sid&amp;site=$site'>sites</a>
+	 | <a href='viewusers.php?$sid&amp;site=$site'>users</a>
 	</td><td align='right' class='bg'>
-	<a href='users.php?$sid&site=$site'>add/edit users</a> | 
-	<a href='classes.php?$sid&site=$site'>add/edit classes</a> |  
+	<a href='users.php?$sid&amp;site=$site'>add/edit users</a> | 
+	<a href='classes.php?$sid&amp;site=$site'>add/edit classes</a> |  
 	 add/edit slots |
-	<a href='update.php?$sid&site=$site'>segue updates</a>
+	<a href='update.php?$sid&amp;site=$site'>segue updates</a>
 	</td></tr></table>";
 }
 
 if ($site) {
 	print "<div align='right'>";
-	print "<a href=add_students.php?$sid&name=$site>Roster</a>";
-	print " | <a href='email.php?$sid&siteid=$siteid&site=$site&action=list&scope=site'>Participation</a>";
-	print " | <a href='viewusers.php?$sid&site=$site'>Logs</a>";
+	print "<a href='add_students.php?$sid&amp;name=$site'>Roster</a>";
+	print " | <a href='email.php?$sid&amp;siteid=$siteid&amp;site=$site&amp;action=list&amp;scope=site'>Participation</a>";
+	print " | <a href='viewusers.php?$sid&amp;site=$site'>Logs</a>";
 	print "</div><br />";
 }
 
@@ -265,28 +273,29 @@ if ($site) {
 
 <?=$content?>
 
-<table cellspacing=1 width='100%' id='maintable'>
+<table cellspacing='1' width='100%' id='maintable'>
 <tr><td>
 
-	<table cellspacing=1 width='100%'>
+	<table cellspacing='1' width='100%'>
 	<tr><td>
-		<form action="<? echo $PHP_SELF ?>" method=get name=searchform>
-		Name: <input type='text' name='slot_name' size=10 value='<?echo $slot_name?>'>
-		Owner: <input type='text' name='slot_owner' size=10 value='<?echo $slot_owner?>'>
-		Type: <select name=slot_type>
-				<option<?=($slot_type=='all')?" selected":""?>>all
-				<option<?=($slot_type=='class')?" selected":""?>>class
-				<option<?=($slot_type=='other')?" selected":""?>>other
-				<option<?=($slot_type=='personal')?" selected":""?>>personal
-				<option<?=($slot_type=='system')?" selected":""?>>system
+		<form action="<? echo $PHP_SELF ?>" method='get' name='searchform'>
+		Name: <input type='text' name='slot_name' size='10' value='<?echo $slot_name?>' />
+		Owner: <input type='text' name='slot_owner' size='10' value='<?echo $slot_owner?>' />
+		Type: <select name='slot_type'>
+				<option<?=($slot_type=='all')?" selected='selected'":""?>>all</option>
+				<option<?=($slot_type=='class')?" selected='selected'":""?>>class</option>
+				<option<?=($slot_type=='other')?" selected='selected'":""?>>other</option>
+				<option<?=($slot_type=='personal')?" selected='selected'":""?>>personal</option>
+				<option<?=($slot_type=='system')?" selected='selected'":""?>>system</option>
 		</select>
-		In Use: <select name=slot_use>
-				<option<?=($slot_use=='all')?" selected":""?>>all
-				<option<?=($slot_use=='yes')?" selected":""?>>yes
-				<option<?=($slot_use=='no')?" selected":""?>>no
+		In Use: <select name='slot_use'>
+				<option<?=($slot_use=='all')?" selected='selected'":""?>>all</option>
+				<option<?=($slot_use=='yes')?" selected='selected'":""?>>yes</option>
+				<option<?=($slot_use=='no')?" selected='selected'":""?>>no</option>
 		</select>
-		<input type=submit name='search' value='Find'>
-		<input type=submit name='findall' value='Find All'>	
+		<input type='submit' name='search' value='Find' />
+		<input type='submit' name='findall' value='Find All' />	
+		</form>
 		</td>	
 		<td align='right'>
 		<?
@@ -300,12 +309,12 @@ if ($site) {
 		print "$curr of $tpages ";
 //		print "$prev $lowerlimit $next ";
 		if ($prev != $lowerlimit)
-			print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&slot_type=$slot_type&slot_name=$slot_name&slot_owner=$slot_owner&slot_use=$slot_use\"'>\n";
+			print "<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&amp;lowerlimit=$prev&amp;slot_type=$slot_type&amp;slot_name=$slot_name&amp;slot_owner=$slot_owner&amp;slot_use=$slot_use\"' />\n";
 		if ($next != $lowerlimit && $next > $lowerlimit)
-			print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&slot_type=$slot_type&slot_name=$slot_name&slot_owner=$slot_owner&slot_use=$slot_use\"'>\n";
+			print "<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&amp;lowerlimit=$next&amp;slot_type=$slot_type&amp;slot_name=$slot_name&amp;slot_owner=$slot_owner&amp;slot_use=$slot_use\"' />\n";
 		?>
 
-		</form>
+		
 	</td></tr>
 	</table>
 		<? 
@@ -316,7 +325,7 @@ if ($site) {
 			//$numslots = count($allSlots);
 			print "Total slots found: ".$numslots;
 		} 
-		print "<table cellpadding=2 cellspacing='0'>";
+		print "<table cellpadding='2' cellspacing='0'>";
 		print "<tr><td><b>Slot naming conventions:</b></td></tr>";
 		print "<tr><td><i>future course slots</i></td><td>course_code-dev (e.g. al201a-f05-dev)</td></tr>";		
 		print "<tr><td><i>student class project slots</i></td><td>These are best created from class rosters. Convention is course_code-student_username (e.g. al201a-f03-msmith).</td></tr>";
@@ -324,7 +333,8 @@ if ($site) {
 		print "<tr><td><i>topical slots</i></td><td>single_word_descriptor (e.g. digitization, segue)</td></tr>";
 		print "</table>";	
 		?>
-
+		
+		<form action="<? echo $PHP_SELF ?>" method='post' name='addform'>
 		<table width='100%'>
 			<tr>
 			<th>id</th>
@@ -332,7 +342,7 @@ if ($site) {
 			<th>owner</th>
 			<th>type</th>
 			<th>associated<br />class site</th>
-			<th colspan=2>uploadlimit<br />(Default = <? print $default_uploadlimit ?> MB)</th>
+			<th colspan='2'>uploadlimit<br />(Default = <? print $default_uploadlimit ?> MB)</th>
 			<th>in use?</th>
 			<th>options</th>
 			</tr>
@@ -371,76 +381,77 @@ if ($site) {
 						}
 			
 						print "<td align='center'>".(($a['inuse'])?"<b>YES</b>":"NO")."</td>";
-						print "<td align='center'><nobr>";
+						print "<td align='center'><span style='white-space: nowrap;'>";
 						if (!$a[FK_site])
-							print "<a href='add_slot.php?$sid&action=del&id=".$a['id']."'>del</a> | \n";
-						print "<a href='add_slot.php?$sid&slot_type=$slot_type&slot_name=$slot_name&slot_owner=$slot_owner&slot_use=".(($a['inuse'])?"YES":"NO")."&action=edit&id=".$a['id']."'>edit</a>\n";
-						print "</nobr></td>";
+							print "<a href='add_slot.php?$sid&amp;action=del&amp;id=".$a['id']."'>del</a> | \n";
+						print "<a href='add_slot.php?$sid&amp;slot_type=$slot_type&amp;slot_name=$slot_name&amp;slot_owner=$slot_owner&amp;slot_use=".(($a['inuse'])?"YES":"NO")."&amp;action=edit&amp;id=".$a['id']."'>edit</a>\n";
+						print "</span></td>";
 						print "</tr>";
 					}
 				}
 			?>
 			
 		</table>
+		</form>
 	</td>
 </tr>
 </table>
 
 <br />
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type='button' value='Close Window' onclick='window.close()' /></div>
 <?
 function doSlotForm($slot,$p='',$e=0) {
 	global $default_uploadlimit;
 	?>
-	<form method='post' name='addform'>
+	
 	<tr>
-	<td align='center'><?=($e)?$slot[$p.'id']:"&nbsp"?></td>
-	<input type=hidden name='id' value='<?=($e)?$slot[$p.'id']:"0"?>'>
+	<td align='center'><?=($e)?$slot[$p.'id']:"&nbsp;"?></td>
 	<td>
+	<input type='hidden' name='id' value='<?=($e)?$slot[$p.'id']:"0"?>' />
 	<? if ($e) {
-		print $slot[$p.'name']."<input type=hidden name='name' value='".$slot[$p.'name']."'>";
+		print $slot[$p.'name']."<input type='hidden' name='name' value='".$slot[$p.'name']."' />";
 	 } else { ?>
-		<input type='text' name='name' size=10 value="<?=$slot[$p.'name']?>">
+		<input type='text' name='name' size='10' value="<?=$slot[$p.'name']?>" />
 	<? } ?>
 	</td>
-	<td><input type='text' name='owner' size=10 value="<?=$slot['owner']?>"> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&comingfrom=classes')">choose</a></td>
+	<td><input type='text' name='owner' size='10' value="<?=$slot['owner']?>" /> <a href="Javascript:sendWindow('addeditor',400,250,'add_editor.php?$sid&amp;comingfrom=classes')">choose</a></td>
 	<td>
 	<? if ($e) {
-		print $slot[$p.'type']."<input type=hidden name='type' value='".$slot[$p.'type']."'>";
+		print $slot[$p.'type']."<input type='hidden' name='type' value='".$slot[$p.'type']."' />";
 	 } else { ?>
-		<select name=type>
-		<option<?=($slot[$p.'type']=='class')?" selected":""?>>class
-		<option<?=($slot[$p.'type']=='other')?" selected":""?>>other
-		<option<?=($slot[$p.'type']=='personal')?" selected":""?>>personal
-		<option<?=($slot[$p.'type']=='system')?" selected":""?>>system
+		<select name='type'>
+		<option<?=($slot[$p.'type']=='class')?" selected='selected'":""?>>class</option>
+		<option<?=($slot[$p.'type']=='other')?" selected='selected'":""?>>other</option>
+		<option<?=($slot[$p.'type']=='personal')?" selected='selected'":""?>>personal</option>
+		<option<?=($slot[$p.'type']=='system')?" selected='selected'":""?>>system</option>
 		</select>
 	<? } ?>
 	</td>
-	<td align='left'><input type='text' name='assocsite' size=10 value="<?=$slot[$p.'assocsite']?>"></td>
+	<td align='left'><input type='text' name='assocsite' size='10' value="<?=$slot[$p.'assocsite']?>" /></td>
 	<td align='right'>
 <?	if ($slot[$p.'uploadlimit'] >= 1073741824) {
-		print "<input type='text' align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1073741824,2)."'>";
+		print "<input type='text' align='right' name='uploadlimit' size='5' value='".round($slot[$p.'uploadlimit']/1073741824,2)."' />";
 		$units = "GB";
 	} else if ($slot[$p.'uploadlimit'] >= 1048576) {
-		print "<input type='text' align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1048576,2)."'>";
+		print "<input type='text' align='right' name='uploadlimit' size='5' value='".round($slot[$p.'uploadlimit']/1048576,2)."' />";
 		$units = "MB";
 	} else if ($slot[$p.'uploadlimit'] >= 1024) {
-		print "<input type='text' align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit']/1024,2)."'>";
+		print "<input type='text' align='right' name='uploadlimit' size='5' value='".round($slot[$p.'uploadlimit']/1024,2)."' />";
 		$units = "KB";
 	} else if ($slot[$p.'uploadlimit'] > 0) {
-		print "<input type='text' align='right' name='uploadlimit' size=5 value='".round($slot[$p.'uploadlimit'],2)."'>";
+		print "<input type='text' align='right' name='uploadlimit' size='5' value='".round($slot[$p.'uploadlimit'],2)."' />";
 		$units = "B";
 	} else {
-		print "<input type='text' align='right' name='uploadlimit' size=5 value='".$default_uploadlimit."'>";
+		print "<input type='text' align='right' name='uploadlimit' size='5' value='".$default_uploadlimit."' />";
 		$units = "MB";
 	}
 ?>
 	</td>
-	<td><select name=units>
-		<option<?=($units=='B')?" selected":""?>>B
-		<option<?=($units=='KB')?" selected":""?>>KB
-		<option<?=($units=='MB' || !$units || !$e)?" selected":""?>>MB
-		<option<?=($units=='GB')?" selected":""?>>GB
+	<td><select name='units'>
+		<option<?=($units=='B')?" selected='selected'":""?>>B</option>
+		<option<?=($units=='KB')?" selected='selected'":""?>>KB</option>
+		<option<?=($units=='MB' || !$units || !$e)?" selected='selected'":""?>>MB</option>
+		<option<?=($units=='GB')?" selected='selected'":""?>>GB</option>
 	</select>
 	</td>
 	<? if ($e) { ?>
@@ -448,14 +459,16 @@ function doSlotForm($slot,$p='',$e=0) {
 	<? } else { ?>
 		<td>&nbsp;  </td>
 	<? } ?>
-	<input type=hidden name='action' value='<?=($e)?"edit":"add"?>'>
-	<?=($e)?"<input type=hidden name='id' value='".$slot[$p."id"]."'><input type=hidden name=commit value=1>":""?>
 	<td align='center'>
-	<a href='#' onClick='document.addform.submit()'><?=($e)?"update":"add slot"?></a>
+	<input type='hidden' name='action' value='<?=($e)?"edit":"add"?>' />
+	<?=($e)?"<input type='hidden' name='id' value='".$slot[$p."id"]."' /><input type='hidden' name='commit' value='1' />":""?>
+	<a href='#' onclick='document.addform.submit()'><?=($e)?"update":"add slot"?></a>
 	<!-- | <a href='add_slot.php'>cancel</a> -->
 	</td>
 	</tr>
-	</form>
 	<?
 }
 ?>
+
+</body>
+</html>

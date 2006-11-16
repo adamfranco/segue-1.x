@@ -12,7 +12,7 @@ include("includes.inc.php");
 //if ($ltype != 'admin') exit;
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
-$siteinfo = db_get_line("site INNER JOIN slot on site_id = FK_site","slot_name='$site'");
+$siteinfo = db_get_line("site INNER JOIN slot on site_id = FK_site","slot_name='".addslashes($site)."'");
 $site_type = $siteinfo[type];
 
 if ($_REQUEST[site_type] =="class") {
@@ -31,12 +31,13 @@ if ($_REQUEST[clear]) {
 }
 
 if (!isset($order)) $order = "fname asc";
+$order = addslashes($order);
 $orderby = " order by $order";
 
 $w = array();
 //if ($type) $w[]="type='$type'";
 //if ($site) $w[]="site='$name'";
-if ($_REQUEST[user]) $w[]="user2.user_uname like '%$user%'";
+if ($_REQUEST[user]) $w[]="user2.user_uname like '%".addslashes($user)."%'";
 if ($_REQUEST[site]) {
 	$isgroup = ($classlist = group::getClassesFromName($_REQUEST[site]))?1:0;
 	if ($isgroup) {
@@ -78,13 +79,14 @@ $query = "
 			ON
 		ugroup_user.FK_user = user2.user_id
 	$where";
+	
 $r=db_query($query); 
 $a = db_fetch_assoc($r);
 $numlogs = $a[log_count];
 if (!isset($lowerlimit)) $lowerlimit = 0;
 if ($lowerlimit < 0) $lowerlimit = 0;
 
-
+$lowerlimit = addslashes($lowerlimit);
 $limit = " limit $lowerlimit,30";
 
 $query = "
@@ -128,7 +130,8 @@ $r = db_query($query);
 <? include("themes/common/logs_css.inc.php"); ?>
 </head>
 
-<script lang="JavaScript">
+<script type="text/javascript">
+// <![CDATA[
 
 function selectClass(name) {
     f = document.searchform;
@@ -149,13 +152,14 @@ function changeOrder(order) {
     f.submit();
 }
 
+// ]]>
 </script>
 <?// print "test = $test"; ?>
 
 <table width='100%' class='bg'>
 <td align='right' class='bg'>
-    <a href=viewlogs.php?$sid&site=<? echo $site ?>>Logs</a>
-    | <a href=viewsites.php?$sid&site=<? echo $site ?>>Sites</a>
+    <a href='viewlogs.php?&amp;site=<? echo $site.$sid ?>'>Logs</a>
+    | <a href='viewsites.php?&amp;site=<? echo $site.$sid; ?>'>Sites</a>
     | Users
 </td></tr>
 <tr><td class='bg'>
@@ -166,16 +170,16 @@ function changeOrder(order) {
 </td></tr>
 </table>
 
-<table cellspacing=1 width='100%' id='maintable'>
+<table cellspacing='1' width='100%' id='maintable'>
 <tr>
-    <td colspan=8>
+    <td colspan='8'>
         <table width='100%'>
         <tr><td>
-        <form action=<?echo "$PHP_SELF?$sid"?> name='searchform' method=post>
+        <form action='<?echo "$PHP_SELF?$sid"?>' name='searchform' method='post'>
         <?
         // $r1 = db_query("select distinct type from sites order by type asc");
         ?>
-        <!-- type: <select name=type>
+        <!-- type: <select name='type'>
         <option value=''>all -->
         <?
         //while ($a=db_fetch_assoc($r1))
@@ -185,12 +189,12 @@ function changeOrder(order) {
         } else {
         ?>
             <!-- </select> -->
-            site: <input type='text' name='site' size=15 value='<?echo $site?>'>
-            <!--title: <input type='text' name=title size=15 value='<?echo $title?>'>-->
-            user: <input type='text' name=user size=15 value='<?echo $user?>'>
-            <input type=submit value='go'>
-            <input type=submit name='clear' value='clear'>
-            <input type=hidden name='order' value='<? echo $order ?>'>
+            site: <input type='text' name='site' size='15' value='<?echo $site?>' />
+            <!--title: <input type='text' name='title' size='15' value='<?echo $title?>' />-->
+            user: <input type='text' name='user' size='15' value='<?echo $user?>' />
+            <input type='submit' value='go' />
+            <input type='submit' name='clear' value='clear' />
+            <input type='hidden' name='order' value='<? echo $order ?>' />
         <? } ?>
         </form>
         </td>
@@ -206,9 +210,9 @@ function changeOrder(order) {
         print "$curr of $tpages ";
 //        print "$prev $lowerlimit $next ";
         if ($prev != $lowerlimit)
-            print "<input type=button value='&lt;&lt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
+            print "<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&type=$type&user=$user&title=$title&site=$site&order=$order\"' />\n";
         if ($next != $lowerlimit && $next > $lowerlimit)
-            print "<input type=button value='&gt;&gt' onClick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&title=$title&site=$site&order=$order\"'>\n";
+            print "<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&type=$type&user=$user&title=$title&site=$site&order=$order\"' />\n";
         ?>
         </td>
         </tr>
@@ -217,7 +221,7 @@ function changeOrder(order) {
 </tr>
 <tr>
 <?
-    print "<th><a href=# onClick=\"changeOrder('";
+    print "<th><a href=# onclick=\"changeOrder('";
     if ($order =='fname asc') print "fname desc";
     else print "fname asc";
     print "')\" style='color: #000'>Name";
@@ -225,7 +229,7 @@ function changeOrder(order) {
     if ($order =='fname desc') print " &and;";    
     print "</a></th>";
     
-    print "<th><a href=# onClick=\"changeOrder('";
+    print "<th><a href=# onclick=\"changeOrder('";
     if ($order =='uname asc') print "uname desc";
     else print "uname asc";
     print "')\" style='color: #000'>User Name";
@@ -233,7 +237,7 @@ function changeOrder(order) {
     if ($order =='uname desc') print " &and;";    
     print "</a></th>";
     
-    print "<th><a href=# onClick=\"changeOrder('";
+    print "<th><a href=# onclick=\"changeOrder('";
     if ($order =='name asc') print "name desc";
     else print "name asc";
     print "')\" style='color: #000'>Site";
@@ -241,7 +245,7 @@ function changeOrder(order) {
     if ($order =='name desc') print " &and;";    
     print "</a></th>";
     
-    print "<th><a href=# onClick=\"changeOrder('";
+    print "<th><a href=# onclick=\"changeOrder('";
     if ($order =='type asc') print "type desc";
     else print "type asc";
     print "')\" style='color: #000'>Type";
@@ -258,42 +262,42 @@ $yesterday = date(Ymd)-1;
 if (db_num_rows($r)) {
     while ($a=db_fetch_assoc($r)) {
         print "<tr>";
-        //print "<td class=td$color><nobr>";
-            //print "<a href='viewlogs.php?$sid&site=$a[name]' style='color: #000;'>";
+        //print "<td class='td$color'><span style='white-space: nowrap;'>";
+            //print "<a href='viewlogs.php?$sid&amp;site=$a[name]' style='color: #000;'>";
             //print "$yesterday";
             //if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "<b>";
             //print timestamp2usdate($a[editedtimestamp],1);
             //if (strncmp($today, $a[editedtimestamp], 8) == 0 || strncmp($yesterday, $a[editedtimestamp], 8) == 0) print "</b>";
-            //print "</nobr>";
+            //print "</span>";
             //print "</a>";
         //print "</td>";
-        print "<td class=td$color><a href=# onClick=\"selectUser('".$a[uname]."')\"  style='color: #000;'>$a[fname]</a></td>";
-        print "<td class=td$color>$a[uname]</td>";
-        print "<td class=td$color><a href=# onClick=\"selectClass('".generateCourseCode($a[id])."')\"  style='color: #000;'>".generateCourseCode($a[id])."</a></td>";
-        print "<td class=td$color>$a[type]</td>";
+        print "<td class='td$color'><a href='#' onclick=\"selectUser('".$a[uname]."')\"  style='color: #000;'>$a[fname]</a></td>";
+        print "<td class='td$color'>$a[uname]</td>";
+        print "<td class='td$color'><a href='#' onclick=\"selectClass('".generateCourseCode($a[id])."')\"  style='color: #000;'>".generateCourseCode($a[id])."</a></td>";
+        print "<td class='td$color'>$a[type]</td>";
         
-        /*print "<td class=td$color><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
-        print "<td class=td$color>$a[type]</td>";
-        print "<td class=td$color><span style='color: #";
+        /*print "<td class='td$color'><span style='color: #".(($a[active])?"090'>active":"900'>inactive")."</span></td>";
+        print "<td class='td$color'>$a[type]</td>";
+        print "<td class='td$color'><span style='color: #";
             if ($a[viewpermissions] == 'anyone') print "000";
             if ($a[viewpermissions] == 'midd') print "00c";
             if ($a[viewpermissions] == 'class') print "900";
         print "'>$a[viewpermissions]</span></td>";
-        print "<td class=td$color>$a[theme]</td>";
-        print "<td class=td$color>";
-        print "<a href='#' onClick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
+        print "<td class='td$color'>$a[theme]</td>";
+        print "<td class='td$color'>";
+        print "<a href='#' onclick='opener.window.location=\"index.php?$sid&action=site&site=$a[name]\"'>";
         print "$a[title]";
         print "</a>";
         print "</td>";
-        print "<td class=td$color>";
+        print "<td class='td$color'>";
         print "$a[addedby]";
         print "</td>"; */
         print "</tr>";
         $color = 1-$color;
     }
 } else {
-    print "<tr><td colspan=4>No log entries.</td></tr>";
+    print "<tr><td colspan='4'>No log entries.</td></tr>";
 }
 ?>
 </table><br />
-<div align='right'><input type=button value='Close Window' onClick='window.close()'></div>
+<div align='right'><input type='button' value='Close Window' onclick='window.close()' /></div>

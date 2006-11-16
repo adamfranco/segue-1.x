@@ -50,8 +50,8 @@ function getclassstudents($class_id) {
 			LEFT JOIN
 		ugroup ON FK_ugroup = ugroup_id
 	WHERE 
-		classgroup_name = '$class_id'
-		OR class_external_id = '$class_id'
+		classgroup_name = '".addslashes($class_id)."'
+		OR class_external_id = '".addslashes($class_id)."'
 		OR $whereClassParts
 	";
 	
@@ -99,7 +99,7 @@ function getclassstudents($class_id) {
 				ON
 			FK_user = user_id
 		WHERE
-			FK_ugroup = $ugroup_id
+			FK_ugroup = '".addslashes($ugroup_id)."'
 		ORDER BY
 			user_type DESC, user_uname
 		";
@@ -180,7 +180,7 @@ function getuserclasses($user,$time="all") {
 				ON
 			class.FK_ugroup = ugroup_user.FK_ugroup
 		WHERE
-			user_uname = '$user'
+			user_uname = '".addslashes($user)."'
 	";
 	$semester = currentsemester ();
 	$r = db_query($query);
@@ -204,6 +204,12 @@ function getuserclasses($user,$time="all") {
 	return $classes;
 }
 
+function getusergroups($user) {
+	
+	return array();
+}
+
+
 function generateCourseCode($id) {
 	$query = "
 		SELECT
@@ -215,7 +221,7 @@ function generateCourseCode($id) {
 		FROM
 			class
 		WHERE
-			class_id = $id
+			class_id = '".addslashes($id)."'
 	";
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
@@ -237,11 +243,11 @@ function generateTermsFromCode($code) {
 	$year = "20".$r[5];
 	
 	$terms = "
-		class_department='$department' AND
-		class_number='$number' AND
-		class_section='$section' AND
-		class_semester='$semester' AND
-		class_year='$year'
+		class_department='".addslashes($department)."' AND
+		class_number='".addslashes($number)."' AND
+		class_section='".addslashes($section)."' AND
+		class_semester='".addslashes($semester)."' AND
+		class_year='".addslashes($year)."'
 	";
 	return $terms;
 }
@@ -255,7 +261,7 @@ function ldapfname($uname) {
 	$uname = strtolower($uname);
 	if (isgroup($uname)) return "Students in group";
 	if (isclass($uname)) return "Students in class";
-	if ($fname = db_get_value("user","user_fname","user_uname='$uname'")) return $fname;
+	if ($fname = db_get_value("user","user_fname","user_uname='".addslashes($uname)."'")) return $fname;
 	else return "n/a";
 }
 
@@ -268,9 +274,9 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 		FROM
 			user
 		WHERE
-			user_uname LIKE '%$name%'
+			user_uname LIKE '%".addslashes($name)."%'
 				OR
-			user_fname LIKE '%$name%'
+			user_fname LIKE '%".addslashes($name)."%'
 	";
 	global $dbhost, $dbuser,$dbpass, $dbdb;
 	db_connect($dbhost, $dbuser, $dbpass, $dbdb);
@@ -289,7 +295,7 @@ function userlookup($name,$type=LDAP_BOTH,$wild=LDAP_WILD,$n=LDAP_LASTNAME,$lc=0
 		FROM
 			ugroup
 		WHERE
-			ugroup_name LIKE '%$name%'
+			ugroup_name LIKE '%".addslashes($name)."%'
 	";
 		$r = db_query($query);
 	$ugroups = array();

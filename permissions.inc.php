@@ -49,25 +49,29 @@ class permissions {
 			$o->delEditor($_REQUEST[edname]);
 		}
 		
-		printc("\n<input type=hidden name=edaction value=''>");
-		printc("\n<input type=hidden name=edname value=''>");
+		printc("\n<input type='hidden' name='edaction' value='' />");
+		printc("\n<input type='hidden' name='edname' value='' />");
 		
 		if ($className = $sitename) {
-			print "<script lang='javascript'>";
-			print "function addClassEditor() {";
-			print "	f = document.addform;";
-			print "	f.edaction.value='add';";
-			print "	f.edname.value='$className';";
-			print "	f.submit();";
-			print "}";
-			print "</script>";
+			print "<script type='text/javascript'>";
+			print "\n// <![CDATA[";
+			
+			print "\nfunction addClassEditor() {";
+			print "\n	f = document.addform;";
+			print "\n	f.edaction.value='add';";
+			print "\n	f.edname.value='$className';";
+			print "\n	f.submit();";
+			print "\n}";
+			
+			print "\n// ]]>";
+			print "\n</script>";
 		}
 		
 		$a = array(0=>4,1=>1);
 		
 		printc("\n<style type='text/css'>th, .td0, .td1 {font-size: 10px;}</style>");
-		printc("\n<table width=100% style='border: 1px solid gray'>");
-		printc("\n<tr><th width=50%>name</th>	<th colspan=".($a[$d])." width=30%>permissions</th>");
+		printc("\n<table width='100%' style='border: 1px solid gray'>");
+		printc("\n<tr><th width='50%'>name</th>	<th colspan='".($a[$d])."' width='30%'>permissions</th>");
 		if ($canAddEditors) {
 			printc("<th>del</th>");
 		}
@@ -87,7 +91,7 @@ class permissions {
 					//if ($e == 'everyone') continue;
 					// :: /hack ::
 					
-					printc("\n<tr><td class=td$color align='left'>");
+					printc("\n<tr><td class='td$color' align='left'>");
 					if ($e == "everyone")
 						printc("Everyone (will override other entries)</td>");
 					else if ($e == "institute")
@@ -101,21 +105,21 @@ class permissions {
 						if (!$d && $i==4) $skip = 1;
 						if (!$d && (($e == 'everyone' || $e == 'institute') && $i!=3)) $nob=1;
 						if (!$skip) {
-							printc("\n<td class=td$color align='center'>");
+							printc("\n<td class='td$color' align='center'>");
 							if ($nob) printc("&nbsp;");
-							else printc("\n<input type=checkbox name='permissions[$e][$i]' value=1".(($permissions[$e][$i])?" checked":"").">");
+							else printc("\n<input type='checkbox' name='permissions[$e][$i]' value='1'".(($permissions[$e][$i])?" checked='checked'":"")." />");
 							printc("</td>");
 						}
 						if ($skip || $nob) {
-							printc("\n<input type=hidden name='permissions[$e][$i]' value=".$permissions[$e][$i].">");
+							printc("\n<input type='hidden' name='permissions[$e][$i]' value='".$permissions[$e][$i]."' />");
 						}
 					}
 					
 					printc("</td>");
 					if ($canAddEditors) {
-						printc("\n<td class=td$color align='center'>");
+						printc("\n<td class='td$color' align='center'>");
 						if ($e == 'everyone' || $e == 'institute') printc("&nbsp;");
-						else printc("<a href='#' onClick='delEditor(\"$e\");'>remove</a>");
+						else printc("<a href='#' onclick='delEditor(\"$e\");'>remove</a>");
 						printc("</td>");
 					}
 					printc("</tr>");
@@ -123,7 +127,7 @@ class permissions {
 				}
 				
 			}
-		} else printc("\n<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=".($a[$d]+1).">no editors added</td></tr>");
+		} else printc("\n<tr><td class='td1' > &nbsp; </td><td class='td1' colspan=".($a[$d]+1).">no editors added</td></tr>");
 		
 		if ($canAddEditors) {
 			printc("\n<tr><th colspan=".($a[$d]+1).">");
@@ -140,7 +144,7 @@ class permissions {
 			if (is_array($className)) {
 				foreach ($className as $class) {
 					if (!in_array($class,$edlist)) {
-						printc("<a href='#' onClick='addClassEditor();'>Add students in ".$sitename."</a><br>");
+						printc("<a href='#' onclick='addClassEditor();'>Add students in ".$sitename."</a><br />");
 						break;
 					} else {
 						printc("&nbsp;");
@@ -148,12 +152,12 @@ class permissions {
 				}
 			}
 			
-			printc("</th><th><a href='add_editor.php?$sid' target='addeditor' onClick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
+			printc("</th><th><a href='add_editor.php?$sid' target='addeditor' onclick='doWindow(\"addeditor\",400,250);'>add editor</a></th></tr>");
 		}
 		
 		printc("\n</table>");
 		
-//		if ($_SESSION[settings][edit]) printc("<a href='editor_access.php?$sid&site=".$sitename."' onClick='doWindow(\"permissions\",600,400)' target='permissions'>Permissions as of last save</a>");
+//		if ($_SESSION[settings][edit]) printc("<a href='editor_access.php?$sid&amp;site=".$sitename."' onclick='doWindow(\"permissions\",600,400)' target='permissions'>Permissions as of last save</a>");
 		
 	}
 	

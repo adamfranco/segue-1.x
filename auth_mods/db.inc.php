@@ -4,7 +4,7 @@ function _valid_db($name,$pass,$admin_auser=0) {
 	$name = strtolower($name);
 	global $dbhost, $dbuser,$dbpass, $dbdb;
 	db_connect($dbhost,$dbuser,$dbpass,$dbdb);
-	$query = "SELECT * FROM user WHERE user_uname='$name'".(($admin_auser)?"":" AND user_pass='$pass' AND user_authtype='db'");
+	$query = "SELECT * FROM user WHERE user_uname='".addslashes($name)."'".(($admin_auser)?"":" AND user_pass='".addslashes($pass)."' AND user_authtype='db'");
 	$r = db_query($query);
 //	$a = db_fetch_assoc($r);
 	

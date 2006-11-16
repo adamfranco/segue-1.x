@@ -276,14 +276,16 @@ class story extends segue {
 			$parentObj->delStory($this->id);
 			$parentObj->updateDB();
 		} else {
-			$query = "DELETE FROM story WHERE story_id=".$this->id;
+			$query = "DELETE FROM story WHERE story_id='".addslashes($this->id)."'";
 			db_query($query);
 
-			$query = "DELETE FROM permission WHERE FK_scope_id=".$this->id." AND permission_scope_type='story';";
+			$query = "DELETE FROM permission WHERE FK_scope_id='".addslashes($this->id)."' AND permission_scope_type='story';";
 			db_query($query);
 			
-			$query = "DELETE FROM discussion WHERE FK_story=".$this->id;
+			$query = "DELETE FROM discussion WHERE FK_story='".addslashes($this->id)."'";
 			db_query($query);
+			
+			delete_record_tags($this->owning_site,$this->id,"story",$user_id="");
 			
 			$this->clearPermissions();
 			$this->updatePermissionsDB();
@@ -384,7 +386,9 @@ class story extends segue {
 						LEFT JOIN
 					 media
 						ON story.FK_media = media_id
-				WHERE story_id = ".$this->id;
+				WHERE 
+					story_id = '".addslashes($this->id)."'
+			";
 
 			$r = db_query($query);
 			$a = db_fetch_assoc($r);
@@ -414,7 +418,7 @@ class story extends segue {
 					discussion
 						ON FK_story = story_id
 				WHERE 
-					story_id = ".$this->id."
+					story_id = '".addslashes($this->id)."'
 				ORDER BY
 					discussion_order
 				";
@@ -442,7 +446,15 @@ class story extends segue {
 			} else
 				$a[] = "FK_updatedby=".$_SESSION[aid];
 
-			$query = "UPDATE story SET ".implode(",",$a)." WHERE story_id=".$this->id;
+			$query = "
+				UPDATE 
+					story 
+				SET 
+					".implode(",",$a)." 
+				WHERE 
+					story_id='".addslashes($this->id)."'
+			";
+			
 /* 			print "<pre>Story->UpdateDB: $query<br />"; */
 			db_query($query);
 /* 			print mysql_error()."<br />"; */
@@ -456,25 +468,26 @@ class story extends segue {
 				// Urls are now stored in the media table
 				// get id of media item
 				$query = "
-SELECT
-	FK_media
-FROM
-	story
-WHERE
-	story_id = ".$this->id;
+					SELECT
+						FK_media
+					FROM
+						story
+					WHERE
+						story_id = '".addslashes($this->id)."'
+				";
 
 				$a = db_fetch_assoc(db_query($query));
 				$media_id = $a[FK_media];
 							
 				$query = "
-UPDATE
-	media
-SET
-	media_tag = '".$this->data[url]."',
-	FK_updatedby = ".$_SESSION[aid]."
-WHERE
-	media_id = $media_id
-";
+					UPDATE
+						media
+					SET
+						media_tag = '".$this->data[url]."',
+						FK_updatedby = ".$_SESSION[aid]."
+					WHERE
+						media_id = '".addslashes($media_id)."'
+				";
 
 				db_query($query);
 
@@ -491,7 +504,7 @@ WHERE
 		return true;
 	}
 	
-	function insertDB($down=0, $newsite=null, $newsection=0, $newpage=0, $removeOrigional=0, $keepaddedby=0, $keepDiscussions=0) {
+	function insertDB($down=0, $newsite=null, $newsection=0, $newpage=0, $removeOrigional=0, $keepaddedby=0, $keepDiscussions=0, $storyTags = null) {
 		$origsite = $this->owning_site;
 		$origid = $this->id;
 		if ($newsite) {
@@ -539,50 +552,54 @@ WHERE
 		
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
-			$a[] = "FK_createdby=".$_SESSION[aid];
+			$a[] = "FK_createdby='".addslashes($_SESSION[aid])."'";
 			$a[] = $this->_datafields[addedtimestamp][1][0]."=NOW()";
-			$a[] = "FK_updatedby=".$_SESSION[aid];
+			$a[] = "FK_updatedby='".addslashes($_SESSION[aid])."'";
 		} else {
-			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".$this->getField("addedby")."'");
-			$a[] = $this->_datafields[addedtimestamp][1][0]."='".$this->getField("addedtimestamp")."'";
-			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".$this->getField("editedby")."'");
-			$a[] = $this->_datafields[editedtimestamp][1][0]."='".$this->getField("editedtimestamp")."'";
+			$a[] = "FK_createdby=".db_get_value("user","user_id","user_uname='".addslashes($this->getField("addedby"))."'");
+			$a[] = $this->_datafields[addedtimestamp][1][0]."='".addslashes($this->getField("addedtimestamp"))."'";
+			$a[] = "FK_updatedby=".db_get_value("user","user_id","user_uname='".addslashes($this->getField("editedby"))."'");
+			$a[] = $this->_datafields[editedtimestamp][1][0]."='".addslashes($this->getField("editedtimestamp"))."'";
 		}
 
 		// insert media (url)
 		if ($this->data[url] && ($this->data['type'] == 'link' || $this->data['type'] == 'rss')) {
 			// first see, if media item already exists in media table
+			
 			$query = "
-SELECT
-	media_id
-FROM
-	media
-WHERE
-	FK_site = ".$this->owningSiteObj->id." AND
-	FK_createdby = ".$_SESSION[aid]." AND
-	media_tag = '".$this->data[url]."' AND
-	media_location = 'remote'";
+				SELECT
+					media_id
+				FROM
+					media
+				WHERE
+					FK_site = '".addslashes($this->owningSiteObj->id)."' AND
+					FK_createdby = '".addslashes($_SESSION[aid])."' AND
+					media_tag = '".addslashes($this->data[url])."' AND
+					media_location = 'remote'
+			";
+	
 			$r = db_query($query);
 			
 			// if not in media table insert it
 			if (!db_num_rows($r)) {
 				$query = "
-INSERT
-INTO media
-SET
-	FK_site = ".$this->owningSiteObj->id.",
-	FK_createdby = ".$_SESSION[aid].",
-	media_tag = '".$this->data[url]."',
-	media_location = 'remote',
-	FK_updatedby = ".$_SESSION[aid]."
-";
+					INSERT INTO 
+						media
+					SET
+						FK_site = '".addslashes($this->owningSiteObj->id)."',
+						FK_createdby = '".addslashes($_SESSION[aid])."',
+						media_tag = '".addslashes($this->data[url])."',
+						media_location = 'remote',
+						FK_updatedby = '".addslashes($_SESSION[aid])."'
+				";
+				
 				db_query($query);
 				$a[] = "FK_media=".lastid();
 			}
 			// if in media table, assign the media id
 			else {
 				$arr = db_fetch_assoc($r);
-				$a[] = "FK_media=".$arr[media_id];
+				$a[] = "FK_media='".addslashes($arr[media_id])."'";
 			}
 		}
 
@@ -626,8 +643,10 @@ SET
 					FROM
 						discussion
 					WHERE
-						discussion_id=".$discussionId;
+						discussion_id='".addslashes($discussionId)."'";
+						
 				$r = db_query($query);
+				
 				$discussionData[$discussionId] = db_fetch_assoc($r);
 			}
 			
@@ -636,9 +655,10 @@ SET
 				
 				// Insert the post
 				$query = 
-"INSERT INTO
-	discussion
-SET";
+					"INSERT INTO
+						discussion
+					SET";
+					
 				// Set the FK_story to our new story ID
 				$discussionData[$oldId]['FK_story'] = $this->id;
 				
@@ -646,10 +666,11 @@ SET";
 				$i=0;
 				foreach ($discussionData[$oldId] as $field => $val) {
 					if ($field != 'discussion_id' && $val) {
-						$query .= "\n\t".(($i==0)?"":", ").$field."='".$val."'";
+						$query .= "\n\t".(($i==0)?"":", ").$field."='".addslashes($val)."'";
 						$i++;
 					}
 				}
+				
 				$r = db_query($query);
 				
 				// store the id mapping
@@ -672,20 +693,28 @@ SET";
 				if ($discussionData[$oldId]['FK_parent']) {
 				
 					$query = "
-UPDATE
-	discussion
-SET
-	FK_parent = '".$idMapping[$discussionData[$oldId]['FK_parent']]."',
-	discussion_tstamp = '".$discussionData[$oldId]['discussion_tstamp']."'
-	
-WHERE
-	discussion_id = '".$newId."'";
+						UPDATE
+							discussion
+						SET
+							FK_parent = '".addslashes($idMapping[$discussionData[$oldId]['FK_parent']])."',
+							discussion_tstamp = '".addslashes($discussionData[$oldId]['discussion_tstamp'])."'
+							
+						WHERE
+							discussion_id = '".addslashes($newId)."'
+					";
 					
 //					printpre($query);
 					$res = db_query($query);
 				}
 			}
 		}
+		
+		
+		// Update any story tags
+		if (is_array($storyTags)) {
+			save_record_tags($storyTags, null, $this->id, $_SESSION[aid], "story");
+		}
+		
 		return true;
 	}
 	
@@ -701,36 +730,36 @@ WHERE
 		$this->fetchUp();
 
 		if ($all) 
-			$a[] = $this->_datafields[page_id][1][0]."='".$this->owningPageObj->getField("id")."'";
+			$a[] = $this->_datafields[page_id][1][0]."='".addslashes($this->owningPageObj->getField("id"))."'";
 		
 //		if ($this->id && ($all || $this->changed[pages])) { //I belive we may always need to fix the order.
 		if ($this->id) {
 			$orderkeys = array_keys($this->owningPageObj->getField("stories"),$this->id);
 //			print "<br />".$this->id."<br />".$orderkeys[0]."<br />";
-			$a[] = "story_order=".$orderkeys[0];
+			$a[] = "story_order='".addslashes($orderkeys[0])."'";
 		} else {
-			$a[] = "story_order=".count($this->owningPageObj->getField("stories"));
+			$a[] = "story_order='".addslashes(count($this->owningPageObj->getField("stories")))."'";
 		}
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-		if ($all || $this->changed[activatedate]) $a[] = "story_activate_tstamp ='".ereg_replace("-","",$d[activatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[deactivatedate]) $a[] = "story_deactivate_tstamp ='".ereg_replace("-","",$d[deactivatedate])."'"; // remove dashes to make a tstamp
-		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".(($d[active])?1:0)."'";
-		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='$d[type]'";
-		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".(($d[locked])?1:0)."'";
+		if ($all || $this->changed[activatedate]) $a[] = "story_activate_tstamp ='".addslashes(ereg_replace("-","",$d[activatedate]))."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[deactivatedate]) $a[] = "story_deactivate_tstamp ='".addslashes(ereg_replace("-","",$d[deactivatedate]))."'"; // remove dashes to make a tstamp
+		if ($all || $this->changed[active]) $a[] = $this->_datafields[active][1][0]."='".addslashes((($d[active])?1:0))."'";
+		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='".addslashes($d[type])."'";
+		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".addslashes((($d[locked])?1:0))."'";
 //		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
 //		if (($all && $this->data[url]) || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
 
-		if ($all || $this->changed[discuss]) $a[] = $this->_datafields[discuss][1][0]."='".(($d[discuss])?1:0)."'";
-		if ($all || $this->changed[discussemail]) $a[] = $this->_datafields[discussemail][1][0]."='".(($d[discussemail])?1:0)."'";
-		if ($all || $this->changed[discussdisplay]) $a[] = $this->_datafields[discussdisplay][1][0]."='".($d[discussdisplay])."'";
-		if ($all || $this->changed[discussauthor]) $a[] = $this->_datafields[discussauthor][1][0]."='".($d[discussauthor])."'";
+		if ($all || $this->changed[discuss]) $a[] = $this->_datafields[discuss][1][0]."='".addslashes((($d[discuss])?1:0))."'";
+		if ($all || $this->changed[discussemail]) $a[] = $this->_datafields[discussemail][1][0]."='".addslashes((($d[discussemail])?1:0))."'";
+		if ($all || $this->changed[discussdisplay]) $a[] = $this->_datafields[discussdisplay][1][0]."='".addslashes(($d[discussdisplay]))."'";
+		if ($all || $this->changed[discussauthor]) $a[] = $this->_datafields[discussauthor][1][0]."='".addslashes(($d[discussauthor]))."'";
 		if ($all || $this->changed[discusslabel]) $a[] = $this->_datafields[discusslabel][1][0]."='".addslashes($d[discusslabel])."'";
 		
-		if ($all || $this->changed[texttype]) $a[] = $this->_datafields[texttype][1][0]."='$d[texttype]'";
-		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='$d[category]'";
-		if ($all || $this->changed[shorttext]) $a[] = $this->_datafields[shorttext][1][0]."='".urlencode($d[shorttext])."'";
-		if ($all || $this->changed[longertext]) $a[] = $this->_datafields[longertext][1][0]."='".urlencode($d[longertext])."'";
+		if ($all || $this->changed[texttype]) $a[] = $this->_datafields[texttype][1][0]."='".addslashes($d[texttype])."'";
+		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='".addslashes($d[category])."'";
+		if ($all || $this->changed[shorttext]) $a[] = $this->_datafields[shorttext][1][0]."='".addslashes(urlencode($d[shorttext]))."'";
+		if ($all || $this->changed[longertext]) $a[] = $this->_datafields[longertext][1][0]."='".addslashes(urlencode($d[longertext]))."'";
 //		if ($all || $this->changed[discussions]) $a[] = "discussions='".encode_array($d[discussions])."'";
 		
 		return $a;

@@ -28,60 +28,94 @@ printc("</td></tr></table>");
 printc("<input type=hidden value='0' name='cancel'>");
 printc("<input type=hidden value='0' name='prevbutton'>");
 printc("<input type=hidden value='0' name='nextbutton'>");
+printc("<input type=hidden value='' name='tag_update'>");
 
-	printc("<div class=title style='font-size: 14px'>Activation & Availability ".helplink("daterange")."</div>");
+printc("<div class=title style='font-size: 14px'>Activation & Availability ".helplink("daterange")."</div>");
 
-	$_SESSION[storyObj]->outputDateForm();
-/* 	printc("<table>"); */
-/* 	printc("<tr><td align='right'>"); */
-/* 	printc("Activate date:</td><td><input type=checkbox name='activatedate' value=1".(($_SESSION[settings][activatedate])?" checked":"")."> <select name='activateday'>"); */
-/* 	for ($i=1;$i<=31;$i++) { */
-/* 		printc("<option" . (($_SESSION[settings][activateday] == $i)?" selected":"") . ">$i\n"); */
-/* 	} */
-/* 	printc("</select>\n"); */
-/* 	printc("<select name='activatemonth'>"); */
-/* 	for ($i=0; $i<12; $i++) { */
-/* 		printc("<option value=$i" . (($_SESSION[settings][activatemonth] == $i)?" selected":"") . ">$months[$i]\n"); */
-/* 	} */
-/* 	printc("</select>\n<select name='activateyear'>"); */
-/* 	$curryear = date("Y"); */
-/* 	for ($i=$curryear; $i <= ($curryear+5); $i++) { */
-/* 		printc("<option" . (($_SESSION[settings][activateyear] == $i)?" selected":"") . ">$i\n"); */
-/* 	} */
-/* 	printc("</select>"); */
-/* 	 */
-/* 	printc("</td></tr>"); */
-/* 	 */
-/* 	printc("<tr><td align='right'>"); */
-/* 	printc("Deactivate date:</td><td><input type=checkbox name='deactivatedate' value=1".(($_SESSION[settings][deactivatedate])?" checked":"")."> <select name='deactivateday'>"); */
-/* 	for ($i=1;$i<=31;$i++) { */
-/* 		printc("<option" . (($_SESSION[settings][deactivateday] == $i)?" selected":"") . ">$i\n"); */
-/* 	} */
-/* 	printc("</select>\n"); */
-/* 	printc("<select name='deactivatemonth'>"); */
-/* 	for ($i=0; $i<12; $i++) { */
-/* 		printc("<option value=$i" . (($_SESSION[settings][deactivatemonth] == $i)?" selected":"") . ">$months[$i]\n"); */
-/* 	} */
-/* 	printc("</select>\n<select name='deactivateyear'>"); */
-/* 	for ($i=$curryear; $i <= ($curryear+5); $i++) { */
-/* 		printc("<option" . (($_SESSION[settings][deactivateyear] == $i)?" selected":"") . ">$i\n"); */
-/* 	} */
-/* 	printc("</select>"); */
-/* 	 */
-/* 	printc("</td></tr></table>"); */
+$_SESSION[storyObj]->outputDateForm();
 
-//	printc("<br /><div class=desc>To prevent the page from being viewed at all, select <b>\"Disabled\"</b> below. This is useful to prevent people from viewing the site while it is still in progress. Selecting <b>\"Disabled\"</b> WILL OVER-RIDE the \"Activate On\" command, above. Selecting \"Enabled\" will not over-ride the \"[De]Activate On\" settings.</div>");
+printc("<br /><br /><div class=title style='font-size: 14px'>Category</div>");
 
-//	printc("<input type=radio name=active value=1 " . (($_SESSION[settings][active])?" checked":"") . "> Enabled | ");
-//	printc("<input type=radio name=active value=0 " . (($_SESSION[settings][active])?"":" checked") . "> Disabled <br />");
 
-	printc("<br /><br /><div class=title style='font-size: 14px'>Category</div>");
-	printc("Category: <input type='text' name=newcategory size=20 value='".$_SESSION[settings][newcategory]."'> <select name=category onChange='document.storyform.newcategory.value = document.storyform.category.value'>");
-	printc("<option value=''".(($_SESSION[storyObj]->getField("category")=='')?" selected":"").">none");
-	foreach ($_SESSION[settings][categories] as $c) {
-		printc("<option value='$c'".(($_SESSION[storyObj]->getField("category")==$c)?" selected":"").">$c");
+if (!isset($_SESSION[settings][story_categories])) {
+	$record_tags = get_record_tags($_SESSION[settings][site],$_SESSION[storyObj]->id, $_SESSION[aid], "story");
+	if (is_array($record_tags)) {
+		foreach($record_tags as $tag) {
+			$_SESSION[settings][story_categories][] = urldecode($tag);	
+		}
 	}
-	printc("</select>");
+}
+
+//printpre($_SESSION[settings][story_categories]);
+
+//printc("Category: <input type='text' name=newcategory size=20 value='".$_SESSION[settings][newcategory]."'>");
+//	printc("<input type='hidden' name=category value='".(($_SESSION[settings][category]=='yes')?"yes":"")."'>");
+//	printc("<select name=category onChange='document.storyform.newcategory.value = document.storyform.category.value'>");
+//printc("<option value=''".(($_SESSION[storyObj]->getField("category")=='')?" selected":"").">none");
+
+
+$story_tags = "";
+//printpre($_SESSION[settings][story_categories]);
+if (is_array($_SESSION[settings][story_categories])) {	
+	foreach ($_SESSION[settings][story_categories] as $c) {
+		//printc("<option value='$c'".(($_SESSION[storyObj]->getField("category")==$c)?" selected":"").">$c");
+		if ($c != " ") {
+			$c = urldecode($c);
+			$c = htmlspecialchars($c, ENT_QUOTES);
+			$story_tags .= $c." ";
+		}
+	}
+}
+
+printc("Category: <input type='text' name=story_tags size=50 value='".$story_tags."'>");
+printc("<br \><div class=desc>(separate categories by a space (for multiple word categories, use an underscore (e.g. Open_Source)</div>");
+$site_tags = array();
+$site_tags = get_tags($_REQUEST[site], $_REQUEST[section], $_REQUEST[page]);
+printc("<br /><br />Site Tags<br />");
+$currenttags = $_SESSION[settings][story_categories];
+
+
+foreach ($site_tags as $key => $value) {
+	$tag = urldecode($key);
+	$urltag = urlencode($key);
+	$tagcount = $value;
+
+	if ($tagcount > 10) {
+		$class = 'level_four';
+	} else if ($tagcount > 5) {
+		$class = 'level_three';
+	} else if ($tagcount > 1) {
+		$class = 'level_two';
+	} else if ($tagcount = 1) {
+		$class = 'level_one';
+	} else {
+		$class = '';
+	}
+	$tagcount = $value;
+	if (is_array($currenttags) && (in_array($tag, $currenttags) || in_array(urlencode($tag), $currenttags))) {
+		$taglist .= "<a href='#' class='tagused' title='".$tagcount." posts' onClick=\"deleteTag('".$tag."')\">$tag</a> ";
+	} else {
+		$taglist .= "<a href='#' class='$class' title='".$tagcount." posts' onClick=\"addTag('".$tag."')\">$tag</a> ";
+	}
+	
+	if ($tag_update == 1) {
+		$newcurrenttags = array();
+		//$_SESSION[settings][story_categories_delete] = array();
+		foreach ($currenttags as $currenttag) {
+			if ($currenttag != $tag) {
+				$newcurrenttags[] = $currenttag;
+			} else {
+				//$_SESSION[settings][story_categories_delete][] = $tag;
+			}
+			
+		}
+		$_SESSION[settings][story_categories] = $newcurrenttags;		
+		//$tag_update = 0;
+	}
+}
+printc("<div class='tagcloud'>");
+printc($taglist);
+printc("</div>");
 	
 printc("<br /><br />");
 

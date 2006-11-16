@@ -37,7 +37,7 @@
 			// Build the code for the annotation
 
 			var html = "";
-			html = html + "<a href=\"javascript:void(0);\" onclick=\"return overlib('"+newtext+"', STICKY, CAPTION, '"+kindofannotation+"', CENTER);\" onmouseout=\"nd();\"><img src=\"htmleditor/images/ed_annotation.gif\" height=\"20\" width=\"20\" alt=\""+kindofannotation+"\" border=\"0\" align=\"top\"></a>\r\n"; 
+			html = html + "<a href=\"javascript:void(0);\" onclick=\"return overlib('"+newtext+"', STICKY, CAPTION, '"+kindofannotation+"', CENTER);\" onmouseout=\"nd();\"><img src=\"htmleditor/images/ed_annotation.gif\" height=\"20\" width=\"20\" alt=\""+kindofannotation+"\" border=\"0\" align=\"top\" /></a>\r\n"; 
 
 
 			
@@ -47,7 +47,7 @@
 
 	</script>
 </head>
-<body id=bdy style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll=no>
+<body id='bdy' style="background: threedface; color: windowtext; margin: 10px; BORDER-STYLE: none" scroll='no'>
 <FIELDSET style="width: 1%; text-align: center">
 <LEGEND>Insert Annotation&nbsp;</LEGEND>
  <table border="0" cellspacing="0" cellpadding="2" align="center" style="margin: 5 5 5 5; width="100%">
@@ -69,7 +69,7 @@
      </tr>
      <tr>
       <td width="40%" class="text"><input type="hidden" value="<? echo date ("l, F d" ,time());?>" id="date"></td>
-      <td width="60%" colspan="3"><input type="button" value="Insert" onClick="insertAnnotation()">&nbsp;<input type="button" value="Cancel" onClick="window.close();"></td>
+      <td width="60%" colspan="3"><input type="button" value="Insert" onclick="insertAnnotation()">&nbsp;<input type="button" value="Cancel" onclick="window.close();"></td>
      </tr>
     </table>
    </td>

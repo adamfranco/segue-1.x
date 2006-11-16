@@ -28,7 +28,6 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-
 	if ($_REQUEST[type]) $_SESSION[storyObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
 	$_SESSION[storyObj]->handleFormDates();
@@ -42,12 +41,57 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discussdisplay",$_REQUEST[discussdisplay]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discussauthor",$_REQUEST[discussauthor]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("discusslabel",$_REQUEST[discusslabel]);
-	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("category",$_REQUEST[category]);
-	if ($_REQUEST[newcategory]) {
-		$_SESSION[storyObj]->setField("category",$_REQUEST[newcategory]);
-		$_SESSION[settings][categories][] = $_REQUEST[newcategory];
-		sort($_SESSION[settings][categories]);
+	//if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("category",$_REQUEST[category]);
+	//if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[settings][story_categories] = $_REQUEST[all_tags];
+	
+	/******************************************************************************
+	 * save changes to tags array
+	 ******************************************************************************/
+	//printpre($_REQUEST);
+
+	if (isset($_REQUEST[story_tags])) {
+		
+		$tags_array = array();
+		$oldtags = array();
+		$tags = trim($_REQUEST[story_tags]);
+		
+		if ($_REQUEST[story_tags] != " ") {
+			
+			$tags_array = explode(" ", $tags);
+		} else {
+			$tags_array = array();
+		}
+				
+		// get original record tags
+		$record_tags = get_record_tags($_SESSION[storyObj]->id);
+		if (is_array($record_tags)) {
+			foreach($record_tags as $tag) {
+				$oldtags[] = urldecode($tag);	
+			}
+		}
+		
+		// compare original tags with new tags and create array of tags to delete
+		$_SESSION[settings][story_categories_delete] = array();
+		foreach ($oldtags as $oldtag) {
+			if (!in_array($oldtag, $tags_array)) {
+				$tag = urlencode($oldtag);
+				$_SESSION[settings][story_categories_delete][] = $tag;
+			}		
+		}
+
+		//create array of tags to add
+		$_SESSION[settings][story_categories] = array();
+		foreach ($tags_array as $newtag) {
+			if ($newtag != "") {
+				$tag = urlencode($newtag);
+				$_SESSION[settings][story_categories][] = $tag;
+			}
+		}
+		
 	}
+	
+	//printpre($_REQUEST);
+		
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("shorttext",$_REQUEST[shorttext]);
 	if ($_SESSION[settings][step] == 2 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("longertext",$_REQUEST[longertext]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[settings][libraryfilename] = $_REQUEST[libraryfilename];
@@ -81,9 +125,9 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 		"site" => $_REQUEST[site],
 		"section" => $_REQUEST[section],
 		"page" => $_REQUEST[page],
+		"story_set" => $_REQUEST[story_set],
 		"comingFrom" => $_REQUEST[comingFrom]
 	);
-	
 	
 	
 	$_SESSION[storyObj] =& new story($thisSite->name,$thisSection->id,$thisPage->id, 0,$thisPage);
@@ -114,7 +158,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 		
 		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
 			$_SESSION[settings][libraryfileid] = $_SESSION[storyObj]->getField("longertext");
-			$_SESSION[settings][libraryfilename] = db_get_value("media","media_tag","media_id=".$_SESSION[settings][libraryfileid]);
+			$_SESSION[settings][libraryfilename] = db_get_value("media","media_tag","media_id='".addslashes($_SESSION[settings][libraryfileid])."'");
 		}
 	}
 	
@@ -123,6 +167,7 @@ if (!$_SESSION[settings] || !is_object($_SESSION[storyObj])/*  && !$error */) {
 
 	
 	$_SESSION[settings][ediscussion] = $thisPage->getField("ediscussion");
+	$_SESSION[storyObj]->initFormDates();
 }
 
 if ($_REQUEST[prevbutton]) $_SESSION[settings][step] = $_SESSION[settings][step] - 1;
@@ -146,19 +191,23 @@ $page = "";
 $siteheader = "";
 $sitefooter = "";
 
+//printpre($_SESSION[settings]);
+
 if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
 	print "cancelling...";
 	if ($comingFrom) {	
-		$headerText = "Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page;
+		$headerText = "Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page.(($_SESSION[settings][story_set])?"&story_set=".($_SESSION[settings][story_set]):"");
 	} else if ($_SESSION[settings][goback]) {
 		$headerText = "Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id;
 	} else {
-		$headerText = "Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page;
+		$headerText = "Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page.(($_SESSION[settings][story_set])?"&story_set=".($_SESSION[settings][story_set]):"");
 	}
 	
 	unset($_SESSION[storyObj], $_SESSION[settings]);
+
 	header($headerText);
+	exit;
 }
 //printpre($_REQUEST[permissions]);
 //printpre($_REQUEST[discuss]);
@@ -248,6 +297,7 @@ if ($_REQUEST[save]) {
 		$text = cleanEditorText($text, $texttype);
 		$_SESSION[storyObj]->setField("longertext", $text);
 		
+		
 		// check make sure the owner is the current user if they are changing permissions
 /* 		if ($site_owner != $_SESSION[auser]) { */
 /* 			if ($_SESSION[settings][edit]) $_SESSION[storyObj]->buildPermissionsArray(); */
@@ -269,7 +319,22 @@ if ($_REQUEST[save]) {
 		
 		$_SESSION[storyObj]->updatePermissionsDB(TRUE);
 		$_SESSION[storyObj]->deletePendingEditors();
-	
+
+		/******************************************************************************
+		 * if tags, then save to tag table
+		 * save_record_tags($record_tags,$record_id,$user_id,$record_type)
+		 ******************************************************************************/
+		 
+		if (isset($_SESSION[settings][story_categories]) || isset($_SESSION[settings][story_categories_delete])) {
+			$save_record_tags = array();
+			$delete_record_tags = array();
+			$save_record_tags = $_SESSION[settings][story_categories];
+			$delete_record_tags = $_SESSION[settings][story_categories_delete];
+			$record_id = $_SESSION[storyObj]->id;
+			$user_id = $_SESSION[aid];
+			$record_type = "story";
+			save_record_tags($save_record_tags,$delete_record_tags,$record_id,$user_id,$record_type);
+		}
 		
 		/******************************************************************************
 		 * Go Back: edit url or content block detail url
@@ -278,11 +343,12 @@ if ($_REQUEST[save]) {
 		if ($_SESSION[settings][goback]) {
 			$headerText = "Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id;
 		} else {
-			$headerText = "Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id;
+			$headerText = "Location: index.php?$sid&action=viewsite&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id.(($_SESSION[settings][story_set])?"&story_set=".($_SESSION[settings][story_set]):"");
 		}
 		
 		unset($_SESSION[storyObj], $_SESSION[settings]);
 		header($headerText);
+		exit;
 		
 	/******************************************************************************
 	 * 	if error take them to page where error occured	
@@ -303,7 +369,7 @@ $leftlinks = "_________________<br /><table>";
 $leftlinks .= "<tr><td>";
 if ($_SESSION[settings][step] == 1) $leftlinks .= "&rArr; ";
 $leftlinks .= "</td><td>";
-if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href='#' onClick=\"submitFormLink(1)\">";
+if ($_SESSION[settings][step] != 1) $leftlinks .= "<a href='#' onclick=\"submitFormLink(1)\">";
 $leftlinks .= "Content";
 if ($_SESSION[settings][step] != 1) $leftlinks .= "</a>";
 $leftlinks .= "</td></tr>";
@@ -312,7 +378,7 @@ if ($_SESSION[storyObj]->getField("type") == "story") {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 2) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href='#' onClick=\"submitFormLink(2)\">";
+	if ($_SESSION[settings][step] != 2) $leftlinks .= "<a href='#' onclick=\"submitFormLink(2)\">";
 	$leftlinks .= "Extended Content";
 	if ($_SESSION[settings][step] != 2) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
@@ -322,8 +388,8 @@ if (1) {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 3) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href='#' onClick=\"submitFormLink(3)\">";
-	$leftlinks .= "Activation & Category";
+	if ($_SESSION[settings][step] != 3) $leftlinks .= "<a href='#' onclick=\"submitFormLink(3)\">";
+	$leftlinks .= "Activation &amp; Category";
 	if ($_SESSION[settings][step] != 3) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
@@ -332,13 +398,13 @@ if (true) {
 	$leftlinks .= "<tr><td>";
 	if ($_SESSION[settings][step] == 4) $leftlinks .= "&rArr; ";
 	$leftlinks .= "</td><td>";
-	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href='#' onClick=\"submitFormLink(4)\">";
+	if ($_SESSION[settings][step] != 4) $leftlinks .= "<a href='#' onclick=\"submitFormLink(4)\">";
 	$leftlinks .= "Discuss/Assess";
 	if ($_SESSION[settings][step] != 4) $leftlinks .= "</a>";
 	$leftlinks .= "</td></tr>";
 }
 
-$leftlinks .= "</table>_________________<br /><a href=$PHP_SELF?$sid&action=add_story&cancel=1>Cancel</a>";
+$leftlinks .= "</table>_________________<br /><a href='$PHP_SELF?$sid&amp;action=add_story&amp;cancel=1'>Cancel</a>";
 
 add_link(leftnav,'','',"$leftlinks");
 

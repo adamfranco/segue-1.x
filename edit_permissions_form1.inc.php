@@ -3,40 +3,40 @@
 /******************************************************************************
  * table & form definition
  ******************************************************************************/
-print "<form action='$PHP_SELF?$SID' medthod=post name='addform'>";
+print "<form action='$PHP_SELF?$SID' method='post' name='addform'>";
 
-print "<input type=hidden name=edaction value=''>";
-print "<input type=hidden name=edname value=''>";
-print "<input type=hidden name=site value='".$_SESSION[obj]->getField("name")."'>";
+print "\n\t<input type='hidden' name='edaction' value='' />";
+print "\n\t<input type='hidden' name='edname' value='' />";
+print "\n\t<input type='hidden' name='site' value='".$_SESSION[obj]->getField("name")."' />";
 
-print "<table cellspacing=1 width='100%'>";
-print "<tr>";
-print "<th colspan=3>Editors";
+print "\n\t<table cellspacing='1' width='100%'>";
+print "\n\t\t<tr>";
+print "\n\t\t\t<th colspan='3'>Editors";
 
-print "<div align='right' style='padding: 5px;'>";
-print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
-if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
-print "</div>";
+print "\n\t\t\t\t<div align='right' style='padding: 5px;'>";
+print "\n\t\t\t\t\t<input type='button' value='".(($isOwner)?"Cancel":"Close")."' onclick='document.location=\"edit_permissions.php?cancel=1\"' />";
+if ($isOwner) print "\n\t\t\t\t\t<input type='button' name='savepermissions' value='Save All Changes' onclick='document.location=\"edit_permissions.php?savechanges=1\"' />";
+print "\n\t\t\t\t</div>";
 
-print "</th>";
+print "\n\t\t\t</th>";
 
-print "</tr>";
+print "\n\t\t</tr>";
 
 /******************************************************************************
  * Buttons:
  * check all/uncheck all buttons, edit permissions for checked editors button
  * add editor button
  ******************************************************************************/
-$buttons = "<tr>";
-$buttons .= "<th align='left' colspan=2>";
-$buttons .= "<input type=button name='checkall' value='Check All' onClick='checkAll()'> ";
-$buttons .= "<input type=button name='uncheckall' value='Uncheck All' onClick='uncheckAll()'> ";
-$buttons .= "<input type=button name='add' value='Add Editor' onClick=\"sendWindow('addeditor',400,250,'add_editor.php?$sid')\">";
+$buttons = "\n\t\t<tr>";
+$buttons .= "\n\t\t\t<th align='left' colspan='2'>";
+$buttons .= "\n\t\t\t\t<input type='button' name='checkall' value='Check All' onclick='checkAll()' /> ";
+$buttons .= "\n\t\t\t\t<input type='button' name='uncheckall' value='Uncheck All' onclick='uncheckAll()' /> ";
+$buttons .= "\n\t\t\t\t<input type='button' name='add' value='Add Editor' onclick=\"sendWindow('addeditor',400,250,'add_editor.php?$sid')\" />";
 $edlist = $_SESSION[obj]->getEditors();
-$buttons .= (($className && !in_array($className,$edlist))?"<div><a href='#' onClick='addClassEditor();'>Add students in ".$className."</a></div>":"");
-$buttons .= "</th><th align='right'>";
-$buttons .= "<input type=submit name='editpermissions' value='Edit Permissions of Checked -&gt;'>";
-$buttons .= "</th></tr>";
+$buttons .= (($className && !in_array($className,$edlist))?"\n\t\t\t\t<div><a href='#' onclick='addClassEditor();'>Add students in ".$className."</a></div>":"");
+$buttons .= "\n\t\t\t</th>\n\t\t\t<th align='right'>";
+$buttons .= "\n\t\t\t\t<input type='submit' name='editpermissions' value='Edit Permissions of Checked -&gt;' />";
+$buttons .= "\n\t\t\t</th>\n\t\t</tr>";
 print $buttons;
 //printpre ($edlist);
 //printpre ($className);
@@ -45,11 +45,13 @@ print $buttons;
  * editor table headings
  ******************************************************************************/
 ?>
-<tr>
-<th>edit</th>
-<th>name</th>
-<th> &nbsp; </th>
-</tr>
+
+		<tr>
+			<th>edit</th>
+			<th>name</th>
+			<th> &nbsp; </th>
+		</tr>
+
 <?
 
 /******************************************************************************
@@ -58,9 +60,10 @@ print $buttons;
 if ($edlist = $_SESSION[obj]->getEditors()) {
 	$color = 0;
 	foreach ($edlist as $e) {
-		print "<tr>";
-		print "<td class=td$color align='center'><input type=checkbox name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked":"")."></td>";
-		print "<td class=td$color>";
+		$e = htmlentities($e);
+		print "\n\t\t<tr>";
+		print "\n\t\t\t<td class='td$color' align='center'>\n\t\t\t\t<input type='checkbox' name='editors[]' value='$e' ".((in_array($e,$_SESSION[editors]))?" checked='checked'":"")." />\n\t\t\t</td>";
+		print "\n\t\t\t<td class='td$color'>";
 		if ($e == "everyone")
 			print "Everyone (everyone) - will override other entries</td>";
 		else if ($e == "institute")
@@ -69,15 +72,15 @@ if ($edlist = $_SESSION[obj]->getEditors()) {
 			print ldapfname($e)." ($e)</td>";
 		
 		// Remove links
-		print "<td class=td$color align='center'>";
+		print "\n\t\t\t<td class='td$color' align='center'>";
 		if ($e == 'everyone' || $e == 'institute') print "&nbsp;";
-		else print "<a href='#' onClick='delEditor(\"$e\");'>remove</a>";
+		else print "<a href='#' onclick='delEditor(\"$e\");'>remove</a>";
 		print "</td>";
 		
-		print "</tr>";
+		print "\n\t\t</tr>";
 		$color = 1-$color;
 	}
-} else  print "<tr><td class=td1 > &nbsp; </td><td class=td1 colspan=2>no editors added</td></tr>";
+} else  print "\n\t\t<tr>\n\t\t\t<td class='td1' > &nbsp; </td>\n\t\t\t<td class='td1' colspan='2'>no editors added</td>\n\t\t</tr>";
 
 /******************************************************************************
  * Buttons:
@@ -85,19 +88,21 @@ if ($edlist = $_SESSION[obj]->getEditors()) {
  ******************************************************************************/
 print $buttons;
 
-print "<th align='center' colspan=3 style='text-size: 25; font-weight: bold'>";
+print "\n\t\t<tr>";
+print "\n\t\t\t<th align='center' colspan='3' style='text-size: 25; font-weight: bold'>";
 
-print "<div align='right' style='padding: 5px;'>";
+print "\n\t\t\t\t<div align='right' style='padding: 5px;'>";
 if ($isOwner) {
-	print "\n\t<input type=button style='width: $btnw' class='button' name='preview_as' value=' &nbsp; Preview Saved Permissions As... &nbsp;' onClick='sendWindow(\"preview_as\",400,300,\"preview.php?$sid&site=$site&query=".urlencode("&action=site&site=".$site)."\")' target='preview_as' style='text-decoration: none'> ";
+	print "\n\t\t\t\t\t<input type='button' style='width: $btnw; text-decoration: none;' class='button' name='preview_as' value=' &nbsp; Preview Saved Permissions As... &nbsp;' onclick='sendWindow(\"preview_as\",400,300,\"preview.php?$sid&amp;site=$site&amp;query=".urlencode("&amp;action=site&amp;site=".$site)."\")' /> ";
 }
-print "<input type=button value='".(($isOwner)?"Cancel":"Close")."' onClick='document.location=\"edit_permissions.php?cancel=1\"'>";
-if ($isOwner) print "\n<input type=button name='savepermissions' value='Save All Changes' onClick='document.location=\"edit_permissions.php?savechanges=1\"'>";
-print "</div>";
+print "\n\t\t\t\t\t<input type='button' value='".(($isOwner)?"Cancel":"Close")."' onclick='document.location=\"edit_permissions.php?cancel=1\"' />";
+if ($isOwner) print "\n\t\t\t\t\t<input type='button' name='savepermissions' value='Save All Changes' onclick='document.location=\"edit_permissions.php?savechanges=1\"' />";
+print "\n\t\t\t\t</div>";
 
-print "</th>";
+print "\n\t\t\t</th>";
+print "\n\t\t</tr>";
 
 /******************************************************************************
  * close up form & table
  ******************************************************************************/
-print "</table></form>";
+print "\n\t</table>\n</form>";
