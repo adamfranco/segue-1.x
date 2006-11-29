@@ -6,9 +6,9 @@ session_start();// start the session manager :) -- important, as we just learned
 //require_once("moodle/lib/moodlelib.php");
 //require_once("moodle/course/lib.php");
 //moodle_link.php?site=test157
-require_once("functions.inc.php");
-require_once("config.inc.php");
-require_once("dbwrapper.inc.php");
+require_once("../../functions.inc.php");
+require_once("../../config.inc.php");
+require_once("../../dbwrapper.inc.php");
 
 
 $dbdb_link = "achapin_segue-moodle";
@@ -25,10 +25,14 @@ $names = split(" ",$userfname);
 $firstname = trim($names[1]);
 $lastname = trim($names[2]);
 
-
+/******************************************************************************
+ * Get the Segue site id from the slot name passed in the request array
+ ******************************************************************************/
 
 $site_name = $_REQUEST[site];
 $segue_site_id =  db_get_value("slot", "FK_site", "slot_name='".addslashes($site_name)."'");
+//$segue_slot_name =  db_get_value("slot", "FK_owner", "slot_name='".addslashes($site_name)."'");
+$segue_site_owner =  db_get_value("slot", "FK_owner", "slot_name='".addslashes($site_name)."'");
 
 //$module_id = $_REQUEST[module_id];
 //$mod = $_REQUEST[mod];
@@ -75,9 +79,12 @@ if (db_num_rows($r) != 0) {
 		INSERT INTO
 			site_link
 		SET
-			FK_segue_site_id = '".addslashes($segue_site_id)."'
+			FK_segue_site_id = '".addslashes($segue_site_id)."',
+			site_title = '".addslashes($site_name)."',
+			site_owner_id = '".addslashes($segue_site_owner)."',
 		";
 	print $query."<br>";
+	//exit;
 	$r = db_query($query);	
 	
 }
@@ -121,7 +128,7 @@ if (db_num_rows($r) != 0) {
 		INSERT INTO
 			user_link
 		SET
-			FK_seque_user_id = '".addslashes($segue_user_id)."'
+			FK_segue_user_id = '".addslashes($segue_user_id)."'
 		";
 	print $query."<br>";
 	$r = db_query($query);		
@@ -129,7 +136,7 @@ if (db_num_rows($r) != 0) {
 }
 
 
-
+//exit;
 header("Location: ".$moodle_url."/segue_link.php?userid=".addslashes($segue_user_id)."&siteid=".addslashes($segue_site_id));
 //exit;
 
