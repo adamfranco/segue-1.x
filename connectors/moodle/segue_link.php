@@ -1,5 +1,4 @@
 <?php // $Id$
-session_start();// start the session manager :) -- important, as we just learned
 
 require_once("config.php");
 require_once("lib/datalib.php");
@@ -34,17 +33,21 @@ $query = "
 		FROM
 			user_link
 		WHERE
-			FK_seque_user_id = '".addslashes($_REQUEST['userid'])."'				
+			FK_segue_user_id = '".addslashes($_REQUEST['userid'])."'				
 	";
 	
 print $query."<br>";
+//exit;
 $r = mysql_query($query, $cid);
 $a = mysql_fetch_assoc($r);
 
+$moodle_user_id = $a['FK_moodle_user_id'];
 
 /******************************************************************************
- * If no corresponding Moodule user, then create that user and
+ * If no corresponding Moodle user, then create that user and
  * add key to that user in user_link table in segue-moodle database
+ * this code is adapted from:
+ * 
  ******************************************************************************/
 
 if ($a['FK_moodle_user_id'] == 0) {
@@ -68,10 +71,10 @@ if ($a['FK_moodle_user_id'] == 0) {
 		$user_uname = $a['username'];
 	}
 	
-	print "firstname: ".$firstname;
-	print "lastname: ".$lastname;
-	print "email: ".$email;
-	print "user_uname: ".$user_uname;
+	print "firstname: ".$firstname."<br \>";
+	print "lastname: ".$lastname."<br \>";
+	print "email: ".$email."<br \>";
+	print "user_uname: ".$user_uname."<br \>";
 	//exit;
 
 	
@@ -82,7 +85,8 @@ if ($a['FK_moodle_user_id'] == 0) {
 	$user->lastname = $lastname;
 	$user->email = $email;
 	$user->firstaccess = time();
-	$user->auth = "manual";
+	$user->auth = "ldap";
+	$user->password = "not cached";
 	$user->confirmed = 1;
 	
 //  printpre2($user);
@@ -93,12 +97,12 @@ if ($a['FK_moodle_user_id'] == 0) {
 		$moodle_user_id = $user->id;
 		//update Segue moodle table
 		$query = "
-			INSERT INTO
+			UPDATE
 				user_link
 			SET
 				FK_moodle_user_id = '".addslashes($moodle_user_id)."'
 			WHERE
-				WHERE FK_seque_user_id = '".addslashes($_REQUEST['userid'])."'
+			    FK_segue_user_id = '".addslashes($_REQUEST['userid'])."'
 		";
 		print $query."<br>";
 		$r = mysql_query($query, $cid);
@@ -107,13 +111,8 @@ if ($a['FK_moodle_user_id'] == 0) {
 	print "new moodle user_id: ".$moodle_user_id."<br>";
 }
 
-exit;
 
-/******************************************************************************
- * user_id will eventually use the Segue user_id
- ******************************************************************************/
- $segue_user =  $_REQUEST['userid'];
- $user_id = $moodle_user_id;
+//exit;
  
  /******************************************************************************
  * Check for corresponding Moodle site
@@ -128,8 +127,11 @@ exit;
 			FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'				
 	";
 print $query."<br>";
+//exit;
 $r = mysql_query($query, $cid);
 $a = mysql_fetch_assoc($r);
+
+$moodle_site_id = $a['FK_moodle_site_id'];
 
 
 /******************************************************************************
@@ -145,29 +147,29 @@ if ($a['FK_moodle_site_id'] == 0) {
 	//need to add site owner and title to site_link table
 	$query = "
 		SELECT 
-			sitetitle, siteowner 
+			site_title, site_owner_id 
 		FROM 
 			site_link
-		WHERE userid = '".addslashes($_REQUEST['siteid'])."'
+		WHERE FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'
 	";
 		
 	print $query."<br>";
 	$r = mysql_query($query, $cid);
 
 	while ($a = mysql_fetch_assoc($r)) {
-		$sitetitle = $a['sitetitle'];
-		$siteowner = $a['siteowner'];
+		$site_title = $a['site_title'];
+		$site_owner_id = $a['site_owner_id'];
 	}
-	exit;
+	//exit;
 	
 	fix_course_sortorder();
 	$form->startdate = make_timestamp($form->startyear, $form->startmonth, $form->startday);	
-	$form->format = 'social';
+	$form->format = 'topics';
 	$form->timecreated = time();
 	$form->sortorder = 100;
-	$form->fullname = $fullname;
-    $form->shortname = $fullname;
-    $form->summary = $fullname;
+	$form->fullname = $site_title;
+    $form->shortname = $site_title;
+    $form->summary = $site_title;
     $form->visible = 1;
     $form->category = 1;
 	$form->teacher  = "Owner";
@@ -198,7 +200,7 @@ if ($a['FK_moodle_site_id'] == 0) {
 	
 	//update Segue moodle table
 	$query = "
-		INSERT INTO
+		UPDATE
 			site_link
 		SET
 			FK_moodle_site_id = '".addslashes($moodle_site_id)."'
@@ -207,19 +209,26 @@ if ($a['FK_moodle_site_id'] == 0) {
 			
 		";
 	print $query."<br>";
+	//exit;
 	$r = mysql_query($query, $cid);
 
 	print "new moodle site_id: ".$moodle_site_id."<br>";
-
+	exit;
 }
 
 
  
 /******************************************************************************
  * if new course id and the auth user is the site owner then make user a teacher 
+ * moodle_site_id, moodle_user_id and site_owner_id set above
+ * segue_user_id from request array
+ * NEED TO TEST
  ******************************************************************************/
+ $segue_user_id =  $_REQUEST['userid'];
 
-if ($newcourseid && $moodle_user_id && $segue_user == $site_owner) {
+
+
+if ($newcourseid && $moodle_user_id && $segue_user_id == $site_owner_id) {
 	print "<hr>New Moodle Course created<br>";	
 	print "newcourseid: ".$newcourseid."<br>";
 	print "moodle_user_id: ".$moodle_user_id."<br>";
@@ -240,36 +249,41 @@ if ($newcourseid && $moodle_user_id && $segue_user == $site_owner) {
 	$USER->teacheredit[$newcourseid] = true;
 }
 
+//exit;
+
 /******************************************************************************
  * Log into Moodle
  * Moodle functions get_record (datalib.php) and 
  * get_complete_user_record (lib/moodlelib.php) when passed 'user' or 'username' 
+ * NEED TO DEBUG
  ******************************************************************************/
+ $user_id = $moodle_user_id;
  
 if ($user = get_record('user', 'id', $user_id)) {
 	$user = get_complete_user_data('username', $user->username);
 	
 	$USER = $user;
 	add_to_log(SITEID, 'user', 'login', "view.php?id=$USER->id&course=".SITEID, $USER->id, 0, $USER->id);
-				
-	update_login_count();
-	update_user_login_times();
-	set_moodle_cookie($user->username);
-	set_login_session_preferences();
-	reset_login_count();
 	
-	$cookie = get_moodle_cookie();
-		
+	
+	update_user_login_times();
+	set_moodle_cookie($USER->username);
+	set_login_session_preferences();
+	
+	//printpre ($_SESSION);
+
 	//Select password change url
-	if (is_internal_auth() || $CFG->{'auth_'.$USER->auth.'_stdchangepassword'}){
+	if (is_internal_auth($USER->auth) || $CFG->{'auth_'.$USER->auth.'_stdchangepassword'}){
 		$passwordchangeurl=$CFG->wwwroot.'/login/change_password.php';
 	} elseif($CFG->changepassword) {
 		$passwordchangeurl=$CFG->changepassword;
-	} 
+	} else {
+		$passwordchangeurl = '';
+	}
 	
-	// check whether the user should be changing password
+  // check whether the user should be changing password
 	if (get_user_preferences('auth_forcepasswordchange', false) || $frm->password == 'changeme'){
-		if (isset($passwordchangeurl)) {
+		if ($passwordchangeurl != '') {
 			redirect($passwordchangeurl);
 		} else {
 			error("You cannot proceed without changing your password. 
@@ -278,37 +292,43 @@ if ($user = get_record('user', 'id', $user_id)) {
 		}
 	}
 			
+ /// Prepare redirection
 	if (user_not_fully_set_up($USER)) {
 		$urltogo = $CFG->wwwroot.'/user/edit.php?id='.$USER->id.'&amp;course='.SITEID;
 		// We don't delete $SESSION->wantsurl yet, so we get there later
-	
+
 	} else if (isset($SESSION->wantsurl) and (strpos($SESSION->wantsurl, $CFG->wwwroot) === 0)) {
 		$urltogo = $SESSION->wantsurl;    /// Because it's an address in this site
 		unset($SESSION->wantsurl);
-	
+
 	} else {
-		$urltogo = $CFG->wwwroot.'/';      /// Go to the standard home page
-		unset($SESSION->wantsurl);         /// Just in case
+		// no wantsurl stored or external - go to homepage
+		$urltogo = $CFG->wwwroot.'/';
+		unset($SESSION->wantsurl);
 	}
 	
-	$urltogo = $CFG->wwwroot."/mod/quiz/view.php?id=$module_id";
-	
-	//require_once("config.inc.php");
-	//require_once("dbwrapper.inc.php");
+	  /// Go to my-moodle page instead of homepage if mymoodleredirect enabled
+	if (!isadmin() and !empty($CFG->mymoodleredirect) and !isguest()) {
+		if ($urltogo == $CFG->wwwroot or $urltogo == $CFG->wwwroot.'/' or $urltogo == $CFG->wwwroot.'/index.php') {
+			$urltogo = $CFG->wwwroot.'/my/';
+		}
+	}
 
-	//get info from Segue tables
-	//print $id."<br>";
-	//print $user_id."<br>";
+	 reset_login_count();
+	 
+	//$urltogo = $CFG->wwwroot."/mod/quiz/view.php?id=$module_id";
+	$urltogo = $CFG->wwwroot.'/';
+	
 	
 	if ($_REQUEST[mod]) {
 		$module_url = $CFG->wwwroot."/mod/".$_REQUEST[mod]."/view.php?id=".$module_id;
 		print $module_url;
 		header("Location: ".$module_url);
 	} else {
-		print "<hr>Go to: <a href='".$CFG->wwwroot."/mod/".$_REQUEST[mod]."/view.php?id=$module_id'>module id= ".$module_id."</a> | ";
+		//print "<hr>Go to: <a href='".$CFG->wwwroot."/mod/".$_REQUEST[mod]."/view.php?id=$module_id'>module id= ".$module_id."</a> | ";
 		print "<a href='".$CFG->wwwroot."/'>Moodle Home</a><hr>";
 	}
-	//redirect($urltogo);
+	redirect($urltogo);
 }
 
 
