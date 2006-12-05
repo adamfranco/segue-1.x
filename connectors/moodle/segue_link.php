@@ -23,6 +23,7 @@ printpre($_REQUEST);
 
 print "Moodle-Segue API<hr>";
 
+ 
 /******************************************************************************
  * Check for corresponding Moodle user
  ******************************************************************************/
@@ -36,12 +37,16 @@ $query = "
 			FK_segue_user_id = '".addslashes($_REQUEST['userid'])."'				
 	";
 	
-print $query."<br>";
+//print $query."<br>";
 //exit;
 $r = mysql_query($query, $cid);
 $a = mysql_fetch_assoc($r);
 
 $moodle_user_id = $a['FK_moodle_user_id'];
+$segue_user_id =  $_REQUEST['userid'];
+print "moodle_user_id:".$moodle_user_id."<br \>";
+print "segue_user_id:".$segue_user_id."<br \>";
+//exit;
 
 /******************************************************************************
  * If no corresponding Moodle user, then create that user and
@@ -50,7 +55,7 @@ $moodle_user_id = $a['FK_moodle_user_id'];
  * 
  ******************************************************************************/
 
-if ($a['FK_moodle_user_id'] == 0) {
+if ($moodle_user_id == 0) {
 	print "<hr>Creating Moodle user...<br>";
 
 	$query = "
@@ -61,7 +66,7 @@ if ($a['FK_moodle_user_id'] == 0) {
 		WHERE userid = '".addslashes($_REQUEST['userid'])."'
 	";
 		
-	print $query."<br>";
+	//print $query."<br>";
 	$r = mysql_query($query, $cid);
 
 	while ($a = mysql_fetch_assoc($r)) {
@@ -87,6 +92,7 @@ if ($a['FK_moodle_user_id'] == 0) {
 	$user->firstaccess = time();
 	$user->auth = "ldap";
 	$user->password = "not cached";
+	$user->lang = "en_utf8";
 	$user->confirmed = 1;
 	
 //  printpre2($user);
@@ -111,13 +117,12 @@ if ($a['FK_moodle_user_id'] == 0) {
 	print "new moodle user_id: ".$moodle_user_id."<br>";
 }
 
-
 //exit;
  
  /******************************************************************************
  * Check for corresponding Moodle site
  ******************************************************************************/
-
+print "corresponding moodle site<hr>";
  $query = "
 		SELECT
 			FK_moodle_site_id
@@ -132,19 +137,13 @@ $r = mysql_query($query, $cid);
 $a = mysql_fetch_assoc($r);
 
 $moodle_site_id = $a['FK_moodle_site_id'];
-
+print "moodle_site_id: ".$moodle_site_id."<br \>";
+//exit;
 
 /******************************************************************************
- * if no corresponding Moodle site, then create one
- * and add key to that site in segue moodle table
+ * 	Get the Segue site owner and title from the site_link table
  ******************************************************************************/
- 
-if ($a['FK_moodle_site_id'] == 0) {	
-	print "<hr>Creating Moodle site...<br>";
-    require_once("course/lib.php");
-    require_once("$CFG->libdir/blocklib.php");
-
-	//need to add site owner and title to site_link table
+print "Segue site owner and title site<hr>";
 	$query = "
 		SELECT 
 			site_title, site_owner_id 
@@ -160,6 +159,19 @@ if ($a['FK_moodle_site_id'] == 0) {
 		$site_title = $a['site_title'];
 		$site_owner_id = $a['site_owner_id'];
 	}
+print "site_title: ".$site_title."<br \>";
+print "site_owner_id: ".$site_owner_id."<br \>";
+//exit;
+/******************************************************************************
+ * if no corresponding Moodle site, then create one
+ * and add key to that site in segue moodle table
+ ******************************************************************************/
+
+if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {	
+	print "<hr>Creating Moodle site...<br>";
+    require_once("course/lib.php");
+    require_once("$CFG->libdir/blocklib.php");
+
 	//exit;
 	
 	fix_course_sortorder();
@@ -172,8 +184,8 @@ if ($a['FK_moodle_site_id'] == 0) {
     $form->summary = $site_title;
     $form->visible = 1;
     $form->category = 1;
-	$form->teacher  = "Owner";
-	$form->teachers = "Owners";
+	$form->teacher  = "Instructor";
+	$form->teachers = "Instructors";
 	$form->student  = "Participant";
 	$form->students = "Participants";
 
@@ -195,10 +207,11 @@ if ($a['FK_moodle_site_id'] == 0) {
  
 	}
 	
-	//update Segue moodle table
+	/******************************************************************************
+	 * Update the link table
+	 ******************************************************************************/
 	$moodle_site_id = $newcourseid;
 	
-	//update Segue moodle table
 	$query = "
 		UPDATE
 			site_link
@@ -213,9 +226,8 @@ if ($a['FK_moodle_site_id'] == 0) {
 	$r = mysql_query($query, $cid);
 
 	print "new moodle site_id: ".$moodle_site_id."<br>";
-	exit;
+	//exit;
 }
-
 
  
 /******************************************************************************
@@ -224,11 +236,9 @@ if ($a['FK_moodle_site_id'] == 0) {
  * segue_user_id from request array
  * NEED TO TEST
  ******************************************************************************/
- $segue_user_id =  $_REQUEST['userid'];
 
 
-
-if ($newcourseid && $moodle_user_id && $segue_user_id == $site_owner_id) {
+if ($newcourseid && $segue_user_id == $site_owner_id) {
 	print "<hr>New Moodle Course created<br>";	
 	print "newcourseid: ".$newcourseid."<br>";
 	print "moodle_user_id: ".$moodle_user_id."<br>";
@@ -247,19 +257,29 @@ if ($newcourseid && $moodle_user_id && $segue_user_id == $site_owner_id) {
 	
 	$USER->teacher[$newcourseid] = true;
 	$USER->teacheredit[$newcourseid] = true;
+	
+} else if ($segue_user_id != $site_owner_id){
+	print "<hr>Adding student to site<br>";
+	print "moodle_site_id".$moodle_site_id;
+	$addstudent = $moodle_user_id;
+	$timestart = $timeend = 0;
+	if (! enrol_student($addstudent, $moodle_site_id, $timestart, $timeend)) {
+		error("Could not add student with id $addstudent to this course!");
+	}
 }
 
 //exit;
 
 /******************************************************************************
  * Log into Moodle
+ * see: moodle/login/index.php
  * Moodle functions get_record (datalib.php) and 
  * get_complete_user_record (lib/moodlelib.php) when passed 'user' or 'username' 
- * NEED TO DEBUG
  ******************************************************************************/
  $user_id = $moodle_user_id;
  
 if ($user = get_record('user', 'id', $user_id)) {
+	print "logging into Moodle...<hr>"; 
 	$user = get_complete_user_data('username', $user->username);
 	
 	$USER = $user;
@@ -328,7 +348,7 @@ if ($user = get_record('user', 'id', $user_id)) {
 		//print "<hr>Go to: <a href='".$CFG->wwwroot."/mod/".$_REQUEST[mod]."/view.php?id=$module_id'>module id= ".$module_id."</a> | ";
 		print "<a href='".$CFG->wwwroot."/'>Moodle Home</a><hr>";
 	}
-	redirect($urltogo);
+	//redirect($urltogo);
 }
 
 

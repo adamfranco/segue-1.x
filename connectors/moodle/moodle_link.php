@@ -26,27 +26,61 @@ $firstname = trim($names[1]);
 $lastname = trim($names[2]);
 
 /******************************************************************************
+ * Make sure there is an authenticated Segue user
+ ******************************************************************************/
+if (!isset($segue_user_id)) {
+	print "You must be logged into Segue to use this link";
+	exit;
+}
+
+
+/******************************************************************************
  * Get the Segue site id from the slot name passed in the request array
  ******************************************************************************/
 
 $site_name = $_REQUEST[site];
 $segue_site_id =  db_get_value("slot", "FK_site", "slot_name='".addslashes($site_name)."'");
-//$segue_slot_name =  db_get_value("slot", "FK_owner", "slot_name='".addslashes($site_name)."'");
+$node_id = $_REQUEST[node];
+//$page_id = db_get_value("story", "FK_page", "story_id='".addslashes($node_id)."'");
+//$section_id = db_get_value("story", "FK_section", "page_id='".addslashes($page_id)."'");
+
+//$thisPage =& new page($_REQUEST[site],$section_id,$page_id,$node_id, $thisPage);
+//$thisNode =& new story($_REQUEST[site],$section_id,$page_id,$node_id, $thisPage);
+
+/******************************************************************************
+ * get information about the Segue user
+ * if the Segue user is an editor of the Segue site then they 
+ * become a teacher in the linked Moodle site
+ * if the Segue user has view permission only, then they become students
+ * in the in the linked Moodle site
+ ******************************************************************************/
+
 $segue_site_owner =  db_get_value("slot", "FK_owner", "slot_name='".addslashes($site_name)."'");
 
-//$module_id = $_REQUEST[module_id];
-//$mod = $_REQUEST[mod];
-//ob_end_flush();
-//ob_start();
-
-//printpre($_REQUEST);
-//printpre($_SESSION);
-//printpre("segue_site_id: ".$segue_site_id);
-//printpre("segue_user_id: ".$segue_user_id);
-//printpre("dbdb_link: ".$dbdb_link);
-//printpre("cid: ".$cid);
-//printpre("moodle_url: ".$moodle_url);
-
+//$query = "
+//	SELECT
+//		FK_editor
+//	FROM
+//		permission
+//	WHERE
+//		FK_editor = '$segue_user_id'
+//	AND
+//		FK_scope_id = '$node_id'
+//	AND
+//		permission_scope_type = 'story'
+//	AND
+//		permission_value = 'e'
+//	";
+//
+//$r = db_query($query);
+//
+//if (db_num_rows($r) != 0) {
+//	print "user $segue_user_id is an editor of node $node_id<br>";	
+//	$segue_site_editor = $segue_user_id;
+//} else {
+//	print "user $segue_user_id is NOT an editor of node $node_id<br>";
+//}
+//exit;
 
 print "Moodle-Segue API<hr>";
 
@@ -66,12 +100,11 @@ $query = "
 			FK_segue_site_id = '".addslashes($segue_site_id)."'				
 	";
 
-//printpre ($query."<br>");
+printpre ($query."<br>");
 $r = db_query($query);
 
 if (db_num_rows($r) != 0) {
 	print "linked moodle site found<br>";
-
 	
 } else {
 	print "no linked moodle site found<br>";
@@ -81,12 +114,12 @@ if (db_num_rows($r) != 0) {
 		SET
 			FK_segue_site_id = '".addslashes($segue_site_id)."',
 			site_title = '".addslashes($site_name)."',
-			site_owner_id = '".addslashes($segue_site_owner)."',
+			site_owner_id = '".addslashes($segue_site_owner)."'
 		";
 	print $query."<br>";
-	//exit;
-	$r = db_query($query);	
 	
+	$r = db_query($query);	
+	//exit;
 }
 
 
@@ -100,15 +133,15 @@ $query = "
 		FROM
 			user_link
 		WHERE
-			FK_seque_user_id = '".addslashes($segue_user_id)."'				
+			FK_segue_user_id = '".addslashes($segue_user_id)."'				
 	";
 
-//printpre ($query."<br>");
+printpre ($query."<br>");
+
 $r = db_query($query);
 
 if (db_num_rows($r) != 0) {
 	print "linked moodle user found<br>";
-
 	
 } else {
 	print "no linked moodle user found<br>";
