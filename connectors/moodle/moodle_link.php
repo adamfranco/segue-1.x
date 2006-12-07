@@ -10,14 +10,15 @@ require_once("../../functions.inc.php");
 require_once("../../config.inc.php");
 require_once("../../dbwrapper.inc.php");
 
-$dbdb_link = "achapin_segue-moodle";
-$moodle_url = "http://slug.middlebury.edu/~achapin/moodle163";
+//$dbdb_link = "achapin_segue-moodle";
+//$moodle_url = "http://slug.middlebury.edu/~achapin/moodle163";
 
 
 $cid = db_connect ($dbhost, $dbuser, $dbpass, $dbdb);
 
 /******************************************************************************
  * Make sure there is an authenticated Segue user
+ * go back to previous page http referrer
  ******************************************************************************/
 if (!isset($_SESSION[aid])) {
 	print "You must be logged into Segue to use this link";
@@ -27,9 +28,10 @@ if (!isset($_SESSION[aid])) {
 /******************************************************************************
  * Make sure a slot name is passed
  ******************************************************************************/
-if (!isset($_REQUEST[site])) {
+if (!isset($_REQUEST[site]) || !$_REQUEST[site]) {
 	print "Missing Segue slot name";
 	exit;
+	
 } else {
 	$site_slot = $_REQUEST[site];
 	$segue_site_id =  db_get_value("slot", "FK_site", "slot_name='".addslashes($site_slot)."'");
@@ -46,6 +48,7 @@ $username = $_SESSION[auser];
 $useremail = $_SESSION[aemail];
 $userfname = $_SESSION[afname];
 $names = split(" ",$userfname);
+//use last in result as last name and all other as first name
 $firstname = trim($names[1]);
 $lastname = trim($names[2]);
 
@@ -120,12 +123,12 @@ $segue_site_owner = $a['FK_createdby'];
 
 print "Moodle-Segue API<hr>";
 
-$cid2 = db_connect ($dbhost, $dbuser, $dbpass, $dbdb_link);
+$cid2 = db_connect ($dbhost_link, $dbuser_link, $dbpass_link, $dbdb_link);
 
 /******************************************************************************
  * Check for corresponding Moodle site
  ******************************************************************************/
-if (!isset($segue_site_id)) {
+if (!isset($segue_site_id) || !$segue_site_id) {
 	print "no Segue site name or id passed<br>";
 	exit;
 	
@@ -141,13 +144,12 @@ if (!isset($segue_site_id)) {
 }
 
 print $query."<br>";
-
 $r = db_query($query);
 
-if (db_num_rows($r) != 0) {
+if (db_num_rows($r) > 0) {
 	print "linked moodle site found<br>";
 	
-} else if (!isset($segue_site_owner) || !isset($segue_site_id) || !isset($site_title) || !isset($site_theme)) {
+} else if (!isset($segue_site_owner) || !$segue_site_owner ||  !isset($site_title) || !$site_title || !isset($site_theme) || !site_theme) {
 	print "missing data<br>";
 	exit;
 	
@@ -174,7 +176,7 @@ if (db_num_rows($r) != 0) {
 /******************************************************************************
  * Check for corresponding Moodle user
  ******************************************************************************/
-if (!isset($segue_user_id)) {
+if (!isset($segue_user_id) || !$segue_user_id) {
 	print "no Segue user id passed<br>";
 	exit;
 	
@@ -194,19 +196,21 @@ print $query."<br>";
 $r = db_query($query);
 
 // create an auth token for validation
-$auth_token = time().rand(1, 10);
+$auth_token = md5(time().rand(1, 1000));
 print "auth_token: ".$auth_token."<hr \>";
-//exit;
+
 
 // linked user found
-if (db_num_rows($r) != 0) {
+if (db_num_rows($r) > 0) {
 	print "linked moodle user found<br>";	
 	
+	// update authentication table with new auth_token
 	$query = "
 		Update
 			authentication
 		SET
-			auth_token = '".addslashes($auth_token)."'
+			auth_token = '".addslashes($auth_token)."',
+			auth_time = NOW()
 		WHERE
 			userid = '".addslashes($_SESSION[aid])."'		
 	";

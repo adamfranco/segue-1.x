@@ -66,15 +66,15 @@ if ($_REQUEST['id']) {
  * Validate request array values
  ******************************************************************************/
  
-if (!isset($_REQUEST['userid'])) {
+if (!isset($_REQUEST['userid']) || !$_REQUEST['userid']) {
 	print "no user id passed<br>";
 	exit;
 	
-} else if (!isset($_REQUEST['auth_token'])) {
+} else if (!isset($_REQUEST['auth_token']) || !$_REQUEST['auth_token']) {
 	print "no auth_token passed<br>";
 	exit;
 	
-} else if (!isset($_REQUEST['siteid'])) {
+} else if (!isset($_REQUEST['siteid']) || !$_REQUEST['siteid']) {
 	print "no site id passed<br>";
 	exit;
 	
@@ -93,8 +93,8 @@ if (!isset($_REQUEST['userid'])) {
 				authentication
 			WHERE
 				userid = '".addslashes($_REQUEST['userid'])."'
-			AND
-				auth_token = '".addslashes($_REQUEST['auth_token'])."'
+				AND auth_token = '".addslashes($_REQUEST['auth_token'])."'
+				AND DATE_ADD(auth_time, INTERVAL 1 MINUTE) > NOW()
 	";
 	
 	//print $query."<br>";
@@ -104,7 +104,7 @@ if (!isset($_REQUEST['userid'])) {
 	
 	// failed auth_token test
 	if (mysql_num_rows($r) == 0) {
-		print "no matching auth_token or userid...<br>";
+		print "no matching auth_token or userid or authentication token has expired...<br>";
 		exit;
 	}
 
@@ -150,8 +150,9 @@ if ($moodle_user_id == 0) {
 			authentication
 		WHERE 
 			userid = '".addslashes($_REQUEST['userid'])."'
-		AND
-			auth_token = '".addslashes($_REQUEST['auth_token'])."'
+			AND auth_token = '".addslashes($_REQUEST['auth_token'])."'
+			AND DATE_ADD(auth_time, INTERVAL 1 MINUTE) > NOW()
+			
 	";
 		
 	print $query."<br>";
@@ -182,7 +183,7 @@ if ($moodle_user_id == 0) {
 
 	
 	//create new moodle user (need user fname, lname, email)
-	// see: moodle/admin/users.php
+	// adapted from: moodle/admin/users.php
 
 	$user->firstname = $firstname;
 	$user->username = $user_uname;
