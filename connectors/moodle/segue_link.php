@@ -18,13 +18,49 @@ $dblink_user = "test";
 $dblink_pass = "test";
 $dblink_db = "achapin_segue-moodle";
 
+$segue_url = "http://slug.middlebury.edu/~achapin/segue-moodle_connect-v2/sites/";
+
 $cid = mysql_pconnect($dblink_host,$dblink_user,$dblink_pass);
 mysql_select_db($dblink_db);
 
-printpre($_REQUEST);
+//printpre($_REQUEST);
 //printpre($_SESSION);
 
-print "Moodle-Segue API<hr>";
+//print "Moodle-Segue API<hr>";
+
+/******************************************************************************
+ * if id, then build url back to Segue
+ ******************************************************************************/
+if ($_REQUEST['id']) {
+	$query = "
+		SELECT
+			site_slot
+		FROM
+			site_link
+		WHERE
+			FK_moodle_site_id = '".addslashes($_REQUEST['id'])."'				
+	";
+	
+	//print $query."<br>";
+	//exit;
+	$r = mysql_query($query, $cid);
+	$a = mysql_fetch_assoc($r);
+	
+	if (mysql_num_rows($r) == 0) {
+		print "no matching Segue site...<br>";
+		header("Location: ".$CFG->wwwroot);
+		exit;
+	}
+	
+	
+	$segue_slot = $a['site_slot'];
+	print "Segue site url: ".$segue_url.$segue_slot."<br \>";
+	header("Location: ".$segue_url.$segue_slot);
+
+	exit;
+
+
+}
 
 /******************************************************************************
  * Validate request array values
@@ -237,6 +273,17 @@ print "site_title: ".$site_title."<br \>";
 print "site_slot: ".$site_slot."<br \>";
 print "site_owner_id: ".$site_owner_id."<br \>";
 print "site_theme: ".$site_theme."<br \><hr>";
+
+if ($site_theme == "shadowbox") {
+	$site_theme = "Segue_Shadow";
+} else if ($site_theme == "beveledge") {
+	$site_theme = "Segue_Bevelbox";
+} else if ($site_theme == "tornpaper") {
+	$site_theme = "Segue_Tornpaper";
+} else {
+	$site_theme = "Segue_Bevelbox";
+}
+
 //exit;
 
 /******************************************************************************
@@ -244,6 +291,7 @@ print "site_theme: ".$site_theme."<br \><hr>";
  * and add key to that site in segue moodle table
  * new Moodle site code adapted from:
  * moodle/course/edit.php
+ * NEED TO TEST ENROLLABLE SETTING
  ******************************************************************************/
 
 if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {	
@@ -259,10 +307,11 @@ if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {
 	$form->sortorder = 100;
 	$form->fullname = $site_title;
     $form->shortname = $site_slot;
-    $form->summary = "";
-  //  $form->theme = "Segue_Bevelbox";
+    $form->summary = "These are assessments for ".$site_title;
+    $form->theme = $site_theme;
     $form->visible = 1;
     $form->category = 1;
+    //$form->enrollable = 0;
 	$form->teacher  = "Instructor";
 	$form->teachers = "Instructors";
 	$form->student  = "Participant";
