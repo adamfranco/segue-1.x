@@ -4,10 +4,6 @@ require_once("config.php");
 require_once("lib/datalib.php");
 require_once("lib/moodlelib.php");
 require_once("course/lib.php");
-//moodle_link.php?site=test157
-//require_once("functions.inc.php");
-//require_once("config.inc.php");
-//require_once("dbwrapper.inc.php");
 
 /******************************************************************************
  * variables for accessing segue-moodle linking database
@@ -26,7 +22,7 @@ mysql_select_db($dblink_db);
 //printpre($_REQUEST);
 //printpre($_SESSION);
 
-//print "Moodle-Segue API<hr>";
+print "Moodle-Segue API<hr>";
 
 /******************************************************************************
  * if id, then build url back to Segue
@@ -36,7 +32,7 @@ if ($_REQUEST['id']) {
 		SELECT
 			site_slot
 		FROM
-			site_link
+			segue_moodle
 		WHERE
 			FK_moodle_site_id = '".addslashes($_REQUEST['id'])."'				
 	";
@@ -48,17 +44,15 @@ if ($_REQUEST['id']) {
 	
 	if (mysql_num_rows($r) == 0) {
 		print "no matching Segue site...<br>";
-		header("Location: ".$CFG->wwwroot);
+		header("Location: ".$CFG->wwwroot."/course/view.php?id=".$_REQUEST['id']);
 		exit;
 	}
-	
-	
+		
 	$segue_slot = $a['site_slot'];
 	print "Segue site url: ".$segue_url.$segue_slot."<br \>";
 	header("Location: ".$segue_url.$segue_slot);
 
 	exit;
-
 
 }
 
@@ -92,12 +86,12 @@ if (!isset($_REQUEST['userid']) || !$_REQUEST['userid']) {
 			FROM
 				authentication
 			WHERE
-				userid = '".addslashes($_REQUEST['userid'])."'
+				user_id = '".addslashes($_REQUEST['userid'])."'
 				AND auth_token = '".addslashes($_REQUEST['auth_token'])."'
 				AND DATE_ADD(auth_time, INTERVAL 1 MINUTE) > NOW()
 	";
 	
-	//print $query."<br>";
+	print $query."<br>";
 	//exit;
 	$r = mysql_query($query, $cid);
 	$a = mysql_fetch_assoc($r);
@@ -114,19 +108,27 @@ if (!isset($_REQUEST['userid']) || !$_REQUEST['userid']) {
 	
 	$query = "
 			SELECT
-				FK_moodle_user_id
+				user_link.system, user_link.user_id
 			FROM
 				user_link
+			INNER JOIN
+				authentication
+			ON
+				FK_auth_id = auth_id
 			WHERE
-				FK_segue_user_id = '".addslashes($_REQUEST['userid'])."'				
+				authentication.system = 'segue'
+				AND
+				user_link.system = 'moodle'
+				AND
+				authentication.user_id = '".addslashes($segue_user_id)."'				
 	";
 	
-	//print $query."<br>";
+	print $query."<br>";
 	//exit;
 	$r = mysql_query($query, $cid);
 	$a = mysql_fetch_assoc($r);
 	
-	$moodle_user_id = $a['FK_moodle_user_id'];
+	$moodle_user_id = $a['user_id'];
 }
 
 print "moodle_user_id:".$moodle_user_id."<br \>";
@@ -143,13 +145,14 @@ print "segue_user_id:".$segue_user_id."<br \>";
 if ($moodle_user_id == 0) {
 	print "<hr>Creating new Moodle user...<br>";
 	
+	// get info about the linked user
 	$query = "
 		SELECT 
-			username, firstname, lastname,  email  
+			username, firstname, lastname,  email, auth_id  
 		FROM 
 			authentication
 		WHERE 
-			userid = '".addslashes($_REQUEST['userid'])."'
+			user_id = '".addslashes($_REQUEST['userid'])."'
 			AND auth_token = '".addslashes($_REQUEST['auth_token'])."'
 			AND DATE_ADD(auth_time, INTERVAL 1 MINUTE) > NOW()
 			
@@ -171,12 +174,14 @@ if ($moodle_user_id == 0) {
 			$lastname = $a['lastname'];
 			$email = $a['email'];
 			$user_uname = $a['username'];
+			$auth_id = $a['auth_id'];
 		}
 		
 		print "firstname: ".$firstname."<br \>";
 		print "lastname: ".$lastname."<br \>";
 		print "email: ".$email."<br \>";
 		print "user_uname: ".$user_uname."<br \>";
+		print "auth_id: ".$auth_id."<br \>";
 	
 	}
 	//exit;
@@ -202,16 +207,20 @@ if ($moodle_user_id == 0) {
 	} else {
 		$moodle_user_id = $user->id;
 		
-		//update Segue moodle table
+		//update user_link table
+				
 		$query = "
 			UPDATE
 				user_link
 			SET
-				FK_moodle_user_id = '".addslashes($moodle_user_id)."'
+				user_id = '".addslashes($moodle_user_id)."',
+				system = 'moodle'
 			WHERE
-			    FK_segue_user_id = '".addslashes($_REQUEST['userid'])."'
+			    FK_auth_id = '".addslashes($auth_id)."'
 		";
+
 		print $query."<br>";
+		//exit;		
 		$r = mysql_query($query, $cid);
 		
 	}
@@ -231,7 +240,7 @@ $query = "
 	SELECT
 		FK_moodle_site_id
 	FROM
-		site_link
+		segue_moodle
 	WHERE
 		FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'				
 ";
@@ -254,7 +263,7 @@ $query = "
 	SELECT 
 		site_title, site_slot, site_owner_id, site_theme
 	FROM 
-		site_link
+		segue_moodle
 	WHERE 
 		FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'
 ";
@@ -289,7 +298,7 @@ if ($site_theme == "shadowbox") {
 
 /******************************************************************************
  * if no corresponding Moodle site, then create one
- * and add key to that site in segue moodle table
+ * and add key to that site in segue-moodle table
  * new Moodle site code adapted from:
  * moodle/course/edit.php
  * NEED TO TEST ENROLLABLE SETTING
@@ -312,7 +321,7 @@ if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {
     $form->theme = $site_theme;
     $form->visible = 1;
     $form->category = 1;
-    //$form->enrollable = 0;
+    $form->enrollable = 0;
 	$form->teacher  = "Instructor";
 	$form->teachers = "Instructors";
 	$form->student  = "Participant";
@@ -336,13 +345,13 @@ if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {
 	}
 	
 	/******************************************************************************
-	 * Update the segue-moodle link table
+	 * Update the segue_moodle link table
 	 ******************************************************************************/
 	$moodle_site_id = $newcourseid;
 	
 	$query = "
 		UPDATE
-			site_link
+			segue_moodle
 		SET
 			FK_moodle_site_id = '".addslashes($moodle_site_id)."'
 		WHERE
@@ -400,8 +409,9 @@ if ($newcourseid && $segue_user_id == $site_owner_id) {
 	
 } else if ($segue_user_id != $site_owner_id){
 	print "<hr>Adding student to site<br>";
-	print "moodle_site_id".$moodle_site_id;
+	print "moodle_site_id: ".$moodle_site_id;
 	$addstudent = $moodle_user_id;
+	
 	$timestart = $timeend = 0;
 	if (! enrol_student($addstudent, $moodle_site_id, $timestart, $timeend)) {
 		error("Could not add student with id $addstudent to this course!");
@@ -491,222 +501,6 @@ if ($user = get_record('user', 'id', $user_id)) {
 		print "<a href='".$urltogo."'>Moodle Home</a><hr>";
 	}
 	redirect($urltogo);
-}
-
-
-/******************************************************************************
- * if no module or moodle id passed then adding new module
- * called from add_story_form_1_item_inc
- ******************************************************************************/
-
-//if (!$module_id || !moodle_id) {
-//	$site_id = $_REQUEST[site_id];
-//	$course_id = $moodle_site_id; 
-//	$section = 1;
-//	$shortname = $_REQUEST[shortname];
-//	$fullname = db_get_value("site", "site_title", "site_id = $site_id");	
-//	print "To create an instance of a Moodle module requires: course_id and section<br>";
-//	print "If the course_id passed is not in Moodle course table, then new Moodle course needs to be created<br><br>";
-//	print "course_id = ".$course_id."<br>";
-//	print "section = ".$section."<br>";
-//	print "shortname = ".$shortname."<br>";
-//	print "fullname = ".$fullname."<br>";
-//	
-////	print "<br><hr>moodle_id= ".$moodle_id."<br>";
-////	print "<br>moodle_type= ".$moodle_type."<br>";
-//	
-//	//$course_id=2;
-//	//$section = 1;
-//	
-//	$addquiz = "<a href='$CFG->wwwroot/course/mod.php?id=$course_id&amp;section=$section&amp;sesskey=$USER->sesskey&amp;add=quiz'>";
-//	$addquiz .= "add quiz</a>";
-//	
-//	$addwiki = "<a href='$CFG->wwwroot/course/mod.php?id=$course_id&amp;section=$section&amp;sesskey=$USER->sesskey&amp;add=wiki'>";
-//	$addwiki .= "add wiki</a>";
-//
-//	$addchat = "<a href='$CFG->wwwroot/course/mod.php?id=$course_id&amp;section=$section&amp;sesskey=$USER->sesskey&amp;add=chat'>";
-//	$addchat .= "add chat</a>";
-//	
-//	print "add: ".$addquiz." | ".$addwiki." | ".$addchat."<br><br>";
-//
-//	if (!isset($straddactivity)) {
-//		$straddactivity = get_string('addactivity');
-//		$straddresource = get_string('addresource');
-//	}
-//	
-//	get_all_mods($course_id, $mods, $modnames, $modnamesplural, $modnamesused);
-//	$activities = popup_form2("$CFG->wwwroot/course/mod.php?id=$course_id&amp;section=$section&amp;sesskey=$USER->sesskey&amp;add=",
-//					$modnames, "section$section", "", $straddactivity, 'mods', $straddactivity, true);
-//	
-//	print $activities;
-//	
-//}
-
-
-
-/******************************************************************************
- * if module_id passed w/o user_id then module was created or updated and module data
- * needs to be passed to Segue
- ******************************************************************************/
-
-//if (isset($_REQUEST[module_id]) && !$user_id) {
-//	print "<hr>Created/updating Moodle module...<br>";
-//
-//	$module_id = $_REQUEST[module_id];
-//	
-//	if (!$mod) {
-//		$module_type = $_REQUEST[module_type];
-//	} else {
-//		$module_type = $mod;
-//	}
-//	
-//	if (! $moduleinstance_id = get_field("course_modules", "instance", "id", $module_id)) {
-//	   error("There is no moodle_instance with id $moodleinstance_id");
-//	}
-//	
-//	if (! $module_name = get_field($module_type, "name", "id", $moduleinstance_id)) {
-//		error("The $mod_name with id1 $moodleinstance_id is missing");
-//	}
-//
-////	if (! $module_intro = get_field($module_type, "intro", "id", $moduleinstance_id)) {
-////		error("The $mod_intro with id2 $moodleinstance_id is missing");
-////	}
-//		
-//	
-//	print "module_id= ".$module_id."<br>";
-//	print "module_type= ".$module_type."<br>";
-//	print "module_name= ".$module_name."<br>";
-//	print "module_intro= ".$module_intro."<br>";
-//	?>
-//	
-//	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-//	<html> 
-//	<head>
-//	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-//	<title>Segue-Moodle API</title> 
-//	
-//	<script lang="JavaScript"> 
-//	
-//	function useFile(moduleID,moduleType,moduleName) { 
-//		o = opener.document.addform; 
-//		o.moodleid.value=moduleID; 
-//		o.moodletype.value=moduleType; 
-//		o.title.value=moduleName;
-//		o.submit(); 
-//		window.close(); 
-//	} 
-//	</script>
-//	<?
-//	print "<input type=button name='use' value='use' onClick=\"useFile('".$module_id."','".$module_type."','".$module_name."')\">\n";
-//	print "</form>";
-//
-//	exit();
-//}
-
-
-
-
-function popup_form2($common, $options, $formname, $selected='', $nothing='choose', $help='', $helptext='', $return=false, $targetwindow='self') {
-
-//    global $CFG;
-//    static $go, $choose;   /// Locally cached, in case there's lots on a page
-//
-//    if (empty($options)) {
-//        return '';
-//    }
-//
-//    if (!isset($go)) {
-//        $go = get_string('go');
-//    }
-//
-//    if ($nothing == 'choose') {
-//        if (!isset($choose)) {
-//            $choose = get_string('choose');
-//        }
-//        $nothing = $choose.'...';
-//    }
-//
-//    $startoutput = '<form action="'.$CFG->wwwroot.'/course/jumpto.php"'.
-//                        ' method="get"'.
-//                        ' target="self"'.
-//                        ' name="'.$formname.'"'.
-//                        ' class="popupform">';
-//
-//    $output = '<select name="jump" onchange="'.$targetwindow.'.location=document.'.$formname.
-//                       '.jump.options[document.'.$formname.'.jump.selectedIndex].value;">'."\n";
-//
-//    if ($nothing != '') {
-//        $output .= "   <option value=\"javascript:void(0)\">$nothing</option>\n";
-//    }
-//
-//    $inoptgroup = false;
-//    foreach ($options as $value => $label) {
-//
-//        if (substr($label,0,2) == '--') { /// we are starting a new optgroup
-//
-//            /// Check to see if we already have a valid open optgroup
-//            /// XHTML demands that there be at least 1 option within an optgroup
-//            if ($inoptgroup and (count($optgr) > 1) ) {
-//                $output .= implode('', $optgr);
-//                $output .= '   </optgroup>';
-//            }
-//
-//            unset($optgr);
-//            $optgr = array();
-//
-//            $optgr[]  = '   <optgroup label="'. substr($label,2) .'">';   // Plain labels
-//
-//            $inoptgroup = true; /// everything following will be in an optgroup
-//            continue;
-//
-//        } else {
-//            $optstr = '   <option value="' . $common . $value . '"';
-//
-//            if ($value == $selected) {
-//                $optstr .= ' selected="selected"';
-//            }
-//
-//            if ($label) {
-//                $optstr .= '>'. $label .'</option>' . "\n";
-//            } else {
-//                $optstr .= '>'. $value .'</option>' . "\n";
-//            }
-//
-//            if ($inoptgroup) {
-//                $optgr[] = $optstr;
-//            } else {
-//                $output .= $optstr;
-//            }
-//        }
-//
-//    }
-//
-//    /// catch the final group if not closed
-//    if ($inoptgroup and count($optgr) > 1) {
-//        $output .= implode('', $optgr);
-//        $output .= '    </optgroup>';
-//    }
-//
-//    $output .= '</select>';
-//    $output .= '<noscript id="noscript'.$formname.'" style="display: inline;">';
-//    $output .= '<input type="submit" value="'.$go.'" /></noscript>';
-//    $output .= '<script type="text/javascript">'.
-//               "\n<!--\n".
-//               'document.getElementById("noscript'.$formname.'").style.display = "none";'.
-//               "\n-->\n".'</script>';
-//    $output .= '</form>' . "\n";
-//
-//    if ($help) {
-//        $button = helpbutton($help, $helptext, 'moodle', true, false, '', true);
-//    } else {
-//        $button = '';
-//    }
-//
-//    if ($return) {
-//        return $startoutput.$button.$output;
-//    } else {
-//        echo $startoutput.$button.$output;
-//    }
 }
 
 function printpre($array, $return=FALSE) {

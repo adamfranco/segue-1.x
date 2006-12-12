@@ -1,11 +1,6 @@
 <?php // $Id$
 session_start();// start the session manager :) -- important, as we just learned
 
-//require_once("moodle/config.php");
-//require_once("moodle/lib/datalib.php");
-//require_once("moodle/lib/moodlelib.php");
-//require_once("moodle/course/lib.php");
-//moodle_link.php?site=test157
 require_once("../../functions.inc.php");
 require_once("../../config.inc.php");
 require_once("../../dbwrapper.inc.php");
@@ -77,48 +72,6 @@ $segue_site_owner = $a['FK_createdby'];
 //print "site_title: ".$site_title."<br \>"; 
 //print "site_theme: ".$site_theme."<br \>"; 
 //print "segue_site_owner: ".$segue_site_owner."<br \>"; 
-
-//exit;
-
-//$page_id = db_get_value("story", "FK_page", "story_id='".addslashes($node_id)."'");
-//$section_id = db_get_value("story", "FK_section", "page_id='".addslashes($page_id)."'");
-
-//$thisPage =& new page($_REQUEST[site],$section_id,$page_id,$node_id, $thisPage);
-//$thisNode =& new story($_REQUEST[site],$section_id,$page_id,$node_id, $thisPage);
-
-/******************************************************************************
- * get information about the Segue user's permissions on this Segue site 
- * if the Segue user is the owner of the Segue site then they 
- * become a teacher in the linked Moodle site
- * if the Segue user has view permission only, then they become students
- * in the in the linked Moodle site
- ******************************************************************************/
-
-//$segue_site_owner =  db_get_value("slot", "FK_owner", "slot_name='".addslashes($site_name)."'");
-
-//$query = "
-//	SELECT
-//		FK_editor
-//	FROM
-//		permission
-//	WHERE
-//		FK_editor = '$segue_user_id'
-//	AND
-//		FK_scope_id = '$node_id'
-//	AND
-//		permission_scope_type = 'story'
-//	AND
-//		permission_value = 'e'
-//	";
-//
-//$r = db_query($query);
-//
-//if (db_num_rows($r) != 0) {
-//	print "user $segue_user_id is an editor of node $node_id<br>";	
-//	$segue_site_editor = $segue_user_id;
-//} else {
-//	print "user $segue_user_id is NOT an editor of node $node_id<br>";
-//}
 //exit;
 
 print "Moodle-Segue API<hr>";
@@ -137,7 +90,7 @@ if (!isset($segue_site_id) || !$segue_site_id) {
 		SELECT
 			FK_moodle_site_id
 		FROM
-			site_link
+			segue_moodle
 		WHERE
 			FK_segue_site_id = '".addslashes($segue_site_id)."'				
 	";	
@@ -158,7 +111,7 @@ if (db_num_rows($r) > 0) {
 			
 	$query = "
 		INSERT INTO
-			site_link
+			segue_moodle
 		SET
 			FK_segue_site_id = '".addslashes($segue_site_id)."',
 			site_title = '".addslashes($site_title)."',
@@ -181,19 +134,31 @@ if (!isset($segue_user_id) || !$segue_user_id) {
 	exit;
 	
 } else {
+
 	$query = "
 			SELECT
-				FK_moodle_user_id
+				user_link.system, user_link.user_id, auth_id
 			FROM
 				user_link
+			INNER JOIN
+				authentication
+			ON
+				FK_auth_id = auth_id
 			WHERE
-				FK_segue_user_id = '".addslashes($segue_user_id)."'				
+				authentication.system = 'segue'
+				AND
+				user_link.system = 'moodle'
+				AND
+				authentication.user_id = '".addslashes($segue_user_id)."'				
 	";
+
 }
 
 print $query."<br>";
+//exit;
 
 $r = db_query($query);
+
 
 // create an auth token for validation
 $auth_token = md5(time().rand(1, 1000));
@@ -212,7 +177,7 @@ if (db_num_rows($r) > 0) {
 			auth_token = '".addslashes($auth_token)."',
 			auth_time = NOW()
 		WHERE
-			userid = '".addslashes($_SESSION[aid])."'		
+			user_id = '".addslashes($segue_user_id)."'		
 	";
 	
 	print $query."<br>";
@@ -221,28 +186,30 @@ if (db_num_rows($r) > 0) {
 //no linked user found	
 } else {
 	print "no linked moodle user found<br>";
-	
-	// add to authentication table
+
 	$query = "
 		INSERT INTO
 			authentication
 		SET
+			system = 'segue',
 			username = '".addslashes($_SESSION[auser])."',
 			firstname = '".addslashes($firstname)."',
 			lastname = '".addslashes($lastname)."',
 			email = '".addslashes($_SESSION[aemail])."',
-			userid = '".addslashes($_SESSION[aid])."',
-			auth_token = '".addslashes($auth_token)."'
+			user_id = '".addslashes($segue_user_id)."',
+			auth_token = '".addslashes($auth_token)."',
+			auth_time = NOW()
 		";
 	print $query."<br>";
+//	exit;
 	$r = db_query($query);
 	
-	// add to user_link table
+	$auth_id = lastid($r);		
 	$query = "
 		INSERT INTO
 			user_link
 		SET
-			FK_segue_user_id = '".addslashes($segue_user_id)."'
+			FK_auth_id = '".addslashes($auth_id)."'
 		";
 	print $query."<br>";
 	$r = db_query($query);		
@@ -252,8 +219,5 @@ if (db_num_rows($r) > 0) {
 
 //exit;
 header("Location: ".$moodle_url."/segue_link.php?userid=".addslashes($segue_user_id)."&siteid=".addslashes($segue_site_id)."&auth_token=".addslashes($auth_token));
-//exit;
-
-
 
 ?>
