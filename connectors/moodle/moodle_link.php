@@ -43,10 +43,14 @@ $username = $_SESSION[auser];
 $useremail = $_SESSION[aemail];
 $userfname = $_SESSION[afname];
 $names = split(" ",$userfname);
-//use last in result as last name and all other as first name
-$firstname = trim($names[1]);
-$lastname = trim($names[2]);
 
+preg_match('/^(.*)\s([^\s]+)$/', $userfname, $matches);
+$firstname = trim($matches[1]);
+$lastname = trim($matches[2]);
+
+print $firstname."<br>";;
+print $lastname."<br>";
+//exit;
 
 /******************************************************************************
  * Get the Segue site title, theme and owner
@@ -218,6 +222,6 @@ if (db_num_rows($r) > 0) {
 
 
 //exit;
-header("Location: ".$moodle_url."/segue_link.php?userid=".addslashes($segue_user_id)."&siteid=".addslashes($segue_site_id)."&auth_token=".addslashes($auth_token));
+header("Location: ".$moodle_url."/segue/segue_link.php?userid=".addslashes($segue_user_id)."&siteid=".addslashes($segue_site_id)."&auth_token=".addslashes($auth_token));
 
 ?>
