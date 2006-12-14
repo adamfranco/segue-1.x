@@ -22,7 +22,7 @@ mysql_select_db($dblink_db);
 //printpre($_REQUEST);
 //printpre($_SESSION);
 
-print "Moodle-Segue API<hr>";
+//print "Moodle-Segue API<hr>";
 
 /******************************************************************************
  * if id in request, then build url back to Segue
@@ -43,7 +43,7 @@ if ($_REQUEST['id']) {
 	$a = mysql_fetch_assoc($r);
 	
 	if (mysql_num_rows($r) == 0) {
-		print "no matching Segue site...<br>";
+//		print "no matching Segue site...<br>";
 		header("Location: ".$CFG->wwwroot."/course/view.php?id=".$_REQUEST['id']);
 		exit;
 	}
@@ -129,6 +129,33 @@ if (!isset($_REQUEST['userid']) || !$_REQUEST['userid']) {
 	$a = mysql_fetch_assoc($r);
 	
 	$moodle_user_id = $a['user_id'];
+	print "moodle_user_id:".$moodle_user_id."<br \>";
+	//exit;
+	
+	/******************************************************************************
+	 * If corresponding Moodle user found in user_link table
+	 * make sure that user still exists in Moodle user table
+	 ******************************************************************************/
+	 
+//	 if ($moodle_user_id != 0) {
+//	 	$record = get_record('user', 'id', $moodle_user_id);
+//	 	if (!$record || $record->deleted == '1') {
+//	 		print "corresponding Moodle user no longer exists";
+//	 			 		
+//			//delete Moodle user from user_link table					
+//			$query = "
+//				DELETE FROM
+//					user_link				
+//				WHERE
+//					user_id = '".addslashes($moodle_user_id)."'
+//			";
+//	
+//			print $query."<br>";
+//			//exit;		
+//			$r = mysql_query($query, $cid);
+//	 		$moodle_user_id = 0;
+//	 	}
+//	 }
 }
 
 print "moodle_user_id:".$moodle_user_id."<br \>";
@@ -143,6 +170,7 @@ print "segue_user_id:".$segue_user_id."<br \>";
  ******************************************************************************/
 
 if ($moodle_user_id == 0) {
+
 	print "<hr>Creating new Moodle user...<br>";
 	
 	// get info about the linked user
@@ -220,7 +248,7 @@ if ($moodle_user_id == 0) {
 		";
 
 		print $query."<br>";
-		//exit;		
+	//	exit;		
 		$r = mysql_query($query, $cid);
 		
 	}
@@ -251,6 +279,32 @@ $r = mysql_query($query, $cid);
 $a = mysql_fetch_assoc($r);
 
 $moodle_site_id = $a['FK_moodle_site_id'];
+
+/******************************************************************************
+ * Make sure corresponding Moodle site still exists in Moodle
+ ******************************************************************************/
+
+// if (isset($moodle_site_id) && $moodle_site_id != 0) {
+// 
+//	if (!$site = get_record('course', 'id', $moodle_site_id)) {
+//		print "corresponding Moodle site no longer exists";
+//					
+//		//delete Moodle user from segue_moodle table					
+//		$query = "
+//			DELETE FROM
+//				segue_moodle				
+//			WHERE
+//				FK_moodle_site_id = '".addslashes($moodle_site_id)."'
+//		";
+//
+//		print $query."<br>";
+//		//exit;		
+//		$r = mysql_query($query, $cid);
+//		$moodle_site_id = 0;
+//	}
+// }
+ 
+
 print "moodle_site_id: ".$moodle_site_id."<br \>";
 //exit;
 
