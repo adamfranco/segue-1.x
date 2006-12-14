@@ -1,9 +1,9 @@
 <?php // $Id$
 
-require_once("config.php");
-require_once("lib/datalib.php");
-require_once("lib/moodlelib.php");
-require_once("course/lib.php");
+require_once("../config.php");
+require_once("../lib/datalib.php");
+require_once("../lib/moodlelib.php");
+require_once("../course/lib.php");
 
 /******************************************************************************
  * variables for accessing segue-moodle linking database
@@ -25,7 +25,7 @@ mysql_select_db($dblink_db);
 print "Moodle-Segue API<hr>";
 
 /******************************************************************************
- * if id, then build url back to Segue
+ * if id in request, then build url back to Segue
  ******************************************************************************/
 if ($_REQUEST['id']) {
 	$query = "

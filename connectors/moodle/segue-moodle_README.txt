@@ -2,14 +2,14 @@
  * Install instructions
  ******************************************************************************/
 1. Install moodle (version 1.6.3)
-2. Copy segue_link.php to moodle root
-3. Copy segue-moodle_themes.zip to moodle/themes and unzip
-4. delete all other directories/files in themes EXCEPT:
-moodle/themes/standard
-moodle/themes/standardwhite
+2. Copy segue/segue_link.php to moodle root
+3. Copy segue/segue-moodle_themes.zip to moodle/themes and unzip
+(includes: standard, standardlogo, Segue_Bevelbox, Segue_Shadow, Segue_Tornpaper)
+4. delete all other directories/files in moodle/themes EXCEPT:
 moodle/themes/index.php
 moodle/themes/preview.php
 moodle/themes/UPGRADE.txt
+
 5. Edit segue_link.php to specify location of linking database 
 and Segue url as follows:
 
@@ -53,7 +53,33 @@ have their Segue auth used to authenticate them into Moodle and enrol in linked
 Moodle sites
 
 /******************************************************************************
- * Site Settings (ie appearance of front page
+ * Variable (ie UI, Security, OS, Maintenance, Mail, User, Permissions,
+ * Course Requests, Miscellaneous, Statistics
+ ******************************************************************************/
+Administration > Configuration > Variables
+Chose defaults for all EXCEPT:
+Interface -> langmenu: Yes
+Interface -> country: United States of America
+Interface -> themelist: Segue_Bevelbox,Segue_Shadow,Segue_Tornpaper
+Interface -> allowuserthemes: No
+Interface -> allowcoursethemes: Yes
+Interface -> allowuserblockhiding: Yes
+Interface -> showblocksonmodpages: Yes
+Mail -> smtphosts: smtp.middlebury.edu
+Mail -> smtpuser: ?
+Mail -> smtppass: ?
+User -> fullnamedisplay: First name + Surname
+Permissions -> teacherassignteachers: Yes
+Permissions -> restrictmodulesfor: No Courses
+Permissions -> restrictbydefault: No
+Permissions -> defaultallowedmodules: quiz, resource
+Course Requests -> enablecourserequests: No
+Miscellaneous -> mymoodleredirect: No
+
+
+
+/******************************************************************************
+ * Site Settings (ie appearance of front page)
  ******************************************************************************/
 Administration > Configuration > Site settings
 Full site name: Middlebury Assessments
@@ -79,10 +105,11 @@ copy to theme directory:
 -Segue_Tornpaper
 -Segue_Bevelbox
 -standardlogo (modified version)
+-standard
 
 remove all themes from theme directory EXCEPT:
--standardlogo
 -all Segue themes referred to above
+-standardlogo and standard
 
 /******************************************************************************
  * UI Language changes
@@ -107,7 +134,9 @@ mymoodle -> No course information to show. = No assessments to show.
  * Modules
  ******************************************************************************/
 Administration > Configuration > Modules 
-hide all modules except quiz
+-hide all modules except quiz
+-modify module table (UPDATE mdl_module set visible = 0 WHERE name = 'forum')
+(this is the only way to turn off the forum module...)
 
 /******************************************************************************
  * Blocks
@@ -140,9 +169,13 @@ Users: course
  * HTML Editor
  ******************************************************************************/
 Administration > Configuration > Editor settings
--change default font-family to Verdana 
--set editor fontsize to 12px
--set 1st font for editor drop down to be Verdana
+htmleditor: allow
+editorfontfamily: Verdana,Arial,Trebuchet MS,Helvetica,sans-serif
+editorfontsize: 12px
+editors dropdown menu: 
+Verdana: verdana,arial,helvetica,sans-serif
+Arial: arial,helvetica,sans-serif
+Georgia: georgia,times new roman,times,serif
 
 /******************************************************************************
  * Calendar
@@ -216,7 +249,7 @@ login/signup.php
 lib/datalib.php
 -all database functions
 
-moodlelib.php
+lib/moodlelib.php
 -all general purpose moodle functions
 
 course/lib.php
