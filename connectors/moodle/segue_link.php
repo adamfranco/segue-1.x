@@ -198,8 +198,8 @@ if ($moodle_user_id == 0) {
 	// passed auth_token test so get Segue user info
 	} else {
 		while ($a = mysql_fetch_assoc($r)) {
-			$firstname = $a['firstname'];
-			$lastname = $a['lastname'];
+			$firstname = ereg_replace("['\"]", "", $a['firstname']);
+			$lastname = ereg_replace("['\"]", "", $a['lastname']);
 			$email = $a['email'];
 			$user_uname = $a['username'];
 			$auth_id = $a['auth_id'];
@@ -228,6 +228,8 @@ if ($moodle_user_id == 0) {
 	$user->lang = "en_utf8";
 	$user->confirmed = 1;
 	
+//	printpre ($user);a	
+//	exit;
 	
 	if (! ($user->id = insert_record("user", $user)) ) {
 		error("Could not add your record to the database!");
