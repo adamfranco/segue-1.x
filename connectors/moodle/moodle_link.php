@@ -12,11 +12,34 @@ require_once("../../dbwrapper.inc.php");
 $cid = db_connect ($dbhost, $dbuser, $dbpass, $dbdb);
 
 /******************************************************************************
+ * start HTML output
+ ******************************************************************************/
+?>
+<html>
+<head>
+<title>Segue - Measure Error</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+
+
+</style>
+</head>
+<body>
+<?
+	if ($_SERVER['HTTP_REFERER'])
+		print "<div class='back'><a href='".$_SERVER['HTTP_REFERER']."'>&lt;-- back</a></div>";
+	
+	print "<div class='back'><a href='".$cfg['full_uri']."'>&lt;-- Segue Home</a></div>";
+		
+
+
+/******************************************************************************
  * Make sure there is an authenticated Segue user
  * go back to previous page http referrer
  ******************************************************************************/
 if (!isset($_SESSION[aid])) {
-	print "You must be logged into Segue to use this link";
+	print "<div class='error'>You must be logged into Segue to use this link</div>";
+	print "</body</html>";
 	exit;
 }
 
@@ -25,6 +48,7 @@ if (!isset($_SESSION[aid])) {
  ******************************************************************************/
 if (!isset($_REQUEST[site]) || !$_REQUEST[site]) {
 	print "Missing Segue slot name";
+	print "</body</html>";
 	exit;
 	
 } else {
@@ -87,6 +111,7 @@ $cid2 = db_connect ($dbhost_link, $dbuser_link, $dbpass_link, $dbdb_link);
  ******************************************************************************/
 if (!isset($segue_site_id) || !$segue_site_id) {
 	print "no Segue site name or id passed<br>";
+	print "</body</html>";
 	exit;
 	
 } else {
@@ -108,6 +133,7 @@ if (db_num_rows($r) > 0) {
 	
 } else if (!isset($segue_site_owner) || !$segue_site_owner ||  !isset($site_title) || !$site_title || !isset($site_theme) || !site_theme) {
 	print "missing data<br>";
+	print "</body</html>";
 	exit;
 	
 } else {
@@ -135,6 +161,7 @@ if (db_num_rows($r) > 0) {
  ******************************************************************************/
 if (!isset($segue_user_id) || !$segue_user_id) {
 	print "no Segue user id passed<br>";
+	print "</body</html>";
 	exit;
 	
 } else {
@@ -168,6 +195,17 @@ $r = db_query($query);
 $auth_token = md5(time().rand(1, 1000));
 print "auth_token: ".$auth_token."<hr \>";
 
+if ($_SERVER['HTTP_REFERER'] 
+	&& (strpos($_SERVER['HTTP_REFERER'], $cfg['full_uri']) === 0
+		|| strpos($_SERVER['HTTP_REFERER'], $cfg['classsitesurl']) === 0
+		|| strpos($_SERVER['HTTP_REFERER'], $cfg['personalsitesurl']) === 0
+	))
+{
+	$referer = "'".addslashes($_SERVER['HTTP_REFERER'])."'";
+} else {
+	$referer = "NULL";
+}
+
 
 // linked user found
 if (db_num_rows($r) > 0) {
@@ -179,7 +217,8 @@ if (db_num_rows($r) > 0) {
 			authentication
 		SET
 			auth_token = '".addslashes($auth_token)."',
-			auth_time = NOW()
+			auth_time = NOW(),
+			referer = ".$referer."
 		WHERE
 			user_id = '".addslashes($segue_user_id)."'		
 	";
@@ -202,7 +241,8 @@ if (db_num_rows($r) > 0) {
 			email = '".addslashes($_SESSION[aemail])."',
 			user_id = '".addslashes($segue_user_id)."',
 			auth_token = '".addslashes($auth_token)."',
-			auth_time = NOW()
+			auth_time = NOW(),
+			referer = ".$referer."
 		";
 	print $query."<br>";
 //	exit;

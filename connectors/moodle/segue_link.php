@@ -24,10 +24,42 @@ mysql_select_db($dblink_db);
 
 //print "Moodle-Segue API<hr>";
 
+
 /******************************************************************************
  * if id in request, then build url back to Segue
- ******************************************************************************/
+ ******************************************************************************/ 
+
 if ($_REQUEST['id']) {
+	
+	/******************************************************************************
+	 * Check if the user has a referer listed, if so take them there.
+	 ******************************************************************************/ 
+	
+	$query = "
+		SELECT
+			referer
+		FROM
+			authentication
+			LEFT JOIN 
+				user_link ON auth_id = FK_auth_id
+		WHERE
+			user_link.system = 'moodle'
+			AND user_link.user_id = '".addslashes($_SESSION['USER']->id)."'
+			";
+	$r = mysql_query($query, $cid);
+	if (mysql_num_rows($r)) {
+		$a = mysql_fetch_assoc($r);
+		if ($a['referer']) {
+			print "Segue site url: ".$a['referer']."<br \>";
+			header("Location: ".$a['referer']);
+		
+			exit;
+		}
+	}
+	
+	/******************************************************************************
+	 * otherwise, go back to the corresponding site root.
+	 ******************************************************************************/ 
 	$query = "
 		SELECT
 			site_slot
