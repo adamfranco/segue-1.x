@@ -255,6 +255,21 @@ FROM
 /******************************************************************************
  * getSiteInfoWhereUserIsEditor
  * 		Answers an array of site information for sites where $user is an editor
+ *
+ * The process is as follows:
+ * 	-	For every site where the user or one of their groups is listed as an editor...
+ *	-	Get a list of all nodes in the site.
+ *	-	For every node (site, section, page, story) get the permissions that apply
+ *		to the user or one of their groups.
+ *	-	Return any site-level permissions found and the site info if the user 
+ *		has more than just view and discuss permissions on any node in the site.
+ *
+ * Note (2006-12-19, Adam Franco):
+ *		This new query using sub-selects is about 12-times faster
+ * 		than the previous query. Attempts were made to reformat the query by loading the
+ * 		list of appropriate permissions, then finding the site id from there, but that
+ * 		proved to be slower than the query below.
+ *
  * 		
  ******************************************************************************/
 	function getSiteInfoWhereUserIsEditor($user='') {
@@ -265,7 +280,30 @@ FROM
 		$userId = db_get_value("user","user_id","user_uname='".addslashes($user)."'");
 
 		$query = "
-			SELECT
+		SELECT
+			slot_name,
+			slot_type,
+			owner_uname,
+			site_exists,
+			site_title,
+			is_classgroup,
+			site_addedby,
+			site_created_tstamp,
+			site_editedby,
+			site_updated_tstamp,
+			site_activate_tstamp,
+			site_deactivate_tstamp,
+			(	site_active = '1'
+					AND (site_activate_tstamp = '0000-00-00 00:00:00'
+						OR site_activate_tstamp < CURRENT_TIMESTAMP())
+					AND (site_deactivate_tstamp = '0000-00-00 00:00:00'
+						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+				) AS is_active,
+			editor_id,
+			permission_scope_type,
+			permission_value
+		FROM
+			(SELECT
 				slot_name,
 				slot_type,
 				slot_owner.user_uname AS owner_uname,
@@ -278,14 +316,13 @@ FROM
 				site_updated_tstamp,
 				site_activate_tstamp,
 				site_deactivate_tstamp,
-				(	site_active = '1'
-					AND (site_activate_tstamp = '00000000000000'
-						OR site_activate_tstamp < CURRENT_TIMESTAMP())
-					AND (site_deactivate_tstamp = '00000000000000'
-						OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
-				) AS is_active,
-				permission_scope_type,
-				permission_value
+				site_active,
+				site_id,
+				section_id,
+				page_id,
+				story_id,
+				site_editors.FK_editor AS editor_id
+				
 			FROM
 				slot
 					INNER JOIN
@@ -312,23 +349,6 @@ FROM
 				page ON page.FK_section = section_id
 					LEFT JOIN
 				story ON story.FK_page = page_id
-					INNER JOIN
-				permission ON (
-								(permission.FK_editor = FK_ugroup
-									OR (permission.FK_editor = site_editors.FK_editor
-										AND permission.FK_editor = '$userId'))
-								AND ((permission_scope_type = 'site'
-										AND permission.FK_scope_id = site_id)
-									OR (permission_scope_type = 'section'
-										AND permission.FK_scope_id = section_id)
-									OR (permission_scope_type = 'page'
-										AND permission.FK_scope_id = page_id)
-									OR (permission_scope_type = 'story'
-										AND permission.FK_scope_id = story_id))
-								AND (FIND_IN_SET('a', permission_value) > 0
-									OR FIND_IN_SET('e', permission_value) > 0
-									OR FIND_IN_SET('d', permission_value) > 0)
-							)
 					LEFT JOIN
 						classgroup ON slot_name = classgroup_name
 					LEFT JOIN
@@ -340,9 +360,27 @@ FROM
 					AND ugroup_user.FK_user = '".addslashes($userId)."')
 				OR (site_editors_type = 'user'
 					AND site_editors.FK_editor = '".addslashes($userId)."')
-			GROUP BY
+			) AS tmp_sites
+		INNER JOIN
+			permission ON (
+				(permission.FK_editor = editor_id)
+				AND ((permission_scope_type = 'site'
+						AND permission.FK_scope_id = site_id)
+					OR (permission_scope_type = 'section'
+						AND permission.FK_scope_id = section_id)
+					OR (permission_scope_type = 'page'
+						AND permission.FK_scope_id = page_id)
+					OR (permission_scope_type = 'story'
+						AND permission.FK_scope_id = story_id))
+				AND (FIND_IN_SET('a', permission_value) > 0
+					OR FIND_IN_SET('e', permission_value) > 0
+					OR FIND_IN_SET('d', permission_value) > 0)
+			)
+		GROUP BY
 				slot_name, 
 				permission_value
+		ORDER BY
+				slot_name
 		";
 					
 		$r = db_query($query);
