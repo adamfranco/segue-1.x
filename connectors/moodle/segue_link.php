@@ -14,7 +14,7 @@ $dblink_user = "test";
 $dblink_pass = "test";
 $dblink_db = "achapin_segue-moodle";
 
-$segue_url = "http://slug.middlebury.edu/~achapin/segue-moodle_connect-v2/sites/";
+$segue_url = "http://slug.middlebury.edu/~achapin/segue-moodle_connect-v2/";
 
 $cid = mysql_pconnect($dblink_host,$dblink_user,$dblink_pass);
 mysql_select_db($dblink_db);
@@ -24,9 +24,52 @@ mysql_select_db($dblink_db);
 
 //print "Moodle-Segue API<hr>";
 
+/******************************************************************************
+ * start HTML output
+ ******************************************************************************/
+?>
+<html>
+<head>
+<title>Segue - Measure Error</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+a {
+	color: #003366;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+.error {
+	margin-top: 10px;
+	color: #990000;
+	font-size: 14px;
+
+}
+.back {	
+	font-size: 16px;
+	align: center;
+	padding: 5px;
+}
+
+</style>
+</head>
+<body>
+<?
 
 /******************************************************************************
- * if id in request, then build url back to Segue
+ * Provide links back to referer and/or Measure home
+ ******************************************************************************/
+
+if ($_SERVER['HTTP_REFERER'])
+	print "<span class='back'><a href='".$_SERVER['HTTP_REFERER']."'>&lt;&lt; back</a></span> | ";
+
+print "<span class='back'><a href='".$segue_url."'>Segue Home</a></span>";
+
+//exit;
+
+/******************************************************************************
+ * if id in request from Measure, then build url back to Segue
  ******************************************************************************/ 
 
 if ($_REQUEST['id']) {
@@ -47,18 +90,19 @@ if ($_REQUEST['id']) {
 			AND user_link.user_id = '".addslashes($_SESSION['USER']->id)."'
 			";
 	$r = mysql_query($query, $cid);
+	
 	if (mysql_num_rows($r)) {
+	
 		$a = mysql_fetch_assoc($r);
 		if ($a['referer']) {
 			print "Segue site url: ".$a['referer']."<br \>";
-			header("Location: ".$a['referer']);
-		
+			header("Location: ".$a['referer']);		
 			exit;
 		}
 	}
 	
 	/******************************************************************************
-	 * otherwise, go back to the corresponding site root.
+	 * otherwise, go to the corresponding Segue site
 	 ******************************************************************************/ 
 	$query = "
 		SELECT
@@ -74,34 +118,43 @@ if ($_REQUEST['id']) {
 	$r = mysql_query($query, $cid);
 	$a = mysql_fetch_assoc($r);
 	
+	//if no corresponding site, go to Segue home
 	if (mysql_num_rows($r) == 0) {
-//		print "no matching Segue site...<br>";
-		header("Location: ".$CFG->wwwroot."/course/view.php?id=".$_REQUEST['id']);
+		print "No matching Segue site...<br>";
+		//print $segue_url;
+		link_log(0, 0, $category="errors",$description="No linked Segue site");
+		header("Location: ".$segue_url);
 		exit;
 	}
-		
+	
+	//if corresponding site, go to home page of that site
 	$segue_slot = $a['site_slot'];
-	print "Segue site url: ".$segue_url.$segue_slot."<br \>";
-	header("Location: ".$segue_url.$segue_slot);
-
+	print "Segue site url: ".$segue_url."sites/".$segue_slot."<br \>";
+	header("Location: ".$segue_url."sites/".$segue_slot);
 	exit;
 
 }
 
 /******************************************************************************
- * Validate request array values
+ * Validate request array values from Segue
  ******************************************************************************/
  
 if (!isset($_REQUEST['userid']) || !$_REQUEST['userid']) {
-	print "no user id passed<br>";
+	print "<div class='error'>No user id passed...</div>";	
+	print "</body</html>";
+	link_log(0, $_REQUEST['siteid'], $category="errors",$description="No Segue user id passed");
 	exit;
 	
 } else if (!isset($_REQUEST['auth_token']) || !$_REQUEST['auth_token']) {
-	print "no auth_token passed<br>";
+	print "<div class='error'>No authentication token passed...</div>";
+	print "</body</html>";
+	link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="errors",$description="No authentication token passed");
 	exit;
 	
 } else if (!isset($_REQUEST['siteid']) || !$_REQUEST['siteid']) {
-	print "no site id passed<br>";
+	print "<div class='error'>No site id passed...</div>";
+	print "</body</html>";
+	link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="errors",$description="No site id passed");
 	exit;
 	
 } else {
@@ -123,14 +176,16 @@ if (!isset($_REQUEST['userid']) || !$_REQUEST['userid']) {
 				AND DATE_ADD(auth_time, INTERVAL 1 MINUTE) > NOW()
 	";
 	
-	print $query."<br>";
+	//print $query."<br>";
 	//exit;
 	$r = mysql_query($query, $cid);
 	$a = mysql_fetch_assoc($r);
 	
 	// failed auth_token test
 	if (mysql_num_rows($r) == 0) {
-		print "no matching auth_token or userid or authentication token has expired...<br>";
+		print "<div class='error'>No matching authentication token or user id or authentication token has expired...</div>";
+		print "</body</html>";
+		link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="errors",$description="auth_token expired or not passed or no user id");
 		exit;
 	}
 
@@ -224,7 +279,8 @@ if ($moodle_user_id == 0) {
 	
 	// failed auth_token test
 	if (mysql_num_rows($r) == 0) {
-		print "no matching auth_token or userid...<br>";
+		print "<div class='error'>No matching authentication token or user id...</div>";
+		print "</body</html>";
 		exit;
 		
 	// passed auth_token test so get Segue user info
@@ -287,6 +343,7 @@ if ($moodle_user_id == 0) {
 		
 	}
 	print "new moodle user_id: ".$moodle_user_id."<br>";
+	link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="user_added",$description="Measure user created");
 	//exit;
 }
 
@@ -451,6 +508,7 @@ if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {
 	$r = mysql_query($query, $cid);
 
 	print "new moodle site_id: ".$moodle_site_id."<br>";
+	link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="site_added",$description="Measure site created");
 	//exit;
 		
 	
@@ -602,6 +660,23 @@ function printpre($array, $return=FALSE) {
 		print $string;
 }
 
+function link_log($auth_id="",$site_link_id="",$category="event",$description="") {
+	global $dblink_host,$dblink_user,$dblink_pass;
+	$cid = mysql_pconnect($dblink_host,$dblink_user,$dblink_pass);
+	
+	$query = " 
+		INSERT INTO 
+			logs
+		SET
+			FK_auth_id = '".addslashes($auth_id)."',
+			FK_site_link = '".addslashes($site_link_id)."',
+			category = '".addslashes($category)."',
+			description = '".addslashes($description)."'
+	";
+	//print $query;
+	//exit;
+	$r = mysql_query($query, $cid);
+}
 
 
 ?>

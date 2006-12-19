@@ -20,16 +20,33 @@ $cid = db_connect ($dbhost, $dbuser, $dbpass, $dbdb);
 <title>Segue - Measure Error</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
+a {
+	color: #003366;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+.error {
+	margin-top: 10px;
+	color: #990000;
+	font-size: 14px;
 
+}
+.back {	
+	font-size: 16px;
+	align: center;
+	padding: 5px;
+}
 
 </style>
 </head>
 <body>
 <?
 	if ($_SERVER['HTTP_REFERER'])
-		print "<div class='back'><a href='".$_SERVER['HTTP_REFERER']."'>&lt;-- back</a></div>";
+		print "<span class='back'><a href='".$_SERVER['HTTP_REFERER']."'>&lt;&lt; back</a></span> | ";
 	
-	print "<div class='back'><a href='".$cfg['full_uri']."'>&lt;-- Segue Home</a></div>";
+	print "<span class='back'><a href='".$cfg['full_uri']."'>Segue Home</a></span>";
 		
 
 
@@ -38,8 +55,9 @@ $cid = db_connect ($dbhost, $dbuser, $dbpass, $dbdb);
  * go back to previous page http referrer
  ******************************************************************************/
 if (!isset($_SESSION[aid])) {
-	print "<div class='error'>You must be logged into Segue to use this link</div>";
+	print "<div class='error'>You must be logged into Segue to use this link...</div>";
 	print "</body</html>";
+	link_log($auth_id, 0, $category="errors",$description="No Segue user authenticated");
 	exit;
 }
 
@@ -47,8 +65,9 @@ if (!isset($_SESSION[aid])) {
  * Make sure a slot name is passed
  ******************************************************************************/
 if (!isset($_REQUEST[site]) || !$_REQUEST[site]) {
-	print "Missing Segue slot name";
+	print "<div class='error'>No Segue site name or id passed...</div>";
 	print "</body</html>";
+	link_log($_SESSION[aid], 0, $category="errors",$description="No Segue site id passed");
 	exit;
 	
 } else {
@@ -110,8 +129,9 @@ $cid2 = db_connect ($dbhost_link, $dbuser_link, $dbpass_link, $dbdb_link);
  * Check for corresponding Moodle site
  ******************************************************************************/
 if (!isset($segue_site_id) || !$segue_site_id) {
-	print "no Segue site name or id passed<br>";
+	print "<div class='error'>No Segue site name or id passed</div>";
 	print "</body</html>";
+	link_log($_SESSION[aid], 0, $category="errors",$description="No Segue site id passed");
 	exit;
 	
 } else {
@@ -132,7 +152,7 @@ if (db_num_rows($r) > 0) {
 	print "linked moodle site found<br>";
 	
 } else if (!isset($segue_site_owner) || !$segue_site_owner ||  !isset($site_title) || !$site_title || !isset($site_theme) || !site_theme) {
-	print "missing data<br>";
+	print "<div class='error'>Data needed for this link is missing...</div>";
 	print "</body</html>";
 	exit;
 	
@@ -160,8 +180,9 @@ if (db_num_rows($r) > 0) {
  * Check for corresponding Moodle user
  ******************************************************************************/
 if (!isset($segue_user_id) || !$segue_user_id) {
-	print "no Segue user id passed<br>";
+	print "<div class='error'>No Segue user id passed...</div><br>";
 	print "</body</html>";
+	link_log(0, $segue_site_id, $category="errors",$description="No Segue user id passed");
 	exit;
 	
 } else {
@@ -263,5 +284,23 @@ if (db_num_rows($r) > 0) {
 
 //exit;
 header("Location: ".$moodle_url."/segue/segue_link.php?userid=".addslashes($segue_user_id)."&siteid=".addslashes($segue_site_id)."&auth_token=".addslashes($auth_token));
+
+function link_log($auth_id="",$site_link_id="",$category="event",$description="") {
+	global $dbhost_link, $dbuser_link, $dbpass_link, $dbdb_link;
+	$cid2 = db_connect ($dbhost_link, $dbuser_link, $dbpass_link, $dbdb_link);
+	
+	$query = " 
+		INSERT INTO 
+			logs
+		SET
+			FK_auth_id = '".addslashes($auth_id)."',
+			FK_site_link = '".addslashes($site_link_id)."',
+			category = '".addslashes($category)."',
+			description = '".addslashes($description)."'
+	";
+	//print $query;
+	//exit;
+	$r = db_query($query);
+}
 
 ?>
