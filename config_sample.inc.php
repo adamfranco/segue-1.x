@@ -171,6 +171,18 @@
 	 * these options pertain to specific authentication modules
 	 * you don't need to change the options for any module you are not using
 	 ******************************************************************************/
+	 	 
+	 /******************************************************************************
+	 * Moodle linking database
+	 * this is a separate database that stores Segue - Moodle linking information
+	 ******************************************************************************/
+	$cfg['dbhost_link'] = $dbhost_link = "";			// "sql.myinstitute.edu"
+	$cfg['dbuser_link'] = $dbuser_link = "";			// "segue"
+	$cfg['dbpass_link'] = $dbpass_link = "";			// "segue"
+	$cfg['dbdb_link'] = $dbdb_link = "";				// "segue_moodle"
+	
+	$cfg['moodle_url'] = $moodle_url = "";				//url for moodle instance
+
 	
 		/******************************************************************************
 		 * DB AUTHENTICATION - REQUIRED

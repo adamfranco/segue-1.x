@@ -240,6 +240,15 @@ login/signup_form.html
 login/signup.php
 -set $user->username = $user->email;
 -changed function validate_form to validate $user->username as $user->email;
+-added note about authentication for Midd users
+
+login/forgot_password.php
+-added note about authentication for Midd users
+
+moodle/course/lib.php
+-changed the print_section_add_menus to comment out following lines:
+//$resources["resource&amp;type=$type"] = $name;
+//$resources['label'] = get_string('resourcetypelabel', 'resource');
 
 
 /******************************************************************************
@@ -254,4 +263,5 @@ lib/moodlelib.php
 
 course/lib.php
 -get_all_mods returns all modules
+-print_section_add_menus add menus for resources and activities
 -modules stored in database table

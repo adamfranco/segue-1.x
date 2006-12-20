@@ -4,7 +4,7 @@ require_once("../config.php");
 require_once("../lib/datalib.php");
 require_once("../lib/moodlelib.php");
 require_once("../course/lib.php");
-
+error_reporting(E_ALL & ~E_NOTICE);
 /******************************************************************************
  * variables for accessing segue-moodle linking database
  ******************************************************************************/
@@ -371,33 +371,6 @@ $a = mysql_fetch_assoc($r);
 
 $moodle_site_id = $a['FK_moodle_site_id'];
 
-/******************************************************************************
- * Make sure corresponding Moodle site still exists in Moodle
- ******************************************************************************/
-
-// if (isset($moodle_site_id) && $moodle_site_id != 0) {
-// 
-//	if (!$site = get_record('course', 'id', $moodle_site_id)) {
-//		print "corresponding Moodle site no longer exists";
-//					
-//		//delete Moodle user from segue_moodle table					
-//		$query = "
-//			DELETE FROM
-//				segue_moodle				
-//			WHERE
-//				FK_moodle_site_id = '".addslashes($moodle_site_id)."'
-//		";
-//
-//		print $query."<br>";
-//		//exit;		
-//		$r = mysql_query($query, $cid);
-//		$moodle_site_id = 0;
-//	}
-// }
- 
-
-print "moodle_site_id: ".$moodle_site_id."<br \>";
-//exit;
 
 /******************************************************************************
  * 	Get the Segue site owner and title from the site_link table
@@ -413,7 +386,7 @@ $query = "
 		FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'
 ";
 	
-print $query."<br>";
+//print $query."<br>";
 //exit;
 $r = mysql_query($query, $cid);
 
@@ -442,6 +415,35 @@ if ($site_theme == "shadowbox") {
 //exit;
 
 /******************************************************************************
+ * Make sure corresponding Moodle site still exists in Moodle
+ ******************************************************************************/
+
+ if (isset($moodle_site_id) && $moodle_site_id != 0) {
+ 
+	if (!$site = get_record('course', 'id', $moodle_site_id)) {
+		print "corresponding Moodle site no longer exists";
+		link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="error",$description="linked Measure site deleted");			
+		//delete Moodle site from segue_moodle table					
+		$query = "
+			DELETE FROM
+				segue_moodle				
+			WHERE
+				FK_moodle_site_id = '".addslashes($moodle_site_id)."'
+		";
+
+		print $query."<br>";
+		//exit;		
+		$r = mysql_query($query, $cid);
+		$moodle_site_id = 0;
+	}
+ }
+ 
+
+print "moodle_site_id: ".$moodle_site_id."<br \>";
+//exit;
+
+
+/******************************************************************************
  * if no corresponding Moodle site, then create one
  * and add key to that site in segue-moodle table
  * new Moodle site code adapted from:
@@ -452,8 +454,10 @@ if ($site_theme == "shadowbox") {
 if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {	
 
 	print "<hr>Creating new Moodle site...<br>";
-    require_once("course/lib.php");
-    require_once("$CFG->libdir/blocklib.php");
+    require_once("../course/lib.php");
+    require_once($CFG->libdir."/blocklib.php");
+	
+	print "<hr>Creating new Moodle site...<br>";
 	
 	fix_course_sortorder();
 	$form->startdate = make_timestamp($form->startyear, $form->startmonth, $form->startday);	
