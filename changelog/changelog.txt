@@ -3,6 +3,23 @@ Name: Segue ChangeLog
 
 
 
+v. 1.6.0 (2006-12-20) 
+----------------------------------------------------
+		
+    * New feature:  (Alex Chapin) 
+    Added code for linking Segue with Moodle (segue/connector). This code
+    requires specific Segue-Moodle themes and modifications to Moodle code
+    documented here. Note: this is the first iterator of this connector and is
+    notwell-documented. Expect improvements in future releases
+		
+    * Bug Fix:  (Adam Franco) 
+    Permissions/Home page: Fixed up the query in the
+    getSiteInfoWhereUserIsEditor() function that is used in building the list of
+    site in which the user is an editor. Speed is now increased by about
+    12-times, making the algorithm functional when a user is an editor of more
+    than 100 sites. Hopefully this will cure incidences of somewhat random 
+	
+
 v. 1.5.11 (2006-11-15) 
 ----------------------------------------------------
 		
