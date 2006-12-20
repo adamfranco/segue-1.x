@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
 	<version number="1.6.0" date="2006-12-20">
+		<new author='alex'>
+			Added code for linking Segue with Moodle (segue/connector). This code
+			requires specific Segue-Moodle themes and modifications to Moodle code
+			documented here.  Note: this is the first iterator of this connector 
+			and is not well-documented.  Expect improvements in future releases
+		</new>
 		<fix author='adam'>
 			Permissions/Home page: Fixed up the query in the 
 			getSiteInfoWhereUserIsEditor() function that is used in building the
