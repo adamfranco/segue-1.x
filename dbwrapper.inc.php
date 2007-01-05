@@ -94,7 +94,7 @@ $_connect_id = -1;
 $db_type = strtolower($db_type);
 
 // Print out some debug info
-if ($debug && $printAllQueries) {
+if (isset($debug) && $debug && $printAllQueries) {
   print "dbwrapper.php: Starting.<br />";
 }
 
