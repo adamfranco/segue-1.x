@@ -5,28 +5,28 @@
 // Questions? rlange@middlebury.edu
 print "<script type=\"JavaScript\">\n";
 
-print " var ol_textfont = \"Arial,Geneva,Helvetica,sans-serif\";\n";
+print " var ol_textfont = \"Arial,Geneva,Helvetica,sans-serif\";\n\t\t\t\t";
 
-print " var ol_fgcolor =  \"#FFFFCC\";\n";
+print " var ol_fgcolor =  \"#FFFFCC\";\n\t\t\t\t";
 
-print " var ol_bgcolor = \"#FAE952\";\n";
+print " var ol_bgcolor = \"#FAE952\";\n\t\t\t\t";
 
-print " var ol_textcolor = \"#000000\";\n";
-print " var ol_captionfont = \"Arial,Geneva,Helvetica,sans-serif\";\n";
+print " var ol_textcolor = \"#000000\";\n\t\t\t\t";
+print " var ol_captionfont = \"Arial,Geneva,Helvetica,sans-serif\";\n\t\t\t\t";
 
-print " var ol_capcolor = \"#000000\";\n";
+print " var ol_capcolor = \"#000000\";\n\t\t\t\t";
 
-print " var ol_textsize = \"2\";\n";
+print " var ol_textsize = \"2\";\n\t\t\t\t";
 
-print " var ol_captionsize = \"2\";\n";
+print " var ol_captionsize = \"2\";\n\t\t\t\t";
 
-print " var ol_closesize = \"2\";\n";
+print " var ol_closesize = \"2\";\n\t\t\t";
 
-print "</script>\n";
+print "</script>\n\t\t\t";
 
-print "<div id=\"overDiv\" style=\"position:absolute; visibility:hidden; z-index:1000;\"></div>\n";
+print "<div id=\"overDiv\" style=\"position:absolute; visibility:hidden; z-index:1000;\"></div>\n\t\t\t";
 
-print "<script type=\"JavaScript\" src=\"themes/common/overlib.js\"></script>\n";
+print "<script type=\"JavaScript\" src=\"themes/common/overlib.js\"></script>\n\t\t\t";
 // end tooltips
 
 
