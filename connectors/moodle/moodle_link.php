@@ -8,6 +8,7 @@ require_once("../../dbwrapper.inc.php");
 //$dbdb_link = "achapin_segue-moodle";
 //$moodle_url = "http://slug.middlebury.edu/~achapin/moodle163";
 
+ob_start();
 
 $cid = db_connect ($dbhost, $dbuser, $dbpass, $dbdb);
 
@@ -91,8 +92,8 @@ preg_match('/^(.*)\s([^\s]+)$/', $userfname, $matches);
 $firstname = trim($matches[1]);
 $lastname = trim($matches[2]);
 
-print $firstname."<br>";;
-print $lastname."<br>";
+//print $firstname."<br>";;
+//print $lastname."<br>";
 //exit;
 
 /******************************************************************************
@@ -121,7 +122,7 @@ $segue_site_owner = $a['FK_createdby'];
 //print "segue_site_owner: ".$segue_site_owner."<br \>"; 
 //exit;
 
-print "Moodle-Segue API<hr>";
+//print "Moodle-Segue API<hr>";
 
 $cid2 = db_connect ($dbhost_link, $dbuser_link, $dbpass_link, $dbdb_link);
 
@@ -145,7 +146,7 @@ if (!isset($segue_site_id) || !$segue_site_id) {
 	";	
 }
 
-print $query."<br>";
+//print $query."<br>";
 $r = db_query($query);
 
 if (db_num_rows($r) > 0) {
@@ -157,7 +158,7 @@ if (db_num_rows($r) > 0) {
 	exit;
 	
 } else {
-	print "no linked moodle site found<br>";
+//	print "no linked moodle site found<br>";
 			
 	$query = "
 		INSERT INTO
@@ -169,7 +170,7 @@ if (db_num_rows($r) > 0) {
 			site_owner_id = '".addslashes($segue_site_owner)."',
 			site_theme = '".addslashes($site_theme)."'
 		";
-	print $query."<br>";
+//	print $query."<br>";
 	//exit;
 	$r = db_query($query);	
 
@@ -206,7 +207,7 @@ if (!isset($segue_user_id) || !$segue_user_id) {
 
 }
 
-print $query."<br>";
+//print $query."<br>";
 //exit;
 
 $r = db_query($query);
@@ -214,7 +215,7 @@ $r = db_query($query);
 
 // create an auth token for validation
 $auth_token = md5(time().rand(1, 1000));
-print "auth_token: ".$auth_token."<hr \>";
+//print "auth_token: ".$auth_token."<hr \>";
 
 if ($_SERVER['HTTP_REFERER'] 
 	&& (strpos($_SERVER['HTTP_REFERER'], $cfg['full_uri']) === 0
@@ -230,7 +231,7 @@ if ($_SERVER['HTTP_REFERER']
 
 // linked user found
 if (db_num_rows($r) > 0) {
-	print "linked moodle user found<br>";	
+//	print "linked moodle user found<br>";	
 	
 	// update authentication table with new auth_token
 	$query = "
@@ -244,12 +245,12 @@ if (db_num_rows($r) > 0) {
 			user_id = '".addslashes($segue_user_id)."'		
 	";
 	
-	print $query."<br>";
+//	print $query."<br>";
 	$r = db_query($query);	
 
 //no linked user found	
 } else {
-	print "no linked moodle user found<br>";
+//	print "no linked moodle user found<br>";
 
 	$query = "
 		INSERT INTO
@@ -265,7 +266,7 @@ if (db_num_rows($r) > 0) {
 			auth_time = NOW(),
 			referer = ".$referer."
 		";
-	print $query."<br>";
+//	print $query."<br>";
 //	exit;
 	$r = db_query($query);
 	
@@ -276,7 +277,7 @@ if (db_num_rows($r) > 0) {
 		SET
 			FK_auth_id = '".addslashes($auth_id)."'
 		";
-	print $query."<br>";
+//	print $query."<br>";
 	$r = db_query($query);		
 		
 }

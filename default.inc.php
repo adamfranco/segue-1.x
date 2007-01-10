@@ -7,12 +7,38 @@ $color = 0;
 $sitesprinted=array();
 //printpre($_SESSION);
 
-if (isset($_REQUEST[expand_pastclasses])) {
-	//printpre($_SESSION[expand_pastclasses]);
-	$_SESSION[expand_pastclasses] = $_REQUEST[expand_pastclasses];
-} else if (!$_SESSION[expand_pastclasses]) {
-	$_SESSION[expand_pastclasses] = 0;
-}
+/******************************************************************************
+ * Display Options
+ ******************************************************************************/
+
+if (isset($_REQUEST[expand_pastclasses]) && $_REQUEST[expand_pastclasses] == 'true')
+	$_SESSION["expand_pastclasses"] = true;
+else if (isset($_REQUEST[expand_pastclasses]) && $_REQUEST[expand_pastclasses] == 'false')
+	$_SESSION["expand_pastclasses"] = false;
+else if (!isset($_SESSION["expand_pastclasses"]))
+	$_SESSION["expand_pastclasses"] = false;
+
+if (isset($_REQUEST[expand_editorsites]) && $_REQUEST[expand_editorsites] == 'true')
+	$_SESSION["expand_editorsites"] = true;
+else if (isset($_REQUEST[expand_editorsites]) && $_REQUEST[expand_editorsites] == 'false')
+	$_SESSION["expand_editorsites"] = false;
+else if (!isset($_SESSION["expand_editorsites"]))
+	$_SESSION["expand_editorsites"] = false;
+	
+if (isset($_REQUEST[expand_othersites]) && $_REQUEST[expand_othersites] == 'true')
+	$_SESSION["expand_othersites"] = true;
+else if (isset($_REQUEST[expand_othersites]) && $_REQUEST[expand_othersites] == 'false')
+	$_SESSION["expand_othersites"] = false;
+else if (!isset($_SESSION["expand_othersites"]))
+	$_SESSION["expand_othersites"] = false;
+	
+if (isset($_REQUEST[expand_upcomingclasses]) && $_REQUEST[expand_upcomingclasses] == 'true')
+	$_SESSION["expand_upcomingclasses"] = true;
+else if (isset($_REQUEST[expand_upcomingclasses]) && $_REQUEST[expand_upcomingclasses] == 'false')
+	$_SESSION["expand_upcomingclasses"] = false;
+else if (!isset($_SESSION["expand_upcomingclasses"]))
+	$_SESSION["expand_upcomingclasses"] = false;
+	
 
 
 /******************************************************************************
@@ -89,30 +115,34 @@ if ($_loggedin) {
 	 * to get them again.
 	 *********************************************************/
 	// this should include all sites that the user owns as well.
-	$userOwnedSlots = slot::getSlotInfoWhereUserOwner($_SESSION['auser']);
-	if (!is_array($userOwnedSlots) || !array_key_exists($_SESSION['auser'], $userOwnedSlots)) {
-			$userOwnedSlots[$_SESSION['auser']] = array();
-			$userOwnedSlots[$_SESSION['auser']]['slot_name'] = $_SESSION['auser'];
-			$userOwnedSlots[$_SESSION['auser']]['slot_type'] = 'personal';
-			$userOwnedSlots[$_SESSION['auser']]['slot_owner'] = $_SESSION['auser'];
-			$userOwnedSlots[$_SESSION['auser']]['site_exits'] = false;		
-	}
 	
-	// Add any user-owned groups that aren't already in the slot list
-	$userOwnedGroups = group::getGroupsOwnedBy($_SESSION['auser']);
-	foreach ($userOwnedGroups as $classSiteName) {
-		if (!isset($userOwnedSlots[$classSiteName])) {
-			$userOwnedSlots[$classSiteName] = array();
-			$userOwnedSlots[$classSiteName]['slot_name'] = $classSiteName;
-			$userOwnedSlots[$classSiteName]['slot_type'] = 'class';
-			$userOwnedSlots[$classSiteName]['slot_owner'] = $_SESSION['auser'];
-			$userOwnedSlots[$classSiteName]['site_exits'] = false;
+	if ($_SESSION["expand_othersites"] != 0 || $_SESSION["expand_editorsites"] != 0 || $_SESSION["expand_pastclasses"] != 0) {
+	
+		$userOwnedSlots = slot::getSlotInfoWhereUserOwner($_SESSION['auser']);
+		if (!is_array($userOwnedSlots) || !array_key_exists($_SESSION['auser'], $userOwnedSlots)) {
+				$userOwnedSlots[$_SESSION['auser']] = array();
+				$userOwnedSlots[$_SESSION['auser']]['slot_name'] = $_SESSION['auser'];
+				$userOwnedSlots[$_SESSION['auser']]['slot_type'] = 'personal';
+				$userOwnedSlots[$_SESSION['auser']]['slot_owner'] = $_SESSION['auser'];
+				$userOwnedSlots[$_SESSION['auser']]['site_exits'] = false;		
+		}
+		
+		// Add any user-owned groups that aren't already in the slot list
+		$userOwnedGroups = group::getGroupsOwnedBy($_SESSION['auser']);
+		foreach ($userOwnedGroups as $classSiteName) {
+			if (!isset($userOwnedSlots[$classSiteName])) {
+				$userOwnedSlots[$classSiteName] = array();
+				$userOwnedSlots[$classSiteName]['slot_name'] = $classSiteName;
+				$userOwnedSlots[$classSiteName]['slot_type'] = 'class';
+				$userOwnedSlots[$classSiteName]['slot_owner'] = $_SESSION['auser'];
+				$userOwnedSlots[$classSiteName]['site_exits'] = false;
+			}
+		}
+		if ($_SESSION["expand_editorsites"] != 0) {
+			$siteLevelEditorSites = segue::getSiteInfoWhereUserIsSiteLevelEditor($_SESSION['auser']);		
+			$anyLevelEditorSites = segue::getSiteInfoWhereUserIsEditor($_SESSION['auser']);
 		}
 	}
-	
-	$siteLevelEditorSites = segue::getSiteInfoWhereUserIsSiteLevelEditor($_SESSION['auser']);
-	
-	$anyLevelEditorSites = segue::getSiteInfoWhereUserIsEditor($_SESSION['auser']);
 	
 	
 	$usersCurrentClasses = $classes;
@@ -210,11 +240,11 @@ if ($_loggedin) {
 					 ******************************************************************************/		
 					if ($timePeriod == "usersOldClasses") {
 						
-						if ($_SESSION[expand_pastclasses] == 0) {
-							printc("\n\t\t\t<div class='title'><a href='$PHP_SELF?expand_pastclasses=1'>+</a> $title</div>");
-							//printc("<a href='$PHP_SELF?expand_pastclasses=1'>show</a>");
+						if (!$_SESSION["expand_pastclasses"]) {
+							printc("\n\t\t\t<div class='title'><a href='$PHP_SELF?expand_pastclasses=true'>+</a> $title</div>");
+
 						} else {
-							printc("\n\t\t\t<div class='title'><a href='$PHP_SELF?expand_pastclasses=0'>-</a> $title</div>");
+							printc("\n\t\t\t<div class='title'><a href='$PHP_SELF?expand_pastclasses=false'>-</a> $title</div>");
 						}
 						
 					// if not previous, then must be current classes...	
@@ -225,7 +255,7 @@ if ($_loggedin) {
 					/******************************************************************************
 					 * expand/collapse link for previous sites listing
 					 ******************************************************************************/		
-					if ($_SESSION[expand_pastclasses] == 0 && $timePeriod == "usersOldClasses") {
+					if ($_SESSION["expand_pastclasses"] == 0 && $timePeriod == "usersOldClasses") {
 						// do nothing
 					} else {																			
 						printc("\n\t\t\t<table width='100%'>\n\t\t\t\t<tr>\n\t\t\t\t\t<th>class</th>\n\t\t\t\t\t<th>site</th>\n\t\t\t\t</tr>");
@@ -360,31 +390,40 @@ if ($_loggedin) {
 			}
 
 			//upcoming classes
-			if (count($usersFutureClasses)) {		    
-				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>Upcoming Classes</td>\n\t\t</tr>");
-				foreach ($usersFutureClasses as $className) {
-					if ($classSiteName = group::getNameFromClass($className)) {
-						if ($groupsPrinted[$classSiteName]) {
-							continue;
-						}
-						$groupsPrinted[$classSiteName] = true;
-					} else {
-						$classSiteName = $className;
-					}
-					
-					if (isset($userOwnedSlots[$classSiteName]))
-						printSiteLine2($userOwnedSlots[$classSiteName], 0, 1, $_SESSION[atype]);
-						
-					else if (isset($anyLevelEditorSites[$classSiteName]))
-						printSiteLine2($anyLevelEditorSites[$classSiteName], 0, 1, $_SESSION[atype]);
+			if ($_SESSION["expand_upcomingclasses"] == 0) {
+				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_upcomingclasses=true'>+</a> Upcoming Classes</td>\n\t\t</tr>");
+			} else {
+				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_upcomingclasses=false'>-</a> Upcoming Classes</td>\n\t\t</tr>");
+			}
 			
-					else if (isset($usersAllClassesInfo[$classSiteName]))
-						printSiteLine2($usersAllClassesInfo[$classSiteName], 0, 1, $_SESSION[atype]);
+			if ($_SESSION["expand_upcomingclasses"] != 0) {	
+				if (count($usersFutureClasses)) {		    
+					//printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>Upcoming Classes</td>\n\t\t</tr>");
+					foreach ($usersFutureClasses as $className) {
+						if ($classSiteName = group::getNameFromClass($className)) {
+							if ($groupsPrinted[$classSiteName]) {
+								continue;
+							}
+							$groupsPrinted[$classSiteName] = true;
+						} else {
+							$classSiteName = $className;
+						}
 						
-					else
-						printc("\n\t\t<tr>\n\t\t\t<td colspan='2'>There was an error loading information for site: ".$classSiteName."</td>\n\t\t</tr>");
+						if (isset($userOwnedSlots[$classSiteName]))
+							printSiteLine2($userOwnedSlots[$classSiteName], 0, 1, $_SESSION[atype]);
+							
+						else if (isset($anyLevelEditorSites[$classSiteName]))
+							printSiteLine2($anyLevelEditorSites[$classSiteName], 0, 1, $_SESSION[atype]);
+				
+						else if (isset($usersAllClassesInfo[$classSiteName]))
+							printSiteLine2($usersAllClassesInfo[$classSiteName], 0, 1, $_SESSION[atype]);
+							
+						else
+							printc("\n\t\t<tr>\n\t\t\t<td colspan='2'>There was an error loading information for site: ".$classSiteName."</td>\n\t\t</tr>");
+					}
 				}
 			}
+
 			
 			//info/interface for groups
 			printc("\n\t\t<tr>\n\t\t\t<th colspan='2' align='right'>add checked sites to group: \n\t\t\t\t<input type='text' name='newgroup' size='10' class='textfield' />");
@@ -404,77 +443,129 @@ if ($_loggedin) {
 			if ($havegroups) printc("\n\t\t\t\t<div class='desc'>\n\t\t\t\t\t<a href='edit_groups.php?$sid' target='groupeditor' onclick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a>\n\t\t\t\t</div>");
 			printc("\n\t\t\t</th>\n\t\t</tr>");
 				
-		}
-	}
-
-	
-/******************************************************************************
- * sites where the user is an Editor
- ******************************************************************************/
-	$sites = array();
-	if (is_array($anyLevelEditorSites)) {
-		foreach (array_keys($anyLevelEditorSites) as $name) {
-			$info =& $anyLevelEditorSites[$name];
+			//past classes
+			if ($_SESSION["expand_pastclasses"] == 0) {
+				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_pastclasses=true'>+</a> Past Classes</td>\n\t\t</tr>");
+			} else {
+				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_pastclasses=false'>-</a> Past Classes</td>\n\t\t</tr>");
+			}
 			
-			if (!in_array($name, $sitesprinted) 
-				&& ($info['hasPermissionDownA']
-					|| $info['hasPermissionDownE']
-					|| $info['hasPermissionDownD'])
-				&& $_SESSION['auser'] !=  $info['slot_owner']) 
-			{
-				if ($allowclasssites && !$allowpersonalsites) {
-					if($info['slot_type'] != 'personal')
-						$sites[$name] =& $info;
+			if ($_SESSION["expand_pastclasses"] != 0) {	
+					
+				$sites=array();
+				if (is_array($userOwnedSlots)) {
+
+					foreach (array_keys($userOwnedSlots) as $name) {
+						$info =& $userOwnedSlots[$name];
+						
+						if (!in_array($name, $sitesprinted)) {
+							if ($allowclasssites && !$allowpersonalsites) {
+								if ($info['slot_type'] != 'personal' && $info['slot_type'] == 'class')
+									$sites[$name] =& $info;
+							
+							} else if (!$allowclasssites && $allowpersonalsites) {
+								if ($info['slot_type'] == 'personal')
+									$sites[$name] =& $info;
 				
-				} else if (!$allowclasssites && $allowpersonalsites) {
-					if ($info['slot_type'] == 'personal')
-						$sites[$name] =& $info;
+							} else
+								$sites[$name] =& $info;
+						}
+					}
+				}
+
+				if (count($sites)) {
+					foreach (array_keys($sites) as $name)
+						printSiteLine2($sites[$name]);
+				}
+				unset($sites);
 	
-				} else
-					$sites[$name] =& $info;
 			}
 		}
+			
 	}
 
-	if (count($sites)) {
-		printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>Sites to which you have editor permissions</td>\n\t\t</tr>");
-		foreach (array_keys($sites) as $name)
-			printSiteLine2($sites[$name]);
+	/*********************************************************
+	 * Other sites where user is owner
+	 *********************************************************/
+	 
+	if ($_SESSION["expand_othersites"] == 0) {
+		printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_othersites=true'>+</a> Your Other Sites".helplink("othersites","?")."</td>\n\t\t</tr>");
+	} else {
+		printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_othersites=false'>-</a> Your Other Sites".helplink("othersites","?")."</td>\n\t\t</tr>");
 	}
-	unset($sites);
 	
+	if ($_SESSION["expand_othersites"] != 0) {
 	
-/*********************************************************
- * Other sites where user is owner
- *********************************************************/
-	$sites=array();
-	if (is_array($userOwnedSlots)) {
-		foreach (array_keys($userOwnedSlots) as $name) {
-			$info =& $userOwnedSlots[$name];
-			
-			if (!in_array($name, $sitesprinted)) {
-				if ($allowclasssites && !$allowpersonalsites) {
-					if($info['slot_type'] != 'personal')
-						$sites[$name] =& $info;
+		$sites=array();
+		if (is_array($userOwnedSlots)) {
+			foreach (array_keys($userOwnedSlots) as $name) {
+				$info =& $userOwnedSlots[$name];
 				
-				} else if (!$allowclasssites && $allowpersonalsites) {
-					if ($info['slot_type'] == 'personal')
-						$sites[$name] =& $info;
-	
-				} else
-					$sites[$name] =& $info;
-			}
-		}
-	}
-	
-	if (count($sites)) {
-		printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>");
+				if (!in_array($name, $sitesprinted)) {
+					if ($allowclasssites && !$allowpersonalsites) {
+						if ($info['slot_type'] != 'personal' && $info['slot_type'] != 'class')
+							$sites[$name] =& $info;
+					
+					} else if (!$allowclasssites && $allowpersonalsites) {
+						if ($info['slot_type'] == 'personal')
+							$sites[$name] =& $info;
 		
-		printc ("\n\t\t\t\tOther Sites".helplink("othersites","What are these?")."\n\t\t\t</td>\n\t\t</tr>");
+					} else
+						$sites[$name] =& $info;
+				}
+			}
+		}
+		
+		if (count($sites)) {
 			foreach (array_keys($sites) as $name)
 				printSiteLine2($sites[$name]);
+		}
+		unset($sites);
 	}
-	unset($sites);
+	
+	/******************************************************************************
+	 * sites where the user is an Editor
+	 ******************************************************************************/
+	if ($_SESSION["expand_editorsites"] == 0) {
+		printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_editorsites=true'>+</a> Sites you can edit".helplink("othersites","?")."</td>\n\t\t</tr>");
+	} else {
+		printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_editorsites=false'>-</a> Sites you can edit".helplink("othersites","?")."</td>\n\t\t</tr>");
+	}
+	
+	if ($_SESSION["expand_editorsites"]) {
+
+		$sites = array();
+		if (is_array($anyLevelEditorSites)) {
+			foreach (array_keys($anyLevelEditorSites) as $name) {
+				$info =& $anyLevelEditorSites[$name];
+				
+				if (!in_array($name, $sitesprinted) 
+					&& ($info['hasPermissionDownA']
+						|| $info['hasPermissionDownE']
+						|| $info['hasPermissionDownD'])
+					&& $_SESSION['auser'] !=  $info['slot_owner']) 
+				{
+					if ($allowclasssites && !$allowpersonalsites) {
+						if($info['slot_type'] != 'personal')
+							$sites[$name] =& $info;
+					
+					} else if (!$allowclasssites && $allowpersonalsites) {
+						if ($info['slot_type'] == 'personal')
+							$sites[$name] =& $info;
+		
+					} else
+						$sites[$name] =& $info;
+				}
+			}
+		}
+	
+		if (count($sites)) {			
+		//	printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>Sites to which you have editor permissions</td>\n\t\t</tr>");
+			foreach (array_keys($sites) as $name)
+				printSiteLine2($sites[$name]);			
+		}
+		unset($sites);		
+	}		
 	
 	
 /******************************************************************************
