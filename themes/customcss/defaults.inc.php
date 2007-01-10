@@ -34,16 +34,10 @@ float: right;
 }
 
 /**
- * These are the 
+ * This class is for the
  * 'site > section > page' links
  */
 .breadcrumbs {}
-
-.headerbox {}
-
-.textfield {}
-
-.navlink {}
 
 /**
  * This holds the section links if 
@@ -129,10 +123,15 @@ font-size: large;
 margin-left: 5px;
 }
 
+/**
+ * This class is used for pages in 
+ * 'Top Sections' mode
+ */
 .nav {}
 
-.btnlink {}
-
+/**
+ * This class is used for page titles.
+ */
 .title {
 font-size: large;
 font-weight: bold;
@@ -175,6 +174,17 @@ font-size: small;
  * public page.
  */
 .rss_link {}
+
+/**
+ * Some other classes used by Segue...
+ */
+.headerbox {}
+
+.textfield {}
+
+.navlink {}
+
+.btnlink {}
 
 ";	
 
