@@ -20,7 +20,7 @@ define("topnav","topnav",TRUE);
 
 
 if (!ini_get("register_globals")) {
-	import_request_variables("gp");
+	@import_request_variables("gp");
 	if (isset($_SESSION) && is_array($_SESSION)) foreach (array_keys($_SESSION) as $n) {$$n = $_SESSION[$n];}
 	if (is_array($_SERVER)) foreach (array_keys($_SERVER) as $n) {$$n = $_SERVER[$n];}
 }
