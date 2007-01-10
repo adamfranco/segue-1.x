@@ -621,9 +621,6 @@ class discussion {
 			if ($a=='rate') {
 				$d = & new discussion($_REQUEST['story']);
 				$d->fetchID($_REQUEST['id']);
-				$d->authoruname;
-				$d->subject = $_REQUEST['subject'];
-				$d->content = $_REQUEST['content'];
 				$d->rating = $_REQUEST['rating'];
 				
 				$d->update();
