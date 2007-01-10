@@ -11,7 +11,7 @@
 		
 	$link = "index.php?$sid&amp;action=".$discussAction."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id;
 	
-	printc("<div class='contentinfo' align='right'>");
+	printc("<div class='contentinfo'>");
 	$l = array();
 	//if ($o->getField("longertext")) $l[] = $link."Full Text</a>";
 	if ($o->getField("discuss")) {

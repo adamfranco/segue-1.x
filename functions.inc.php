@@ -423,7 +423,7 @@ function makelink($i,$samepage=0,$e='',$newline=0,$bold=0) {
 	}
 	
 	$s.=(!$samepage&&$i[url])?"</a>\n":"";
-	$s.=($i[extra])?(($newline)?"<div align='right'>":" ").$i[extra].(($newline)?"</div>\n":""):"";
+	$s.=($i[extra])?(($newline)?"<div class='nav_extras'>":" ").$i[extra].(($newline)?"</div>\n":""):"";
 	return $s;
 }
 

@@ -46,7 +46,7 @@ function horizontal_nav($navtype,$topnav,$extra, $hide_sidebar = 0) {
 		$next=$next+1;
 		$nextorder++;
 	}
-	print $extra;
+	print "\n\t<div class='nav_extras'>$extra</div>\n";
 	print "</div>\n";
 }
 
@@ -98,6 +98,8 @@ function vertical_nav($navtype,$nav_items, $extra, $bordercolor='000000', $hide_
 		$nextorder = 0;
 		
 		foreach ($nav_items as $item) {
+			print "\n<!-- Start Nav Item ".$item['id']." -->";
+			
 			$bold=0;
 			print "\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>\n";
 			
@@ -149,9 +151,9 @@ function vertical_nav($navtype,$nav_items, $extra, $bordercolor='000000', $hide_
 			
 			if ($item[type] == 'content' || $item[type] == 'rss' || $item[type] == 'tags' || $item[type] == 'participants') {
 				if ($action == "viewsite") {
-					print "\n\t\t\t\t\t\t\t<table width='100%' cellspacing='0' cellpadding='1' style='border: 1px solid #$bordercolor'>";
+					print "\n\t\t\t\t\t\t\t<table width='100%' cellspacing='0' cellpadding='1' class='page_sidebar_content'>";
 				} else {
-					print "\n\t\t\t\t\t\t\t<table width='100%' cellspacing='0' cellpadding='0'>";
+					print "\n\t\t\t\t\t\t\t<table width='100%' cellspacing='0' cellpadding='0' class='page_sidebar_content'>";
 				}
 							
 				if ($item[name]) {
@@ -174,7 +176,6 @@ function vertical_nav($navtype,$nav_items, $extra, $bordercolor='000000', $hide_
 					print "\n\t\t\t\t\t\t\t\t\t\t".$item[name];
 				
 				print "\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t</tr>";
-				
 				if ($item[type] == 'content') {
 					print "\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t<td>";
 					print "\n\t\t\t\t\t\t\t\t\t\t".$item['content']."<br />";
@@ -184,15 +185,14 @@ function vertical_nav($navtype,$nav_items, $extra, $bordercolor='000000', $hide_
 					print "\n\t\t\t\t\t\t\t\t\t\t".$item['content'];
 					print "\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t</tr>";				
 				}
-				
 // 				print "\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t<td style='border-bottom: 1px solid #$bordercolor; padding-bottom: 2px; text-align: right;'>";
 				
-				if ($action == "viewsite") 
-					print "\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t<td>";
+				if ($action == "viewsite") {
+					print "\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t<td class='nav_extras'>";
 					print "\n\t\t\t\t\t\t\t".$item['extra']."<br />";
 					print "\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t</tr>";
+				}
 				
-				print "\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t</tr>";
 				print "\n\t\t\t\t\t\t\t</table>";
 			}
 			/******************************************************************************
@@ -227,16 +227,18 @@ function vertical_nav($navtype,$nav_items, $extra, $bordercolor='000000', $hide_
 				
 				print "$item[name]\n";
 				if ($item[extra]) 
-					print "\n\t\t\t\t\t\t\t<div align='right'>$item[extra]</div>\n";
+					print "\n\t\t\t\t\t\t\t<div class='nav_extras'>$item[extra]</div>\n";
 				
 				print "\n\t\t\t\t\t\t\t</div>";
 			}
 			$nextorder++;
 			
 			print "\n\t\t\t\t\t\t</td>\n\t\t\t\t\t</tr>";
+			
+			print "\n<!-- End Nav Item -->";
 		}		
 	print "\n\t\t\t\t</table>\n";
-	print "<br />$extra\n";
+	print "<div class='nav_extras'>$extra</div>\n";
 }
 
 /******************************************************************************
@@ -358,7 +360,7 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 							$samepage = 0;
 						}
 						
-						print "\n\t\t<div class='subnav'>  ";
+						print "\n\t\t<div class='subnav'>";
 						
 						// Reorder Links
 						if ($_REQUEST['showorder'] == "page") {
@@ -381,14 +383,14 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 					 ******************************************************************************/
 
 					if ($item[type] == 'content'  || $item[type] == 'rss' || $item[type] == 'tags' || $item[type] == 'participants') {
-						print "\n\t\t<div class='subnav'>  ";
+						print "\n\t\t<div class='subnav'>";
 						if ($action == "viewsite") {
-							print "<table width='100%' cellspacing='0' cellpadding='1' style='border: 1px solid #$bordercolor'>";
+							print "\n\t\t\t<table width='100%' cellspacing='0' cellpadding='1' class='page_sidebar_content'>";
 						} else {
-							print "<table width='100%' cellspacing='0' cellpadding=>";
+							print "\n\t\t\t<table width='100%' cellspacing='0' cellpadding=>";
 						}
 						if ($item[name]) {
-							print "<tr><td class='heading'>";
+							print "\n\t\t\t\t<tr><td class='heading'>";
 							
 							// Reorder Links
 							if ($_REQUEST['showorder'] == "page") {
@@ -402,7 +404,7 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 						}
 
 						if ($item[type] == 'content') {
-							print "<tr><td>";
+							print "\n\t\t\t\t<tr><td>";
 							
 							// Reorder Links
 							if ($_REQUEST['showorder'] == "page") {
@@ -425,15 +427,15 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 //								print "</select>\n";
 //							}							
 
-							print "<tr><td>$item[content]";				
+							print "\n\t\t\t\t<tr><td>$item[content]";				
 						}
-						print "<div style='text-align: right'>$item[extra]</div>";
-						print "</td></tr></table>";
+						print "\n\t\t\t\t\t<div class='nav_extras'>$item[extra]</div>";
+						print "\n\t\t\t\t</td></tr>\n\t\t\t</table>";
 						print "\n\t\t</div>";
 					}
 
 					if ($item[type] == 'divider') {
-						print "\n\t\t<div class='subnav'>  ";
+						print "\n\t\t<div class='subnav'>";
 						// Reorder Links
 						if ($_REQUEST['showorder'] == "page") {
 							print "<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'";
@@ -446,7 +448,7 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 						print "\n\t\t</div>";
 					}
 					if ($item[type] == 'heading') {
-						print "\n\t\t<div class='subnav'>  ";
+						print "\n\t\t<div class='subnav'>";
 						print "<div class='heading'>";
 						// Reorder Links
 						if ($_REQUEST['showorder'] == "page") {
@@ -458,14 +460,14 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 							}							
 						
 						print "$item[name]";
-						if ($item[extra]) print "\n\t\t<div align='right'>$item[extra]</div>";
+						if ($item[extra]) print "\n\t\t<div class='nav_extras'>$item[extra]</div>";
 						print "\n\t\t</div>";
 					}
 					print "\n\t\t</td></tr>";
 					$nextorder_page++;
 				}
 				print "\n\t</table>";
-				print "\n\t$subextra";	
+				print "\n\t<div class='nav_extras'>$subextra</div>";	
 				
 			}
 		}
@@ -482,7 +484,7 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 				print "</select>\n";
 			}							
 
-			print "\n\t$item[extra]<br />";
+			print "\n\t<div >$item[extra]<br />";
 		}
 		/******************************************************************************
 		 * heading
@@ -500,14 +502,14 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 			}							
 
 			print "\n\t\t$item[name]:";
-			if ($item[extra]) print "\n\t\t<div align='right'>$item[extra]</div>";
+			if ($item[extra]) print "\n\t\t<div class='nav_extras'>$item[extra]</div>";
 			print "\n\t</div>";
 		}
 		print "\n\t</td></tr>";
 		$nextorder_section++;
 	}
 	print "\n</table>";
-	print "\n<div align='right'>$extra</div>";
+	print "\n<div class='nav_extras'>$extra</div>";
 	
 }
 

@@ -64,7 +64,7 @@ ob_clean();
 
 if ($o->getField("title")) {
 
-	printc("\n\n<div class='contentinfo' align='right'>".spchars($o->getField("title"))."</div>\n");
+	printc("\n\n<div class='contentinfo'>".spchars($o->getField("title"))."</div>\n");
 // printc("<div><a href='".$o->getField("url")."' target='_blank'>".$o->getField("url")."</a></div>");
 // if ($o->getField("shorttext")) printc("<div class='desc'>".stripslashes($o->getField("shorttext"))."</div>");
 

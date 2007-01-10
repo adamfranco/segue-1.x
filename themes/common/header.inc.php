@@ -117,34 +117,75 @@ function getElementsByAttribute(oElm, strTagName, strAttributeName, strAttribute
 
 // ]]>
 </script>
-<style type="text/css">
-.desc {
-	padding-left: 20px;
-	font-size: 11px;
-	margin-bottom: 5px;
-}
-
-input.small {
-	font-size: 10px;
-	vertical-align: middle;	
-}
-
-.small { font-size: 10px; }
-
-.title {
-	font-size: 16px;
-}
-
-.smaller {font-size: smaller;}
-.contenttitle {font-weight: bolder;}
-.contentinfo {
-	margin-top: 10px;
-	font-size: 10px;
-}
-
-.content {padding-bottom: 5px;}
-
-.red {color: #900;}
-.green {color: #070;}
-
-</style>
+	
+	<style type="text/css">
+		/* Default Styles */
+		
+		.desc {
+			padding-left: 20px;
+			font-size: 11px;
+			margin-bottom: 5px;
+		}
+		
+		input.small {
+			font-size: 10px;
+			vertical-align: middle;	
+		}
+		
+		.small { font-size: 10px; }
+		
+		.title {
+			font-size: 16px;
+		}
+		
+		.smaller {font-size: smaller;}
+		
+		.contenttitle {font-weight: bolder;}
+		
+		.story {
+			margin-bottom: 10px
+		}
+		
+		.contentinfo {
+			margin-top: 10px;
+			font-size: 10px;
+			text-align: right;
+		}
+		
+		.content {padding-bottom: 5px;}
+		
+		.red {color: #900;}
+		.green {color: #070;}
+		
+		.breadcrumbs {
+			text-align: left;
+			margin-bottom: 5px; 
+			margin-left: 10px; 
+			font-size: 9px;
+		}
+		
+		.multi_page_links {
+			text-align: right;
+		}
+		
+		.rss_link {
+			text-align: right;
+			font-size: 9px;
+		}
+		
+		.previous_page_link {
+			font-size: 11px; 
+			float: left; 
+			text-align: left;
+		}
+		
+		.next_page_link {
+			font-size: 11px; 
+			text-align: right;
+		}
+		
+		.nav_extras {
+			text-align: right;
+		}
+	
+	</style>

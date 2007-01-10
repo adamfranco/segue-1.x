@@ -199,13 +199,13 @@ do {
 			if ($hide_sidebar) {
 				ob_start();
 				if ($prevPage) {
-					print "<div style='font-size: 11px; float: left; text-align: left;'>";
+					print "<div class='previous_page_link'>";
 					print "<a href='$PHP_SELF?$sid&amp;site=$site&amp;page=$prevPage->id&amp;section=$section&amp;action=site'>&lt;&lt; ";
 					print $prevPage->getField("title");
 					print "</a></div>";
 				}
 				if ($nextPage) {
-					print "<div style='font-size: 11px; text-align: right;'>";
+					print "<div class='next_page_link'>";
 					print "<a href='$PHP_SELF?$sid&amp;site=$site&amp;page=$nextPage->id&amp;section=$section&amp;action=site'>";
 					print $nextPage->getField("title");
 					print " &gt;&gt;</a></div>";
@@ -315,7 +315,7 @@ do {
 				 ******************************************************************************/
 				$pagelinks = array();
 				if (count($stories) > $num_per_set && $num_per_set != 0)  {
-					printc("\n\t\t\t\t<div align='right'>");
+					printc("\n\t\t\t\t<div class='multi_page_links'>");
 					
 					for ($j = 0; $j < (count($stories) / $num_per_set); $j++) {
 						if ($story_set == $j) {
@@ -334,7 +334,7 @@ do {
 					 
 					if ($num_per_set == 1) {
 					//	printpre ($num_per_set);
-						printc("\n\t\t\t\t<div align='right'>\n\t\t\t\t<select name='story_nav' onchange='window.location=this.value;'>");
+						printc("\n\t\t\t\t<div class='multi_page_links'>\n\t\t\t\t<select name='story_nav' onchange='window.location=this.value;'>");
 						$n = 0;
 						foreach ($stories as $story_id) {
 							$story_title = db_get_value("story", "story_title", "story_id ='".addslashes($story_id)."'");
@@ -417,7 +417,7 @@ do {
 						/******************************************************************************
 						 * include story output module
 						 ******************************************************************************/
-						printc("\n\t\t\t\t<div style='margin-bottom: 10px'>\n\t\t\t\t\t");
+						printc("\n\t\t\t\t<div class='story'>\n\t\t\t\t\t");
 						$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
 					//	print $incfile; // debug
 						include($incfile);
@@ -430,7 +430,7 @@ do {
 					 
 					
 						if ($thisPage->getField("showcreator") || $thisPage->getField("showeditor") || $thisPage->getField("showdate")) {
-							printc("<div class='contentinfo' align='right'>");
+							printc("<div class='contentinfo'>");
 							$added = timestamp2usdate($o->getField("addedtimestamp"));
 							$edited = timestamp2usdate($o->getField("editedtimestamp"));
 							
@@ -479,7 +479,7 @@ do {
 		 * Print out story pagination again
 		 ******************************************************************************/
 		if (count($stories) > $num_per_set && $num_per_set != 0)  {
-			printc("\n\t\t\t\t<br />\n\t\t\t\t<div align='right'>");
+			printc("\n\t\t\t\t<br />\n\t\t\t\t<div class='multi_page_links'>");
 			
 			for ($j = 0; $j < (count($stories) / $num_per_set); $j++) {
 				if ($story_set == $j)
@@ -503,7 +503,7 @@ do {
 		 * Print out link for stories RSS
 		 ******************************************************************************/
 		if (is_object($thisPage) && $thisPage->hasPermission("view", "everyone")) {
-			printc("\n\t\t\t\t<br />\n\t\t\t\t<div align='right' style='font-size: 9px;'>\n\t\t\t\t\t<a href='".preg_replace("/action=(viewsite|site)/","action=rss", htmlentities($_SERVER['REQUEST_URI']))."'>\n\t\t\t\t\t\t<img border='0' src='$cfg[themesdir]/common/images/rss_icon02.png' alt='rss' title='RSS feed of this page'/> RSS\n\t\t\t\t\t</a>\n\t\t\t\t</div>");
+			printc("\n\t\t\t\t<br />\n\t\t\t\t<div class='rss_link'>\n\t\t\t\t\t<a href='".preg_replace("/action=(viewsite|site)/","action=rss", htmlentities($_SERVER['REQUEST_URI']))."'>\n\t\t\t\t\t\t<img border='0' src='$cfg[themesdir]/common/images/rss_icon02.png' alt='rss' title='RSS feed of this page'/> RSS\n\t\t\t\t\t</a>\n\t\t\t\t</div>");
 		}	
 	
 	} // end if this page

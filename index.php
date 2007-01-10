@@ -284,7 +284,7 @@ if ($thisSite) {
 }
 $nav .= $sn.$pn.$tn;
 if ($nav) {
-	$sitecrumbs = "<div align='left' style='margin-bottom: 5px; margin-left: 10px; font-size: 9px'>$nav</div>";
+	$sitecrumbs = "<div class='breadcrumbs'>$nav</div>";
 }
 
 // Load non-pervasive theme for "program" actions
