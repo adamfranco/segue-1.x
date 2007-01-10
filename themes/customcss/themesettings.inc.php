@@ -31,7 +31,10 @@ if ($themesettings[theme] == 'customcss') {
  *********************************************************/
 else {
 	$themesettings[theme] = 'customcss';
-	if ($_REQUEST['css'])
+	
+	if ($_REQUEST['restore'])
+		$themesettings['css'] = $css;
+	else if ($_REQUEST['css'])
 		$css = $themesettings['css'] = $_REQUEST['css'];
 	else
 		$themesettings['css'] = $css;
@@ -48,6 +51,7 @@ else {
 Enter your custom CSS into the text box.
 <textarea name='css' cols='40' rows='20'><?php print $css; ?></textarea>
 <br/><input type='submit' value='Update Preview'/>
+<input type='button' value='Restore Defaults' onclick="if (confirm('Are you sure you want to loose your changes and restore the default CSS?')) {this.nextSibling.value='true'; this.form.submit();}"/><input type='hidden' name='restore' value=''/>
 <hr noshade size='1' />
 <?
 
