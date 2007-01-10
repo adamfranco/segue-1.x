@@ -121,6 +121,10 @@ function getElementsByAttribute(oElm, strTagName, strAttributeName, strAttribute
 	<style type="text/css">
 		/* Default Styles */
 		
+		body {
+			margin: 0px;
+		}
+		
 		.desc {
 			padding-left: 20px;
 			font-size: 11px;

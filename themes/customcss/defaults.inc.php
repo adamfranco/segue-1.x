@@ -5,10 +5,6 @@ $nav_arrange = "2";
 	
 $css = "
 
-body {
-margin: 0px;
-}
-
 /**
  * This is the area at the top of the 
  * screen in which the users' custom 
