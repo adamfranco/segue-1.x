@@ -39,6 +39,12 @@ else if (isset($_REQUEST[expand_upcomingclasses]) && $_REQUEST[expand_upcomingcl
 else if (!isset($_SESSION["expand_upcomingclasses"]))
 	$_SESSION["expand_upcomingclasses"] = false;
 	
+if (isset($_REQUEST[expand_recentactivity]) && $_REQUEST[expand_recentactivity] == 'true')
+	$_SESSION["expand_recentactivity"] = true;
+else if (isset($_REQUEST[expand_recentactivity]) && $_REQUEST[expand_recentactivity] == 'false')
+	$_SESSION["expand_recentactivity"] = false;
+else if (!isset($_SESSION["expand_recentactivity"]))
+	$_SESSION["expand_recentactivity"] = false;
 
 
 /******************************************************************************
@@ -207,13 +213,99 @@ if ($_loggedin) {
 			$usersAllClassesInfo[$classSiteName]['site_exits'] = false;
 		}
 	}
+
+printc("\n<table width='100%'>");
+
+/******************************************************************************
+ * Recent Activity
+ ******************************************************************************/
+if ($_SESSION["expand_recentactivity"] == 0) {
+	printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_recentactivity=true'>+</a> Recent Activity</td>\n\t\t</tr>");
+} else {
+	printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_recentactivity=false'>-</a> Recent Activity</td>\n\t\t</tr>");
+}
+
+if ($_SESSION["expand_recentactivity"] != 0) {	
+
+	printc("<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>");
+	printc("<tr><td valign='top'>");
+
+	//recent discussions
+	$recent_discussions = recent_discussions(10,$_SESSION["aid"]);
+	$number_recent_discussions = db_num_rows($recent_discussions);
+	if ($number_recent_discussions) {	
+		$recent_discussions_sites = "<table border=0 width='100%' align = center cellpadding=1, cellspacing=0>";
+		$recent_discussions_sites .= "<tr><td colspan=4 align='left' class='title'>Recent Discussions";
+		$recent_discussions_sites .= "</td></tr>";
+		$recent_discussions_sites .= "<tr><td>Date/Time</td><td>Participant</td><td>Discussion Subject</td><td>Site</td></tr>";
+		
+		while ($a = db_fetch_assoc($recent_discussions)) {
+			$recent_discussions_sites .= "<tr>";
+			$tstamp = $a['discussion_tstamp'];
+			//$tstamp =& TimeStamp::fromString($tstamp);
+			//$time =& $tstamp->asTime();
+			//$recent_discussions_sites .= "<td valign='top' class='list'>".$tstamp->ymdString()."<br/>".$time->string12(true)."</td>";
+			$recent_discussions_sites .= "<td valign='top' class='list'>".$tstamp."</td>";
+			$recent_discussions_sites .= "<td valign='top' class='list'><a href=$PHP_SELF?type=recent&user=".$a['user_uname'].">".$a['user_fname']."</td>";
+			
+			$recent_discussions_sites .= "<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
+			$recent_discussions_sites .= "&action=site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id'];
+			$recent_discussions_sites .= "&detail=".$a['story_id']."#".$a['discussion_id'];
+			$recent_discussions_sites .= " target=new_window>";
+			$recent_discussions_sites .= urldecode($a['discussion_subject'])."</a></td>";
+			
+			$recent_discussions_sites .= "<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
+			$recent_discussions_sites .= "&action=site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id'];
+			$recent_discussions_sites .= "&detail=".$a['story_id'];
+			$recent_discussions_sites .= " target=new_window>".$a['site_title']."</a></td>";
+			$recent_discussions_sites .= "</tr>";
+		}
+		$recent_discussions_sites .= "</table>";
+		printc($recent_discussions_sites);
+	}	
+
+	printc("</td><td valign='top'>");
 	
-// 	print "classgroupLists = ";
-// 	printpre($classgroupLists);
-// 	print "siteLevelEditorSites = ";
-// 	printpre($siteLevelEditorSites);
-// 	print "anyLevelEditorSites = ";
-// 	printpre($anyLevelEditorSites);
+	// recently edited content	
+	$recent_sites = recent_edited_sites(10,$_SESSION["aid"]);
+	if (db_num_rows($recent_sites)) {	
+		$number_recent_sites = db_num_rows($recent_sites);
+		$edited_sites = "<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>";
+		$edited_sites .= "<tr><td colspan=2 align='left' class='title'>Recently Edited Sites";
+		$edited_sites .="</td></tr>";
+		$edited_sites .= "<tr><td>Date/Time</td><td>Site</td></tr>";
+	
+		$current_page = "";
+		while ($a = db_fetch_assoc($recent_sites)) {
+			$next_page = $a['slot_name'];
+			
+			//if ($next_page != $current_page) {
+				$current_page = $next_page;
+				$edited_sites .= "<tr>";
+				$site_update_tstamp = $a['story_created_tstamp'];
+				//$site_update_tstamp =& TimeStamp::fromString($site_update_tstamp);
+				//$site_update_time =& $site_update_tstamp->asTime();
+				//$edited_sites .= "<td valign='top' class='list'>".$site_update_tstamp->ymdString()."<br/>".$site_update_time->string12(false)."</td>";
+				$edited_sites .= "<td valign='top' class='list'>".$site_update_tstamp."</td>";
+				$edited_sites .= "<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
+				$edited_sites .= "&action=site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id'];
+				$edited_sites .= " target=new_window>";				
+				$edited_sites .= $a['site_title'];
+				if ($a['story_title'] != "") {
+					$edited_sites .= " > ".$a['story_title'];
+				}
+				$edited_sites .= "</a></td>";
+				//$edited_sites .= "<td valign='top' class='list'><a href=$PHP_SELF?type=recent&user=".$a['user_uname'].">".$a['user_fname']."</a></td>";
+				$edited_sites .= "</tr>";
+			//}
+		}
+		$edited_sites .= "</table>";
+		printc($edited_sites);
+	}	
+	
+	printc("</td></tr></table>");
+}
+	
 	
 /*********************************************************
  * Class Sites for students
@@ -225,15 +317,12 @@ if ($_loggedin) {
 		
 		// for students: print out list of classes
 		if ($_SESSION[atype]=='stud') {
-			printc("\n<table width='100%'>");
 			
 			//loop through all classes in list
 			foreach ($_class_list_titles as $timePeriod => $title) {
 				
 				if (count($$timePeriod)) {
 
-					printc("\n\t<tr>");
-					printc("\n\t\t<td valign='top'>");
 
 					/******************************************************************************
 					 * expand/collapse link for previous sites listing
@@ -241,20 +330,24 @@ if ($_loggedin) {
 					if ($timePeriod == "usersOldClasses") {
 						
 						if (!$_SESSION["expand_pastclasses"]) {
-							printc("\n\t\t\t<div class='title'><a href='$PHP_SELF?expand_pastclasses=true'>+</a> $title</div>");
+							printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_pastclasses=true'>+</a> $title</div>\n\t\t</tr>");
 
 						} else {
-							printc("\n\t\t\t<div class='title'><a href='$PHP_SELF?expand_pastclasses=false'>-</a> $title</div>");
+							printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_pastclasses=false'>-</a> $title</div>\n\t\t</tr>");
+							printc("\n\t<tr>");
+							printc("\n\t\t<td valign='top'>");
 						}
 						
 					// if not previous, then must be current classes...	
 					} else {
-						printc("\n\t\t\t<div class='title'>$title</div>");
+						
+						printc("\n\t<tr>");
+						printc("\n\t\t<td valign='top'>");
+					//	printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'> $title</div>\n\t\t</tr>");
+						printc("\n\t\t\t<div class='inlineth'>$title</div>");
 					}
 					
-					/******************************************************************************
-					 * expand/collapse link for previous sites listing
-					 ******************************************************************************/		
+		
 					if ($_SESSION["expand_pastclasses"] == 0 && $timePeriod == "usersOldClasses") {
 						// do nothing
 					} else {																			
@@ -323,7 +416,7 @@ if ($_loggedin) {
 	}
 	
 
-	printc("\n<div class='title'>Sites".helplink("sites")."</div>");
+//	printc("\n<div class='title'>Sites".helplink("sites")."</div>");
 	
 	printc("\n<form name='groupform' action='$PHP_SELF?$sid&amp;action=default' method='post'>");
 	
@@ -390,58 +483,59 @@ if ($_loggedin) {
 			}
 
 			//upcoming classes
-			if ($_SESSION["expand_upcomingclasses"] == 0) {
-				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_upcomingclasses=true'>+</a> Upcoming Classes</td>\n\t\t</tr>");
-			} else {
-				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_upcomingclasses=false'>-</a> Upcoming Classes</td>\n\t\t</tr>");
-			}
-			
-			if ($_SESSION["expand_upcomingclasses"] != 0) {	
-				if (count($usersFutureClasses)) {		    
-					//printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>Upcoming Classes</td>\n\t\t</tr>");
-					foreach ($usersFutureClasses as $className) {
-						if ($classSiteName = group::getNameFromClass($className)) {
-							if ($groupsPrinted[$classSiteName]) {
-								continue;
+				if (count($usersFutureClasses)) {
+					
+					if ($_SESSION["expand_upcomingclasses"] == 0) {
+						printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_upcomingclasses=true'>+</a> Upcoming Classes</td>\n\t\t</tr>");
+					} else {
+						printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_upcomingclasses=false'>-</a> Upcoming Classes</td>\n\t\t</tr>");
+									
+						foreach ($usersFutureClasses as $className) {
+							if ($classSiteName = group::getNameFromClass($className)) {
+								if ($groupsPrinted[$classSiteName]) {
+									continue;
+								}
+								$groupsPrinted[$classSiteName] = true;
+							} else {
+								$classSiteName = $className;
 							}
-							$groupsPrinted[$classSiteName] = true;
-						} else {
-							$classSiteName = $className;
+							
+							if (isset($userOwnedSlots[$classSiteName]))
+								printSiteLine2($userOwnedSlots[$classSiteName], 0, 1, $_SESSION[atype]);
+								
+							else if (isset($anyLevelEditorSites[$classSiteName]))
+								printSiteLine2($anyLevelEditorSites[$classSiteName], 0, 1, $_SESSION[atype]);
+					
+							else if (isset($usersAllClassesInfo[$classSiteName]))
+								printSiteLine2($usersAllClassesInfo[$classSiteName], 0, 1, $_SESSION[atype]);
+								
+							else
+								printc("\n\t\t<tr>\n\t\t\t<td colspan='2'>There was an error loading information for site: ".$classSiteName."</td>\n\t\t</tr>");
 						}
-						
-						if (isset($userOwnedSlots[$classSiteName]))
-							printSiteLine2($userOwnedSlots[$classSiteName], 0, 1, $_SESSION[atype]);
-							
-						else if (isset($anyLevelEditorSites[$classSiteName]))
-							printSiteLine2($anyLevelEditorSites[$classSiteName], 0, 1, $_SESSION[atype]);
-				
-						else if (isset($usersAllClassesInfo[$classSiteName]))
-							printSiteLine2($usersAllClassesInfo[$classSiteName], 0, 1, $_SESSION[atype]);
-							
-						else
-							printc("\n\t\t<tr>\n\t\t\t<td colspan='2'>There was an error loading information for site: ".$classSiteName."</td>\n\t\t</tr>");
 					}
 				}
-			}
+			
 
 			
 			//info/interface for groups
-			printc("\n\t\t<tr>\n\t\t\t<th colspan='2' align='right'>add checked sites to group: \n\t\t\t\t<input type='text' name='newgroup' size='10' class='textfield' />");
-			$havegroups = count($userOwnedGroups);
-			if ($havegroups) {
-				printc(" \n\t\t\t\t<select name='groupname' onchange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
-				printc("\n\t\t\t\t\t<option value=''>-choose-</option>");
-				foreach ($userOwnedGroups as $group) {
-					printc("\n\t\t\t\t\t<option value='$group'>$group</option>");
+			if (count($classes) || count($usersFutureClasses)) {
+				printc("\n\t\t<tr>\n\t\t\t<th colspan='2' align='right'>add checked sites to group: \n\t\t\t\t<input type='text' name='newgroup' size='10' class='textfield' />");
+				$havegroups = count($userOwnedGroups);
+				if ($havegroups) {
+					printc(" \n\t\t\t\t<select name='groupname' onchange='document.groupform.newgroup.value = document.groupform.groupname.value'>");
+					printc("\n\t\t\t\t\t<option value=''>-choose-</option>");
+					foreach ($userOwnedGroups as $group) {
+						printc("\n\t\t\t\t\t<option value='$group'>$group</option>");
+					}
+					printc("\n\t\t\t\t</select>");
 				}
-				printc("\n\t\t\t\t</select>");
+				printc(" \n\t\t\t\t<input type='submit' class='button' value='add' />");
+				printc("\n\t\t\t</th>\n\t\t</tr>");
+				printc("\n\t\t<tr>\n\t\t\t<th colspan='2' align='left'>");
+				printc("\n\t\t\t\t<div style='padding-left: 10px; font-size: 10px;'>By adding sites to a group you can consolidate multiple class sites into one entity. This is useful if you teach multiple sections of the same class and want to work on only one site for those classes/sections. Check the boxes next to the classes you would like to add, and either type in a new group name or choose an existing one.</div>");
+				if ($havegroups) printc("\n\t\t\t\t<div class='desc'>\n\t\t\t\t\t<a href='edit_groups.php?$sid' target='groupeditor' onclick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a>\n\t\t\t\t</div>");
+				printc("\n\t\t\t</th>\n\t\t</tr>");
 			}
-			printc(" \n\t\t\t\t<input type='submit' class='button' value='add' />");
-			printc("\n\t\t\t</th>\n\t\t</tr>");
-			printc("\n\t\t<tr>\n\t\t\t<th colspan='2' align='left'>");
-			printc("\n\t\t\t\t<div style='padding-left: 10px; font-size: 10px;'>By adding sites to a group you can consolidate multiple class sites into one entity. This is useful if you teach multiple sections of the same class and want to work on only one site for those classes/sections. Check the boxes next to the classes you would like to add, and either type in a new group name or choose an existing one.</div>");
-			if ($havegroups) printc("\n\t\t\t\t<div class='desc'>\n\t\t\t\t\t<a href='edit_groups.php?$sid' target='groupeditor' onclick='doWindow(\"groupeditor\",400,400)'>[edit class groups]</a>\n\t\t\t\t</div>");
-			printc("\n\t\t\t</th>\n\t\t</tr>");
 				
 			//past classes
 			if ($_SESSION["expand_pastclasses"] == 0) {

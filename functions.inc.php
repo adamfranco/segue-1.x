@@ -1813,3 +1813,78 @@ function recent_discussion($site) {
 	$recent_discussions = db_query($query); 
 	return $recent_discussions;
 }
+
+function recent_edited_sites($limit,$user_id) {
+	
+	$query = "		
+		SELECT
+			slot_name, user_fname, site_title, section_id, page_id, story_id,
+			story_created_tstamp, user_uname, story_title
+		FROM
+			story
+				INNER JOIN				
+			page
+				ON FK_page = page_id
+				INNER JOIN
+			section
+				ON FK_section = section_id
+				INNER JOIN
+			site
+				ON section.FK_site = site_id
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site
+				INNER JOIN
+			user
+				ON story.FK_createdby = user_id				
+			WHERE
+				story.FK_createdby = $user_id
+			Order BY
+				story_created_tstamp  DESC
+			LIMIT 0,10
+	";
+	//printpre($query);
+	$recent_sites = db_query($query); 
+	return $recent_sites;
+}
+
+function recent_discussions($limit,$user_id) {
+	
+	$query = "
+		SELECT
+			discussion_tstamp, discussion_subject, discussion_id, user_fname, slot_name, site_title,
+			story_id, story_title, page_id, section_id, FK_author, user_uname
+		FROM
+			discussion
+				INNER JOIN
+			story
+				ON FK_story = story_id
+				INNER JOIN
+			page
+				ON FK_page = page_id
+				INNER JOIN
+			section
+				ON FK_section = section_id
+				INNER JOIN
+			site
+				ON section.FK_site = site_id
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site
+				INNER JOIN
+			user
+				ON discussion.FK_author = user_id
+ 
+			WHERE
+				discussion.FK_author = $user_id
+			OR
+				story.FK_createdby = $user_id
+			Order BY
+				discussion_tstamp DESC
+			LIMIT 0,10
+		";
+	
+	$recent_discussions = db_query($query); 
+	//printpre($query);
+	return $recent_discussions;
+}

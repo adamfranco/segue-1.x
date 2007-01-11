@@ -315,7 +315,8 @@ include("$themesdir/$theme/output.inc.php");
 if (!ini_get("register_globals")) {
 	$_ign = array("editors","obj","settings","siteObj","sectionObj","pageObj","storyObj",
 				"auser","lpass","afname","aemail","atype","amethod","lmethod","ltype",
-				"lemail","lfname","luser","lid","aid", "expand_upcomingclasses", "expand_pastclasses", "expand_editorsites", "expand_othersites");
+				"lemail","lfname","luser","lid","aid", "expand_upcomingclasses", 
+				"expand_pastclasses", "expand_editorsites", "expand_othersites", "expand_recentactivity");
 	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = &$$n; }
 }
 
