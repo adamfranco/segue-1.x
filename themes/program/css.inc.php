@@ -115,6 +115,27 @@ table, td { border: 0px solid black }
 	font-weight: bolder;
 }
 
+.title2 {
+	color: #<? echo $c['title-color']; ?>;
+	border-bottom: 1px solid #<? echo $c['title-under-color']; ?>;
+	padding: 3px;
+	font-size: 12px;
+	padding-left: 0px;
+	margin-bottom: 1px;
+	font-variant: small-caps;
+	font-weight: bolder;
+}
+
+.title3 {
+	color: #<? echo $c['title-color']; ?>;
+	padding: 3px;
+	font-size: 11px;
+	padding-left: 0px;
+	margin-bottom: 0px;
+}
+
+
+
 th {
 	font-size: 12px;
 	font-weight: normal;
@@ -136,7 +157,7 @@ th {
 	font-size: 14px;
 	font-weight: bold;
 	font-variant: small-caps;
-	background-color: #C0C0C0;
+	background-color: #CCCCCC;
 	color: #333333;
 	padding-left: 5px;
 	padding-top: 10px;	
@@ -190,6 +211,18 @@ th {
 	color: #<? echo $c['navtext']; ?>;
 	font-family: Arial, Verdana, Helvetica, sans-serif;
 	font-size: 16px;
+}
+
+.list {
+	color: #000000;
+	border-bottom: 1px dotted #333333;
+	font-size: 10px;
+	padding-left: 0px;
+	margin-bottom: 7px;
+}
+
+.listtext {
+	font-size: 10px;
 }
 
 

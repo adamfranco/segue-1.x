@@ -1814,12 +1814,18 @@ function recent_discussion($site) {
 	return $recent_discussions;
 }
 
-function recent_edited_sites($limit,$user_id) {
+function recent_edited_stories($limit,$user_id) {
 	
 	$query = "		
 		SELECT
-			slot_name, user_fname, site_title, section_id, page_id, story_id,
-			story_created_tstamp, user_uname, story_title
+			slot_name, site_title,
+			MAX(story_updated_tstamp) AS most_recent_tstamp, 
+			SUBSTR(MAX(CONCAT(story_updated_tstamp,'@',story_id)), LENGTH(MAX(story_updated_tstamp))+2) AS mr_story_id,
+			SUBSTR(MAX(CONCAT(story_updated_tstamp,'@',story_title)), LENGTH(MAX(story_updated_tstamp))+2) AS mr_story_title,
+			SUBSTR(MAX(CONCAT(story_updated_tstamp,'@',page_id)), LENGTH(MAX(story_updated_tstamp))+2) AS mr_page_id,
+			SUBSTR(MAX(CONCAT(story_updated_tstamp,'@',page_title)), LENGTH(MAX(story_updated_tstamp))+2) AS mr_page_title,
+			SUBSTR(MAX(CONCAT(story_updated_tstamp,'@',section_id)), LENGTH(MAX(story_updated_tstamp))+2) AS mr_section_id,
+			SUBSTR(MAX(CONCAT(story_updated_tstamp,'@',section_title)), LENGTH(MAX(story_updated_tstamp))+2) AS mr_section_title
 		FROM
 			story
 				INNER JOIN				
@@ -1833,19 +1839,164 @@ function recent_edited_sites($limit,$user_id) {
 				ON section.FK_site = site_id
 				INNER JOIN
 			slot
-				ON site_id = slot.FK_site
-				INNER JOIN
-			user
-				ON story.FK_createdby = user_id				
+				ON site_id = slot.FK_site		
 			WHERE
-				story.FK_createdby = $user_id
+				story.FK_updatedby = $user_id
+			group BY
+				slot_name
 			Order BY
-				story_created_tstamp  DESC
+				most_recent_tstamp  DESC
 			LIMIT 0,10
 	";
 	//printpre($query);
 	$recent_sites = db_query($query); 
 	return $recent_sites;
+}
+
+function recent_edited_pages($limit,$user_id) {
+	
+	$query = "		
+		SELECT
+			slot_name, site_title,
+			MAX(page_updated_tstamp) AS most_recent_tstamp, 
+			SUBSTR(MAX(CONCAT(page_updated_tstamp,'@',page_id)), LENGTH(MAX(page_updated_tstamp))+2) AS mr_page_id,
+			SUBSTR(MAX(CONCAT(page_updated_tstamp,'@',page_title)), LENGTH(MAX(page_updated_tstamp))+2) AS mr_page_title,
+			SUBSTR(MAX(CONCAT(page_updated_tstamp,'@',section_id)), LENGTH(MAX(page_updated_tstamp))+2) AS mr_section_id,
+			SUBSTR(MAX(CONCAT(page_updated_tstamp,'@',section_title)), LENGTH(MAX(page_updated_tstamp))+2) AS mr_section_title
+		FROM				
+			page
+				INNER JOIN
+			section
+				ON FK_section = section_id
+				INNER JOIN
+			site
+				ON section.FK_site = site_id
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site		
+			WHERE
+				page.FK_updatedby = $user_id
+			group BY
+				slot_name
+			Order BY
+				most_recent_tstamp  DESC
+			LIMIT 0,10
+	";
+	//printpre($query);
+	$recent_sites = db_query($query); 
+	return $recent_sites;
+}
+
+function recent_edited_sections($limit,$user_id) {
+	
+	$query = "		
+		SELECT
+			slot_name, site_title,
+			MAX(section_updated_tstamp) AS most_recent_tstamp, 
+			SUBSTR(MAX(CONCAT(section_updated_tstamp,'@',section_id)), LENGTH(MAX(section_updated_tstamp))+2) AS mr_section_id,
+			SUBSTR(MAX(CONCAT(section_updated_tstamp,'@',section_title)), LENGTH(MAX(section_updated_tstamp))+2) AS mr_section_title
+		FROM
+			section
+				INNER JOIN
+			site
+				ON section.FK_site = site_id
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site		
+			WHERE
+				section.FK_updatedby = $user_id
+			group BY
+				slot_name
+			Order BY
+				most_recent_tstamp  DESC
+			LIMIT 0,10
+	";
+	//printpre($query);
+	$recent_sites = db_query($query); 
+	return $recent_sites;
+}
+
+function recent_edited_sites($limit,$user_id) {
+	
+	$query = "		
+		SELECT
+			slot_name, site_title,
+			site_updated_tstamp AS most_recent_tstamp
+		FROM
+			site
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site		
+			WHERE
+				site.FK_updatedby = $user_id
+			group BY
+				slot_name
+			Order BY
+				most_recent_tstamp  DESC
+			LIMIT 0,10
+	";
+	//printpre($query);
+	$recent_sites = db_query($query); 
+	return $recent_sites;
+}
+
+function recent_edited_components($limit, $user_id) {
+	$recentSites = array();
+	
+	// Add Sites
+	$componentsResult = recent_edited_sites($limit, $user_id);
+	while ($a = db_fetch_assoc($componentsResult)) {
+		$recentSites[$a['slot_name']] = $a;
+	}
+	mysql_free_result($componentsResult);
+	
+	// Add Sections
+	$componentsResult = recent_edited_sections($limit, $user_id);
+	while ($a = db_fetch_assoc($componentsResult)) {
+		if(!isset($recentSites[$a['slot_name']])
+			|| $a['most_recent_tstamp'] > $recentSites[$a['slot_name']]['most_recent_tstamp']) 
+		{
+			$recentSites[$a['slot_name']] = $a;
+		}
+	}
+	mysql_free_result($componentsResult);
+	
+
+	// Add Pages
+	$componentsResult = recent_edited_pages($limit, $user_id);
+	while ($a = db_fetch_assoc($componentsResult)) {
+		if(!isset($recentSites[$a['slot_name']])
+			|| $a['most_recent_tstamp'] > $recentSites[$a['slot_name']]['most_recent_tstamp']) 
+		{
+			$recentSites[$a['slot_name']] = $a;
+		}
+	}
+	mysql_free_result($componentsResult);
+	
+	// Add Stories
+	$componentsResult = recent_edited_stories($limit, $user_id);
+	while ($a = db_fetch_assoc($componentsResult)) {
+		if(!isset($recentSites[$a['slot_name']])
+			|| $a['most_recent_tstamp'] > $recentSites[$a['slot_name']]['most_recent_tstamp']) 
+		{
+			$recentSites[$a['slot_name']] = $a;
+		}
+	}
+	mysql_free_result($componentsResult);
+	
+	// Sort the sites based on the timestamp
+	$tstamps = array();
+	foreach ($recentSites as $name => $array) {
+		$tstamps[$name] = $array['most_recent_tstamp'];
+	}
+	array_multisort($tstamps, SORT_DESC, $recentSites);
+	
+	// remove any extras
+	while (count($recentSites) > $limit)
+		array_pop($recentSites);
+	
+	
+	return $recentSites;
 }
 
 function recent_discussions($limit,$user_id) {

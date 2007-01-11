@@ -227,7 +227,7 @@ if ($_SESSION["expand_recentactivity"] == 0) {
 
 if ($_SESSION["expand_recentactivity"] != 0) {	
 
-	printc("<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>");
+	printc("<table border=0 width='100%' align ='center' cellpadding=0, cellspacing=5>");
 	printc("<tr><td valign='top'>");
 
 	//recent discussions
@@ -235,9 +235,9 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	$number_recent_discussions = db_num_rows($recent_discussions);
 	if ($number_recent_discussions) {	
 		$recent_discussions_sites = "<table border=0 width='100%' align = center cellpadding=1, cellspacing=0>";
-		$recent_discussions_sites .= "<tr><td colspan=4 align='left' class='title'>Recent Discussions";
+		$recent_discussions_sites .= "<tr><td colspan=4 align='left' class='title2'>Recent Discussions";
 		$recent_discussions_sites .= "</td></tr>";
-		$recent_discussions_sites .= "<tr><td>Date/Time</td><td>Participant</td><td>Discussion Subject</td><td>Site</td></tr>";
+		$recent_discussions_sites .= "<tr><td class='title3'>Date/Time</td><td class='title3'>Participant</td><td class='title3'>Subject</td><td class='title3'>Site</td></tr>";
 		
 		while ($a = db_fetch_assoc($recent_discussions)) {
 			$recent_discussions_sites .= "<tr>";
@@ -266,38 +266,43 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 
 	printc("</td><td valign='top'>");
 	
-	// recently edited content	
-	$recent_sites = recent_edited_sites(10,$_SESSION["aid"]);
-	if (db_num_rows($recent_sites)) {	
-		$number_recent_sites = db_num_rows($recent_sites);
-		$edited_sites = "<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>";
-		$edited_sites .= "<tr><td colspan=2 align='left' class='title'>Recently Edited Sites";
-		$edited_sites .="</td></tr>";
-		$edited_sites .= "<tr><td>Date/Time</td><td>Site</td></tr>";
+	// recently edited content
+	$recentComponents = recent_edited_components(10, $_SESSION["aid"]);
 	
-		$current_page = "";
-		while ($a = db_fetch_assoc($recent_sites)) {
-			$next_page = $a['slot_name'];
+	
+	if (count($recentComponents)) {	
+		$number_recent_sites = count($recentComponents);
+		$edited_sites = "<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>";
+		$edited_sites .= "<tr><td colspan=2 align='left' class='title2'>Your Recent Edits";
+		$edited_sites .="</td></tr>";
+		$edited_sites .= "<tr><td class='title3'>Date/Time</td><td class='title3'>Site</td></tr>";
+
 			
-			//if ($next_page != $current_page) {
-				$current_page = $next_page;
-				$edited_sites .= "<tr>";
-				$site_update_tstamp = $a['story_created_tstamp'];
-				//$site_update_tstamp =& TimeStamp::fromString($site_update_tstamp);
-				//$site_update_time =& $site_update_tstamp->asTime();
-				//$edited_sites .= "<td valign='top' class='list'>".$site_update_tstamp->ymdString()."<br/>".$site_update_time->string12(false)."</td>";
-				$edited_sites .= "<td valign='top' class='list'>".$site_update_tstamp."</td>";
-				$edited_sites .= "<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
-				$edited_sites .= "&action=site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id'];
-				$edited_sites .= " target=new_window>";				
-				$edited_sites .= $a['site_title'];
-				if ($a['story_title'] != "") {
-					$edited_sites .= " > ".$a['story_title'];
-				}
-				$edited_sites .= "</a></td>";
-				//$edited_sites .= "<td valign='top' class='list'><a href=$PHP_SELF?type=recent&user=".$a['user_uname'].">".$a['user_fname']."</a></td>";
-				$edited_sites .= "</tr>";
-			//}
+		foreach ($recentComponents as $a) {
+//			printpre($a);
+			$edited_sites .= "<tr>";
+			$edited_sites .= "<td valign='top' class='list'>".$a['most_recent_tstamp']."</td>";
+			$edited_sites .= "<td valign='top' class='list'><a href=\"".$_full_uri."/index.php?";
+			$edited_sites .= "&action=site&site=".$a['slot_name'];
+			if ($a['mr_section_id'])
+				$edited_sites .= "&section=".$a['mr_section_id'];
+			if ($a['mr_page_id'])
+				$edited_sites .= "&page=".$a['mr_page_id'];
+			if ($a['mr_story_id'])
+				$edited_sites .= "&story=".$a['mr_story_id'];
+			$edited_sites .= "\" target=new_window>";				
+			$edited_sites .= $a['site_title'];
+			if ($a['mr_section_title'] != "") {
+				$edited_sites .= " > ".$a['mr_section_title'];
+			}
+			if ($a['mr_page_title'] != "") {
+				$edited_sites .= " > ".$a['mr_page_title'];
+			}
+			if ($a['mr_story_title'] != "") {
+				$edited_sites .= " > ".$a['mr_story_title'];
+			}
+			$edited_sites .= "</a></td>";
+			$edited_sites .= "</tr>";
 		}
 		$edited_sites .= "</table>";
 		printc($edited_sites);
