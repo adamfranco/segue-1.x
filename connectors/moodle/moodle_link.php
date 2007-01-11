@@ -4,9 +4,7 @@ session_start();// start the session manager :) -- important, as we just learned
 require_once("../../functions.inc.php");
 require_once("../../config.inc.php");
 require_once("../../dbwrapper.inc.php");
-
-//$dbdb_link = "achapin_segue-moodle";
-//$moodle_url = "http://slug.middlebury.edu/~achapin/moodle163";
+//error_reporting(0);
 
 ob_start();
 
@@ -150,7 +148,7 @@ if (!isset($segue_site_id) || !$segue_site_id) {
 $r = db_query($query);
 
 if (db_num_rows($r) > 0) {
-	print "linked moodle site found<br>";
+//	print "linked moodle site found<br>";
 	
 } else if (!isset($segue_site_owner) || !$segue_site_owner ||  !isset($site_title) || !$site_title || !isset($site_theme) || !site_theme) {
 	print "<div class='error'>Data needed for this link is missing...</div>";
@@ -282,9 +280,9 @@ if (db_num_rows($r) > 0) {
 		
 }
 
-
 //exit;
 header("Location: ".$moodle_url."/segue/segue_link.php?userid=".addslashes($segue_user_id)."&siteid=".addslashes($segue_site_id)."&auth_token=".addslashes($auth_token));
+
 
 function link_log($auth_id="",$site_link_id="",$category="event",$description="") {
 	global $dbhost_link, $dbuser_link, $dbpass_link, $dbdb_link;

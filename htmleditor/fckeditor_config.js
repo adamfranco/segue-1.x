@@ -45,7 +45,7 @@ FCKConfig.ToolbarSets["Page"] = [
 ] ;
 
 FCKConfig.ToolbarSets["Discuss"] = [
-	['Bold','Italic','-','OrderedList','UnorderedList','-','Link','Unlink','-'],
+	['Source','-','Bold','Italic','-','OrderedList','UnorderedList','-','Link','Unlink','-'],
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Cut','Copy','Paste','PasteText','PasteWord','-'],
 	'/',
