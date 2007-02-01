@@ -264,7 +264,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 		printc($recent_discussions_sites);
 	}	
 
-	printc("</td><td valign='top'>");
+	printc("</td></tr><tr><td valign='top'>");
 	
 	// recently edited content
 	$recentComponents = recent_edited_components(10, $_SESSION["aid"]);
