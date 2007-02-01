@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
+	<version number="1.6.1" date="the future">
+		<new author='alex'>
+			Added a Recent Activity section to the Segue home page that shows
+			a dashboard view (sorted by recent first) with Recent Discussions on all 
+			sites of a given users as well as on all content blocks a given user 
+			has added.  Recent Activity also shows all sites ordered by those
+			the user has most recently edited with links to the most recent 
+			content.
+		</new>
+		<new author='alex'>
+			Redesigned Segue home page (default.inc.php) so that all sections
+			except Current Classes can be shown or hidden and by default are 
+			set to hidden so as to speed up the loading of home pages and to 
+			allow users to decide what sites they want to display 
+		</new>
+		<change author='alex'>
+			Added view source to discussion version of HTML editor
+		</change>	
+		<fix author='adam'>
+			Fixed bug in rating UI that truncated discussion posts that included
+			a single quotes when ratings were added
+		</fix>
+
+	</version>
 	<version number="1.6.0" date="2006-12-20">
 		<new author='alex'>
 			Added code for linking Segue with Moodle (segue/connector). This code
