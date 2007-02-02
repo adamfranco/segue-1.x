@@ -150,30 +150,60 @@ if ($_REQUEST['selversions']) {
 	$versions = get_versions($storyObj->id);
 	//printpre($versions);	
 	
-	printc("<tr><th>Select</th><th>Revision</th><th>Revision Date</th><th>Revision Author</th></tr>\n");
+	printc("<tr><th colspan='2'>Select</th><th>Revision</th><th>Revision Date</th><th>Revision Author</th></tr>\n");
 		
 	$color = 0;
-	foreach($versions as $version) {
+	$i = 0;
+	foreach ($versions as $version) {
 		$version_id = $version['version_id'];
 		$version_num = $version['version_order'];
-		if (is_array($_SESSION[selversions]) && in_array($version_num,$_SESSION[selversions])) {
-			$checkstatus = " checked";
-		} else {
-			$checkstatus = "";
+		
+		printc("<tr>\n");
+		printc("<td class=ts$color align='right'>");
+		
+		if ($i > 0) {
+			printc("<input type='radio' name='oldversion' value='".$version_num."' ");
+			
+			if (isset($_SESSION['oldversion'])) {
+				if ($_SESSION['oldversion'] == $version_num)
+					printc(" checked='checked'");
+			} else {
+				if ($i == 1)
+					printc(" checked='checked'");
+			}
+			
+			printc(" />");
+		}
+		
+		printc("</td>\n<td class=ts$color align='left'>");
+		
+		if ($i < count($versions) - 1) {
+			printc("<input type='radio' name='newversion' value='".$version_num."' ");
+			
+			if (isset($_SESSION['newversion'])) {
+				if ($_SESSION['newversion'] == $version_num)
+					printc(" checked='checked'");
+			} else {
+				if (!$i)
+					printc(" checked='checked'");
+			}
+			
+			printc(" />");
 		}
 
-		printc("<tr>\n");
-		printc("<td class=ts$color align='center'><input type='checkbox' name='selversions[]' value='".$version_num."' ".$checkstatus."></td>");
+		printc("</td>");
 		printc("<td class=ts$color><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
 		printc("<td class=ts$color>".$version['version_created_tstamp']."</td>");
 		printc("<td class=ts$color>".$version['FK_createdby']."</td>\n");
 		printc("</tr>\n");
+		
 		$color = 1-$color;
+		$i++;
 	}	
 
 	printc("</table>\n");
 	// compare selected versions button (bottom)
-	printc("<br /><button type='submit' class='button' value='compare'>Compare selected revisions</button><br \><br \> ");
+	printc("<br /><button type='submit' class='button' value='compare'>Compare selected revisions</button><br /><br /> ");
 	printc("</form>");
 	printc("</td></tr>");
 
