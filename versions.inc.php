@@ -83,47 +83,201 @@ if ($storyObj->getField("discuss")) $titleExtra = " Discussion";
 printc("\n<table width='100%' id='maintable' cellspacing='1'>");
 
 printc($pagePagination);
-				
-printc("\n\t<tr>\n\t\t<td align='left' class='title'>\n\t\t\t<a href='index.php?action=site&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a>");
+if ($_REQUEST['selversions']) {
+	$_SESSION['selversions'] = $_REQUEST['selversions'];
+}
+
+
+//printpre($_SESSION['selversions']);
+//printpre($_REQUEST['selversions']);
+
+/******************************************************************************
+ * print out title and options
+ ******************************************************************************/
+ 
+printc("<tr><td align='left' class=title>");
+printc("<a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a>");
 
 if ($storyObj->getField('title')) {
-	printc("\n\t\t\t&gt; ".spchars($storyObj->getField('title'))." &gt; in depth");
+	printc(" > ".spchars($storyObj->getField('title')));
+}
+
+if ($_REQUEST['selversions']) {
+	$_SESSION['selversions'] = $_REQUEST['selversions'];
+	//printpre($_SESSION['selversions']);
+	printc(" > <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > Selected Versions");
+	
+} else if ($_REQUEST['versioning']) {
+	printc(" > All Versions");
+
+/******************************************************************************
+ * if particular version then get version details
+ ******************************************************************************/
+	
+} else if ($_REQUEST['version']) {
+	$version = get_versions($storyObj->id, $_REQUEST['version']);
+	$version_id = $version[0]['version_id'];
+	$version_num = $version[0]['version_order'];
+	$smalltext = urldecode($version[0]['version_text_short']);
+	$fulltext = urldecode($version[0]['version_text_long']);
+	$version_date = $version[0]['version_created_tstamp'];
+	$version_author = $version[0]['FK_createdby'];
+	printc(" > <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > Selected Versions");
+	
 } else {
-	printc("\n\t\t\t&gt; in depth");
+	printc(" > in depth");
 }
-printc("\n\t\t</td>\n\t</tr>");
+printc("</td></tr>\n");
 
 
-if ($storyObj->getField('type') != "image") printc("\n\t<tr>\n\t\t<td align='left'>\n\t\t\t<strong>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</strong>\n\t\t</td>\n\t</tr>");
+/******************************************************************************
+ * if selected versions request, then print out selected versions to compare
+ ******************************************************************************/
+	
+if ($_REQUEST['selversions']) {
 
-$record_id = $story;
-$user_id = $_SESSION[aid];
-$record_type = "story";
-$story_tags = get_record_tags($record_id);
-//printpre($story_tags);
+	$version01 = get_versions($story, $_REQUEST['selversions'][0]);
+	$version01_num = $version01[0]['version_order'];
+	$version02 = get_versions($story, $_REQUEST['selversions'][1]);
+	$version02_num = $version02[0]['version_order'];
+//	printpre($version01);
+	//printpre($version02);	
+	printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>");
+	printc("<table width='100%' cellpadding='3'>");
+	printc("<tr>\n");
+	printc("<td>");
+	printc("<strong><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version01_num'>Revision ".$version01_num."</a></strong> ");
+	printc("(".$version01[0]['version_created_tstamp']." - ".$version01[0]['FK_createdby'].")\n");
+	printc("</td>");
+	printc("<td>");
+	printc("<strong><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version02_num'>Revision ".$version02_num."</a></strong> ");
+	printc("(".$version02[0]['version_created_tstamp']." - ".$version02[0]['FK_createdby'].")\n");
+	printc("</td>");
+	printc("</tr>\n");
+	printc("<tr>\n");
+	printc("<td width='50%' valign='top' style='border: 1px dotted #CCC;'>".$version01[0]['version_text_short']."</td>\n");
+	printc("<td width='50%' valign='top'  style='border: 1px dotted #CCC;'>".$version02[0]['version_text_short']."</td>\n");
+	printc("</tr>\n");
+	printc("<tr>\n");
+	printc("<td style='border: 1px dotted #CCCCCC;'>".$version01[0]['version_text_long']."</td>\n");
+	printc("<td style='border: 1px dotted #CCCCCC;'>".$version02[0]['version_text_long']."</td>\n");
+	printc("</tr>\n");
+	printc("</table>");
+	printc("</tr>\n");
 
-if ($story_tags) {
-	printc("\n\t\t\t\t<div class='contentinfo' style='margin-top: 0px;'>");
-	printc("\n\t\t\t\tCategories:");
-	foreach ($story_tags as $tag) {
-		$urltag = urlencode($tag);
-		$tagname = urldecode($tag);
-		printc("\n\t\t\t\t<a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".$tagname."</a>");
-	};
-	printc("\n\t\t\t</div>\n\t\t</td>\n\t</tr>");
+/******************************************************************************
+ * if versioning then then show list of versions with date, version author
+ ******************************************************************************/
+
+} else if ($_REQUEST['versioning']) {
+	$u = "$PHP_SELF?$sid&amp;action=site&site=$site&section=$section&page=$page&story=$story&versioning=1";
+	printc("<form action=$u method='post'>");
+	printc("<tr><td>");
+	// compare selected versions button (top)
+	printc("<br \><button type='submit' class='button' value='compare' onClick=\"window.location='$u'\">Compare selected revisions</button><br /><br />");
+	printc("<table cellspacing='3' width='100%'>\n");
+	$versions = get_versions($storyObj->id);
+	//printpre($versions);	
+	
+	printc("<tr><th>Select</th><th>Revision</th><th>Revision Date</th><th>Revision Author</th></tr>\n");
+		
+	$color = 0;
+	foreach($versions as $version) {
+		$version_id = $version['version_id'];
+		$version_num = $version['version_order'];
+		if (is_array($_SESSION[selversions]) && in_array($version_num,$_SESSION[selversions])) {
+			$checkstatus = " checked";
+		} else {
+			$checkstatus = "";
+		}
+
+		printc("<tr>\n");
+		printc("<td class=ts$color align='center'><input type='checkbox' name='selversions[]' value='".$version_num."' ".$checkstatus."></td>");
+		printc("<td class=ts$color><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
+		printc("<td class=ts$color>".$version['version_created_tstamp']."</td>");
+		printc("<td class=ts$color>".$version['FK_createdby']."</td>\n");
+		printc("</tr>\n");
+		$color = 1-$color;
+	}	
+
+	printc("</table>\n");
+	// compare selected versions button (bottom)
+	printc("<br /><button type='submit' class='button' value='compare'>Compare selected revisions</button><br \><br \> ");
+	printc("</form>");
+	printc("</td></tr>");
+
+
+/******************************************************************************
+ * if no versioning or selected versions then print a single version
+ ******************************************************************************/
+
+} else {
+
+	/******************************************************************************
+	 * if a particular version specified print out
+	 ******************************************************************************/
+	
+	// Revert to this version link (top location)
+	if ($_REQUEST['version']  && $storyObj->hasPermission("edit")) {
+		printc("<tr><td>");
+		printc("<br \><table width='100%' cellspacing='0'><tr><td>");
+		printc("<strong>Revision ".$version_num."</strong> (".$version_date." - ".$version_author.")");
+		printc("</td><td align='right'>");
+		// revert to this version link (top)
+		printc("<a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;version=$version_num&amp;comingFrom=viewsite'>Revert to this Version</a>\n");
+		printc("</td></td></table><br \>");
+		printc("</td></tr>\n");
+		printc("<tr><td width='100%' valign='top' style='border: 1px dotted #CCCCCC;'>$smalltext</td></tr>\n");
+		printc("<tr><td width='100%' valign='top' style='border: 1px dotted #CCCCCC;'>$fulltext</td></tr>\n");
+
+	/******************************************************************************
+	 * if no version specified print out current version
+	 ******************************************************************************/
+	} else {
+						
+		if ($storyObj->getField('type') != "image") printc("<tr><td align='left'><strong>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</strong></td></tr>\n");
+		
+		$record_id = $story;
+		$user_id = $_SESSION[aid];
+		$record_type = "story";
+		$story_tags = get_record_tags($site,$record_id,$user_id, $record_type);
+		//printpre($story_tags);
+		
+		if (isset($story_tags)) {
+			printc("<tr><td align='left'><div class='contentinfo' id='contentinfo2' align='left'>\n");
+			printc("Categories:");
+			foreach ($story_tags as $tag) {
+				$urltag = urlencode($tag);
+				$tagname = urldecode($tag);
+				printc("<a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".$tagname."</a>\n");
+			}
+			printc("\n");
+			printc("</div></td></tr>\n\n");
+		}
+	
+		
+			printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>\n");
+			printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>\n");
+		}
+		
+		// Revert to this version link (bottom location)
+		if ($_REQUEST['version']  && $storyObj->hasPermission("edit")) {
+			printc("<tr><td align='center'><br \>");
+			printc("<a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;version=$version_num&amp;comingFrom=viewsite'>Revert to this Version</a><br \><br \>\n");
+			printc("</td></tr>\n");
+		}
+	
+		if ($storyObj->getField('type') == "image") {
+			printc("<tr><td align='center' font-size: 12px'><strong>".spchars($storyObj->getField('title'))."</strong></td></tr>\n");
+			printc("<tr><td font-size: 12px'>$captiontext</td></tr>\n");
+		}
 }
 
-printc("\n\t<tr>\n\t\t<td style='padding-bottom: 15px; font-size: 12px'>\n\t\t\t$smalltext\n\t\t</td>\n\t</tr>");
-printc("\n\t<tr>\n\t\t<td style='padding-bottom: 15px; font-size: 12px'>\n\t\t\t$fulltext\n\t\t</td>\n\t</tr>");
-if ($storyObj->getField('type') == "image") {
-	printc("\n\t<tr>\n\t\t<td align='center' font-size: 12px'>\n\t\t\t<strong>".spchars($storyObj->getField('title'))."</strong>\n\t\t</td>\n\t</tr>");
-	printc("\n\t<tr>\n\t\t<td font-size: 12px'>$captiontext</td>\n\t</tr>");
-}
-printc("\n</table>\n");
-
-/*********************************************************
- * output discussions?
- *********************************************************/
+/******************************************************************************
+ *  if discussions, then print these
+ ******************************************************************************/
 if ($storyObj->getField("discuss")) {
 	$mailposts = $storyObj->getField("discussemail");	
 	$showposts = $storyObj->getField("discussdisplay");
@@ -300,6 +454,40 @@ if ($storyObj->getField("discuss")) {
 	$ds->outputAll($canReply,($_SESSION[auser]==$site_owner),true,$showposts,$showallauthors,$mailposts);
 	if (!$ds->count()) printc("\n\t<tr>\n\t\t<td>There have been no posts to this discussion.</td>\n\t</tr>");
 }
+
+/******************************************************************************
+ * print out title and options
+ ******************************************************************************/
+ 
+printc("<tr><td align='left'");
+printc("<a href=index.php?action=site&".$getinfo2.">".spchars($pageObj->getField('title'))."</a>");
+
+if ($storyObj->getField('title')) {
+	printc(" > ".spchars($storyObj->getField('title')));
+}
+
+if ($_REQUEST['selversions']) {
+	//printpre($_SESSION['selversions']);
+	printc(" > <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > Selected Versions");
+	
+} else if ($_REQUEST['versioning']) {
+	printc(" > All Versions");
+
+/******************************************************************************
+ * if particular version then get version details
+ ******************************************************************************/
+ 
+} else if ($_REQUEST['version']) {
+	printc(" > <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > Revision ".$version_num);
+	
+} else {
+	printc(" > in depth");
+}
+printc("</td></tr>\n");
+
+
 		printc("<table>");
 printc("\n\t<tr>\n\t\t<td align='left'>\n\t\t\t<br /><a href='index.php?action=site&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a> &gt; in depth</td>\n\t</tr>");
 printc("</table>\n");
