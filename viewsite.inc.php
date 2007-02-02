@@ -228,7 +228,7 @@ do {
 			if ($_REQUEST['detail']) {
 				$o =& $thisPage->stories[$_REQUEST['detail']];
 				include("fullstory.inc.php");
-			} else if ($_REQUEST['versioning']) {
+			} else if ($_REQUEST['versioning'] || $_REQUEST['version'] ) {
 				$o =& $thisPage->stories[$_REQUEST['versioning']];
 				include("versions.inc.php");				
 			} else {
