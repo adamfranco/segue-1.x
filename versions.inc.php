@@ -143,6 +143,25 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	<script type='text/javascript'>
 	// <![CDATA[
 	
+	if (!Array.prototype.push) {
+
+		/**
+		 * IE 5.01 does not implement the push method, so it needs to be
+		 * added
+		 * 
+		 * @param mixed element
+		 * @return int
+		 * @access public
+		 * @since 1/31/07
+		 */
+		Array.prototype.push = function ( element ) {
+			var key = this.length;
+			this[key] = element;
+			return key;
+		}
+		
+	}
+	
 	/**
 	 * Update the radio buttons checked if needed to preven un-allowed situations:
 	 * 		- comparing a version to itself
