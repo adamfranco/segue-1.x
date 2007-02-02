@@ -468,6 +468,14 @@ class story extends segue {
 			
 			// the hard step: update the fields in the JOIN tables
 			
+			/******************************************************************************
+			 * Update version table
+			 ******************************************************************************/
+			 
+			save_version($this->getField("shorttext"), $this->getField("longertext"), $this->id, $this->version_comments);
+			 
+
+			
 			// Urls are now stored in the media table
 			if ($this->changed[url] && ($this->getField("type") == 'link' || $this->getField("type") == 'rss')) {
 				// Urls are now stored in the media table

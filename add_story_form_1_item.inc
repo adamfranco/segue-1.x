@@ -142,18 +142,20 @@ printc("\n</table>");
 /******************************************************************************
  * Include option for versioning if type is new content
 ******************************************************************************/
-printc("<br /><table cellpadding=5 cellspacing='0' style='border: 1px solid gray'>");
-printc("<tr>");
-printc("<td><input type='checkbox' name='versioning' value='1' ");
+printc("<br />\n<table cellpadding='5' cellspacing='0' style='border: 1px solid gray'>");
+printc("\n<tr>");
+printc("\n<td><input type='checkbox' name='versioning' value='1' ");
 printc(($_SESSION[storyObj]->getField("versioning")=='1')?" checked":"");
 if ($_SESSION[auser] != $thisSite->owningSiteObj->owner) {
 	printc(" disabled");
 }
-printc("></td>");
-printc("<td>Versioning</td>");
+printc(">\n</td>");
+printc("\n<td>Show Versions: Check this to display a link to previous versions of this content block. ");
+printc("<i>(Only participants with permission to edit this content block will be able to revert to previous versions)</i>");
+printc("\n</td>");
 
-printc("</td></tr>");
-printc("</table>");
+printc("\n</td></tr>");
+printc("\n</table>");
 
 /******************************************************************************
  * Determine the editor and if not set, set to default (i.e. fckeditor)
@@ -293,22 +295,9 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 		
 	printc("\n<table width='100%'><tr><td style='padding-left: 5px'>");
 	
-	/******************************************************************************
-	 * 	if particular version is selected, then get the selected version
-	 ******************************************************************************/
-	if ($_REQUEST['version']) {
-		$version_id = $_REQUEST['version'];
-		$story_id = $_REQUEST['edit_story'];
-		$version = get_versions($story_id, $version_id);
-		$text = urldecode($version[0]['version_text_short']);
-		$fulltext = urldecode($version[0]['version_text_long']);
-		$_SESSION[storyObj]->setField("shorttext",$text);
-		$_SESSION[storyObj]->setField("longertext",$fulltext);
-	} else {
-	
-		$text = $_SESSION[storyObj]->getField("shorttext");
-	}
-
+	//printc("\n<br />");
+			
+	$text = $_SESSION[storyObj]->getField("shorttext");
 	
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)
@@ -348,7 +337,22 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	}
 	
 	printc("\n</td></tr>");
-	printc("\n</table>");
+	
+	/******************************************************************************
+	 * Version comment field
+	 ******************************************************************************/
+
+	printc("\n<tr><td>");
+	printc("\nComments about changes (optional):".helplink('versions'));
+	printc("<br /><textarea name='version_comments' rows='5' cols='100'>");
+	if ($_SESSION[storyObj]->version_comments) {
+		printc($_SESSION[storyObj]->version_comments);
+	} else {
+		printc("a minor edit...");
+	}
+	printc("</textarea>");
+	printc("\n</td></tr>");	
+
 }
 
  printc("\n<br />");

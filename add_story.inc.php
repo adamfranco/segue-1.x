@@ -19,7 +19,7 @@
 /* } */
 
 
-//printpre($_SESSION[settings]);
+printpre($_REQUEST[version_comments]);
 //printpre($_SESSION[storyObj]->data);
 
 if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
@@ -30,7 +30,10 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
 	if ($_REQUEST[type]) $_SESSION[storyObj]->setField("type",$_REQUEST[type]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
-	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]  && $_REQUEST[versioning]) $_SESSION[storyObj]->setField("versioning",$_REQUEST[versioning]);	
+	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]  && isset($_REQUEST[version_comments])) $_SESSION[storyObj]->version_comments = $_REQUEST[version_comments];
+
+printpre($_SESSION[storyObj]->version_comments);
+	
 	$_SESSION[storyObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[storyObj]->setField("active",$_REQUEST[active]);
 	if ($_SESSION[settings][step] == 4 && !$_REQUEST[link]) $_SESSION[storyObj]->setPermissions($_REQUEST[permissions]);
@@ -243,7 +246,7 @@ if ($_REQUEST[save]) {
 		if ($permissionset != 1)
 			error("You must specify who can discuss/assess this content block.");
 	}
-	
+		
 	/******************************************************************************
 	 * Save: sets fields in story object (see: objects/story.inc.php)
 	 ******************************************************************************/
@@ -322,15 +325,16 @@ if ($_REQUEST[save]) {
 		$_SESSION[storyObj]->deletePendingEditors();
 		
 		/******************************************************************************
-		 * if versioning, then save this current version to version table
+		 * If this version is different, then save version to  to version table
 		 ******************************************************************************/
-		if ($_SESSION[storyObj]->getField("versioning") == '1') {		 	
-			$version_short = $_SESSION[storyObj]->getField("shorttext");
-			$version_long = $_SESSION[storyObj]->getField("longertext");
-			$story_id = $_SESSION[storyObj]->id;
-			// printpre($version_short);
-			save_version($version_short, $version_long, $story_id);
-		 }
+		
+// 		
+// 			$version_short = $_SESSION[storyObj]->getField("shorttext");
+// 			$version_long = $_SESSION[storyObj]->getField("longertext");
+// 			$story_id = $_SESSION[storyObj]->id;
+// 			// printpre($version_short);
+// 			save_version($version_short, $version_long, $story_id);
+
 
 
 		/******************************************************************************

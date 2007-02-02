@@ -1,4 +1,4 @@
-<? /* $Id$ */
+\<? /* $Id$ */
 
 printc("<form action='$PHP_SELF?$sid' method='post' name='addform'>");
 printc("<input type='hidden' name='step' />");

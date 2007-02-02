@@ -66,6 +66,23 @@ if ($storyObj->getField('title')) {
 	printc(" > ".spchars($storyObj->getField('title')));
 }
 
+/******************************************************************************
+ * if request is to revert, then create new version based on revert version number
+ ******************************************************************************/
+if ($_REQUEST['revert']) {
+
+	$version = get_versions($storyObj->id, $_REQUEST['revert']);
+	$version_num = $version[0]['version_order'];
+
+	$version_short = stripslashes(urldecode($version[0]['version_text_short']));
+	$version_long = stripslashes(urldecode($version[0]['version_text_long']));
+	$story_id = $story;
+	$version_comments = "reverted to revision ".$_REQUEST['revert'];
+	
+	save_version ($version_short, $version_long, $story_id, $version_comments);
+}
+
+
 if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	$_SESSION['oldversion'] = $_REQUEST['oldversion'];
 	$_SESSION['newversion'] = $_REQUEST['newversion'];
@@ -74,6 +91,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	
 } else if ($_REQUEST['versioning']) {
 	printc(" > All Versions");
+	
 
 /******************************************************************************
  * if particular version then get version details
@@ -83,19 +101,40 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	$version = get_versions($storyObj->id, $_REQUEST['version']);
 	$version_id = $version[0]['version_id'];
 	$version_num = $version[0]['version_order'];
-	$smalltext = urldecode($version[0]['version_text_short']);
-	$fulltext = urldecode($version[0]['version_text_long']);
 	$version_date = $version[0]['version_created_tstamp'];
 	$version_author = $version[0]['FK_createdby'];
+	
+	//convert internal links
+	$smalltext = convertTagsToInteralLinks($siteObj->name, stripslashes(urldecode($version[0]['version_text_short'])));
+	$fulltext = convertTagsToInteralLinks($siteObj->name, stripslashes(urldecode($version[0]['version_text_long'])));
+	$smalltext = urldecode($smalltext);
+	$fulltext = urldecode($fulltext);
+		
 	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
 	printc(" > Selected Versions");
+	
+	printc("<tr><td>");
+	printc("<br /><table width='100%' cellspacing='0'><tr><td>");
+	printc("<strong>Revision ".$version_num."</strong> (".$version_date." - ".$version_author.")");
+	printc("</td><td align='right'>");
+	
+	// revert to this version link (top)
+	if ($storyObj->hasPermission("edit")) {
+		printc("<a class='btnlink2' href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;revert=$version_num&amp;versioning=$story&amp;comingFrom=viewsite'>Revert to this Version</a>\n");		
+	}
+	
+	printc("</td></td></table><br />");
+	printc("</td></tr>\n");
+	printc("<tr><td width='100%' valign='top' style='border: 1px dotted #CCCCCC;'>$smalltext</td></tr>\n");
+	printc("<tr><td width='100%' valign='top' style='border: 1px dotted #CCCCCC;'>$fulltext</td></tr>\n");
+
 	
 } else {
 	printc(" > in depth");
 }
 printc("</td></tr>\n");
 
-
+// printpre($_REQUEST);
 /******************************************************************************
  * if selected versions request, then print out selected versions to compare
  ******************************************************************************/
@@ -106,6 +145,11 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	$version01_num = $version01[0]['version_order'];
 	$version02 = get_versions($story, $_REQUEST['newversion']);
 	$version02_num = $version02[0]['version_order'];
+	$smalltext01 = convertTagsToInteralLinks($siteObj->name, stripslashes(urldecode($version01[0]['version_text_short'])));
+	$smalltext02 = convertTagsToInteralLinks($siteObj->name, stripslashes(urldecode($version02[0]['version_text_short'])));	
+	$fulltext01 = convertTagsToInteralLinks($siteObj->name, stripslashes(urldecode($version01[0]['version_text_long'])));
+	$fulltext02 = convertTagsToInteralLinks($siteObj->name, stripslashes(urldecode($version02[0]['version_text_long'])));
+	
 //	printpre($version01);
 	//printpre($version02);	
 	printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>");
@@ -121,15 +165,16 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	printc("</td>");
 	printc("</tr>\n");
 	printc("<tr>\n");
-	printc("<td width='50%' valign='top' style='border: 1px dotted #CCC;'>".$version01[0]['version_text_short']."</td>\n");
-	printc("<td width='50%' valign='top'  style='border: 1px dotted #CCC;'>".$version02[0]['version_text_short']."</td>\n");
+	printc("<td width='50%' valign='top' style='border: 1px dotted #CCC;'>".$smalltext01."</td>\n");
+	printc("<td width='50%' valign='top'  style='border: 1px dotted #CCC;'>".$smalltext02."</td>\n");
 	printc("</tr>\n");
 	printc("<tr>\n");
-	printc("<td style='border: 1px dotted #CCCCCC;'>".$version01[0]['version_text_long']."</td>\n");
-	printc("<td style='border: 1px dotted #CCCCCC;'>".$version02[0]['version_text_long']."</td>\n");
+	printc("<td style='border: 1px dotted #CCCCCC;'>".$fulltext01."</td>\n");
+	printc("<td style='border: 1px dotted #CCCCCC;'>".$fulltext02."</td>\n");
 	printc("</tr>\n");
 	printc("</table>");
 	printc("</tr>\n");
+
 
 /******************************************************************************
  * if versioning then then show list of versions with date, version author
@@ -234,17 +279,24 @@ END;
 	printc(ob_get_clean());
 	
 	// compare selected versions button (top)
-	printc("<br /><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button><br /><br />");
+	printc("<table cellspacing='3' width='100%'><tr><td>");
+	printc("<td><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button></td>");
+	if ($action == "viewsite") {
+		printc("<td align='right'><a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;comingFrom=viewsite'>Edit current version</a></td>\n");
+	}
+	printc("</tr></table>");
+	
 	printc("<table cellspacing='3' width='100%'>\n");
 	$versions = get_versions($storyObj->id);
 	//printpre($versions);	
 	
-	printc("<tr><th colspan='2'>Select</th><th>Revision</th><th>Revision Date</th><th>Revision Author</th></tr>\n");
+	printc("<tr><th colspan='2'>Select</th><th>Revision</th><th>Revision Date</th><th>Revision Author</th><th>Revision Comment</th></tr>\n");
 		
 	$color = 0;
 	$i = 0;
 	$hideOld = true;
 	$hideNew = false;
+	$currentversion = true;
 	foreach ($versions as $version) {
 		$version_id = $version['version_id'];
 		$version_num = $version['version_order'];
@@ -300,87 +352,43 @@ END;
 		}
 
 		printc("</td>");
-		printc("<td class='ts$color'><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
+		if (!$currentversion) {
+			printc("<td class='ts$color'><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
+		} else {
+			printc("<td class='ts$color'>Revision $version_num</td>");		
+		}
+		
 		printc("<td class='ts$color'>".$version['version_created_tstamp']."</td>");
 		printc("<td class='ts$color'>".$version['FK_createdby']."</td>\n");
+		printc("<td class='ts$color'>".$version['version_comments']."</td>\n");
 		printc("</tr>\n");
 		
 		$color = 1-$color;
+		$currentversion = false;
 		$i++;
 	}	
 
 	printc("</table>\n");
 	// compare selected versions button (bottom)
-	printc("<br /><button type='submit' class='button' value='compare'>Compare selected revisions</button><br /><br /> ");
+	printc("<table cellspacing='3' width='100%'><tr><td>");
+	printc("<td><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button></td>");
+
+//	printc("<td align='right'><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Edit this version</button></td>");
+	printc("</tr></table>");
+
+// 	printc("<br /><button type='submit' class='button' value='compare'>Compare selected revisions</button><br /><br /> ");
 	printc("\n\t\t</form>");
 	printc("\n\t</td>\n</tr>");
 
-
-/******************************************************************************
- * if no versioning or selected versions then print a single version
- ******************************************************************************/
-
-} else {
-
-	/******************************************************************************
-	 * if a particular version specified print out
-	 ******************************************************************************/
-	
-	// Revert to this version link (top location)
-	if ($_REQUEST['version']  && $storyObj->hasPermission("edit")) {
-		printc("<tr><td>");
-		printc("<br /><table width='100%' cellspacing='0'><tr><td>");
-		printc("<strong>Revision ".$version_num."</strong> (".$version_date." - ".$version_author.")");
-		printc("</td><td align='right'>");
-		// revert to this version link (top)
-		printc("<a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;version=$version_num&amp;comingFrom=viewsite'>Revert to this Version</a>\n");
-		printc("</td></td></table><br />");
-		printc("</td></tr>\n");
-		printc("<tr><td width='100%' valign='top' style='border: 1px dotted #CCCCCC;'>$smalltext</td></tr>\n");
-		printc("<tr><td width='100%' valign='top' style='border: 1px dotted #CCCCCC;'>$fulltext</td></tr>\n");
-
-	/******************************************************************************
-	 * if no version specified print out current version
-	 ******************************************************************************/
-	} else {
-						
-		if ($storyObj->getField('type') != "image") printc("<tr><td align='left'><strong>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</strong></td></tr>\n");
-		
-		$record_id = $story;
-		$user_id = $_SESSION[aid];
-		$record_type = "story";
-		$story_tags = get_record_tags($site,$record_id,$user_id, $record_type);
-		//printpre($story_tags);
-		
-		if (isset($story_tags)) {
-			printc("<tr><td align='left'><div class='contentinfo' id='contentinfo2' align='left'>\n");
-			printc("Categories:");
-			foreach ($story_tags as $tag) {
-				$urltag = urlencode($tag);
-				$tagname = urldecode($tag);
-				printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".$tagname."</a>\n");
-			}
-			printc("\n");
-			printc("</div></td></tr>\n\n");
-		}
-	
-		
-			printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$smalltext</td></tr>\n");
-			printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>$fulltext</td></tr>\n");
-		}
-		
-		// Revert to this version link (bottom location)
-		if ($_REQUEST['version']  && $storyObj->hasPermission("edit")) {
-			printc("<tr><td align='center'><br />");
-			printc("<a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;version=$version_num&amp;comingFrom=viewsite'>Revert to this Version</a><br /><br />\n");
-			printc("</td></tr>\n");
-		}
-	
-		if ($storyObj->getField('type') == "image") {
-			printc("<tr><td align='center' font-size: 12px'><strong>".spchars($storyObj->getField('title'))."</strong></td></tr>\n");
-			printc("<tr><td font-size: 12px'>$captiontext</td></tr>\n");
-		}
 }
+		
+// Revert to this version link (bottom location)
+if ($_REQUEST['version']  && $storyObj->hasPermission("edit")) {
+	printc("<tr><td align='center'><br />");
+	printc("<a class='btnlink2' href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;revert=$version_num&amp;versioning=$story&amp;comingFrom=viewsite'>Revert to this Version</a>\n");		
+	printc("</td></tr>\n");
+}
+
 
 /******************************************************************************
  * print out title and options

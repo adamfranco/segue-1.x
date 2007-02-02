@@ -189,7 +189,9 @@ do {
 				printc(urldecode($_REQUEST["tag"])."</div>");
 			} else if ($_REQUEST["tag"]) {
 				printc("<div class='title'>Categories > ");
-				printc(urldecode($_REQUEST["tag"])."</div>");				
+				printc(urldecode($_REQUEST["tag"])."</div>");
+			} else if ($_REQUEST['versioning'] || $_REQUEST['version']) {
+				printc("");
 			} else {
 				printc("<div class='title'>".$thisPage->getField("title"));
 				if ($thisSection->hasPermission("edit")) {
