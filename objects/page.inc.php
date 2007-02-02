@@ -8,7 +8,7 @@ class page extends segue {
 	var $stories;
 	var $_allfields = array("section_id","site_id","title","location","addedtimestamp","addedby",
 						"editedby","editedtimestamp","text","activatedate","deactivatedate",
-						"active","locked","showcreator","showeditor","showdate","showhr","stories",
+						"active","locked","showcreator","showeditor","showdate","showversions","showhr","stories",
 						"storyorder","type","url","ediscussion","archiveby");
 						
 	// fields listed in $_datafields are stored in the database.
@@ -90,6 +90,11 @@ class page extends segue {
 		"showdate" => array(
 			"page",
 			array("page_show_date"),
+			"page_id"
+		),
+		"showversions" => array(
+			"page",
+			array("page_show_versions"),
 			"page_id"
 		),
 		"showhr" => array(
@@ -192,6 +197,7 @@ class page extends segue {
 		$this->data[showcreator] = 0;
 		$this->data[showeditor] = 0;
 		$this->data[showdate] = 0;
+		$this->data[showversions] = 0;
 		$this->data[archiveby] = "none";
 		$this->data[ediscussion] = 0;
 		$this->data[showcreator] = 0;
@@ -310,7 +316,7 @@ class page extends segue {
 				SELECT  
 					page_display_type AS type, page_title AS title, page_location AS location, page_text AS text, DATE_FORMAT(page_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(page_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 					page_active AS active, page_story_order AS storyorder, page_show_creator AS showcreator, page_show_editor AS showeditor,
-					page_show_date AS showdate, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
+					page_show_date AS showdate, page_show_versions AS showversions, page_show_hr AS showhr,	page_archiveby AS archiveby, page_locked AS locked,
 					page_updated_tstamp AS editedtimestamp, page_created_tstamp AS addedtimestamp,
 					page_ediscussion AS ediscussion,
 					user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
@@ -615,6 +621,7 @@ class page extends segue {
 		if ($all || $this->changed[showcreator]) $a[] = $this->_datafields[showcreator][1][0]."='".addslashes((($d[showcreator])?1:0))."'";
 		if ($all || $this->changed[showeditor]) $a[] = $this->_datafields[showeditor][1][0]."='".addslashes((($d[showeditor])?1:0))."'";		
 		if ($all || $this->changed[showdate]) $a[] = $this->_datafields[showdate][1][0]."='".addslashes((($d[showdate])?1:0))."'";
+		if ($all || $this->changed[showversions]) $a[] = $this->_datafields[showversions][1][0]."='".addslashes((($d[showversions])?1:0))."'";
 		if ($all || $this->changed[showhr]) $a[] = $this->_datafields[showhr][1][0]."='".addslashes((($d[showhr])?1:0))."'";
 		if ($all || $this->changed[storyorder]) $a[] = $this->_datafields[storyorder][1][0]."='".addslashes($d[storyorder])."'";
 		

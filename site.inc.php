@@ -471,7 +471,7 @@ do {
 							
 														
 							// if versioning then show link to versions
-							if ($o->getField("versioning") == 1) {
+							if ($thisPage->getField("showversions") == 1) {
 								printc(" | <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;versioning=".$o->id."'>");
 								printc("versions</a>\n");								
 							}

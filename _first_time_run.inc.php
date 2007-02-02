@@ -174,6 +174,7 @@ if (!$allTablesExist) {
 		  page_show_creator enum('0','1') NOT NULL default '0',
 		  page_show_editor enum('0','1') default NULL,
 		  page_show_date enum('0','1') NOT NULL default '0',
+		  page_show_versions enum('0','1') default NULL '0',
 		  page_show_hr enum('0','1') NOT NULL default '0',
 		  page_display_type enum('page','heading','divider','link','content','rss','tags','participants') NOT NULL default 'page',
 		  FK_media int(10) unsigned default NULL,
@@ -360,6 +361,7 @@ if (!$allTablesExist) {
 		  version_created_tstamp timestamp(14) NOT NULL,
 		  version_text_short mediumblob NOT NULL,
 		  version_text_long mediumblob NOT NULL,
+		  version_comments mediumblob NOT NULL,
 		  PRIMARY KEY  (version_id)
 		) TYPE=MyISAM;
 
