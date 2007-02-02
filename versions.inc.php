@@ -191,14 +191,19 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 					var newRow = newButtons.length - 1;
 			}
 		}
-		
-		newButtons.push(null);
-				
+						
 		// If a new version was selected make sure that the old version is older
 		if (button.name == 'newversion') {
 			if (oldRow <= newRow) {
 				oldButtons[oldRow].checked = '';
 				oldButtons[newRow + 1].checked = 'checked';
+			}
+			
+			for (var i = 1; i < oldButtons.length; i++) {
+				if (i <= newRow)
+					oldButtons[i].style.visibility = 'hidden';
+				else
+					oldButtons[i].style.visibility = 'visible';
 			}
 		} 
 		// If an old version was selected make sure that the new version is newer
@@ -206,6 +211,13 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 			if (newRow >= oldRow) {
 				newButtons[newRow].checked = '';
 				newButtons[oldRow - 1].checked = 'checked';
+			}
+			
+			for (var i = 1; i < newButtons.length; i++) {
+				if (i >= oldRow)
+					newButtons[i].style.visibility = 'hidden';
+				else
+					newButtons[i].style.visibility = 'visible';
 			}
 		}
 	}
@@ -227,6 +239,8 @@ END;
 		
 	$color = 0;
 	$i = 0;
+	$hideOld = true;
+	$hideNew = false;
 	foreach ($versions as $version) {
 		$version_id = $version['version_id'];
 		$version_num = $version['version_order'];
@@ -238,12 +252,19 @@ END;
 			printc("<input type='radio' name='oldversion' value='".$version_num."' ");
 			
 			if (isset($_SESSION['oldversion'])) {
-				if ($_SESSION['oldversion'] == $version_num)
+				if ($_SESSION['oldversion'] == $version_num) {
 					printc(" checked='checked'");
+					$hideNew = true;
+				}
 			} else {
-				if ($i == 1)
+				if ($i == 1) {
 					printc(" checked='checked'");
+					$hideNew = true;
+				}
 			}
+			
+			if ($hideOld)
+				printc(" style='visibility: hidden;'");
 			
 			printc(" onclick=\"updateVersionSelection(this);\"");
 			
@@ -256,12 +277,19 @@ END;
 			printc("<input type='radio' name='newversion' value='".$version_num."' ");
 			
 			if (isset($_SESSION['newversion'])) {
-				if ($_SESSION['newversion'] == $version_num)
+				if ($_SESSION['newversion'] == $version_num) {
 					printc(" checked='checked'");
+					$hideOld = false;
+				}
 			} else {
-				if (!$i)
+				if (!$i) {
 					printc(" checked='checked'");
+					$hideOld = false;
+				}
 			}
+			
+			if ($hideNew)
+				printc(" style='visibility: hidden;'");
 			
 			printc(" onclick=\"updateVersionSelection(this);\"");
 			printc(" />");
