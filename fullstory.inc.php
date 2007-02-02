@@ -8,13 +8,11 @@ $content = '';
  * This script is an adaptation of fullstory.php
  * this script is included in site.inc.php when detail variable is set
  ******************************************************************************/
-//printpre($_REQUEST);
-//session_start();
+if ($_REQUEST['action'] == 'viewsite') 
+	$action = 'viewsite';
+else
+	$action = 'site';
 
-// include all necessary files
-//include("includes.inc.php");
-
-//include(dirname(__FILE__)."/".$themesdir."/common/header.inc.php");
 
 if ($tmp = $_REQUEST['flat_discussion']) {
 	$_SESSION['flat_discussion'] = ($tmp=='true')?true:false;
@@ -84,7 +82,7 @@ printc("\n<table width='100%' id='maintable' cellspacing='1'>");
 
 printc($pagePagination);
 				
-printc("\n\t<tr>\n\t\t<td align='left' class='title'>\n\t\t\t<a href='index.php?action=site&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a>");
+printc("\n\t<tr>\n\t\t<td align='left' class='title'>\n\t\t\t<a href='index.php?action=".$action."&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a>");
 
 if ($storyObj->getField('title')) {
 	printc("\n\t\t\t&gt; ".spchars($storyObj->getField('title'))." &gt; in depth");
@@ -108,7 +106,7 @@ if ($story_tags) {
 	foreach ($story_tags as $tag) {
 		$urltag = urlencode($tag);
 		$tagname = urldecode($tag);
-		printc("\n\t\t\t\t<a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".$tagname."</a>");
+		printc("\n\t\t\t\t<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".$tagname."</a>");
 	};
 	printc("\n\t\t\t</div>\n\t\t</td>\n\t</tr>");
 }
@@ -163,7 +161,7 @@ if ($storyObj->getField("discuss")) {
 	printc("\n\t\t\t<table>");
 	printc("\n\t\t\t\t<tr>\n\t\t\t\t\t<td>");
 	$f = $_SESSION['flat_discussion'];
-	printc("\n\t\t\t\t\t\t<form action='index.php?$sid&amp;action=site&amp;".$getinfo."' method='post' name='viewform'>");
+	printc("\n\t\t\t\t\t\t<form action='index.php?$sid&amp;action=".$action."&amp;".$getinfo."' method='post' name='viewform'>");
 	printc("\n\t\t\t\t\t\t\t<select name='flat_discussion'>");
 	printc("\n\t\t\t\t\t\t\t\t<option value='true'".(($f)?" selected='selected'":"").">Flat</option>");
 	printc("\n\t\t\t\t\t\t\t\t<option value='false'".((!$f)?" selected='selected'":"").">Threaded</option>");
@@ -301,7 +299,7 @@ if ($storyObj->getField("discuss")) {
 	if (!$ds->count()) printc("\n\t<tr>\n\t\t<td>There have been no posts to this discussion.</td>\n\t</tr>");
 }
 		printc("<table>");
-printc("\n\t<tr>\n\t\t<td align='left'>\n\t\t\t<br /><a href='index.php?action=site&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a> &gt; in depth</td>\n\t</tr>");
+printc("\n\t<tr>\n\t\t<td align='left'>\n\t\t\t<br /><a href='index.php?action=".$action."&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a> &gt; in depth</td>\n\t</tr>");
 printc("</table>\n");
 
 function participants() {

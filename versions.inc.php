@@ -1,5 +1,9 @@
 <? /* $Id$ */
 
+if ($_REQUEST['action'] == 'viewsite') 
+	$action = 'viewsite';
+else
+	$action = 'site';
 
 $siteObj =& new site($_REQUEST[site]);
 $sectionObj =& new section($_REQUEST[site],$_REQUEST[section], $siteObj);
@@ -56,7 +60,7 @@ printc($pagePagination);
  ******************************************************************************/
  
 printc("<tr><td align='left' class='title'>");
-printc("<a href='index.php?action=site&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a>");
+printc("<a href='index.php?action=".$action."&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a>");
 
 if ($storyObj->getField('title')) {
 	printc(" > ".spchars($storyObj->getField('title')));
@@ -65,7 +69,7 @@ if ($storyObj->getField('title')) {
 if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	$_SESSION['oldversion'] = $_REQUEST['oldversion'];
 	$_SESSION['newversion'] = $_REQUEST['newversion'];
-	printc(" > <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
 	printc(" > Selected Versions");
 	
 } else if ($_REQUEST['versioning']) {
@@ -83,7 +87,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	$fulltext = urldecode($version[0]['version_text_long']);
 	$version_date = $version[0]['version_created_tstamp'];
 	$version_author = $version[0]['FK_createdby'];
-	printc(" > <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
 	printc(" > Selected Versions");
 	
 } else {
@@ -108,11 +112,11 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	printc("<table width='100%' cellpadding='3'>");
 	printc("<tr>\n");
 	printc("<td>");
-	printc("<strong><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version01_num'>Revision ".$version01_num."</a></strong> ");
+	printc("<strong><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version01_num'>Revision ".$version01_num."</a></strong> ");
 	printc("(".$version01[0]['version_created_tstamp']." - ".$version01[0]['FK_createdby'].")\n");
 	printc("</td>");
 	printc("<td>");
-	printc("<strong><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version02_num'>Revision ".$version02_num."</a></strong> ");
+	printc("<strong><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version02_num'>Revision ".$version02_num."</a></strong> ");
 	printc("(".$version02[0]['version_created_tstamp']." - ".$version02[0]['FK_createdby'].")\n");
 	printc("</td>");
 	printc("</tr>\n");
@@ -133,7 +137,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 
 } else if ($_REQUEST['versioning']) {
 	printc("\n<tr>\n\t<td>\n\t\t");
-	$u = "$PHP_SELF?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=1";
+	$u = "$PHP_SELF?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=1";
 	printc("<form action='$u' method='post'>\n");
 	
 	ob_start();
@@ -296,7 +300,7 @@ END;
 		}
 
 		printc("</td>");
-		printc("<td class='ts$color'><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
+		printc("<td class='ts$color'><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
 		printc("<td class='ts$color'>".$version['version_created_tstamp']."</td>");
 		printc("<td class='ts$color'>".$version['FK_createdby']."</td>\n");
 		printc("</tr>\n");
@@ -354,7 +358,7 @@ END;
 			foreach ($story_tags as $tag) {
 				$urltag = urlencode($tag);
 				$tagname = urldecode($tag);
-				printc("<a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".$tagname."</a>\n");
+				printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".$tagname."</a>\n");
 			}
 			printc("\n");
 			printc("</div></td></tr>\n\n");
@@ -383,14 +387,14 @@ END;
  ******************************************************************************/
  
 printc("<tr><td align='left'>");
-printc("<a href='index.php?action=site&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a>");
+printc("<a href='index.php?action=".$action."&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a>");
 
 if ($storyObj->getField('title')) {
 	printc(" > ".spchars($storyObj->getField('title')));
 }
 
 if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
-	printc(" > <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
 	printc(" > Selected Versions");
 	
 } else if ($_REQUEST['versioning']) {
@@ -401,7 +405,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
  ******************************************************************************/
  
 } else if ($_REQUEST['version']) {
-	printc(" > <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
 	printc(" > Revision ".$version_num);
 	
 } else {

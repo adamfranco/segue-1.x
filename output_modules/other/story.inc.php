@@ -28,7 +28,7 @@ if ($o->getField("discuss") || $o->getField("longertext")) {
 	
 	if ($o->getField("longertext") && !ereg("^[\n\r]*<br />$", $o->getField("longertext"))) {
 		if ($action == 'viewsite')
-			$discussAction = 'site';
+			$discussAction = 'viewsite';
 		else if (ereg("preview_edit_as|preview_as", $action))
 			$discussAction = ereg_replace("preview_edit_as", "preview_as", $action);
 		else
