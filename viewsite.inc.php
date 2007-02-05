@@ -189,7 +189,9 @@ do {
 				printc(urldecode($_REQUEST["tag"])."</div>");
 			} else if ($_REQUEST["tag"]) {
 				printc("<div class='title'>Categories > ");
-				printc(urldecode($_REQUEST["tag"])."</div>");				
+				printc(urldecode($_REQUEST["tag"])."</div>");
+			} else if ($_REQUEST['versioning'] || $_REQUEST['version']) {
+				printc("");
 			} else {
 				printc("<div class='title'>".$thisPage->getField("title"));
 				if ($thisSection->hasPermission("edit")) {
@@ -224,264 +226,282 @@ do {
 		 ******************************************************************************/
 		
 		if ($thisPage->stories || $thisPage->getField("type") == "tags") {
-		
-			/******************************************************************************
-			 * Set up pagination variables
-			 ******************************************************************************/
-			 
-			if (is_numeric($thisPage->getField("archiveby"))) {
-				$num_per_set = $thisPage->getField("archiveby");
+			//if detail then print only story detail ie full text/discussion
+			if ($_REQUEST['detail']) {
+				$o =& $thisPage->stories[$_REQUEST['detail']];
+				include("fullstory.inc.php");
+			} else if ($_REQUEST['versioning'] || $_REQUEST['version'] ) {
+				$o =& $thisPage->stories[$_REQUEST['versioning']];
+				include("versions.inc.php");				
 			} else {
-				$num_per_set = 100000000;
-			}
-
-			if ($_REQUEST["story_set"] > 0) 
-				$story_set = $_REQUEST["story_set"] - 1;
-			else
-				$story_set = 0;
-				
-			$start = $story_set * $num_per_set;
-			$end = $start + $num_per_set;
-
-			/******************************************************************************
-			 * Print out story pagination links
-			 ******************************************************************************/
-
-			if ($_REQUEST["tag"]) {
-				$tagged_stories = get_tagged_stories($site,$section,$page,$_REQUEST["tag"]);
-				$stories = $tagged_stories[story_id];
-				//printpre($stories);
-			} else {
-				$stories = $thisPage->data[stories];
-			}
-		
-			printc("<div align='right'>");
-			if (count($stories) > $num_per_set)  {
-				for ($j = 0; $j < (count($stories) / $num_per_set); $j++) {
-				
-					if ($story_set == $j) {
-						$pagelinks[] = "current";
-						printc(" <strong>".($j+1)."</strong> | ");
-					} else {
-						$pagelinks[] = "?$sid&amp;$envvars&amp;action=viewsite&amp;story_set=".($j+1).(($_REQUEST['showorder']=='story')?"&amp;showorder=story":"");
-						printc("<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;story_set=".($j+1).(($_REQUEST['showorder']=='story')?"&amp;showorder=story":"")."'>".($j+1)."</a> | ");
-					}
-				}
-			}
-			
-			/******************************************************************************
-			 * If num_per_set = 1 show menu of story titles (or snippets from short text)
-			 ******************************************************************************/
-			 
-			if ($num_per_set == 1) {
-			//	printpre ($num_per_set);
-				printc("\n<div align='right'>\n\t<select name='story_nav' onchange=\"window.location=this.value;\">");
-				$n = 0;
-				foreach ($stories as $story_id) {
-					$story_title = db_get_value("story", "story_title", "story_id ='".addslashes($story_id)."'");
-					$pagelink = $pagelinks[$n];
-					if ($story_set != $j) {
-						if ($story_title) {
-							printc("\n\t\t<option value='".$pagelink."'".(($pagelink=='current')?" selected='selected'":"").">".$story_title."</option>");
-						} else {
-							$story_text = db_get_value("story", "story_text_short", "story_id ='".addslashes($story_id)."'");
-							$shory_text_all = strip_tags(urldecode($story_text));
-							$story_text = substr($shory_text_all,0,25);
-							printc("\n\t\t<option value='".$pagelink."'".(($pagelink=='current')?" selected='selected'":"").">".$story_text."...</option>");
-						}
-					}
-					$n = $n+1;
-				}
-				printc("\n\t</select>\n</div>");			
-			}
-
-			printc("\n</div>\n\n");
-								
-			 /******************************************************************************
-			 * Print out stories in pagination range
-			 ******************************************************************************/
-			$nextorder = 0;
-			
-			for ($j= $start; $j < $end && $j < count($stories); $j++ ) {
-				
-				$s = $stories[$j];
-				$reorderUrl = $_SERVER['PHP_SELF']."?&amp;action=reorder&amp;site=".$site."&amp;section=".$section."&amp;page=".$page.(($_REQUEST['story_set'])?"&amp;story_set=".$_REQUEST['story_set']:"")."&amp;reorderContent=".$s."&amp;newPosition=";
-				
-				
-				if ($_REQUEST["tag"]) {
-					$tagged_page = $tagged_stories[page_id][$j];
-					$tagged_section = $tagged_stories[section_id][$j];					
-					$o =& new story($_REQUEST[site],$tagged_section,$tagged_page,$s, $thisPage);
+				/******************************************************************************
+				 * Set up pagination variables
+				 ******************************************************************************/
+				 
+				if (is_numeric($thisPage->getField("archiveby"))) {
+					$num_per_set = $thisPage->getField("archiveby");
 				} else {
-					$o = & $thisPage->stories[$s];
+					$num_per_set = 100000000;
+				}
+	
+				if ($_REQUEST["story_set"] > 0) 
+					$story_set = $_REQUEST["story_set"] - 1;
+				else
+					$story_set = 0;
+					
+				$start = $story_set * $num_per_set;
+				$end = $start + $num_per_set;
+	
+				/******************************************************************************
+				 * Print out story pagination links
+				 ******************************************************************************/
+	
+				if ($_REQUEST["tag"]) {
+					$tagged_stories = get_tagged_stories($site,$section,$page,$_REQUEST["tag"]);
+					$stories = $tagged_stories[story_id];
+					//printpre($stories);
+				} else {
+					$stories = $thisPage->data[stories];
+				}
+			
+				printc("<div align='right'>");
+				if (count($stories) > $num_per_set)  {
+					for ($j = 0; $j < (count($stories) / $num_per_set); $j++) {
+					
+						if ($story_set == $j) {
+							$pagelinks[] = "current";
+							printc(" <strong>".($j+1)."</strong> | ");
+						} else {
+							$pagelinks[] = "?$sid&amp;$envvars&amp;action=viewsite&amp;story_set=".($j+1).(($_REQUEST['showorder']=='story')?"&amp;showorder=story":"");
+							printc("<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;story_set=".($j+1).(($_REQUEST['showorder']=='story')?"&amp;showorder=story":"")."'>".($j+1)."</a> | ");
+						}
+					}
 				}
 				
-				if ($o && $o->canview()) {
-					if ($i!=0)
-						printc("<hr class='block' style='margin-top: 10px' />");
-						
-
-					/******************************************************************************
-					 * print out story title
-					 ******************************************************************************/
-					
-					if ($tagged_section) {
-						$source_section = $section;
-						$section = $tagged_section;	
-					}
-					if ($tagged_page) {
-						$source_page = $page;
-						$page = $tagged_page;
-					}
-					
-					printc("<div class='leftmargin'>\n");
-					
-					// Reorder Links	
-					if ($_REQUEST['showorder'] == "story" && $thisPage->getField("storyorder") == 'custom' && $thisPage->hasPermission("edit")) {
-						//print "<select name='reorder2' style = 'font-size: 9px; display: none;' class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'";
-						printc("<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'");
-						for ($i=0; $i<count($stories); $i++) {
-							printc( "<option value='".$i."'".(($i==$nextorder || $i==$story_set)?" selected":"").">".($i+1)."</option>\n");
-						}
-						printc("</select>\n");
-					}
-					
-					if ($o->getField("title") && $o->getField("type") != "link" && $o->getField("type") != "file" && $o->getField("type") != "image") {
-						
-						printc("<strong>");			
-						printc("<a name='".$o->id."'");
-						printc(" href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id."'>");
-						printc(spchars($o->getField("title"))."</a></strong>\n");	
-					}
-					printc("</div>\n");
-
-					/******************************************************************************
-					 * check is story is active and if not, display active dates.
-					 ******************************************************************************/
-
-					if (!indaterange($o->getField("activatedate"), $o->getField("deactivatedate"))) {
-						printc("<div class='contentinfo' align='left'>\n");
-						if (!nulldate($o->getField("activatedate"))) printc("Active dates: <strong><a href='index.php?$sid&amp;action=edit_story&amp;edit_story=".$o->id."&amp;comingFrom=viewsite&amp;step=3&amp;site=$site&amp;section=$section&amp;page=$page&amp;'>".$o->getField("activatedate")."</a></strong>");
-						if (!nulldate($o->getField("deactivatedate"))) printc(" to <strong><a href='index.php?$sid&amp;action=edit_story&amp;edit_story=".$o->id."&amp;comingFrom=viewsite&amp;step=3&amp;site=$site&amp;section=$section&amp;page=$page&amp;'>".$o->getField("deactivatedate")."</strong>");
-						printc("</div>");
-					}
-					
-					/******************************************************************************
-					 * Get story tags and display them
-					 ******************************************************************************/
-					$record_id = $o->id;
-					$user_id = $_SESSION[aid];
-					$record_type = "story";
-					$story_tags = get_record_tags($record_id);
-					
-					if ($story_tags) {
-						printc("\n\t\t\t\t<div class='contentinfo' style='margin-top: 0px;'>");
-						printc("Categories:");
-						foreach ($story_tags as $tag) {
-							$urltag = urlencode($tag);
-							printc("<a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".urldecode($tag)."</a>\n");
-						}
-						printc(" <a href='index.php?$sid&amp;action=edit_story&amp;edit_story=".$o->id."&amp;comingFrom=viewsite&amp;step=3&amp;site=$site&amp;section=$section&amp;page=$page&amp;".(($story_set)?"&amp;story_set=".($story_set+1):"")."'>[edit]</a>");
-						printc("</div>\n");
-					}
-					
-
-					$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
-	/* 				print "<br />".$incfile; */
-					include($incfile);
-					
-					/******************************************************************************
-					 * author, editor, timestamp info
-					 ******************************************************************************/
-					
-					if ($thisPage->getField("showcreator") || $thisPage->getField("showeditor") || $thisPage->getField("showdate")) {
-						printc("<div class='contentinfo' align='right'>");
-						$added = timestamp2usdate($o->getField("addedtimestamp"));
-						$edited = timestamp2usdate($o->getField("editedtimestamp"));
-						
-	
-						// if show date but not creator							
-						if ($thisPage->getField("showdate") && !$thisPage->getField("showcreator") && !$o->getField("editedtimestamp")) {
-							printc(" added on $added");
-						} else if ($thisPage->getField("showdate") && (!$thisPage->getField("showcreator") && !$thisPage->getField("showeditor"))  && $o->getField("editedtimestamp")) {
-							printc(" updated on $edited");
-																			
-						// if show date and creator/editor
-						} else if ($thisPage->getField("showdate") && ($thisPage->getField("showcreator") || $thisPage->getField("showeditor"))) {
-							if ($thisPage->getField("showcreator") && $thisPage->getField("showeditor") == $thisPage->getField("showcreator") && $o->getField("editedtimestamp")) {
-								printc("updated by ".$o->getField("editedbyfull")." on $edited");
-							} else if ($thisPage->getField("showcreator") && !$o->getField("editedtimestamp")) {
-								printc("added by ".$o->getField("addedbyfull")." on $added");
-							} else if ($thisPage->getField("showeditor") && $o->getField("editedtimestamp")) {
-								printc("updated by ".$o->getField("editedbyfull")." on $edited");
-							} else if ($thisPage->getField("showcreator") && $o->getField("editedtimestamp")) {
-								printc("added by ".$o->getField("addedbyfull")." on $added");
+				/******************************************************************************
+				 * If num_per_set = 1 show menu of story titles (or snippets from short text)
+				 ******************************************************************************/
+				 
+				if ($num_per_set == 1) {
+				//	printpre ($num_per_set);
+					printc("\n<div align='right'>\n\t<select name='story_nav' onchange=\"window.location=this.value;\">");
+					$n = 0;
+					foreach ($stories as $story_id) {
+						$story_title = db_get_value("story", "story_title", "story_id ='".addslashes($story_id)."'");
+						$pagelink = $pagelinks[$n];
+						if ($story_set != $j) {
+							if ($story_title) {
+								printc("\n\t\t<option value='".$pagelink."'".(($pagelink=='current')?" selected='selected'":"").">".$story_title."</option>");
+							} else {
+								$story_text = db_get_value("story", "story_text_short", "story_id ='".addslashes($story_id)."'");
+								$shory_text_all = strip_tags(urldecode($story_text));
+								$story_text = substr($shory_text_all,0,25);
+								printc("\n\t\t<option value='".$pagelink."'".(($pagelink=='current')?" selected='selected'":"").">".$story_text."...</option>");
 							}
-							
-						// if don't show date but show creator/editor
-						} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor") && $thisPage->getField("showcreator") && $o->getField("addedbyfull") != $o->getField("editedbyfull")) {
-							printc("added by ".$o->getField("addedbyfull")."<br />");
-							printc("updated by ".$o->getField("editedbyfull"));
-						} else if (!$thisPage->getField("showdate") && $thisPage->getField("showcreator")) {
-							printc("added by ".$o->getField("addedbyfull"));
-						} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor")) {
-							printc("updated by ".$o->getField("editedbyfull"));
 						}
-													
-						printc("</div>");
-						//printc("<hr size='1' noshade /><br />");
-					}						
+						$n = $n+1;
+					}
+					printc("\n\t</select>\n</div>");			
+				}
+	
+				printc("\n</div>\n\n");
+									
+				 /******************************************************************************
+				 * Print out stories in pagination range
+				 ******************************************************************************/
+				$nextorder = 0;
 				
-					printc("<div align='right'>");
-		//			$s1=$s2=NULL;
-		
-					/******************************************************************************
-					 * edit, delete options 
-					 ******************************************************************************/
-					if ($_REQUEST['tag']) {
-						$envvars = "site=".$thisSite->name;
+				for ($j= $start; $j < $end && $j < count($stories); $j++ ) {
+					
+					$s = $stories[$j];
+					$reorderUrl = $_SERVER['PHP_SELF']."?&amp;action=reorder&amp;site=".$site."&amp;section=".$section."&amp;page=".$page.(($_REQUEST['story_set'])?"&amp;story_set=".$_REQUEST['story_set']:"")."&amp;reorderContent=".$s."&amp;newPosition=";
+					
+					
+					if ($_REQUEST["tag"]) {
+						$tagged_page = $tagged_stories[page_id][$j];
+						$tagged_section = $tagged_stories[section_id][$j];					
+						$o =& new story($_REQUEST[site],$tagged_section,$tagged_page,$s, $thisPage);
+					} else {
+						$o = & $thisPage->stories[$s];
+					}
+					
+					if ($o && $o->canview()) {
+						if ($i!=0)
+							printc("<hr class='block' style='margin-top: 10px' />");
+							
+	
+						/******************************************************************************
+						 * print out story title
+						 ******************************************************************************/
+						
 						if ($tagged_section) {
-							$envvars .= "&amp;section=".$tagged_section;
+							$source_section = $section;
+							$section = $tagged_section;	
 						}
 						if ($tagged_page) {
-							$envvars .= "&amp;page=".$tagged_page;
+							$source_page = $page;
+							$page = $tagged_page;
 						}
-					}
-					//printpre($story_set);
-					$l = array();
-					if (($_SESSION[auser] == $site_owner) || (($_SESSION[auser] != $site_owner) && !$o->getField("locked"))) {
-						if (!$_REQUEST['tag']) {
 						
-							if ($thisPage->getField("storyorder") == 'custom' && $thisPage->hasPermission("edit") ) {
-								if ($_REQUEST[showorder] == "story") {
-									$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>hide order</a>";
-								} else {
-									$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=story".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>reorder</a>";									
-								}
+						printc("<div class='leftmargin'>\n");
+						
+						// Reorder Links	
+						if ($_REQUEST['showorder'] == "story" && $thisPage->getField("storyorder") == 'custom' && $thisPage->hasPermission("edit")) {
+							//print "<select name='reorder2' style = 'font-size: 9px; display: none;' class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'";
+							printc("<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'");
+							for ($i=0; $i<count($stories); $i++) {
+								printc( "<option value='".$i."'".(($i==$nextorder || $i==$story_set)?" selected":"").">".($i+1)."</option>\n");
 							}
-			
-							if (($thisPage->getField("archiveby") == '' || $thisPage->getField("archiveby") == 'none' || !$thisPage->getField("archiveby")) && $thisPage->hasPermission("edit")) {
-																
-//								if ($i!=0 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) {
-//									$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=story&amp;direction=up&amp;id=$s' class='small' title='Move this Content Block up'><b>&uarr;</b></a>";
-//								}
-//								if ($i!=count($thisPage->stories)-1 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) {
-//									$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=story&amp;direction=down&amp;id=$s' class='small' title='Move this Content Block down'><b>&darr;</b></a>";
-//								}
-							}
-							if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='copy_parts.php?$sid&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$s&amp;type=story' class='small' title='Move/Copy this Content Block to another page' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>";
+							printc("</select>\n");
 						}
-						if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_story&amp;edit_story=$s&amp;comingFrom=viewsite".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Edit this Content Block'>edit</a>";
-						if ($thisPage->hasPermission("delete") || $o->hasPermission("delete")) $l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&amp;$envvars&amp;action=delete_story&amp;delete_story=$s\")' class='small' title='Delete this Content Block'>delete</a>";
-					}
-					printc(implode(" | ",$l));
-					printc("</div>");
-					$i++;
-				}
-				unset($o);
-				$nextorder++;
-			}
+						
+						if ($o->getField("title") && $o->getField("type") != "link" && $o->getField("type") != "file" && $o->getField("type") != "image") {
+							
+							printc("<strong>");			
+							printc("<a name='".$o->id."'");
+							printc(" href='index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id."'>");
+							printc(spchars($o->getField("title"))."</a></strong>\n");	
+						}
+						printc("</div>\n");
+	
+						/******************************************************************************
+						 * check is story is active and if not, display active dates.
+						 ******************************************************************************/
+	
+						if (!indaterange($o->getField("activatedate"), $o->getField("deactivatedate"))) {
+							printc("<div class='contentinfo' align='left'>\n");
+							if (!nulldate($o->getField("activatedate"))) printc("Active dates: <strong><a href='index.php?$sid&amp;action=edit_story&amp;edit_story=".$o->id."&amp;comingFrom=viewsite&amp;step=3&amp;site=$site&amp;section=$section&amp;page=$page&amp;'>".$o->getField("activatedate")."</a></strong>");
+							if (!nulldate($o->getField("deactivatedate"))) printc(" to <strong><a href='index.php?$sid&amp;action=edit_story&amp;edit_story=".$o->id."&amp;comingFrom=viewsite&amp;step=3&amp;site=$site&amp;section=$section&amp;page=$page&amp;'>".$o->getField("deactivatedate")."</strong>");
+							printc("</div>");
+						}
+						
+						/******************************************************************************
+						 * Get story tags and display them
+						 ******************************************************************************/
+						$record_id = $o->id;
+						$user_id = $_SESSION[aid];
+						$record_type = "story";
+						$story_tags = get_record_tags($record_id);
+						
+						if ($story_tags) {
+							printc("\n\t\t\t\t<div class='contentinfo' style='margin-top: 0px;'>");
+							printc("Categories:");
+							foreach ($story_tags as $tag) {
+								$urltag = urlencode($tag);
+								printc("<a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".urldecode($tag)."</a>\n");
+							}
+							printc(" <a href='index.php?$sid&amp;action=edit_story&amp;edit_story=".$o->id."&amp;comingFrom=viewsite&amp;step=3&amp;site=$site&amp;section=$section&amp;page=$page&amp;".(($story_set)?"&amp;story_set=".($story_set+1):"")."'>[edit]</a>");
+							printc("</div>\n");
+						}
+						
+	
+						$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
+		/* 				print "<br />".$incfile; */
+						include($incfile);
+						
+						/******************************************************************************
+						 * author, editor, timestamp info
+						 ******************************************************************************/
+						
+						if ($thisPage->getField("showcreator") || $thisPage->getField("showeditor") || $thisPage->getField("showdate")) {
+							printc("<div class='contentinfo' align='right'>");
+							$added = timestamp2usdate($o->getField("addedtimestamp"));
+							$edited = timestamp2usdate($o->getField("editedtimestamp"));
+							
 		
+							// if show date but not creator							
+							if ($thisPage->getField("showdate") && !$thisPage->getField("showcreator") && !$o->getField("editedtimestamp")) {
+								printc(" added on $added");
+							} else if ($thisPage->getField("showdate") && (!$thisPage->getField("showcreator") && !$thisPage->getField("showeditor"))  && $o->getField("editedtimestamp")) {
+								printc(" updated on $edited");
+																				
+							// if show date and creator/editor
+							} else if ($thisPage->getField("showdate") && ($thisPage->getField("showcreator") || $thisPage->getField("showeditor"))) {
+								if ($thisPage->getField("showcreator") && $thisPage->getField("showeditor") == $thisPage->getField("showcreator") && $o->getField("editedtimestamp")) {
+									printc("updated by ".$o->getField("editedbyfull")." on $edited");
+								} else if ($thisPage->getField("showcreator") && !$o->getField("editedtimestamp")) {
+									printc("added by ".$o->getField("addedbyfull")." on $added");
+								} else if ($thisPage->getField("showeditor") && $o->getField("editedtimestamp")) {
+									printc("updated by ".$o->getField("editedbyfull")." on $edited");
+								} else if ($thisPage->getField("showcreator") && $o->getField("editedtimestamp")) {
+									printc("added by ".$o->getField("addedbyfull")." on $added");
+								}
+								
+							// if don't show date but show creator/editor
+							} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor") && $thisPage->getField("showcreator") && $o->getField("addedbyfull") != $o->getField("editedbyfull")) {
+								printc("added by ".$o->getField("addedbyfull")."<br />");
+								printc("updated by ".$o->getField("editedbyfull"));
+							} else if (!$thisPage->getField("showdate") && $thisPage->getField("showcreator")) {
+								printc("added by ".$o->getField("addedbyfull"));
+							} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor")) {
+								printc("updated by ".$o->getField("editedbyfull"));
+							}
+							
+													
+							// if versioning then show link to versions
+							if ($thisPage->getField("showversions") == 1) {
+								printc(" | <a href='index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;versioning=".$o->id."'>");
+								printc("versions</a>\n");								
+							}
+	
+							printc("</div>");
+							//printc("<hr size='1' noshade /><br />");
+						}						
+					
+						printc("<div align='right'>");
+			//			$s1=$s2=NULL;
+			
+						/******************************************************************************
+						 * edit, delete options 
+						 ******************************************************************************/
+						if ($_REQUEST['tag']) {
+							$envvars = "site=".$thisSite->name;
+							if ($tagged_section) {
+								$envvars .= "&amp;section=".$tagged_section;
+							}
+							if ($tagged_page) {
+								$envvars .= "&amp;page=".$tagged_page;
+							}
+						}
+						//printpre($story_set);
+						$l = array();
+						if (($_SESSION[auser] == $site_owner) || (($_SESSION[auser] != $site_owner) && !$o->getField("locked"))) {
+							if (!$_REQUEST['tag']) {
+							
+								if ($thisPage->getField("storyorder") == 'custom' && $thisPage->hasPermission("edit") ) {
+									if ($_REQUEST[showorder] == "story") {
+										$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>hide order</a>";
+									} else {
+										$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=story".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>reorder</a>";									
+									}
+								}
+				
+								if (($thisPage->getField("archiveby") == '' || $thisPage->getField("archiveby") == 'none' || !$thisPage->getField("archiveby")) && $thisPage->hasPermission("edit")) {
+																	
+	//								if ($i!=0 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) {
+	//									$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=story&amp;direction=up&amp;id=$s' class='small' title='Move this Content Block up'><b>&uarr;</b></a>";
+	//								}
+	//								if ($i!=count($thisPage->stories)-1 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) {
+	//									$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=story&amp;direction=down&amp;id=$s' class='small' title='Move this Content Block down'><b>&darr;</b></a>";
+	//								}
+								}
+								if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='copy_parts.php?$sid&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$s&amp;type=story' class='small' title='Move/Copy this Content Block to another page' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>";
+							}
+							if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) 
+								$l[]="<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_story&amp;edit_story=$s&amp;comingFrom=viewsite".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Edit this Content Block'>edit</a>";
+							if ($thisPage->hasPermission("delete") || $o->hasPermission("delete")) 
+								$l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&amp;$envvars&amp;action=delete_story&amp;delete_story=$s\")' class='small' title='Delete this Content Block'>delete</a>";
+							if ($thisPage->hasPermission("edit") || $o->hasPermission("edit"))
+								$l[]= "<a href='index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$s."&amp;versioning=".$s."' class='small' title='View the history of this content'>versions</a>";
+						}
+						printc(implode(" | ",$l));
+						printc("</div>");
+						$i++;
+					}
+					unset($o);
+					$nextorder++;
+				}
+			}
 			
 		/******************************************************************************
 		 * if now stories print content add note
@@ -498,8 +518,13 @@ do {
 		}
 		
 		$_b = array("","custom","addedasc","editedasc");
-		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_b) && $thisPage->getField("type") == "page") 
+		if ($thisPage->hasPermission("add") 
+			&& in_array($thisPage->getField("storyorder"),$_b) 
+			&& $thisPage->getField("type") == "page"
+			&& !($_REQUEST['versioning'] || $_REQUEST['detail'])) 
+		{
 			printc("<br /><hr class='block' /><div align='right'><a href='$PHP_SELF?$sid&amp;$envvars&amp;action=add_story&amp;comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+		}
 	} else if ($thisSection && count($thisSection->pages) == 0) {
 		printc("Click the '+ add item' button to add a page to this section.\n<br/>");
 	}

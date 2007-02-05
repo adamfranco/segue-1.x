@@ -110,6 +110,24 @@ select, textarea, input {
 	margin-right: 0px;
 }
 
+.btnlink2 {
+	color: #<? echo $linkcolor; ?>;
+	font-size: 10px;
+	border: 1px solid #<? echo $linkcolor; ?>;
+	padding: 3px;
+	margin-bottom: 7px;
+}
+
+.versions {
+	color: #<? echo $linkcolor; ?>;
+	border: 1px solid #<? echo $linkcolor; ?>;
+	padding-left: 3px;
+	padding-right: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;/* 	width: 15px; */
+	margin-right: 0px;
+}
+
 /*     BLOCK DIVIDERS           */
 .block {
 <? if ($c['a'])
@@ -160,6 +178,13 @@ th {
 /*      DATE AND TIME DISPLAYS, ETC (below content blocks)  */
 .contentinfo {
 	color: #<? echo $c['contentinfo']; ?>;
+}
+
+.contentinfo2 {
+	color: #<? echo $c['contentinfo']; ?>;
+	border: 1px solid #<? echo $linkcolor; ?>;
+	padding-left: 1px;
+	padding-right: 1px;
 }
 
 .editinfo {

@@ -221,7 +221,10 @@ do {
 				printc(urldecode($_REQUEST["tag"])."</div>");
 			} else if ($_REQUEST["tag"]) {
 				printc("<div class='title'>Categories > ");
-				printc(urldecode($_REQUEST["tag"])."</div>");				
+				printc(urldecode($_REQUEST["tag"])."</div>");
+				
+			} else if ($_REQUEST['versioning'] || $_REQUEST['version']) {
+				printc("");
 			} else {
 
 				printc("\n\t\t\t\t<div class='title'>".$thisPage->getField("title")."</div>");
@@ -278,6 +281,10 @@ do {
 			if ($detail) {
 				$o =& $thisPage->stories[$detail];
 				include("fullstory.inc.php");
+			} else if ($_REQUEST['versioning'] || $_REQUEST['version']) {
+				$o =& $thisPage->stories[$detail];
+				include("versions.inc.php");			
+
 			
 			//if not detail, then print all stories
 			
@@ -461,6 +468,14 @@ do {
 							} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor")) {
 								printc("updated by ".$o->getField("editedbyfull"));
 							}
+							
+														
+							// if versioning then show link to versions
+							if ($thisPage->getField("showversions") == 1) {
+								printc(" | <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;versioning=".$o->id."'>");
+								printc("versions</a>\n");								
+							}
+
 							printc(" | <a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id."'>");
 							printc("permalink</a>\n");		
 							printc("</div>");

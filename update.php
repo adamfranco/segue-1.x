@@ -11,6 +11,7 @@ include("objects/objects.inc.php");
  *		run()				runs the update
  ******************************************************************************/
 	$updates = array();
+	require_once("updates/update_1.6.1.inc.php");
 	require_once("updates/update_1.5.7.inc.php");
 	require_once("updates/update_1.5.3.inc.php");
 	require_once("updates/update_1.5.0.inc.php");
@@ -18,6 +19,7 @@ include("objects/objects.inc.php");
 	require_once("updates/update_1.1.0.inc.php");
 	require_once("updates/update_1.0.3.inc.php");
 	
+	$updates[] =& new Update161;
 	$updates[] =& new Update157;
 	$updates[] =& new Update153;
 	$updates[] =& new Update150;

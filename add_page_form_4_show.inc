@@ -59,6 +59,9 @@ if ($_SESSION[pageObj]->getField("type")=='page') {
 		
 	printc("Show added/edited timestamp: <input type='checkbox' name='showdate' value='1'". (($_SESSION[pageObj]->getField("showdate"))?" checked='checked'":"") . " /><br />");
 	printc("<div class='desc'>By checking the above box, the date and time content was added (and edited, if that be the case), will be displayed along with the story text.</div>");
+
+	printc("Show versions: <input type='checkbox' name='showversions' value='1'". (($_SESSION[pageObj]->getField("showversions"))?" checked='checked'":"") . " /><br />");
+	printc("<div class='desc'>By checking the above box, a link to previous versions of content will be displayed.</div>");
 	
 	printc("Number of content blocks to display: ");
 	printc("<select name='archiveby'>");
