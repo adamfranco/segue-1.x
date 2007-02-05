@@ -241,11 +241,11 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 		
 		while ($a = db_fetch_assoc($recent_discussions)) {
 			$recent_discussions_sites .= "<tr>";
-			$tstamp = $a['discussion_tstamp'];
+			preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}):[0-9]{2}/', $a['discussion_tstamp'], $matches);
 			//$tstamp =& TimeStamp::fromString($tstamp);
 			//$time =& $tstamp->asTime();
 			//$recent_discussions_sites .= "<td valign='top' class='list'>".$tstamp->ymdString()."<br/>".$time->string12(true)."</td>";
-			$recent_discussions_sites .= "<td valign='top' class='list'>".$tstamp."</td>";
+			$recent_discussions_sites .= "<td valign='top' class='list'>".$matches[1]." &nbsp; ".$matches[2]."</td>";
 			$recent_discussions_sites .= "<td valign='top' class='list'><a href=$PHP_SELF?type=recent&user=".$a['user_uname'].">".$a['user_fname']."</td>";
 			
 			$recent_discussions_sites .= "<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
@@ -275,24 +275,24 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 		$edited_sites = "<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>";
 		$edited_sites .= "<tr><td colspan=3 align='left' class='title2'>Your Recent Edits";
 		$edited_sites .="</td></tr>";
-		$edited_sites .= "<tr><td class='title3'>Date/Time</td><td class='title3'>Site</td><td class='title3'>Last Edited...</td></tr>";
+		$edited_sites .= "<tr><td class='title3'>Date</td><td class='title3'>Site</td><td class='title3'>Last Edited...</td></tr>";
 
 		foreach ($recentComponents as $a) {
+			$url = $_full_uri."/index.php?";
+			$url .= "&action=site&site=".$a['slot_name'];
+			if ($a['mr_section_id'])
+				$url .= "&section=".$a['mr_section_id'];
+			if ($a['mr_page_id'])
+				$url .= "&page=".$a['mr_page_id'];
+			if ($a['mr_story_id'])
+				$url .= "&story=".$a['mr_story_id'];
 			
 //			printpre($a);
 			$edited_sites .= "<tr>";
 			preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2})/', $a['most_recent_tstamp'], $matches);
 			$edited_sites .= "<td valign='top' class='list'>".$matches[1]."</td>";
-			$edited_sites .= "<td valign='top' class='list' align='right'>".$a['site_title']."</td>";
-			$edited_sites .= "<td valign='top' class='list'><a href=\"".$_full_uri."/index.php?";
-			$edited_sites .= "&action=site&site=".$a['slot_name'];
-			if ($a['mr_section_id'])
-				$edited_sites .= "&section=".$a['mr_section_id'];
-			if ($a['mr_page_id'])
-				$edited_sites .= "&page=".$a['mr_page_id'];
-			if ($a['mr_story_id'])
-				$edited_sites .= "&story=".$a['mr_story_id'];
-			$edited_sites .= "\" target=new_window>";				
+			$edited_sites .= "<td valign='top' class='list' style='text-align: left; width: 25%; padding-left: 5px;'> <a href=\"".$url."\" target=new_window>".$a['site_title']."</a>";
+			$edited_sites .= "<td valign='top' class='list'><a href=\"".$url."\" target=new_window>";				
 	//		$edited_sites .= $a['site_title'];
 			if ($a['mr_section_title'] != "") {
 				$edited_sites .= " > ".$a['mr_section_title'];
