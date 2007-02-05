@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
-	<version number="1.6.1" date="the future">
+	<version number="1.7.0" date="the future">
 		<new author='alex'>
 			Added a Recent Activity section to the Segue home page that shows
 			a dashboard view (sorted by recent first) with Recent Discussions on all 
@@ -18,11 +18,12 @@
 		<change author='alex'>
 			Added view source to discussion version of HTML editor
 		</change>	
+	</version>
+	<version number="1.6.1" date="2007-01-10">
 		<fix author='adam'>
-			Fixed bug in rating UI that truncated discussion posts that included
-			a single quotes when ratings were added
+			Fixed bug in which comments containing single quotes where being truncated 
+			on rating.
 		</fix>
-
 	</version>
 	<version number="1.6.0" date="2006-12-20">
 		<new author='alex'>

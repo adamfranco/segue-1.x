@@ -3,6 +3,14 @@ Name: Segue ChangeLog
 
 
 
+v. 1.6.1 (2007-01-10) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed bug in which comments containing single quotes where being truncated
+    onrating.
+	
+
 v. 1.6.0 (2006-12-20) 
 ----------------------------------------------------
 		
