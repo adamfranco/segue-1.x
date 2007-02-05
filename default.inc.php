@@ -277,12 +277,12 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 		$edited_sites .="</td></tr>";
 		$edited_sites .= "<tr><td class='title3'>Date/Time</td><td class='title3'>Site</td><td class='title3'>Last Edited...</td></tr>";
 
-		$today = date();	
 		foreach ($recentComponents as $a) {
 			
 //			printpre($a);
 			$edited_sites .= "<tr>";
-			$edited_sites .= "<td valign='top' class='list'>".date("Y M D", $a['most_recent_tstamp'])."</td>";
+			preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2})/', $a['most_recent_tstamp'], $matches);
+			$edited_sites .= "<td valign='top' class='list'>".$matches[1]."</td>";
 			$edited_sites .= "<td valign='top' class='list' align='right'>".$a['site_title']."</td>";
 			$edited_sites .= "<td valign='top' class='list'><a href=\"".$_full_uri."/index.php?";
 			$edited_sites .= "&action=site&site=".$a['slot_name'];
