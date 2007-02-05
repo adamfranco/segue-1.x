@@ -125,7 +125,7 @@ class Update170
 				  version_created_tstamp timestamp(14) NOT NULL,
 				  version_text_short mediumblob NOT NULL,
 				  version_text_long mediumblob NOT NULL,
-				  version_comment mediumblob NOT NULL,
+				  version_comments mediumblob NOT NULL,
 				  PRIMARY KEY  (version_id)
 				) TYPE=MyISAM;
 			";

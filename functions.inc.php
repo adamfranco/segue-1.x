@@ -777,8 +777,8 @@ function save_version ($version_short, $version_long, $story_id, $version_commen
 			version_text_long = '".addslashes(urlencode($version_long))."',
 			version_comments = '".addslashes($version_comments)."'
 		";
-//		printpre($query);
-		//exit;
+	//	printpre($query);
+	//	exit;
 		$r = db_query($query);
 	}
 
