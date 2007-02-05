@@ -273,15 +273,17 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	if (count($recentComponents)) {	
 		$number_recent_sites = count($recentComponents);
 		$edited_sites = "<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>";
-		$edited_sites .= "<tr><td colspan=2 align='left' class='title2'>Your Recent Edits";
+		$edited_sites .= "<tr><td colspan=3 align='left' class='title2'>Your Recent Edits";
 		$edited_sites .="</td></tr>";
-		$edited_sites .= "<tr><td class='title3'>Date/Time</td><td class='title3'>Site</td></tr>";
+		$edited_sites .= "<tr><td class='title3'>Date/Time</td><td class='title3'>Site</td><td class='title3'>Last Edited...</td></tr>";
 
-			
+		$today = date();	
 		foreach ($recentComponents as $a) {
+			
 //			printpre($a);
 			$edited_sites .= "<tr>";
-			$edited_sites .= "<td valign='top' class='list'>".$a['most_recent_tstamp']."</td>";
+			$edited_sites .= "<td valign='top' class='list'>".date("Y M D", $a['most_recent_tstamp'])."</td>";
+			$edited_sites .= "<td valign='top' class='list' align='right'>".$a['site_title']."</td>";
 			$edited_sites .= "<td valign='top' class='list'><a href=\"".$_full_uri."/index.php?";
 			$edited_sites .= "&action=site&site=".$a['slot_name'];
 			if ($a['mr_section_id'])
@@ -291,7 +293,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 			if ($a['mr_story_id'])
 				$edited_sites .= "&story=".$a['mr_story_id'];
 			$edited_sites .= "\" target=new_window>";				
-			$edited_sites .= $a['site_title'];
+	//		$edited_sites .= $a['site_title'];
 			if ($a['mr_section_title'] != "") {
 				$edited_sites .= " > ".$a['mr_section_title'];
 			}
