@@ -11,14 +11,14 @@ function addeditor($textarea,$cols,$rows,$text,$context="story", $texttype = NUL
 	
 	//chose editor based on browser and platfrom
 	if ($winIEVersion > 5.5) {
-		if ($context=="story" && $_SESSION[settings][editor]=='activex') {	
+		if ($context=="story" && $_SESSION['html_editor']=='activex') {	
 			include("htmleditor/editor_activex.inc.php");
 			editor_activex($textarea,$cols,$rows,$text);
-		} else if ($context=="story" && $_SESSION[settings][editor]=='htmlarea') {
+		} else if ($context=="story" && $_SESSION['html_editor']=='htmlarea') {
 			editor_htmlarea($textarea,$text,$context);
-		} else if ($context=="story" && $_SESSION[settings][editor]=='fckeditor') {
+		} else if ($context=="story" && $_SESSION['html_editor']=='fckeditor') {
 			editor_fck($textarea,$text,$context);			
-		} else if ($context=="story" && $_SESSION[settings][editor]=='txt') {
+		} else if ($context=="story" && $_SESSION['html_editor']=='txt') {
 			$replaceBRs = ($texttype == 'html')?FALSE:TRUE;
 			editor_txt($textarea,$cols,$rows,$text, $replaceBRs);		
 		} else if ($context=="discuss") {
@@ -31,11 +31,11 @@ function addeditor($textarea,$cols,$rows,$text,$context="story", $texttype = NUL
 		$replaceBRs = ($texttype == 'html')?FALSE:TRUE;
 		editor_txt($textarea,$cols,$rows,$text, $replaceBRs);
 	} else {
-		if ($_SESSION[settings][editor]=='fckeditor') {	
+		if ($_SESSION['html_editor']=='fckeditor') {	
 			editor_fck($textarea,$text,$context);
-		} else if ($_SESSION[settings][editor]=='htmlarea') {
+		} else if ($_SESSION['html_editor']=='htmlarea') {
 			editor_htmlarea($textarea,$text,$context);
-		} else if ($_SESSION[settings][editor]=='txt') {
+		} else if ($_SESSION['html_editor']=='txt') {
 			$replaceBRs = ($texttype == 'html')?FALSE:TRUE;
 			editor_txt($textarea,$cols,$rows,$text, $replaceBRs);		
 		} else {

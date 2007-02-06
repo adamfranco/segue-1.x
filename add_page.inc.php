@@ -71,7 +71,7 @@ if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 		}
 	}
 		if ($_REQUEST[editor]) {
-		$_SESSION[settings][editor] = $_REQUEST[editor];
+		$_SESSION['html_editor'] = $_REQUEST[editor];
 	}
 }
 

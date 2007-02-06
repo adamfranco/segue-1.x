@@ -21,6 +21,12 @@
 		<change author='adam'>
 			Can now chose not to use a WYSIWYG editor.
 		</change>
+		<change author='adam'>
+			HTML editor selection is now persisted globally for the entire session.
+		</change>
+		<change author='adam'>
+			Can now choose the HTML editor to use for the site header and footer.
+		</change>
 	</version>
 	<version number="1.6.1" date="2007-01-10">
 		<fix author='adam'>

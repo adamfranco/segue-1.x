@@ -34,10 +34,10 @@ printc("<input type='hidden' value='0' name='nextbutton' />");
  * Determine the editor and if not set, set to default (i.e. fckeditor)
  ******************************************************************************/
 
-if (!$_SESSION[settings][editor]) $_SESSION[settings][editor] = 'fckeditor';
+if (!$_SESSION['html_editor']) $_SESSION['html_editor'] = 'fckeditor';
 
 
-if ($_SESSION[storyObj]->getField("type")=='story' && $_SESSION[settings][editor] != 'fckeditor') {
+if ($_SESSION[storyObj]->getField("type")=='story' && $_SESSION['html_editor'] != 'fckeditor') {
 	
 	/******************************************************************************
  	* Media Library: links to filebrowser.php and returns media urls
@@ -97,24 +97,24 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	}
 	
 	if ($supported == 1) {
-		//printpre($_SESSION[settings][editor]);
+		//printpre($_SESSION['html_editor']);
 		if ($isWinIE) {
 			printc("<div style='font-size:10px;'>Your web browser supports three different HTML editors.  ");
 			printc("We recommend you chose FCKeditor for the greatest cross-platform compatibility.</div>");
 			printc("<div align='right'>Current Editor: <select name='editor' onchange='document.addform.submit()'>");
-			printc("<option value='fckeditor'".(($_SESSION[settings][editor]=='fckeditor')?" selected='selected'":"").">FCKeditor</option>");
-			printc("<option value='htmlarea'".(($_SESSION[settings][editor]=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
-			printc("<option value='activex'".(($_SESSION[settings][editor]=='activex')?" selected='selected'":"").">Active-X</option>");
-			printc("\n<option value='txt'".(($_SESSION[settings][editor]=='txt')?" selected='selected'":"").">None</option>");
+			printc("<option value='fckeditor'".(($_SESSION['html_editor']=='fckeditor')?" selected='selected'":"").">FCKeditor</option>");
+			printc("<option value='htmlarea'".(($_SESSION['html_editor']=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
+			printc("<option value='activex'".(($_SESSION['html_editor']=='activex')?" selected='selected'":"").">Active-X</option>");
+			printc("\n<option value='txt'".(($_SESSION['html_editor']=='txt')?" selected='selected'":"").">None</option>");
 			printc("</select></div>");
 			//printc("<input type='button' value='Update' onclick='document.addform.submit()' />\n");						
 		} else {
 			printc("<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
 			printc("We recommend you chose FCKeditor for the greatest cross-platform compatibility.</div>");
 			printc("<div align='right'>Current Editor: <select name='editor' onchange='document.addform.submit()'>");
-			printc("<option value='fckeditor'".(($_SESSION[settings][editor]=='fckeditor')?" selected='selected'":"").">FCKeditor</option>");
-			printc("\n<option value='txt'".(($_SESSION[settings][editor]=='txt')?" selected='selected'":"").">None</option>");
-// 			printc("<option value='htmlarea'".(($_SESSION[settings][editor]=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
+			printc("<option value='fckeditor'".(($_SESSION['html_editor']=='fckeditor')?" selected='selected'":"").">FCKeditor</option>");
+			printc("\n<option value='txt'".(($_SESSION['html_editor']=='txt')?" selected='selected'":"").">None</option>");
+// 			printc("<option value='htmlarea'".(($_SESSION['html_editor']=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
 			printc("</select></div>");		
 		}
 	}
