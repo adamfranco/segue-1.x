@@ -13,10 +13,12 @@ if ($_REQUEST['reorderPage']) {
 	if (!isset($page_location)) $page_location = "left"; 
 	
 	
-	$orderedSet = new OrderedSet(null);
+	$orderedSetLeft = new OrderedSet(null);
+	$orderedSetRight = new OrderedSet(null);
+	
 	$query = "
 		SELECT
-			page_id, page_order, page_location
+			page_id, page_order, page_location, page_title
 		FROM
 			page
 		WHERE
@@ -29,21 +31,28 @@ if ($_REQUEST['reorderPage']) {
 	
 	// Populate the Set with the original page order
 	while ($a=db_fetch_assoc($r)) {
-		printpre($a['page_order']."-".$a['page_id']."-".$a['page_title']);	
-		if ($a['page_location'] == $page_location || (!isset($a['page_location']) && $page_location == "left")) {
-			$orderedSet->addItem($a['page_id']);	
+		printpre($a['page_order']."-".$a['page_id']."-".$a['page_title']."-".$a['page_location']);
+		
+		if ($a['page_location'] == 'right') {
+			$orderedSetRight->addItem($a['page_id']);	
+		} else {
+			$orderedSetLeft->addItem($a['page_id']);	
 		}
 	}
 			
 	// Move our page to its new position
-	$orderedSet->moveToPosition($_REQUEST['reorderPage'], $_REQUEST['newPosition']);
+	if ($page_location == 'right')
+		$orderedSetRight->moveToPosition($_REQUEST['reorderPage'], $_REQUEST['newPosition']);
+	else
+		$orderedSetLeft->moveToPosition($_REQUEST['reorderPage'], $_REQUEST['newPosition']);
 		
 	// Save the new order
-	$orderedSet->reset();		// Make sure the iterator is at the begining.
+	$orderedSetLeft->reset();		// Make sure the iterator is at the begining.
+	$orderedSetRight->reset();
+	
 	$order = 0;
-	while ($orderedSet->hasNext()) {
-		$item = $orderedSet->next();
-		printpre($order."-".$item);
+	while ($orderedSetLeft->hasNext()) {
+		$item = $orderedSetLeft->next();
 		
 		// Update the db
 		$query = "
@@ -55,7 +64,24 @@ if ($_REQUEST['reorderPage']) {
 				page_id = '".addslashes($item)."'
 		";
 		
-		//printpre($query);
+		printpre($query);
+		$r = db_query($query);			
+		$order++;
+	}
+	while ($orderedSetRight->hasNext()) {
+		$item = $orderedSetRight->next();
+		
+		// Update the db
+		$query = "
+			UPDATE
+				page
+			SET
+				page_order =  '".addslashes($order)."'
+			WHERE
+				page_id = '".addslashes($item)."'
+		";
+		
+		printpre($query);
 		$r = db_query($query);			
 		$order++;
 	}
@@ -169,7 +195,7 @@ if ($_REQUEST['reorderPage']) {
 
 }
 
-exit;
+// exit;
 
 $returnURL = $_SERVER['PHP_SELF']."?&action=viewsite&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&showorder=$showorder".(($_REQUEST['story_set'])?"&story_set=".$_REQUEST['story_set']:"");
 //printpre($returnURL);

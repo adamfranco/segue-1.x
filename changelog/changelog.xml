@@ -39,6 +39,10 @@
 			'other sites'.
 		</fix>
 		<fix author='adam'>
+			Fixing bug with reordering of stories where the reorder button was
+			sometimes not shown.
+		</fix>
+		<fix author='adam'>
 			Fixing bug with reordering of pages. Where moving pages from one 
 			column to the other got orders confused. All pages in a section are 
 			now re-keyed during reorder.

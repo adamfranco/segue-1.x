@@ -40,11 +40,11 @@ function printStoryEditLinks() {
 	if (($_SESSION[auser] == $site_owner) || (($_SESSION[auser] != $site_owner) && !$o->getField("locked"))) {
 		if (!$_REQUEST['tag']) {
 		
-			if ($thisPage->getField("storyorder") == 'custom' && $thisPage->hasPermission("edit") ) {
+			if (($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '') && $thisPage->hasPermission("edit") ) {
 				if ($_REQUEST[showorder] == "story") {
-					$l[] = "<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;showorder=0".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>hide order</a>";
+					$l[] = "<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;showorder=0".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>hide order</a>";
 				} else {
-					$l[] = "<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;showorder=story".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>reorder</a>";									
+					$l[] = "<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;showorder=story".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>reorder</a>";									
 				}
 			}
 
@@ -406,7 +406,7 @@ do {
 						printc("<div class='leftmargin'>\n");
 						
 						// Reorder Links	
-						if ($_REQUEST['showorder'] == "story" && $thisPage->getField("storyorder") == 'custom' && $thisPage->hasPermission("edit")) {
+						if ($_REQUEST['showorder'] == "story" && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '') && $thisPage->hasPermission("edit")) {
 							//print "<select name='reorder2' style = 'font-size: 9px; display: none;' class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'";
 							printc("<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'");
 							for ($i=0; $i<count($stories); $i++) {
