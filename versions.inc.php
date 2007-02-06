@@ -296,9 +296,12 @@ END;
 	$versions = get_versions($storyObj->id);
 	//printpre($versions);	
 	
-	printc("<tr><th colspan='2'>Select</th><th>Revision</th><th>Revision Date</th><th>Revision Author</th><th>Revision Comment</th></tr>\n");
+	printc("<thead><tr><th colspan='2'>Select</th><th>Revision</th><th>Revision Date</th><th>Revision Author</th><th>Revision Comment</th></tr></thead>\n");
+	
+	printc("\n<tbody style='vertical-align: top;'>\n");
 		
-	$color = 0;
+	$shadeStyle = ' background-color: #F3F3F3; ';
+	$shade = 0;
 	$i = 0;
 	$hideOld = true;
 	$hideNew = false;
@@ -308,7 +311,9 @@ END;
 		$version_num = $version['version_order'];
 		
 		printc("<tr>\n");
-		printc("<td class='ts$color' align='right'>");
+		printc("<td align='right' style='");
+		if ($shade) printc($shadeStyle);
+		printc("'>");
 		
 		if ($i > 0) {
 			printc("<input type='radio' name='oldversion' value='".$version_num."' ");
@@ -333,7 +338,9 @@ END;
 			printc(" />");
 		}
 		
-		printc("</td>\n<td class='ts$color' align='left'>");
+		printc("</td>\n<td align='left' style='");
+		if ($shade) printc($shadeStyle);
+		printc("'>");
 		
 		if ($i < count($versions) - 1) {
 			printc("<input type='radio' name='newversion' value='".$version_num."' ");
@@ -359,20 +366,40 @@ END;
 
 		printc("</td>");
 		if ($currentversion) {
-			printc("<td class='ts$color'><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;detail=$story'>Revision $version_num</a> (current)</td>");
+			printc("<td  style='");
+		if ($shade) printc($shadeStyle);
+		printc("'>");
+		printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;detail=$story'>Revision $version_num</a> (current)</td>");
 		} else {
-			printc("<td class='ts$color'><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
+			printc("<td  style='");
+		if ($shade) printc($shadeStyle);
+		printc("'>");
+		printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
 		}
 		
-		printc("<td class='ts$color' style='white-space: nowrap;'>".$version['version_created_tstamp']."</td>");
-		printc("<td class='ts$color' style='white-space: nowrap;'>".$version['FK_createdby']."</td>\n");
-		printc("<td class='ts$color'>".$version['version_comments']."</td>\n");
+		printc("<td  style='white-space: nowrap; ");
+		if ($shade) printc($shadeStyle);
+		printc("'>");
+		printc($version['version_created_tstamp']."</td>");
+		
+		printc("<td  style='white-space: nowrap; ");
+		if ($shade) printc($shadeStyle);
+		printc("'>");
+		printc($version['FK_createdby']."</td>\n");
+		
+		printc("<td  style='font-size: smaller; ");
+		if ($shade) printc($shadeStyle);
+		printc("'>");
+		printc($version['version_comments']."</td>\n");
+		
 		printc("</tr>\n");
 		
-		$color = 1-$color;
+		$shade = 1-$shade;
 		$currentversion = false;
 		$i++;
-	}	
+	}
+	
+	printc("\n</tbody>\n");
 
 	printc("</table>\n");
 	// compare selected versions button (bottom)
