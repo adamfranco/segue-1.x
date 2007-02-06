@@ -2145,7 +2145,7 @@ function recent_edited_components($limit, $user_id) {
 	return $recentSites;
 }
 
-function recent_discussions($limit,$user_id) {
+function recent_discussions($start, $max, $user_id) {
 	
 	$query = "
 		SELECT
@@ -2178,7 +2178,7 @@ function recent_discussions($limit,$user_id) {
 				story.FK_createdby = $user_id
 			Order BY
 				discussion_tstamp DESC
-			LIMIT 0,$limit
+			LIMIT $start,$max
 		";
 	
 	$recent_discussions = db_query($query); 

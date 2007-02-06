@@ -317,8 +317,8 @@ if (!ini_get("register_globals")) {
 				"auser","lpass","afname","aemail","atype","amethod","lmethod","ltype",
 				"lemail","lfname","luser","lid","aid", "expand_upcomingclasses", 
 				"expand_pastclasses", "expand_editorsites", "expand_othersites", 
-				"expand_personalsites", 
-				"expand_recentactivity", "oldversion", "newversion", "html_editor");
+				"expand_personalsites", "expand_recentactivity", "discussion_set",
+				"oldversion", "newversion", "html_editor");
 	foreach (array_keys($_SESSION) as $n) { if (!in_array($n,$_ign)) $_SESSION[$n] = &$$n; }
 }
 

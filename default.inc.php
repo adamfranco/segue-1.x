@@ -250,49 +250,33 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	printc("<tr><td valign='top'>");
 
 	//recent discussions
-	$recent_discussions = recent_discussions(20,$_SESSION["aid"]);
-	$number_recent_discussions = db_num_rows($recent_discussions);
 	
 	//pagination variables
-	if ($_REQUEST["discussion_set"] > 0) 
-		$discussion_set = $_REQUEST["discussion_set"] - 1;
-	else
-		$discussion_set = 0;
+	if (isset($_REQUEST["discussion_set"]) && $_REQUEST["discussion_set"] > 0) 
+		$_SESSION["discussion_set"] = intval($_REQUEST["discussion_set"]);
+	else if (!isset($_SESSION["discussion_set"]))
+		$_SESSION["discussion_set"] = 1;
 	
 	$num_per_set = 10;
 		
-	$start = $discussion_set * $num_per_set;
+	$start = ($_SESSION["discussion_set"] - 1) * $num_per_set;
 	$end = $start + $num_per_set;
+	
+	$recent_discussions = recent_discussions($start, $num_per_set, $_SESSION["aid"]);
+	$number_in_batch = db_num_rows($recent_discussions);
 
-	if ($number_recent_discussions) {	
+	if ($number_in_batch > 0 || $start > 0) {	
 		$recent_discussions_sites = "\n<table border=0 width='100%' align = center cellpadding=1, cellspacing=0>";
 		$recent_discussions_sites .= "\n\t<tr><td colspan='4' align='left' class='title2'>Recent Discussions";
-		
-		// print out discussion pagination
-		$pagelinks = array();		
-		if ($number_recent_discussions > $num_per_set && $num_per_set != 0)  {
-			$recent_discussions_sites .= "\n\t<tr><td colspan='4' align='left'>";
-			$recent_discussions_sites .= "\n\t<div class='multi_page_links'>";
-			
-			for ($j = 0; $j < ($number_recent_discussions / $num_per_set); $j++) {
-				if ($discussion_set == $j) {
-					$pagelinks[] = "current";
-					$recent_discussions_sites .= "<strong>".($j+1)."</strong> | ";
-				} else {
-					$pagelinks[] = "?$sid&amp;discussion_set=".($j+1);
-					$recent_discussions_sites .= "<a href='?$sid&amp;discussion_set=".($j+1)."'>".($j+1)."</a> | ";
-				}
-			}
-			$recent_discussions_sites .= "</td></tr>";
-		}	
-
 		//print out headers
 		$recent_discussions_sites .= "</td></tr>";
 		$recent_discussions_sites .= "\n\t<tr><td class='title3'>Date/Time</td><td class='title3'>Participant</td><td class='title3'>Subject</td><td class='title3'>Site</td></tr>";
-
-		// for ($j= $start; $j < $end && $j < $number_recent_discussions; $j++) {	
 		
-		while ($a = db_fetch_assoc($recent_discussions)) {
+// 		printpre($start);
+// 		printpre($end);
+// 		printpre($number_in_batch);
+		
+		while ($a = db_fetch_assoc($recent_discussions)) {			
 			$recent_discussions_sites .= "<tr>";
 			preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}):[0-9]{2}/', $a['discussion_tstamp'], $matches);
 			//$tstamp =& TimeStamp::fromString($tstamp);
@@ -313,6 +297,35 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 			$recent_discussions_sites .= " target=new_window>".$a['site_title']."</a></td>";
 			$recent_discussions_sites .= "\n\t</tr>";
 		}
+		
+		// print out discussion pagination
+		$pagelinks = array();		
+		if ($num_per_set != 0)  {
+			$recent_discussions_sites .= "\n\t<tr><td colspan='4' align='left'>";
+			$recent_discussions_sites .= "\n\t<div class='multi_page_links'>";
+			
+			for ($i = 1; $i <= ($start / $num_per_set); $i++) {
+				$pagelinks[] = "?$sid&amp;discussion_set=".$i;
+				$recent_discussions_sites .= "<a href='?$sid&amp;discussion_set=".$i."'>".$i."</a> | ";
+			}
+			
+			// The current one is the last one printed
+			$pagelinks[] = "current";
+			$recent_discussions_sites .= "<strong>".$i."</strong> ";
+			
+			// Next links if there are more results
+			if ($number_in_batch >= $num_per_set) {
+				$i++;
+				$recent_discussions_sites .= " | <a href='?$sid&amp;discussion_set=".$i."'>".$i." >></a> ";
+			}
+			
+			$recent_discussions_sites .= "</div></td></tr>";
+		}
+		
+		
+		
+		
+		
 		$recent_discussions_sites .= "\n</table>";
 		printc($recent_discussions_sites);
 	}	
