@@ -27,6 +27,8 @@ $cfg['defaultBlacklist'] = $defaultBlacklist = array(
 	'rl',
 	'f77',
 	'lisp',
+	'dsk',
+	'nlogo',
 );
 
 

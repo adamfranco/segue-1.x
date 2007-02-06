@@ -15,6 +15,10 @@
 			set to hidden so as to speed up the loading of home pages and to 
 			allow users to decide what sites they want to display 
 		</new>
+		<new author='adam'>
+			Added a custom css theme that allows users to edit existing css styles
+			as well as add new css styles.  
+		</new>
 		<change author='alex'>
 			Added view source to discussion version of HTML editor
 		</change>

@@ -120,7 +120,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	printc(" > Selected Versions");
 	
 	printc("<tr><td>");
-	printc("<br /><table width='100%' cellspacing='0'><tr><td>");
+	printc("<br /><table width='100%' cellspacing='0'><tr><td class='list'>");
 	printc("<strong>Revision ".$version_num."</strong> (".$version_date." - ".$version_author.")");
 	printc("</td><td align='right'>");
 	

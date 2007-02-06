@@ -231,13 +231,47 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	printc("<tr><td valign='top'>");
 
 	//recent discussions
-	$recent_discussions = recent_discussions(10,$_SESSION["aid"]);
+	$recent_discussions = recent_discussions(20,$_SESSION["aid"]);
 	$number_recent_discussions = db_num_rows($recent_discussions);
+	
+	//pagination variables
+	if ($_REQUEST["discussion_set"] > 0) 
+		$discussion_set = $_REQUEST["discussion_set"] - 1;
+	else
+		$discussion_set = 0;
+	
+	$num_per_set = 10;
+		
+	$start = $discussion_set * $num_per_set;
+	$end = $start + $num_per_set;
+
 	if ($number_recent_discussions) {	
-		$recent_discussions_sites = "<table border=0 width='100%' align = center cellpadding=1, cellspacing=0>";
-		$recent_discussions_sites .= "<tr><td colspan=4 align='left' class='title2'>Recent Discussions";
+		$recent_discussions_sites = "\n<table border=0 width='100%' align = center cellpadding=1, cellspacing=0>";
+		$recent_discussions_sites .= "\n\t<tr><td colspan='4' align='left' class='title2'>Recent Discussions";
+		
+		// print out discussion pagination
+		$pagelinks = array();		
+		if ($number_recent_discussions > $num_per_set && $num_per_set != 0)  {
+			$recent_discussions_sites .= "\n\t<tr><td colspan='4' align='left'>";
+			$recent_discussions_sites .= "\n\t<div class='multi_page_links'>";
+			
+			for ($j = 0; $j < ($number_recent_discussions / $num_per_set); $j++) {
+				if ($discussion_set == $j) {
+					$pagelinks[] = "current";
+					$recent_discussions_sites .= "<strong>".($j+1)."</strong> | ";
+				} else {
+					$pagelinks[] = "?$sid&amp;discussion_set=".($j+1);
+					$recent_discussions_sites .= "<a href='?$sid&amp;discussion_set=".($j+1)."'>".($j+1)."</a> | ";
+				}
+			}
+			$recent_discussions_sites .= "</td></tr>";
+		}	
+
+		//print out headers
 		$recent_discussions_sites .= "</td></tr>";
-		$recent_discussions_sites .= "<tr><td class='title3'>Date/Time</td><td class='title3'>Participant</td><td class='title3'>Subject</td><td class='title3'>Site</td></tr>";
+		$recent_discussions_sites .= "\n\t<tr><td class='title3'>Date/Time</td><td class='title3'>Participant</td><td class='title3'>Subject</td><td class='title3'>Site</td></tr>";
+
+		// for ($j= $start; $j < $end && $j < $number_recent_discussions; $j++) {	
 		
 		while ($a = db_fetch_assoc($recent_discussions)) {
 			$recent_discussions_sites .= "<tr>";
@@ -245,22 +279,22 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 			//$tstamp =& TimeStamp::fromString($tstamp);
 			//$time =& $tstamp->asTime();
 			//$recent_discussions_sites .= "<td valign='top' class='list'>".$tstamp->ymdString()."<br/>".$time->string12(true)."</td>";
-			$recent_discussions_sites .= "<td valign='top' class='list'>".$matches[1]." &nbsp; ".$matches[2]."</td>";
-			$recent_discussions_sites .= "<td valign='top' class='list'><a href=$PHP_SELF?type=recent&user=".$a['user_uname'].">".$a['user_fname']."</td>";
+			$recent_discussions_sites .= "\n\t<td valign='top' class='list'>".$matches[1]." &nbsp; ".$matches[2]."</td>";
+			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href=$PHP_SELF?type=recent&user=".$a['user_uname'].">".$a['user_fname']."</td>";
 			
-			$recent_discussions_sites .= "<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
+			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
 			$recent_discussions_sites .= "&action=site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id'];
 			$recent_discussions_sites .= "&detail=".$a['story_id']."#".$a['discussion_id'];
 			$recent_discussions_sites .= " target=new_window>";
 			$recent_discussions_sites .= urldecode($a['discussion_subject'])."</a></td>";
 			
-			$recent_discussions_sites .= "<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
+			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
 			$recent_discussions_sites .= "&action=site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id'];
 			$recent_discussions_sites .= "&detail=".$a['story_id'];
 			$recent_discussions_sites .= " target=new_window>".$a['site_title']."</a></td>";
-			$recent_discussions_sites .= "</tr>";
+			$recent_discussions_sites .= "\n\t</tr>";
 		}
-		$recent_discussions_sites .= "</table>";
+		$recent_discussions_sites .= "\n</table>";
 		printc($recent_discussions_sites);
 	}	
 
@@ -275,7 +309,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 		$edited_sites = "<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>";
 		$edited_sites .= "<tr><td colspan=3 align='left' class='title2'>Your Recent Edits";
 		$edited_sites .="</td></tr>";
-		$edited_sites .= "<tr><td class='title3'>Date</td><td class='title3'>Site</td><td class='title3'>Last Edited...</td></tr>";
+		$edited_sites .= "<tr><td class='title3'>Date</td><td class='title3'>Site</td><td class='title3'>Most Recent Edit...</td></tr>";
 
 		foreach ($recentComponents as $a) {
 			$url = $_full_uri."/index.php?";

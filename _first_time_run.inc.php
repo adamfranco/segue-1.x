@@ -174,7 +174,6 @@ if (!$allTablesExist) {
 		  page_show_creator enum('0','1') NOT NULL default '0',
 		  page_show_editor enum('0','1') default NULL,
 		  page_show_date enum('0','1') NOT NULL default '0',
-		  page_show_versions enum('0','1') default NULL '0',
 		  page_show_hr enum('0','1') NOT NULL default '0',
 		  page_display_type enum('page','heading','divider','link','content','rss','tags','participants') NOT NULL default 'page',
 		  FK_media int(10) unsigned default NULL,
@@ -352,18 +351,6 @@ if (!$allTablesExist) {
 		  KEY record_type (record_type(7)),
 		  KEY record_tag (record_tag(10))
 		) TYPE=MyISAM
-		
-		CREATE TABLE version (
-		  version_id int(10) unsigned NOT NULL auto_increment,
-		  FK_parent int(10) unsigned NOT NULL default '0',
-		  FK_createdby int(10) unsigned NOT NULL default '0',
-		  version_order INT( 10 ) unsigned NOT NULL  default '0',
-		  version_created_tstamp timestamp(14) NOT NULL,
-		  version_text_short mediumblob NOT NULL,
-		  version_text_long mediumblob NOT NULL,
-		  version_comments mediumblob NOT NULL,
-		  PRIMARY KEY  (version_id)
-		) TYPE=MyISAM;
 
 	";
 	$queryArray = explode(";",$query);
@@ -589,6 +576,45 @@ if ($a[numslots] == 0) {
 				printpre(mysql_error());
 			}
 	}
+	
+	/******************************************************************************
+	 * Add in Segue 1.7.0 database updates
+	 ******************************************************************************/
+	$query = "
+		CREATE TABLE version (
+		  version_id int(10) unsigned NOT NULL auto_increment,
+		  FK_parent int(10) unsigned NOT NULL default '0',
+		  FK_createdby int(10) unsigned NOT NULL default '0',
+		  version_order INT( 10 ) unsigned NOT NULL  default '0',
+		  version_created_tstamp timestamp(14) NOT NULL,
+		  version_text_short mediumblob NOT NULL,
+		  version_text_long mediumblob NOT NULL,
+		  version_comments mediumblob NOT NULL,
+		  PRIMARY KEY  (version_id)
+		) TYPE=MyISAM;
+	";
+	
+	db_query($query);
+	if (mysql_error()) {
+		print "\n<hr />";
+		printpre($query);
+		printpre(mysql_error());
+	}
+
+	$query = "
+		ALTER TABLE 
+			page
+		ADD 
+			page_show_versions enum('0','1') NOT NULL default '0' AFTER page_show_date
+	";
+
+	db_query($query);
+	if (mysql_error()) {
+		print "\n<hr />";
+		printpre($query);
+		printpre(mysql_error());
+	}
+	
 	
 	$path = realpath($cfg[uploaddir]);
 		

@@ -2178,7 +2178,7 @@ function recent_discussions($limit,$user_id) {
 				story.FK_createdby = $user_id
 			Order BY
 				discussion_tstamp DESC
-			LIMIT 0,10
+			LIMIT 0,$limit
 		";
 	
 	$recent_discussions = db_query($query); 
