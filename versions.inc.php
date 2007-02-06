@@ -285,14 +285,14 @@ END;
 	printc(ob_get_clean());
 	
 	// compare selected versions button (top)
-	printc("<table cellspacing='3' width='100%'><tr><td>");
-	printc("<td><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button></td>");
+	printc("<table cellspacing='3' width='100%'>\n\t<tr>");
+	printc("\n\t<td><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button></td>");
 	if ($action == "viewsite") {
-		printc("<td align='right'><a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;comingFrom=viewsite'>Edit current version</a></td>\n");
+		printc("\n\t<td align='right'><a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;comingFrom=viewsite'>Edit current version</a></td>\n");
 	}
-	printc("</tr></table>");
+	printc("\n\t</tr>\n</table>");
 
-	printc("<table cellspacing='3' width='100%'>\n");
+	printc("\n<table cellspacing='3' width='100%'>\n");
 	$versions = get_versions($storyObj->id);
 	//printpre($versions);	
 	
@@ -403,11 +403,11 @@ END;
 
 	printc("</table>\n");
 	// compare selected versions button (bottom)
-	printc("<table cellspacing='3' width='100%'><tr><td>");
-	printc("<td><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button></td>");
+	printc("\n<table cellspacing='3' width='100%'>\n\t<tr>");
+	printc("\n\t<td><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button></td>");
 
 //	printc("<td align='right'><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Edit this version</button></td>");
-	printc("</tr></table>");
+	printc("\n\t</tr>\n</table>");
 
 // 	printc("<br /><button type='submit' class='button' value='compare'>Compare selected revisions</button><br /><br /> ");
 	printc("\n\t\t</form>");
@@ -417,7 +417,7 @@ END;
 		
 // Revert to this version link (bottom location)
 if ($_REQUEST['version']  && $storyObj->hasPermission("edit")) {
-	printc("<tr><td align='center'><br />");
+	printc("\n\t<tr><td align='center'><br />");
 	printc("<a class='btnlink2' href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;revert=$version_num&amp;versioning=$story&amp;comingFrom=viewsite'>Revert to this Version</a>\n");		
 	printc("</td></tr>\n");
 }

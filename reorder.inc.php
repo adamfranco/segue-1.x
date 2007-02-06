@@ -169,6 +169,8 @@ if ($_REQUEST['reorderPage']) {
 
 }
 
+exit;
+
 $returnURL = $_SERVER['PHP_SELF']."?&action=viewsite&site=".$_REQUEST['site']."&section=".$_REQUEST['section']."&page=".$_REQUEST['page']."&showorder=$showorder".(($_REQUEST['story_set'])?"&story_set=".$_REQUEST['story_set']:"");
 //printpre($returnURL);
 

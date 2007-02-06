@@ -243,10 +243,11 @@ if ($_SESSION["expand_recentactivity"] == 0) {
 } else {
 	printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_recentactivity=false'>-</a> Recent Activity</td>\n\t\t</tr>");
 }
+printc("\n</table>");
 
 if ($_SESSION["expand_recentactivity"] != 0) {	
 
-	printc("<table border=0 width='100%' align ='center' cellpadding=0, cellspacing=5>");
+	printc("<table border='0' width='100%' align ='center' cellpadding='0' cellspacing='5'>");
 	printc("<tr><td valign='top'>");
 
 	//recent discussions
@@ -266,11 +267,11 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	$number_in_batch = db_num_rows($recent_discussions);
 
 	if ($number_in_batch > 0 || $start > 0) {	
-		$recent_discussions_sites = "\n<table border=0 width='100%' align = center cellpadding=1, cellspacing=0>";
+		$recent_discussions_sites = "\n<table border='0' width='100%' align='center' cellpadding='1' cellspacing='0'>";
 		$recent_discussions_sites .= "\n\t<tr><td colspan='4' align='left' class='title2'>Recent Discussions";
 		//print out headers
 		$recent_discussions_sites .= "</td></tr>";
-		$recent_discussions_sites .= "\n\t<tr><td class='title3'>Date/Time</td><td class='title3'>Participant</td><td class='title3'>Subject</td><td class='title3'>Site</td></tr>";
+		$recent_discussions_sites .= "\n\t<tr>\n\t\t<td class='title3'>Date/Time</td>\n\t\t<td class='title3'>Participant</td>\n\t\t<td class='title3'>Subject</td>\n\t\t<td class='title3'>Site</td>\n\t</tr>";
 		
 // 		printpre($start);
 // 		printpre($end);
@@ -283,18 +284,18 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 			//$time =& $tstamp->asTime();
 			//$recent_discussions_sites .= "<td valign='top' class='list'>".$tstamp->ymdString()."<br/>".$time->string12(true)."</td>";
 			$recent_discussions_sites .= "\n\t<td valign='top' class='list' style='white-space: nowrap;'>".$matches[1]." &nbsp; ".$matches[2]."</td>";
-			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href=$PHP_SELF?type=recent&user=".$a['user_uname'].">".$a['user_fname']."</td>";
+			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href='$PHP_SELF?type=recent&amp;user=".$a['user_uname']."'>".$a['user_fname']."</a></td>";
 			
-			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
-			$recent_discussions_sites .= "&action=site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id'];
-			$recent_discussions_sites .= "&detail=".$a['story_id']."#".$a['discussion_id'];
-			$recent_discussions_sites .= " target=new_window>";
+			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href='".$_full_uri."/index.php?&amp;site=".$a['slot_name'];
+			$recent_discussions_sites .= "&amp;action=site&amp;section=".$a['section_id']."&amp;page=".$a['page_id']."&amp;story=".$a['story_id'];
+			$recent_discussions_sites .= "&amp;detail=".$a['story_id']."#".$a['discussion_id'];
+			$recent_discussions_sites .= "' target='new_window'>";
 			$recent_discussions_sites .= urldecode($a['discussion_subject'])."</a></td>";
 			
-			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
-			$recent_discussions_sites .= "&action=site&section=".$a['section_id']."&page=".$a['page_id']."&story=".$a['story_id'];
-			$recent_discussions_sites .= "&detail=".$a['story_id'];
-			$recent_discussions_sites .= " target=new_window>".$a['site_title']."</a></td>";
+			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href='".$_full_uri."/index.php?&amp;site=".$a['slot_name'];
+			$recent_discussions_sites .= "&amp;action=site&amp;section=".$a['section_id']."&amp;page=".$a['page_id']."&amp;story=".$a['story_id'];
+			$recent_discussions_sites .= "&amp;detail=".$a['story_id'];
+			$recent_discussions_sites .= "' target='new_window'>".$a['site_title']."</a></td>";
 			$recent_discussions_sites .= "\n\t</tr>";
 		}
 		
@@ -306,20 +307,20 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 			
 			for ($i = 1; $i <= ($start / $num_per_set); $i++) {
 				$pagelinks[] = "?$sid&amp;discussion_set=".$i;
-				$recent_discussions_sites .= "<a href='?$sid&amp;discussion_set=".$i."'>".$i."</a> | ";
+				$recent_discussions_sites .= "\n\t\t<a href='?$sid&amp;discussion_set=".$i."'>".$i."</a> | ";
 			}
 			
 			// The current one is the last one printed
 			$pagelinks[] = "current";
-			$recent_discussions_sites .= "<strong>".$i."</strong> ";
+			$recent_discussions_sites .= "\n\t\t<strong>".$i."</strong> ";
 			
 			// Next links if there are more results
 			if ($number_in_batch >= $num_per_set) {
 				$i++;
-				$recent_discussions_sites .= " | <a href='?$sid&amp;discussion_set=".$i."'>".$i." >></a> ";
+				$recent_discussions_sites .= " | \n\t\t<a href='?$sid&amp;discussion_set=".$i."'>".$i." >></a> ";
 			}
 			
-			$recent_discussions_sites .= "</div></td></tr>";
+			$recent_discussions_sites .= "\n\t</div>\n\t</td>\n\t</tr>";
 		}
 		
 		
@@ -330,7 +331,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 		printc($recent_discussions_sites);
 	}	
 
-	printc("</td></tr><tr><td valign='top'>");
+	printc("\n\t</td>\n\t</tr>\n\t<tr>\n\t<td valign='top'>");
 	
 	// recently edited content
 	$recentComponents = recent_edited_components(10, $_SESSION["aid"]);
@@ -338,27 +339,27 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	
 	if (count($recentComponents)) {	
 		$number_recent_sites = count($recentComponents);
-		$edited_sites = "<table border=0 width='100%' align ='center' cellpadding=1, cellspacing=0>";
-		$edited_sites .= "<tr><td colspan=3 align='left' class='title2'>Your Recent Edits";
-		$edited_sites .="</td></tr>";
-		$edited_sites .= "<tr><td class='title3'>Date</td><td class='title3'>Site</td><td class='title3'>Most Recent Edit...</td></tr>";
+		$edited_sites = "\n\t\t<table border='0' width='100%' align ='center' cellpadding='1' cellspacing='0'>";
+		$edited_sites .= "\n\t\t\t<tr>\n\t\t\t<td colspan='3' align='left' class='title2'>Your Recent Edits";
+		$edited_sites .="</td>\n\t\t\t</tr>";
+		$edited_sites .= "\n\t\t\t<tr>\n\t\t\t<td class='title3'>Date</td>\n\t\t\t<td class='title3'>Site</td>\n\t\t\t<td class='title3'>Most Recent Edit...</td>\n\t\t\t</tr>";
 
 		foreach ($recentComponents as $a) {
 			$url = $_full_uri."/index.php?";
-			$url .= "&action=site&site=".$a['slot_name'];
+			$url .= "&amp;action=site&amp;site=".$a['slot_name'];
 			if ($a['mr_section_id'])
-				$url .= "&section=".$a['mr_section_id'];
+				$url .= "&amp;section=".$a['mr_section_id'];
 			if ($a['mr_page_id'])
-				$url .= "&page=".$a['mr_page_id'];
+				$url .= "&amp;page=".$a['mr_page_id'];
 			if ($a['mr_story_id'])
-				$url .= "&story=".$a['mr_story_id'];
+				$url .= "&amp;story=".$a['mr_story_id'];
 			
 //			printpre($a);
-			$edited_sites .= "<tr>";
+			$edited_sites .= "\n\t\t\t<tr>";
 			preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2})/', $a['most_recent_tstamp'], $matches);
-			$edited_sites .= "<td valign='top' class='list'>".$matches[1]."</td>";
-			$edited_sites .= "<td valign='top' class='list' style='text-align: left; width: 25%; padding-left: 5px;'> <a href=\"".$url."\" target=new_window>".$a['site_title']."</a>";
-			$edited_sites .= "<td valign='top' class='list'><a href=\"".$url."\" target=new_window>";				
+			$edited_sites .= "\n\t\t\t<td valign='top' class='list'>".$matches[1]."</td>";
+			$edited_sites .= "\n\t\t\t<td valign='top' class='list' style='text-align: left; width: 25%; padding-left: 5px;'> <a href=\"".$url."\" target='new_window'>".$a['site_title']."</a></td>";
+			$edited_sites .= "\n\t\t\t<td valign='top' class='list'><a href=\"".$url."\" target='new_window'>";				
 	//		$edited_sites .= $a['site_title'];
 			if ($a['mr_section_title'] != "") {
 				$edited_sites .= " > ".$a['mr_section_title'];
@@ -370,13 +371,13 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 				$edited_sites .= " > ".$a['mr_story_title'];
 			}
 			$edited_sites .= "</a></td>";
-			$edited_sites .= "</tr>";
+			$edited_sites .= "\n\t\t\t</tr>";
 		}
-		$edited_sites .= "</table>";
+		$edited_sites .= "\n\t\t</table>";
 		printc($edited_sites);
 	}	
 	
-	printc("</td></tr></table>");
+	printc("\n\t</td>\n\t</tr>\n</table>");
 }
 	
 	
