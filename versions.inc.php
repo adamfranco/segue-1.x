@@ -358,14 +358,14 @@ END;
 		}
 
 		printc("</td>");
-		if (!$currentversion) {
-			printc("<td class='ts$color'><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
+		if ($currentversion) {
+			printc("<td class='ts$color'><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;detail=$story'>Revision $version_num</a> (current)</td>");
 		} else {
-			printc("<td class='ts$color'>Revision $version_num</td>");		
+			printc("<td class='ts$color'><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
 		}
 		
-		printc("<td class='ts$color'>".$version['version_created_tstamp']."</td>");
-		printc("<td class='ts$color'>".$version['FK_createdby']."</td>\n");
+		printc("<td class='ts$color' style='white-space: nowrap;'>".$version['version_created_tstamp']."</td>");
+		printc("<td class='ts$color' style='white-space: nowrap;'>".$version['FK_createdby']."</td>\n");
 		printc("<td class='ts$color'>".$version['version_comments']."</td>\n");
 		printc("</tr>\n");
 		

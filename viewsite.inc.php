@@ -18,6 +18,57 @@ if ($thisPage) $page = $thisPage->id;
 //	printpre($_SESSION['story_set']);
 //}
 
+function printStoryEditLinks() {
+	global $thisSite, $thisSection, $thisPage, $thisStory, $tagged_page, 
+		$site_owner, $o, $story_set, $s, $sid, $site, $section, $page;
+	printc("<div align='right'>");
+
+	/******************************************************************************
+	 * edit, delete options 
+	 ******************************************************************************/
+	if ($_REQUEST['tag']) {
+		$envvars = "&amp;site=".$thisSite->name;
+		if ($tagged_section) {
+			$envvars .= "&amp;section=".$tagged_section;
+		}
+		if ($tagged_page) {
+			$envvars .= "&amp;page=".$tagged_page;
+		}
+	}
+	//printpre($story_set);
+	$l = array();
+	if (($_SESSION[auser] == $site_owner) || (($_SESSION[auser] != $site_owner) && !$o->getField("locked"))) {
+		if (!$_REQUEST['tag']) {
+		
+			if ($thisPage->getField("storyorder") == 'custom' && $thisPage->hasPermission("edit") ) {
+				if ($_REQUEST[showorder] == "story") {
+					$l[] = "<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;showorder=0".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>hide order</a>";
+				} else {
+					$l[] = "<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;showorder=story".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>reorder</a>";									
+				}
+			}
+
+			if (($thisPage->getField("archiveby") == '' || $thisPage->getField("archiveby") == 'none' || !$thisPage->getField("archiveby")) && $thisPage->hasPermission("edit")) {
+												
+//								if ($i!=0 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) {
+//									$l[] = "<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;reorder=story&amp;direction=up&amp;id=$s' class='small' title='Move this Content Block up'><b>&uarr;</b></a>";
+//								}
+//								if ($i!=count($thisPage->stories)-1 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) {
+//									$l[] = "<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;reorder=story&amp;direction=down&amp;id=$s' class='small' title='Move this Content Block down'><b>&darr;</b></a>";
+//								}
+			}
+			if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='copy_parts.php?$sid&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$s&amp;type=story' class='small' title='Move/Copy this Content Block to another page' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>";
+		}
+		if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) 
+			$l[]="<a href='$PHP_SELF?$sid$envvars&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$s&amp;comingFrom=viewsite".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Edit this Content Block'>edit</a>";
+		if ($thisPage->hasPermission("delete") || $o->hasPermission("delete")) 
+			$l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid$envvars&amp;site=$site&amp;section=$section&amp;page=$page&amp;action=delete_story&amp;delete_story=$s\")' class='small' title='Delete this Content Block'>delete</a>";
+		if ($thisPage->hasPermission("edit") || $o->hasPermission("edit"))
+			$l[]= "<a href='index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$s."&amp;versioning=".$s."' class='small' title='View the history of this content'>versions</a>";
+	}
+	printc(implode(" | ",$l));
+	printc("</div>");
+}
 
 
 do {
@@ -151,7 +202,7 @@ do {
 		}
 	}	
 	
-	$envvars = "site=".$thisSite->name;
+	$envvars = "&amp;site=".$thisSite->name;
 	if ($thisSection) $envvars .= "&amp;section=".$thisSection->id;
 	if ($thisPage) $envvars .= "&amp;page=".$thisPage->id;
 	
@@ -197,13 +248,13 @@ do {
 				if ($thisSection->hasPermission("edit")) {
 					printc(" <span style='font-variant: normal; font-weight: normal;'>");
 //					if ($_REQUEST["showorder"] == "story" && $thisPage->getField("storyorder") == 'custom') {
-//						printc("<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0' class='small' title='Hide reorder fields on this page'>hide order</a> | ");
+//						printc("<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;showorder=0' class='small' title='Hide reorder fields on this page'>hide order</a> | ");
 //					} else if ($thisPage->getField("storyorder") == 'custom') {
-//						printc("<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=story' class='small' title='Reorder items on this page'>reorder</a> | ");
+//						printc("<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;showorder=story' class='small' title='Reorder items on this page'>reorder</a> | ");
 //					}
 //					printc("<a href='copy_parts.php?$sid&amp;site=$site&amp;section=$section&amp;page=$page&amp;type=page' class='small' title='Move/Copy this page to another section' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a> |");
-					printc("<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_page&amp;edit_page=$page&amp;step=3&amp;comingFrom=viewsite' class='small' title='Edit display of this page'>[display options]</a>");
-//					printc("<a href='javascript:doconfirm(\"Are you sure you want to permanently delete this page and any data that may be contained within it?\",\"$PHPSELF?$sid&amp;$envvars&amp;action=delete_page&amp;delete_page=$page\")' class='small' title='Delete this page'>delete</a>");
+					printc("<a href='$PHP_SELF?$sid$envvars&amp;action=edit_page&amp;edit_page=$page&amp;step=3&amp;comingFrom=viewsite' class='small' title='Edit display of this page'>[display options]</a>");
+//					printc("<a href='javascript:doconfirm(\"Are you sure you want to permanently delete this page and any data that may be contained within it?\",\"$PHPSELF?$sid$envvars&amp;action=delete_page&amp;delete_page=$page\")' class='small' title='Delete this page'>delete</a>");
 					printc("</span>");
 				}
 				printc("</div>");
@@ -217,7 +268,7 @@ do {
 		
 		$_top_addlink_orders = array("addeddesc","editeddesc","author","editor","category","titleasc","titledesc");
 		if ($thisPage->hasPermission("add") && in_array($thisPage->getField("storyorder"),$_top_addlink_orders)) 
-			printc("<br /><div align='right'><a href='$PHP_SELF?$sid&amp;$envvars&amp;action=add_story&amp;comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br /><hr class='block' />");
+			printc("<br /><div align='right'><a href='$PHP_SELF?$sid$envvars&amp;action=add_story&amp;comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div><br /><hr class='block' />");
 		
 		$i=0;
 		
@@ -229,7 +280,16 @@ do {
 			//if detail then print only story detail ie full text/discussion
 			if ($_REQUEST['detail']) {
 				$o =& $thisPage->stories[$_REQUEST['detail']];
+				$s = $_REQUEST['detail'];
+				
+				$tmp = $content;
+				$content = '';
+				printStoryEditLinks();
+				$storyEditLinks = $content;
+				$content = $tmp;
+								
 				include("fullstory.inc.php");
+
 			} else if ($_REQUEST['versioning'] || $_REQUEST['version'] ) {
 				$o =& $thisPage->stories[$_REQUEST['versioning']];
 				include("versions.inc.php");				
@@ -272,8 +332,8 @@ do {
 							$pagelinks[] = "current";
 							printc(" <strong>".($j+1)."</strong> | ");
 						} else {
-							$pagelinks[] = "?$sid&amp;$envvars&amp;action=viewsite&amp;story_set=".($j+1).(($_REQUEST['showorder']=='story')?"&amp;showorder=story":"");
-							printc("<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;story_set=".($j+1).(($_REQUEST['showorder']=='story')?"&amp;showorder=story":"")."'>".($j+1)."</a> | ");
+							$pagelinks[] = "?$sid$envvars&amp;action=viewsite&amp;story_set=".($j+1).(($_REQUEST['showorder']=='story')?"&amp;showorder=story":"");
+							printc("<a href='$PHP_SELF?$sid$envvars&amp;action=viewsite&amp;story_set=".($j+1).(($_REQUEST['showorder']=='story')?"&amp;showorder=story":"")."'>".($j+1)."</a> | ");
 						}
 					}
 				}
@@ -448,54 +508,7 @@ do {
 							//printc("<hr size='1' noshade /><br />");
 						}						
 					
-						printc("<div align='right'>");
-			//			$s1=$s2=NULL;
-			
-						/******************************************************************************
-						 * edit, delete options 
-						 ******************************************************************************/
-						if ($_REQUEST['tag']) {
-							$envvars = "site=".$thisSite->name;
-							if ($tagged_section) {
-								$envvars .= "&amp;section=".$tagged_section;
-							}
-							if ($tagged_page) {
-								$envvars .= "&amp;page=".$tagged_page;
-							}
-						}
-						//printpre($story_set);
-						$l = array();
-						if (($_SESSION[auser] == $site_owner) || (($_SESSION[auser] != $site_owner) && !$o->getField("locked"))) {
-							if (!$_REQUEST['tag']) {
-							
-								if ($thisPage->getField("storyorder") == 'custom' && $thisPage->hasPermission("edit") ) {
-									if ($_REQUEST[showorder] == "story") {
-										$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>hide order</a>";
-									} else {
-										$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=story".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Reorder content blocks on this page'>reorder</a>";									
-									}
-								}
-				
-								if (($thisPage->getField("archiveby") == '' || $thisPage->getField("archiveby") == 'none' || !$thisPage->getField("archiveby")) && $thisPage->hasPermission("edit")) {
-																	
-	//								if ($i!=0 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) {
-	//									$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=story&amp;direction=up&amp;id=$s' class='small' title='Move this Content Block up'><b>&uarr;</b></a>";
-	//								}
-	//								if ($i!=count($thisPage->stories)-1 && ($thisPage->getField("storyorder") == 'custom' || $thisPage->getField("storyorder") == '')) {
-	//									$l[] = "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=story&amp;direction=down&amp;id=$s' class='small' title='Move this Content Block down'><b>&darr;</b></a>";
-	//								}
-								}
-								if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) $l[]="<a href='copy_parts.php?$sid&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$s&amp;type=story' class='small' title='Move/Copy this Content Block to another page' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>";
-							}
-							if ($thisPage->hasPermission("edit") || $o->hasPermission("edit")) 
-								$l[]="<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_story&amp;edit_story=$s&amp;comingFrom=viewsite".(($story_set)?"&amp;story_set=".($story_set+1):"")."' class='small' title='Edit this Content Block'>edit</a>";
-							if ($thisPage->hasPermission("delete") || $o->hasPermission("delete")) 
-								$l[]="<a href='javascript:doconfirm(\"Are you sure you want to delete this content?\",\"$PHP_SELF?$sid&amp;$envvars&amp;action=delete_story&amp;delete_story=$s\")' class='small' title='Delete this Content Block'>delete</a>";
-							if ($thisPage->hasPermission("edit") || $o->hasPermission("edit"))
-								$l[]= "<a href='index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$s."&amp;versioning=".$s."' class='small' title='View the history of this content'>versions</a>";
-						}
-						printc(implode(" | ",$l));
-						printc("</div>");
+						printStoryEditLinks($thisPage);
 						$i++;
 					}
 					unset($o);
@@ -523,7 +536,7 @@ do {
 			&& $thisPage->getField("type") == "page"
 			&& !($_REQUEST['versioning'] || $_REQUEST['detail'])) 
 		{
-			printc("<br /><hr class='block' /><div align='right'><a href='$PHP_SELF?$sid&amp;$envvars&amp;action=add_story&amp;comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
+			printc("<br /><hr class='block' /><div align='right'><a href='$PHP_SELF?$sid$envvars&amp;action=add_story&amp;comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 		}
 	} else if ($thisSection && count($thisSection->pages) == 0) {
 		printc("Click the '+ add item' button to add a page to this section.\n<br/>");

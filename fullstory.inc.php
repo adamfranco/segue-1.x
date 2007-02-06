@@ -121,6 +121,12 @@ if ($storyObj->getField('type') == "image") {
 printc("\n</table>\n");
 
 /*********************************************************
+ * Print out edit links if we are in viewsite mode
+ *********************************************************/
+if ($action == 'viewsite' && isset($storyEditLinks))
+ 	printc($storyEditLinks);
+
+/*********************************************************
  * output discussions?
  *********************************************************/
 if ($storyObj->getField("discuss")) {
