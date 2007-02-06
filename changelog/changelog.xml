@@ -31,6 +31,9 @@
 		<change author='adam'>
 			Can now choose the HTML editor to use for the site header and footer.
 		</change>
+		<fix author='adam'>
+			Fixed error in media table definition for new installs.
+		</fix>
 	</version>
 	<version number="1.6.1" date="2007-01-10">
 		<fix author='adam'>

@@ -144,7 +144,6 @@ if (!$allTablesExist) {
 		  publisher varchar(255) default NULL,
 		  pubyear int(4) unsigned default NULL,
 		  isbn varchar(100) default NULL,
-		  ownership enum('personal','library') default NULL,		  
 		  PRIMARY KEY  (media_id),
 		  UNIQUE KEY uniqueness (FK_site,FK_createdby,media_tag,media_location),
 		  KEY FK_site (FK_site),
@@ -297,7 +296,6 @@ if (!$allTablesExist) {
 		  story_display_type enum('story','image','file','link','rss') NOT NULL default 'story',
 		  FK_media int(10) unsigned default NULL,
 		  story_locked enum('0','1') NOT NULL default '0',
-		  story_versioning enum('0','1') NOT NULL default '0',
 		  PRIMARY KEY  (story_id),
 		  KEY FK_page (FK_page),
 		  KEY story_order (story_order),
@@ -569,6 +567,10 @@ if ($a[numslots] == 0) {
 	";
 	$queryArray = explode(";",$query);
 	foreach ($queryArray AS $query) {
+			$query = trim($query);
+			if (!$query)
+				continue;
+				
 			db_query($query);
 			if (mysql_error()) {
 				print "\n<hr />";
