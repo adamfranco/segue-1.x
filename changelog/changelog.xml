@@ -34,6 +34,10 @@
 		<fix author='adam'>
 			Fixed error in media table definition for new installs.
 		</fix>
+		<fix author='adam'>
+			Now all personal-type sites are shown under personal sites, not under
+			'other sites'.
+		</fix>
 	</version>
 	<version number="1.6.1" date="2007-01-10">
 		<fix author='adam'>

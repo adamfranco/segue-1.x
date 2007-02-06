@@ -24,6 +24,13 @@ else if (isset($_REQUEST[expand_editorsites]) && $_REQUEST[expand_editorsites] =
 	$_SESSION["expand_editorsites"] = false;
 else if (!isset($_SESSION["expand_editorsites"]))
 	$_SESSION["expand_editorsites"] = false;
+
+if (isset($_REQUEST[expand_personalsites]) && $_REQUEST[expand_personalsites] == 'true')
+	$_SESSION["expand_personalsites"] = true;
+else if (isset($_REQUEST[expand_personalsites]) && $_REQUEST[expand_personalsites] == 'false')
+	$_SESSION["expand_personalsites"] = false;
+else if (!isset($_SESSION["expand_personalsites"]))
+	$_SESSION["expand_personalsites"] = false;
 	
 if (isset($_REQUEST[expand_othersites]) && $_REQUEST[expand_othersites] == 'true')
 	$_SESSION["expand_othersites"] = true;
@@ -122,7 +129,7 @@ if ($_loggedin) {
 	 *********************************************************/
 	// this should include all sites that the user owns as well.
 	
-	if ($_SESSION["expand_othersites"] != 0 || $_SESSION["expand_editorsites"] != 0 || $_SESSION["expand_pastclasses"] != 0) {
+	if ($_SESSION["expand_othersites"] != 0 || $_SESSION["expand_editorsites"] != 0 || $_SESSION["expand_pastclasses"] != 0 || $_SESSION["expand_personalsites"] != 0) {
 	
 		$userOwnedSlots = slot::getSlotInfoWhereUserOwner($_SESSION['auser']);
 		if (!is_array($userOwnedSlots) || !array_key_exists($_SESSION['auser'], $userOwnedSlots)) {
@@ -213,6 +220,18 @@ if ($_loggedin) {
 			$usersAllClassesInfo[$classSiteName]['site_exits'] = false;
 		}
 	}
+	
+// visitor are users who post to public discussions w/o logging in
+// visitors are not allowed to create sites
+if ($_SESSION[atype] == 'visitor') {
+	printc("Welcome to Segue.  You have a visitor account that was created when you registered with Segue.  ");
+	printc("This account will allow you to post to any public discussions ");
+	printc("and view all publically accessible sites.<br /><br />");
+} else if ($_SESSION[atype] == 'guest') {
+	printc("Welcome to Segue.  You have been given a guest account.  ");
+	printc("This account will allow you to view sites and post to discussions/assessments");
+	printc("that are limited to users in the ".$cfg[inst_name]." community.<br /><br />");
+}
 
 printc("\n<table width='100%'>");
 
@@ -279,7 +298,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 			//$tstamp =& TimeStamp::fromString($tstamp);
 			//$time =& $tstamp->asTime();
 			//$recent_discussions_sites .= "<td valign='top' class='list'>".$tstamp->ymdString()."<br/>".$time->string12(true)."</td>";
-			$recent_discussions_sites .= "\n\t<td valign='top' class='list'>".$matches[1]." &nbsp; ".$matches[2]."</td>";
+			$recent_discussions_sites .= "\n\t<td valign='top' class='list' style='white-space: nowrap;'>".$matches[1]." &nbsp; ".$matches[2]."</td>";
 			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href=$PHP_SELF?type=recent&user=".$a['user_uname'].">".$a['user_fname']."</td>";
 			
 			$recent_discussions_sites .= "\n\t<td valign='top' class='list'><a href=".$_full_uri."/index.php?&site=".$a['slot_name'];
@@ -467,26 +486,60 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 /*********************************************************
  * Personal Sites
  *********************************************************/
-	if ($allowpersonalsites) {
-		// print out the personal site if there is a slot for them that they own.
-		if ($userOwnedSlots[$_SESSION['auser']]['slot_owner'] == $_SESSION['auser']) {
-			// visitor are users who post to public discussions w/o logging in
-			// visitors are not allowed to create sites
-			if ($_SESSION[atype] == 'visitor') {
-				printc("Welcome to Segue.  You have a visitor account that was created when you registered with Segue.  ");
-				printc("This account will allow you to post to any public discussions ");
-				printc("and view all publically accessible sites.<br /><br />");
-			} else if ($_SESSION[atype] == 'guest') {
-				printc("Welcome to Segue.  You have been given a guest account.  ");
-				printc("This account will allow you to view sites and post to discussions/assessments");
-				printc("that are limited to users in the ".$cfg[inst_name]." community.<br /><br />");
+// 	if ($allowpersonalsites) {
+// 		// print out the personal site if there is a slot for them that they own.
+// 		if ($userOwnedSlots[$_SESSION['auser']]['slot_owner'] == $_SESSION['auser']) {
+// 			// visitor are users who post to public discussions w/o logging in
+// 			// visitors are not allowed to create sites
+// 			if ($_SESSION[atype] == 'visitor') {
+// 				printc("Welcome to Segue.  You have a visitor account that was created when you registered with Segue.  ");
+// 				printc("This account will allow you to post to any public discussions ");
+// 				printc("and view all publically accessible sites.<br /><br />");
+// 			} else if ($_SESSION[atype] == 'guest') {
+// 				printc("Welcome to Segue.  You have been given a guest account.  ");
+// 				printc("This account will allow you to view sites and post to discussions/assessments");
+// 				printc("that are limited to users in the ".$cfg[inst_name]." community.<br /><br />");
+// 			} else {
+// 				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>Personal Site</td>\n\t\t</tr>");
+// 				printSiteLine2($userOwnedSlots[$_SESSION['auser']]);
+// 			}
+// 		}
+// 	}
+	
+/*********************************************************
+ * Personal Sites
+ *********************************************************/
+	 if ($allowpersonalsites) {
+	 	// visitor are users who post to public discussions w/o logging in
+		// visitors are not allowed to create sites
+		if ($_SESSION[atype] != 'visitor' && $_SESSION[atype] != 'guest') {
+			if ($_SESSION["expand_personalsites"] == 0) {
+				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_personalsites=true'>+</a> Personal Sites</td>\n\t\t</tr>");
 			} else {
-				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>Personal Site</td>\n\t\t</tr>");
-				printSiteLine2($userOwnedSlots[$_SESSION['auser']]);
+				printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_personalsites=false'>-</a> Personal Sites</td>\n\t\t</tr>");
+			}
+			
+			if ($_SESSION["expand_personalsites"] != 0) {
+			
+				$sites=array();
+				if (is_array($userOwnedSlots)) {
+					foreach (array_keys($userOwnedSlots) as $name) {
+						$info =& $userOwnedSlots[$name];
+						
+						if (!in_array($name, $sitesprinted) && $info['slot_type'] == 'personal') {
+							$sites[$name] =& $info;
+						}
+					}
+				}
+				
+				if (count($sites)) {
+					foreach (array_keys($sites) as $name)
+						printSiteLine2($sites[$name]);
+				}
+				unset($sites);
 			}
 		}
 	}
-	
 
 /*********************************************************
  * Class sites for professors
@@ -622,40 +675,34 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	/*********************************************************
 	 * Other sites where user is owner
 	 *********************************************************/
-	 
-	if ($_SESSION["expand_othersites"] == 0) {
-		printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_othersites=true'>+</a> Your Other Sites".helplink("othersites","?")."</td>\n\t\t</tr>");
-	} else {
-		printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_othersites=false'>-</a> Your Other Sites".helplink("othersites","?")."</td>\n\t\t</tr>");
-	}
-	
-	if ($_SESSION["expand_othersites"] != 0) {
-	
-		$sites=array();
-		if (is_array($userOwnedSlots)) {
-			foreach (array_keys($userOwnedSlots) as $name) {
-				$info =& $userOwnedSlots[$name];
-				
-				if (!in_array($name, $sitesprinted)) {
-					if ($allowclasssites && !$allowpersonalsites) {
-						if ($info['slot_type'] != 'personal' && $info['slot_type'] != 'class')
-							$sites[$name] =& $info;
-					
-					} else if (!$allowclasssites && $allowpersonalsites) {
-						if ($info['slot_type'] == 'personal')
-							$sites[$name] =& $info;
+	if ($allowclasssites) {
+		if ($_SESSION["expand_othersites"] == 0) {
+			printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_othersites=true'>+</a> Your Other Sites".helplink("othersites","?")."</td>\n\t\t</tr>");
+		} else {
+			printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_othersites=false'>-</a> Your Other Sites".helplink("othersites","?")."</td>\n\t\t</tr>");
+		}
 		
-					} else
-						$sites[$name] =& $info;
+		if ($_SESSION["expand_othersites"] != 0) {
+		
+			$sites=array();
+			if (is_array($userOwnedSlots)) {
+				foreach (array_keys($userOwnedSlots) as $name) {
+					$info =& $userOwnedSlots[$name];
+					
+					if (!in_array($name, $sitesprinted)) {
+						if ($info['slot_type'] != 'personal' && $info['slot_type'] != 'class') {
+							$sites[$name] =& $info;
+						}
+					}
 				}
 			}
+			
+			if (count($sites)) {
+				foreach (array_keys($sites) as $name)
+					printSiteLine2($sites[$name]);
+			}
+			unset($sites);
 		}
-		
-		if (count($sites)) {
-			foreach (array_keys($sites) as $name)
-				printSiteLine2($sites[$name]);
-		}
-		unset($sites);
 	}
 	
 	/******************************************************************************
