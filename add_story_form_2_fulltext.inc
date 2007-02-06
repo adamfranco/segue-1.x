@@ -1,4 +1,4 @@
-\<? /* $Id$ */
+<? /* $Id$ */
 
 printc("<form action='$PHP_SELF?$sid' method='post' name='addform'>");
 printc("<input type='hidden' name='step' />");
@@ -105,6 +105,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 			printc("<option value='fckeditor'".(($_SESSION[settings][editor]=='fckeditor')?" selected='selected'":"").">FCKeditor</option>");
 			printc("<option value='htmlarea'".(($_SESSION[settings][editor]=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
 			printc("<option value='activex'".(($_SESSION[settings][editor]=='activex')?" selected='selected'":"").">Active-X</option>");
+			printc("\n<option value='txt'".(($_SESSION[settings][editor]=='txt')?" selected='selected'":"").">None</option>");
 			printc("</select></div>");
 			//printc("<input type='button' value='Update' onclick='document.addform.submit()' />\n");						
 		} else {
@@ -112,7 +113,8 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 			printc("We recommend you chose FCKeditor for the greatest cross-platform compatibility.</div>");
 			printc("<div align='right'>Current Editor: <select name='editor' onchange='document.addform.submit()'>");
 			printc("<option value='fckeditor'".(($_SESSION[settings][editor]=='fckeditor')?" selected='selected'":"").">FCKeditor</option>");
-			printc("<option value='htmlarea'".(($_SESSION[settings][editor]=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
+			printc("\n<option value='txt'".(($_SESSION[settings][editor]=='txt')?" selected='selected'":"").">None</option>");
+// 			printc("<option value='htmlarea'".(($_SESSION[settings][editor]=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
 			printc("</select></div>");		
 		}
 	}
@@ -158,7 +160,7 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	$action_site = "action=site";			
 	$text = eregi_replace($action_viewsite, $action_site, $text);
 
-	printc(addeditor ("longertext",60,26,$text));
+	printc(addeditor ("longertext",100,26,$text));
 	printc("</td></tr></table>");
 	
 	/******************************************************************************

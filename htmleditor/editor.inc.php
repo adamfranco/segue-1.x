@@ -18,6 +18,9 @@ function addeditor($textarea,$cols,$rows,$text,$context="story", $texttype = NUL
 			editor_htmlarea($textarea,$text,$context);
 		} else if ($context=="story" && $_SESSION[settings][editor]=='fckeditor') {
 			editor_fck($textarea,$text,$context);			
+		} else if ($context=="story" && $_SESSION[settings][editor]=='txt') {
+			$replaceBRs = ($texttype == 'html')?FALSE:TRUE;
+			editor_txt($textarea,$cols,$rows,$text, $replaceBRs);		
 		} else if ($context=="discuss") {
 			editor_fck($textarea,$text,$context);
 		} else {
@@ -32,6 +35,9 @@ function addeditor($textarea,$cols,$rows,$text,$context="story", $texttype = NUL
 			editor_fck($textarea,$text,$context);
 		} else if ($_SESSION[settings][editor]=='htmlarea') {
 			editor_htmlarea($textarea,$text,$context);
+		} else if ($_SESSION[settings][editor]=='txt') {
+			$replaceBRs = ($texttype == 'html')?FALSE:TRUE;
+			editor_txt($textarea,$cols,$rows,$text, $replaceBRs);		
 		} else {
 			editor_fck($textarea,$text,$context);
 		}

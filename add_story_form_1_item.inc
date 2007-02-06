@@ -270,12 +270,14 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 			printc("\n<option value='htmlarea'".(($_SESSION[settings][editor]=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
 			printc("\n<option value='activex'".(($_SESSION[settings][editor]=='activex')?" selected='selected'":"").">Active-X</option>");
 			printc("\n</select></div>");
+			printc("\n<option value='txt'".(($_SESSION[settings][editor]=='txt')?" selected='selected'":"").">None</option>");
 			//printc("\n<input type='button' value='Update' onclick='document.addform.submit()' />\n");						
 		} else {
 			printc("\n<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");
 			printc("\nWe recommend you chose FCKeditor for the greatest cross-platform compatibility.</div>");
 			printc("\n<div align='right'>Current Editor: <select name='editor' onchange='document.addform.submit()'>");
 			printc("\n<option value='fckeditor'".(($_SESSION[settings][editor]=='fckeditor')?" selected='selected'":"").">FCKeditor</option>");
+			printc("\n<option value='txt'".(($_SESSION[settings][editor]=='txt')?" selected='selected'":"").">None</option>");
 	//		printc("\n<option value='htmlarea'".(($_SESSION[settings][editor]=='htmlarea')?" selected='selected'":"").">HTMLarea");
 			printc("\n</select></div>");		
 		}
@@ -317,14 +319,14 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	//$text = eregi_replace($action_viewsite, $action_site, $text);
 	//printpre($_REQUEST);
 
-	printc(addeditor ("shorttext",60,20,$text, "story", $_SESSION[storyObj]->getField("texttype")));
+	printc(addeditor ("shorttext",100,20,$text, "story", $_SESSION[storyObj]->getField("texttype")));
 	printc("\n</td></tr></table>");
 	
 	/******************************************************************************
 	 * Text fields text type: html or text
 	 ******************************************************************************/
 		
-	if ($supported == 1) {
+	if ($supported == 1 && $_SESSION[settings][editor] != 'txt') {
 		printc("\n<input type='hidden' name='texttype' value='html' />");
 	} else {
 		printc("\n<div align='right'>");

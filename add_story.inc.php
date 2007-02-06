@@ -19,7 +19,7 @@
 /* } */
 
 
-printpre($_REQUEST[version_comments]);
+// printpre($_REQUEST[version_comments]);
 //printpre($_SESSION[storyObj]->data);
 
 if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
@@ -32,7 +32,7 @@ if ($_SESSION[settings] && is_object($_SESSION[storyObj])) {
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]) $_SESSION[storyObj]->setField("title",$_REQUEST[title]);
 	if ($_SESSION[settings][step] == 1 && !$_REQUEST[link]  && isset($_REQUEST[version_comments])) $_SESSION[storyObj]->version_comments = $_REQUEST[version_comments];
 
-printpre($_SESSION[storyObj]->version_comments);
+// printpre($_SESSION[storyObj]->version_comments);
 	
 	$_SESSION[storyObj]->handleFormDates();
 	if ($_REQUEST[active] != "") $_SESSION[storyObj]->setField("active",$_REQUEST[active]);
