@@ -84,8 +84,14 @@ if ($_REQUEST['revert']) {
 
 
 if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
-	$_SESSION['oldversion'] = $_REQUEST['oldversion'];
-	$_SESSION['newversion'] = $_REQUEST['newversion'];
+	if (!isset($_SESSION['oldversion']) || !is_array($_SESSION['oldversion']))
+		$_SESSION['oldversion'] = array();
+	if (!isset($_SESSION['newversion']) || !is_array($_SESSION['newversion']))
+		$_SESSION['newversion'] = array();
+		
+	$_SESSION['oldversion'][$_REQUEST['story']] = $_REQUEST['oldversion'];
+	$_SESSION['newversion'][$_REQUEST['story']] = $_REQUEST['newversion'];
+		
 	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
 	printc(" > Selected Versions");
 	
@@ -285,7 +291,7 @@ END;
 		printc("<td align='right'><a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;comingFrom=viewsite'>Edit current version</a></td>\n");
 	}
 	printc("</tr></table>");
-	
+
 	printc("<table cellspacing='3' width='100%'>\n");
 	$versions = get_versions($storyObj->id);
 	//printpre($versions);	
@@ -307,8 +313,8 @@ END;
 		if ($i > 0) {
 			printc("<input type='radio' name='oldversion' value='".$version_num."' ");
 			
-			if (isset($_SESSION['oldversion'])) {
-				if ($_SESSION['oldversion'] == $version_num) {
+			if (isset($_SESSION['oldversion'][$_REQUEST['story']])) {
+				if ($_SESSION['oldversion'][$_REQUEST['story']] == $version_num) {
 					printc(" checked='checked'");
 					$hideNew = true;
 				}
@@ -332,8 +338,8 @@ END;
 		if ($i < count($versions) - 1) {
 			printc("<input type='radio' name='newversion' value='".$version_num."' ");
 			
-			if (isset($_SESSION['newversion'])) {
-				if ($_SESSION['newversion'] == $version_num) {
+			if (isset($_SESSION['newversion'][$_REQUEST['story']])) {
+				if ($_SESSION['newversion'][$_REQUEST['story']] == $version_num) {
 					printc(" checked='checked'");
 					$hideOld = false;
 				}
