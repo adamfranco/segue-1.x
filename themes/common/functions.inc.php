@@ -58,12 +58,21 @@ function horizontal_nav($navtype,$topnav,$extra, $hide_sidebar = 0) {
  * extra = editing UI
  ******************************************************************************/
 
-function vertical_nav($navtype,$nav_items, $extra, $bordercolor='000000', $hide_sidebar = 0) {
+function vertical_nav($navtype, $nav_items, $extra, $bordercolor='000000', $hide_sidebar = 0) {
+	global $thisSection;
+	
 	$section = $_REQUEST[section];
 	$site = $_REQUEST[site];
 	$detail = $_REQUEST[detail];
 	$page = $_REQUEST[page];
 	$action = $_REQUEST[action];
+	
+	$numContentPages = 0;
+	foreach ($thisSection->pages as $page) {
+		if ($page->getField('type') == 'page')
+			$numContentPages++;
+	}
+	
 	//printpre($nav_items);
 		print "\n\t\t\t\t<table width='100%' cellpadding='2' cellspacing='0'>";
 		print "\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>\n";
@@ -80,7 +89,7 @@ function vertical_nav($navtype,$nav_items, $extra, $bordercolor='000000', $hide_
 			print "display options</a>";
 			print "</div>";
 			print "</td></tr></table><br />";
-		} else if (count($nav_items) == 1 && $action == 'viewsite' && $hide_sidebar != 2) {
+		} else if ($numContentPages == 1 && $action == 'viewsite' && $hide_sidebar != 2) {
 			print "<table cellpadding='1' style='border: 1px solid;'><tr><td>";
 			print "<div style='font-size: 9px;'>";
 			print "This section has only one page.  If you want to hide this sidebar when viewing this section see: ";

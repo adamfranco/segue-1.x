@@ -16,8 +16,8 @@
 			allow users to decide what sites they want to display 
 		</new>
 		<new author='adam'>
-			Added a custom css theme that allows users to edit existing css styles
-			as well as add new css styles.  
+			Added a "custom css" theme that allows users to have full control
+			over the style sheet for their site.
 		</new>
 		<change author='alex'>
 			Added view source to discussion version of HTML editor
@@ -46,6 +46,10 @@
 			Fixing bug with reordering of pages. Where moving pages from one 
 			column to the other got orders confused. All pages in a section are 
 			now re-keyed during reorder.
+		</fix>
+		<fix author='adam'>
+			Now the message to hide page navigation only shows when there is only
+			one page, not when there is only one on a side.
 		</fix>
 	</version>
 	<version number="1.6.1" date="2007-01-10">
