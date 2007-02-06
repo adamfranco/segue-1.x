@@ -27,6 +27,17 @@ if ($ltype == 'admin') {	// must be admin to do this:
 		$_SESSION[aid] = $x[id];
 		$_SESSION[amethod] = $x[method];
 		log_entry("change_auser","$luser as $auser");
+		
+		
+		unset($_SESSION["discussion_set"]);
+		unset($_SESSION["oldversion"]);
+		unset($_SESSION["newversion"]);
+		unset($_SESSION["expand_personalsites"]);
+		unset($_SESSION["expand_recentactivity"]);
+		unset($_SESSION["expand_othersites"]);
+		unset($_SESSION["expand_editorsites"]);
+		unset($_SESSION["expand_pastclasses"]);
+		unset($_SESSION["expand_upcomingclasses"]);
 	}
 }
 
