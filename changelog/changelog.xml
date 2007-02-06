@@ -38,6 +38,11 @@
 			Now all personal-type sites are shown under personal sites, not under
 			'other sites'.
 		</fix>
+		<fix author='adam'>
+			Fixing bug with reordering of pages. Where moving pages from one 
+			column to the other got orders confused. All pages in a section are 
+			now re-keyed during reorder.
+		</fix>
 	</version>
 	<version number="1.6.1" date="2007-01-10">
 		<fix author='adam'>
