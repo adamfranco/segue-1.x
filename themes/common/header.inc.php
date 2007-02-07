@@ -191,5 +191,58 @@ function getElementsByAttribute(oElm, strTagName, strAttributeName, strAttribute
 		.nav_extras {
 			text-align: right;
 		}
+		
+		/*********************************************************
+		 * Versioning styles
+		 *********************************************************/
+		.version_table {
+			width: 100%;
+		}
+		
+		.version_table td {
+			width: 50%;
+			vertical-align: top;
+			border: 1px dotted #CCC;
+		}
+		
+		.version_table th .timestamp {
+			font-weight: normal;
+		}
+		
+		.version_table thead th {
+			text-align: left;
+			font-weight: bold;
+			padding-top: 10px;
+		}
+		
+		.diff_table {
+			width: 100%;
+		}		
+		
+		.diff_table thead th {
+			text-align: left;
+			font-weight: bold;
+			padding-top: 10px;
+			border-bottom: 1px dotted #CCC;
+		}
+		
+		.diff_table td {
+			text-align: center;
+		}
+		.diff_table .diff-context {
+			text-align: left;
+		}
+		
+		.diff_table .diff-addedline {
+			text-align: left;
+			background-color: #CFC;
+			width: 45%;
+		}
+		
+		.diff_table .diff-deletedline {
+			text-align: left;
+			background-color: #FCC;
+			width: 45%;
+		}
 	
 	</style>

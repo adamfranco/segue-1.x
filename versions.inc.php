@@ -159,26 +159,103 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 //	printpre($version01);
 	//printpre($version02);	
 	printc("<tr><td style='padding-bottom: 15px; font-size: 12px'>");
-	printc("<table width='100%' cellpadding='3'>");
+	
+	
+	ob_start();
+	print "\n<tr>";
+	print "\n\t<th>";
+	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version01_num'>Revision ".$version01_num."</a> ";
+	print "<span class='timestamp'>";
+	print "(".$version01[0]['version_created_tstamp']." - ".$version01[0]['FK_createdby'].")\n";
+	print "</span>";
+	print "</th>";
+	print "\n\t<th>";
+	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version02_num'>Revision ".$version02_num."</a> ";
+	print "<span class='timestamp'>";
+	print "(".$version02[0]['version_created_tstamp']." - ".$version02[0]['FK_createdby'].")\n";
+	print "</span>";
+	print "</th>";
+	print "\n</tr>\n";
+	$revisionHeadings = ob_get_clean();
+	
+	
+	/*********************************************************
+	 * Shorttext
+	 *********************************************************/
+	if (trim($fulltext01) || trim($fulltext02)) {
+// 		printc("\n\n<hr/ style='margin-top: 20px;'>");
+		printc("\n<h2>Short Content</h2>");
+	}
+	printc("\n\n<table cellpadding='3' class='version_table'>");
+	printc("\n<thead>");
+	printc($revisionHeadings);
+	printc("\n</thead>");
+	
+	
+	printc("\n<tbody>");
 	printc("<tr>\n");
-	printc("<td>");
-	printc("<strong><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version01_num'>Revision ".$version01_num."</a></strong> ");
-	printc("(".$version01[0]['version_created_tstamp']." - ".$version01[0]['FK_createdby'].")\n");
+	printc("<td>".$smalltext01."</td>\n");
+	printc("<td>".$smalltext02."</td>\n");
+	printc("</tr>\n");
+	printc("\n</tbody>");
+	printc("\n</table>");
+	
+	// Diffs
+	printc("\n<table cellspacing='0' class='diff_table'>");
+	printc("\n<thead>");
+	printc("\n\t<tr><th colspan='4'>Changes</th></tr>\n");
+	printc("\n</thead>");
+	
+	printc("\n<tbody>");
+	define('USE_ASSERTS', false);
+	require_once('DiffEngine.php');
+	
+	$diff = & new Diff (explode("\n", $smalltext01), explode("\n", $smalltext02));
+	$formatter =& new TableDiffFormatter;
+	
+	printc($formatter->format($diff));
+	printc("\n</tbody>");
+	printc("\n</table>");
+	
+	
+	/*********************************************************
+	 * Fulltext
+	 *********************************************************/
+	 
+	if (trim($fulltext01) || trim($fulltext02)) {
+		printc("\n\n<hr/ style='margin-top: 20px;'>");
+		printc("\n<h2>Extended Content</h2>");
+		printc("\n\n<table cellpadding='3' class='version_table'>");
+		printc("\n<thead>");
+		printc($revisionHeadings);
+		printc("\n</thead>");
+		
+		printc("\n<tbody>");
+		printc("\n<tr>");
+		printc("\n\t<td class='version'>".$fulltext01."</td>");
+		printc("\n<td class='version'>".$fulltext02."</td>");
+		printc("\n</tr>");
+		printc("\n</tbody>");
+		printc("\n</table>");
+		
+		printc("\n<table cellspacing='0' class='diff_table'>");
+		printc("\n<thead>");
+		printc("<tr><th colspan='4' style='border-bottom: 1px dotted #CCC;'>Changes</th></tr>\n");
+		printc("\n</thead>");
+		
+		printc("\n<tbody>");
+		define('USE_ASSERTS', false);
+		require_once('DiffEngine.php');
+		
+		$diff = & new Diff (explode("\n", $fulltext01), explode("\n", $fulltext02));
+		$formatter =& new TableDiffFormatter;
+		
+		printc($formatter->format($diff));
+		printc("\n</tbody>");
+		printc("\n</table>");
+	}
+	
 	printc("</td>");
-	printc("<td>");
-	printc("<strong><a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version02_num'>Revision ".$version02_num."</a></strong> ");
-	printc("(".$version02[0]['version_created_tstamp']." - ".$version02[0]['FK_createdby'].")\n");
-	printc("</td>");
-	printc("</tr>\n");
-	printc("<tr>\n");
-	printc("<td width='50%' valign='top' style='border: 1px dotted #CCC;'>".$smalltext01."</td>\n");
-	printc("<td width='50%' valign='top'  style='border: 1px dotted #CCC;'>".$smalltext02."</td>\n");
-	printc("</tr>\n");
-	printc("<tr>\n");
-	printc("<td style='border: 1px dotted #CCCCCC;'>".$fulltext01."</td>\n");
-	printc("<td style='border: 1px dotted #CCCCCC;'>".$fulltext02."</td>\n");
-	printc("</tr>\n");
-	printc("</table>");
 	printc("</tr>\n");
 
 
