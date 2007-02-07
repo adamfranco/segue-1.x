@@ -363,10 +363,10 @@ END;
 	
 	// compare selected versions button (top)
 	printc("<table cellspacing='3' width='100%'>\n\t<tr>");
-	printc("\n\t<td><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button></td>");
 	if ($action == "viewsite") {
-		printc("\n\t<td align='right'><a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;comingFrom=viewsite'>Edit current version</a></td>\n");
+		printc("\n\t<td align='left'><a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;comingFrom=viewsite'>Edit current version</a></td>\n");
 	}
+	printc("\n\t<td align='right'><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions &gt;&gt;</button></td>");
 	printc("\n\t</tr>\n</table>");
 
 	printc("\n<table cellspacing='3' width='100%'>\n");
@@ -481,7 +481,7 @@ END;
 	printc("</table>\n");
 	// compare selected versions button (bottom)
 	printc("\n<table cellspacing='3' width='100%'>\n\t<tr>");
-	printc("\n\t<td><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions</button></td>");
+	printc("\n\t<td align='right'><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions &gt;&gt;</button></td>");
 
 //	printc("<td align='right'><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Edit this version</button></td>");
 	printc("\n\t</tr>\n</table>");
