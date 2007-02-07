@@ -592,7 +592,8 @@ if ($a[numslots] == 0) {
 		  version_text_short mediumblob NOT NULL,
 		  version_text_long mediumblob NOT NULL,
 		  version_comments mediumblob NOT NULL,
-		  PRIMARY KEY  (version_id)
+		  PRIMARY KEY  (version_id),
+		  KEY `FK_parent` (`FK_parent`)
 		) TYPE=MyISAM;
 	";
 	
