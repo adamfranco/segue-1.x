@@ -46,29 +46,85 @@ text-align: center;
 
 /**
  * This is a container for the leftnav, 
- * content, and right nav
+ * content, and right nav.
+ *
+ * To enable floating columns, the 
+ * padding-left should match the width 
+ * of the left navigation and the 
+ * padding-right should match the width 
+ * of the right navigation.
  */
 .contentarea {
-padding-left: 150px;
+padding-left: 150px; 
 padding-right: 150px;
 clear: both;
 }
 
 /**
- * This holds the left-navigation links
+ * This holds the left-navigation.
+ *
+ * To enable floating columns, the 
+ * width this left-navigation should
+ * match the padding-left of the 
+ * content-area. As well, the 'right' 
+ * position should match the width of 
+ * this column plus the width of any 
+ * borders.
  */
-.leftnav {
+.leftnav_container {
 position: relative;
 float: left;
 width: 150px;
 right: 150px;
 }
 
+/**
+ * This is a div nested in the 
+ * leftnav_container to to allow
+ * easier styling of margins 
+ * around text.
+ */
+.leftnav {
+	border: 1px dotted #CCCCCC;
+	min-height: 300px;
+	padding: 5px;
+}
 
 /**
- * This holds the stories and discussions
+ * This holds the right-navigation links
+ *
+ * To enable floating columns, the 
+ * width this right-navigation should
+ * match the padding-right of the 
+ * content-area. As well, the margin-
+ * right should match the width of 
+ * this column plus the width of any 
+ * borders.
  */
-.content {
+.rightnav_container {
+position: relative;
+float: left;
+width: 150px;
+margin-right: -150px;
+}
+
+/**
+ * This is a div nested in the 
+ * rightnav_container to to allow
+ * easier styling of margins 
+ * around text.
+ */
+.rightnav {
+	border: 1px dotted #CCCCCC;
+	min-height: 300px;
+	padding: 5px;
+}
+
+
+/**
+ * This holds the center content.
+ */
+.content_container {
 position: relative;
 float: left;
 width: 100%;
@@ -76,13 +132,12 @@ margin-left: -150px;
 }
 
 /**
- * This holds the right-navigation links
+ * This holds the stories and is nested
+ * inside the content_container to allow
+ * easier styling of margins around text.
  */
-.rightnav {
-position: relative;
-float: left;
-width: 150px;
-margin-right: -150px;
+.content {
+margin: 5px;
 }
 
 /**

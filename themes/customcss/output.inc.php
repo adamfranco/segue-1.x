@@ -97,12 +97,14 @@ if ($nav_arrange==1) {
  ******************************************************************************/
 
 if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)) {
-	print "\n\t\t<div class='leftnav'>\n";
+	print "\n\t\t<div class='leftnav_container'>";
+	print "\n\t\t\t<div class='leftnav'>\n";
 	if ($nav_arrange==1) {
 		vertical_nav($page, $leftnav, $leftnav_extra, $bordercolor, $hide_sidebar);		
 	} else {
 		side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra, $bordercolor);
 	}
+	print "\n\t\t\t</div>";	
 	print "\n\t\t</div>\n";	
 } 
 
@@ -111,7 +113,8 @@ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)
  ******************************************************************************/
 ?>
 
-		<div class='content'>
+		<div class='content_container'>
+			<div class='content'>
 
 <?
 /******************************************************************************
@@ -119,7 +122,7 @@ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)
  ******************************************************************************/
 print $content; 
 ?>
-
+			</div>
 		</div>
 
 <?
@@ -128,8 +131,10 @@ print $content;
  * Right Column
  ******************************************************************************/
 if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
-	print "\n\t\t<div class='rightnav'>\n";
+	print "\n\t\t<div class='rightnav_container'>";
+	print "\n\t\t\t<div class='rightnav'>\n";
 	print vertical_nav($page, $rightnav, $leftnav_extra, $bordercolor, $hide_sidebar);
+	print "\n\t\t\t</div>";
 	print "\n\t\t</div>";
 }
 ?>
