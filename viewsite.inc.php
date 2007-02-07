@@ -534,7 +534,7 @@ do {
 		if ($thisPage->hasPermission("add") 
 			&& in_array($thisPage->getField("storyorder"),$_b) 
 			&& $thisPage->getField("type") == "page"
-			&& !($_REQUEST['versioning'] || $_REQUEST['detail'])) 
+			&& !($_REQUEST['versioning'] || $_REQUEST['detail'] || $_REQUEST['version'])) 
 		{
 			printc("<br /><hr class='block' /><div align='right'><a href='$PHP_SELF?$sid$envvars&amp;action=add_story&amp;comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
 		}
