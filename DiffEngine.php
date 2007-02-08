@@ -1137,9 +1137,50 @@ class TableDiffFormatter extends DiffFormatter
 class SegueTableDiffFormatter
 	extends TableDiffFormatter
 {
+	var $maxLength = 60;
+	var $separator = " ";
+	
+	
+	# HTML-escape parameter before calling this
+	function addedLine( $line ) {
+		$line = $this->breakLongWords($line);
+		return "<td>+</td><td class='diff-addedline'>{$line}</td>";
+	}
+
+	# HTML-escape parameter before calling this
+	function deletedLine( $line ) {
+		$line = $this->breakLongWords($line);
+		return "<td>-</td><td class='diff-deletedline'>{$line}</td>";
+	}
+
+	# HTML-escape parameter before calling this
+	function contextLine( $line ) {
+		$line = $this->breakLongWords($line);
+		return "<td> </td><td class='diff-context'>{$line}</td>";
+	}
+	
+	/**
+	 * Break words longer than a certain number of characters so that they 
+	 * don't stretch our table cells too much
+	 * 
+	 * @param string $input
+	 * @return string
+	 * @access public
+	 * @since 2/8/07
+	 */
+	function breakLongWords ($input) {
+		$words = explode(" ", trim($input));
+		$newWords = array();
+		foreach ($words as $word) {
+			if (strlen($word) > $this->maxLength) {
+				$word = wordwrap($word, $this->maxLength, $this->separator, true);
+			}
+			
+			$newWords[] = $word;
+		}
 		
-	
-	
+		return implode(" ", $newWords);
+	}
 }
 
 

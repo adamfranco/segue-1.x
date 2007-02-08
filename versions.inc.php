@@ -146,6 +146,9 @@ printc("</td></tr>\n");
  ******************************************************************************/
 	
 if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
+	define('USE_ASSERTS', false);
+	require_once('DiffEngine.php');
+	$formatter =& new SegueTableDiffFormatter;
 
 	$version01 = get_versions($story, $_REQUEST['oldversion']);
 	$version01_num = $version01[0]['version_order'];
@@ -207,13 +210,10 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	printc("\n</thead>");
 	
 	printc("\n<tbody>");
-	define('USE_ASSERTS', false);
-	require_once('DiffEngine.php');
 	
-	$diff = & new Diff (explode("\n", $smalltext01), explode("\n", $smalltext02));
-	$formatter =& new TableDiffFormatter;
-	
+	$diff = & new Diff (explode("\n", $smalltext01), explode("\n", $smalltext02));	
 	printc($formatter->format($diff));
+	
 	printc("\n</tbody>");
 	printc("\n</table>");
 	
@@ -244,13 +244,10 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 		printc("\n</thead>");
 		
 		printc("\n<tbody>");
-		define('USE_ASSERTS', false);
-		require_once('DiffEngine.php');
 		
 		$diff = & new Diff (explode("\n", $fulltext01), explode("\n", $fulltext02));
-		$formatter =& new TableDiffFormatter;
-		
 		printc($formatter->format($diff));
+		
 		printc("\n</tbody>");
 		printc("\n</table>");
 	}
