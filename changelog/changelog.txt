@@ -3,6 +3,13 @@ Name: Segue ChangeLog
 
 
 
+v. 1.7.1 (2007-02-08) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed global variable overwrite in page reordering.
+	
+
 v. 1.7.0 (2007-02-08) 
 ----------------------------------------------------
 		

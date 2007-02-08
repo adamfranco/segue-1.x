@@ -68,8 +68,8 @@ function vertical_nav($navtype, $nav_items, $extra, $bordercolor='000000', $hide
 	$action = $_REQUEST[action];
 	
 	$numContentPages = 0;
-	foreach ($thisSection->pages as $page) {
-		if ($page->getField('type') == 'page')
+	foreach ($thisSection->pages as $pageObj) {
+		if ($pageObj->getField('type') == 'page')
 			$numContentPages++;
 	}
 	

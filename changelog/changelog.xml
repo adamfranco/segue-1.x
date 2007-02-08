@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
+	<version number="1.7.1" date="2007-02-08">
+		<fix author='adam'>
+			Fixed global variable overwrite in page reordering.
+		</fix>
+	</version>
 	<version number="1.7.0" date="2007-02-08">
 		<new author='alex'>
 			Added a Recent Activity section to the Segue home page that shows
