@@ -113,7 +113,7 @@ class Update170
 				  version_id int(10) unsigned NOT NULL auto_increment,
 				  FK_parent int(10) unsigned NOT NULL default '0',
 				  FK_createdby int(10) unsigned NOT NULL default '0',
-				  version_order INT( 10 ) unsigned NOT NULL  default '0',
+				  version_order INT( 10 ) unsigned NOT NULL  default '1',
 				  version_created_tstamp timestamp(14) NOT NULL,
 				  version_text_short mediumblob NOT NULL,
 				  version_text_long mediumblob NOT NULL,
