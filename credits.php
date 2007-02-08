@@ -59,17 +59,23 @@ li { margin-bottom: 3px; }
 <h2>Included/Referenced Projects</h2>
 
 <ul>
-	<li /><a href='http://www.fckeditor.net/' target="new_window">FCKeditor</a>  -
-	This is the new default HTML Editor for Segue.
-	<li /><a href='http://sourceforge.net/projects/itools-htmlarea/' target="new_window">HTMLArea</a> by 
+	<li><a href='http://www.fckeditor.net/' target="new_window">FCKeditor</a>  -
+	This is the new default HTML Editor for Segue.</li>
+	
+	<li><a href='http://sourceforge.net/projects/itools-htmlarea/' target="new_window">HTMLArea</a> by 
 	<a href='http://www.interactivetools.com' target="new_window">Interactive Tools</a> -
-	 HTMLArea is a The HTML editor available within Segue.
-	<li /><a href='http://www.engageinteractive.com/flashSite/domit.html' target="new_window">DOMIT!</a> by 
+	 HTMLArea is an HTML editor available within Segue.</li>
+	 
+	<li><a href='http://www.engageinteractive.com/flashSite/domit.html' target="new_window">DOMIT!</a> by 
 	<a href='http://www.engageinteractive.com/' target="new_window">Engage Interactive</a> - DOMIT! XML parsing
-	libraries are used to export and import Segue sites to and from XML files.
-	<li /><a href='http://www.geckotribe.com/rss/carp/' target="new_window">CaRP: Caching RSS Parser</a> -
+	libraries are used to export and import Segue sites to and from XML files.</li>
+	
+	<li><a href='http://www.geckotribe.com/rss/carp/' target="new_window">CaRP: Caching RSS Parser</a> -
 	The GPL version 3.5.2 (3/10/2004), with minor modifications by Adam Franco, is used to
-	display RSS Feeds.
+	display RSS Feeds.</li>
+	
+	<li><a href='http://drupal.org'>Drupal</a> / <a href='http://phpwiki.sf.net'>PhpWiki</a> -
+	Segue makes use of the <a href='http://cvs.drupal.org/viewcvs/drupal/contributions/modules/diff/DiffEngine.php'>DiffEngine</a> from Drupal, a library for showing highlighted differences. This library was originally part of PhpWiki, but was reformatted when it was added to Drupal.</li>
 </ul>
 
 <h2>Thanks to:</h2>
