@@ -9,7 +9,7 @@ class story extends segue {
 	var $_allfields = array("page_id","section_id","site_id","title","addedby","addedtimestamp", "addedbyfull", "editedbyfull",
 							"editedby","editedtimestamp","shorttext","longertext",
 							"activatedate","deactivatedate","discuss","discussdisplay","discussauthor","discussemail","discusslabel",
-							"locked","category","discussions","texttype","type","url","active","versioning");
+							"locked","category","discussions","texttype","type","url","active");
 	
 	// fields listed in $_datafields are stored in the database.
 	// the first element is the table join syntax required to pull the data.
@@ -187,11 +187,6 @@ class story extends segue {
 			"story",
 			array("story_text_long"),
 			"story_id"
-		),
-		"versioning" => array(
-			"story",
-			array("story_versioning"),
-			"story_id"
 		)
 	);
 
@@ -357,7 +352,6 @@ class story extends segue {
 					story_discussauthor AS discussauthor, 
 					story_discussemail AS discussemail,
 					story_discusslabel AS discusslabel,
-					story_versioning AS versioning,
 					story_category AS category, 
 					story_text_type AS texttype, 
 					story_text_short AS shorttext,
@@ -769,7 +763,6 @@ class story extends segue {
 		if ($all || $this->changed[discussauthor]) $a[] = $this->_datafields[discussauthor][1][0]."='".addslashes(($d[discussauthor]))."'";
 		if ($all || $this->changed[discusslabel]) $a[] = $this->_datafields[discusslabel][1][0]."='".addslashes($d[discusslabel])."'";
 
-		if ($all || $this->changed[versioning]) $a[] = $this->_datafields[versioning][1][0]."='".addslashes($d[versioning])."'";
 		
 		if ($all || $this->changed[texttype]) $a[] = $this->_datafields[texttype][1][0]."='".addslashes($d[texttype])."'";
 		if ($all || $this->changed[category]) $a[] = $this->_datafields[category][1][0]."='".addslashes($d[category])."'";
