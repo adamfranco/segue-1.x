@@ -463,7 +463,8 @@ do {
 						 * author, editor, timestamp info
 						 ******************************************************************************/
 						
-						if ($thisPage->getField("showcreator") || $thisPage->getField("showeditor") || $thisPage->getField("showdate")) {
+						if ($thisPage->getField("showcreator") || $thisPage->getField("showeditor") || $thisPage->getField("showdate") || $thisPage->getField("showversions")) {
+							$linksAddedSoFar = false;
 							printc("<div class='contentinfo' align='right'>");
 							$added = timestamp2usdate($o->getField("addedtimestamp"));
 							$edited = timestamp2usdate($o->getField("editedtimestamp"));
@@ -472,8 +473,10 @@ do {
 							// if show date but not creator							
 							if ($thisPage->getField("showdate") && !$thisPage->getField("showcreator") && !$o->getField("editedtimestamp")) {
 								printc(" added on $added");
+								$linksAddedSoFar = true;
 							} else if ($thisPage->getField("showdate") && (!$thisPage->getField("showcreator") && !$thisPage->getField("showeditor"))  && $o->getField("editedtimestamp")) {
 								printc(" updated on $edited");
+								$linksAddedSoFar = true;
 																				
 							// if show date and creator/editor
 							} else if ($thisPage->getField("showdate") && ($thisPage->getField("showcreator") || $thisPage->getField("showeditor"))) {
@@ -486,21 +489,27 @@ do {
 								} else if ($thisPage->getField("showcreator") && $o->getField("editedtimestamp")) {
 									printc("added by ".$o->getField("addedbyfull")." on $added");
 								}
+								$linksAddedSoFar = true;
 								
 							// if don't show date but show creator/editor
 							} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor") && $thisPage->getField("showcreator") && $o->getField("addedbyfull") != $o->getField("editedbyfull")) {
 								printc("added by ".$o->getField("addedbyfull")."<br />");
 								printc("updated by ".$o->getField("editedbyfull"));
+								$linksAddedSoFar = true;
 							} else if (!$thisPage->getField("showdate") && $thisPage->getField("showcreator")) {
 								printc("added by ".$o->getField("addedbyfull"));
+								$linksAddedSoFar = true;
 							} else if (!$thisPage->getField("showdate") && $thisPage->getField("showeditor")) {
 								printc("updated by ".$o->getField("editedbyfull"));
+								$linksAddedSoFar = true;
 							}
 							
 													
 							// if versioning then show link to versions
 							if ($thisPage->getField("showversions") == 1) {
-								printc(" | <a href='index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;versioning=".$o->id."'>");
+								if ($linksAddedSoFar)
+									printc(" | ");
+								printc(" <a href='index.php?$sid&amp;action=viewsite&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;versioning=".$o->id."'>");
 								printc("versions</a>\n");								
 							}
 	

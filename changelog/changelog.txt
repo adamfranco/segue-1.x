@@ -3,6 +3,18 @@ Name: Segue ChangeLog
 
 
 
+v. 1.7.2 (2007-02-09) 
+----------------------------------------------------
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed error with story definition in 1.7.0 that prevented inserting of 
+		
+    * Bug Fix:  (Adam Franco) 
+    Versions are now displayed whenever the 'show versioning' box is checked,
+    not just when it is checked along-side another property such as 'show
+    updatedusername'.
+	
+
 v. 1.7.1 (2007-02-08) 
 ----------------------------------------------------
 		
