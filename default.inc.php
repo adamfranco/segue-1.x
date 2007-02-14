@@ -380,48 +380,74 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	printc("\n\t</td>\n\t</tr>\n</table>");
 }
 	
+	/******************************************************************************
+	 * Print out classes
+	 ******************************************************************************/
 	
-/*********************************************************
- * Class Sites for students
- *********************************************************/
 	if ($allowclasssites) {
 		$_class_list_titles = array("usersCurrentClasses"=>"Your Current Classes",
 									"usersFutureClasses"=>"Upcoming Classes",
 									"usersOldClasses"=>"Previous Semesters");
 		
-		// for students: print out list of classes
+		/*********************************************************
+		 * Class Sites for students
+		 *********************************************************/
 		if ($_SESSION[atype]=='stud') {
 			
 			//loop through all classes in list
 			foreach ($_class_list_titles as $timePeriod => $title) {
 				
-				if (count($$timePeriod)) {
-
-
+				/******************************************************************************
+				 * Current Classes Title
+				 ******************************************************************************/
+				
+				if ($timePeriod == "usersCurrentClasses") {
+					printc("\n<table border='0' width='100%'>");
+					printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'>Current Class Sites</td>\n\t\t</tr>");
+					printc("\n\t\t\t\t<tr>\n\t\t\t\t\t<th>class</th>\n\t\t\t\t\t<th>site</th>\n\t\t\t\t</tr>");
+					$groupsPrinted = array();
+					foreach ($usersCurrentClasses as $className) {
+						if ($classSiteName = group::getNameFromClass($className)) {
+							if ($groupsPrinted[$classSiteName])
+								continue;
+							
+							$groupsPrinted[$classSiteName] = true;
+						} else {
+							$classSiteName = $className;
+						}
+						
+					}
+					if (isset($userOwnedSlots[$classSiteName]))
+						printStudentSiteLine($classSiteName, $userOwnedSlots[$classSiteName]);
+						
+					else if (isset($anyLevelEditorSites[$classSiteName]))
+						printStudentSiteLine($classSiteName, $anyLevelEditorSites[$classSiteName]);
+			
+					else if (isset($usersAllClassesInfo[$classSiteName]))
+						printStudentSiteLine($classSiteName, $usersAllClassesInfo[$classSiteName]);
+						
+					else
+						printc("\n\t\t\t\t<tr>\n\t\t\t\t<td colspan='2' style='background-color: red; font-weight: bold'>There was an error loading information for site: ".$classSiteName."\n\t\t\t\t\t</td>\n\t\t\t\t</tr>");
+				
+					printc("\n\t\t\t</table>");
+					
+				} else if ($timePeriod == "usersOldClasses") {
+						
 					/******************************************************************************
 					 * expand/collapse link for previous sites listing
 					 ******************************************************************************/		
 					if ($timePeriod == "usersOldClasses") {
-						
+						printc("<table border='0' width='100%'>");
 						if (!$_SESSION["expand_pastclasses"]) {
-							printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_pastclasses=true'>+</a> $title</div>\n\t\t</tr>");
+							printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_pastclasses=true'>+</a> $title \n\t\t</td></tr>");
 
 						} else {
-							printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_pastclasses=false'>-</a> $title</div>\n\t\t</tr>");
+							printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'><a href='$PHP_SELF?expand_pastclasses=false'>-</a> $title \n\t\t</td></tr>");
 							printc("\n\t<tr>");
 							printc("\n\t\t<td valign='top'>");
 						}
-						
-					// if not previous, then must be current classes...	
-					} else {
-						
-						printc("\n\t<tr>");
-						printc("\n\t\t<td valign='top'>");
-					//	printc("\n\t\t<tr>\n\t\t\t<td class='inlineth' colspan='2'> $title</div>\n\t\t</tr>");
-						printc("\n\t\t\t<div class='inlineth'>$title</div>");
 					}
-					
-		
+							
 					if ($_SESSION["expand_pastclasses"] == 0 && $timePeriod == "usersOldClasses") {
 						// do nothing
 					} else {																			
@@ -453,10 +479,11 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 						}
 						
 						printc("\n\t\t\t</table>");
+						printc("\n\t\t</td>");
+						printc("\n\t</tr>");						
 					}
 					
-					printc("\n\t\t</td>");
-					printc("\n\t</tr>");
+
 				}
 			}
 			printc("\n</table>");
@@ -761,7 +788,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 				printSiteLine2($sites[$name]);			
 		}
 		unset($sites);		
-	}		
+	}
 	
 	
 /******************************************************************************
@@ -850,6 +877,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 		if (!user::numDBUsers()) {
 			require("_first_time_run.inc.php");
 		}
+		
 }
 
 
