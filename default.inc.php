@@ -129,7 +129,6 @@ if ($_loggedin) {
 	 *********************************************************/
 	// this should include all sites that the user owns as well.
 	
-	if ($_SESSION["expand_othersites"] != 0 || $_SESSION["expand_editorsites"] != 0 || $_SESSION["expand_pastclasses"] != 0 || $_SESSION["expand_personalsites"] != 0) {
 	
 		$userOwnedSlots = slot::getSlotInfoWhereUserOwner($_SESSION['auser']);
 		if (!is_array($userOwnedSlots) || !array_key_exists($_SESSION['auser'], $userOwnedSlots)) {
@@ -140,6 +139,7 @@ if ($_loggedin) {
 				$userOwnedSlots[$_SESSION['auser']]['site_exits'] = false;		
 		}
 		
+	if ($_SESSION["expand_othersites"] != 0 || $_SESSION["expand_editorsites"] != 0 || $_SESSION["expand_pastclasses"] != 0 || $_SESSION["expand_personalsites"] != 0) {
 		// Add any user-owned groups that aren't already in the slot list
 		$userOwnedGroups = group::getGroupsOwnedBy($_SESSION['auser']);
 		foreach ($userOwnedGroups as $classSiteName) {
@@ -803,6 +803,8 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 // ******************************* THESE TWO
 	$allExistingSlots = array();
 	$allExistingSites = array();
+	
+	//printpre($userOwnedSlots);
 	
 	if (is_array($userOwnedSlots)) {	
 		foreach (array_keys($userOwnedSlots) as $name) {
