@@ -3,6 +3,18 @@ Name: Segue ChangeLog
 
 
 
+v. 1.7.3 (2007-02-16) 
+----------------------------------------------------
+		
+    * Change:  (Alex Chapin) 
+    Copy site UI now displayed on Segue home pages by default (changes in
+    version1.7.0 hid the copy site UI until a section was expanded).
+		
+    * Bug Fix:  (Alex Chapin) 
+    Fixed Segue home page display for students that was broken by updates to
+    Seguehome page display made in version 1.7.0
+	
+
 v. 1.7.2 (2007-02-09) 
 ----------------------------------------------------
 		
