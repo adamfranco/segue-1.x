@@ -54,9 +54,7 @@ if ($storyObj->getField("type") == 'story') {
 	$fulltext = stripslashes($fulltext);
 	if ($storyObj->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);	
 	if ($storyObj->getField("texttype") == 'text') $smalltext = htmlbr($smalltext);
-}
-
-if ($storyObj->getField("type") == 'image') {
+} else if ($storyObj->getField("type") == 'image') {
 	$filename = urldecode(db_get_value("media","media_tag","media_id='".addslashes($storyObj->getField("longertext"))."'"));
 	$dir = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","slot_name","media_id='".addslashes($storyObj->getField("longertext"))."'");
 	$imagepath = "$uploadurl/$dir/$filename";
@@ -67,10 +65,16 @@ if ($storyObj->getField("type") == 'image') {
 		$captiontext = "<br />".stripslashes($captiontext);
 	}
 	$fulltext .= "";
-}
-if ($storyObj->getField("type") == 'file') {
+} else if ($storyObj->getField("type") == 'file') {
 	$fulltext = "<br />";
 	$fulltext .= makedownloadbar($storyObj);
+} else {
+	$fulltext = "<br />";
+	$incfile = "output_modules/".$siteObj->getField("type")."/".$storyObj->getField("type").".inc.php";
+	//	print $incfile; // debug
+		include($incfile);
+	$fulltext .= $content;
+	$content = '';
 }
 
 /******************************************************************************
@@ -93,7 +97,7 @@ if ($storyObj->getField('title')) {
 printc("\n\t\t</td>\n\t</tr>");
 
 
-if ($storyObj->getField('type') != "image") printc("\n\t<tr>\n\t\t<td align='left'>\n\t\t\t<strong>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</strong>\n\t\t</td>\n\t</tr>");
+if ($storyObj->getField('type') != "image" && $storyObj->getField('type') != "link" && $storyObj->getField('type') != "rss") printc("\n\t<tr>\n\t\t<td align='left'>\n\t\t\t<strong>".(($storyObj->getField('title'))?spchars($storyObj->getField('title')):'&nbsp;')."</strong>\n\t\t</td>\n\t</tr>");
 
 $record_id = $story;
 $user_id = $_SESSION[aid];
