@@ -67,13 +67,13 @@ if ($error) {
 } else if (isset($_REQUEST['scope'])) {
 
 	$link = $cfg[full_uri];			
-	$link .= "/index.php?&amp;action=site";
-	$link .= "&amp;site=".$thisSite->name;
+	$link .= "/index.php?&action=site";
+	$link .= "&site=".$thisSite->name;
 	$link = htmlspecialchars($link, ENT_QUOTES);
 	if ($_REQUEST['scope'] == "allcontent") {
-		print "\t\t<title>".htmlspecialchars($thisSite->title)." > All Posts</title>\n";	
+		print "\t\t<title>".htmlspecialchars($thisSite->title, ENT_QUOTE)." &gt; All Posts</title>\n";	
 	} else {
-		print "\t\t<title>".$thisSite->title." > All Discussion</title>\n";
+		print "\t\t<title>".htmlspecialchars($thisSite->title, ENT_QUOTES)." &gt; All Discussion</title>\n";
 	}
 	print "\t\t<link>".$link."</link>\n";		
 	print "\t\t<description>";
@@ -105,11 +105,11 @@ if ($error) {
 				
 				print "\t\t\t<title>".htmlspecialchars(urldecode($title), ENT_QUOTES, 'utf-8')."</title>\n";
 				
-				$storylink = "&amp;story=".$a["story_id"]."&amp;detail=".$a["story_id"]."#".$a["discussion_id"];
-				$pagelink = "&amp;page=".$a["page_id"];
-				$sectionlink = "&amp;section=".$a["section_id"];
+				$storylink = "&story=".$a["story_id"]."&detail=".$a["story_id"]."#".$a["discussion_id"];
+				$pagelink = "&page=".$a["page_id"];
+				$sectionlink = "&section=".$a["section_id"];
 				$discusslink = $a["discussion_id"];	
-				$linkpath = htmlspecialchars($link.$sectionlink.$pagelink.$storylink, ENT_QUOTES);
+				$linkpath = $link.htmlspecialchars($sectionlink.$pagelink.$storylink, ENT_QUOTES);
 				
 				print "\t\t\t<link>".$linkpath."</link>\n";
 				print "\t\t\t<guid isPermaLink=\"true\">".$linkpath."</guid>\n";
@@ -187,11 +187,11 @@ if ($error) {
 				$title = $a["discussion_subject"];
 				print "\t\t\t<title>".htmlspecialchars(urldecode($title), ENT_QUOTES, 'utf-8')."</title>\n";
 				
-				$storylink = "&amp;story=".$a["story_id"]."&amp;detail=".$a["story_id"]."#".$a["discussion_id"];
-				$pagelink = "&amp;page=".$a["page_id"];
-				$sectionlink = "&amp;section=".$a["section_id"];
+				$storylink = "&amp;story=".$a["story_id"]."&detail=".$a["story_id"]."#".$a["discussion_id"];
+				$pagelink = "&page=".$a["page_id"];
+				$sectionlink = "&section=".$a["section_id"];
 				$discusslink = $a["discussion_id"];	
-				$linkpath = htmlspecialchars($link.$sectionlink.$pagelink.$storylink, ENT_QUOTES);
+				$linkpath = $link.htmlspecialchars($sectionlink.$pagelink.$storylink, ENT_QUOTES);
 				
 				print "\t\t\t<link>".$linkpath."</link>\n";
 				print "\t\t\t<guid isPermaLink=\"true\">".$linkpath."</guid>\n";
@@ -319,20 +319,20 @@ if ($error) {
 		$thisPage->fetchDown();
 		if ($thisPage->hasPermissionDown("view"))
 			
-			
+			print "\t\t<title>";
 			if ($_REQUEST["tag"]) {
-				print "\t\t<title>".$thisSite->title." > ".$_REQUEST["tag"];
+				print htmlspecialchars($thisSite->title." > ".$_REQUEST["tag"], ENT_QUOTES);
 			} else {
-				print "\t\t<title>".$thisSite->title." > ".$thisSection->getField("title")." > ".$thisPage->getField("title");
+				print htmlspecialchars($thisSite->title." > ".$thisSection->getField("title")." > ".$thisPage->getField("title"), ENT_QUOTES);;
 			}
 			print "</title>\n";
 			
 			$link = $cfg[full_uri];			
-			$link .= "/index.php?&amp;action=site";
-			$link .= "&amp;site=".$thisSite->name;
+			$link .= "/index.php?&action=site";
+			$link .= "&site=".$thisSite->name;
 			
-			if ($thisSection) $sectionlink = "&amp;section=".$thisSection->id;			
-			if ($thisPage) $pagelink = "&amp;page=".$thisPage->id;
+			if ($thisSection) $sectionlink = "&section=".$thisSection->id;			
+			if ($thisPage) $pagelink = "&page=".$thisPage->id;
 			
 			$link = htmlspecialchars($link, ENT_QUOTES);
 			$pagelink = htmlspecialchars($pagelink, ENT_QUOTES);
@@ -379,10 +379,10 @@ if ($error) {
 								
 				if ($_REQUEST["tag"]) {
 					$tagged_page = $tagged_stories[page_id][$i];
-					$pagelink = "&amp;page=".$tagged_page;
+					$pagelink = "&page=".$tagged_page;
 					$pagelink = htmlspecialchars($pagelink, ENT_QUOTES);
 					$tagged_section = $tagged_stories[section_id][$i];					
-					$sectionlink = "&amp;section=".$tagged_section;
+					$sectionlink = "&section=".$tagged_section;
 					$sectionlink = htmlspecialchars($sectionlink, ENT_QUOTES);
 					$o =& new story($site,$tagged_section,$tagged_page,$s, $thisPage);
 					
@@ -419,7 +419,7 @@ if ($error) {
 						}					
 					}
 					
-					print "\t\t\t<title>".$title."</title>\n";
+					print "\t\t\t<title>".htmlspecialchars($title, ENT_QUOTES)."</title>\n";
 					
 					$storylink = "&amp;story=".$o->getField("id")."&amp;detail=".$o->getField("id");
 					print "\t\t\t<link>".$link.$sectionlink.$pagelink.$storylink."</link>\n";
@@ -448,7 +448,7 @@ if ($error) {
 					
 					if ($o->getField("discuss")) {
 						print "\t\t\t<comments>";
-						print $link.$sectionlink.$pagelink.htmlspecialchars("&amp;story=".$o->id."&amp;detail=".$o->id, ENT_QUOTES);
+						print $link.$sectionlink.$pagelink.htmlspecialchars("&story=".$o->id."&detail=".$o->id, ENT_QUOTES);
 						print "</comments>\n";
 					}
 					
@@ -509,7 +509,7 @@ if ($error) {
 							$title = $a["discussion_subject"];
 							print "\t\t\t<title>".htmlspecialchars(urldecode($title), ENT_QUOTES, 'utf-8')."</title>\n";
 							
-							$storylink = "&amp;story=".$story_id."&amp;detail=".$story_id."#".$a["discussion_id"];
+							$storylink = "&story=".$story_id."&detail=".$story_id."#".$a["discussion_id"];
 							$storylink = $storylink = htmlspecialchars($storylink, ENT_QUOTES);
 							$discusslink = $a["discussion_id"];								
 							print "\t\t\t<link>".$link.$sectionlink.$pagelink.$storylink."</link>\n";
