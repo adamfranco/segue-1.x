@@ -402,6 +402,28 @@ class section extends segue {
 		}
 		
 		$this->fetchUp(1);
+		
+		
+		
+		
+		/*********************************************************
+		 * Re-Key the ordering of the rest of the sections in the
+		 * site to make sure that there are no holes in the order
+		 *********************************************************/
+		foreach($this->owningSiteObj->getField("sections") as $order => $sectionId) {
+			$query = 
+				"UPDATE
+					section
+				SET
+					section_order = '".addslashes($order)."'
+				WHERE
+					section_id = '".$sectionId."'";
+			
+// 			printpre($query);
+			db_query($query);
+		}
+		
+		
 				
 
 		$a = $this->createSQLArray(1);

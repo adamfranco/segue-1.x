@@ -486,6 +486,27 @@ class page extends segue {
 /* 		print "\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n</pre>"; */
 		
 		$this->fetchUp(1);
+		
+		
+		
+		/*********************************************************
+		 * Re-Key the ordering of the rest of the pages in the
+		 * section to make sure that there are no holes
+		 *********************************************************/
+		foreach($this->owningSectionObj->getField("pages") as $order => $pageId) {
+			$query = 
+				"UPDATE
+					page
+				SET
+					page_order = '".addslashes($order)."'
+				WHERE
+					page_id = '".$pageId."'";
+			
+// 			printpre($query);
+			db_query($query);
+		}
+		
+		
 
 		$a = $this->createSQLArray(1);
 		if (!$keepaddedby) {
