@@ -630,6 +630,12 @@ class story extends segue {
 			$this->owningPageObj->updateDB();
 		}
 		
+		/******************************************************************************
+		 * Update version table
+		 ******************************************************************************/
+		 
+		save_version($this->getField("shorttext"), $this->getField("longertext"), $this->id, $this->version_comments);
+		
 		// add new permissions entry.. force update
 		$this->updatePermissionsDB(1);
 		

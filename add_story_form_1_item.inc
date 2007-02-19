@@ -349,6 +349,8 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 	printc("<br /><textarea name='version_comments' rows='5' cols='100'>");
 	if ($_SESSION[storyObj]->version_comments) {
 		printc($_SESSION[storyObj]->version_comments);
+	} else if ($_SESSION[settings][add]) {
+		printc("Initial version.");
 	} else {
 		printc("a minor edit...");
 	}
