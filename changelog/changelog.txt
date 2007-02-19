@@ -3,6 +3,27 @@ Name: Segue ChangeLog
 
 
 
+v. 1.7.4 (The Future) 
+----------------------------------------------------
+		
+    * Bug Fix: #1661595  (Adam Franco) 
+    Page and section order is now re-keyed when adding a new page/section so
+    that new pages/sections are always at the end of the list. Before, moves or
+    deletions of pages/sections would result in gaps in the order which could
+    allow new pages/sections to be given an order other than the end of the 
+		
+    * Bug Fix: #1663713  (Adam Franco) 
+    Initial version of content is now saved creating a new content block, not
+    justwhen updating.
+		
+    * Bug Fix: #1663677  (Adam Franco) 
+    Detail view for 'link'-type and 'RSS'-type content blocks now displays their
+    
+		
+    * Bug Fix: #1663638  (Adam Franco) 
+    Fixed RSS feeds so that ampersands are not doubly encoded.
+	
+
 v. 1.7.3 (2007-02-16) 
 ----------------------------------------------------
 		
