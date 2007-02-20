@@ -528,6 +528,27 @@ class story extends segue {
 		}
 		
 		$this->fetchUp(1);
+		
+		
+		
+		/*********************************************************
+		 * Re-Key the ordering of the rest of the stories in the
+		 * section to make sure that there are no holes
+		 *********************************************************/
+		foreach($this->owningPageObj->getField("stories") as $order => $storyId) {
+			$query = 
+				"UPDATE
+					story
+				SET
+					story_order = '".addslashes($order)."'
+				WHERE
+					story_id = '".$storyId."'";
+			
+// 			printpre($query);
+			db_query($query);
+		}
+		
+		
 				
 		// if moving to a new site, copy the media
 		if ($origsite != $this->owning_site && $down) {
