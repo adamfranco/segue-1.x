@@ -469,3 +469,11 @@
 	 * themesdir - the folder where all the themes are kept. shouldn't need changing
 	 ******************************************************************************/
 	$cfg['themesdir'] = $themesdir = "themes";
+	
+	/******************************************************************************
+	 * custom themes - array of additional themesm
+	 ******************************************************************************/
+	$cfg['additional_themes'] = $additional_themes = array(
+//						"mycustomthemedir"=> "My Custom Theme"
+						);
+
