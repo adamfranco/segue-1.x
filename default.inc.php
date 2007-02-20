@@ -416,18 +416,19 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 							$classSiteName = $className;
 						}
 						
+					
+						if (isset($userOwnedSlots[$classSiteName]))
+							printStudentSiteLine($classSiteName, $userOwnedSlots[$classSiteName]);
+							
+						else if (isset($anyLevelEditorSites[$classSiteName]))
+							printStudentSiteLine($classSiteName, $anyLevelEditorSites[$classSiteName]);
+				
+						else if (isset($usersAllClassesInfo[$classSiteName]))
+							printStudentSiteLine($classSiteName, $usersAllClassesInfo[$classSiteName]);
+							
+						else
+							printc("\n\t\t\t\t<tr>\n\t\t\t\t<td colspan='2' style='background-color: red; font-weight: bold'>There was an error loading information for site: ".$classSiteName."\n\t\t\t\t\t</td>\n\t\t\t\t</tr>");
 					}
-					if (isset($userOwnedSlots[$classSiteName]))
-						printStudentSiteLine($classSiteName, $userOwnedSlots[$classSiteName]);
-						
-					else if (isset($anyLevelEditorSites[$classSiteName]))
-						printStudentSiteLine($classSiteName, $anyLevelEditorSites[$classSiteName]);
-			
-					else if (isset($usersAllClassesInfo[$classSiteName]))
-						printStudentSiteLine($classSiteName, $usersAllClassesInfo[$classSiteName]);
-						
-					else
-						printc("\n\t\t\t\t<tr>\n\t\t\t\t<td colspan='2' style='background-color: red; font-weight: bold'>There was an error loading information for site: ".$classSiteName."\n\t\t\t\t\t</td>\n\t\t\t\t</tr>");
 				
 					printc("\n\t\t\t</table>");
 					
