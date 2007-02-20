@@ -22,6 +22,11 @@
 		<fix author='adam'>
 			Fixed error in which only one current class was shown to students.
 		</fix>
+		<change author='alex'>
+			Added a configuration list for additional custom themes to the config
+			to prevent needing to modify the themes/themeslist.inc.php when adding
+			custom themes.
+		</change>
 	</version>
 	<version number="1.7.3" date="2007-02-16">
 		<change author='alex'>

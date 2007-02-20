@@ -25,6 +25,10 @@ v. 1.7.4 (2007-02-20)
 		
     * Bug Fix:  (Adam Franco) 
     Fixed error in which only one current class was shown to students.
+		
+    * Change:  (Alex Chapin) 
+    Added a configuration list for additional custom themes to the config to
+    prevent needing to modify the themes/themeslist.inc.php when adding custom 
 	
 
 v. 1.7.3 (2007-02-16) 
