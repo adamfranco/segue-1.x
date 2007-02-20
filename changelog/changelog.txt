@@ -3,7 +3,7 @@ Name: Segue ChangeLog
 
 
 
-v. 1.7.4 (The Future) 
+v. 1.7.4 (2007-02-20) 
 ----------------------------------------------------
 		
     * Bug Fix: #1661595  (Adam Franco) 
@@ -22,6 +22,9 @@ v. 1.7.4 (The Future)
 		
     * Bug Fix: #1663638  (Adam Franco) 
     Fixed RSS feeds so that ampersands are not doubly encoded.
+		
+    * Bug Fix:  (Adam Franco) 
+    Fixed error in which only one current class was shown to students.
 	
 
 v. 1.7.3 (2007-02-16) 

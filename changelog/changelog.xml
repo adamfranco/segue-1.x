@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
-	<version number="1.7.4" date="The Future">
+	<version number="1.7.4" date="2007-02-20">
 		<fix author='adam' ref='1661595' reftype='bug'>
 			Page and section order is now re-keyed when adding a new page/section
 			so that new pages/sections are always at the end of the list. Before, 
@@ -18,6 +18,9 @@
 		</fix>
 		<fix author='adam' ref='1663638' reftype='bug'>
 			Fixed RSS feeds so that ampersands are not doubly encoded.
+		</fix>
+		<fix author='adam'>
+			Fixed error in which only one current class was shown to students.
 		</fix>
 	</version>
 	<version number="1.7.3" date="2007-02-16">
