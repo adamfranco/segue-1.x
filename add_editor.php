@@ -89,7 +89,7 @@ input {
 </style>
 </head>
 <body onload="document.lookup.n.focus()">
-<form action="<? echo $PHP_SELF ?>" method='get' name='lookup'>
+<form action="<? echo $_SERVER['PHP_SELF'] ?>" method='get' name='lookup'>
 
 <table cellspacing='1' width='100%'>
 

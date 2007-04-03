@@ -82,7 +82,7 @@ if ($_SESSION[storyObj]->getField("type")=='link') {
 	printc("\n<div class='desc'>Enter a URL (internet address).  Title and description are optional.</div>");
 }
 if ($_SESSION[storyObj]->getField("type")=='rss') {
-	printc("\n<div class='desc'>Enter a URL (internet address) of an RSS feed below.</div>");
+	printc("\n<div class='desc'>Enter a URL (internet address) of an RSS feed below.  As, well specify the number of items to display</div>");
 }
 if ($_SESSION[storyObj]->getField("type")=='story') {
 	printc("\n<div class='desc'>Enter content in text area below. Title and extended content are optional. If you enter extended content (see next screen), the shorter content (or Abstract) will be displayed on your page with a link to the full content, in a new window.</div>");
@@ -113,8 +113,16 @@ if ($_SESSION[storyObj]->getField("type")!='rss') {
 	printc("\n</td></tr>");
 		
 } else if ($_SESSION[storyObj]->getField("type")=='rss') {	
+	if (!$_SESSION[storyObj]->getField("shorttext")) $_SESSION[storyObj]->setField("shorttext", 10);
+	if (!$_SESSION[storyObj]->getField("longertext")) $_SESSION[storyObj]->setField("longertext", 0);
 	printc("\n<tr>");
 	printc("\n<td>URL:</td><td><input type='text' name='url' value='".$_SESSION[storyObj]->getField("url")."' size='75' /></td>");
+	printc("\n</tr>");
+	printc("\n<tr>");
+	printc("\n<td>Number of items:</td><td><input type='text' name='shorttext' value='".$_SESSION[storyObj]->getField("shorttext")."' size='5' /> (standard view)</td>");
+	printc("\n</tr>");
+	printc("\n<tr>");
+	printc("\n<td></td><td><input type='text' name='longertext' value='".$_SESSION[storyObj]->getField("longertext")."' size='5' /> (detail view)</td>");
 	printc("\n</tr>");
 	
 }

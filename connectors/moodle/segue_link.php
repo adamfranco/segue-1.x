@@ -567,7 +567,7 @@ if ($newcourseid && $segue_user_id == $site_owner_id) {
 		error("Could not add student with id $addstudent to this course!");
 	}
 }
-//exit;
+exit;
 
 /******************************************************************************
  * end Moodle permissions assignment (i.e. adding teacher, students)

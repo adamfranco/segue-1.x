@@ -29,6 +29,14 @@ $url = $o->getField("url");
 MyCarpConfReset();
 MyCarpConfReset('rss_contentblock');
 
+if (is_numeric($o->getField("shorttext"))) {
+	$num_per_set = $o->getField("shorttext");
+	CarpConf('maxitems',$num_per_set);						
+} else {
+	CarpConf('maxitems',5);
+}
+
+
 // If we have an auser, create a cache just for them.
 if ($_SESSION['auser']) {
 	CarpCacheShow($url, '', 1,  $_SESSION['auser']);
@@ -69,6 +77,19 @@ if ($o->getField("title")) {
 // if ($o->getField("shorttext")) printc("<div class='desc'>".stripslashes($o->getField("shorttext"))."</div>");
 
 }
+
+if ($o->getField("longertext") && !ereg("^[\n\r]*<br />$", $o->getField("longertext"))) {
+	if ($action == 'viewsite')
+		$discussAction = 'viewsite';
+	else if (ereg("preview_edit_as|preview_as", $action))
+		$discussAction = ereg_replace("preview_edit_as", "preview_as", $action);
+	else
+		$discussAction = 'site';
+		
+	$link = "index.php?$sid&amp;action=".$discussAction."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id;
+	printc("<div align='right'><a href='".$link."'>"." More >></a></div>\n");
+}
+
 if ($o->getField("discuss")) {
 	include (dirname(__FILE__)."/discussionLink.inc.php");
 }

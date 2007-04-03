@@ -117,11 +117,69 @@ if ($story_tags) {
 }
 
 printc("\n\t<tr>\n\t\t<td style='padding-bottom: 15px; font-size: 12px'>\n\t\t\t$smalltext\n\t\t</td>\n\t</tr>");
-printc("\n\t<tr>\n\t\t<td style='padding-bottom: 15px; font-size: 12px'>\n\t\t\t$fulltext\n\t\t</td>\n\t</tr>");
+if ($storyObj->getField('type') != "rss") {
+	printc("\n\t<tr>\n\t\t<td style='padding-bottom: 15px; font-size: 12px'>\n\t\t\t$fulltext\n\t\t</td>\n\t</tr>");
+}
+
+
 if ($storyObj->getField('type') == "image") {
 	printc("\n\t<tr>\n\t\t<td align='center' font-size: 12px'>\n\t\t\t<strong>".spchars($storyObj->getField('title'))."</strong>\n\t\t</td>\n\t</tr>");
 	printc("\n\t<tr>\n\t\t<td font-size: 12px'>$captiontext</td>\n\t</tr>");
 }
+
+if ($storyObj->getField('type') == "rss") {
+	//include_once (dirname(__FILE__)."/carprss/carp.php");
+	ob_clean();	
+	ob_start();
+	print "\n\n";
+	
+	$url = $storyObj->getField("url");
+	MyCarpConfReset();
+	MyCarpConfReset('rss_contentblock');
+	
+	if (is_numeric($storyObj->getField("longertext"))) {
+		$num_per_set = $storyObj->getField("longertext");
+		CarpConf('maxitems',$num_per_set);						
+	} else {
+		CarpConf('maxitems',5);
+	}
+	
+	
+	// If we have an auser, create a cache just for them.
+	if ($_SESSION['auser']) {
+		CarpCacheShow($url, '', 1,  $_SESSION['auser']);
+	} else {
+	
+		// If the user has a valid campus ip-address, then they are a
+		// member of 'institute'.
+		$ipIsInInstitute = FALSE;
+		$ip = $_SERVER[REMOTE_ADDR];
+		// check if our IP is in inst_ips
+		if (is_array($cfg[inst_ips])) {
+			foreach ($cfg[inst_ips] as $i) {
+				if (ereg("^$i",$ip)) 
+					$ipIsInInstitute = TRUE;
+			}
+		}
+		
+		// if we are in the institute IPs, use the institute
+		// cache.
+		if ($ipIsInInstitute) {
+			CarpCacheShow($url, '', 1, 'institute');
+		}
+		// If we aren't logged in or in the institute IPs, just use the
+		// everyone cache.
+		else {
+			CarpCacheShow($url);
+		}
+	}
+	$rssitems = ob_get_contents();
+	printc("\n\t<tr>\n\t\t<td style='padding-bottom: 15px; font-size: 12px'>\n\t\t\t$rssitems\n\t\t</td>\n\t</tr>");
+	ob_clean();	
+
+
+}
+
 printc("\n</table>\n");
 
 /*********************************************************

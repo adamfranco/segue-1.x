@@ -214,7 +214,7 @@ if ($_REQUEST[cancel]) {
 	exit;
 }
 //printpre($_REQUEST[permissions]);
-//printpre($_REQUEST[discuss]);
+//printpre($_REQUEST);
 
 /******************************************************************************
  * Save: error checking
@@ -235,6 +235,18 @@ if ($_REQUEST[save]) {
 		error("You must enter a title.");
 	if ($_SESSION[storyObj]->getField("type")=='image' && (!$_SESSION[settings][libraryfileid] || $_SESSION[settings][libraryfileid] == ''))
 		error("You must select an image to upload.");
+		
+	//RSS error checking needs to make sure there are integers for short and long items and that long items is greater than short
+	if ($_SESSION[storyObj]->getField("type")=='rss' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))=='' || (!is_numeric($_SESSION[storyObj]->getField("shorttext"))))) {
+		error("You must enter the number of items you want to display.");
+		$_SESSION[storyObj]->setField("shorttext", 10);
+	}
+	
+	if ($_SESSION[storyObj]->getField("type")=='rss' && (!is_numeric($_SESSION[storyObj]->getField("longertext")))) {
+		error("You must enter a number of items you want to display.");
+		$_SESSION[storyObj]->setField("longertext", 0);
+	}
+	
 		
 	if ($_REQUEST[discuss]==1) {
 		foreach ($_REQUEST[permissions] as $permission) {
@@ -258,6 +270,14 @@ if ($_REQUEST[save]) {
 		 ******************************************************************************/
 		if ($_SESSION[storyObj]->getField("type") == "image" || $_SESSION[storyObj]->getField("type") == "file") {
 			$_SESSION[storyObj]->setField("longertext",$_SESSION[settings][libraryfileid]);
+		}
+		
+		/******************************************************************************
+		 * RSS: put short number of items to show in shorttext and 
+		 * detail number of items to show in longtext
+		 ******************************************************************************/
+		if ($_SESSION[storyObj]->getField("type") == "rss") {
+			$_SESSION[storyObj]->setField("longertext",$_REQUEST[longertext]);
 		}
 		
 		/******************************************************************************
