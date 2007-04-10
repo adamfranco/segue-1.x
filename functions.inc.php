@@ -1499,6 +1499,7 @@ function convertAllInteralLinksToTags ($sitename) {
 	$site->updatedb(1,1,1);
 }
 
+
 /******************************************************************************
  * Gets pages titles 
  * @param string $section the id of section with pages.

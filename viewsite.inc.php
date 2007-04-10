@@ -139,66 +139,10 @@ do {
 	if ($_REQUEST[reorder]) {
 		
 		if ($_REQUEST[reorder] == 'page' && $thisSection->hasPermission("edit")) {
-//			$rightpages = array();
-//			$leftpages = array();
-//			$allpages = array();
-//			foreach ($thisSection->getField("pages") as $page) {
-//				$page_location = db_get_value("page", "page_location", "page_id='".addslashes($page)."'");
-//				if ($page_location == 'right') {
-//					$rightpages[] = $page;
-//				} else {
-//					$leftpages[] = $page;
-//				}				
-//			}
-//			$page_location = db_get_value("page", "page_location", "page_id='".addslashes($_REQUEST[id])."'");
-//	//		printpre($leftpages);
-//
-//			if ($page_location == 'right') {
-//				$rightpages = reorder($rightpages,$_REQUEST[id],$_REQUEST[direction]);
-//				$allpages = array_merge($leftpages, $rightpages);
-//			//	printpre($allpages);
-//				$thisSection->setField("pages",$allpages);
-//				foreach(array_keys($thisSection->pages) as $k=>$id)
-//					$thisSection->pages[$id]->changed[order] = 1;
-//			} else {
-//				$leftpages = reorder($leftpages,$_REQUEST[id],$_REQUEST[direction]);
-//				$allpages = array_merge($leftpages, $rightpages);
-//			//	printpre($allpages);
-//				$thisSection->setField("pages",$allpages);
-//				foreach(array_keys($thisSection->pages) as $k=>$id)
-//					$thisSection->pages[$id]->changed[order] = 1;
-//			}
-//			$thisSection->updateDB(1);
-//			$thisSection->fetcheddown=0;
-//			$thisSection->fetchDown();
 		}
 		if ($_REQUEST[reorder] == 'section' && $thisSite->hasPermission("edit")) {
-//			$thisSite->setField("sections",reorder($thisSite->getField("sections"), $_REQUEST[id],$_REQUEST[direction]));	
-//			foreach(array_keys($thisSite->sections) as $k=>$id)
-//				$thisSite->sections[$id]->changed[order] = 1;
-//
-//			$thisSite->updateDB(1);
-//			$section_id = $page_id = 0;
-//			if ($thisSection)
-//				$section_id = $thisSection->id;
-//			if ($thisPage)
-//				$page_id = $thisPage->id;
-//			$thisSite->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen($_REQUEST[section],$_REQUEST[page]);
-//			if ($thisSection)
-//				$thisSection =& $thisSite->sections[$section_id];
-//			if ($thisPage)
-//				$thisPage =& $thisSite->sections[$section_id]->pages[$page_id];
-
-//			$thisSite->fetcheddown=0;
-//			$thisSite->fetchDown();
 		}
 		if ($_REQUEST[reorder] == 'story' && $thisPage->hasPermission("edit")) {
-//			$thisPage->setField("stories",reorder($thisPage->getField("stories"),$_REQUEST[id],$_REQUEST[direction]));
-//			foreach(array_keys($thisPage->stories) as $k=>$id)
-//				$thisPage->stories[$id]->changed[order] = 1;
-//			$thisPage->updateDB(1);
-//			$thisPage->fetcheddown=0;
-//			$thisPage->fetchDown();
 		}
 	}	
 	
