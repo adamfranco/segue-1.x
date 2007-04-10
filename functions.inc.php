@@ -1499,6 +1499,98 @@ function convertAllInteralLinksToTags ($sitename) {
 	$site->updatedb(1,1,1);
 }
 
+/******************************************************************************
+ * Gets pages titles 
+ * @param string $section the id of section with pages.
+ * return array of page titles
+ ******************************************************************************/
+
+function getPageTitles ($section) {	
+	$page_titles = array();
+	
+	$query = "
+	SELECT 
+		page_title, page_id
+	FROM 
+		page 
+	WHERE 
+		FK_section ='".addslashes($section)."'
+	";
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$page_titles[$a[page_title]] = $a[page_id];
+	}
+	return $page_titles;
+}
+
+/******************************************************************************
+ * creates a page in a given section 
+ * @param string $section the id of section with pages.
+ * return array of page titles
+ ******************************************************************************/
+
+function createPage ($site, $section, $linked_title) {
+	$siteObj =& new site($site);
+	$sectionObj =& new section($site, $section, $siteObj);
+	$pageObj =& new page($site, $section, 0, $sectionObj);
+	
+	$pageObj->setField("title", $linked_title);
+	//$pageObj->setField("addedby", $linked_title);
+	
+
+	$pageObj->setPermissions($sectionObj->getPermissions());
+	$pageObj->insertDB();
+	log_entry("add_page","$_SESSION[auser] added page id ".$pageObj->id." in site ".$pageObj->owning_site.", section ".$pageObj->owning_section,$pageObj->owning_site,$pageObj->id,"page");
+	
+	$page_id = $pageObj->id;
+	return $page_id;
+}
+
+/******************************************************************************
+ * Converts wiki markup to internal links
+ * if no page with title = markup title call createPage function
+ * Add internal link to link table
+ * @param string $section the id of section with pages.
+ * return $text
+ ******************************************************************************/
+
+function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text) {
+	global $cfg;
+	$page_titles = getPageTitles ($section);
+	$linked_titles = array();
+	$links = array();
+	
+	
+	$linkpattern = "/(\[)([^\[]*)(\])/";
+	
+	preg_match_all($linkpattern, $text, $matches);
+	$linked_titles = $matches[2];
+	//$wikiLinks = $matches[0];
+	
+	foreach ($linked_titles as $linked_title) {
+		if (in_array($linked_title, array_keys($page_titles))) {
+			$linked_page_id = $page_titles[$linked_title];
+		} else {
+			$linked_page_id = createPage($site, $section, $linked_title);		
+		}
+		
+		$links[$linked_title] = "<a href='";
+		$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
+		$links[$linked_title] .= "'>".$linked_title."</a>";
+
+	}
+	
+	foreach ($links as $title=>$link) {
+		$wikiLink = "[".$title."]";
+		$text = str_replace($wikiLink, $link, $text);
+	}
+		
+	return $text;
+
+}
+
+
 /**
  * Convert links in $text that point to other parts of this segue site, or
  * to this site's media, to placeholder tags for storage. This allows those

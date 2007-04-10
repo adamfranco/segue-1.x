@@ -289,7 +289,12 @@ if ($_REQUEST[save]) {
 
 			$text = $_SESSION[storyObj]->getField("shorttext");
 			
-			$text = convertInteralLinksToTags($_SESSION[settings][site], $text);
+			//		
+			$page_title = $thisPage->getField("title");
+			$text = convertWikiMarkupToLinks($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);
+	//		exit;
+			
+			$text = convertInteralLinksToTags($_SESSION[settings][site], $text);			
 			
 			// Lets pass the cleaning of editor text off to the editor.
 			$texttype = $_SESSION[storyObj]->getField("texttype");
