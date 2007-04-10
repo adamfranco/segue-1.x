@@ -6,23 +6,6 @@
 /* ----------------------------------------------------------------------- */
 /*   redo all below permissions checks with new permissions scheme			*/
 
-// first check if we are allowed to edit this site at all
-/* if ($_SESSION[auser] != $site_owner && $_SESSION[auser] != $_SESSION[settings][site_owner] && !is_editor($_SESSION[auser],$thisSite->name) && !is_editor($_SESSION[auser],$_SESSION[settings][site])) { */
-/* 	error("You're not even an editor for this site! Bad person!"); */
-/* 	return; */
-/* } */
-/* if ($edit && !permission($_SESSION[auser],SECTION,EDIT,$thisSite->name) && !permission($_SESSION[auser],SECTION,EDIT,$_SESSION[settings][site])) { */
-/* 	error("You don't have permission to edit this page. Nice try."); */
-/* 	return; */
-/* } */
-/* if ($add && !permission($_SESSION[auser],SECTION,ADD,$thisSite->name)  && !permission($_SESSION[auser],SECTION,ADD,$_SESSION[settings][site])) { */
-/* 	error("You don't have permission to add sections to this site. Nice try."); */
-/* 	return; */
-/* } */
-/* if ($edit && !insite($thisSite->name,$_REQUEST[edit_section])) { */
-/* 	error("Oh, you're good, but not good enough!"); */
-/* 	return; */
-/* } */
 
 if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 	// if we have already started editing...
@@ -159,46 +142,6 @@ if ($_REQUEST[save]) {
 			log_entry("edit_section","$_SESSION[auser] edited section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
 		}
 		
-		// do the recursive update of active flag and such... .... ugh
-		
-		// $_SESSION[sectionObj]->setFieldDown("active",$recursiveenable); // <-- this is wrong... something like it though
-
-/* 		$_SESSION[settings][permissions] = decode_array($_SESSION[settings][permissions]); */
-/* 		if ($_SESSION[settings][edit] && ($_SESSION[settings][recursiveenable] || count($_SESSION[settings][copydownpermissions]))) { */
-/* 			// recursively change the $active or $permissions field for all parts of the site */
-/* 			$pages = decode_array(db_get_value("sections","pages","id=$_SESSION[settings][section]")); */
-/* 			foreach ($pages as $p) { */
-/* 				$pa = db_get_line("pages","id=$p"); */
-/* 				$chg = array(); */
-/* 				if ($recursiveenable && permission($auser,SECTION,EDIT,$_SESSION[settings][section])) $chg[] = "active=$_SESSION[settings][active]"; */
-/* 				if (count($_SESSION[settings][copydownpermissions]) && $auser == $_SESSION[settings][site_owner]) { */
-/* 					$pp = decode_array($pa['permissions']); */
-/* 					foreach ($_SESSION[settings][copydownpermissions] as $e) $pp[$e] = $_SESSION[settings][permissions][$e]; */
-/* 					$pp = encode_array($pp); */
-/* 					$chg[] = "permissions='$pp'"; */
-/* 				} */
-/* 				$query = "update pages set " . implode(",",$chg) . " where id=$p"; */
-/* 				print "--> ".$query . "<br />"; */
-/* 				if (count($chg)) db_query($query); */
-/* 				 */
-/* 				$stories = decode_array(db_get_value("pages","stories","id=$p")); */
-/* 				foreach ($stories as $s) { */
-/* 					$sa = db_get_line("stories","id=$s"); */
-/* 					$chg = array(); */
-/* 					if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active=$_SESSION[settings][active]"; */
-/* 					if (count($_SESSION[settings][copydownpermissions]) && $auser == $_SESSION[settings][site_owner]) { */
-/* 						$sp = decode_array($sa['permissions']); */
-/* 						foreach ($_SESSION[settings][copydownpermissions] as $e) $sp[$e] = $_SESSION[settings][permissions][$e]; */
-/* 						$sp = encode_array($sp); */
-/* 						$chg[] = "permissions='$sp'"; */
-/* 					} */
-/* 					$query = "update stories set " . implode(",",$chg) . " where id=$s"; */
-/* 					print "--> ".$query . "<br />"; */
-/* 					if (count($chg)) db_query($query); */
-/* 				} */
-/* 			} */
-/* 			 */
-/* 		} */
 		
 		header("Location: index.php?$sid&action=viewsite&site=".$_SESSION[sectionObj]->owning_site.(($_SESSION[sectionObj]->getField("type")=='section')?"&section=".$_SESSION[sectionObj]->id:""));
 		exit;
