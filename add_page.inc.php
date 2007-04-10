@@ -156,6 +156,15 @@ if ($_REQUEST[save]) {
 	// error checking
 	if ($_SESSION[pageObj]->getField("type")=='page' && (!$_SESSION[pageObj]->getField("title") || $_SESSION[pageObj]->getField("title")=='')) {
 		error("You must enter a title.");
+	
+	} else if ($_SESSION[pageObj]->getField("type")=='page') {
+		$page_titles = getPageTitles ($pageObj->owning_section);
+		foreach (array_keys($page_titles) as $page_title) {
+			if (eregi($_SESSION[pageObj]->getField("title"), $page_title)) {
+				error("This section already has a title with this name.  Please choose another title");
+			}
+		}	
+	
 	} else if ($_SESSION[pageObj]->getField("type")=='link' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[pageObj]->getField("url")=='' || $_SESSION[pageObj]->getField("url")=='http://')) {
 		error("You must enter a URL.");
 	} else if ($_SESSION[pageObj]->getField("type")=='rss' && (!$_SESSION[pageObj]->getField("url") || $_SESSION[pageObj]->getField("url")=='' || $_SESSION[pageObj]->getField("url")=='http://')) {
