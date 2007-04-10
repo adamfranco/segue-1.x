@@ -21,7 +21,7 @@ if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 	$_SESSION[sectionObj]->handleFormDates();	
 	if ($_REQUEST[active] != "") $_SESSION[sectionObj]->setField("active",$_REQUEST[active]);
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setField("hide_sidebar",$_REQUEST[hide_sidebar]);
-	
+	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setField("pageorder",$_REQUEST[pageorder]);
 	
 /* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setPermissions($_REQUEST[permissions]); */
 /* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setField("locked",$_REQUEST[locked]); */

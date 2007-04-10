@@ -241,7 +241,7 @@ class section extends segue {
 				SELECT  
 					section_display_type AS type, section_title AS title, DATE_FORMAT(section_activate_tstamp, '%Y-%m-%d') AS activatedate, DATE_FORMAT(section_deactivate_tstamp, '%Y-%m-%d') AS deactivatedate,
 					section_active AS active, section_locked AS locked, section_updated_tstamp AS editedtimestamp,
-					section_created_tstamp AS addedtimestamp, section_hide_sidebar AS hide_sidebar,
+					section_created_tstamp AS addedtimestamp, section_hide_sidebar AS hide_sidebar, section_page_order AS pageorder,
 					user_createdby.user_uname AS addedby, user_updatedby.user_uname AS editedby, slot_name as site_id,
 					media_tag AS url
 				FROM 
@@ -561,6 +561,7 @@ class section extends segue {
 //		if ($all || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='$d[url]'";
 		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".addslashes((($d[locked])?1:0))."'";
 		if ($all || $this->changed[hide_sidebar]) $a[] = $this->_datafields[hide_sidebar][1][0]."='".addslashes((($d[hide_sidebar])?1:0))."'";
+		if ($all || $this->changed[pageorder]) $a[] = $this->_datafields[pageorder][1][0]."='".addslashes($d[pageorder])."'";
 		
 		return $a;
 	}
@@ -576,25 +577,27 @@ class section extends segue {
 		
 		$this->fetchDown();
 
-		//printpre ($order);
+		printpre ($order);
 		foreach ($this->pages as $p=>$o) {
 			$added = ereg_replace("[: -]","",$o->getField("addedtimestamp"));
+			$edited = ereg_replace("[: -]","",$o->getField("editedtimestamp"));
 /* 			$added = str_replace("-","",$added); */
 /* 			$added = str_replace(" ","",$added); */
 		//	printpre ($added."-".$o->getField("title"));
 			
-			if ($order == "addeddesc" || $order == "addedasc") 
+			if ($order == "addeddesc" || $order == "addedasc") {
 				$newpages[$p] = $added;
-			else if ($order == "editeddesc" || $order == "editedasc") 
-				$newpages[$p] = $o->getField("editedtimestamp");
-			else if ($order == "author") 
+			} else if ($order == "editeddesc" || $order == "editedasc") {
+				$newpages[$p] = $edited;
+			} else if ($order == "author") {
 				$newpages[$p] = $o->getField("addedby");
-			else if ($order == "editor") 
+			} else if ($order == "editor") {
 				$newpages[$p] = $o->getField("editedby");
-			else if ($order == "category") 
+			} else if ($order == "category") {
 				$newpages[$p] = $o->getField("category");
-			else if ($order == "titledesc" || $order == "titleasc") 
+			} else if ($order == "titledesc" || $order == "titleasc") {
 				$newpages[$p] = strtolower($o->getField("title"));
+			}
 		}
 		
 		if ($order == "addeddesc" || $order == "editeddesc") {

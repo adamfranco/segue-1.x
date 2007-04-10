@@ -32,6 +32,20 @@ printc("<input type='hidden' value='0' name='nextbutton'>");
 if ($_SESSION[sectionObj]->getField("type")=='section') {
 
 	printc("<div class='title'>Display Options</div>");
+	printc("<div class='leftmargin'>");
+	
+	printc("Order the pages in this section by: ");
+	printc("<select name='pageorder'>");
+		printc("<option value='custom'".(($_SESSION[sectionObj]->getField("pageorder")=='')?" selected='selected'":"").">Custom (Default)");
+		printc("<option value='addeddesc'".(($_SESSION[sectionObj]->getField("pageorder")=='addeddesc')?" selected='selected'":"").">Recent First");
+		printc("<option value='addedasc'".(($_SESSION[sectionObj]->getField("pageorder")=='addedasc')?" selected='selected'":"").">Recent Last");
+		printc("<option value='editeddesc'".(($_SESSION[sectionObj]->getField("pageorder")=='editeddesc')?" selected='selected'":"").">Recently Edited First");
+		printc("<option value='editedasc'".(($_SESSION[sectionObj]->getField("pageorder")=='editedasc')?" selected='selected'":"").">Recently Edited Last");
+		printc("<option value='titleasc'".(($_SESSION[sectionObj]->getField("pageorder")=='titleasc')?" selected='selected'":"").">Title Ascending");
+	printc("</select></div>");
+
+	
+	
 	printc("Hide Sidebar: <input type='checkbox' name='hide_sidebar' value='1'". (($_SESSION[sectionObj]->getField("hide_sidebar") == 1)?" checked='checked'":"") . "><br />");
 	printc("<div class='desc'>");
 	printc("Hide sidebars will hide both the left and right sidebars in all themes (EXCEPT Bevel Box and Tabs).");
