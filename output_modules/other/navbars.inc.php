@@ -105,11 +105,12 @@ if ($thisSection) {
 					}
 
 					if ($thisSection->hasPermission("edit")) {
-						
-						if ($_REQUEST['showorder'] == "page") {
-							$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0' class='small' title='HIde reorder fields in this section'>hide order</a>";
-						} else {
-							$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=page' class='small' title='Reorder pages in this section'>reorder</a>";
+						if ($thisSection->getField("pageorder") == "custom") {
+							if ($_REQUEST['showorder'] == "page") {
+								$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0' class='small' title='HIde reorder fields in this section'>hide order</a>";
+							} else {
+								$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=page' class='small' title='Reorder pages in this section'>reorder</a>";
+							}
 						}
 
 

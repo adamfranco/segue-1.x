@@ -577,7 +577,7 @@ class section extends segue {
 		
 		$this->fetchDown();
 
-		printpre ($order);
+	//	printpre ($order);
 		foreach ($this->pages as $p=>$o) {
 			$added = ereg_replace("[: -]","",$o->getField("addedtimestamp"));
 			$edited = ereg_replace("[: -]","",$o->getField("editedtimestamp"));
