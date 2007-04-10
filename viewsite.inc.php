@@ -159,6 +159,7 @@ do {
 	/* print "themsettings: \"".$thisSite->getField("themesettings")."\"<br />"; */
 	/* print $topsections; */
 	
+//	$thisSection->handlePageOrder();
 	// build the navbar
 	include ("output_modules/".$thisSite->getField("type")."/navbars.inc.php");
 	
@@ -179,6 +180,7 @@ do {
 		//printpre ($hide_sidebar);
  
 		if ($thisPage->canview()) {
+		
 			if ($thisPage->getField("type") == "tags" && $_REQUEST["tag"]) {
 				printc("<div class='title'>".$thisPage->getField("title")." > ");
 				printc(urldecode($_REQUEST["tag"])."</div>");

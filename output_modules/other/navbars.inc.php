@@ -84,6 +84,8 @@ if ($thisSection) {
  ******************************************************************************/
 
 	if ($thisSection->pages) {
+		$thisSection->handlePageOrder();
+		
 		foreach ($thisSection->data[pages] as $p) {
 			$o =& $thisSection->pages[$p];
 			$extra = '';
@@ -91,7 +93,7 @@ if ($thisSection) {
 			$nextorder = 1;
 			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 				if (($action == 'viewsite' || ereg('preview_edit_as', $action)) && ($p == $page || $o->getField("type") != 'page')) {
-				
+					
 					/******************************************************************************
 					 * Pages get same extras (ie edit options) regardless of navigation arrangement
 					 ******************************************************************************/
@@ -347,7 +349,7 @@ if ($thisSection) {
 						$extra = "".$extra;
 					}					
 				}
-				
+								
 				/******************************************************************************
 				 * Build page arrays based on location and navigational arrangement 
 				 ******************************************************************************/				

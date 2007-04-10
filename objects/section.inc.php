@@ -3,7 +3,7 @@
 class section extends segue {
 	var $pages;
 	var $_allfields = array("site_id","title","editedtimestamp","addedby","editedby","addedtimestamp",
-						"activatedate","deactivatedate","active","pages","type",
+						"activatedate","deactivatedate","active","pages","pageorder","type",
 						"url","locked","hide_sidebar");
 	
 	// fields listed in $_datafields are stored in the database.
@@ -52,7 +52,12 @@ class section extends segue {
 			"section",
 			array("section_active"),
 			"section_id"
-		),		
+		),
+		"pageorder" => array(
+			"section",
+			array("section_page_order"),
+			"section_id"
+		),
 		"url" => array(
 			"section
 				LEFT JOIN
@@ -559,4 +564,55 @@ class section extends segue {
 		
 		return $a;
 	}
+	
+		function handlePageOrder() {
+		// reorders the pages array passed to it depending on the order specified.
+		// Orders: editeddesc, editedasc, titleasc
+
+		$newpages = array();
+		$order = $this->getField("pageorder");
+		
+		if ($order == '' || $order=='custom') return;
+		
+		$this->fetchDown();
+
+		//printpre ($order);
+		foreach ($this->pages as $p=>$o) {
+			$added = ereg_replace("[: -]","",$o->getField("addedtimestamp"));
+/* 			$added = str_replace("-","",$added); */
+/* 			$added = str_replace(" ","",$added); */
+		//	printpre ($added."-".$o->getField("title"));
+			
+			if ($order == "addeddesc" || $order == "addedasc") 
+				$newpages[$p] = $added;
+			else if ($order == "editeddesc" || $order == "editedasc") 
+				$newpages[$p] = $o->getField("editedtimestamp");
+			else if ($order == "author") 
+				$newpages[$p] = $o->getField("addedby");
+			else if ($order == "editor") 
+				$newpages[$p] = $o->getField("editedby");
+			else if ($order == "category") 
+				$newpages[$p] = $o->getField("category");
+			else if ($order == "titledesc" || $order == "titleasc") 
+				$newpages[$p] = strtolower($o->getField("title"));
+		}
+		
+		if ($order == "addeddesc" || $order == "editeddesc") {
+			arsort($newpages,SORT_NUMERIC);
+		} else if ($order == "addedasc" || $order == "editedasc") {
+			asort($newpages,SORT_NUMERIC);
+		} else if ($order == "titledesc") {
+			arsort($newpages);
+		} else {
+			asort($newpages);
+		}
+		
+		foreach ($newpages as $id=>$n) {
+			$newpages[$id] = $this->pages[$id];
+		}
+		$this->pages = $newpages;
+
+		$this->setField("pages",array_keys($newpages));
+	}
+
 }

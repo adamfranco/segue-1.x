@@ -160,7 +160,7 @@ if ($_REQUEST[save]) {
 	} else if ($_SESSION[pageObj]->getField("type")=='page') {
 		$page_titles = getPageTitles ($pageObj->owning_section);
 		foreach (array_keys($page_titles) as $page_title) {
-			if (eregi($_SESSION[pageObj]->getField("title"), $page_title)) {
+			if (strtolower($_SESSION[pageObj]->getField("title") == strtolower($page_title))) {
 				error("This section already has a title with this name.  Please choose another title");
 			}
 		}	
