@@ -1562,7 +1562,6 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text)
 	$linked_titles = array();
 	$links = array();
 	
-	
 	$linkpattern = "/(\[)([^\[]*)(\])/";
 	
 	preg_match_all($linkpattern, $text, $matches);
@@ -1586,7 +1585,7 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text)
 		$wikiLink = "[".$title."]";
 		$text = str_replace($wikiLink, $link, $text);
 	}
-		
+	
 	return $text;
 
 }
@@ -1659,7 +1658,7 @@ function convertInteralLinksToTags ($sitename, $text) {
  */
 function convertTagsToInteralLinks ($sitename, $text) {
 	global $cfg;
-	
+
 	if (!$sitename)
 		printError("convertTagsToInternalLinks: no sitename passed!");
 	
@@ -1681,7 +1680,7 @@ function convertTagsToInteralLinks ($sitename, $text) {
 	for ($i=0; $i < count($patterns); $i++) {
 		$text = eregi_replace($patterns[$i], $replacements[$i], $text);
 	}
-	
+
 	return $text;
 }
 

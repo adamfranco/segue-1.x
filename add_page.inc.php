@@ -200,11 +200,15 @@ if ($_REQUEST[save]) {
 			$_SESSION[pageObj]->setField("url",$url);
 		
 		} else if ($_SESSION[pageObj]->getField("type")=='content') {
+			$page_title = $_SESSION[pageObj]->getField("title");
+			$content = $_SESSION[pageObj]->getField("text");
+			$content = convertWikiMarkupToLinks($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[pageObj]->id, $page_title, $content);
+
 		
 			$content = convertInteralLinksToTags($_SESSION[settings][site], $content);
-			
+
 			// save general internal_linkpath to object	
-			$_SESSION[pageObj]->setField("content",$content);
+			$_SESSION[pageObj]->setField("text",$content);
 			
 		} else if ($_SESSION[pageObj]->getField("type")=='rss') {
 			$url = convertInteralLinksToTags($_SESSION[settings][site], $url);

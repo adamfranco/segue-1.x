@@ -628,7 +628,7 @@ class page extends segue {
 /* 		print "\nXXXXXXX\n</pre>"; */
 		
 		if ($all || $this->changed[title]) $a[] = $this->_datafields[title][1][0]."='".addslashes($d[title])."'";
-		if ($all || $this->changed[text]) $a[] = $this->_datafields[text][1][0]."='".addslashes($d[text])."'";
+		if ($all || $this->changed[text]) $a[] = $this->_datafields[text][1][0]."='".addslashes(urlencode($d[text]))."'";
 		if ($all || $this->changed[location]) $a[] = $this->_datafields[location][1][0]."='".addslashes($d['location'])."'";
 		if ($all || $this->changed[activatedate]) $a[] = "page_activate_tstamp ='".addslashes(ereg_replace("-","",$d[activatedate]))."'"; // remove dashes to make a tstamp
 		if ($all || $this->changed[deactivatedate]) $a[] = "page_deactivate_tstamp ='".addslashes(ereg_replace("-","",$d[deactivatedate]))."'"; // remove dashes to make a tstamp

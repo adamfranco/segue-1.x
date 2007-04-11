@@ -245,14 +245,17 @@ if ($thisSection) {
 				 ******************************************************************************/
 				
 				} else if ($o->getField("type") == 'content') {
-					$text = $o->getField("text");
+					$text = stripslashes(urldecode($o->getField("text")));
 					$url = "#";
+
 					
 					/******************************************************************************
 					 * replace general media library urls (i.e. $mediapath/$sitename/filename)
 					 * replace general with specific
 					 ******************************************************************************/
 					$content = convertTagsToInteralLinks($site, $text);
+					//					printpre($site);
+					//exit;
 														
 				/******************************************************************************
 				 * RSS type pages
