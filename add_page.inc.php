@@ -201,9 +201,9 @@ if ($_REQUEST[save]) {
 		
 		} else if ($_SESSION[pageObj]->getField("type")=='content') {
 			$page_title = $_SESSION[pageObj]->getField("title");
-			$content = $_SESSION[pageObj]->getField("text");
+			$content = urldecode($_SESSION[pageObj]->getField("text"));
 			$content = convertWikiMarkupToLinks($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[pageObj]->id, $page_title, $content);
-
+			$content = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[pageObj]->id, $page_title, $content);	
 		
 			$content = convertInteralLinksToTags($_SESSION[settings][site], $content);
 
