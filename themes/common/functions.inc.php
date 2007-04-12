@@ -66,6 +66,18 @@ function vertical_nav($navtype, $nav_items, $extra, $bordercolor='000000', $hide
 	$detail = $_REQUEST[detail];
 	$page = $_REQUEST[page];
 	$action = $_REQUEST[action];
+	if ($thisSection->getField('pageorder') == "editeddesc") {
+		$pageorder = "Recently Edited First";
+	} else if ($thisSection->getField('pageorder') == "editedasc") {
+		$pageorder = "Recently Edited Last";
+	} else if ($thisSection->getField('pageorder') == "addeddesc") {
+		$pageorder = "Recently First";
+	} else if ($thisSection->getField('pageorder') == "addedasc") {
+		$pageorder = "Recently Last";
+	} else if ($thisSection->getField('pageorder') == "titleasc") {
+		$pageorder = "Alphabetic Order";
+	}
+	
 	
 	$numContentPages = 0;
 	foreach ($thisSection->pages as $pageObj) {
@@ -78,17 +90,18 @@ function vertical_nav($navtype, $nav_items, $extra, $bordercolor='000000', $hide
 		print "\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>\n";
 
 		/******************************************************************************
-		 * if hide sidebar then print display options message
+		 * Print display options message
 		 ******************************************************************************/
 		
 		if ($hide_sidebar && $hide_sidebar != 2) {
 			print "<table cellpadding='1' style='border: 1px solid;'><tr><td>";
 			print "<div style='font-size: 9px;'>";
+			print "<strong>".$pageorder."</strong><br />";
 			print "This sidebar will be hidden when viewing this section. To change, see: ";
-			print "<a href='$PHP_SELF?$sid&amp;site=$site&amp;action=edit_section&amp;step=3&amp;edit_section=$section&amp;comingFrom=viewsite'>";
-			print "display options</a>";
+			print "[<a href='$PHP_SELF?$sid&amp;site=$site&amp;action=edit_section&amp;step=3&amp;edit_section=$section&amp;comingFrom=viewsite'>";
+			print "display options</a>]";
 			print "</div>";
-			print "</td></tr></table><br />";
+			print "</td></tr></table>";
 		} else if ($numContentPages == 1 && $action == 'viewsite' && $hide_sidebar != 2) {
 			print "<table cellpadding='1' style='border: 1px solid;'><tr><td>";
 			print "<div style='font-size: 9px;'>";
@@ -96,9 +109,19 @@ function vertical_nav($navtype, $nav_items, $extra, $bordercolor='000000', $hide
 			print "<a href='$PHP_SELF?$sid&amp;site=$site&amp;action=edit_section&amp;step=3&amp;edit_section=$section&amp;comingFrom=viewsite'>";
 			print "display options</a>";
 			print "</div>";
-			print "</td></tr></table><br />";
+			print "</td></tr></table>";
 				
-		}		
+		} else if ($action == 'viewsite') {
+			print "<table cellpadding='1' width='95%' style='border: 1px solid;'><tr><td>";
+			print "<div style='font-size: 9px;'>";
+			print "<strong>".$pageorder."</strong><br />";
+			print "[<a href='$PHP_SELF?$sid&amp;site=$site&amp;action=edit_section&amp;step=3&amp;edit_section=$section&amp;comingFrom=viewsite'>";
+			print "display options</a>]";
+			print "</div>";
+			print "</td></tr></table>";
+		
+		
+		}
 		print "\n\t\t\t\t\t\t</td>\n\t\t\t\t\t</tr>\n";
 
 		/******************************************************************************
