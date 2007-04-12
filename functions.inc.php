@@ -1551,7 +1551,6 @@ function createPage ($site, $section, $linked_title) {
 /******************************************************************************
  * Converts wiki markup to internal links
  * if no page with title = markup title call createPage function
- * Add internal link to link table
  * @param string $section the id of section with pages.
  * return $text
  ******************************************************************************/
@@ -1589,6 +1588,150 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text)
 	return $text;
 
 }
+
+function getLinkingPages($site, $section, $page) {
+	global $cfg;
+	
+	$links = array();
+	
+	$query = "
+	SELECT 
+		source_id, source_type
+	FROM 
+		links 
+	WHERE 
+		target_id ='".addslashes($page)."'
+	AND
+		target_type = 'page'
+	";
+//	printpre($query);		
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {	
+		$linkingpage = $a['source_id'];
+		$linkingpagetitle = db_get_value("page", "page_title", "page_id=".$linkingpage);
+		$linkingsection = db_get_value("page", "FK_section", "page_id=".$linkingpage);
+		$linkingsite = db_get_value("section", "FK_site", "section_id=".$linkingsection);
+		$linkingsite = db_get_value("slot", "slot_name", "FK_site=".$linkingsite);
+	
+		$links[$linkingpagetitle] = $cfg['full_uri']."/index.php?action=site"."&site=".$linkingsite."&section=".$linkingsection."&page=".$a['source_id'];		
+	}
+	
+//	printpre($links);
+	return $links;
+	//exit;
+
+}
+
+/******************************************************************************
+ * records all internal links
+ * Add internal link to link table
+ * @param string $section the id of section with pages.
+ * return $text
+ ******************************************************************************/
+
+function recordInternalLinks ($site, $section, $page_id, $page_title, $text) {
+	global $cfg;
+//	exit;
+	$patterns = array();
+	$replacements = array();
+		
+	
+	printpre($text);
+	$linkpattern = "/site=([^&]*).*?section=([0-9]*).*?.*?page=([0-9]*).*?story=([0-9]*)/";
+	
+	//find links to stories
+	$linkpattern = "/site=[^&]*.*?section=[0-9]*.*?page=([0-9]*).*?story=([0-9]*)/";	
+	preg_match_all($linkpattern, $text, $matches);
+	$linked_story = $matches[1];	
+	printpre($linked_story);
+	
+	//find links to pages
+	$linkpattern = "/site=[^&]*.*?section=[0-9]*.*?page=([0-9]*)/";	
+	preg_match_all($linkpattern, $text, $matches);
+	$linked_page = $matches[1];	
+	printpre($linked_page);
+	
+	//find links to sections
+	$linkpattern = "/site=[^&]*.*?section=([0-9]*)[&][^page+]/";	
+	preg_match_all($linkpattern, $text, $matches);
+	$linked_section = $matches[1];	
+//	printpre($linked_section);
+
+	//find links to sites
+	$linkpattern = "/site=([^&]*)[&][^(?:section)]/";
+	preg_match_all($linkpattern, $text, $matches);
+	$linked_site = $matches;	
+	//printpre($linked_site);
+
+	//check if linked page exists and if not delete from links table
+	foreach ($linked_page as $target_id) {
+		$query = "
+		SELECT 
+			page_id
+		FROM 
+			page 
+		WHERE 
+			page_id ='".addslashes($target_id)."'
+		";
+	//	printpre($query);		
+		$r = db_query($query);
+		
+		
+		if (!db_num_rows($r)) {
+			$query = "
+			DELETE FROM 
+				links
+			WHERE 
+				target_id ='".addslashes($target_id)."'
+			AND
+				target_type = 'page'
+			";
+		//	printpre($query);		
+			$r = db_query($query);	
+
+		// check if record of source page linking to link page exists
+		// and if not create record			
+		} else {
+		
+			$query = "
+			SELECT 
+				target_id, target_type
+			FROM 
+				links 
+			WHERE 
+				source_id ='".addslashes($page_id)."'
+			AND
+				target_id ='".addslashes($target_id)."'
+			AND
+				target_type = 'page'
+			";
+		//	printpre($query);		
+			$r = db_query($query);
+			
+			if (!db_num_rows($r)) {
+				$query = "
+				INSERT INTO 
+					links
+				SET
+					source_id ='".addslashes($page_id)."',
+					source_type = 'page',
+					target_id ='".addslashes($target_id)."',
+					target_type = 'page',
+					link_tstamp = NOW(),
+					FK_luser='".addslashes($_SESSION[lid])."',
+					FK_auser='".addslashes($_SESSION[aid])."'				
+				";
+			//	printpre($query);		
+				$r = db_query($query);					
+			}
+		}	
+	}
+	
+//	exit;	
+	return $text;
+}
+
 
 
 /**

@@ -292,6 +292,7 @@ if ($_REQUEST[save]) {
 			//		
 			$page_title = $thisPage->getField("title");
 			$text = convertWikiMarkupToLinks($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);			
+			$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);	
 			$text = convertInteralLinksToTags($_SESSION[settings][site], $text);			
 			
 			// Lets pass the cleaning of editor text off to the editor.

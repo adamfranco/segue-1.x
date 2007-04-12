@@ -193,6 +193,7 @@ do {
 		$thisPage->fetchDown();
 		if ($thisPage->hasPermissionDown("view"))
 		
+		
 			/******************************************************************************
 			 * if hide sidebars then print out page pagination
 			 ******************************************************************************/
@@ -228,6 +229,14 @@ do {
 			} else {
 
 				printc("\n\t\t\t\t<div class='title'>".$thisPage->getField("title")."</div>");
+								$linking_pages = getLinkingPages($site, $section, $page);
+				printc("linking pages:");
+				foreach ($linking_pages as $linktitle => $link) {
+					printc("<a href='".$link."'>".$linktitle."</a>, ");
+				
+				}
+				printc("<hr>");
+
 			}
 			
 		$i=0;
