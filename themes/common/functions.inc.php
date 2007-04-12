@@ -75,8 +75,11 @@ function vertical_nav($navtype, $nav_items, $extra, $bordercolor='000000', $hide
 	} else if ($thisSection->getField('pageorder') == "addedasc") {
 		$pageorder = "Recently Last";
 	} else if ($thisSection->getField('pageorder') == "titleasc") {
-		$pageorder = "Alphabetic Order";
+		$pageorder = "Alphabetic Display";
+	} else if ($thisSection->getField('pageorder') == "custom") {
+		$pageorder = "Custom Order";
 	}
+
 	
 	
 	$numContentPages = 0;
