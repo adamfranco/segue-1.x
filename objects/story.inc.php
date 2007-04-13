@@ -459,6 +459,27 @@ class story extends segue {
 /* 			print mysql_error()."<br />"; */
 /* 			print_r($this->data['stories']); */
 /* 			print "</pre>"; */
+
+			/******************************************************************************
+			 * update the page updated timestamp
+			 ******************************************************************************/
+
+			$query = "
+				UPDATE 
+					page 
+				SET 
+					page_updated_tstamp = NOW()
+				WHERE 
+					page_id='".addslashes($this->getField("page_id"))."'
+			";
+			
+			print "<pre>page update:".$query."<br />"; 
+			print "</pre>";
+			//exit;
+			db_query($query);
+
+
+
 			
 			// the hard step: update the fields in the JOIN tables
 			
