@@ -473,9 +473,6 @@ class story extends segue {
 					page_id='".addslashes($this->getField("page_id"))."'
 			";
 			
-			print "<pre>page update:".$query."<br />"; 
-			print "</pre>";
-			//exit;
 			db_query($query);
 
 
@@ -671,6 +668,22 @@ class story extends segue {
 			$this->owningPageObj->delStory($origid,0);
 			$this->owningPageObj->updateDB();
 		}
+		
+			/******************************************************************************
+			 * update the page updated timestamp
+			 ******************************************************************************/
+
+			$query = "
+				UPDATE 
+					page 
+				SET 
+					page_updated_tstamp = NOW()
+				WHERE 
+					page_id='".addslashes($this->getField("page_id"))."'
+			";
+			
+			db_query($query);
+
 		
 		/******************************************************************************
 		 * Update version table

@@ -231,7 +231,10 @@ class page extends segue {
 			db_query($query);
 			$query = "DELETE FROM permission WHERE FK_scope_id='".addslashes($this->id)."' AND permission_scope_type='page';";
 			db_query($query);
-			
+			$query = "DELETE FROM links WHERE source_id='".addslashes($this->id)."' AND source_type='page';";
+			db_query($query);			
+			$query = "DELETE FROM links WHERE target_id='".addslashes($this->id)."' AND target_type='page';";
+			db_query($query);			
 //			// should page media (i.e. link or rss url be deleted when page is...?
 //			$query = "DELETE FROM media WHERE media_id=".$media_id;
 //			db_query($query);

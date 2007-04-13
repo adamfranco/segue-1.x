@@ -1604,17 +1604,24 @@ function getLinkingPages($site, $section, $page) {
 	AND
 		target_type = 'page'
 	";
-//	printpre($query);		
+	//printpre($query);
+	//exit;
+	
 	$r = db_query($query);
 	
-	while ($a = db_fetch_assoc($r)) {	
-		$linkingpage = $a['source_id'];
-		$linkingpagetitle = db_get_value("page", "page_title", "page_id=".$linkingpage);
-		$linkingsection = db_get_value("page", "FK_section", "page_id=".$linkingpage);
-		$linkingsite = db_get_value("section", "FK_site", "section_id=".$linkingsection);
-		$linkingsite = db_get_value("slot", "slot_name", "FK_site=".$linkingsite);
 	
-		$links[$linkingpagetitle] = $cfg['full_uri']."/index.php?action=site"."&site=".$linkingsite."&section=".$linkingsection."&page=".$a['source_id'];		
+	
+	while ($a = db_fetch_assoc($r)) {	
+		$linkingpage = $a['source_id'];		
+
+		$linkingpagetitle = db_get_value("page", "page_title", "page_id=".$linkingpage);
+		if ($linkingpagetitle) {
+			$linkingsection = db_get_value("page", "FK_section", "page_id=".$linkingpage);
+			$linkingsite = db_get_value("section", "FK_site", "section_id=".$linkingsection);
+			$linkingsite = db_get_value("slot", "slot_name", "FK_site=".$linkingsite);
+		
+			$links[$linkingpagetitle] = $cfg['full_uri']."/index.php?action=site"."&site=".$linkingsite."&section=".$linkingsection."&page=".$a['source_id'];		
+		}
 	}
 	
 //	printpre($links);
