@@ -1549,6 +1549,55 @@ function createPage ($site, $section, $linked_title) {
 }
 
 /******************************************************************************
+ * Gets story titles 
+ * @param string $page the id of page with stories.
+ * return array of page titles
+ ******************************************************************************/
+
+function getStoryTitles ($page) {	
+	$story_titles = array();
+	
+	$query = "
+	SELECT 
+		story_title, story_id
+	FROM 
+		story 
+	WHERE 
+		FK_page ='".addslashes($page)."'
+	";
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$story_titles[$a[story_title]] = $a[story_id];
+	}
+	return $story_titles;
+}
+
+/******************************************************************************
+ * creates a story in a given page 
+ * @param string $section the id of section with pages.
+ * return array of page titles
+ ******************************************************************************/
+
+function createStory ($site, $section, $page, $linked_title) {
+	$siteObj =& new site($site);
+	$sectionObj =& new section($site, $section, $siteObj);
+	$pageObj =& new page($site, $section, $page, $sectionObj);
+	$storyObj =& new story($site, $section, $page, 0, $pageObj);
+	
+	$storyObj->setField("title", $linked_title);
+	//$pageObj->setField("addedby", $linked_title);
+	
+
+	$pageObj->setPermissions($sectionObj->getPermissions());
+	$pageObj->insertDB();
+	log_entry("add_page","$_SESSION[auser] added page id ".$pageObj->id." in site ".$pageObj->owning_site.", section ".$pageObj->owning_section,$pageObj->owning_site,$pageObj->id,"page");
+	
+	$page_id = $pageObj->id;
+	return $page_id;
+}
+
+/******************************************************************************
  * Converts wiki markup to internal links
  * if no page with title = markup title call createPage function
  * @param string $section the id of section with pages.
@@ -1558,6 +1607,7 @@ function createPage ($site, $section, $linked_title) {
 function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text) {
 	global $cfg;
 	$page_titles = getPageTitles ($section);
+	$story_titles = getStoryTitles ($page_id);
 	$linked_titles = array();
 	$links = array();
 	
@@ -1579,6 +1629,26 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text)
 		$links[$linked_title] .= "'>".$linked_title."</a>";
 
 	}
+	
+	$linkpattern = "/(\[#)([^\[]*)(\])/";
+	
+	preg_match_all($linkpattern, $text, $matches);
+	$linked_titles = $matches[2];
+	//$wikiLinks = $matches[0];
+	
+	foreach ($linked_titles as $linked_title) {
+		if (in_array($linked_title, array_keys($page_titles))) {
+			$linked_page_id = $page_titles[$linked_title];
+		} else {
+			$linked_page_id = createPage($site, $section, $linked_title);		
+		}
+		
+		$links[$linked_title] = "<a href='";
+		$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
+		$links[$linked_title] .= "'>".$linked_title."</a>";
+
+	}
+	
 	
 	foreach ($links as $title=>$link) {
 		$wikiLink = "[".$title."]";
