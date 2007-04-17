@@ -247,7 +247,7 @@ if ($_REQUEST[save]) {
 			$_SESSION[pageObj]->insertDB();
 			log_entry("add_page","$_SESSION[auser] added page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->id,"page");
 			
-			convertAddNodeLinks($_SESSION[pageObj]->owning_site, $_SESSION[pageObj]->owning_section, $_SESSION[settings][source_story], $_SESSION[settings][source_title], $_SESSION[pageObj]->id, $story=0);
+//			convertAddNodeLinks($_SESSION[pageObj]->owning_site, $_SESSION[pageObj]->owning_section, $_SESSION[settings][source_story], $_SESSION[settings][source_title], $_SESSION[pageObj]->id, $story=0);
 
 
 		}

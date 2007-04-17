@@ -52,6 +52,10 @@ if ($storyObj->getField("type") == 'story') {
 	$fulltext = convertTagsToInteralLinks($siteObj->name, $storyObj->getField("longertext"));
 	$smalltext = stripslashes($smalltext);
 	$fulltext = stripslashes($fulltext);
+	
+	$smalltext = convertWikiMarkupToLinks($site,$section,$page,$o->id, $page_title, $smalltext);
+	$fulltext = convertWikiMarkupToLinks($site,$section,$page,$o->id, $page_title, $fulltext);
+	
 	if ($storyObj->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);	
 	if ($storyObj->getField("texttype") == 'text') $smalltext = htmlbr($smalltext);
 } else if ($storyObj->getField("type") == 'image') {

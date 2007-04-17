@@ -12,6 +12,7 @@ $st = convertTagsToInteralLinks($site, $st);
 if ($o->getField("texttype") == 'text')
 	$st = nl2br($st);
 
+$st = convertWikiMarkupToLinks($site,$section,$page,$o->id, $page_title, $st);	
 
 /******************************************************************************
  * print out story content

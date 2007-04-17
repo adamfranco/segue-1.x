@@ -77,18 +77,18 @@ if ($_SESSION[settings][add]) {
 		printc("</select> section");
 		
 	} else if ($_SESSION[settings][type] =='content') {
+		$_SESSION[settings][location] = $_SESSION[settings][page];
+		$site_sections = array();
 		printc(" to: ");
 		printc("<select name='location'>");
-		$site_sections = array();
+		
 		
 		$site_sections = getSectionTitles($_SESSION[settings][site]);
-		foreach ($site_sections as $section_title => $section_id) {
-			
+		foreach ($site_sections as $section_title => $section_id) {			
 			$section_pages = array();
 			$section_pages = getPageTitles($section_id);
-//			printpre($section_pages);
 			printc("<optgroup label ='".$section_title."'>");
-			foreach ($section_pages as $page_title => $page_id) {				
+			foreach ($section_pages as $page_title => $page_id) {	
 				if ($page_title != "") printc("<option value='".$page_id."'".(($_SESSION[settings][location] == $page_id)?" selected='selected'":"").">".$page_title."</option>");
 			}
 			printc("<optgroup>");

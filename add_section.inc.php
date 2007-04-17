@@ -139,7 +139,7 @@ if ($_REQUEST[save]) {
 			$_SESSION[sectionObj]->insertDB();
 			log_entry("add_section","$_SESSION[auser] added section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
 
-			convertAddNodeLinks($_SESSION[sectionObj]->owning_site, $_SESSION[sectionObj]->id, $_SESSION[settings][source_story], $_SESSION[settings][source_title], $page=0, $story=0);
+//			convertAddNodeLinks($_SESSION[sectionObj]->owning_site, $_SESSION[sectionObj]->id, $_SESSION[settings][source_story], $_SESSION[settings][source_title], $page=0, $story=0);
 
 		}
 		if ($_SESSION[settings][edit]) {

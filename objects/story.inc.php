@@ -439,17 +439,17 @@ class story extends segue {
 			/******************************************************************************
 			 * get story text, convert wiki links to internal links
 			 ******************************************************************************/			 
-			$text = $this->getField("shorttext");					 
-			$text = convertWikiMarkupToLinks($this->owning_site, $this->owning_section, $this->owning_page, $this->id, "page", $text);				
-		//	$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);	
-			$text = convertInteralLinksToTags($this->owning_site, $text);			
-			$text = $this->setField("shorttext", $text);
-			
-			$text = $this->getField("longertext");					 
-			$text = convertWikiMarkupToLinks($this->owning_site, $this->owning_section, $this->owning_page, $this->id, "page", $text);				
-		//	$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);	
-			$text = convertInteralLinksToTags($this->owning_site, $text);			
-			$text = $this->setField("longertext", $text);
+//			$text = $this->getField("shorttext");					 
+//			$text = convertWikiMarkupToLinks($this->owning_site, $this->owning_section, $this->owning_page, $this->id, "page", $text);				
+//		//	$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);	
+//			$text = convertInteralLinksToTags($this->owning_site, $text);			
+//			$text = $this->setField("shorttext", $text);
+//			
+//			$text = $this->getField("longertext");					 
+//			$text = convertWikiMarkupToLinks($this->owning_site, $this->owning_section, $this->owning_page, $this->id, "page", $text);				
+//		//	$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);	
+//			$text = convertInteralLinksToTags($this->owning_site, $text);			
+//			$text = $this->setField("longertext", $text);
 		
 			$this->parseMediaTextForDB("shorttext");
 			$this->parseMediaTextForDB("longertext");
@@ -673,29 +673,29 @@ class story extends segue {
 		/******************************************************************************
 		 * get story text, convert wiki links to internal links
 		 ******************************************************************************/			 
-		$text = $this->getField("shorttext");					 
-		$text = convertWikiMarkupToLinks($this->owning_site, $this->owning_section, $this->owning_page, $this->id, "page", $text);				
+//		$text = $this->getField("shorttext");					 
+//		$text = convertWikiMarkupToLinks($this->owning_site, $this->owning_section, $this->owning_page, $this->id, "page", $text);				
 	//	$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);	
-		$shorttext = convertInteralLinksToTags($this->owning_site, $text);			
+//		$shorttext = convertInteralLinksToTags($this->owning_site, $text);			
 
 		
-		$text = $this->getField("longertext");					 
-		$text = convertWikiMarkupToLinks($this->owning_site, $this->owning_section, $this->owning_page, $this->id, "page", $text);				
+//		$text = $this->getField("longertext");					 
+//		$text = convertWikiMarkupToLinks($this->owning_site, $this->owning_section, $this->owning_page, $this->id, "page", $text);				
 	//	$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);	
-		$longertext = convertInteralLinksToTags($this->owning_site, $text);			
+//		$longertext = convertInteralLinksToTags($this->owning_site, $text);			
 
 		// update table with new short and long text
-		$query = "UPDATE
-					story
-				SET 
-					story_text_short ='".addslashes($shorttext)."',
-					story_text_long ='".addslashes($longertext)."' 
-				WHERE
-					story_id ='".addslashes($this->id)."'
-				";
-								
-		db_query($query);
-		 		 
+//		$query = "UPDATE
+//					story
+//				SET 
+//					story_text_short ='".addslashes($shorttext)."',
+//					story_text_long ='".addslashes($longertext)."' 
+//				WHERE
+//					story_id ='".addslashes($this->id)."'
+//				";
+//								
+//		db_query($query);
+//		 		 
 
 		// See if there is a site hash (meaning that we are being copied).
 		// If so, try to match our id with the hash entry for 'NEXT'.

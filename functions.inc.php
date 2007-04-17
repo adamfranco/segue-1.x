@@ -1591,7 +1591,7 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_ti
 	$linked_titles = array();
 	$links = array();
 	
-	$linkpattern = "/(\[)([^\[]*)(\])/";
+	$linkpattern = "/(\[\[)([^\[]*)(\]\])/";
 	
 	preg_match_all($linkpattern, $text, $matches);
 	$linked_titles = $matches[2];
@@ -1603,7 +1603,7 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_ti
 		if (in_array($linked_title, array_keys($page_titles))) {
 			$linked_page_id = $page_titles[$linked_title];
 			$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
-			$links[$linked_title] .= "'>".$linked_title."?</a>";
+			$links[$linked_title] .= "'>".$linked_title."</a>";
 		} else {
 			//$linked_page_id = createPage($site, $section, $linked_title);
 			$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=add_node"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$story_id."&title=".$linked_title;
@@ -1611,10 +1611,10 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_ti
 		}
 	}
 	
-	printpre($links);
+//	printpre($links);
 //	exit;
 	foreach ($links as $title=>$link) {
-		$wikiLink = "[".$title."]";
+		$wikiLink = "[[".$title."]]";
 		$text = str_replace($wikiLink, $link, $text);
 	}
 	
