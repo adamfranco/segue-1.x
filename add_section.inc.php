@@ -46,7 +46,9 @@ if (!is_array($_SESSION[settings]) || !is_object($_SESSION[sectionObj])) {
 		"add" => 0,
 		"edit" => 0,
 		"step" => 1,
-		"comingFrom" => $_REQUEST[comingFrom]
+		"comingFrom" => $_REQUEST[comingFrom],
+		"source_story" => $_REQUEST[story],
+		"source_title" => $_REQUEST[title]
 	);
 	
 	$_SESSION[sectionObj] =& new section($thisSite->name,0,$thisSite);
@@ -136,6 +138,9 @@ if ($_REQUEST[save]) {
 			$_SESSION[sectionObj]->setPermissions($thisSite->getPermissions());
 			$_SESSION[sectionObj]->insertDB();
 			log_entry("add_section","$_SESSION[auser] added section id ".$_SESSION[sectionObj]->id." in site ".$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->owning_site,$_SESSION[sectionObj]->id,"section");
+
+			convertAddNodeLinks($_SESSION[sectionObj]->owning_site, $_SESSION[sectionObj]->id, $_SESSION[settings][source_story], $_SESSION[settings][source_title], $page=0, $story=0);
+
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[sectionObj]->updateDB();

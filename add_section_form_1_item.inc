@@ -66,7 +66,11 @@ if ($_SESSION[sectionObj]->getField("type")=='section') {
 }
 
 printc("<div class='leftmargin'>");
-printc("Title: <input type='text' size='35' name='title' value='".spchars($_SESSION[sectionObj]->getField("title"))."'>");
+if (isset($_REQUEST["title"])) {	
+	printc("Title: <input type='text' size='35' name='title' value='".spchars($_REQUEST['title'])."'>");
+} else {
+	printc("Title: <input type='text' size='35' name='title' value='".spchars($_SESSION[sectionObj]->getField("title"))."'>");
+}
 printc("</div><br />");
 
 //if ($_SESSION[sectionObj]->getField("type")=='section') {
