@@ -1526,6 +1526,33 @@ function getPageTitles ($section) {
 }
 
 /******************************************************************************
+ * Gets section titles 
+ * @param string $section the id of section with pages.
+ * return array of page titles
+ ******************************************************************************/
+
+function getSectionTitles ($site) {	
+	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
+	$section_titles = array();
+	
+	$query = "
+	SELECT 
+		section_title, section_id
+	FROM 
+		section 
+	WHERE 
+		FK_site ='".addslashes($site_id)."'
+	";
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$section_titles[$a[section_title]] = $a[section_id];
+	}
+	return $section_titles;
+}
+
+
+/******************************************************************************
  * creates a page in a given section 
  * @param string $section the id of section with pages.
  * return array of page titles
@@ -1548,54 +1575,7 @@ function createPage ($site, $section, $linked_title) {
 	return $page_id;
 }
 
-/******************************************************************************
- * Gets story titles 
- * @param string $page the id of page with stories.
- * return array of page titles
- ******************************************************************************/
 
-function getStoryTitles ($page) {	
-	$story_titles = array();
-	
-	$query = "
-	SELECT 
-		story_title, story_id
-	FROM 
-		story 
-	WHERE 
-		FK_page ='".addslashes($page)."'
-	";
-	$r = db_query($query);
-	
-	while ($a = db_fetch_assoc($r)) {
-		$story_titles[$a[story_title]] = $a[story_id];
-	}
-	return $story_titles;
-}
-
-/******************************************************************************
- * creates a story in a given page 
- * @param string $section the id of section with pages.
- * return array of page titles
- ******************************************************************************/
-
-function createStory ($site, $section, $page, $linked_title) {
-	$siteObj =& new site($site);
-	$sectionObj =& new section($site, $section, $siteObj);
-	$pageObj =& new page($site, $section, $page, $sectionObj);
-	$storyObj =& new story($site, $section, $page, 0, $pageObj);
-	
-	$storyObj->setField("title", $linked_title);
-	//$pageObj->setField("addedby", $linked_title);
-	
-
-	$pageObj->setPermissions($sectionObj->getPermissions());
-	$pageObj->insertDB();
-	log_entry("add_page","$_SESSION[auser] added page id ".$pageObj->id." in site ".$pageObj->owning_site.", section ".$pageObj->owning_section,$pageObj->owning_site,$pageObj->id,"page");
-	
-	$page_id = $pageObj->id;
-	return $page_id;
-}
 
 /******************************************************************************
  * Converts wiki markup to internal links
@@ -1604,10 +1584,10 @@ function createStory ($site, $section, $page, $linked_title) {
  * return $text
  ******************************************************************************/
 
-function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text) {
+function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_title=0, $text) {
 	global $cfg;
 	$page_titles = getPageTitles ($section);
-	$story_titles = getStoryTitles ($page_id);
+
 	$linked_titles = array();
 	$links = array();
 	
@@ -1618,38 +1598,21 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text)
 	//$wikiLinks = $matches[0];
 	
 	foreach ($linked_titles as $linked_title) {
-		if (in_array($linked_title, array_keys($page_titles))) {
-			$linked_page_id = $page_titles[$linked_title];
-		} else {
-			$linked_page_id = createPage($site, $section, $linked_title);		
-		}
 		
 		$links[$linked_title] = "<a href='";
-		$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
-		$links[$linked_title] .= "'>".$linked_title."</a>";
-
-	}
-	
-	$linkpattern = "/(\[#)([^\[]*)(\])/";
-	
-	preg_match_all($linkpattern, $text, $matches);
-	$linked_titles = $matches[2];
-	//$wikiLinks = $matches[0];
-	
-	foreach ($linked_titles as $linked_title) {
 		if (in_array($linked_title, array_keys($page_titles))) {
 			$linked_page_id = $page_titles[$linked_title];
+			$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
+			$links[$linked_title] .= "'>".$linked_title."?</a>";
 		} else {
-			$linked_page_id = createPage($site, $section, $linked_title);		
+			//$linked_page_id = createPage($site, $section, $linked_title);
+			$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=add_node"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$story_id."&title=".$linked_title;
+			$links[$linked_title] .= "'>".$linked_title."?</a>";
 		}
-		
-		$links[$linked_title] = "<a href='";
-		$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
-		$links[$linked_title] .= "'>".$linked_title."</a>";
-
 	}
 	
-	
+	printpre($links);
+//	exit;
 	foreach ($links as $title=>$link) {
 		$wikiLink = "[".$title."]";
 		$text = str_replace($wikiLink, $link, $text);
@@ -1658,6 +1621,112 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $page_title, $text)
 	return $text;
 
 }
+
+/******************************************************************************
+ * Converts links with action=add_node to links with action=site
+ * if no page with title = markup title call createPage function
+ * @param string $section the id of section with pages.
+ * return $text
+ ******************************************************************************/
+
+function convertAddNodeLinks($site, $section, $source_story_id, $title, $page=0, $story=0) {
+	global $cfg;
+	//$page_titles = getPageTitles ($section);
+	
+	// get source story text
+	$shorttext = db_get_value("story", "story_text_short", "story_id=".$source_story_id);
+	$shorttext = stripslashes(urldecode($shorttext));
+	$shorttext = convertTagsToInteralLinks ($site, $shorttext);
+	
+	$longertext = db_get_value("story", "story_text_long", "story_id=".$source_story_id);
+	$longertext = stripslashes(urldecode($longertext));
+	$longertext = convertTagsToInteralLinks ($site, $longertext);
+
+	printpre($shorttext);
+	
+	
+	// find all links with action = add_node and title = title
+		
+
+	$linked_titles = array();
+	$links = array();
+	
+	$linkpattern = "/action=(add_node).*?site=([^&]*).*?section=([0-9]*).*?page=([0-9]*).*?story=([0-9]*).*?title=([^'>]*)/";	
+	
+	preg_match_all($linkpattern, $shorttext, $matches);
+	$links[action] = $matches[1];
+	$links[site] = $matches[2];
+	$links[section] = $matches[3];
+	$links[page] = $matches[4];
+	$links[story] = $matches[5];
+	$links[title] = $matches[6];
+	
+	printpre($links);
+//	exit;
+
+	// replace in found items add_node with site and section, page and story with new values
+	
+	for ($i=0; $i<=count($links[action]); $i++) {
+		printpre($links[title][$i]);
+		if ($links[title][$i] == $title) {
+			$oldlink = "action=add_node&site=".$links[site][$i]."&section=".$links[section][$i]."&page=".$links[page][$i]."&story=".$links[story][$i]."&title=".$links[title][$i]."'>".$links[title][$i]."?";
+			$newlink = "action=site&site=".$site."&section=".$section;
+			printpre($oldlink);
+			if ($page != 0) $newlink .= "&page=".$page;
+			if ($story != 0) $newlink .= "&story=".$story;
+			$newlink .= "'>".$links[title][$i];
+			printpre($newlink);
+			$shorttext = str_replace($oldlink, $newlink, $shorttext);
+		}
+	}
+	
+	preg_match_all($linkpattern, $longertext, $matches);
+	$links[action] = $matches[1];
+	$links[site] = $matches[2];
+	$links[section] = $matches[3];
+	$links[page] = $matches[4];
+	$links[story] = $matches[5];
+	$links[title] = $matches[6];
+	
+	printpre($links);
+//	exit;
+
+	// replace in found items add_node with site and section, page and story with new values
+	
+	for ($i=0; $i<=count($links[action]); $i++) {
+		printpre($links[title][$i]);
+		if ($links[title][$i] == $title) {
+			$oldlink = "action=add_node&site=".$links[site][$i]."&section=".$links[section][$i]."&page=".$links[page][$i]."&story=".$links[story][$i]."&title=".$links[title][$i]."'>".$links[title][$i]."?";
+			$newlink = "action=site&site=".$site."&section=".$section;
+			printpre($oldlink);
+			if ($page != 0) $newlink .= "&page=".$page;
+			if ($story != 0) $newlink .= "&story=".$story;
+			$newlink .= "'>".$links[title][$i];
+			printpre($newlink);
+			$longertext = str_replace($oldlink, $newlink, $longertext);
+		}
+	}
+	
+	
+	printpre($shorttext);
+	//exit;
+	// save updated story text
+
+	$query = "UPDATE
+				story
+			SET 
+				story_text_short ='".addslashes($shorttext)."',
+				story_text_long ='".addslashes($longertext)."' 
+			WHERE
+				story_id ='".addslashes($source_story_id)."'
+			";
+							
+	db_query($query);
+	
+
+}
+
+
 
 function getLinkingPages($site, $section, $page) {
 	global $cfg;

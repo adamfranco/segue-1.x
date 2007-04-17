@@ -123,6 +123,9 @@ if ($thisSite->getField("type") == 'publication') {
  * Page options
  ******************************************************************************/
 	
+} else if (isset($_REQUEST["title"])) {	
+	printc("<tr><td>Title:</td><td><input type='text' size='50' name='title' value='".spchars($_REQUEST['title'])."' /></td></tr>");
+	
 } else if ($_SESSION[pageObj]->getField("type")=='page') {	
 	printc("<tr><td>Title:</td><td><input type='text' size='50' name='title' value='".spchars($_SESSION[pageObj]->getField("title"))."' /></td></tr>");
 

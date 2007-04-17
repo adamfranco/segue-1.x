@@ -106,7 +106,7 @@ if (ereg("^login",getenv("QUERY_STRING"))) {
 
 // actions for which we use pervasive themes (if enabled)
 // and actions for which certain session variables are allowed (settings, *Obj)
-$pervasiveActions = array("edit_site","add_site","add_section","edit_section","add_page","edit_page","add_story","edit_story");
+$pervasiveActions = array("edit_site","add_site","add_section","edit_section","add_page","edit_page","add_story","edit_story","add_node");
 $permittedSettingsActions = $pervasiveActions;
 $permittedSettingsActions[]='site';
 $permittedPermissionsActions = array("site","viewsite");

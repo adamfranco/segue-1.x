@@ -33,12 +33,15 @@
 //printpre($_SESSION[settings]);
 //printpre($_REQUEST);
 
+
 if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 	// if we have already started editing...
 
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
+	
+	
 	if ($_REQUEST[type]) $_SESSION[pageObj]->setField("type",$_REQUEST[type]);	
 	$_SESSION[pageObj]->handleFormDates();	// handle de/activate dates
 	if ($_REQUEST[active] != "") $_SESSION[pageObj]->setField("active",$_REQUEST[active]);
@@ -53,6 +56,7 @@ if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("storyorder",$_REQUEST[storyorder]);
 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setField("showhr",$_REQUEST[showhr]);
 //	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[pageObj]->setPermissions($_REQUEST[permissions]);
+
 	if ($_REQUEST[archiveby]) $_SESSION[pageObj]->setField("archiveby",$_REQUEST[archiveby]);
 	if ($_REQUEST[url] != "http://") $_SESSION[pageObj]->setField("url",$_REQUEST[url]);
 	if ($_REQUEST[text]) $_SESSION[pageObj]->setField("text",$_REQUEST[text]);
@@ -78,16 +82,26 @@ if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$error */) {
 	// create the settings array with default values. $_SESSION[settings] must be passed along with each link.
 	// The array will be saved on clicking a save button.
+	if ($_SESSION[settings][location]) {
+		$this_section = $_SESSION[settings][location];
+	} else {
+		$this_section = $thisSection->id;
+	}
+	
 	$_SESSION[settings] = array(
 		"site_owner" => $site_owner,
 		"add" => 0,
 		"edit" => 0,
 		"step" => 1,
 		"site" => $thisSite->name,
-		"section" => $thisSection->id,
-		"comingFrom" => $comingFrom
+		"section" => $this_section,
+		"comingFrom" => $comingFrom,
+		"source_story" => $_REQUEST[story],
+		"source_title" => $_REQUEST[title]
 	);
 
+//	printpre($_SESSION[settings]);
+	
 	$_SESSION[pageObj] =& new page($thisSite->name,$thisSection->id,0,$thisSection);
 	
 	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > ";
@@ -232,6 +246,10 @@ if ($_REQUEST[save]) {
 			$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
 			$_SESSION[pageObj]->insertDB();
 			log_entry("add_page","$_SESSION[auser] added page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->id,"page");
+			
+			convertAddNodeLinks($_SESSION[pageObj]->owning_site, $_SESSION[pageObj]->owning_section, $_SESSION[settings][source_story], $_SESSION[settings][source_title], $_SESSION[pageObj]->id, $story=0);
+
+
 		}
 		
 		// do the recursive update of active flag and such... .... ugh
