@@ -291,8 +291,7 @@ if ($_REQUEST[save]) {
 			
 			//		
 	//		$page_title = $thisPage->getField("title");
-	//		$text = convertWikiMarkupToLinks($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);			
-	//		$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);	
+	//		$text = convertWikiMarkupToLinks($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $page_title, $text);				
 			$text = convertInteralLinksToTags($_SESSION[settings][site], $text);			
 			
 			// Lets pass the cleaning of editor text off to the editor.
@@ -342,12 +341,15 @@ if ($_REQUEST[save]) {
 		if ($_SESSION[settings][add]) {
 			$_SESSION[storyObj]->insertDB();
 			log_entry("add_story","$_SESSION[auser] added content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->id,"story");
-
+			
 		}
 		if ($_SESSION[settings][edit]) {
 			$_SESSION[storyObj]->updateDB();
 			log_entry("edit_story","$_SESSION[auser] edited content id ".$_SESSION[storyObj]->id." in site ".$_SESSION[storyObj]->owning_site.", section ".$_SESSION[storyObj]->owning_section.", page ".$_SESSION[storyObj]->owning_page,$_SESSION[storyObj]->owning_site,$_SESSION[storyObj]->id,"story");
 		}
+		
+//		$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $_SESSION[storyObj]->id, $_SESSION[storyObj]->getField("shorttext"));
+//		$text = recordInternalLinks ($_SESSION[settings][site],$_SESSION[settings][section],$_SESSION[settings][page], $_SESSION[storyObj]->id, $_SESSION[storyObj]->getField("longertext"));
 		
 		$_SESSION[storyObj]->updatePermissionsDB(TRUE);
 		$_SESSION[storyObj]->deletePendingEditors();

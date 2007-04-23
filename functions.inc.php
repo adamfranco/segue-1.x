@@ -1527,8 +1527,8 @@ function getPageTitles ($section) {
 
 /******************************************************************************
  * Gets section titles 
- * @param string $section the id of section with pages.
- * return array of page titles
+ * @param string $section the id of site with sections.
+ * return array of site titles
  ******************************************************************************/
 
 function getSectionTitles ($site) {	
@@ -1548,7 +1548,111 @@ function getSectionTitles ($site) {
 	while ($a = db_fetch_assoc($r)) {
 		$section_titles[$a[section_title]] = $a[section_id];
 	}
+	
 	return $section_titles;
+}
+	
+/******************************************************************************
+ * Gets story titles 
+ * @param string $page the id of page with stories on it.
+ * return array of site titles
+ ******************************************************************************/
+
+function getStoryTitles ($page) {	
+
+	$story_titles = array();
+	
+	$query = "
+	SELECT 
+		story_title, story_id
+	FROM 
+		story 
+	WHERE 
+		FK_page ='".addslashes($page)."'
+	";
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$story_titles[$a[story_title]] = $a[story_id];
+	}
+
+	return $story_titles;
+}
+
+/******************************************************************************
+ * Gets all story titles from site
+ * @param string $page the id of page with stories on it.
+ * return array of site titles
+ ******************************************************************************/
+
+function getAllStoryTitles ($site) {	
+	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
+	$story_titles = array();
+	
+	$query = "
+	SELECT 
+		story_title, story_id
+	FROM
+		story
+		LEFT JOIN
+		page
+		ON FK_page = page_id
+		LEFT JOIN
+		section
+		ON FK_section = section_id
+		LEFT JOIN
+		site
+		ON section.FK_site = site_id
+		LEFT JOIN
+		slot
+		ON site_id = slot.FK_site
+	WHERE 
+		slot.FK_site ='".addslashes($site_id)."'	
+	";
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$story_titles[$a[story_title]] = $a[story_id];
+	}
+
+	return $story_titles;
+}
+
+/******************************************************************************
+ * Gets all page titles from site
+ * @param string $page the id of page with stories on it.
+ * return array of site titles
+ ******************************************************************************/
+
+
+function getAllPageTitles ($site) {	
+	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
+	$page_titles = array();
+	
+	$query = "
+	SELECT 
+		page_title, page_id, section_id
+	FROM
+		page
+		LEFT JOIN
+		section
+		ON FK_section = section_id
+		LEFT JOIN
+		site
+		ON section.FK_site = site_id
+		LEFT JOIN
+		slot
+		ON site_id = slot.FK_site
+	WHERE 
+		slot.FK_site ='".addslashes($site_id)."'
+	";
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$page_titles[$a[page_title]] = $a[page_id];
+	}
+//	printpre($page_titles);
+	return $page_titles;
 }
 
 
@@ -1558,22 +1662,22 @@ function getSectionTitles ($site) {
  * return array of page titles
  ******************************************************************************/
 
-function createPage ($site, $section, $linked_title) {
-	$siteObj =& new site($site);
-	$sectionObj =& new section($site, $section, $siteObj);
-	$pageObj =& new page($site, $section, 0, $sectionObj);
-	
-	$pageObj->setField("title", $linked_title);
-	//$pageObj->setField("addedby", $linked_title);
-	
-
-	$pageObj->setPermissions($sectionObj->getPermissions());
-	$pageObj->insertDB();
-	log_entry("add_page","$_SESSION[auser] added page id ".$pageObj->id." in site ".$pageObj->owning_site.", section ".$pageObj->owning_section,$pageObj->owning_site,$pageObj->id,"page");
-	
-	$page_id = $pageObj->id;
-	return $page_id;
-}
+//function createPage ($site, $section, $linked_title) {
+//	$siteObj =& new site($site);
+//	$sectionObj =& new section($site, $section, $siteObj);
+//	$pageObj =& new page($site, $section, 0, $sectionObj);
+//	
+//	$pageObj->setField("title", $linked_title);
+//	//$pageObj->setField("addedby", $linked_title);
+//	
+//
+//	$pageObj->setPermissions($sectionObj->getPermissions());
+//	$pageObj->insertDB();
+//	log_entry("add_page","$_SESSION[auser] added page id ".$pageObj->id." in site ".$pageObj->owning_site.", section ".$pageObj->owning_section,$pageObj->owning_site,$pageObj->id,"page");
+//	
+//	$page_id = $pageObj->id;
+//	return $page_id;
+//}
 
 
 
@@ -1586,8 +1690,7 @@ function createPage ($site, $section, $linked_title) {
 
 function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_title=0, $text) {
 	global $cfg;
-	$page_titles = getPageTitles ($section);
-
+	
 	$linked_titles = array();
 	$links = array();
 	
@@ -1597,17 +1700,46 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_ti
 	$linked_titles = $matches[2];
 	//$wikiLinks = $matches[0];
 	
-	foreach ($linked_titles as $linked_title) {
-		
-		$links[$linked_title] = "<a href='";
-		if (in_array($linked_title, array_keys($page_titles))) {
-			$linked_page_id = $page_titles[$linked_title];
-			$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
-			$links[$linked_title] .= "'>".$linked_title."</a>";
-		} else {
-			//$linked_page_id = createPage($site, $section, $linked_title);
-			$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=add_node"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$story_id."&title=".$linked_title;
-			$links[$linked_title] .= "'>".$linked_title."?</a>";
+	if (count($linked_titles) != 0) {
+	
+		$current_story_titles = getStoryTitles ($page_id);
+		$current_page_titles = getPageTitles ($section);
+		$section_titles = getSectionTitles ($site);
+		$all_page_titles = getAllPageTitles($site);
+		$all_story_titles = getAllStoryTitles($site);
+		//printpre($current_story_titles);
+	
+		foreach ($linked_titles as $linked_title) {
+			
+			$links[$linked_title] = "<a href='";
+			if (in_array($linked_title, array_keys($current_story_titles))) {
+				$linked_story_id = $current_story_titles[$linked_title];
+				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$linked_story_id."&detail=".$linked_story_id;
+				$links[$linked_title] .= "'>".$linked_title."</a>";
+			} else if (in_array($linked_title, array_keys($current_page_titles))) {
+				$linked_page_id = $current_page_titles[$linked_title];
+				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
+				$links[$linked_title] .= "'>".$linked_title."</a>";
+			} else if (in_array($linked_title, array_keys($section_titles))) {
+				$linked_section_id = $section_titles[$linked_title];
+				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id;
+				$links[$linked_title] .= "'>".$linked_title."</a>";
+			} else if (in_array($linked_title, array_keys($all_page_titles))) {
+				$linked_page_id = $all_page_titles[$linked_title];
+				$linked_section_id = db_get_value("page", "FK_section", "page_id='".$linked_page_id."'");
+				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id."&page=".$linked_page_id;
+				$links[$linked_title] .= "'>".$linked_title."</a>";
+			} else if (in_array($linked_title, array_keys($all_story_titles))) {
+				$linked_story_id = $all_story_titles[$linked_title];
+				$linked_page_id = db_get_value("story", "FK_page", "story_id='".$linked_story_id."'");
+				$linked_section_id = db_get_value("page", "FK_section", "page_id='".$linked_page_id."'");
+				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id."&page=".$linked_page_id."&story=".$linked_story_id."&detail=".$linked_story_id;				
+				$links[$linked_title] .= "'>".$linked_title."</a>";
+			} else {
+				//$linked_page_id = createPage($site, $section, $linked_title);
+				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=add_node"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$story_id."&title=".$linked_title;
+				$links[$linked_title] .= "'>".$linked_title."?</a>";
+			}
 		}
 	}
 	
@@ -1629,102 +1761,102 @@ function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_ti
  * return $text
  ******************************************************************************/
 
-function convertAddNodeLinks($site, $section, $source_story_id, $title, $page=0, $story=0) {
-	global $cfg;
-	//$page_titles = getPageTitles ($section);
-	
-	// get source story text
-	$shorttext = db_get_value("story", "story_text_short", "story_id=".$source_story_id);
-	$shorttext = stripslashes(urldecode($shorttext));
-	$shorttext = convertTagsToInteralLinks ($site, $shorttext);
-	
-	$longertext = db_get_value("story", "story_text_long", "story_id=".$source_story_id);
-	$longertext = stripslashes(urldecode($longertext));
-	$longertext = convertTagsToInteralLinks ($site, $longertext);
-
-	printpre($shorttext);
-	
-	
-	// find all links with action = add_node and title = title
-		
-
-	$linked_titles = array();
-	$links = array();
-	
-	$linkpattern = "/action=(add_node).*?site=([^&]*).*?section=([0-9]*).*?page=([0-9]*).*?story=([0-9]*).*?title=([^'>]*)/";	
-	
-	preg_match_all($linkpattern, $shorttext, $matches);
-	$links[action] = $matches[1];
-	$links[site] = $matches[2];
-	$links[section] = $matches[3];
-	$links[page] = $matches[4];
-	$links[story] = $matches[5];
-	$links[title] = $matches[6];
-	
-	printpre($links);
-//	exit;
-
-	// replace in found items add_node with site and section, page and story with new values
-	
-	for ($i=0; $i<=count($links[action]); $i++) {
-		printpre($links[title][$i]);
-		if ($links[title][$i] == $title) {
-			$oldlink = "action=add_node&site=".$links[site][$i]."&section=".$links[section][$i]."&page=".$links[page][$i]."&story=".$links[story][$i]."&title=".$links[title][$i]."'>".$links[title][$i]."?";
-			$newlink = "action=site&site=".$site."&section=".$section;
-			printpre($oldlink);
-			if ($page != 0) $newlink .= "&page=".$page;
-			if ($story != 0) $newlink .= "&story=".$story;
-			$newlink .= "'>".$links[title][$i];
-			printpre($newlink);
-			$shorttext = str_replace($oldlink, $newlink, $shorttext);
-		}
-	}
-	
-	preg_match_all($linkpattern, $longertext, $matches);
-	$links[action] = $matches[1];
-	$links[site] = $matches[2];
-	$links[section] = $matches[3];
-	$links[page] = $matches[4];
-	$links[story] = $matches[5];
-	$links[title] = $matches[6];
-	
-	printpre($links);
-//	exit;
-
-	// replace in found items add_node with site and section, page and story with new values
-	
-	for ($i=0; $i<=count($links[action]); $i++) {
-		printpre($links[title][$i]);
-		if ($links[title][$i] == $title) {
-			$oldlink = "action=add_node&site=".$links[site][$i]."&section=".$links[section][$i]."&page=".$links[page][$i]."&story=".$links[story][$i]."&title=".$links[title][$i]."'>".$links[title][$i]."?";
-			$newlink = "action=site&site=".$site."&section=".$section;
-			printpre($oldlink);
-			if ($page != 0) $newlink .= "&page=".$page;
-			if ($story != 0) $newlink .= "&story=".$story;
-			$newlink .= "'>".$links[title][$i];
-			printpre($newlink);
-			$longertext = str_replace($oldlink, $newlink, $longertext);
-		}
-	}
-	
-	
-	printpre($shorttext);
-	//exit;
-	// save updated story text
-
-	$query = "UPDATE
-				story
-			SET 
-				story_text_short ='".addslashes($shorttext)."',
-				story_text_long ='".addslashes($longertext)."' 
-			WHERE
-				story_id ='".addslashes($source_story_id)."'
-			";
-							
-	db_query($query);
-	
-
-}
+//function convertAddNodeLinks($site, $section, $source_story_id, $title, $page=0, $story=0) {
+//	global $cfg;
+//	//$page_titles = getPageTitles ($section);
+//	
+//	// get source story text
+//	$shorttext = db_get_value("story", "story_text_short", "story_id=".$source_story_id);
+//	$shorttext = stripslashes(urldecode($shorttext));
+//	$shorttext = convertTagsToInteralLinks ($site, $shorttext);
+//	
+//	$longertext = db_get_value("story", "story_text_long", "story_id=".$source_story_id);
+//	$longertext = stripslashes(urldecode($longertext));
+//	$longertext = convertTagsToInteralLinks ($site, $longertext);
+//
+//	printpre($shorttext);
+//	
+//	
+//	// find all links with action = add_node and title = title
+//		
+//
+//	$linked_titles = array();
+//	$links = array();
+//	
+//	$linkpattern = "/action=(add_node).*?site=([^&]*).*?section=([0-9]*).*?page=([0-9]*).*?story=([0-9]*).*?title=([^'>]*)/";	
+//	
+//	preg_match_all($linkpattern, $shorttext, $matches);
+//	$links[action] = $matches[1];
+//	$links[site] = $matches[2];
+//	$links[section] = $matches[3];
+//	$links[page] = $matches[4];
+//	$links[story] = $matches[5];
+//	$links[title] = $matches[6];
+//	
+//	printpre($links);
+////	exit;
+//
+//	// replace in found items add_node with site and section, page and story with new values
+//	
+//	for ($i=0; $i<=count($links[action]); $i++) {
+//		printpre($links[title][$i]);
+//		if ($links[title][$i] == $title) {
+//			$oldlink = "action=add_node&site=".$links[site][$i]."&section=".$links[section][$i]."&page=".$links[page][$i]."&story=".$links[story][$i]."&title=".$links[title][$i]."'>".$links[title][$i]."?";
+//			$newlink = "action=site&site=".$site."&section=".$section;
+//			printpre($oldlink);
+//			if ($page != 0) $newlink .= "&page=".$page;
+//			if ($story != 0) $newlink .= "&story=".$story;
+//			$newlink .= "'>".$links[title][$i];
+//			printpre($newlink);
+//			$shorttext = str_replace($oldlink, $newlink, $shorttext);
+//		}
+//	}
+//	
+//	preg_match_all($linkpattern, $longertext, $matches);
+//	$links[action] = $matches[1];
+//	$links[site] = $matches[2];
+//	$links[section] = $matches[3];
+//	$links[page] = $matches[4];
+//	$links[story] = $matches[5];
+//	$links[title] = $matches[6];
+//	
+//	printpre($links);
+////	exit;
+//
+//	// replace in found items add_node with site and section, page and story with new values
+//	
+//	for ($i=0; $i<=count($links[action]); $i++) {
+//		printpre($links[title][$i]);
+//		if ($links[title][$i] == $title) {
+//			$oldlink = "action=add_node&site=".$links[site][$i]."&section=".$links[section][$i]."&page=".$links[page][$i]."&story=".$links[story][$i]."&title=".$links[title][$i]."'>".$links[title][$i]."?";
+//			$newlink = "action=site&site=".$site."&section=".$section;
+//			printpre($oldlink);
+//			if ($page != 0) $newlink .= "&page=".$page;
+//			if ($story != 0) $newlink .= "&story=".$story;
+//			$newlink .= "'>".$links[title][$i];
+//			printpre($newlink);
+//			$longertext = str_replace($oldlink, $newlink, $longertext);
+//		}
+//	}
+//	
+//	
+//	printpre($shorttext);
+//	//exit;
+//	// save updated story text
+//
+//	$query = "UPDATE
+//				story
+//			SET 
+//				story_text_short ='".addslashes($shorttext)."',
+//				story_text_long ='".addslashes($longertext)."' 
+//			WHERE
+//				story_id ='".addslashes($source_story_id)."'
+//			";
+//							
+//	db_query($query);
+//	
+//
+//}
 
 
 
@@ -1770,13 +1902,29 @@ function getLinkingPages($site, $section, $page) {
 }
 
 /******************************************************************************
+ * Finds all links to a given node in all other content blocks in site
+ * Add internal link to link table
+ * @param string $section the id of section with pages.
+ * return $text
+ ******************************************************************************/
+
+function findInternalLinks ($site, $section, $page_id, $page_title, $text) {
+	global $cfg;
+//	exit;
+	$patterns = array();
+	$replacements = array();
+		
+}
+
+
+/******************************************************************************
  * records all internal links
  * Add internal link to link table
  * @param string $section the id of section with pages.
  * return $text
  ******************************************************************************/
 
-function recordInternalLinks ($site, $section, $page_id, $page_title, $text) {
+function recordInternalLinks ($site, $section, $page_id, $story_id, $text) {
 	global $cfg;
 //	exit;
 	$patterns = array();
@@ -1784,7 +1932,16 @@ function recordInternalLinks ($site, $section, $page_id, $page_title, $text) {
 		
 	
 	printpre($text);
-	$linkpattern = "/site=([^&]*).*?section=([0-9]*).*?.*?page=([0-9]*).*?story=([0-9]*)/";
+	
+	
+	//$linkpattern = "/site=([^&]*).*?section=([0-9]*).*?.*?page=([0-9]*).*?story=([0-9]*)/";	
+
+	//find wiki links
+	$linkpattern = "/(\[\[)([^\[]*)(\]\])/";
+	preg_match_all($linkpattern, $text, $matches);
+	$linked_wiki = $matches[1];	
+	printpre($linked_wiki);
+
 	
 	//find links to stories
 	$linkpattern = "/site=[^&]*.*?section=[0-9]*.*?page=([0-9]*).*?story=([0-9]*)/";	

@@ -1,4 +1,4 @@
-<? /* $Id$ */
+<?php /* $Id$ */
 
 /******************************************************************************
  * Segue object - basis for all other section, page, and story objects

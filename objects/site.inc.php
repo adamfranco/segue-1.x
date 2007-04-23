@@ -1,4 +1,4 @@
-<? /* $Id$ */
+<?php /* $Id$ */
 
 class site extends segue {
 	var $canview; // an array of editors that can view this site
