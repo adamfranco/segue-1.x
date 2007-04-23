@@ -29,6 +29,10 @@ $text = '<p>This template is designed for a [[course]] that makes [[Really Big|e
 </ul>
 <p>[http://google.com]</p>
 <p>[http://google.com The Google Search Engine]</p>
+
+<p>[[site:template4]]</p>
+<p>[[site:template4|My other template]]</p>
+
 <p><span style="color: rgb(51, 51, 51);">(Any of the sections and pages in this site can be edited and deleted as needed... As well additional sections and pages can be added)</span></p>';
 
 $currentSite = "template1";

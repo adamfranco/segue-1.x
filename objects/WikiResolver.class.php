@@ -222,11 +222,47 @@ class WikiResolver {
 $		# Anchor for the end of the line
 
 /xi";
+
+		$siteOnlyRegexp = "/
+
+^		# Anchor for the beginning of the line
+\[\[	# The opening link tags
+
+	\s*		# optional whitespace
+
+	(?: site:([a-z0-9_\-]+) )?	# A designator for linking to another site
+	
+	(?: \s*\|\s* ([^\]]+) )?	# The optional link-text to display instead of the title
+
+	\s*		# optional whitespace
+
+\]\]	# The closing link tags
+$		# Anchor for the end of the line
+
+/xi";
+		
+		// Check for a link only to a site [[site:my_other_site]]
+		if (preg_match($siteOnlyRegexp, $wikiText, $matches)) {
+			
+			$targetSite = $matches[1];
+			
+			if ($matches[2]) {
+				$display = $matches[2];
+			} else {
+				$display = $targetSite;
+			}
+			
+			ob_start();
+			print "<a href='".$cfg['full_uri']."/index.php?&action=site";
+			print "&site=".$targetSite;
+			print "'>";
+			print $display;
+			print "</a>";
+			return ob_get_clean();
+		}
+		
 		// Links of the form [[Assignments]]
-		if (preg_match($regexp, $wikiText, $matches)) {
-// 			print "<hr/>";
-// 			printpre($wikiText);
-// 			printpre($matches);
+		else if (preg_match($regexp, $wikiText, $matches)) {
 			
 			if ($matches[1]) {
 				$targetSite = $matches[1];
@@ -273,6 +309,7 @@ $		# Anchor for the end of the line
 				return ob_get_clean();
 			}
 		} 
+		
 		// If invalid, just return the wiki text.
 		else {
 			return $wikiText;
