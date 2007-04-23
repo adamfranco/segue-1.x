@@ -877,6 +877,10 @@ class discussion {
 			}
 			if ($this->opt("showtstamp")) $a .= timestamp2usdate($this->tstamp);
 			
+			// Wiki-markup example
+			global $storyObj;
+			$a .= WikiResolver::getMarkupExample($storyObj->getField("title"), $this->id);
+			
 			/******************************************************************************
 			 * 	 collect possible actions to current post (rely | del | edit | rate)
 			 ******************************************************************************/
