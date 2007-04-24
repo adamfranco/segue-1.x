@@ -288,9 +288,10 @@ $		# Anchor for the end of the line
 					print "&section=".$targetPath['section'];
 				if ($targetPath['page'])
 					print "&page=".$targetPath['page'];
-				if ($targetPath['story'])
+				if ($targetPath['story']) {
 					print "&story=".$targetPath['story'];
 					print "&detail=".$targetPath['story'];
+				}
 				print "'>";
 				print $display;
 				print "</a>";

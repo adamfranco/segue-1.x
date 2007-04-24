@@ -198,7 +198,7 @@ if ($_REQUEST[save]) {
 		} else if ($_REQUEST[type] == "content") {
 			$page = $_SESSION[settings][location];
 			unset($_SESSION[settings],$_SESSION[siteObj],$_SESSION[sectionObj],$_SESSION[pageObj],$_SESSION[storyObj]);				
-			header("Location: index.php?$sid&action=add_story&site=".$thisSite->name."&section=".$thisSection->id."&page=".$page."&story=".$_SESSION[settings][story]."&comingFrom=viewsite&title=".$_SESSION[settings][title]);
+			header("Location: index.php?$sid&action=add_story&site=".$thisSite->name."&section=".$thisSection->id."&page=".$page."&story=".$_SESSION[settings][story]."&comingFrom=viewsite&title=".$title);
 			
 			//log_entry("edit_page","$_SESSION[auser] edited page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->id,"page");		
 		}

@@ -948,7 +948,11 @@ class discussion {
 			 ******************************************************************************/
 			if ($this->opt("showcontent")) {
 				printc ("<tr><td class='dtext'>");
-				printc (convertTagsToInteralLinks ($_REQUEST[site], stripslashes($this->content)));
+				$content = convertTagsToInteralLinks ($_REQUEST[site], stripslashes($this->content));
+				$wikiResolver =& WikiResolver::instance();
+				$content = $wikiResolver->parseText($content, $_REQUEST[site], $_REQUEST[section],$_REQUEST[page]);
+				printc($content);
+				
 				//printc ("- [ $c]</td></tr>\n");
 				//printc ("<tr><td align='right'>$c</td></tr>\n"); 
 			}

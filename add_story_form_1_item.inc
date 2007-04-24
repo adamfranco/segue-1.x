@@ -104,7 +104,13 @@ if ($_SESSION[storyObj]->getField("type")!='rss') {
 	} else {
 		printc("\n<td>Title:</td>");
 	}
-	printc("\n<td><input type='text' size='50' name='title' value='".spchars($_SESSION[storyObj]->getField("title"))."' />");
+	
+	if (isset($_REQUEST["title"])) {	
+		printc("\n<td><input type='text' size='50' name='title' value='".spchars($_REQUEST["title"])."' />");
+	} else {
+		printc("\n<td><input type='text' size='50' name='title' value='".spchars($_SESSION[storyObj]->getField("title"))."' />");
+	}
+	
 	if ($_SESSION[storyObj]->getField("type") == 'file') {
 		printc("\n <span style='font-size:10px; color: #D00'> *required</span>");
 	} else {
