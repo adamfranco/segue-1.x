@@ -246,6 +246,8 @@ if ($thisSection) {
 				
 				} else if ($o->getField("type") == 'content') {
 					$text = stripslashes(urldecode($o->getField("text")));
+					$wikiResolver =& WikiResolver::instance();
+					$text = $wikiResolver->parseText($text, $site, $section, $page);
 					$url = "#";
 
 					

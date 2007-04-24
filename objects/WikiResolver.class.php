@@ -290,6 +290,7 @@ $		# Anchor for the end of the line
 					print "&page=".$targetPath['page'];
 				if ($targetPath['story'])
 					print "&story=".$targetPath['story'];
+					print "&detail=".$targetPath['story'];
 				print "'>";
 				print $display;
 				print "</a>";
@@ -301,6 +302,8 @@ $		# Anchor for the end of the line
 				ob_start();
 				print "<a href='".$cfg['full_uri']."/index.php?&action=add_node";
 				print "&site=".$targetSite;
+				print "&section=".$this->_currentSectionId;
+				print "&page=".$this->_currentPageId;
 				print "&link_title=".urlencode($targetTitle);
 				print "'>";
 				print $display;

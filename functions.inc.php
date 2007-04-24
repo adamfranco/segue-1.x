@@ -1585,38 +1585,38 @@ function getStoryTitles ($page) {
  * return array of site titles
  ******************************************************************************/
 
-function getAllStoryTitles ($site) {	
-	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
-	$story_titles = array();
-	
-	$query = "
-	SELECT 
-		story_title, story_id
-	FROM
-		story
-		LEFT JOIN
-		page
-		ON FK_page = page_id
-		LEFT JOIN
-		section
-		ON FK_section = section_id
-		LEFT JOIN
-		site
-		ON section.FK_site = site_id
-		LEFT JOIN
-		slot
-		ON site_id = slot.FK_site
-	WHERE 
-		slot.FK_site ='".addslashes($site_id)."'	
-	";
-	$r = db_query($query);
-	
-	while ($a = db_fetch_assoc($r)) {
-		$story_titles[$a[story_title]] = $a[story_id];
-	}
-
-	return $story_titles;
-}
+//function getAllStoryTitles ($site) {	
+//	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
+//	$story_titles = array();
+//	
+//	$query = "
+//	SELECT 
+//		story_title, story_id
+//	FROM
+//		story
+//		LEFT JOIN
+//		page
+//		ON FK_page = page_id
+//		LEFT JOIN
+//		section
+//		ON FK_section = section_id
+//		LEFT JOIN
+//		site
+//		ON section.FK_site = site_id
+//		LEFT JOIN
+//		slot
+//		ON site_id = slot.FK_site
+//	WHERE 
+//		slot.FK_site ='".addslashes($site_id)."'	
+//	";
+//	$r = db_query($query);
+//	
+//	while ($a = db_fetch_assoc($r)) {
+//		$story_titles[$a[story_title]] = $a[story_id];
+//	}
+//
+//	return $story_titles;
+//}
 
 /******************************************************************************
  * Gets all page titles from site
@@ -1625,35 +1625,35 @@ function getAllStoryTitles ($site) {
  ******************************************************************************/
 
 
-function getAllPageTitles ($site) {	
-	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
-	$page_titles = array();
-	
-	$query = "
-	SELECT 
-		page_title, page_id, section_id
-	FROM
-		page
-		LEFT JOIN
-		section
-		ON FK_section = section_id
-		LEFT JOIN
-		site
-		ON section.FK_site = site_id
-		LEFT JOIN
-		slot
-		ON site_id = slot.FK_site
-	WHERE 
-		slot.FK_site ='".addslashes($site_id)."'
-	";
-	$r = db_query($query);
-	
-	while ($a = db_fetch_assoc($r)) {
-		$page_titles[$a[page_title]] = $a[page_id];
-	}
-//	printpre($page_titles);
-	return $page_titles;
-}
+//function getAllPageTitles ($site) {	
+//	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
+//	$page_titles = array();
+//	
+//	$query = "
+//	SELECT 
+//		page_title, page_id, section_id
+//	FROM
+//		page
+//		LEFT JOIN
+//		section
+//		ON FK_section = section_id
+//		LEFT JOIN
+//		site
+//		ON section.FK_site = site_id
+//		LEFT JOIN
+//		slot
+//		ON site_id = slot.FK_site
+//	WHERE 
+//		slot.FK_site ='".addslashes($site_id)."'
+//	";
+//	$r = db_query($query);
+//	
+//	while ($a = db_fetch_assoc($r)) {
+//		$page_titles[$a[page_title]] = $a[page_id];
+//	}
+////	printpre($page_titles);
+//	return $page_titles;
+//}
 
 
 /******************************************************************************
@@ -1688,71 +1688,71 @@ function getAllPageTitles ($site) {
  * return $text
  ******************************************************************************/
 
-function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_title=0, $text) {
-	global $cfg;
-	
-	$linked_titles = array();
-	$links = array();
-	
-	$linkpattern = "/(\[\[)([^\[]*)(\]\])/";
-	
-	preg_match_all($linkpattern, $text, $matches);
-	$linked_titles = $matches[2];
-	//$wikiLinks = $matches[0];
-	
-	if (count($linked_titles) != 0) {
-	
-		$current_story_titles = getStoryTitles ($page_id);
-		$current_page_titles = getPageTitles ($section);
-		$section_titles = getSectionTitles ($site);
-		$all_page_titles = getAllPageTitles($site);
-		$all_story_titles = getAllStoryTitles($site);
-		//printpre($current_story_titles);
-	
-		foreach ($linked_titles as $linked_title) {
-			
-			$links[$linked_title] = "<a href='";
-			if (in_array($linked_title, array_keys($current_story_titles))) {
-				$linked_story_id = $current_story_titles[$linked_title];
-				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$linked_story_id."&detail=".$linked_story_id;
-				$links[$linked_title] .= "'>".$linked_title."</a>";
-			} else if (in_array($linked_title, array_keys($current_page_titles))) {
-				$linked_page_id = $current_page_titles[$linked_title];
-				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
-				$links[$linked_title] .= "'>".$linked_title."</a>";
-			} else if (in_array($linked_title, array_keys($section_titles))) {
-				$linked_section_id = $section_titles[$linked_title];
-				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id;
-				$links[$linked_title] .= "'>".$linked_title."</a>";
-			} else if (in_array($linked_title, array_keys($all_page_titles))) {
-				$linked_page_id = $all_page_titles[$linked_title];
-				$linked_section_id = db_get_value("page", "FK_section", "page_id='".$linked_page_id."'");
-				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id."&page=".$linked_page_id;
-				$links[$linked_title] .= "'>".$linked_title."</a>";
-			} else if (in_array($linked_title, array_keys($all_story_titles))) {
-				$linked_story_id = $all_story_titles[$linked_title];
-				$linked_page_id = db_get_value("story", "FK_page", "story_id='".$linked_story_id."'");
-				$linked_section_id = db_get_value("page", "FK_section", "page_id='".$linked_page_id."'");
-				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id."&page=".$linked_page_id."&story=".$linked_story_id."&detail=".$linked_story_id;				
-				$links[$linked_title] .= "'>".$linked_title."</a>";
-			} else {
-				//$linked_page_id = createPage($site, $section, $linked_title);
-				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=add_node"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$story_id."&title=".$linked_title;
-				$links[$linked_title] .= "'>".$linked_title."?</a>";
-			}
-		}
-	}
-	
-//	printpre($links);
-//	exit;
-	foreach ($links as $title=>$link) {
-		$wikiLink = "[[".$title."]]";
-		$text = str_replace($wikiLink, $link, $text);
-	}
-	
-	return $text;
-
-}
+//function convertWikiMarkupToLinks($site, $section, $page_id, $story_id, $page_title=0, $text) {
+//	global $cfg;
+//	
+//	$linked_titles = array();
+//	$links = array();
+//	
+//	$linkpattern = "/(\[\[)([^\[]*)(\]\])/";
+//	
+//	preg_match_all($linkpattern, $text, $matches);
+//	$linked_titles = $matches[2];
+//	//$wikiLinks = $matches[0];
+//	
+//	if (count($linked_titles) != 0) {
+//	
+//		$current_story_titles = getStoryTitles ($page_id);
+//		$current_page_titles = getPageTitles ($section);
+//		$section_titles = getSectionTitles ($site);
+//		$all_page_titles = getAllPageTitles($site);
+//		$all_story_titles = getAllStoryTitles($site);
+//		//printpre($current_story_titles);
+//	
+//		foreach ($linked_titles as $linked_title) {
+//			
+//			$links[$linked_title] = "<a href='";
+//			if (in_array($linked_title, array_keys($current_story_titles))) {
+//				$linked_story_id = $current_story_titles[$linked_title];
+//				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$linked_story_id."&detail=".$linked_story_id;
+//				$links[$linked_title] .= "'>".$linked_title."</a>";
+//			} else if (in_array($linked_title, array_keys($current_page_titles))) {
+//				$linked_page_id = $current_page_titles[$linked_title];
+//				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$section."&page=".$linked_page_id;
+//				$links[$linked_title] .= "'>".$linked_title."</a>";
+//			} else if (in_array($linked_title, array_keys($section_titles))) {
+//				$linked_section_id = $section_titles[$linked_title];
+//				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id;
+//				$links[$linked_title] .= "'>".$linked_title."</a>";
+//			} else if (in_array($linked_title, array_keys($all_page_titles))) {
+//				$linked_page_id = $all_page_titles[$linked_title];
+//				$linked_section_id = db_get_value("page", "FK_section", "page_id='".$linked_page_id."'");
+//				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id."&page=".$linked_page_id;
+//				$links[$linked_title] .= "'>".$linked_title."</a>";
+//			} else if (in_array($linked_title, array_keys($all_story_titles))) {
+//				$linked_story_id = $all_story_titles[$linked_title];
+//				$linked_page_id = db_get_value("story", "FK_page", "story_id='".$linked_story_id."'");
+//				$linked_section_id = db_get_value("page", "FK_section", "page_id='".$linked_page_id."'");
+//				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=site"."&site=".$site."&section=".$linked_section_id."&page=".$linked_page_id."&story=".$linked_story_id."&detail=".$linked_story_id;				
+//				$links[$linked_title] .= "'>".$linked_title."</a>";
+//			} else {
+//				//$linked_page_id = createPage($site, $section, $linked_title);
+//				$links[$linked_title] .= $cfg['full_uri']."/index.php?&action=add_node"."&site=".$site."&section=".$section."&page=".$page_id."&story=".$story_id."&title=".$linked_title;
+//				$links[$linked_title] .= "'>".$linked_title."?</a>";
+//			}
+//		}
+//	}
+//	
+////	printpre($links);
+////	exit;
+//	foreach ($links as $title=>$link) {
+//		$wikiLink = "[[".$title."]]";
+//		$text = str_replace($wikiLink, $link, $text);
+//	}
+//	
+//	return $text;
+//
+//}
 
 /******************************************************************************
  * Converts links with action=add_node to links with action=site
@@ -1908,13 +1908,13 @@ function getLinkingPages($site, $section, $page) {
  * return $text
  ******************************************************************************/
 
-function findInternalLinks ($site, $section, $page_id, $page_title, $text) {
-	global $cfg;
-//	exit;
-	$patterns = array();
-	$replacements = array();
-		
-}
+//function findInternalLinks ($site, $section, $page_id, $page_title, $text) {
+//	global $cfg;
+////	exit;
+//	$patterns = array();
+//	$replacements = array();
+//		
+//}
 
 
 /******************************************************************************
@@ -1924,116 +1924,116 @@ function findInternalLinks ($site, $section, $page_id, $page_title, $text) {
  * return $text
  ******************************************************************************/
 
-function recordInternalLinks ($site, $section, $page_id, $story_id, $text) {
-	global $cfg;
-//	exit;
-	$patterns = array();
-	$replacements = array();
-		
-	
-	printpre($text);
-	
-	
-	//$linkpattern = "/site=([^&]*).*?section=([0-9]*).*?.*?page=([0-9]*).*?story=([0-9]*)/";	
-
-	//find wiki links
-	$linkpattern = "/(\[\[)([^\[]*)(\]\])/";
-	preg_match_all($linkpattern, $text, $matches);
-	$linked_wiki = $matches[1];	
-	printpre($linked_wiki);
-
-	
-	//find links to stories
-	$linkpattern = "/site=[^&]*.*?section=[0-9]*.*?page=([0-9]*).*?story=([0-9]*)/";	
-	preg_match_all($linkpattern, $text, $matches);
-	$linked_story = $matches[1];	
-	printpre($linked_story);
-	
-	//find links to pages
-	$linkpattern = "/site=[^&]*.*?section=[0-9]*.*?page=([0-9]*)/";	
-	preg_match_all($linkpattern, $text, $matches);
-	$linked_page = $matches[1];	
-	printpre($linked_page);
-	
-	//find links to sections
-	$linkpattern = "/site=[^&]*.*?section=([0-9]*)[&][^page+]/";	
-	preg_match_all($linkpattern, $text, $matches);
-	$linked_section = $matches[1];	
-//	printpre($linked_section);
-
-	//find links to sites
-	$linkpattern = "/site=([^&]*)[&][^(?:section)]/";
-	preg_match_all($linkpattern, $text, $matches);
-	$linked_site = $matches;	
-	//printpre($linked_site);
-
-	//check if linked page exists and if not delete from links table
-	foreach ($linked_page as $target_id) {
-		$query = "
-		SELECT 
-			page_id
-		FROM 
-			page 
-		WHERE 
-			page_id ='".addslashes($target_id)."'
-		";
-	//	printpre($query);		
-		$r = db_query($query);
-		
-		
-		if (!db_num_rows($r)) {
-			$query = "
-			DELETE FROM 
-				links
-			WHERE 
-				target_id ='".addslashes($target_id)."'
-			AND
-				target_type = 'page'
-			";
-		//	printpre($query);		
-			$r = db_query($query);	
-
-		// check if record of source page linking to link page exists
-		// and if not create record			
-		} else {
-		
-			$query = "
-			SELECT 
-				target_id, target_type
-			FROM 
-				links 
-			WHERE 
-				source_id ='".addslashes($page_id)."'
-			AND
-				target_id ='".addslashes($target_id)."'
-			AND
-				target_type = 'page'
-			";
-		//	printpre($query);		
-			$r = db_query($query);
-			
-			if (!db_num_rows($r)) {
-				$query = "
-				INSERT INTO 
-					links
-				SET
-					source_id ='".addslashes($page_id)."',
-					source_type = 'page',
-					target_id ='".addslashes($target_id)."',
-					target_type = 'page',
-					link_tstamp = NOW(),
-					FK_luser='".addslashes($_SESSION[lid])."',
-					FK_auser='".addslashes($_SESSION[aid])."'				
-				";
-			//	printpre($query);		
-				$r = db_query($query);					
-			}
-		}	
-	}
-	
-//	exit;	
-	return $text;
-}
+//function recordInternalLinks ($site, $section, $page_id, $story_id, $text) {
+//	global $cfg;
+////	exit;
+//	$patterns = array();
+//	$replacements = array();
+//		
+//	
+//	printpre($text);
+//	
+//	
+//	//$linkpattern = "/site=([^&]*).*?section=([0-9]*).*?.*?page=([0-9]*).*?story=([0-9]*)/";	
+//
+//	//find wiki links
+//	$linkpattern = "/(\[\[)([^\[]*)(\]\])/";
+//	preg_match_all($linkpattern, $text, $matches);
+//	$linked_wiki = $matches[1];	
+//	printpre($linked_wiki);
+//
+//	
+//	//find links to stories
+//	$linkpattern = "/site=[^&]*.*?section=[0-9]*.*?page=([0-9]*).*?story=([0-9]*)/";	
+//	preg_match_all($linkpattern, $text, $matches);
+//	$linked_story = $matches[1];	
+//	printpre($linked_story);
+//	
+//	//find links to pages
+//	$linkpattern = "/site=[^&]*.*?section=[0-9]*.*?page=([0-9]*)/";	
+//	preg_match_all($linkpattern, $text, $matches);
+//	$linked_page = $matches[1];	
+//	printpre($linked_page);
+//	
+//	//find links to sections
+//	$linkpattern = "/site=[^&]*.*?section=([0-9]*)[&][^page+]/";	
+//	preg_match_all($linkpattern, $text, $matches);
+//	$linked_section = $matches[1];	
+////	printpre($linked_section);
+//
+//	//find links to sites
+//	$linkpattern = "/site=([^&]*)[&][^(?:section)]/";
+//	preg_match_all($linkpattern, $text, $matches);
+//	$linked_site = $matches;	
+//	//printpre($linked_site);
+//
+//	//check if linked page exists and if not delete from links table
+//	foreach ($linked_page as $target_id) {
+//		$query = "
+//		SELECT 
+//			page_id
+//		FROM 
+//			page 
+//		WHERE 
+//			page_id ='".addslashes($target_id)."'
+//		";
+//	//	printpre($query);		
+//		$r = db_query($query);
+//		
+//		
+//		if (!db_num_rows($r)) {
+//			$query = "
+//			DELETE FROM 
+//				links
+//			WHERE 
+//				target_id ='".addslashes($target_id)."'
+//			AND
+//				target_type = 'page'
+//			";
+//		//	printpre($query);		
+//			$r = db_query($query);	
+//
+//		// check if record of source page linking to link page exists
+//		// and if not create record			
+//		} else {
+//		
+//			$query = "
+//			SELECT 
+//				target_id, target_type
+//			FROM 
+//				links 
+//			WHERE 
+//				source_id ='".addslashes($page_id)."'
+//			AND
+//				target_id ='".addslashes($target_id)."'
+//			AND
+//				target_type = 'page'
+//			";
+//		//	printpre($query);		
+//			$r = db_query($query);
+//			
+//			if (!db_num_rows($r)) {
+//				$query = "
+//				INSERT INTO 
+//					links
+//				SET
+//					source_id ='".addslashes($page_id)."',
+//					source_type = 'page',
+//					target_id ='".addslashes($target_id)."',
+//					target_type = 'page',
+//					link_tstamp = NOW(),
+//					FK_luser='".addslashes($_SESSION[lid])."',
+//					FK_auser='".addslashes($_SESSION[aid])."'				
+//				";
+//			//	printpre($query);		
+//				$r = db_query($query);					
+//			}
+//		}	
+//	}
+//	
+////	exit;	
+//	return $text;
+//}
 
 
 

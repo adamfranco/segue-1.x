@@ -53,8 +53,11 @@ if ($storyObj->getField("type") == 'story') {
 	$smalltext = stripslashes($smalltext);
 	$fulltext = stripslashes($fulltext);
 	
-	$smalltext = convertWikiMarkupToLinks($site,$section,$page,$o->id, $page_title, $smalltext);
-	$fulltext = convertWikiMarkupToLinks($site,$section,$page,$o->id, $page_title, $fulltext);
+//	$smalltext = convertWikiMarkupToLinks($site,$section,$page,$o->id, $page_title, $smalltext);
+//	$fulltext = convertWikiMarkupToLinks($site,$section,$page,$o->id, $page_title, $fulltext);
+	$wikiResolver =& WikiResolver::instance();
+	$smalltext = $wikiResolver->parseText($smalltext, $site, $section, $page);
+	$fulltext = $wikiResolver->parseText($fulltext, $site, $section, $page);
 	
 	if ($storyObj->getField("texttype") == 'text') $fulltext = htmlbr($fulltext);	
 	if ($storyObj->getField("texttype") == 'text') $smalltext = htmlbr($smalltext);

@@ -60,7 +60,7 @@ if (!is_array($_SESSION[settings]) ) {
 		"comingFrom" => "viewsite",
 		"type" => "page",
 		"location" => $_REQUEST[section],
-		"title" => $_REQUEST[title]
+		"title" => $_REQUEST[link_title]
 	);
 
 	// create session array for new node values and init
