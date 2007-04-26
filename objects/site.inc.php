@@ -568,7 +568,7 @@ class site extends segue {
 					permission_editor_type = site_editors_type
 		";
 		
-		printpre($query);
+//		printpre($query);
 		
 		$r = db_query($query);
 
@@ -578,7 +578,7 @@ class site extends segue {
 
 		// for every permisson entry, add it to the permissions array
 		while ($row=db_fetch_assoc($r)) {
-			printpre($row);
+//			printpre($row);
 			// decode 'final_permissions'; 
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
