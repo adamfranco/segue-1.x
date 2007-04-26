@@ -1231,7 +1231,7 @@ FROM
 		$query = "
 SELECT
 	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+	MAKE_SET(permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
 		INNER JOIN
@@ -1262,7 +1262,7 @@ FROM
 		$query = "
 SELECT
 	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+	MAKE_SET(p1.permission_value | p2.permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
 		INNER JOIN
@@ -1305,7 +1305,7 @@ FROM
 		$query = "
 SELECT
 	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+	MAKE_SET(p1.permission_value | p2.permission_value | p3.permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
 		INNER JOIN
@@ -1360,7 +1360,7 @@ FROM
 			$query = "
 				SELECT
 					user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-					MAKE_SET(IFNULL(p1.permission_value,0) | IFNULL(p2.permission_value,0) | IFNULL(p3.permission_value,0) | IFNULL(p4.permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+					MAKE_SET(p1.permission_value | p2.permission_value | p3.permission_value | p4.permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
 				FROM
 					site
 						INNER JOIN
@@ -1762,7 +1762,7 @@ FROM
 								permission_id = '".addslashes($a[permission_id])."'
 						";
 						
-//						echo $query."<br />";
+						//echo $query."<br />";
 						db_query($query);
 					}
 					// if we are clearing the permissions, delete the entry from the db
@@ -1787,7 +1787,7 @@ FROM
 							(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
 						VALUES (".$ed_id.", '".addslashes($ed_type)."', '".addslashes($id)."', '".addslashes($scope)."', '".addslashes($p_new_str)."')
 					";
-//						echo $query."<br />";
+						//echo $query."<br />";
 					db_query($query);
 				}
 			}

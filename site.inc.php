@@ -229,13 +229,13 @@ do {
 			} else {
 
 				printc("\n\t\t\t\t<div class='title'>".$thisPage->getField("title")."</div>");
-								$linking_pages = getLinkingPages($site, $section, $page);
-				printc("linking pages:");
-				foreach ($linking_pages as $linktitle => $link) {
-					printc("<a href='".$link."'>".$linktitle."</a>, ");
-				
-				}
-				printc("<hr>");
+//				$linking_pages = getLinkingPages($site, $section, $page);
+//				printc("linking pages:");
+//				foreach ($linking_pages as $linktitle => $link) {
+//					printc("<a href='".$link."'>".$linktitle."</a>, ");
+//				
+//				}
+//				printc("<hr>");
 
 			}
 			

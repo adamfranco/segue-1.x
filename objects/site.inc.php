@@ -545,7 +545,7 @@ class site extends segue {
 		$query = "
 			SELECT
 				user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-				MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+				MAKE_SET(permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
 			FROM
 				t_sites
 					INNER JOIN
@@ -568,6 +568,8 @@ class site extends segue {
 					permission_editor_type = site_editors_type
 		";
 		
+		printpre($query);
+		
 		$r = db_query($query);
 
 		$this->editors = array();
@@ -576,6 +578,7 @@ class site extends segue {
 
 		// for every permisson entry, add it to the permissions array
 		while ($row=db_fetch_assoc($r)) {
+			printpre($row);
 			// decode 'final_permissions'; 
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
@@ -631,7 +634,7 @@ class site extends segue {
 		$query = "
 			SELECT
 				section_id, user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-				MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+				MAKE_SET(permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
 			FROM
 				t_sections
 					INNER JOIN
@@ -696,7 +699,7 @@ class site extends segue {
 		$query = "
 			SELECT
 				section_id, page_id, user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-				MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+				MAKE_SET(permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
 			FROM
 				t_pages
 					INNER JOIN
@@ -764,7 +767,7 @@ class site extends segue {
 		$query = "
 			SELECT
 				section_id, page_id, story_id, user_uname as editor, ugroup_name as editor2,  site_editors_type as editor_type, permission_id,
-				MAKE_SET(IFNULL(permission_value,0), 'v', 'a', 'e', 'd', 'di') as permissions
+				MAKE_SET(permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
 			FROM
 				t_stories
 					INNER JOIN
