@@ -57,7 +57,7 @@ if (!is_array($_SESSION[settings]) ) {
 		"section" => $thisSection->id,
 		"page" => $_REQUEST[page],
 		"story" => $_REQUEST[story],
-		"comingFrom" => "viewsite",
+		"comingFrom" => "site",
 		"type" => "page",
 		"location" => $_REQUEST[section],
 		"title" => $_REQUEST[link_title]
@@ -141,9 +141,10 @@ $sitefooter = "";
 //}
 if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
+
 	print "cancelling...";
 	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$_SESSION[settings][site]."&section=".$_SESSION[settings][section]."&page=".$_SESSION[settings][page]);
-	else header("Location: index.php?$sid&action=viewsite&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$pageObj->id);
+	else header("Location: index.php?$sid&action=site&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$pageObj->id);
 	
 	exit;
 }

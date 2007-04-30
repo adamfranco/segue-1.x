@@ -1225,7 +1225,6 @@ FROM
 		// editors can be either institute, everyone, a username or a ugroup name
 		// we need two queries for any one scope
 		
-		
 		// CASE 1: scope is SITE
 		if ($scope == 'site') {
 		$query = "
