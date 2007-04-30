@@ -2424,8 +2424,6 @@ function associatedSiteExists($uname, $class_id) {
 }
 
 function contributionsExists($uname, $site) {
-	$assoc_site = "false";
-	$slotname = $class_id."-".$uname;
 	
 	$query = "
 		SELECT
