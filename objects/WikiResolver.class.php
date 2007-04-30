@@ -212,7 +212,9 @@ class WikiResolver {
 
 	(?: site:([a-z0-9_\-]+) \s+ )?	# An optional designator for linking to another site
 	
-	([^\]|]+)	# The Title of the linked section, page, story
+	([^\]#\|]+)	# The Title of the linked section, page, story
+	
+	(?: \s*\#\s* ([0-9]+) )?	# The optional discussion post id
 	
 	(?: \s*\|\s* ([^\]]+) )?	# The optional link-text to display instead of the title
 
@@ -272,10 +274,14 @@ $		# Anchor for the end of the line
 			
 			$targetTitle = $matches[2];
 			
-			if ($matches[3]) {
-				$display = $matches[3];
+			$targetPost = $matches[3];
+			
+			if ($matches[4]) {
+				$display = $matches[4];
 			} else {
 				$display = $targetTitle;
+				if ($targetPost)
+					$display .= " &#187; Discussion";
 			}
 			
 			$targetPath = $this->_getPath($targetSite, $targetTitle);
@@ -291,6 +297,9 @@ $		# Anchor for the end of the line
 				if ($targetPath['story']) {
 					print "&story=".$targetPath['story'];
 					print "&detail=".$targetPath['story'];
+				}
+				if ($targetPost) {
+					print "#".$targetPost;
 				}
 				print "'>";
 				print $display;

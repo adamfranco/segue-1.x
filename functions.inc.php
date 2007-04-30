@@ -1506,24 +1506,24 @@ function convertAllInteralLinksToTags ($sitename) {
  * return array of page titles
  ******************************************************************************/
 
-function getPageTitles ($section) {	
-	$page_titles = array();
-	
-	$query = "
-	SELECT 
-		page_title, page_id
-	FROM 
-		page 
-	WHERE 
-		FK_section ='".addslashes($section)."'
-	";
-	$r = db_query($query);
-	
-	while ($a = db_fetch_assoc($r)) {
-		$page_titles[$a[page_title]] = $a[page_id];
-	}
-	return $page_titles;
-}
+//function getPageTitles ($section) {	
+//	$page_titles = array();
+//	
+//	$query = "
+//	SELECT 
+//		page_title, page_id
+//	FROM 
+//		page 
+//	WHERE 
+//		FK_section ='".addslashes($section)."'
+//	";
+//	$r = db_query($query);
+//	
+//	while ($a = db_fetch_assoc($r)) {
+//		$page_titles[$a[page_title]] = $a[page_id];
+//	}
+//	return $page_titles;
+//}
 
 /******************************************************************************
  * Gets section titles 
@@ -1531,26 +1531,26 @@ function getPageTitles ($section) {
  * return array of site titles
  ******************************************************************************/
 
-function getSectionTitles ($site) {	
-	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
-	$section_titles = array();
-	
-	$query = "
-	SELECT 
-		section_title, section_id
-	FROM 
-		section 
-	WHERE 
-		FK_site ='".addslashes($site_id)."'
-	";
-	$r = db_query($query);
-	
-	while ($a = db_fetch_assoc($r)) {
-		$section_titles[$a[section_title]] = $a[section_id];
-	}
-	
-	return $section_titles;
-}
+//function getSectionTitles ($site) {	
+//	$site_id = db_get_value("slot", "FK_site", "slot_name='".$site."'");
+//	$section_titles = array();
+//	
+//	$query = "
+//	SELECT 
+//		section_title, section_id
+//	FROM 
+//		section 
+//	WHERE 
+//		FK_site ='".addslashes($site_id)."'
+//	";
+//	$r = db_query($query);
+//	
+//	while ($a = db_fetch_assoc($r)) {
+//		$section_titles[$a[section_title]] = $a[section_id];
+//	}
+//	
+//	return $section_titles;
+//}
 	
 /******************************************************************************
  * Gets story titles 
@@ -1558,26 +1558,26 @@ function getSectionTitles ($site) {
  * return array of site titles
  ******************************************************************************/
 
-function getStoryTitles ($page) {	
-
-	$story_titles = array();
-	
-	$query = "
-	SELECT 
-		story_title, story_id
-	FROM 
-		story 
-	WHERE 
-		FK_page ='".addslashes($page)."'
-	";
-	$r = db_query($query);
-	
-	while ($a = db_fetch_assoc($r)) {
-		$story_titles[$a[story_title]] = $a[story_id];
-	}
-
-	return $story_titles;
-}
+//function getStoryTitles ($page) {	
+//
+//	$story_titles = array();
+//	
+//	$query = "
+//	SELECT 
+//		story_title, story_id
+//	FROM 
+//		story 
+//	WHERE 
+//		FK_page ='".addslashes($page)."'
+//	";
+//	$r = db_query($query);
+//	
+//	while ($a = db_fetch_assoc($r)) {
+//		$story_titles[$a[story_title]] = $a[story_id];
+//	}
+//
+//	return $story_titles;
+//}
 
 /******************************************************************************
  * Gets all story titles from site
@@ -2412,6 +2412,52 @@ function associatedSiteExists($uname, $class_id) {
 				slot.FK_assocsite = assocsite.slot_id
 	WHERE
 		slot.slot_name = '".addslashes($slotname)."'
+	";
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	
+	// if associated site slot  exists, print add to array
+	if (db_num_rows($r)) {
+		$assoc_site = "true";
+		return $assoc_site;
+	}
+}
+
+function contributionsExists($uname, $site) {
+	$assoc_site = "false";
+	$slotname = $class_id."-".$uname;
+	
+	$query = "
+		SELECT
+			user_fname, section_id, page_id, story_id, FK_createdby,
+			story_created_tstamp, story_title, version_created_tstamp, 
+			version_text_short, version_text_long, version_comments 
+		FROM
+			version
+				INNER JOIN
+			story
+				ON FK_parent = story_id
+				INNER JOIN
+			page
+				ON FK_page = page_id
+				INNER JOIN
+			section
+				ON FK_section = section_id
+				INNER JOIN
+			site
+				ON section.FK_site = site_id
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site
+				INNER JOIN
+			user
+				ON story.FK_createdby = user_id
+		WHERE
+			slot_name = '".addslashes($site)."'
+		AND
+			user_uname = '".addslashes($uname)."'
+		Order BY
+			version_created_tstamp  DESC
 	";
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);

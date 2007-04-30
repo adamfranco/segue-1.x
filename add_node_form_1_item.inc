@@ -73,8 +73,11 @@ if ($_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDo
 	} else {
 		printc("<option value='section' disabled='disabled'>Section</option>");
 	}
-
-	printc("<option value='page'".(($_SESSION[settings][type] =='page')?" selected='selected'":"").">Page</option>");		
+	if ($sections[$_REQUEST[section]]->hasPermission("add")) {
+		printc("<option value='page'".(($_SESSION[settings][type] =='page')?" selected='selected'":"").">Page</option>");	
+	}else {
+		printc("<option value='page' disabled='disabled'>Page</option>");
+	}
 	printc("<option value='content'".(($_SESSION[settings][type] =='content')?" selected='selected'":"").">Content</option>");
 	printc("</select>");
 	
@@ -92,7 +95,7 @@ if ($_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDo
 		
 		foreach ($sections as $i=>$o) {
 			$sections[$i]->buildPermissionsArray();
-			if ($sections[$i]->hasPermissionDown("add")) {
+			if ($sections[$i]->hasPermissionDown("add") && $sections[$i]->hasPermission("add")) {
 				printc("<option value='".$sections[$i]->id."'".(($_SESSION[settings][location] == $sections[$i]->id)?" selected='selected'":"").">".$sections[$i]->getField('title')."</option>");			
 			} else {
 				printc("<option value='".$sections[$i]->id." 'disabled='disabled'>".$sections[$i]->getField('title')."</option>");			
@@ -112,9 +115,9 @@ if ($_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDo
 				printc("<optgroup label ='".$sections[$i]->getField('title')."'>");
 				$pages = &$sections[$i]->pages;
 				foreach ($pages as $i=>$o) {
-					if ($pages[$i]->hasPermissionDown("add") && $pages[$i]->getField('title') != "") {
+					if ($pages[$i]->hasPermissionDown("add") && $pages[$i]->getField('title') != "" && $pages[$i]->getField('type') != "rss") {
 						printc("<option value='".$pages[$i]->id."'".(($_SESSION[settings][location] == $pages[$i]->id)?" selected='selected'":"").">".$pages[$i]->getField('title')."</option>");					
-					} else {
+					} else if ($pages[$i]->getField('title') != "") {
 						printc("<option value='".$pages[$i]->id." 'disabled='disabled'>".$pages[$i]->getField('title')."</option>");
 					}
 				}
