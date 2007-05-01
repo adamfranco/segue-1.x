@@ -193,11 +193,24 @@ if ($thisSection) {
 							$email = $value[email];
 							$urlname = urlencode($fname);
 							$utype = $value[type];
+							
+							/******************************************************************************
+							 * get participation info including:
+							 * associated site
+							 * contributions
+							 * discussion posts
+							 ******************************************************************************/
+							
 							$associatedExists = associatedSiteExists($uname, $site);
-							if ($associatedExists) {
+							$contributions = participantContributions($uname, $site);							
+							$userDiscussions = participantDiscussions($uname, $site);
+							
+							
+							if ($associatedExists || $contributions || $userDiscussions) {
 							//	printpre("ok");
 								$slotname = $site."-".$uname;
-								$participantslist .= "<tr><td><a href='$cfg[full_uri]/sites/$slotname' target='new_window'>$fname</a>";
+							//	$participantslist .= "<tr><td><a href='$cfg[full_uri]/sites/$slotname' target='new_window'>$fname</a>";
+								$participantslist .= "<tr><td><a href='$PHPSELF?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;action=$action&user=$uname'>$fname</a>";
 							} else {
 								$participantslist .= "<tr><td>";
 								$participantslist .= "<div class='nav'>$fname</div>";
@@ -217,8 +230,21 @@ if ($thisSection) {
 						foreach ($editors as $editor) {
 							if ($editor != "everyone" && $editor != "institute") {
 								$fname = db_get_value("user","user_fname","user_uname = '".addslashes($editor)."'");
+								
+								$contributions = participantContributions($editor, $site);							
+								$userDiscussions = participantDiscussions($editor, $site);
+								printpre($contributions); 
+								
 								$urlname = urlencode($fname);
-								$editorslist .= "<tr><td><div class='nav'>$fname</div></td></tr>";
+								
+								if ($contributions || $userDiscussions) {
+								//	printpre("ok");
+
+									$participantslist .= "<tr><td><a href='$PHPSELF?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;action=$action&user=$editor'>$fname</a>";
+								} else {
+	
+									$editorslist .= "<tr><td><div class='nav'>$fname</div></td></tr>";
+								}
 							}
 						}
 						$editorslist .= "</table>";

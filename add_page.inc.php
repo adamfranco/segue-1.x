@@ -93,9 +93,9 @@ if ((!is_array($_SESSION[settings]) || !is_object($_SESSION[pageObj]))/*  && !$e
 		"add" => 0,
 		"edit" => 0,
 		"step" => 1,
-		"site" => $thisSite->name,
-		"section" => $this_section,
-		"comingFrom" => $comingFrom,
+		"site" => $_REQUEST[site],
+		"section" => $_REQUEST[section],
+		"comingFrom" => $_REQUEST[comingFrom],
 		"source_story" => $_REQUEST[story],
 		"source_title" => $_REQUEST[title]
 	);

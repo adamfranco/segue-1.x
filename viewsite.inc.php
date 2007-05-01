@@ -238,14 +238,20 @@ do {
 				$tmp = $content;
 				$content = '';
 				printStoryEditLinks();
-				$storyEditLinks = $content;
+				$storyEditLinks = $content;  
 				$content = $tmp;
 								
 				include("fullstory.inc.php");
 
 			} else if ($_REQUEST['versioning'] || $_REQUEST['version'] ) {
 				$o =& $thisPage->stories[$_REQUEST['versioning']];
-				include("versions.inc.php");				
+				include("versions.inc.php");	
+			
+			
+			} else if ($_REQUEST['user']) {
+				//$o =& $thisPage->stories[$_REQUEST['versioning']];
+				//include("participation.inc.php");	
+			
 			} else {
 				/******************************************************************************
 				 * Set up pagination variables

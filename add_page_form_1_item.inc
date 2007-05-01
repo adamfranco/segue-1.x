@@ -20,7 +20,7 @@ printc("<table width='100%'><tr><td width='50%'>");
 	printc("<input type='button' value='Cancel' onclick='cancelForm()' />\n");
 printc("</td><td width='50%' align='right'>");
 /* 	printc("<input type='button' value='&larr; Previous' onclick='submitPrevButton()' />\n"); */
-	if ($_SESSION[pageObj]->getField("type") == 'page' || $_SESSION[pageObj]->getField("type") == 'link') printc("<input type='button' value='Continue &rarr;' onclick='submitNextButton()' />\n");
+if ($_SESSION[pageObj]->getField("type") == 'page' || $_SESSION[pageObj]->getField("type") == 'link') printc("<input type='button' value='Continue &rarr;' onclick='submitNextButton()' />\n");
 printc("</td></tr><tr><td>");
 printc("</td><td align='right'>");
 	printc("<input type='submit' name='save' value='Save Now' />\n");
@@ -174,7 +174,7 @@ if ($thisSite->getField("type") == 'publication') {
 	printc("<tr><td align='right'>Maximum Entries:</td><td><input type='text' name='archiveby' value='".$rss_display."' size='5' /></td></tr>");	
 
 } else if (isset($_REQUEST["title"])) {	
-	printc("<tr><td>Title:</td><td><input type='text' size='50' name='title' value='".spchars($_REQUEST['title'])."' /></td></tr>");
+	//printc("<tr><td>Title:</td><td><input type='text' size='50' name='title' value='".spchars($_REQUEST['title'])."' /></td></tr>");
 
 /******************************************************************************
  * Categories options

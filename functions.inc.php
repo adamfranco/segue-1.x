@@ -2423,11 +2423,11 @@ function associatedSiteExists($uname, $class_id) {
 	}
 }
 
-function contributionsExists($uname, $site) {
-	
+function participantContributions($uname, $site) {
+
 	$query = "
 		SELECT
-			user_fname, section_id, page_id, story_id, FK_createdby,
+			version_id, section_id, page_id, story_id,
 			story_created_tstamp, story_title, version_created_tstamp, 
 			version_text_short, version_text_long, version_comments 
 		FROM
@@ -2460,10 +2460,72 @@ function contributionsExists($uname, $site) {
 	$r = db_query($query);
 	$a = db_fetch_assoc($r);
 	
-	// if associated site slot  exists, print add to array
+	// if contributions exist put into an array
 	if (db_num_rows($r)) {
-		$assoc_site = "true";
-		return $assoc_site;
+	
+		$contributions = array();
+		while ($a = db_fetch_assoc($r)) {
+			$contributions[story_title] = $a['story_title'];
+			$contributions[section_id] = $a['section_id'];
+			$contributions[page_id] = $a['page_id'];
+			$contributions[version_id] = $a['version_id'];
+			$contributions[version_created_tstamp] = $a['version_created_tstamp'];			
+		}
+		return $contributions;
+	}
+}
+
+function participantDiscussions($uname, $site) {
+	
+	$query = "
+		SELECT
+			discussion_tstamp, discussion_subject, discussion_id, user_fname, slot_name, site_title,
+			story_id, story_title, page_id, section_id, FK_author, user_uname
+		FROM
+			discussion
+				INNER JOIN
+			story
+				ON FK_story = story_id
+				INNER JOIN
+			page
+				ON FK_page = page_id
+				INNER JOIN
+			section
+				ON FK_section = section_id
+				INNER JOIN
+			site
+				ON section.FK_site = site_id
+				INNER JOIN
+			slot
+				ON site_id = slot.FK_site
+				INNER JOIN
+			user
+				ON discussion.FK_author = user_id
+ 
+			WHERE
+				discussion.FK_author = '".addslashes($uname)."'
+			AND
+				slot_name = '".addslashes($site)."'
+			Order BY
+				discussion_tstamp DESC
+		";
+	
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+//	printpre($query);
+	
+	// if discussion posts by this user exist put into an array
+	if (db_num_rows($r)) {
+		$discussions = array();
+		while ($a = db_fetch_assoc($r)) {
+			$discussions[discussion_subject] = $a['discussion_subject'];
+			$discussions[story_id] = $a['story_id'];
+			$discussions[section_id] = $a['section_id'];
+			$discussions[page_id] = $a['page_id'];
+			$discussions[discussion_id] = $a['discussion_id'];
+			$discussions[discussion_tstamp] = $a['discussion_tstamp'];			
+		}
+		return $discussions;
 	}
 }
 
