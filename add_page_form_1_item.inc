@@ -118,6 +118,10 @@ if ($thisSite->getField("type") == 'publication') {
 		printc("</select>");
 	}
 	printc("</div>");
+	
+} else if (isset($_REQUEST["title"])) {	
+	printc("<tr><td>Title:</td><td><input type='text' size='50' name='title' value='".spchars($_REQUEST['title'])."' /></td></tr>");
+
 
 /******************************************************************************
  * Page options
@@ -172,9 +176,6 @@ if ($thisSite->getField("type") == 'publication') {
 	printc("<tr><td align='right'>Title:</td><td><input type='text' size='50' name='title' value='".spchars($_SESSION[pageObj]->getField("title"))."' />");	printc("</td></tr>");
 	printc("<tr><td align='right'>URL:</td><td><input type='text' name='url' value='".$url."' size='50' /></td></tr>");
 	printc("<tr><td align='right'>Maximum Entries:</td><td><input type='text' name='archiveby' value='".$rss_display."' size='5' /></td></tr>");	
-
-} else if (isset($_REQUEST["title"])) {	
-	//printc("<tr><td>Title:</td><td><input type='text' size='50' name='title' value='".spchars($_REQUEST['title'])."' /></td></tr>");
 
 /******************************************************************************
  * Categories options

@@ -10,12 +10,12 @@ printc("<input type='hidden' name='typeswitch' value='0' />");
  * Get permissions
  ******************************************************************************/
 
-if (!is_object($_SESSION[obj])) {
+//if (!is_object($_SESSION[obj])) {
 	$_SESSION[obj] =& new site($_REQUEST[site]);
 	$_SESSION[obj]->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,1);
 	$_SESSION[obj]->spiderDownLockedFlag();
 	$_SESSION[obj]->buildPermissionsArray();
-}
+//}
 
 $site_permissions = $_SESSION[obj]->getPermissions();
 

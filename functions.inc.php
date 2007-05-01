@@ -1506,24 +1506,24 @@ function convertAllInteralLinksToTags ($sitename) {
  * return array of page titles
  ******************************************************************************/
 
-//function getPageTitles ($section) {	
-//	$page_titles = array();
-//	
-//	$query = "
-//	SELECT 
-//		page_title, page_id
-//	FROM 
-//		page 
-//	WHERE 
-//		FK_section ='".addslashes($section)."'
-//	";
-//	$r = db_query($query);
-//	
-//	while ($a = db_fetch_assoc($r)) {
-//		$page_titles[$a[page_title]] = $a[page_id];
-//	}
-//	return $page_titles;
-//}
+function getPageTitles ($section) {	
+	$page_titles = array();
+	
+	$query = "
+	SELECT 
+		page_title, page_id
+	FROM 
+		page 
+	WHERE 
+		FK_section ='".addslashes($section)."'
+	";
+	$r = db_query($query);
+	
+	while ($a = db_fetch_assoc($r)) {
+		$page_titles[$a[page_title]] = $a[page_id];
+	}
+	return $page_titles;
+}
 
 /******************************************************************************
  * Gets section titles 
