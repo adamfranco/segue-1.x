@@ -1422,7 +1422,7 @@ FROM
 		}
 
 		// execute the query
-//		echo $query;
+	//	printpre( $query);
 		$r = db_query($query);
 		//echo "Query result: ".$r."<br />";
 		
@@ -1433,8 +1433,9 @@ FROM
 			$this->permissions = array();
 		}
 		
-		// for every permisson entry, add it to the permissions array
+		// for every permisson entry, add //it to the permissions array
 		while ($row=db_fetch_assoc($r)) {
+			//printpre($row);
 			// decode 'final_permissions'; 
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
@@ -1571,6 +1572,9 @@ FROM
 // 			printpre($n);
 
 			foreach ($n as $editor) {
+				printpre($editor);
+			
+
 				$p2 = $this->permissions[$editor];
 				if (!is_array($p2)) {
 //					echo "p2: ************************** BE CAREFUL!!!! ********************************<br />";
@@ -1787,6 +1791,7 @@ FROM
 						VALUES (".$ed_id.", '".addslashes($ed_type)."', '".addslashes($id)."', '".addslashes($scope)."', '".addslashes($p_new_str)."')
 					";
 						//echo $query."<br />";
+						
 					db_query($query);
 				}
 			}

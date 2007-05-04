@@ -39,6 +39,8 @@ include("$themesdir/common/css.inc.php");
 }
 
 
+
+
 .topnav {
 	padding: 5px;
 /* 	background-color: #<? echo $c['topnav']; ?>; */

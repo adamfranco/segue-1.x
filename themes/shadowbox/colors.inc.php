@@ -22,6 +22,26 @@ $_theme_colors = array(
 			"contentarea"=>			"fff",
 			"contentinfo"=>			"999"
 	),
+	"black"=>array(
+			"font-size"=>			"12px",
+			"input-borders"=>		"555",
+			"input-size"=>			"12px",
+			"box-color"=>			"efefef",
+			"box-border-color"=>	"999",
+			"btnlink-color"=>		"d33",
+			"btnlink-border-color"=>"d55",
+			"title-color"=>			"aaa",
+			"title-under-color"=>	"aaa",
+			"th-color"=>			"777",
+			"th-background"=>		"000000",
+			"td-color"=>			"333",
+			"td0"=>					"e6e6ff",
+			"td1"=>					"f6f6ff",
+			"header"=>				"fff",
+			"topnav"=>				"fff",
+			"contentarea"=>			"000000",
+			"contentinfo"=>			"999"
+	),
 	"yellow"=>array(
 			"font-size"=>			"12px",
 			"input-borders"=>		"555",
@@ -90,24 +110,26 @@ $_theme_colors = array(
 			"box-border-color"=>	"999",
 			"btnlink-color"=>		"a33",
 			"btnlink-border-color"=>"b55",
-			"title-color"=>			"666",
+			"title-color"=>			"888",
 			"title-under-color"=>	"888",
 			"th-color"=>			"777",
-			"th-background"=>		"e9e9e9",
+			"th-background"=>		"FFFFCC",
 			"td-color"=>			"333",
 			"td0"=>					"e6e6ff",
 			"td1"=>					"f6f6ff",
 			"header"=>				"b88",
 			"topnav"=>				"c99",
 			"contentarea"=>			"edd",
-			"contentinfo"=>			"999"
+			"contentinfo"=>			"990000"
 	)
 );
 
 $_bordercolor = array(
 	"black"=>					"000000",
 	"red"=>						"990000",
-	"blue"=>					"000033"
+	"blue"=>					"000033",
+	"white"=>					"FFFFFF",
+	"yellow"=>					"FFCC00",
 );
 
 $_bgcolor = array(
@@ -122,19 +144,28 @@ $_bgcolor = array(
 	"yellow"=>array(
 			"bgshadow"=>		"yellow",
 			"bg"=>				"FFFFCC"					
+	),
+	"black"=>array(
+			"bgshadow"=>		"black",
+			"bg"=>				"000000"					
 	)	
+
 );
 
 $_textcolor = array(
 	"black"=>					"444",
 	"red"=>						"990000",
-	"blue"=>					"000033"
+	"blue"=>					"000033",
+	"yellow"=>					"FFCC00",
+	"white"=>					"FFFFFF"
 );
 
 $_linkcolor = array(
 	"red"=>						"990000",
 	"blue"=>					"003366",
-	"green"=>					"006633"
+	"green"=>					"006633",
+	"yellow"=>					"FFCC00",
+	"white"=>					"FFFFFF"
 );
 
 if (!defined("CONFIGS_INCLUDED"))

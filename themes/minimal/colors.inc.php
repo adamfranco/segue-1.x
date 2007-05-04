@@ -124,7 +124,7 @@ $_bordercolor = array(
 	"red"=>						"990000",
 	"blue"=>					"000033",
 	"white"=>					"FFFFFF",
-	"yellow"=>					"FFCC00",
+	"yellow"=>					"FFCC00"
 );
 
 $_bgcolor = array(
@@ -158,7 +158,8 @@ $_textcolor = array(
 	"black"=>					"444",
 	"red"=>						"990000",
 	"blue"=>					"000044",
-	"white"=>					"FFFFFF"
+	"white"=>					"FFFFFF",
+	"yellow"=>					"FFCC00"
 );
 
 $_linkcolor = array(
@@ -166,6 +167,7 @@ $_linkcolor = array(
 	"blue"=>					"003366",
 	"green"=>					"006633",
 	"yellow"=>					"FFCC00",
+	"white"=>					"FFFFFF"
 );
 
 if (!defined("CONFIGS_INCLUDED"))

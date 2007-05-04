@@ -374,7 +374,7 @@ END;
 	
 	printc("\n<tbody style='vertical-align: top;'>\n");
 		
-	$shadeStyle = ' background-color: #F3F3F3; ';
+	$shadeStyle = ' versionborders ';
 	$shade = 0;
 	$i = 0;
 	$hideOld = true;
@@ -385,8 +385,8 @@ END;
 		$version_num = $version['version_order'];
 		
 		printc("<tr>\n");
-		printc("<td align='right' style='");
-		if ($shade) printc($shadeStyle);
+		printc("<td align='right' class='");
+		printc($shadeStyle);
 		printc("'>");
 		
 		if ($i > 0) {
@@ -412,8 +412,8 @@ END;
 			printc(" />");
 		}
 		
-		printc("</td>\n<td align='left' style='");
-		if ($shade) printc($shadeStyle);
+		printc("</td>\n<td align='left' class='");
+		printc($shadeStyle);
 		printc("'>");
 		
 		if ($i < count($versions) - 1) {
@@ -440,30 +440,30 @@ END;
 
 		printc("</td>");
 		if ($currentversion) {
-			printc("<td  style='");
-		if ($shade) printc($shadeStyle);
+			printc("<td  class='");
+		printc($shadeStyle);
 		printc("'>");
 		printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;detail=$story'>Revision $version_num</a> (current)</td>");
 		} else {
-			printc("<td  style='");
-		if ($shade) printc($shadeStyle);
+			printc("<td class='");
+		printc($shadeStyle);
 		printc("'>");
 		printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
 		}
 		
-		printc("<td  style='white-space: nowrap; ");
-		if ($shade) printc($shadeStyle);
-		printc("'>");
+		printc("<td class='");
+		printc($shadeStyle);
+		printc("'  style='white-space: nowrap;'>");
 		printc($version['version_created_tstamp']."</td>");
 		
-		printc("<td  style='white-space: nowrap; ");
-		if ($shade) printc($shadeStyle);
-		printc("'>");
+		printc("<td class='");
+		printc($shadeStyle);
+		printc("' style='white-space: nowrap;'>");
 		printc($version['FK_createdby']."</td>\n");
 		
-		printc("<td  style='font-size: smaller; ");
-		if ($shade) printc($shadeStyle);
-		printc("'>");
+		printc("<td class='");
+		printc($shadeStyle);
+		printc("' style='font-size: smaller;'>");
 		printc($version['version_comments']."</td>\n");
 		
 		printc("</tr>\n");

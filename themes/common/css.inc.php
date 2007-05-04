@@ -219,28 +219,43 @@ th {
 
 .dheader {
 	font-size: 14px;
-	border-bottom: 1px solid #000;
-	background: #EAEAEA;
+	border-top: 1px solid #<? echo $bordercolor; ?>;
+	border-bottom: 1px solid #<? echo $bordercolor; ?>;
+	background: #<? echo $bg['bg']; ?>;
 	padding-left: 5px;
 	padding-top: 5px;
 }
 
 .dheader2 {
-	border-bottom: 1px solid #000;
-	background: #EAEAEA;
+	border-top: 1px solid #<? echo $bordercolor; ?>;
+	border-bottom: 1px solid #<? echo $bordercolor; ?>;
+	background: #<? echo $bg['bg']; ?>;
 	padding-right: 5px;
 	padding-top: 5px;
 }
 
 .dheader3 {
-	border-top: 0px solid #000;
-	background: #EAEAEA;
+	border: 1px solid #<? echo $bordercolor; ?>;
+	background: #<? echo $bg['bg']; ?>;
 	padding-left: 5px;
 	padding-right: 5px;
 }
+
 
 .dinfo1 {
 	border: 1px solid #000;
 	padding-left: 2px;
 	padding-right: 2px;
+}
+
+/*********************************************************
+ * Version Styles
+ *********************************************************/
+
+.versionborders {
+	border-bottom: 1px dotted #<? echo $bordercolor; ?>;
+}
+
+.versionshade {
+	border-bottom: 1px dotted #<? echo $bordercolor; ?>;
 }
