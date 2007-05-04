@@ -1,4 +1,4 @@
-<?php /* $Id$ */
+<? /* $Id$ */
 
 /******************************************************************************
  * Segue object - basis for all other section, page, and story objects
@@ -1225,12 +1225,13 @@ FROM
 		// editors can be either institute, everyone, a username or a ugroup name
 		// we need two queries for any one scope
 		
+		
 		// CASE 1: scope is SITE
 		if ($scope == 'site') {
 		$query = "
 SELECT
 	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
+	MAKE_SET(IFNULL((permission_value+0),0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
 		INNER JOIN
@@ -1261,7 +1262,7 @@ FROM
 		$query = "
 SELECT
 	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(p1.permission_value | p2.permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
+	MAKE_SET(IFNULL((p1.permission_value+0),0) | IFNULL((p2.permission_value+0),0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
 		INNER JOIN
@@ -1304,7 +1305,7 @@ FROM
 		$query = "
 SELECT
 	user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-	MAKE_SET(p1.permission_value | p2.permission_value | p3.permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
+	MAKE_SET(IFNULL((p1.permission_value+0),0) | IFNULL((p2.permission_value+0),0) | IFNULL((p3.permission_value+0),0), 'v', 'a', 'e', 'd', 'di') as permissions
 FROM
 	site
 		INNER JOIN
@@ -1359,7 +1360,7 @@ FROM
 			$query = "
 				SELECT
 					user_uname as editor, ugroup_name as editor2, site_editors_type as editor_type,
-					MAKE_SET(p1.permission_value | p2.permission_value | p3.permission_value | p4.permission_value, 'v', 'a', 'e', 'd', 'di') as permissions
+					MAKE_SET(IFNULL((p1.permission_value+0),0) | IFNULL((p2.permission_value+0),0) | IFNULL((p3.permission_value+0),0) | IFNULL((p4.permission_value+0),0), 'v', 'a', 'e', 'd', 'di') as permissions
 				FROM
 					site
 						INNER JOIN
@@ -1422,7 +1423,7 @@ FROM
 		}
 
 		// execute the query
-	//	printpre( $query);
+//		echo $query;
 		$r = db_query($query);
 		//echo "Query result: ".$r."<br />";
 		
@@ -1433,9 +1434,8 @@ FROM
 			$this->permissions = array();
 		}
 		
-		// for every permisson entry, add //it to the permissions array
+		// for every permisson entry, add it to the permissions array
 		while ($row=db_fetch_assoc($r)) {
-			//printpre($row);
 			// decode 'final_permissions'; 
 			// 'final_permissions' is a field returned by the query and contains a string of the form "'a','vi','e'" etc.
 			$a = array();
@@ -1572,9 +1572,6 @@ FROM
 // 			printpre($n);
 
 			foreach ($n as $editor) {
-				printpre($editor);
-			
-
 				$p2 = $this->permissions[$editor];
 				if (!is_array($p2)) {
 //					echo "p2: ************************** BE CAREFUL!!!! ********************************<br />";
@@ -1765,7 +1762,7 @@ FROM
 								permission_id = '".addslashes($a[permission_id])."'
 						";
 						
-						//echo $query."<br />";
+//						echo $query."<br />";
 						db_query($query);
 					}
 					// if we are clearing the permissions, delete the entry from the db
@@ -1790,8 +1787,7 @@ FROM
 							(FK_editor, permission_editor_type, FK_scope_id, permission_scope_type, permission_value)
 						VALUES (".$ed_id.", '".addslashes($ed_type)."', '".addslashes($id)."', '".addslashes($scope)."', '".addslashes($p_new_str)."')
 					";
-						//echo $query."<br />";
-						
+//						echo $query."<br />";
 					db_query($query);
 				}
 			}

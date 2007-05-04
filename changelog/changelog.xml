@@ -7,6 +7,11 @@
 		<new author='adam'>
 			Added a wiki parsing engine to support wiki-style linking.
 		</new>
+		<fix author='adam'>
+			Adding ' + 0' to permission fetching queries to force enumerated fields 
+			into using their numeric [index] values rather than the string version. 
+			The previous form had stopped working in MySQL 5.
+		</fix>
 	</version>
 	<version number="1.7.4" date="2007-02-20">
 		<fix author='adam' ref='1661595' reftype='bug'>
