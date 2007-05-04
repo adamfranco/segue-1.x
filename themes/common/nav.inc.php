@@ -21,6 +21,16 @@ $_nav_width = array(
 	"275 pixels"=>				"275"
 );
 
+$_site_width = array(
+	"variable"=>				"100%",
+	"800 pixels"=>				"800",
+	"700 pixels"=>				"700",
+	"600 pixels"=>				"600",
+	"900 pixels"=>				"900",
+	"1000 pixels"=>				"1000"
+);
+
+
 $_sectionnav_size = array(
 	"10 pixels"=>				"10",
 	"12 pixels"=>				"12",
