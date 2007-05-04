@@ -66,6 +66,8 @@ $sectionnavsize = $_sectionnav_size[$usesectionnavsize];
 if (!$usenavsize) $usenavsize = '12 pixels';
 $navsize = $_nav_size[$usenavsize];
 
+//printpre($c);
+
 
 /* ------------------- END THEME SETTINGS---------------------	*/
 
@@ -105,11 +107,11 @@ include("themes/$theme/css.inc.php");
 	</tr>
 		<td class='r2c1'></td>
 		<td>
-		<img class='r2c2' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/r2c2.gif" ?>' alt='border' />
+		<img class='r2c2' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c2.gif" ?>' alt='border' />
 		</td>
 		<td class='r2c3'></td>
 		<td>
-		<img class='r2c4' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/r2c4.gif" ?>' alt='border' />
+		<img class='r2c4' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c4.gif" ?>' alt='border' />
 		</td>
 		<td class='r2c5'></td>
 	<tr>
@@ -213,11 +215,11 @@ include("themes/$theme/css.inc.php");
 	<tr>
 		<td class='r4c1'></td>
 		<td>
-		<img class='r4c2' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/r4c2.gif" ?>' alt='border' />
+		<img class='r4c2' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c2.gif" ?>' alt='border' />
 		</td>
 		<td class='r4c3'></td>
 		<td>
-		<img class='r4c4' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/r4c4.gif" ?>' alt='border' />
+		<img class='r4c4' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c4.gif" ?>' alt='border' />
 		</td>
 		<td class='r4c5'></td>
 	</tr>

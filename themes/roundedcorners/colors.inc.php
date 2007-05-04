@@ -20,27 +20,8 @@ $_theme_colors = array(
 			"header"=>				"fff",
 			"topnav"=>				"fff",
 			"contentarea"=>			"fff",
-			"contentinfo"=>			"999"
-	),
-	"black"=>array(
-			"font-size"=>			"12px",
-			"input-borders"=>		"555",
-			"input-size"=>			"12px",
-			"box-color"=>			"efefef",
-			"box-border-color"=>	"999",
-			"btnlink-color"=>		"d33",
-			"btnlink-border-color"=>"d55",
-			"title-color"=>			"aaa",
-			"title-under-color"=>	"aaa",
-			"th-color"=>			"777",
-			"th-background"=>		"000000",
-			"td-color"=>			"333",
-			"td0"=>					"e6e6ff",
-			"td1"=>					"f6f6ff",
-			"header"=>				"fff",
-			"topnav"=>				"fff",
-			"contentarea"=>			"000000",
-			"contentinfo"=>			"999"
+			"contentinfo"=>			"999",
+			"imagelocation"=>		"white"
 	),
 	"yellow"=>array(
 			"font-size"=>			"12px",
@@ -60,7 +41,29 @@ $_theme_colors = array(
 			"header"=>				"A1AEBE",
 			"topnav"=>				"909DAD",
 			"contentarea"=>			"FFFFCC",
-			"contentinfo"=>			"999"
+			"contentinfo"=>			"999",
+			"imagelocation"=>		"yellow"
+	),
+	"black"=>array(
+			"font-size"=>			"12px",
+			"input-borders"=>		"555",
+			"input-size"=>			"12px",
+			"box-color"=>			"efefef",
+			"box-border-color"=>	"999",
+			"btnlink-color"=>		"d33",
+			"btnlink-border-color"=>"d55",
+			"title-color"=>			"aaa",
+			"title-under-color"=>	"aaa",
+			"th-color"=>			"777",
+			"th-background"=>		"000000",
+			"td-color"=>			"333",
+			"td0"=>					"e6e6ff",
+			"td1"=>					"f6f6ff",
+			"header"=>				"fff",
+			"topnav"=>				"fff",
+			"contentarea"=>			"000000",
+			"contentinfo"=>			"999",
+			"imagelocation"=>		"black"
 	),
 		"lightblue"=>array(
 			"font-size"=>			"12px",
@@ -133,23 +136,30 @@ $_bordercolor = array(
 );
 
 $_bgcolor = array(
-	"white"=>array(
-			"bgshadow"=>		"white",
-			"bg"=>				"FFFFFF"					
+	"gray-white"=>array(
+			"bgcolor"=>		"FFFFFF",
+			"bgimage"=>		"gray-white.jpg"					
 	),
-	"gray"=>array(
-			"bgshadow"=>		"gray",
-			"bg"=>				"gray-white.jpg"					
+	"yellow-white"=>array(
+			"bgcolor"=>		"FFFFFF",
+			"bgimage"=>		"yellow-white.jpg"					
 	),
-	"yellow"=>array(
-			"bgshadow"=>		"yellow",
-			"bg"=>				"bg.jpg"					
+	"blue-white"=>array(
+			"bgcolor"=>		"FFFFFF",
+			"bgimage"=>		"blue-white.jpg"					
 	),
-	"black"=>array(
-			"bgshadow"=>		"black",
-			"bg"=>				"000000"					
+	"black-gray"=>array(
+			"bgcolor"=>		"000000",
+			"bgimage"=>		"black-gray.jpg"					
 	)	
+);
 
+$_fgcolor = array(
+	"black"=>					"000000",
+	"red"=>						"990000",
+	"blue"=>					"000033",
+	"white"=>					"FFFFFF",
+	"yellow"=>					"FFCC00",
 );
 
 $_textcolor = array(
