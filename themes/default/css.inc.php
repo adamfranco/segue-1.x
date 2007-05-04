@@ -46,28 +46,6 @@ select, textarea, input {
 	text-align: left;
 }
 
-.dheader {
-	font-size: 14px;
-	border-bottom: 1px solid #000;
-	background: #EAEAEA;
-	padding-left: 5px;
-	padding-top: 5px;
-}
-
-.dheader2 {
-	border-bottom: 1px solid #000;
-	background: #EAEAEA;
-	padding-right: 5px;
-	padding-top: 5px;
-}
-
-.dheader3 {
-	border-top: 0px solid #000;
-	background: #EAEAEA;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
 table, td { border: 0px solid black }
 
 .toppadding { padding: 5px; border-bottom: 1px solid #aaa; }
