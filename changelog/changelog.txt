@@ -1,1621 +1,2054 @@
 
+
 Name: Segue ChangeLog
 
 
-
-v. 1.7.4 (2007-02-20) 
+v. 1.8.0 (The Future)
 ----------------------------------------------------
 		
-    * Bug Fix: #1661595  (Adam Franco) 
-    Page and section order is now re-keyed when adding a new page/section so
-    that new pages/sections are always at the end of the list. Before, moves or
-    deletions of pages/sections would result in gaps in the order which could
-    allow new pages/sections to be given an order other than the end of the 
+	* New feature: 
 		
-    * Bug Fix: #1663713  (Adam Franco) 
-    Initial version of content is now saved creating a new content block, not
-    justwhen updating.
+		Added wiki-style linking.
+		(Alex Chapin)
 		
-    * Bug Fix: #1663677  (Adam Franco) 
-    Detail view for 'link'-type and 'RSS'-type content blocks now displays their
-    
+	* New feature: 
 		
-    * Bug Fix: #1663638  (Adam Franco) 
-    Fixed RSS feeds so that ampersands are not doubly encoded.
+		Added a wiki parsing engine to support wiki-style linking.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed error in which only one current class was shown to students.
-		
-    * Change:  (Alex Chapin) 
-    Added a configuration list for additional custom themes to the config to
-    prevent needing to modify the themes/themeslist.inc.php when adding custom 
+	* Bug Fix: 
+		Adding ' + 0' to permission fetching queries to force enumerated fields into
+		using their numeric [index] values rather than the string version. The
+		previous form had stopped working in MySQL 5.
+		(Adam Franco)
 	
-
-v. 1.7.3 (2007-02-16) 
+v. 1.7.4 (2007-02-20)
 ----------------------------------------------------
 		
-    * Change:  (Alex Chapin) 
-    Copy site UI now displayed on Segue home pages by default (changes in
-    version1.7.0 hid the copy site UI until a section was expanded).
+	* Bug Fix: #1661595 
+		Page and section order is now re-keyed when adding a new page/section so
+		that new pages/sections are always at the end of the list. Before, moves or
+		deletions of pages/sections would result in gaps in the order which could
+		allow new pages/sections to be given an order other than the end of the
+		list. 
+		(Adam Franco)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed Segue home page display for students that was broken by updates to
-    Seguehome page display made in version 1.7.0
+	* Bug Fix: #1663713 
+		Initial version of content is now saved creating a new content block, not
+		just when updating.
+		(Adam Franco)
+		
+	* Bug Fix: #1663677 
+		Detail view for 'link'-type and 'RSS'-type content blocks now displays their
+		content. 
+		(Adam Franco)
+		
+	* Bug Fix: #1663638 
+		
+		Fixed RSS feeds so that ampersands are not doubly encoded.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Fixed error in which only one current class was shown to students.
+		(Adam Franco)
+		
+	* Change: 
+		Added a configuration list for additional custom themes to the config to
+		prevent needing to modify the themes/themeslist.inc.php when adding custom
+		themes. 
+		(Alex Chapin)
 	
-
-v. 1.7.2 (2007-02-09) 
+v. 1.7.3 (2007-02-16)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed error with story definition in 1.7.0 that prevented inserting of 
+	* Change: 
+		Copy site UI now displayed on Segue home pages by default (changes in
+		version 1.7.0 hid the copy site UI until a section was expanded).
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    Versions are now displayed whenever the 'show versioning' box is checked,
-    not just when it is checked along-side another property such as 'show
-    updatedusername'.
+	* Bug Fix: 
+		Fixed Segue home page display for students that was broken by updates to
+		Segue home page display made in version 1.7.0
+		(Alex Chapin)
 	
-
-v. 1.7.1 (2007-02-08) 
+v. 1.7.2 (2007-02-09)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed global variable overwrite in page reordering.
+	* Bug Fix: 
+		Fixed error with story definition in 1.7.0 that prevented inserting of
+		stories. 
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Versions are now displayed whenever the 'show versioning' box is checked,
+		not just when it is checked along-side another property such as 'show
+		updated username'.
+		(Adam Franco)
 	
-
-v. 1.7.0 (2007-02-08) 
+v. 1.7.1 (2007-02-08)
 ----------------------------------------------------
 		
-    * New feature:  (Alex Chapin) 
-    Added a Recent Activity section to the Segue home page that shows a
-    dashboard view (sorted by recent first) with Recent Discussions on all sites
-    of a given users as well as on all content blocks a given user has added.
-    Recent Activity also shows all sites ordered by those the user has most
-    recentlyedited with links to the most recent content.
+	* Bug Fix: 
 		
-    * New feature:  (Alex Chapin) 
-    Redesigned Segue home page (default.inc.php) so that all sections except
-    Current Classes can be shown or hidden and by default are set to hidden so
-    as to speed up the loading of home pages and to allow users to decide what
-    sitesthey want to display
-		
-    * New feature:  (Adam Franco) 
-    Added a "custom css" theme that allows users to have full control over the
-    stylesheet for their site.
-		
-    * Change:  (Alex Chapin) 
-    Added view source to discussion version of HTML editor
-		
-    * Change:  (Adam Franco) 
-    Can now chose not to use a WYSIWYG editor.
-		
-    * Change:  (Adam Franco) 
-    HTML editor selection is now persisted globally for the entire session.
-		
-    * Change:  (Adam Franco) 
-    Can now choose the HTML editor to use for the site header and footer.
-		
-    * Bug Fix:  (Adam Franco) 
-    Fixed error in media table definition for new installs.
-		
-    * Bug Fix:  (Adam Franco) 
-    Now all personal-type sites are shown under personal sites, not under 'other
-    
-		
-    * Bug Fix:  (Adam Franco) 
-    Fixing bug with reordering of stories where the reorder button was sometimes
-    notshown.
-		
-    * Bug Fix:  (Adam Franco) 
-    Fixing bug with reordering of pages. Where moving pages from one column to
-    the other got orders confused. All pages in a section are now re-keyed
-    duringreorder.
-		
-    * Bug Fix:  (Adam Franco) 
-    Now the message to hide page navigation only shows when there is only one
-    page,not when there is only one on a side.
+		Fixed global variable overwrite in page reordering.
+		(Adam Franco)
 	
-
-v. 1.6.1 (2007-01-10) 
+v. 1.7.0 (2007-02-08)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed bug in which comments containing single quotes where being truncated
-    onrating.
+	* New feature: 
+		Added a Recent Activity section to the Segue home page that shows a
+		dashboard view (sorted by recent first) with Recent Discussions on all sites
+		of a given users as well as on all content blocks a given user has added.
+		Recent Activity also shows all sites ordered by those the user has most
+		recently edited with links to the most recent content.
+		(Alex Chapin)
+		
+	* New feature: 
+		Redesigned Segue home page (default.inc.php) so that all sections except
+		Current Classes can be shown or hidden and by default are set to hidden so
+		as to speed up the loading of home pages and to allow users to decide what
+		sites they want to display
+		(Alex Chapin)
+		
+	* New feature: 
+		Added a "custom css" theme that allows users to have full control over the
+		style sheet for their site.
+		(Adam Franco)
+		
+	* Change: 
+		
+		Added view source to discussion version of HTML editor
+		(Alex Chapin)
+		
+	* Change: 
+		
+		Can now chose not to use a WYSIWYG editor.
+		(Adam Franco)
+		
+	* Change: 
+		
+		HTML editor selection is now persisted globally for the entire session.
+		(Adam Franco)
+		
+	* Change: 
+		
+		Can now choose the HTML editor to use for the site header and footer.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Fixed error in media table definition for new installs.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Now all personal-type sites are shown under personal sites, not under 'other
+		sites'. 
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Fixing bug with reordering of stories where the reorder button was sometimes
+		not shown.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Fixing bug with reordering of pages. Where moving pages from one column to
+		the other got orders confused. All pages in a section are now re-keyed
+		during reorder.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Now the message to hide page navigation only shows when there is only one
+		page, not when there is only one on a side.
+		(Adam Franco)
 	
-
-v. 1.6.0 (2006-12-20) 
+v. 1.6.1 (2007-01-10)
 ----------------------------------------------------
 		
-    * New feature:  (Alex Chapin) 
-    Added code for linking Segue with Moodle (segue/connector). This code
-    requires specific Segue-Moodle themes and modifications to Moodle code
-    documented here. Note: this is the first iterator of this connector and is
-    notwell-documented. Expect improvements in future releases
-		
-    * Bug Fix:  (Adam Franco) 
-    Permissions/Home page: Fixed up the query in the
-    getSiteInfoWhereUserIsEditor() function that is used in building the list of
-    site in which the user is an editor. Speed is now increased by about
-    12-times, making the algorithm functional when a user is an editor of more
-    than 100 sites. Hopefully this will cure incidences of somewhat random 
+	* Bug Fix: 
+		Fixed bug in which comments containing single quotes where being truncated
+		on rating.
+		(Adam Franco)
 	
-
-v. 1.5.11 (2006-11-15) 
+v. 1.6.0 (2006-12-20)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Added a check for a non-zero length password to prevent login from occuring
-    without a password when the LDAP server is configured to allow anonymous
-    binding. Thank you to Melanie Hoag and her team at Southwestern University
-    forhelp locating this bug.
+	* New feature: 
+		Added code for linking Segue with Moodle (segue/connector). This code
+		requires specific Segue-Moodle themes and modifications to Moodle code
+		documented here. Note: this is the first iterator of this connector and is
+		not well-documented. Expect improvements in future releases
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Permissions/Home page: Fixed up the query in the
+		getSiteInfoWhereUserIsEditor() function that is used in building the list of
+		site in which the user is an editor. Speed is now increased by about
+		12-times, making the algorithm functional when a user is an editor of more
+		than 100 sites. Hopefully this will cure incidences of somewhat random
+		slowdowns. 
+		(Adam Franco)
 	
-
-v. 1.5.10 (2006-10-25) 
+v. 1.5.11 (2006-11-15)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Added exit() statements after sending redirect headers to prevent continued
-    execution that was resulting in an authentication race-condition that had
-    the effect of populating empty class-lists for students and professors.
-    Thank you to Melanie Hoag and her team at Southwestern University for help
-    locatingthis bug.
+	* Bug Fix: 
+		Added a check for a non-zero length password to prevent login from occuring
+		without a password when the LDAP server is configured to allow anonymous
+		binding. Thank you to Melanie Hoag and her team at Southwestern University
+		for help locating this bug.
+		(Adam Franco)
 	
-
-v. 1.5.9 (2006-10-24) 
+v. 1.5.10 (2006-10-25)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed reorder content block UI so it only appears to users who have edit
-    permissonto the page containing content blocks.
-		
-    * Bug Fix:  (Adam Franco) 
-    Patched a vulnerability in dynamic includes that allowed the execution of
-    arbitraryremote code when register_globals was turned on.
-		
-    * Bug Fix:  (Adam Franco) 
-    Fixed an error in permissions setting and loading in which permissions for
-    everyone and institute where quotes were being added around NULL editor ids
-    andcausing view permissions for everyone and institute to not show up.
-		
-    * Bug Fix:  (Adam Franco) 
-    Fixed an error in permissions in which invalid permissions commands were
-    being run when a user or group name contained the sting 'add', 'edit',
-    'delete',or 'view'. i.e. 'pheditram-w06'.
+	* Bug Fix: 
+		Added exit() statements after sending redirect headers to prevent continued
+		execution that was resulting in an authentication race-condition that had
+		the effect of populating empty class-lists for students and professors.
+		Thank you to Melanie Hoag and her team at Southwestern University for help
+		locating this bug.
+		(Adam Franco)
 	
-
-v. 1.5.8 (2006-10-19) 
+v. 1.5.9 (2006-10-24)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed extra borders showing in the torn pieces theme.
+	* Bug Fix: 
+		Fixed reorder content block UI so it only appears to users who have edit
+		permisson to the page containing content blocks.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed theme issue in which text color stayed black when choosing a black
-    backgroundin the "Minimal Colors" theme.
+	* Bug Fix: 
+		Patched a vulnerability in dynamic includes that allowed the execution of
+		arbitrary remote code when register_globals was turned on.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Added global parameter reference into newly refactored Download Bar function
-    tonow generate the correct link.
+	* Bug Fix: 
+		Fixed an error in permissions setting and loading in which permissions for
+		everyone and institute where quotes were being added around NULL editor ids
+		and causing view permissions for everyone and institute to not show up.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Fixed an error in permissions in which invalid permissions commands were
+		being run when a user or group name contained the sting 'add', 'edit',
+		'delete', or 'view'. i.e. 'pheditram-w06'.
+		(Adam Franco)
 	
-
-v. 1.5.7 (2006-10-18) 
+v. 1.5.8 (2006-10-19)
+----------------------------------------------------
+		
+	* Bug Fix: 
+		
+		Fixed extra borders showing in the torn pieces theme.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed theme issue in which text color stayed black when choosing a black
+		background in the "Minimal Colors" theme.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Added global parameter reference into newly refactored Download Bar function
+		to now generate the correct link.
+		(Adam Franco)
+	
+v. 1.5.7 (2006-10-18)
 ----------------------------------------------------	
 		
-    **** IMPORTANT *** Change:  (Alex Chapin) 
-    Various changes in Segue necessitate that you run the '1.5.7 update' under
-    'admintools' &gt; 'updates' to make several changes to Segue's database.
+	**** IMPORTANT *** Change: 
+		Various changes in Segue necessitate that you run the '1.5.7 update' under
+		'admin tools' &gt; 'updates' to make several changes to Segue's database.
+		(Alex Chapin)
 		
-    * New feature:  (Adam Franco) 
-    Fields have been added to the media table to enable users to add and edit
-    metadatato files they upload to the Media Library.
+	* New feature: 
+		Fields have been added to the media table to enable users to add and edit
+		metadata to files they upload to the Media Library.
+		(Adam Franco)
 		
-    * New feature:  (Adam Franco) 
-    File metadata is now displayed in the file download bar.
+	* New feature: 
+		
+		File metadata is now displayed in the file download bar.
+		(Adam Franco)
 	
-
-v. 1.5.6 (2006-10-16) 
+v. 1.5.6 (2006-10-16)
 ----------------------------------------------------			
 		
-    * Change:  (Alex Chapin) 
-    Changed the toolbar in the HTML editor used for emailing participants to be
-    thesame toolbar as is used for discussions/assessments.
+	* Change: 
+		Changed the toolbar in the HTML editor used for emailing participants to be
+		the same toolbar as is used for discussions/assessments.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Updated the FCKeditor from version 2.2 to version 2.3.2.
+	* Change: 
 		
-    * Change:  (Alex Chapin) 
-    Fixed Segue CSS so that table borders created in the HTML Editor will
-    displayproperly.
+		Updated the FCKeditor from version 2.2 to version 2.3.2.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Added documentation re: changes that need to be made to the FCKeditor source
-    codein order to integrate it with Segue.
+	* Change: 
+		Fixed Segue CSS so that table borders created in the HTML Editor will
+		display properly.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed errors in logging function (introduced in version 1.5.5).
+	* Change: 
+		Added documentation re: changes that need to be made to the FCKeditor source
+		code in order to integrate it with Segue.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed roster and participation UI such that links and information about
-    rostersis displayed only if the site is a class site.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed email/roster/participation/logs UI such that relevant information from
-    eachof these are saved when navigating between them.
+		Fixed errors in logging function (introduced in version 1.5.5).
+		(Adam Franco)
 		
-    * Change:  (Adam Franco) 
-    Segue's RSS reader (CaRP) was modified to handle RSS feeds in any encoding.
+	* Bug Fix: 
+		Fixed roster and participation UI such that links and information about
+		rosters is displayed only if the site is a class site.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed editing of content blocks on pages set to display one content block
-    per page such that users are returned to that content block (instead of
-    beingreturned to the first content block)
+	* Bug Fix: 
+		Fixed email/roster/participation/logs UI such that relevant information from
+		each of these are saved when navigating between them.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Content block categories now copied when a page is moved/copied.
+	* Change: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Segue now generates valid XHTML 1.0 Transitional output. Some user-supplied
-    contentmay not be valid, but the Segue-generated content is.
+		Segue's RSS reader (CaRP) was modified to handle RSS feeds in any encoding.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Themes all now generate valid CSS. This fixes a problem with the BevelBox
-    themenot rendering properly in Safari.
+	* Bug Fix: 
+		Fixed editing of content blocks on pages set to display one content block
+		per page such that users are returned to that content block (instead of
+		being returned to the first content block)
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    Removed a number of PHP warnings from the add_editor script.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed display of groups for everyone and institute in add editor UI.
+		Content block categories now copied when a page is moved/copied.
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Added a link to page display options beside the page title.
+	* Bug Fix: 
+		Segue now generates valid XHTML 1.0 Transitional output. Some user-supplied
+		content may not be valid, but the Segue-generated content is.
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Changed the UI for reordering pages.
+	* Bug Fix: 
+		Themes all now generate valid CSS. This fixes a problem with the BevelBox
+		theme not rendering properly in Safari.
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Changed edit UI to always show page title.
+	* Bug Fix: 
+		
+		Removed a number of PHP warnings from the add_editor script.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Fixed display of groups for everyone and institute in add editor UI.
+		(Adam Franco)
+		
+	* Change: 
+		
+		Added a link to page display options beside the page title.
+		(Alex Chapin)
+		
+	* Change: 
+		
+		Changed the UI for reordering pages.
+		(Alex Chapin)
+		
+	* Change: 
+		
+		Changed edit UI to always show page title.
+		(Alex Chapin)
 	
-
-v. 1.5.5 (the future) 
+v. 1.5.5 (the future)
 ----------------------------------------------------	
 		
-    * Change:  (Alex Chapin) 
-    Moved editing UI for lower right for participant, category, rss and content
-    soit is consistent with positioning of other editing UI's
+	* Change: 
+		Moved editing UI for lower right for participant, category, rss and content
+		so it is consistent with positioning of other editing UI's
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Changed all SQL queries to prevent SQL injection.
+	* Change: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed sorting of site and user logs so they now can be sorted by any of the
-    columnsdisplayed.
+		Changed all SQL queries to prevent SQL injection.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed sorting of discussion posts so they now sort properly by recent first,
-    recentlast, by author and by rating.
+	* Bug Fix: 
+		Fixed sorting of site and user logs so they now can be sorted by any of the
+		columns displayed.
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added a function for adding all groups from LDAP that a given user is a
-    member of into the Segue ugroup table. Once added these groups will appear
-    inthe user directory and permissions can be assigned to them
+	* Bug Fix: 
+		Fixed sorting of discussion posts so they now sort properly by recent first,
+		recent last, by author and by rating.
+		(Alex Chapin)
+		
+	* New feature: 
+		Added a function for adding all groups from LDAP that a given user is a
+		member of into the Segue ugroup table. Once added these groups will appear
+		in the user directory and permissions can be assigned to them
+		(Alex Chapin)
 	
-
-v. 1.5.4 (2006-06-13) 
+v. 1.5.4 (2006-06-13)
 ----------------------------------------------------	
 		
-    * Bug Fix:  (Alex Chapin) 
-    Page pagination was not displaying on top of page for full content view when
-    hidesidebars was checked.
+	* Bug Fix: 
+		Page pagination was not displaying on top of page for full content view when
+		hide sidebars was checked.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Changed spacing between sidebar navigation items that had been
-    inadvertantelychanged in version 1.5.3.
+	* Change: 
+		Changed spacing between sidebar navigation items that had been
+		inadvertantely changed in version 1.5.3.
+		(Alex Chapin)
 	
-
-v. 1.5.3 (2006-06-08) 
+v. 1.5.3 (2006-06-08)
 ----------------------------------------------------	
 		
-    * Change:  (Alex Chapin) 
-    Added the gsp mime type for files created with Geometer's sketchpad.
+	* Change: 
 		
-    * Change:  (Alex Chapin) 
-    Changed how RSS feed links are displayed in the pop up window for more RSS.
-    Specifically added RSS icon and made the description of the RSS feed the
-    linkto that RSS feed.
+		Added the gsp mime type for files created with Geometer's sketchpad.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Added the text RSS to the right of the RSS icon for the link to page RSS. As
-    well added the RSS icon to the left of the more RSS link for additional RSS 
+	* Change: 
+		Changed how RSS feed links are displayed in the pop up window for more RSS.
+		Specifically added RSS icon and made the description of the RSS feed the
+		link to that RSS feed.
+		(Alex Chapin)
 		
-    * Change:  (Adam Franco) 
-    There has been a problem with inadvertant session-hijacking. This is caused
-    when a user (with cookies diabled and the PHP Session ID passed in their
-    URL) copy/pastes a Segue url containing the session ID into an email or
-    external website. When students (or others click on that link, they are now
-    using the session with the id specified in the url. Multiple users clicking
-    such a link would all end up using the same session, causing login/logout
-    actions of one user to apply to state of all users who clicked that link. As
-    there is no technological trick in PHP that would allow the continued
-    passing of the Session ID in the URL without this problem, Segue will now
-    forcethe use of cookies for authenticated users.
+	* Change: 
+		Added the text RSS to the right of the RSS icon for the link to page RSS. As
+		well added the RSS icon to the left of the more RSS link for additional RSS
+		feeds. 
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Changed display of sections with single pages. Specifically, when a section
-    has only one page, a sidebar link is still created. (this change undoes a
-    new feature introduced in version 1.5 whereby sections with only one page
-    would not display a link to that page in the left sidebar). To avoid
-    confusion as well as inform users of options, when a section has only one
-    page, a note is displayed at the top of the sidebar indicating the section
-    has only one page and a link is provided to change the section display
-    settingsto hide the sidebar.
+	* Change: 
+		There has been a problem with inadvertant session-hijacking. This is caused
+		when a user (with cookies diabled and the PHP Session ID passed in their
+		URL) copy/pastes a Segue url containing the session ID into an email or
+		external website. When students (or others click on that link, they are now
+		using the session with the id specified in the url. Multiple users clicking
+		such a link would all end up using the same session, causing login/logout
+		actions of one user to apply to state of all users who clicked that link. As
+		there is no technological trick in PHP that would allow the continued
+		passing of the Session ID in the URL without this problem, Segue will now
+		force the use of cookies for authenticated users.
+		(Adam Franco)
 		
-    * New feature: 
-    Added section display options. Specifically added a display option to hide
-    sidebars. When this option is selected, both the left and right sidebars are
-    hidden and if the section has more than one page, links are displayed to the
-    previous and next pages. If this section setting to hide sidebars is turned
-    on, then a note is displayed at the top of each sidebar indicated this and a
-    linkis provided to change the section display settings to show the sidebar.		
+	* Change: 
+		Changed display of sections with single pages. Specifically, when a section
+		has only one page, a sidebar link is still created. (this change undoes a
+		new feature introduced in version 1.5 whereby sections with only one page
+		would not display a link to that page in the left sidebar). To avoid
+		confusion as well as inform users of options, when a section has only one
+		page, a note is displayed at the top of the sidebar indicating the section
+		has only one page and a link is provided to change the section display
+		settings to hide the sidebar.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    removed extra spacing in RSS output.		
+	* New feature: 
+		Added section display options. Specifically added a display option to hide
+		sidebars. When this option is selected, both the left and right sidebars are
+		hidden and if the section has more than one page, links are displayed to the
+		previous and next pages. If this section setting to hide sidebars is turned
+		on, then a note is displayed at the top of each sidebar indicated this and a
+		link is provided to change the section display settings to show the sidebar.		
 		
-    * Bug Fix:  (Alex Chapin) 
-    Added missing enclosure tags to all-content RSS outputs.		
+	* Bug Fix: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Removed page and section titles from category RSS title field		
+		removed extra spacing in RSS output.
+		(Alex Chapin)		
 		
-    * Change:  (Alex Chapin) 
-    Increased number of items in all-content and all-discussion RSS outputs from
-    10to 20 items
+	* Bug Fix: 
 		
-    * Change:  (Alex Chapin) 
-    Added category tags to all Segue RSS output
+		Added missing enclosure tags to all-content RSS outputs.
+		(Alex Chapin)		
 		
-    * Change:  (Alex Chapin) 
-    Added the rel attribute with the category/tag name to category/tag links
+	* Bug Fix: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    RSS feeds no longer will include RSS content blocks as items (i.e. no RSS
-    feedsof RSS feeds)
+		Removed page and section titles from category RSS title field
+		(Alex Chapin)		
 		
-    * Change:  (Alex Chapin) 
-    The attribution link for content blocks now displays a link to that content
-    blocksurl
+	* Change: 
+		Increased number of items in all-content and all-discussion RSS outputs from
+		10 to 20 items
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Addedsupport for displaying table tags in the display of RSS feeds in Segue
+	* Change: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Set encoding of RSS feeds that are displayed in Segue (via CARP) to be utf-8
-    (hadbeen set to ISO 8859-1)		
+		Added category tags to all Segue RSS output
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed spacing between content blocks to make more consistent. Specifically,
-    if no attribution or no horizontal rule, then a single space is put between
-    content blocks. If horizontal rules specified, then no space is put between
-    contentblocks.		
+	* Change: 
 		
-    * Change:  (Alex Chapin) 
-    The title for image type content blocks now only displayed below the image
-    center justified and no longer is displayed above the image. As well, the
-    add/edit UI for image type content blocks no longer refers to Title and
-    Caption/Descriptionbut instead refers to Caption and Description
+		Added the rel attribute with the category/tag name to category/tag links
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Changed FCKEditor config so that the link tool included advanced options
-    suchas specifying link target.
+	* Bug Fix: 
+		RSS feeds no longer will include RSS content blocks as items (i.e. no RSS
+		feeds of RSS feeds)
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed missing scrollbars in the filebrowser window that is opened from the 		
+	* Change: 
+		The attribution link for content blocks now displays a link to that content
+		blocks url
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed problem with category UI on PC IE. Specifically, fixed javascript so
-    thatcategories can be added and deleted from site tags by clicking on them.		
+	* Change: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed problem with paths to filetype icons in the FCKEditor version of the
-    Seguefilebrowser.		
+		Addedsupport for displaying table tags in the display of RSS feeds in Segue
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Set encoding of RSS feeds that are displayed in Segue (via CARP) to be utf-8
+		(had been set to ISO 8859-1)
+		(Alex Chapin)		
+		
+	* Bug Fix: 
+		Fixed spacing between content blocks to make more consistent. Specifically,
+		if no attribution or no horizontal rule, then a single space is put between
+		content blocks. If horizontal rules specified, then no space is put between
+		content blocks.
+		(Alex Chapin)		
+		
+	* Change: 
+		The title for image type content blocks now only displayed below the image
+		center justified and no longer is displayed above the image. As well, the
+		add/edit UI for image type content blocks no longer refers to Title and
+		Caption/Description but instead refers to Caption and Description
+		(Alex Chapin)
+		
+	* Change: 
+		Changed FCKEditor config so that the link tool included advanced options
+		such as specifying link target.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed missing scrollbars in the filebrowser window that is opened from the
+		FCKEditor. 
+		(Alex Chapin)		
+		
+	* Bug Fix: 
+		Fixed problem with category UI on PC IE. Specifically, fixed javascript so
+		that categories can be added and deleted from site tags by clicking on them.
+		(Alex Chapin)		
+		
+	* Bug Fix: 
+		Fixed problem with paths to filetype icons in the FCKEditor version of the
+		Segue filebrowser.
+		(Alex Chapin)		
 	
-
-v. 1.5.2 (2006-02-21) 
+v. 1.5.2 (2006-02-21)
 ----------------------------------------------------	
 		
-    * Change:  (Alex Chapin) 
-    The 1st page link of any section no longer uses the heading style that was
-    introducedin version 1.5
+	* Change: 
+		The 1st page link of any section no longer uses the heading style that was
+		introduced in version 1.5
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Content blocks without titles display a link to their detail view (i.e.
-    unique URL) to the right of attribution and timestamp display (this link
-    used to display above attribution display). This means that the url for a
-    given content block without a title will be displayed only if
-    attribution/timestamp is set to display and/or discussion/assessment is
-    enabled and/or there is extended content. (content blocks with titles use
-    thetitle itself as the unique link for that content block)
+	* Change: 
+		Content blocks without titles display a link to their detail view (i.e.
+		unique URL) to the right of attribution and timestamp display (this link
+		used to display above attribution display). This means that the url for a
+		given content block without a title will be displayed only if
+		attribution/timestamp is set to display and/or discussion/assessment is
+		enabled and/or there is extended content. (content blocks with titles use
+		the title itself as the unique link for that content block)
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    RSS for all recently added content blocks and recent discussions.
+	* New feature: 
 		
-    * New feature:  (Alex Chapin) 
-    RSS for content block detail will include just that content block and all
-    itsdiscussion posts.
+		RSS for all recently added content blocks and recent discussions.
+		(Alex Chapin)
 		
-    * Bug Fix: #1432407  (Alex Chapin) 
-    Fixed category RSS feeds so now they have proper page and section ids	
+	* New feature: 
+		RSS for content block detail will include just that content block and all
+		its discussion posts.
+		(Alex Chapin)
 		
-    * Bug Fix: #1431633  (Alex Chapin) 
-    Fixed Javascript error related to the FCKEditor	
+	* Bug Fix: #1432407 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed secure/non-secure dialog warnings caused by the HTMLArea editor in PC
-    IE when Segue is running on a secure server. Thanks to Mark Pyfrom for
-    findinga solution to this problem	
+		Fixed category RSS feeds so now they have proper page and section ids
+		(Alex Chapin)	
+		
+	* Bug Fix: #1431633 
+		
+		Fixed Javascript error related to the FCKEditor
+		(Alex Chapin)	
+		
+	* Bug Fix: 
+		Fixed secure/non-secure dialog warnings caused by the HTMLArea editor in PC
+		IE when Segue is running on a secure server. Thanks to Mark Pyfrom for
+		finding a solution to this problem
+		(Alex Chapin)	
 	
-
-v. 1.5.1 (2006-02-09) 
+v. 1.5.1 (2006-02-09)
 ----------------------------------------------------	
 		
-    * Change:  (Alex Chapin) 
-    Changed the RSS icon to use the Firefox RSS icon.
+	* Change: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Parts of the discussion UI were unreadable if the mimimal theme used white
-    text on a black background. I have reworked the discussion UI styles so that
-    they used theme border and bg color information to ensure compatible colors
-    andlegible text.	
+		Changed the RSS icon to use the Firefox RSS icon.
+		(Alex Chapin)
 		
-    * Bug Fix: #1425388  (Alex Chapin) 
-    Fixed bug that did not warn admin users that they were entering a duplicate
-    externalclass id.	
+	* Bug Fix: 
+		Parts of the discussion UI were unreadable if the mimimal theme used white
+		text on a black background. I have reworked the discussion UI styles so that
+		they used theme border and bg color information to ensure compatible colors
+		and legible text.
+		(Alex Chapin)	
 		
-    * Change:  (Alex Chapin) 
-    Removed unnecessary references to Segue in help topics. Also allowed for
-    customization of Segue logo adding config options for right side logo in
-    programtheme
+	* Bug Fix: #1425388 
+		Fixed bug that did not warn admin users that they were entering a duplicate
+		external class id.
+		(Alex Chapin)	
 		
-    * Change:  (Alex Chapin) 
-    Changed how RSS content blocks are displayed making them look more like
-    othercontent blocks.
+	* Change: 
+		Removed unnecessary references to Segue in help topics. Also allowed for
+		customization of Segue logo adding config options for right side logo in
+		program theme
+		(Alex Chapin)
 		
-    * Bug Fix: #1423624  (Alex Chapin) 
-    Fixed bug that prevented personal slots from being displayed	
+	* Change: 
+		Changed how RSS content blocks are displayed making them look more like
+		other content blocks.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed various tag display problems related to special characters such as
-    apersands,single quotes and so on.	
+	* Bug Fix: #1423624 
 		
-    * New feature:  (Alex Chapin) 
-    Have added the FCKeditor as Segue's default HTML editor.
+		Fixed bug that prevented personal slots from being displayed
+		(Alex Chapin)	
 		
-    * Change:  (Alex Chapin) 
-    Added .m4v and .swf to default upload whitelist	
+	* Bug Fix: 
+		Fixed various tag display problems related to special characters such as
+		apersands, single quotes and so on.
+		(Alex Chapin)	
+		
+	* New feature: 
+		
+		Have added the FCKeditor as Segue's default HTML editor.
+		(Alex Chapin)
+		
+	* Change: 
+		
+		Added .m4v and .swf to default upload whitelist
+		(Alex Chapin)	
 	
-
-v. 1.5.0 (2005-12-18) 
+v. 1.5.0 (2005-12-18)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    fixed file copy errors when copying site
+	* Bug Fix: 
 		
-    * Change:  (Alex Chapin) 
-    The 1st page link of any section uses the heading style.
+		fixed file copy errors when copying site
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Page display options have been changed so that added by and edited by
-    timestampscan be displayed independently.
+	* Change: 
 		
-    * Change:  (Alex Chapin) 
-    Content block page titles are now links to detail or in-depth view which
-    display only the given content block and its extended text and/or
-    discussions when these exist. If a content block has no title, a link
-    labeled "link" is displayed below the content block above links to
-    discussionand attribution.
+		The 1st page link of any section uses the heading style.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    If the current date is not within the active dates range of a content block
-    then the active dates range will be displayed in edit mode and the content
-    block will not be displayed (even to the site owner) in view mode. If a page
-    is hidden or inactive, "[hidden]" and/or "[inactive]" will be displayed
-    belowthe page title in edit mode.
+	* Change: 
+		Page display options have been changed so that added by and edited by
+		timestamps can be displayed independently.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Heading page type style have been changed to use colors from theme settings
-    tocreate a more consistent UI. As well the hr tag also uses theme colors.
+	* Change: 
+		Content block page titles are now links to detail or in-depth view which
+		display only the given content block and its extended text and/or
+		discussions when these exist. If a content block has no title, a link
+		labeled "link" is displayed below the content block above links to
+		discussion and attribution.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Have changed how page and content types are selected, replacing radio
-    buttonswith a select menu.
+	* Change: 
+		If the current date is not within the active dates range of a content block
+		then the active dates range will be displayed in edit mode and the content
+		block will not be displayed (even to the site owner) in view mode. If a page
+		is hidden or inactive, "[hidden]" and/or "[inactive]" will be displayed
+		below the page title in edit mode.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Content block archiving has been changed such that content blocks are now
-    archived by specifying the number of blocks to display on a page. If the
-    number of content blocks exceeds the number per page setting, pagination
-    will be displayed. If the number per page is set to one then the page title
-    will not be displayed and a select menu with links to all content blocks on
-    thepage will be displayed.
+	* Change: 
+		Heading page type style have been changed to use colors from theme settings
+		to create a more consistent UI. As well the hr tag also uses theme colors.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Categories have been reimplemented such that a given content block can be
-    added to more than one category. Category select UI changed from select menu
-    to an alphabetical list of categories that are links that populate the
-    categoryfield and that highlighted currently selected categories.
+	* Change: 
+		Have changed how page and content types are selected, replacing radio
+		buttons with a select menu.
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added new page type called Participant list. This page type allows users to
-    display a list of the names of all participants in the site in the left or
-    right sidebar including the Site Owner, Roster participants (for class
-    sites) and all site editors. For class sites, if an associated site has been
-    created by a given roster participant, their name will be a link to this
-    associated site. The Participant list type does not have children (i.e. do
-    nothave stories)
+	* Change: 
+		Content block archiving has been changed such that content blocks are now
+		archived by specifying the number of blocks to display on a page. If the
+		number of content blocks exceeds the number per page setting, pagination
+		will be displayed. If the number per page is set to one then the page title
+		will not be displayed and a select menu with links to all content blocks on
+		the page will be displayed.
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added new page type called Categories. This page type allows users to
-    display all the content block categories they have created for a given site
-    as a list in the left or right sidebar. Each item in the list is then a link
-    which retrieves all content blocks of that category and displays them
-    chronologically. The Category page type does not have children (i.e. do not
-    havestories)
+	* Change: 
+		Categories have been reimplemented such that a given content block can be
+		added to more than one category. Category select UI changed from select menu
+		to an alphabetical list of categories that are links that populate the
+		category field and that highlighted currently selected categories.
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added new page type called RSS feed. This page type allows users to add an
-    RSS feed to the left or right sidebar. Only the RSS page types do not have
-    children(i.e. do not have stories)
+	* New feature: 
+		Added new page type called Participant list. This page type allows users to
+		display a list of the names of all participants in the site in the left or
+		right sidebar including the Site Owner, Roster participants (for class
+		sites) and all site editors. For class sites, if an associated site has been
+		created by a given roster participant, their name will be a link to this
+		associated site. The Participant list type does not have children (i.e. do
+		not have stories)
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added new page type called sidebar content. This page type allows users to
-    add content to left or right sidebar. Sidebar content page types do not have
-    children(i.e. do not have stories)
+	* New feature: 
+		Added new page type called Categories. This page type allows users to
+		display all the content block categories they have created for a given site
+		as a list in the left or right sidebar. Each item in the list is then a link
+		which retrieves all content blocks of that category and displays them
+		chronologically. The Category page type does not have children (i.e. do not
+		have stories)
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    if a section has only one page, then display only the stories on that page,
-    donot display a link to the page in either sidebar.
+	* New feature: 
+		Added new page type called RSS feed. This page type allows users to add an
+		RSS feed to the left or right sidebar. Only the RSS page types do not have
+		children (i.e. do not have stories)
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Activated a right column navigation area so that any page link can be
-    displayedon the left or right side of a Segue page.
+	* New feature: 
+		Added new page type called sidebar content. This page type allows users to
+		add content to left or right sidebar. Sidebar content page types do not have
+		children (i.e. do not have stories)
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Changed the display range of discussion summaries from 2 to 30. (this
-    display range was reduced to 2 from 30 in Version 1.4.4 for testing purposes
-    andwas not set back to 30 before release!)
+	* Change: 
+		if a section has only one page, then display only the stories on that page,
+		do not display a link to the page in either sidebar.
+		(Alex Chapin)
 		
-    * Bug Fix: #1348393  (Alex Chapin) 
-    Fixed RSS feeds so that they do not re-downloaded in certain RSS readers
-    likeSafari and iTunes.
+	* New feature: 
+		Activated a right column navigation area so that any page link can be
+		displayed on the left or right side of a Segue page.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Changed the display range of discussion summaries from 2 to 30. (this
+		display range was reduced to 2 from 30 in Version 1.4.4 for testing purposes
+		and was not set back to 30 before release!)
+		(Alex Chapin)
+		
+	* Bug Fix: #1348393 
+		Fixed RSS feeds so that they do not re-downloaded in certain RSS readers
+		like Safari and iTunes.
+		(Alex Chapin)
 	
-
-v. 1.4.4 (2005-11-22) 
+v. 1.4.4 (2005-11-22)
 ----------------------------------------------------
 		
-    * Bug Fix: #877774  (Alex Chapin) 
-    If certain steps are taken when creating a site it was possible to create a
-    site with no name (if a user creates a site and then immediately uses the
-    browser back button to return and then clicks continue and finish...). This
-    bug has been eliminated. Thanks to Jim Witte (jwitte@uiuc.edu) for tracking
-    thisbug down!
+	* Bug Fix: #877774 
+		If certain steps are taken when creating a site it was possible to create a
+		site with no name (if a user creates a site and then immediately uses the
+		browser back button to return and then clicks continue and finish...). This
+		bug has been eliminated. Thanks to Jim Witte (jwitte@uiuc.edu) for tracking
+		this bug down!
+		(Alex Chapin)
 		
-    * Bug Fix: #1353196  (Alex Chapin) 
-    Mispelling of password in "Forgot your password" as been fixed.
+	* Bug Fix: #1353196 
 		
-    * Bug Fix: #1363156  (Alex Chapin) 
-    Editing button styles now specify a text color. (fixes bug caused by themes
-    withwhite text color)
+		Mispelling of password in "Forgot your password" as been fixed.
+		(Alex Chapin)
 		
-    * Change: #1212787  (Alex Chapin) 
-    Class sections can now be designated by either letters or numbers.
+	* Bug Fix: #1363156 
+		Editing button styles now specify a text color. (fixes bug caused by themes
+		with white text color)
+		(Alex Chapin)
 		
-    * Bug Fix: #1345320  (Alex Chapin) 
-    Fixed summaries of discussion posts when number of participants is greater
-    than 30 (query limits) Also fixed display of a given users discussion posts
-    whenthese exceed query limit.
+	* Change: #1212787 
 		
-    * Bug Fix: #1330176  (Alex Chapin) 
-    Fixed typo in config.sample.inc.php file.
+		Class sections can now be designated by either letters or numbers.
+		(Alex Chapin)
 		
-    * Bug Fix: #1313096  (Alex Chapin) 
-    Fixed internal links in image content blocks by adding convertlinks 
+	* Bug Fix: #1345320 
+		Fixed summaries of discussion posts when number of participants is greater
+		than 30 (query limits) Also fixed display of a given users discussion posts
+		when these exceed query limit.
+		(Alex Chapin)
+		
+	* Bug Fix: #1330176 
+		
+		Fixed typo in config.sample.inc.php file.
+		(Alex Chapin)
+		
+	* Bug Fix: #1313096 
+		Fixed internal links in image content blocks by adding convertlinks
+		function. 
+		(Alex Chapin)
 	
-
-v. 1.4.3 (2005-10-05) 
+v. 1.4.3 (2005-10-05)
 ----------------------------------------------------
 		
-    * Change:  (Adam Franco) 
-    Added several functions which can return all data needed to display a number
-    of sites/slots in one query. The default page was reworked to use these
-    queries, dramatically reducing (by about 2000%) the number of queries needed
-    todisplay the default page for users who are editors of many sites.
+	* Change: 
+		Added several functions which can return all data needed to display a number
+		of sites/slots in one query. The default page was reworked to use these
+		queries, dramatically reducing (by about 2000%) the number of queries needed
+		to display the default page for users who are editors of many sites.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed ordering (for display) of class-codes.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed ordering (for display) of class-codes.
+		Fixed ordering (for display) of class-codes.
+		(Adam Franco)
 		
-    * Change:  (Adam Franco) 
-    Now caches class membership info for the session since this data will not
-    generally chage during a session. If it does change, such as an admin or
-    prof adding students to a class, a simple log-out, log-in will update the 
+	* Bug Fix: 
+		
+		Fixed ordering (for display) of class-codes.
+		(Adam Franco)
+		
+	* Change: 
+		Now caches class membership info for the session since this data will not
+		generally chage during a session. If it does change, such as an admin or
+		prof adding students to a class, a simple log-out, log-in will update the
+		data. 
+		(Adam Franco)
 	
-
-v. 1.4.2 (2005-10-03) 
+v. 1.4.2 (2005-10-03)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    The old isgroup() algorithm was looping through ALL classes and generating
-    codes for them when ANY classes were in a group. When a user has a group
-    displayed on the homepage: 1 call is made for each class in existance + 2
-    calls for each class in the group Now only 2 calls are made for each class
-    inthe group.
+	* Bug Fix: 
+		The old isgroup() algorithm was looping through ALL classes and generating
+		codes for them when ANY classes were in a group. When a user has a group
+		displayed on the homepage: 1 call is made for each class in existance + 2
+		calls for each class in the group Now only 2 calls are made for each class
+		in the group.
+		(Adam Franco)
 	
-
-v. 1.4.1 (2005-08-02) 
+v. 1.4.1 (2005-08-02)
 ----------------------------------------------------
 		
-    * New feature:  (Alex Chapin) 
-    Added support for podcasting via RSS with enclosures. Specifically for
-    content blocks that are files for download, enclosed url to these files in
-    enclosuretag
+	* New feature: 
+		Added support for podcasting via RSS with enclosures. Specifically for
+		content blocks that are files for download, enclosed url to these files in
+		enclosure tag
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Added support for more html tags in RSS description field. Specifically
-    allowedfor images and link tags.
+	* Change: 
+		Added support for more html tags in RSS description field. Specifically
+		allowed for images and link tags.
+		(Alex Chapin)
 		
-    * Bug Fix: #1235422  (Alex Chapin) 
-    Fixed RSS feed publishing to be more valid. In particular, changed pubDate
-    to be an RFC-822 date-time, included author email address, fixed links to
-    urlsinternal to site and make each story url unique
+	* Bug Fix: #1235422 
+		Fixed RSS feed publishing to be more valid. In particular, changed pubDate
+		to be an RFC-822 date-time, included author email address, fixed links to
+		urls internal to site and make each story url unique
+		(Alex Chapin)
 		
-    * Bug Fix: #1235421  (Alex Chapin) 
-    Fixed bug in getclassstudents function that prevented getting students in a
-    classwhen the class_external_id is different from the slot_name
+	* Bug Fix: #1235421 
+		Fixed bug in getclassstudents function that prevented getting students in a
+		class when the class_external_id is different from the slot_name
+		(Alex Chapin)
 		
-    * Bug Fix: #1235423  (Alex Chapin) 
-    Fixed bug that caused sections with no pages to not print out when viewing a
-    
+	* Bug Fix: #1235423 
+		Fixed bug that caused sections with no pages to not print out when viewing a
+		site 
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    removed getNameOfClassForSite function and changed all code that attempted
-    toget class info using the class_external_id
+	* Change: 
+		removed getNameOfClassForSite function and changed all code that attempted
+		to get class info using the class_external_id
+		(Alex Chapin)
 		
-    * Bug Fix: #1235421  (Alex Chapin) 
-    Fixed bug in getclassstudents function that prevented getting students in a
-    classwhen the class_external_id is different from the slot_name
+	* Bug Fix: #1235421 
+		Fixed bug in getclassstudents function that prevented getting students in a
+		class when the class_external_id is different from the slot_name
+		(Alex Chapin)
 		
-    * New feature:  (Gabe Schine) 
-    Added some checks for 'no-name' sites deleting the entire userfiles 
+	* New feature: 
+		Added some checks for 'no-name' sites deleting the entire userfiles
+		directory! 
+		(Gabe Schine)
 		
-    * Bug Fix:  (Adam Franco) 
-    Changed include paths to allow importing sites from XML backups to work.
+	* Bug Fix: 
 		
-    * Bug Fix: #1240466  (Adam Franco) 
-    Fixed bug in which media files are not being copied to the destination site
-    whenit was different from the originating site.
+		Changed include paths to allow importing sites from XML backups to work.
+		(Adam Franco)
 		
-    * Bug Fix: #1239086  (Adam Franco) 
-    Empty sites/sections/pages now display instructions to use the '+ add
-    section','+ add page', and '+ add story' buttons in edit mode.
+	* Bug Fix: #1240466 
+		Fixed bug in which media files are not being copied to the destination site
+		when it was different from the originating site.
+		(Adam Franco)
+		
+	* Bug Fix: #1239086 
+		Empty sites/sections/pages now display instructions to use the '+ add
+		section', '+ add page', and '+ add story' buttons in edit mode.
+		(Adam Franco)
 	
-
-v. 1.4.0 (2005-05-31) 
+v. 1.4.0 (2005-05-31)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Alex Chapin) 
-    fixed various errors due to higher level PHP error checking (e.g. wrong
-    datatypes,non-scalar values...etc)
+	* Bug Fix: 
+		fixed various errors due to higher level PHP error checking (e.g. wrong
+		datatypes, non-scalar values...etc)
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Refined discussion summary and email UI. In Discussion summary, separated
-    lists of participants in roster(i.e. class) for participants not is roster.
-    Added option to add non-roster participants to roster. Also added option to
-    email all participants, only participants in class (regardless of whether
-    theyposted to discussion or not) or any subset of all participants.
+	* New feature: 
+		Refined discussion summary and email UI. In Discussion summary, separated
+		lists of participants in roster(i.e. class) for participants not is roster.
+		Added option to add non-roster participants to roster. Also added option to
+		email all participants, only participants in class (regardless of whether
+		they posted to discussion or not) or any subset of all participants.
+		(Alex Chapin)
 		
-    * New feature:  (Adam Franco) 
-    Added RSS publishing option for all Segue pages.
+	* New feature: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Removed call-time pass-by-reference usage.
+		Added RSS publishing option for all Segue pages.
+		(Adam Franco)
 		
-    * Change:  (Adam Franco) 
-    The version number on the default page now links to this changelog.
+	* Bug Fix: 
+		
+		Removed call-time pass-by-reference usage.
+		(Adam Franco)
+		
+	* Change: 
+		
+		The version number on the default page now links to this changelog.
+		(Adam Franco)
 	
-
-v. 1.3.7 (2005-05-10) 
+v. 1.3.7 (2005-05-10)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    fixed config parameter checking to look for new whitelist parameter.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed whitelist to not allow substrings to trigger validity.
+		fixed config parameter checking to look for new whitelist parameter.
+		(Adam Franco)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed class-membership printing.
+	* Bug Fix: 
+		
+		Fixed whitelist to not allow substrings to trigger validity.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Fixed class-membership printing.
+		(Alex Chapin)
 	
-
-v. 1.3.8 (The Nebulous Future) 
+v. 1.3.8 (The Nebulous Future)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Previous security fixes broke log pagination and limiting. These now work 
+	* Bug Fix: 
+		Previous security fixes broke log pagination and limiting. These now work
+		again. 
+		(Adam Franco)
 	
-
-v. 1.3.7 (2005-05-10) 
+v. 1.3.7 (2005-05-10)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    fixed config parameter checking to look for new whitelist parameter.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed whitelist to not allow substrings to trigger validity.
+		fixed config parameter checking to look for new whitelist parameter.
+		(Adam Franco)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed class-membership printing.
+	* Bug Fix: 
+		
+		Fixed whitelist to not allow substrings to trigger validity.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Fixed class-membership printing.
+		(Alex Chapin)
 	
-
-v. 1.3.6 (2005-05-06) 
+v. 1.3.6 (2005-05-06)
 ----------------------------------------------------
 		
-    **** IMPORTANT *** Change: 
-    Segue &lt; 1.3.6 contains a critical security hole which allows the upload of
-    php scripts with the .phtml extension to the userfiles directory. It is
-    critical that you either update Segue to version 1.3.6 or greater AND/OR
-    edit your Apache configuration (httpd.conf) to prevent Apache from passing
-    thehandling of .phtml files to PHP.
+	**** IMPORTANT *** Change: 
+		Segue &lt; 1.3.6 contains a critical security hole which allows the upload of
+		php scripts with the .phtml extension to the userfiles directory. It is
+		critical that you either update Segue to version 1.3.6 or greater AND/OR
+		edit your Apache configuration (httpd.conf) to prevent Apache from passing
+		the handling of .phtml files to PHP.
 		
-    * Bug Fix:  (Adam Franco) 
-    File over-writes are now properly logged.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Log view now displays actions of user accounts that have been deleted.
+		File over-writes are now properly logged.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    White-listing or black-listing of files by extension is now availible.
-    White-listing is the default. Please update your config from 
+	* Bug Fix: 
+		
+		Log view now displays actions of user accounts that have been deleted.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		White-listing or black-listing of files by extension is now availible.
+		White-listing is the default. Please update your config from
+		config_sample.inc.php. 
+		(Adam Franco)
 	
-
-v. 1.3.5 (2005-04-27) 
+v. 1.3.5 (2005-04-27)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Session variables now properly unset after editing stories.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Editors can now be removed using discussion editor UI. (This bug was
-    introducedin version 1.3.4)
+		Session variables now properly unset after editing stories.
+		(Adam Franco)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed hide author bug so that authors in all discussions are not hidden to
-    unauthenticatedusers.
+	* Bug Fix: 
+		Editors can now be removed using discussion editor UI. (This bug was
+		introduced in version 1.3.4)
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed hide author bug so that authors in all discussions are not hidden to
+		unauthenticated users.
+		(Alex Chapin)
 	
-
-v. 1.3.4 (2005-04-18) 
+v. 1.3.4 (2005-04-18)
 ----------------------------------------------------
 		
-    * Change: #1185237  (Adam Franco) 
-    Default page now focuses to username field.
+	* Change: #1185237 
 		
-    * Bug Fix: #1177195  (Alex Chapin) 
-    Discussion feedback now show site owner instead of addedby user	
+		Default page now focuses to username field.
+		(Adam Franco)
 		
-    * Bug Fix: #1177199  (Alex Chapin) 
-    Hide authors now works for both authenticated and unauthenticated users	
+	* Bug Fix: #1177195 
 		
-    * Bug Fix: #1120772  (Alex Chapin) 
-    Typo in discussion settings explanation is fixed	
+		Discussion feedback now show site owner instead of addedby user
+		(Alex Chapin)	
 		
-    * Bug Fix: #1164085  (Alex Chapin) 
-    Segue class sites that are grouped will now display all the students in all
-    theclasses included in the group.	
+	* Bug Fix: #1177199 
+		
+		Hide authors now works for both authenticated and unauthenticated users
+		(Alex Chapin)	
+		
+	* Bug Fix: #1120772 
+		
+		Typo in discussion settings explanation is fixed
+		(Alex Chapin)	
+		
+	* Bug Fix: #1164085 
+		Segue class sites that are grouped will now display all the students in all
+		the classes included in the group.
+		(Alex Chapin)	
 	
-
-v. 1.3.3 (2005-01-14) 
+v. 1.3.3 (2005-01-14)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Now Segue strips PHPSESSID tags from any urls saved to prevent accidental
-    session hijacking when copy/pasting links from a browser without cookies 
+	* Bug Fix: 
+		Now Segue strips PHPSESSID tags from any urls saved to prevent accidental
+		session hijacking when copy/pasting links from a browser without cookies
+		enabled. 
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Now Segue doesn't force the cookie domain if we are not accessing segue from
-    the domain specified in the config (either due to a configuration error or a
-    vhostsetting) as that would make the cookie inaccessible.
+	* Bug Fix: 
+		Now Segue doesn't force the cookie domain if we are not accessing segue from
+		the domain specified in the config (either due to a configuration error or a
+		vhost setting) as that would make the cookie inaccessible.
+		(Adam Franco)
 		
-    * Bug Fix: #1083127  (Adam Franco) 
-    Added some additional error lines to be printed on email failure.
+	* Bug Fix: #1083127 
 		
-    * Bug Fix: #1083131  (Adam Franco) 
-    Addedsome additional information lines to be printed during table creation.
+		Added some additional error lines to be printed on email failure.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Database errors on connection will now not print the database password used
-    unlessthe debug configuration option is set to 1.
+	* Bug Fix: #1083131 
 		
-    * Change:  (Adam Franco) 
-    Date printing has been re-worked to support more timestamp formats. As well,
-    configoptions have been added for customing date/time formats.
+		Addedsome additional information lines to be printed during table creation.
+		(Adam Franco)
 		
-    * Bug Fix: #878641  (Adam Franco) 
-    Removed some unused form fields.
+	* Bug Fix: 
+		Database errors on connection will now not print the database password used
+		unless the debug configuration option is set to 1.
+		(Adam Franco)
+		
+	* Change: 
+		Date printing has been re-worked to support more timestamp formats. As well,
+		config options have been added for customing date/time formats.
+		(Adam Franco)
+		
+	* Bug Fix: #878641 
+		
+		Removed some unused form fields.
+		(Adam Franco)
 	
-
-v. 1.3.2 (2004-10-07) 
+v. 1.3.2 (2004-10-07)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Replaced preview links in permissions window with a link to the new preview 
+	* Bug Fix: 
+		Replaced preview links in permissions window with a link to the new preview
+		screen. 
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    'Build permissions array' now doesn't confuse delete and discuss 
+	* Bug Fix: 
+		'Build permissions array' now doesn't confuse delete and discuss
+		permissions. 
+		(Adam Franco)
 		
-    * Bug Fix: #1042319  (Adam Franco) 
-    Classes with the external ID different from the internal code now are pulled
-    properlyin the roster.
+	* Bug Fix: #1042319 
+		Classes with the external ID different from the internal code now are pulled
+		properly in the roster.
+		(Adam Franco)
 		
-    * Change: #854782  (Adam Franco) 
-    Headers have been reworked to print a doctype tag as well as html and head
-    tags in the right order. Some attributes, such as align='right', have their
-    attributes quoted, and br tags have trailing slashes added. Much more
-    cleaning up of the HTML needs to be done before Segue code will validate,
-    butit is now partially along the way.
+	* Change: #854782 
+		Headers have been reworked to print a doctype tag as well as html and head
+		tags in the right order. Some attributes, such as align='right', have their
+		attributes quoted, and br tags have trailing slashes added. Much more
+		cleaning up of the HTML needs to be done before Segue code will validate,
+		but it is now partially along the way.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Site-listing next/previous buttons now reflect search results.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed midd network's LDAP search function to properly show members of the
-    classas students.
+		Site-listing next/previous buttons now reflect search results.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Modified HTMLarea to not capture CTRL+v, which was violating Mozilla's
-    securitypolicy for clipboard access.
+	* Bug Fix: 
+		Fixed midd network's LDAP search function to properly show members of the
+		class as students.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Content blocks created in plain-text mode now have br tags replacing line 
+	* Bug Fix: 
+		Modified HTMLarea to not capture CTRL+v, which was violating Mozilla's
+		security policy for clipboard access.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Content blocks created in plain-text mode now have br tags replacing line
+		breaks. 
+		(Adam Franco)
 	
-
-v. 1.3.1 (2004-10-05) 
+v. 1.3.1 (2004-10-05)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Alex Chapin) 
-    Removed invalid template from sample config.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed links in user account maintenance UI (passwd.php). Links to register
-    now appear in user account maintenance UI if auth_register is turned on in 
+		Removed invalid template from sample config.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    'Visitor Registration' screen now asks for Name instead of username, what it
-    wasdoing before, but not saying.
+	* Bug Fix: 
+		Fixed links in user account maintenance UI (passwd.php). Links to register
+		now appear in user account maintenance UI if auth_register is turned on in
+		config. 
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    'Forgot password' screen now works properly.
+	* Bug Fix: 
+		'Visitor Registration' screen now asks for Name instead of username, what it
+		was doing before, but not saying.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    When moving or copying sections/pages/stories within a site, the 'added'
-    timestampsare now preserved.
+	* Bug Fix: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Link to Segue site listing (sitelisting.php) changed from Public Sites to
-    Site Listing to reflect that sites actually listed are not necessarily
-    public. Clarification made in explanation of site listing to indicate that
-    the listing includes all class sites and all other sites that have settings
-    whichspecify public listing.
+		'Forgot password' screen now works properly.
+		(Adam Franco)
 		
-    * Bug Fix:  (Alex Chapin) 
-    If a section has a single page, that page link will not be displayed.
-    However, if that page is a "link" then it will be displayed to make it 
+	* Bug Fix: 
+		When moving or copying sections/pages/stories within a site, the 'added'
+		timestamps are now preserved.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    The side-sections navigation was all screwed up and not printing editing
-    linksin viewsite mode.
+	* Bug Fix: 
+		Link to Segue site listing (sitelisting.php) changed from Public Sites to
+		Site Listing to reflect that sites actually listed are not necessarily
+		public. Clarification made in explanation of site listing to indicate that
+		the listing includes all class sites and all other sites that have settings
+		which specify public listing.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    Page titles are now displayed with the title CSS class instead of just bold 
+	* Bug Fix: 
+		If a section has a single page, that page link will not be displayed.
+		However, if that page is a "link" then it will be displayed to make it
+		accessable. 
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    The sample_config was replicating the auth_help string.
+	* Bug Fix: 
+		The side-sections navigation was all screwed up and not printing editing
+		links in viewsite mode.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    The sample_config now has an empty arry for the email excludes, instead of
-    anempty string as an element.
+	* Bug Fix: 
+		Page titles are now displayed with the title CSS class instead of just bold
+		letters. 
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Misspelling in the Midd class functions was throwing a warning.
+	* Bug Fix: 
+		
+		The sample_config was replicating the auth_help string.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		The sample_config now has an empty arry for the email excludes, instead of
+		an empty string as an element.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Misspelling in the Midd class functions was throwing a warning.
+		(Adam Franco)
 	
-
-v. 1.3.0 (2004-09-30) 
+v. 1.3.0 (2004-09-30)
 ----------------------------------------------------
 		
-    **** IMPORTANT *** Change:  (Adam Franco) 
-    Various changes in Segue necessitate that you upgrade to a new config file
-    as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make
-    severalchanges to Segue's database and file-storage structure.		
+	**** IMPORTANT *** Change: 
+		Various changes in Segue necessitate that you upgrade to a new config file
+		as well as run the '1.3.0 update' under 'admin tools' --&gt; 'updates' to make
+		several changes to Segue's database and file-storage structure.
+		(Adam Franco)		
 		
-    * Bug Fix:  (Adam Franco) 
-    '...more.' links now don't print for stories if the extended content is just
-    aline-return and a line break inserted by the editor.
+	* Bug Fix: 
+		'...more.' links now don't print for stories if the extended content is just
+		a line-return and a line break inserted by the editor.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Sites now only appear once in the 'Copy Site' bar.
+	* Bug Fix: 
 		
-    * Change:  (Adam Franco) 
-    Everyone and institute permissions are now not dropped on site-copy. As
-    well, when creating a group from an existing site, the permissions are now 
+		Sites now only appear once in the 'Copy Site' bar.
+		(Adam Franco)
 		
-    * Bug Fix: #1036482  (Adam Franco) 
-    LDAPusers are now syched with the database when they are given permissions.
+	* Change: 
+		Everyone and institute permissions are now not dropped on site-copy. As
+		well, when creating a group from an existing site, the permissions are now
+		retained. 
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    When adding slots to a group, they now disapear from the site listing.
+	* Bug Fix: #1036482 
 		
-    * Bug Fix: #1036562  (Adam Franco) 
-    CopySite now copies all media, not just those referenced by stories.
+		LDAPusers are now syched with the database when they are given permissions.
+		(Adam Franco)
 		
-    * New feature:  (Adam Franco) 
-    Added a configuration checking function and some more helpful error messages
-    sothat installing and configuring Segue is more straight forward.
+	* Bug Fix: 
 		
-    * Bug Fix: #856465  (Alex Chapin) 
-    Have added notes and help to themes UI indicating the Popup Window blocker
-    softwareshould be disabled for Segue.
+		When adding slots to a group, they now disapear from the site listing.
+		(Adam Franco)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Improved navigation header display. Fixed style of navigation header in
-    bevelboxtheme.
+	* Bug Fix: #1036562 
 		
-    * Change:  (Alex Chapin) 
-    Changed side sections navigational arrangement (see: theme settings) such
-    that links to pages of the current section appear in an indented list below
-    sectionname in left navigation.				
+		CopySite now copies all media, not just those referenced by stories.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Segue now checks that it can write to a site directory before attempting to
-    copy media to it and prints out an informative message if it can't instead
-    offailing with confusing errors.
+	* New feature: 
+		Added a configuration checking function and some more helpful error messages
+		so that installing and configuring Segue is more straight forward.
+		(Adam Franco)
 		
-    * Bug Fix: #879877  (Adam Franco) 
-    Removed repeating titles for stories in the sitemap.
+	* Bug Fix: #856465 
+		Have added notes and help to themes UI indicating the Popup Window blocker
+		software should be disabled for Segue.
+		(Alex Chapin)
 		
-    * New feature: #1029412  (Adam Franco) 
-    When copying sites or other parts of a site, discussion posts can now be
-    coppiedas well.
+	* Bug Fix: 
+		Improved navigation header display. Fixed style of navigation header in
+		bevelbox theme.
+		(Alex Chapin)
 		
-    * New feature:  (Adam Franco) 
-    When viewing the logs screen, old logs are cleaned out as per a configurable
-    numberof days.
+	* Change: 
+		Changed side sections navigational arrangement (see: theme settings) such
+		that links to pages of the current section appear in an indented list below
+		section name in left navigation.
+		(Alex Chapin)				
 		
-    * Bug Fix:  (Adam Franco) 
-    Sites associated with a class and class sites now can properly add the class
-    asan editor.
+	* Bug Fix: 
+		Segue now checks that it can write to a site directory before attempting to
+		copy media to it and prints out an informative message if it can't instead
+		of failing with confusing errors.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Segue now prints a nice error instructing the user to update thier links if
-    a bad link tries to get a non-existant section or page and creates a
-    corruptedsection or page object.
+	* Bug Fix: #879877 
 		
-    * New feature:  (Adam Franco) 
-    When copying a site, section, or page, links internal to that part (such as
-    links in a content block that point to another page in the site or section)
-    are now updated to point to the appropriate place in the new version of the 
+		Removed repeating titles for stories in the sitemap.
+		(Adam Franco)
 		
-    * Bug Fix:  (Alex Chapin) 
-    When editing slots, information about whether the slot was in use not or not
-    isnow accurate.
+	* New feature: #1029412 
+		When copying sites or other parts of a site, discussion posts can now be
+		coppied as well.
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Added new template to config.inc.php.		
+	* New feature: 
+		When viewing the logs screen, old logs are cleaned out as per a configurable
+		number of days.
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Changed display of links on home page. In particular, change "Public Site
-    Lising" to "Public Sites". Removed "links" header and removed header
-    formattingfrom help link. Also added text to public site listing.
+	* Bug Fix: 
+		Sites associated with a class and class sites now can properly add the class
+		as an editor.
+		(Adam Franco)
 		
-    * New feature: #1036499  (Alex Chapin) 
-    Added a config option to include registration link below login fields when
-    there has been no authentication. Also added config option to include a
-    externalauthentication help text string.	
+	* Bug Fix: 
+		Segue now prints a nice error instructing the user to update thier links if
+		a bad link tries to get a non-existant section or page and creates a
+		corrupted section or page object.
+		(Adam Franco)
 		
-    * New feature:  (Alex Chapin) 
-    Added a config option to include forgot your password link below login
-    fields when there has been no authentication. This allows users to request
-    Segue to reset the passwords for their Segue user accounts (i.e. those
-    accountswhose authentication type is "db")		
+	* New feature: 
+		When copying a site, section, or page, links internal to that part (such as
+		links in a content block that point to another page in the site or section)
+		are now updated to point to the appropriate place in the new version of the
+		part. 
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    HTMLAREA and plaintext box editing now behavies better with respect to line
-    returns. HTMLArea submissions now have the first line return removed to
-    prevent them from accumulating. Plain textarea line returns are converted to
-    &lt;br/&gt; tags.
+	* Bug Fix: 
+		When editing slots, information about whether the slot was in use not or not
+		is now accurate.
+		(Alex Chapin)
 		
-    * Change:  (Adam Franco) 
-    Discussions now display 'cancel' buttons when in post or rate modes.
+	* Change: 
 		
-    * New feature:  (Adam Franco) 
-    Added 'Preview as user' functionality (found in the Permissions screen) that
-    allows the owner of a site to see what the site would look like for other
-    users (including 'everyone' and 'institute'). This can give site owners a
-    betterunderstanding of the permissions system.
+		Added new template to config.inc.php.
+		(Alex Chapin)		
 		
-    * New feature:  (Alex Chapin) 
-    Added Your Posts link to home page (default.inc.php). Your posts displays
-    all discussion/assessment posts the current user has made on all sites.
-    Administrators will have the option to view all discussion/assessment posts
-    acrossall sites for all users or find all the posts of a given user.
+	* Change: 
+		Changed display of links on home page. In particular, change "Public Site
+		Lising" to "Public Sites". Removed "links" header and removed header
+		formatting from help link. Also added text to public site listing.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Changed the way internal links (i.e. links to other pages in same site) are
-    saved when added via section and page link types and via story link types.
-    Specifically, the full uri portion of internal link urls are replaced with a
-    constant (similiar to Media Library path) when saved to database. This will
-    allow for updating these links correctly when copying a site or moving a
-    sitefrom one instance of Segue to another.		
+	* New feature: #1036499 
+		Added a config option to include registration link below login fields when
+		there has been no authentication. Also added config option to include a
+		external authentication help text string.
+		(Alex Chapin)	
 		
-    * Change:  (Alex Chapin) 
-    Changed Active-X editor so that it links to the Media Library for images.		
+	* New feature: 
+		Added a config option to include forgot your password link below login
+		fields when there has been no authentication. This allows users to request
+		Segue to reset the passwords for their Segue user accounts (i.e. those
+		accounts whose authentication type is "db")
+		(Alex Chapin)		
 		
-    * Change: #865093  (Adam Franco) 
-    View and activate permission settings on template sites now affect who/when
-    theyappear for users creating sites.
+	* Bug Fix: 
+		HTMLAREA and plaintext box editing now behavies better with respect to line
+		returns. HTMLArea submissions now have the first line return removed to
+		prevent them from accumulating. Plain textarea line returns are converted to
+		&lt;br /&gt; tags.
+		(Adam Franco)
 		
-    * Change:  (Adam Franco) 
-    Added the HTML Area editor to Image, Link, and File, story types.
+	* Change: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed bug in display of stories by enclosing each story in a table to
-    preventedit and discuss/assess links from shifting across stories
+		Discussions now display 'cancel' buttons when in post or rate modes.
+		(Adam Franco)
 		
-    * Change:  (Adam Franco) 
-    When logging in and logging out, users are kept on the same page if possible
-    insteadof being redirected back to the default page.
+	* New feature: 
+		Added 'Preview as user' functionality (found in the Permissions screen) that
+		allows the owner of a site to see what the site would look like for other
+		users (including 'everyone' and 'institute'). This can give site owners a
+		better understanding of the permissions system.
+		(Adam Franco)
 		
-    * Change:  (Adam Franco) 
-    The 'Site not availible' error is now more informative and includes links to
-    "Home" as well as a "create site" link if the active user is allowed to
-    create a site in that place. The latter is useful when taking advantage of
-    thevhost functionality.
+	* New feature: 
+		Added Your Posts link to home page (default.inc.php). Your posts displays
+		all discussion/assessment posts the current user has made on all sites.
+		Administrators will have the option to view all discussion/assessment posts
+		across all sites for all users or find all the posts of a given user.
+		(Alex Chapin)
 		
-    * Change:  (Adam Franco) 
-    When Changing to a differnt active user as admin, you are now kept on the
-    samepage.
+	* Change: 
+		Changed the way internal links (i.e. links to other pages in same site) are
+		saved when added via section and page link types and via story link types.
+		Specifically, the full uri portion of internal link urls are replaced with a
+		constant (similiar to Media Library path) when saved to database. This will
+		allow for updating these links correctly when copying a site or moving a
+		site from one instance of Segue to another.
+		(Alex Chapin)		
 		
-    * New feature:  (Gabe Schine) 
-    Segue can now be configured to restrict users to given sites based on the
-    virtual host asked for. Each vhost must be set up on the webserver as well
-    asin the Segue config.
+	* Change: 
 		
-    * Bug Fix:  (Alex Chapin) 
-    stripped html tags from of first 25 characters of content that is the topic
-    of discussion and is displayed in discussion/assessment participation 
+		Changed Active-X editor so that it links to the Media Library for images.
+		(Alex Chapin)		
 		
-    * Change:  (Adam Franco) 
-    Changed the way semesters are defined and handled. Segue can now be
-    configured to have as few or many semesters as desired, each with custom
-    start/enddays.
+	* Change: #865093 
+		View and activate permission settings on template sites now affect who/when
+		they appear for users creating sites.
+		(Adam Franco)
 		
-    **** IMPORTANT *** Change:  (Adam Franco) 
-    The semester-handling changes involve new config options if upgrading from
-    Segue 1.2.x or earlier. Change also necessitates a database table change if
-    semesters other than w,s,l,f are used. These table changes can be made by
-    runningthe 1.3.0 update under 'admin tools' --&gt; 'updates'
+	* Change: 
 		
-    * Bug Fix:  (Adam Franco) 
-    Classes are now ordered by year, semester, and code on the default page.
+		Added the HTML Area editor to Image, Link, and File, story types.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    sites.php now queries the new (as of a year ago) tables when checking for
-    thetype of a site.
+	* Bug Fix: 
+		Fixed bug in display of stories by enclosing each story in a table to
+		prevent edit and discuss/assess links from shifting across stories
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    Rating can now be set to zero. The default, NULL, -- set by an empty field
-    --is "no rating".
+	* Change: 
+		When logging in and logging out, users are kept on the same page if possible
+		instead of being redirected back to the default page.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Public Site Listing now prints next/previous links to additional pages.
+	* Change: 
+		The 'Site not availible' error is now more informative and includes links to
+		"Home" as well as a "create site" link if the active user is allowed to
+		create a site in that place. The latter is useful when taking advantage of
+		the vhost functionality.
+		(Adam Franco)
 		
-    * New feature:  (Adam Franco) 
-    Added error-printing functions to print out backtraces neatly.
+	* Change: 
+		When Changing to a differnt active user as admin, you are now kept on the
+		same page.
+		(Adam Franco)
 		
-    * New feature:  (Alex Chapin) 
-    Added Media Library link to text content block UI to allow users to easily
-    add media files to text content blocks in a way that is portable across
-    copies of a site and can be exported from one instance of Segue to another.
-    This Media Library link allows users to easily get urls of Media Library
-    files to copy/paste into HTML or text editors. When text content blocks are
-    saved to database the $cfg[uploadurl] and $sitename portions of Media
-    Library file urls (i.e. entire url except filename) are converted to a
-    placeholder (i.e. unique string). When text content blocks are displayed or
-    edited (i.e. fetched from database), the url placeholder is converted back
-    to actual current media file url (based on current $cfg[uploadurl] and site 
+	* New feature: 
+		Segue can now be configured to restrict users to given sites based on the
+		virtual host asked for. Each vhost must be set up on the webserver as well
+		as in the Segue config.
+		(Gabe Schine)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed bug in media library (filebrowser.php) that prevented getting custom
-    upload limits when called from add content block UI 
+	* Bug Fix: 
+		stripped html tags from of first 25 characters of content that is the topic
+		of discussion and is displayed in discussion/assessment participation
+		summary. 
+		(Alex Chapin)
 		
-    * Change: #982246  (Alex Chapin) 
-    Link type pages no longer open in new window.
+	* Change: 
+		Changed the way semesters are defined and handled. Segue can now be
+		configured to have as few or many semesters as desired, each with custom
+		start/end days.
+		(Adam Franco)
 		
-    * Change: #982246  (Alex Chapin) 
-    Link type content blocks no longer print out urls greater than 70 characters
-    but instead truncate their display to avoid stretching their enclosing 
+	**** IMPORTANT *** Change: 
+		The semester-handling changes involve new config options if upgrading from
+		Segue 1.2.x or earlier. Change also necessitates a database table change if
+		semesters other than w,s,l,f are used. These table changes can be made by
+		running the 1.3.0 update under 'admin tools' --&gt; 'updates'
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Have changed full text link (for content blocks with extended text) so that
-    it is appended at the end of short text as "...more." Have put an anchor on
-    title of discuss/assess UI and added reference to this anchor in the
-    discuss/assesslink.
+	* Bug Fix: 
 		
-    * New feature:  (Alex Chapin) 
-    Have added an option to chose a discuss/assess link label. Choses are:
-    discuss,assess, comment, review and register.
+		Classes are now ordered by year, semester, and code on the default page.
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Have moved code in add_student.php that gets lists of students in class
-    groupsto new getclassstudents function in class_functions/empty.inc.php.
+	* Bug Fix: 
+		sites.php now queries the new (as of a year ago) tables when checking for
+		the type of a site.
+		(Adam Franco)
 		
-    * New feature:  (Alex Chapin) 
-    Have added a function in class_functions for getting list of students from
-    class groups in Segue tables. Have also added to this function code to get a
-    list of students in a given class from LDAP groups. This code appears in
-    midd.inc.phpand can be used as a reference for other ldap implementations.
+	* Bug Fix: 
+		Rating can now be set to zero. The default, NULL, -- set by an empty field
+		-- is "no rating".
+		(Adam Franco)
 		
-    * New feature:  (Alex Chapin) 
-    Added student roster listing UI for class type sites. This UI allows site
-    owners to add and remove users from their class group. In addition, class
-    type sites will list all students in class in discussion moderation UI,
-    regardless of whether or not they have posted to discussions/assessments on
-    theclass site.
+	* Bug Fix: 
 		
-    * New feature: #956123  (Alex Chapin) 
-    Added visitor and guest usertypes. Visitors can participate in public
-    discussions and can be assigned permissions. Visitors cannot view
-    institute-only content. Guests can participate in all
-    discussions/assessments accessible to institute users and can view
-    institute-only content. Neither visitors nor guests are given a slot for a
-    personalsite.
+		Public Site Listing now prints next/previous links to additional pages.
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Changed passwd.php to handle 1. changing passwords of users authenticated
-    via Segue's db 2. registering new visitor type users 3. Log in of existing 
+	* New feature: 
 		
-    * New feature: #957605  (Alex Chapin) 
-    Added user registration UI that appears in public discussions when posts are
-    made without authentication. User registration UI requires unauthenticated
-    users to submit their name and email address when posting to public
-    discussions. Email address in user registration UI is checked against email
-    addresses in user table. In addition, their is a new config option for
-    specifying emails that cannot be registered as visitor (these would be
-    emails address that are set up for an institution' users and part of their
-    user account and authentication. Segue user accounts are created for users
-    who register this way and these users are sent an email with their username
-    (=email address) and a auto- generated password. These users are visitor 
+		Added error-printing functions to print out backtraces neatly.
+		(Adam Franco)
 		
-    * New feature:  (Adam Franco) 
-    Added an RSS Feed content type that allows the inclusion of RSS feeds into a
-    Seguesite.
+	* New feature: 
+		Added Media Library link to text content block UI to allow users to easily
+		add media files to text content blocks in a way that is portable across
+		copies of a site and can be exported from one instance of Segue to another.
+		This Media Library link allows users to easily get urls of Media Library
+		files to copy/paste into HTML or text editors. When text content blocks are
+		saved to database the $cfg[uploadurl] and $sitename portions of Media
+		Library file urls (i.e. entire url except filename) are converted to a
+		placeholder (i.e. unique string). When text content blocks are displayed or
+		edited (i.e. fetched from database), the url placeholder is converted back
+		to actual current media file url (based on current $cfg[uploadurl] and site
+		name. 
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    Re-wrote the canview() and hasPermission() functions. They are now more
-    understandable and commented, as well as having less redundency. Also, they
-    nowsupport the visitor user-type.
+	* Bug Fix: 
+		Fixed bug in media library (filebrowser.php) that prevented getting custom
+		upload limits when called from add content block UI
+		(add_story_form_1_item.inc) 
+		(Alex Chapin)
+		
+	* Change: #982246 
+		
+		Link type pages no longer open in new window.
+		(Alex Chapin)
+		
+	* Change: #982246 
+		Link type content blocks no longer print out urls greater than 70 characters
+		but instead truncate their display to avoid stretching their enclosing
+		tables. 
+		(Alex Chapin)
+		
+	* Change: 
+		Have changed full text link (for content blocks with extended text) so that
+		it is appended at the end of short text as "...more." Have put an anchor on
+		title of discuss/assess UI and added reference to this anchor in the
+		discuss/assess link.
+		(Alex Chapin)
+		
+	* New feature: 
+		Have added an option to chose a discuss/assess link label. Choses are:
+		discuss, assess, comment, review and register.
+		(Alex Chapin)
+		
+	* Change: 
+		Have moved code in add_student.php that gets lists of students in class
+		groups to new getclassstudents function in class_functions/empty.inc.php.
+		(Alex Chapin)
+		
+	* New feature: 
+		Have added a function in class_functions for getting list of students from
+		class groups in Segue tables. Have also added to this function code to get a
+		list of students in a given class from LDAP groups. This code appears in
+		midd.inc.php and can be used as a reference for other ldap implementations.
+		(Alex Chapin)
+		
+	* New feature: 
+		Added student roster listing UI for class type sites. This UI allows site
+		owners to add and remove users from their class group. In addition, class
+		type sites will list all students in class in discussion moderation UI,
+		regardless of whether or not they have posted to discussions/assessments on
+		the class site.
+		(Alex Chapin)
+		
+	* New feature: #956123 
+		Added visitor and guest usertypes. Visitors can participate in public
+		discussions and can be assigned permissions. Visitors cannot view
+		institute-only content. Guests can participate in all
+		discussions/assessments accessible to institute users and can view
+		institute-only content. Neither visitors nor guests are given a slot for a
+		personal site.
+		(Alex Chapin)
+		
+	* Change: 
+		Changed passwd.php to handle 1. changing passwords of users authenticated
+		via Segue's db 2. registering new visitor type users 3. Log in of existing
+		users. 
+		(Alex Chapin)
+		
+	* New feature: #957605 
+		Added user registration UI that appears in public discussions when posts are
+		made without authentication. User registration UI requires unauthenticated
+		users to submit their name and email address when posting to public
+		discussions. Email address in user registration UI is checked against email
+		addresses in user table. In addition, their is a new config option for
+		specifying emails that cannot be registered as visitor (these would be
+		emails address that are set up for an institution' users and part of their
+		user account and authentication. Segue user accounts are created for users
+		who register this way and these users are sent an email with their username
+		(=email address) and a auto- generated password. These users are visitor
+		usertypes. 
+		(Alex Chapin)
+		
+	* New feature: 
+		Added an RSS Feed content type that allows the inclusion of RSS feeds into a
+		Segue site.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Re-wrote the canview() and hasPermission() functions. They are now more
+		understandable and commented, as well as having less redundency. Also, they
+		now support the visitor user-type.
+		(Adam Franco)
 	
-
-v. 1.2.3 (2004-08-04) 
+v. 1.2.3 (2004-08-04)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Alex Chapin) 
-    HTMLArea editor automatically inserts a break tag causing stories which user
-    do not add content to have content. Fixed this bug by deleting break tag if
-    itis the only content in the editor
+	* Bug Fix: 
+		HTMLArea editor automatically inserts a break tag causing stories which user
+		do not add content to have content. Fixed this bug by deleting break tag if
+		it is the only content in the editor
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    fixed bug that allowed users within institute ip range to post to
-    discussionsfor only institute users without logging in.
+	* Bug Fix: 
+		fixed bug that allowed users within institute ip range to post to
+		discussions for only institute users without logging in.
+		(Alex Chapin)
 		
-    * Change:  (Gabe Schine) 
-    Changed user-type output in status bar to display full words (ie, student
-    insteadof stud, professor instead of prof, etc).
+	* Change: 
+		Changed user-type output in status bar to display full words (ie, student
+		instead of stud, professor instead of prof, etc).
+		(Gabe Schine)
 		
-    * Bug Fix:  (Gabe Schine) 
-    Fixeddiscussion post output to strip slashes, avoided extra '\' characters.
+	* Bug Fix: 
 		
-    * New feature:  (Gabe Schine) 
-    Added in public site listing feature.
+		Fixeddiscussion post output to strip slashes, avoided extra '\' characters.
+		(Gabe Schine)
 		
-    * Bug Fix:  (Gabe Schine) 
-    Changed semester-list in add-course admin tools view so that it corresponds
-    to the list given in the config file instead of a static Middlebury-based 
+	* New feature: 
+		
+		Added in public site listing feature.
+		(Gabe Schine)
+		
+	* Bug Fix: 
+		Changed semester-list in add-course admin tools view so that it corresponds
+		to the list given in the config file instead of a static Middlebury-based
+		list. 
+		(Gabe Schine)
 	
-
-v. 1.2.2 (2004-07-06) 
+v. 1.2.2 (2004-07-06)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Gabe Schine) 
-    Fixed a UI bug in which story timestamps/editors would display "edited by
-    ..."when nobody had done any editing.
+	* Bug Fix: 
+		Fixed a UI bug in which story timestamps/editors would display"edited by
+		..." when nobody had done any editing.
+		(Gabe Schine)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed browser sniffer bug that prevented inclusion of html editor in
-    add_site_form_5_header.incand add_site_form_5_footer.inc
+	* Bug Fix: 
+		Fixed browser sniffer bug that prevented inclusion of html editorin
+		add_site_form_5_header.inc and add_site_form_5_footer.inc
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed problem uploading files to Media Library that occured in Mac Safari.
-    Removedbrowser specific code from filebrowser.php
+	* Bug Fix: 
+		Fixed problem uploading files to Media Library that occured inMac Safari.
+		Removed browser specific code from filebrowser.php
+		(Alex Chapin)
 	
-
-v. 1.2.1 (2004-06-17) 
+v. 1.2.1 (2004-06-17)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed a problem uploading files to Media Library that occured in Windows
-    InternetExplorer.
+	* Bug Fix: 
+		Fixed a problem uploading files to Media Library that occured in Windows
+		Internet Explorer.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Link to edit discussion/assessment options from discussion/assessment UI now
-    returnsusers back to this location (instead of page)	
+	* Change: 
+		Link to edit discussion/assessment options from discussion/assessment UI now
+		returns users back to this location (instead of page)
+		(Alex Chapin)	
 	
-
-v. 1.2.0 (2004-06-10) 
+v. 1.2.0 (2004-06-10)
 ----------------------------------------------------
 		
-    * New feature: #957602  (Alex Chapin) 
-    Added HTMLarea version 3.0 to UI for adding content, editing site headers
-    and footers and discussion posts. 2 implementations of the editor are used,
-    one for content blocks, site headers and footers and another for discussion 	
+	* New feature: #957602 
+		Added HTMLarea version 3.0 to UI for adding content, editing site headers
+		and footers and discussion posts. 2 implementations of the editor are used,
+		one for content blocks, site headers and footers and another for discussion
+		posts. 
+		(Alex Chapin)	
 		
-    **** IMPORTANT *** Change:  (Alex Chapin) 
-    The HTMLarea editor works with Mozilla 1.3 beta or higher or Windows
-    Internet Explorer 5.5. or higher. This editor doesn't work in Safari or Mac
-    InternetExplorer. For these browsers, a standard textarea is available.
+	**** IMPORTANT *** Change: 
+		The HTMLarea editor works with Mozilla 1.3 beta or higher or Windows
+		Internet Explorer 5.5. or higher. This editor doesn't work in Safari or Mac
+		Internet Explorer. For these browsers, a standard textarea is available.
+		(Alex Chapin)
 		
-    * New feature: #957602  (Alex Chapin) 
-    Added UI for discussion/assessment participation summary and moderation.
-    This UI gives site owners a list of all the participants in a given
-    discussion/assessment or in all the discussions/assessments in the given
-    site. This UI also allows site owners to email all the participants in given
-    discussion/assessment or all the participants of all discussions/assessments
-    in the given site. finally this UI allows site owners to sort all discussion
-    postsby rating, post time or user name.
+	* New feature: #957602 
+		Added UI for discussion/assessment participation summary and moderation.
+		This UI gives site owners a list of all the participants in a given
+		discussion/assessment or in all the discussions/assessments in the given
+		site. This UI also allows site owners to email all the participants in given
+		discussion/assessment or all the participants of all discussions/assessments
+		in the given site. finally this UI allows site owners to sort all discussion
+		posts by rating, post time or user name.
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added summary of discussion/assessment settings that is displayed for site
-    ownerswhen they view discussions/assessments on their sites.
+	* New feature: 
+		Added summary of discussion/assessment settings that is displayed for site
+		owners when they view discussions/assessments on their sites.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed bug that allowed discussions to be enabled without granting
-    permissionsto discuss to any group/users
+	* Bug Fix: 
+		Fixed bug that allowed discussions to be enabled without granting
+		permissions to discuss to any group/users
+		(Alex Chapin)
 	
-
-v. 1.1.1 (2004-04-23) 
+v. 1.1.1 (2004-04-23)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed a problem in the _first_time_run.inc.php SQL syntax that was
-    preventing the discussion table from being created for new installs of 
+	* Bug Fix: 
+		Fixed a problem in the _first_time_run.inc.php SQL syntax that was
+		preventing the discussion table from being created for new installs of
+		Segue. 
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed some missing quotation marks, ", in "admin tools" --&gt; "edit users"
-    page that were causing problems with spaces in names. Thanks go to Steve
-    fromNottingham Trent University, England, for finding this problem.
+	* Bug Fix: 
+		Fixed some missing quotation marks, ", in "admin tools" --&gt; "edit users"
+		page that were causing problems with spaces in names. Thanks go to Steve
+		from Nottingham Trent University, England, for finding this problem.
+		(Adam Franco)
 	
-
-v. 1.1.0 (2004-04-22) 
+v. 1.1.0 (2004-04-22)
 ----------------------------------------------------
 		
-    * New feature:  (Adam Franco) 
-    Command-line XML import/export scripts now allow for backup of Segue sites
-    to flat XML files. For more information please reference the README in the
-    segue/export/directory.
+	* New feature: 
+		Command-line XML import/export scripts now allow for backup of Segue sites
+		to flat XML files. For more information please reference the README in the
+		segue/export/ directory.
+		(Adam Franco)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Fixed bug in admin tools search users UI (users.php) so search pagination
-    workingproperly.
+	* Bug Fix: 
+		Fixed bug in admin tools search users UI (users.php) so search pagination
+		working properly.
+		(Alex Chapin)
 		
-    * Bug Fix:  (Alex Chapin) 
-    Posting to discussions now works reliably on all browsers (PC Internet
-    Explorer sometimes would not post because did not interpret postform action
-    pathcorrectly).
+	* Bug Fix: 
+		Posting to discussions now works reliably on all browsers (PC Internet
+		Explorer sometimes would not post because did not interpret postform action
+		path correctly).
+		(Alex Chapin)
 		
-    * Bug Fix:  (Adam Franco) 
-    Adding of editors now works in the 'discussions settings' step of the
-    add/editstory interface.
+	* Bug Fix: 
+		Adding of editors now works in the 'discussions settings' step of the
+		add/edit story interface.
+		(Adam Franco)
 		
-    **** IMPORTANT *** Change:  (Alex Chapin) 
-    New database fields have been added to the story and discussion tables. To
-    add new fields, log in as an administrator, then go to 'admin tools' &gt;
-    'segueupdates' and run the 1.1.0 update if needed.
+	**** IMPORTANT *** Change: 
+		New database fields have been added to the story and discussion tables. To
+		add new fields, log in as an administrator, then go to 'admin tools' &gt;
+		'segue updates' and run the 1.1.0 update if needed.
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added information about discussion/assessment access such as authentication
-    requirements, information about what will be displayed to other users (e.g.
-    author name, post content) and what post information is available to the
-    siteowner.	
+	* New feature: 
+		Added information about discussion/assessment access such as authentication
+		requirements, information about what will be displayed to other users (e.g.
+		author name, post content) and what post information is available to the
+		site owner.
+		(Alex Chapin)	
 		
-    * New feature: #888585  (Alex Chapin) 
-    Added file upload UI to discussion/assessment post form. This feature will
-    allow those who post to a discussion to attach a file. Upload UI uses the
-    site Media Library (accessible from filebrowser.php). When the Media Library
-    is accessed from discussion/assessment, only files uploaded by the currently
-    authenticated user will appear (unless that user is the site owner). This
-    new functionality will allow the discussion/assessment UI to function as an
-    assignment/assessmentdropbox.
+	* New feature: #888585 
+		Added file upload UI to discussion/assessment post form. This feature will
+		allow those who post to a discussion to attach a file. Upload UI uses the
+		site Media Library (accessible from filebrowser.php). When the Media Library
+		is accessed from discussion/assessment, only files uploaded by the currently
+		authenticated user will appear (unless that user is the site owner). This
+		new functionality will allow the discussion/assessment UI to function as an
+		assignment/assessment dropbox.
+		(Alex Chapin)
 		
-    * New feature: #888588  (Alex Chapin) 
-    Added option to rate discussion/assessment posts. This feature will allow
-    site owners rate the quality of posts. In assessment mode this rating can be
-    usedas a grade.
+	* New feature: #888588 
+		Added option to rate discussion/assessment posts. This feature will allow
+		site owners rate the quality of posts. In assessment mode this rating can be
+		used as a grade.
+		(Alex Chapin)
 		
-    * New feature: #888588  (Alex Chapin) 
-    Added option to show or hide authors of discussion/assessment posts. This
-    feature will allow site owners to create publicly anonymous discussions
-    while retaining their own access to the identity of discussion post authors.
-    All users (other then the site owner) will see only then own posts
-    identified. This feature will also allow site owners to let all users see
-    then results of an assessment without revealing identity of assessment post 
+	* New feature: #888588 
+		Added option to show or hide authors of discussion/assessment posts. This
+		feature will allow site owners to create publicly anonymous discussions
+		while retaining their own access to the identity of discussion post authors.
+		All users (other then the site owner) will see only then own posts
+		identified. This feature will also allow site owners to let all users see
+		then results of an assessment without revealing identity of assessment post
+		authors. 
+		(Alex Chapin)
 		
-    * New feature: #888588  (Alex Chapin) 
-    Added option to show or hide discussion/assessment posts. This feature will
-    allow site owners to use discussions as assessments. Thus if hide posts is
-    set then posts referred to collectively as an Assessment. All users (other
-    thenthe site owner) will see their own posts only.
+	* New feature: #888588 
+		Added option to show or hide discussion/assessment posts. This feature will
+		allow site owners to use discussions as assessments. Thus if hide posts is
+		set then posts referred to collectively as an Assessment. All users (other
+		then the site owner) will see their own posts only.
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added option to email site owner all discussion/assessment posts. This
-    feature will allow site owners to get email updates of posts to their 
+	* New feature: 
+		Added option to email site owner all discussion/assessment posts. This
+		feature will allow site owners to get email updates of posts to their
+		discussions. 
+		(Alex Chapin)
 		
-    * New feature:  (Alex Chapin) 
-    Added option to sort discussion/assessment posts by recent first or recent
-    last,rating and author.	
+	* New feature: 
+		Added option to sort discussion/assessment posts by recent first or recent
+		last, rating and author.
+		(Alex Chapin)	
 		
-    * Change:  (Alex Chapin) 
-    Information on who posted last to a given discussion/assessment has been
-    removed. This has been done to preserve integrity of assessment mode
-    describedabove.
+	* Change: 
+		Information on who posted last to a given discussion/assessment has been
+		removed. This has been done to preserve integrity of assessment mode
+		described above.
+		(Alex Chapin)
 		
-    * Change:  (Alex Chapin) 
-    Link to discussions have been changed from Discussion to Discuss/Assess.
+	* Change: 
 		
-    * Change:  (Alex Chapin) 
-    Full name (instead of username) now displayed in story author and editor 
+		Link to discussions have been changed from Discussion to Discuss/Assess.
+		(Alex Chapin)
 		
-    * Change:  (Adam Franco) 
-    The user full name, email, and type in the db are now updated from LDAP or
-    other auth method if the db version doesn't match. Fixed bug that prevented
-    indentationof replies to thread in Windows Internet Explorer.
+	* Change: 
+		Full name (instead of username) now displayed in story author and editor
+		attribution. 
+		(Alex Chapin)
+		
+	* Change: 
+		The user full name, email, and type in the db are now updated from LDAP or
+		other auth method if the db version doesn't match. Fixed bug that prevented
+		indentation of replies to thread in Windows Internet Explorer.
+		(Adam Franco)
 	
-
-v. 1.0.6 (2003-12-29) 
+v. 1.0.6 (2003-12-29)
 ----------------------------------------------------
 		
-    * Bug Fix: #750109  (Adam Franco) 
-    Now doesn't attempt to perform operations on nonexistant LDAP results.
+	* Bug Fix: #750109 
 		
-    * Bug Fix: #865065  (Gabe Schine) 
-    Now checks that the destination name is not the same as the source name and
-    isalso not an empty string.
+		Now doesn't attempt to perform operations on nonexistant LDAP results.
+		(Adam Franco)
+		
+	* Bug Fix: #865065 
+		Now checks that the destination name is not the same as the source name and
+		is also not an empty string.
+		(Gabe Schine)
 	
-
-v. 1.0.5 (2003-12-19) 
+v. 1.0.5 (2003-12-19)
 ----------------------------------------------------
 		
-    * Change:  (Adam Franco) 
-    LDAP authentication has been generalized and should now work with most LDAP 
+	* Change: 
+		LDAP authentication has been generalized and should now work with most LDAP
+		servers. 
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Refined admin tools UI. Added all Segue users to add/edit user UI and
-    allowed for searching by auth and user type. Added pagination to add/edit
-    slotsUI and refined layout of search results.
+	* Change: 
+		Refined admin tools UI. Added all Segue users to add/edit user UI and
+		allowed for searching by auth and user type. Added pagination to add/edit
+		slots UI and refined layout of search results.
+		(Alex Chapin)
 		
-    * Bug Fix: #853466  (Alex Chapin) 
-    Classes now show up if the user is an admin.
+	* Bug Fix: #853466 
 		
-    * Bug Fix: #853497  (Alex Chapin) 
-    Removed link to assessments on default.inc.php
+		Classes now show up if the user is an admin.
+		(Alex Chapin)
 		
-    * Bug Fix: #853501  (Alex Chapin) 
-    Fixed a bug in add/edit classes UI so that classes existing classes can now
-    beedit.
+	* Bug Fix: #853497 
+		
+		Removed link to assessments on default.inc.php
+		(Alex Chapin)
+		
+	* Bug Fix: #853501 
+		Fixed a bug in add/edit classes UI so that classes existing classes can now
+		be edit.
+		(Alex Chapin)
 	
-
-v. 1.0.4 (2003-11-13) 
+v. 1.0.4 (2003-11-13)
 ----------------------------------------------------
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed a bug in the 1.0.3 permissions checking that prevented institution
-    usersfrom accessing sites.
+	* Bug Fix: 
+		Fixed a bug in the 1.0.3 permissions checking that prevented institution
+		users from accessing sites.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Fixed a bug in fetching of sites where a user is editor, so that a database
-    connectionis guaranteed.
+	* Bug Fix: 
+		Fixed a bug in fetching of sites where a user is editor, so that a database
+		connection is guaranteed.
+		(Adam Franco)
 	
-
-v. 1.0.3 (2003-11-12) 
+v. 1.0.3 (2003-11-12)
 ----------------------------------------------------
 		
-    * Change:  (Dobo Radichkov) 
-    Default page and permissions checking re-written to be faster.
+	* Change: 
 		
-    * Change:  (Adam Franco) 
-    Permissions window now has Save/Cancel buttons at the top of the window.
+		Default page and permissions checking re-written to be faster.
+		(Dobo Radichkov)
 		
-    **** IMPORTANT *** Change:  (Adam Franco) 
-    Segue expects that usernames are all lower-case. Checks are in place to
-    force the creation of lowercase usernames when adding users, but if you are
-    using a custom authentication modules, these checks may be bypassed and you
-    should check that usernames in your user table are lower-case if you see
-    strangeproblems with permissions.
+	* Change: 
 		
-    * New feature:  (Adam Franco) 
-    Addition of an update framework for applying database updates in Segue. When
-    templates/database updates are in a release, they will appear in the "Segue
-    Updates"section of the "admin tools".
+		Permissions window now has Save/Cancel buttons at the top of the window.
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Two new site templates: "Advanced: Single Section" and "Advanced: Blank".
+	**** IMPORTANT *** Change: 
+		Segue expects that usernames are all lower-case. Checks are in place to
+		force the creation of lowercase usernames when adding users, but if you are
+		using a custom authentication modules, these checks may be bypassed and you
+		should check that usernames in your user table are lower-case if you see
+		strange problems with permissions.
+		(Adam Franco)
 		
-    **** IMPORTANT *** Change:  (Adam Franco) 
-    New templates have been added. To create the new templates, log in as an
-    administrator, then go to 'admin tools' --&gt; 'segue updates' and run the
-    1.0.3update if needed.
+	* New feature: 
+		Addition of an update framework for applying database updates in Segue. When
+		templates/database updates are in a release, they will appear in the "Segue
+		Updates" section of the "admin tools".
+		(Adam Franco)
 		
-    * Change:  (Alex Chapin) 
-    Discussions now appear in-line instead of in a popup window.
+	* Change: 
 		
-    * Change:  (Alex Chapin) 
-    Admin screens for users, classes, slots, and logs now have improved
-    searchingand pagination.
+		Two new site templates: "Advanced: Single Section" and "Advanced: Blank".
+		(Alex Chapin)
 		
-    * Bug Fix: #776452  (Gabe Schine) 
-    Anonymous/Unauthenticated discussions are now working.
+	**** IMPORTANT *** Change: 
+		New templates have been added. To create the new templates, log in as an
+		administrator, then go to 'admin tools' --&gt; 'segue updates' and run the
+		1.0.3 update if needed.
+		(Adam Franco)
 		
-    * Bug Fix: #809335  (Adam Franco) 
-    Class groups not listed from members
+	* Change: 
 		
-    * Change: #804005  (Adam Franco) 
-    Editors of sections can now enable discussions for that section and select
-    which(of the already availible editors) can post to it.
+		Discussions now appear in-line instead of in a popup window.
+		(Alex Chapin)
 		
-    * Bug Fix: #803899  (Adam Franco) 
-    Co-Teaching profs now don't see site creation, grouping, or editing links if
-    they are not the owner for a site. They see editing links as apropriate if
-    theyare editors.
+	* Change: 
+		Admin screens for users, classes, slots, and logs now have improved
+		searching and pagination.
+		(Alex Chapin)
 		
-    * Bug Fix: #803894  (Adam Franco) 
-    User's Full Names containing apostrophes now don't throw errors when adding
-    tothe user table.
+	* Bug Fix: #776452 
+		
+		Anonymous/Unauthenticated discussions are now working.
+		(Gabe Schine)
+		
+	* Bug Fix: #809335 
+		
+		Class groups not listed from members
+		(Adam Franco)
+		
+	* Change: #804005 
+		Editors of sections can now enable discussions for that section and select
+		which (of the already availible editors) can post to it.
+		(Adam Franco)
+		
+	* Bug Fix: #803899 
+		Co-Teaching profs now don't see site creation, grouping, or editing links if
+		they are not the owner for a site. They see editing links as apropriate if
+		they are editors.
+		(Adam Franco)
+		
+	* Bug Fix: #803894 
+		User's Full Names containing apostrophes now don't throw errors when adding
+		to the user table.
+		(Adam Franco)
 	
-
-v. 1.0.2 (2003-09-08) 
+v. 1.0.2 (2003-09-08)
 ----------------------------------------------------
 		
-    * Change: #777065  (Adam Franco) 
-    The admin interface has been changed so that slot and their properties can
-    be changed along side the classes and users. Custom upload limits can be set
-    inthis slot interface now instead of editing the DB directly.
+	* Change: #777065 
+		The admin interface has been changed so that slot and their properties can
+		be changed along side the classes and users. Custom upload limits can be set
+		in this slot interface now instead of editing the DB directly.
+		(Adam Franco)
 		
-    * Bug Fix: #802499  (Adam Franco) 
-    Story problems with the [De]Activate dates have been fixed
+	* Bug Fix: #802499 
 		
-    * Bug Fix: #795587  (Adam Franco) 
-    Problems with the [De]Activate dates have been fixed
+		Story problems with the [De]Activate dates have been fixed
+		(Adam Franco)
 		
-    * Bug Fix: #791954  (Adam Franco) 
-    The Move/Copy UI now shows the sitename to differentiate between similarly
-    titledsites.
+	* Bug Fix: #795587 
+		
+		Problems with the [De]Activate dates have been fixed
+		(Adam Franco)
+		
+	* Bug Fix: #791954 
+		The Move/Copy UI now shows the sitename to differentiate between similarly
+		titled sites.
+		(Adam Franco)
 	
-
-v. 1.0.1 (2003-08-08) 
+v. 1.0.1 (2003-08-08)
 ----------------------------------------------------
 		
-    * Bug Fix: 
-    Fixed the numerous bugs that were generated by the change below. (ouch)
+	* Bug Fix: 
 		
-    * Change: 
-    Slots interface: administrators can now edit owner &amp; media library size for
-    existingslots.
+		Fixed the numerous bugs that were generated by the change below. (ouch)
 		
-    * Bug Fix: #784526  (Adam Franco) 
-    Fixed upload of PHP files bug.
+	* Change: 
+		Slots interface: administrators can now edit owner &amp; media library size for
+		existing slots.
 		
-    **** IMPORTANT *** Change: 
-    DB CHANGE: The 'slot' table has a new column: 'slot_uploadlimit', which is
-    anINT(10), corresponding to the number of bytes of the quota.
+	* Bug Fix: #784526 
 		
-    * New feature: #777065  (Adam Franco) 
-    Media Library quota can be adjusted on a per-site basis through the slot
-    databasetable. Add Slot interface upgraded too.
+		Fixed upload of PHP files bug.
+		(Adam Franco)
 		
-    * Bug Fix: #771969  (Gabe Schine) 
-    Upon logout, the session, instead of being completely destroyed, only unsets
-    Segue-specific variables. The previous functionality was also killing other
-    appsrunning under the same session.
+	**** IMPORTANT *** Change: 
+		DB CHANGE: The 'slot' table has a new column: 'slot_uploadlimit', which is
+		an INT(10), corresponding to the number of bytes of the quota.
+		
+	* New feature: #777065 
+		Media Library quota can be adjusted on a per-site basis through the slot
+		database table. Add Slot interface upgraded too.
+		(Adam Franco)
+		
+	* Bug Fix: #771969 
+		Upon logout, the session, instead of being completely destroyed, only unsets
+		Segue-specific variables. The previous functionality was also killing other
+		apps running under the same session.
+		(Gabe Schine)
 	
-
-v. 1.0.0 rc1 (2003-07-14) 
+v. 1.0.0 rc1 (2003-07-14)
 ----------------------------------------------------
 		
-    * New feature:  (Gabe Schine) 
-    Added new config option: $cfg[domain] -- the cookie domain for session info.
-    Allows session info to cross sites if they are running the same instance of 
+	* New feature: 
+		Added new config option: $cfg[domain] -- the cookie domain for session info.
+		Allows session info to cross sites if they are running the same instance of
+		segue. 
+		(Gabe Schine)
 		
-    * New feature:  (Gabe Schine) 
-    Discussion links now displayed with statistics info.
+	* New feature: 
 		
-    * Change:  (Gabe Schine) 
-    By-line for default page now has a link to a "credits" page with more info
-    aboutthe authors.
+		Discussion links now displayed with statistics info.
+		(Gabe Schine)
 		
-    * Change: 
-    ChangeLog is now held in XML format &amp; converted with XSL!
+	* Change: 
+		By-line for default page now has a link to a "credits" page with more info
+		about the authors.
+		(Gabe Schine)
 		
-    * Change:  (Gabe Schine) 
-    "Powered by Segue" logo now takes you to the Segue page.
+	* Change: 
+		
+		ChangeLog is now held in XML format &amp; converted with XSL!
+		
+	* Change: 
+		
+		"Powered by Segue" logo now takes you to the Segue page.
+		(Gabe Schine)
 	
-
-v. 1.0.0 beta1 (2003-07-11) 
+v. 1.0.0 beta1 (2003-07-11)
 ----------------------------------------------------
 		
-    * Change: 
-    Permissions can now be assigned to link type sections and pages and image
-    andfile type stories.
+	* Change: 
+		Permissions can now be assigned to link type sections and pages and image
+		and file type stories.
 		
-    * Bug Fix: 
-    Headings and dividers are now properly displayed when not logged in.
+	* Bug Fix: 
 		
-    **** IMPORTANT *** Change:  (Adam Franco) 
-    DATABASE CHANGE! The class_number field in the class table should be changed
-    intype from an int(11) to a varchar(15) and the default set to "000".
+		Headings and dividers are now properly displayed when not logged in.
 		
-    * Bug Fix:  (Gabe Schine) 
-    When integrated with an LDAP server, Segue now correctly synchronizes the
-    user and class database tables when adding users/groups as editors who have
-    notyet logged in/been added to the local tables.
+	**** IMPORTANT *** Change: 
+		DATABASE CHANGE! The class_number field in the class table should be changed
+		in type from an int(11) to a varchar(15) and the default set to "000".
+		(Adam Franco)
 		
-    * Change: 
-    Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.
+	* Bug Fix: 
+		When integrated with an LDAP server, Segue now correctly synchronizes the
+		user and class database tables when adding users/groups as editors who have
+		not yet logged in/been added to the local tables.
+		(Gabe Schine)
 		
-    * Change:  (Gabe Schine) 
-    View/add slots interface: a used slot now displays a "-" under the delete
-    columninstead of non-linked "delete" text for clarity.
+	* Change: 
+		
+		Added Dobo Radichkov's name as a main editor on Segue websites &amp; program.
+		
+	* Change: 
+		View/add slots interface: a used slot now displays a "-" under the delete
+		column instead of non-linked "delete" text for clarity.
+		(Gabe Schine)
 	
-
-v. 1.0.0 alpha3 (2003-06-08) 
+v. 1.0.0 alpha3 (2003-06-08)
 ----------------------------------------------------
 		
-    * New feature:  (Adam Franco) 
-    Owners of class sites can now easily add members of their class as an 
+	* New feature: 
+		Owners of class sites can now easily add members of their class as an
+		editor. 
+		(Adam Franco)
 		
-    * Change:  (Adam Franco) 
-    Activation/Deactivation Date form now has valid day options.
+	* Change: 
 		
-    * Change:  (Adam Franco) 
-    When an admin is acting as another person, they can only see what that
-    personwould see.
+		Activation/Deactivation Date form now has valid day options.
+		(Adam Franco)
 		
-    * Bug Fix:  (Gabe Schine) 
-    The "default" page now appropriately shows sites of which a group member is 
+	* Change: 
+		When an admin is acting as another person, they can only see what that
+		person would see.
+		(Adam Franco)
 		
-    * Bug Fix:  (Adam Franco) 
-    Move/Copy now shows sites properly when opened on first page load.
+	* Bug Fix: 
+		The "default" page now appropriately shows sites of which a group member is
+		owner. 
+		(Gabe Schine)
 		
-    * Change: 
-    More debug output has been removed.
+	* Bug Fix: 
+		
+		Move/Copy now shows sites properly when opened on first page load.
+		(Adam Franco)
+		
+	* Change: 
+		
+		More debug output has been removed.
 	
-
-v. 1.0.0 alpha2 (2003-06-07) 
+v. 1.0.0 alpha2 (2003-06-07)
 ----------------------------------------------------
 		
-    * Change:  (Gabe Schine) 
-    Removed debug output.
+	* Change: 
+		
+		Removed debug output.
+		(Gabe Schine)
 	
-
-v. 1.0.0 alpha (2003-06-06) 
+v. 1.0.0 alpha (2003-06-06)
 ----------------------------------------------------
 		
-    * New feature: 
-    First official release.
+	* New feature: 
+		
+		First official release.
 	

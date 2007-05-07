@@ -19,7 +19,7 @@
 			so that new pages/sections are always at the end of the list. Before, 
 			moves or deletions of pages/sections would result in gaps in the order 
 			which could allow new pages/sections to be given an order other than 
-			the end of the list.
+			the end of the list. 
 		</fix>
 		<fix author='adam' ref='1663713' reftype='bug'>
 			Initial version of content is now saved creating a new content block,
