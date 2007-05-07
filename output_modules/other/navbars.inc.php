@@ -233,7 +233,7 @@ if ($thisSection) {
 								
 								$contributions = participantContributions($editor, $site);							
 								$userDiscussions = participantDiscussions($editor, $site);
-								printpre($contributions); 
+							//	printpre($contributions); 
 								
 								$urlname = urlencode($fname);
 								

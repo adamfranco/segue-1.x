@@ -22,7 +22,7 @@ $_nav_width = array(
 );
 
 $_site_width = array(
-	"variable"=>				"100%",
+	"variable"=>				"95%",
 	"800 pixels"=>				"800",
 	"700 pixels"=>				"700",
 	"600 pixels"=>				"600",

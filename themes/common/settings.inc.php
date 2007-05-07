@@ -1,5 +1,17 @@
 <table width="95%" border="0" cellpadding="0" cellspacing="5"></td></tr>
 <tr><td align='left'>
+Site Width:</td><td> 
+<select name='site_width' onchange="document.settings.submit()">
+<?
+foreach ($site_widths as $s) {
+	print "<option value='$s'".(($site_width==$s || ((!$site_width || $site_width == "") && $s=="variable"))?" selected":"").">$s\n";
+}
+?>
+</select>
+</td></tr>
+
+
+<tr><td align='left'>
 Left Navigation Column Width:</td><td>
 <select name='nav_width' onchange="document.settings.submit()">
 <?

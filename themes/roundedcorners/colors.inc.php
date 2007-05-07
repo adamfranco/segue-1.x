@@ -148,6 +148,10 @@ $_bgcolor = array(
 			"bgcolor"=>		"FFFFFF",
 			"bgimage"=>		"blue-white.jpg"					
 	),
+	"green-white"=>array(
+			"bgcolor"=>		"FFFFFF",
+			"bgimage"=>		"green-white.jpg"					
+	),		
 	"black-gray"=>array(
 			"bgcolor"=>		"000000",
 			"bgimage"=>		"black-gray.jpg"					

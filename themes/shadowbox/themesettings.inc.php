@@ -21,7 +21,7 @@ $nav_arranges = array_keys($_nav_arrange);
 $nav_widths = array_keys($_nav_width);
 $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
-
+$site_widths = array_keys($_site_width);
 
 if ($themesettings[theme] == 'shadowbox') {
 	$bgcolor = $themesettings[bgcolor];
@@ -34,6 +34,7 @@ if ($themesettings[theme] == 'shadowbox') {
 	$nav_width = $themesettings[nav_width];
 	$sectionnav_size = $themesettings[sectionnav_size];
 	$nav_size = $themesettings[nav_size];
+	$site_width = $themesettings[site_width];
 } else {
 	$themesettings[theme] = 'shadowbox';
 	$themesettings[bgcolor] = $bgcolor;
@@ -46,6 +47,7 @@ if ($themesettings[theme] == 'shadowbox') {
 	$themesettings[nav_width] = $nav_width;
 	$themesettings[sectionnav_size] = $sectionnav_size;
 	$themesettings[nav_size] = $nav_size;
+	$themesettings[site_width] = $site_width;
 }
 
 ?>

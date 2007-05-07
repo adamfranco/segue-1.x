@@ -52,24 +52,13 @@ if ($themesettings[theme] == 'shadowbox') {
 	$themesettings[nav_size] = $nav_size;
 	$themesettings[site_width] = $site_width;
 }
-printpre($themesettings[site_width]);
+//printpre($themesettings[site_width]);
 
 ?>
-<b>Shadow Box</b><br />
-This theme creates the illusion of a page that is cast out of a flat surface.  
-This illusion is created by surrounding boxes each of which is larger and less opaque.
+<b>Rounded Corners</b><br />
+This theme encloses your site is a box with rounded corners.
 <hr noshade size='1' />
 <table width="95%" border="0" cellpadding="0" cellspacing="5"><tr>
-<td align='left'>
-Site Width:</td><td> 
-<select name='site_width' onchange="document.settings.submit()">
-<?
-foreach ($site_widths as $s) {
-	print "<option value='$s'".(($site_width==$s)?" selected":"").">$s\n";
-}
-?>
-</select>
-</td></tr>
 
 <td align='left'>
 Background Color:</td><td> 
