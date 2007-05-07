@@ -110,9 +110,7 @@ include("themes/$theme/css.inc.php");
 		<td class='r1c5'></td>
 	</tr>
 		<td class='r2c1'></td>
-		<td>
-		<img class='r2c2' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c2.gif" ?>' alt='border' />
-		</td>
+		<td class='r2c2'></td>
 		<td class='r2c3'></td>
 		<td>
 		<img class='r2c4' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c4.gif" ?>' alt='border' />

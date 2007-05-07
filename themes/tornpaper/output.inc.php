@@ -32,6 +32,7 @@ if ($themesettings[theme] == 'tornpaper') {   // indeed these settings are for t
 	$uselinkcolor = $themesettings[linkcolor];
 	$usenav = $themesettings[nav_arrange];
 	$usenavwidth = $themesettings[nav_width];
+	$usesitewidth = $themesettings[site_width];
 	$usesectionnavsize = $themesettings[sectionnav_size];	
 	$usenavsize = $themesettings[nav_size];	
 }
@@ -58,6 +59,9 @@ $nav_arrange = $_nav_arrange[$usenav];
 
 if (!$usenavwidth) $usenavwidth = '150 pixels';
 $navwidth = $_nav_width[$usenavwidth];
+
+if (!$usesitewidth) $usesitewidth = 'variable';
+$sitewidth = $_site_width[$usesitewidth];
 
 if (!$usesectionnavsize) $usesectionnavsize = '12 pixels';
 $sectionnavsize = $_sectionnav_size[$usesectionnavsize];
@@ -95,7 +99,7 @@ include("themes/$theme/css.inc.php");
 
 <? print $obContent; ?>
 
-<table width='95%' cellpadding='0' cellspacing='0' align='center'>
+<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
 		<td class='topleft'></td>
 		<td class='top'></td>

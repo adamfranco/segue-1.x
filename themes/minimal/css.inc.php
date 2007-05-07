@@ -62,10 +62,14 @@ include("$themesdir/common/css.inc.php"); ?>
 	background-color: #<? echo $c['contentarea']; ?>;
 	border-bottom: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
 	border-top: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
+//	border-right: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
+//	border-left: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
+
 
 }
 
 .contenttable {
+	background-color: #<? echo $c['contentarea']; ?>;
 	border-right: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
 	border-left: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
 

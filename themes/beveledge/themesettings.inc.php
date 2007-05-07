@@ -19,6 +19,7 @@ $textcolors = array_keys($_textcolor);
 $linkcolors = array_keys($_linkcolor);
 $nav_arranges = array_keys($_nav_arrange);
 $nav_widths = array_keys($_nav_width);
+$site_widths = array_keys($_site_width);
 $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
 
@@ -32,6 +33,7 @@ if ($themesettings[theme] == 'beveledge') {
 	$linkcolor = $themesettings[linkcolor];
 	$nav_arrange = $themesettings[nav_arrange];
 	$nav_width = $themesettings[nav_width];
+	$site_width = $themesettings[site_width];
 	$sectionnav_size = $themesettings[sectionnav_size];
 	$nav_size = $themesettings[nav_size];
 } else {
@@ -46,6 +48,7 @@ if ($themesettings[theme] == 'beveledge') {
 	$themesettings[nav_width] = $nav_width;
 	$themesettings[sectionnav_size] = $sectionnav_size;
 	$themesettings[nav_size] = $nav_size;
+	$themesettings[site_width] = $site_width;
 }
 
 ?>

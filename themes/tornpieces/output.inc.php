@@ -32,6 +32,7 @@ if ($themesettings[theme] == 'tornpieces') {   // indeed these settings are for 
 	$uselinkcolor = $themesettings[linkcolor];
 	$usenav = $themesettings[nav_arrange];
 	$usenavwidth = $themesettings[nav_width];
+	$usesitewidth = $themesettings[site_width];
 	$usesectionnavsize = $themesettings[sectionnav_size];	
 	$usenavsize = $themesettings[nav_size];	
 	
@@ -59,6 +60,9 @@ $nav_arrange = $_nav_arrange[$usenav];
 
 if (!$usenavwidth) $usenavwidth = '150 pixels';
 $navwidth = $_nav_width[$usenavwidth];
+
+if (!$usesitewidth) $usesitewidth = 'variable';
+$sitewidth = $_site_width[$usesitewidth];
 
 if (!$usesectionnavsize) $usesectionnavsize = '12 pixels';
 $sectionnavsize = $_sectionnav_size[$usesectionnavsize];
@@ -96,7 +100,7 @@ include("themes/$theme/css.inc.php");
 
 <? print $obContent; ?>
 
-<table width='97%' cellpadding='0' cellspacing='0' align='center'>
+<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
 		<td class='topleft'></td>
 		<td class='top'></td>
@@ -143,8 +147,8 @@ include("themes/$theme/css.inc.php");
 <!-- end header table   -->
 
 <!-- begin 3 column 1 row content table   -->
-<table width='97%' class='contenttable'>
-	<tr>
+<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
+
 <?
 /******************************************************************************
  * Left Column
@@ -152,10 +156,10 @@ include("themes/$theme/css.inc.php");
 
    	
 if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)) {	
-	print "\n\t\t<td class='leftnav'>";
+	print "\n\t\t<tr><td class='leftnav'>";
 	?>		
 	<!-- left nav table   -->
-			<table width='90%' cellpadding='0' cellspacing='0' align='center'>
+			<table width='95%' cellpadding='0' cellspacing='0' align='left'>
 				<tr>
 					<td class='topleft'></td>
 					<td class='top'></td>
@@ -189,16 +193,13 @@ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)
 					<td class='bottomright'>&nbsp;</td>
 				</tr>
 			</table>
-	
+	</td>
 	<!-- end left nav table   -->
 	<?
 } else {
-	print "\n\t\t<td valign='top'>";
+	print "\n\t\t<tr><td valign='top'></td>";
 }
 ?>	
-
-		</td>
-
 		<td class='contentarea'>
 			<!-- center table   -->
 			<table width='100%' cellpadding='0' cellspacing='0' align='center'>
@@ -228,7 +229,6 @@ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)
 			</table>
 			<!-- end center table   -->
 		</td>
-
 <?
 /******************************************************************************
  * Right Column
@@ -237,7 +237,7 @@ if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
 	print "\n\t\t<td class='rightnav'>\n";
 	?>		
 			<!-- right nav table   -->
-			<table width='90%' cellpadding='0' cellspacing='0' align='center'>
+			<table width='95%' cellpadding='0' cellspacing='0' align='right'>
 				<tr>
 					<td class='topleft'></td>
 					<td class='top'></td>
@@ -268,22 +268,20 @@ if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
 				</tr>
 			</table>			
 			<!-- end right table   -->
-
+	</td>
 	<?	
 	
 } else {
-	print "\n\t\t<td width= '1%' valign='top'>\n";
+	print "\n\t\t<td width= '1%' valign='top'><td>\n";
 }
 ?> 
-	
-		</td>
-	</tr>
+</tr>
 </table>
 <!-- end main content table 1 row, 3 col  -->
 
 
 <!-- begin bottom table  -->
-<table width='95%' cellpadding='0' cellspacing='0' align='center'>
+<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
 		<td class='topleft'></td>
 		<td class='top'></td>

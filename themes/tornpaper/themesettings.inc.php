@@ -19,6 +19,7 @@ $textcolors = array_keys($_textcolor);
 $linkcolors = array_keys($_linkcolor);
 $nav_arranges = array_keys($_nav_arrange);
 $nav_widths = array_keys($_nav_width);
+$site_widths = array_keys($_site_width);
 $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
 
@@ -34,6 +35,7 @@ if ($themesettings[theme] == 'tornpaper') {
 	$nav_width = $themesettings[nav_width];
 	$sectionnav_size = $themesettings[sectionnav_size];
 	$nav_size = $themesettings[nav_size];
+	$site_width = $themesettings[site_width];
 } else {
 	$themesettings[theme] = 'tornpaper';
 	$themesettings[bgcolor] = $bgcolor;
@@ -46,12 +48,12 @@ if ($themesettings[theme] == 'tornpaper') {
 	$themesettings[nav_width] = $nav_width;
 	$themesettings[sectionnav_size] = $sectionnav_size;
 	$themesettings[nav_size] = $nav_size;
+	$themesettings[site_width] = $site_width;
 }
 
 ?>
-<b>Shadow Box</b><br />
-This theme creates the illusion of a page that is cast out of a flat surface.  
-This illusion is created by surrounding boxes each of which is larger and less opaque.
+<b>Torn Paper</b><br />
+This theme creates the illusion of a piece of torn paper.
 <hr noshade size='1' />
 <table width="95%" border="0" cellpadding="0" cellspacing="5"><tr><td align='left'>
 Background Color:</td><td> 

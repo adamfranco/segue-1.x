@@ -19,6 +19,7 @@ $textcolors = array_keys($_textcolor);
 $linkcolors = array_keys($_linkcolor);
 $nav_arranges = array_keys($_nav_arrange);
 $nav_widths = array_keys($_nav_width);
+$site_widths = array_keys($_site_width);
 $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
 
@@ -34,6 +35,7 @@ if ($themesettings[theme] == 'tornpieces') {
 	$nav_width = $themesettings[nav_width];
 	$sectionnav_size = $themesettings[sectionnav_size];
 	$nav_size = $themesettings[nav_size];
+	$site_width = $themesettings[site_width];
 } else {
 	$themesettings[theme] = 'tornpieces';
 	$themesettings[bgcolor] = $bgcolor;
@@ -46,6 +48,7 @@ if ($themesettings[theme] == 'tornpieces') {
 	$themesettings[nav_width] = $nav_width;
 	$themesettings[sectionnav_size] = $sectionnav_size;
 	$themesettings[nav_size] = $nav_size;
+	$themesettings[site_width] = $site_width;
 }
 
 ?>
