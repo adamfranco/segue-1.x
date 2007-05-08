@@ -98,7 +98,34 @@ include("themes/$theme/css.inc.php");
 <body style='margin: 0px'>
 
 <? print $obContent; ?>
-
+<table  width='<?php echo $sitewidth ?>' align='center' cellpadding='0' cellspacing='0'>
+<tr><td>
+<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class='left'>
+			<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+		</td>
+		<td class='status'>
+			<? include("themes/common/status.inc.php"); ?>		
+		</td> 
+		<!-- end content table cell -->
+		<td class='right'>
+			<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='rightop' />
+		</td>
+	</tr>
+	<tr>
+		<td class='bottomleft'></td>
+		<td class='bottom'></td>
+		<td class='bottomright'></td>
+	</tr>
+	</table>
+</td></tr>
+<tr><td>
 <table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
 		<td class='topleft'></td>
@@ -201,9 +228,12 @@ include("themes/$theme/css.inc.php");
 		</td>
 	</tr>
 	<tr>
-		<td class='bottomleft'>&nbsp;</td>
-		<td class='bottom'>&nbsp;</td>
-		<td class='bottomright'>&nbsp;</td>
+		<td class='bottomleft'></td>
+		<td class='bottom'></td>
+		<td class='bottomright'></td>
+	</tr>
+	</table>
+	</td>
 	</tr>
 	</table>
 </body>
