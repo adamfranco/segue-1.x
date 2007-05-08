@@ -1,9 +1,10 @@
 <?
 
 
+//printpre($_REQUEST);
 
 if (!$_REQUEST[nostatus]) {
-	print "<form action='$PHP_SELF?$sid";
+	print "<form action='$PHP_SELF?&site=".$_REQUEST[site]."$section=".$_REQUEST[section]."page=".$_REQUEST[page];
 	foreach ($_GET as $key => $val) {
 		print "&amp;".$key."=".$val;
 	}
@@ -14,9 +15,9 @@ if (!$_REQUEST[nostatus]) {
 	//printpre($name);
 	print " <input type='text' class='textfield small' name='search' size='9' value='".(($_REQUEST['search'])?$_REQUEST['search']:'')."'/> \n";
 //	print "<input type='hidden' name='search' value='1'/>\n";
-	print "<input type='hidden' name='getquery' value='".urlencode($QUERY_STRING)."'/>\n";
-	print "<input type='hidden' name='gotourl' value='".urlencode($REQUEST_URI)."'/>\n";
-//	print "<input type='hidden' name='action' value='site'/>\n";
+	//print "<input type='hidden' name='getquery' value='".urlencode($QUERY_STRING)."'/>\n";
+	//print "<input type='hidden' name='gotourl' value='".urlencode($REQUEST_URI)."'/>\n";
+	//print "<input type='hidden' name='action' value='site'/>\n";
 	print "<input type='submit' class='button small' name='button' value='Find'/><br />\n";
 	print "</div>\n";
 	print "</form>\n";
