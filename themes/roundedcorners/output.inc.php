@@ -100,8 +100,35 @@ include("themes/$theme/css.inc.php");
 <body style='margin: 0px'>
 
 <? print $obContent; ?>
-
-<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
+<table  width='<?php echo $sitewidth ?>' align='center' cellpadding='0' cellspacing='0'>
+<tr><td>
+	<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
+		<tr>
+			<td class='r3c1'></td>
+			<td class='r3c2'></td>
+			<td class='status'>
+			<? include("themes/common/status.inc.php"); ?>
+			</td>		
+			<td class='r3c4'></td>
+			<td class='r3c5'></td>
+		</tr>	
+		<tr>
+			<td class='r4c1'></td>
+			<td class='r4c2'></td>
+			<td class='r4c3'></td>
+			<td class='r4c4'></td>
+			<td class='r4c5'></td>
+		</tr>
+			<td class='r5c1'></td>
+			<td class='r5c2'></td>
+			<td class='r5c3'></td>
+			<td class='r5c4'></td>
+			<td class='r5c5'></td>
+		<tr>
+	</table>
+</td></tr>
+<tr><td>	
+	<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>	
 	<tr>
 		<td class='r1c1'></td>
 		<td class='r1c2'></td>
@@ -112,11 +139,8 @@ include("themes/$theme/css.inc.php");
 		<td class='r2c1'></td>
 		<td class='r2c2'></td>
 		<td class='r2c3'></td>
-		<td>
-		<img class='r2c4' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c4.gif" ?>' alt='border' />
-		</td>
+		<td class='r2c4'></td>
 		<td class='r2c5'></td>
-	<tr>
 	</tr>
 	<tr>
 		<td class='r3c1'></td>
@@ -130,7 +154,7 @@ include("themes/$theme/css.inc.php");
 			 * Site Header, Status bar, crumbs
 			 ******************************************************************************/ 
 			print $siteheader; 
-			include("themes/common/status.inc.php"); 
+			include("themes/common/search.inc.php"); 
 			print $sitecrumbs;
 			?>
 			</div>
@@ -216,13 +240,9 @@ include("themes/$theme/css.inc.php");
 	</tr>
 	<tr>
 		<td class='r4c1'></td>
-		<td>
-		<img class='r4c2' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c2.gif" ?>' alt='border' />
-		</td>
+		<td class='r4c2'></td>
 		<td class='r4c3'></td>
-		<td>
-		<img class='r4c4' src='<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c4.gif" ?>' alt='border' />
-		</td>
+		<td class='r4c4'></td>
 		<td class='r4c5'></td>
 	</tr>
 		<td class='r5c1'></td>
@@ -232,6 +252,9 @@ include("themes/$theme/css.inc.php");
 		<td class='r5c5'></td>
 	<tr>
 	</table>
+	<br \>
+</td></tr>
+</table>
 </body>
 </html>
 

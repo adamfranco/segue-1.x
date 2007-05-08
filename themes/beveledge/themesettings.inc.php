@@ -36,6 +36,7 @@ if ($themesettings[theme] == 'beveledge') {
 	$site_width = $themesettings[site_width];
 	$sectionnav_size = $themesettings[sectionnav_size];
 	$nav_size = $themesettings[nav_size];
+	$site_width = $themesettings[site_width];
 } else {
 	$themesettings[theme] = 'beveledge';
 	$themesettings[bgcolor] = $bgcolor;

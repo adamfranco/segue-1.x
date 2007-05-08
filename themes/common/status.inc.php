@@ -76,7 +76,8 @@ if (!$_REQUEST[nostatus]) {
 			print $_SESSION[afname];
 	} else {// print out the login thingy
 		//print "Login";
-		print " Login: <input type='text' class='textfield small' name='name' size='9' value='$name'/> password: <input type='password' class='textfield small' name='password' size='9'/> \n";
+		//printpre($name);
+		print " Login: <input type='text' class='textfield small' name='name' size='9' value=''/> password: <input type='password' class='textfield small' name='password' size='9'/> \n";
 		print "<input type='hidden' name='loginform' value='1'/>\n";
 		print "<input type='hidden' name='getquery' value='".urlencode($QUERY_STRING)."'/>\n";
 		print "<input type='hidden' name='gotourl' value='".urlencode($REQUEST_URI)."'/>\n";
@@ -90,10 +91,9 @@ if (!$_REQUEST[nostatus]) {
 			//print "<a href='passwd.php?action=change' target='password' onclick='doWindow(\"password\",400,300)'>Change?</a>)";
 		}
 	}
-	
-	
-	
-	print "</div>\n";
 	print "</form>\n";
+	print "</div>\n";
+} else {
+print "&nbsp;";
 }
 ?>

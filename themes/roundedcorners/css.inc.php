@@ -81,48 +81,54 @@ include("$themesdir/common/css.inc.php");
 	background: #<? echo $c['contentarea']; ?>;
 }
 
+.status {
+	padding-top: 3px;
+	background: #<? echo $c['contentarea']; ?>;
+}
+
+
 /* top left outer border images */
 
 .r1c1 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c1.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c1.gif"; ?>') no-repeat;*/
 	width: 16px;
-	height: 16px;
+	height: 2px;
 }
 
 .r1c2 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c2.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c2.gif"; ?>') no-repeat;*/
 	width: 16px;
-	height: 16px;
+	height: 2px;
 }
 
 
 /* top border outer repeating image */
 
 .r1c3 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c3.gif"; ?>') repeat-x;*/
-	height: 16px;
+	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c3.gif"; ?>') repeat-x;*/
+	height: 2px;
 }
 
 
 /* top right outer border images */
 
 .r1c4 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c4.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c4.gif"; ?>') no-repeat;*/
 	width: 16px;
-	height: 16px;
+	height: 2px;
 }
 
 
 .r1c5 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c5.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c5.gif"; ?>') no-repeat;*/
 	width: 16px;
-	height: 16px;
+	height: 2px;
 }
 
 /* top left inner border images */
 
 .r2c1 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c1.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c1.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 16px;
 }
@@ -143,7 +149,7 @@ include("$themesdir/common/css.inc.php");
 /* top right inner border images */
 
 .r2c4 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c4.gif"; ?>') no-repeat;*/
+	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c4.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 }
@@ -186,7 +192,7 @@ include("$themesdir/common/css.inc.php");
 /* bottom left inner border images */
 
 .r4c1 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c1.gif"; ?>') no-repeat;
+	//background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c1.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 }
@@ -215,7 +221,7 @@ include("$themesdir/common/css.inc.php");
 
 
 .r4c5 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c5.gif"; ?>') no-repeat;
+	//background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c5.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 }
@@ -225,21 +231,21 @@ include("$themesdir/common/css.inc.php");
 .r5c1 {
 	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c1.gif"; ?>') no-repeat;*/
 	width: 16px;
-	height: 16px;
+	height: 2px;
 }
 
 
 .r5c2 {
 	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c2.gif"; ?>') no-repeat;*/
 	width: 16px;
-	height: 16px;
+	height: 2px;
 }
 
 /* bottom border outer repeating image */
 
 .r5c3 {
 	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c3.gif"; ?>') repeat-x;*/
-	height: 16px;
+	height: 2px;
 }
 
 
@@ -248,14 +254,14 @@ include("$themesdir/common/css.inc.php");
 .r5c4 {
 	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c4.gif"; ?>') no-repeat;*/
 	width: 16px;
-	height: 16px;
+	height: 2px;
 }
 
 
 .r5c5 {
 	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c5.gif"; ?>') no-repeat;*/
 	width: 16px;
-	height: 16px;
+	height: 2px;
 }
 
 

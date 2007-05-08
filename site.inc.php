@@ -292,8 +292,11 @@ do {
 				include("fullstory.inc.php");
 			} else if ($_REQUEST['versioning'] || $_REQUEST['version']) {
 				$o =& $thisPage->stories[$detail];
-				include("versions.inc.php");			
-
+				include("versions.inc.php");
+				
+			} else if ($_REQUEST['search']) {
+				
+				include("search.inc.php");			
 			
 			//if not detail, then print all stories
 			
