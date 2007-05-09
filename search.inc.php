@@ -1,6 +1,7 @@
 <? /* $Id$ */
 
-//require("objects/objects.inc.php");
+require_once("objects/objects.inc.php");
+//require_once(dirname(__FILE__)."/objects/String.class.php");
 $content = '';
 
 //ob_start();
@@ -46,7 +47,7 @@ if ($_REQUEST['search']) {
 		
 //	$pageResults = searchPages($search);
 	$contentResults = searchContent($_REQUEST['search'], $_REQUEST[site]);
-//	$discussResults = searchDiscussions($search);
+	$discussResults = searchDiscussions($_REQUEST['search'], $_REQUEST[site]);
 
 	/******************************************************************************
 	 * Print out search results
@@ -57,21 +58,26 @@ if ($_REQUEST['search']) {
 //	printc($totalResults." found");
 	printc("<table width='100%' border=0 align = center cellpadding=4, cellspacing=0>");
 	printc("</td><td></td></tr>");
-	printc("<tr><td colspan=2 align='left' class='title'>Content containing '$search' ($totalResults results)</td></tr>");
+	printc("<tr><td colspan=2 align='left' class='title'>Found: '$search' ($totalResults results)</td></tr>");
 //	printc("<tr><td>Site</td><td>Author</td></tr>");
 	
 //	foreach ($pageResults as $result) {
 //		printPageItem($result);
 //	}
 	
-	foreach ($contentResults as $result) {
-	//	printpre($result);
-		printContentItem($result);
+	if (count($contentResults) > 0) {
+		printc("<tr><td class='title2' >'$search' in text (".count($contentResults)." results)</td></tr>");	
+		foreach ($contentResults as $result) {
+			printContentItem($result, "content", $search);
+		}
 	}
-	
-//	foreach ($discussResults as $result) {
-//		printContentItem($result);
-//	}
+
+	if (count($discussResults) > 0) {
+		printc("<tr><td class='title2' >'$search' in discussions (".count($discussResults)." results)</td></tr>");		
+		foreach ($discussResults as $result) {
+			printContentItem($result, "discussion");
+		}
+	}
 
 
 	printc("</table>");
@@ -79,7 +85,7 @@ if ($_REQUEST['search']) {
 }
 
 
-function printContentItem($result) {
+function printContentItem($result, $type, $search="") {
 	global $_full_uri;
 	//printpre($result);
 		ob_start();
@@ -91,25 +97,38 @@ function printContentItem($result) {
 		
 			//print "<td valign='top' class='listtext'>".$record_tag_tstamp->ymdString()."<br/>".$record_tag_time->string12(false)."</td>";
 		//	print "<td valign='top' class='listtext'>".$record_tag_tstamp."</td>";
-			print "<td valign='top' class='listtext'><a href=".$_full_uri."/index.php?&action=site&site=".$_REQUEST[site];
+			print "<td valign='top'><a href=".$_full_uri."/index.php?&action=site&site=".$_REQUEST[site];
 			print "&section=".$result['section_id'];
 			print "&page=".$result['page_id'];
 			print "&story=".$result['story_id'];
 			print "&detail=".$result['story_id'];
+			if ($type == "discussion") {
+				print "#".$result['discussion_id'];
+			}
 			print ">";
 			print stripslashes(urldecode($result['section_title']));
 			print " > ".stripslashes(urldecode($result['page_title']));
 			if ($result['story_title']) print " > ".stripslashes(urldecode($result['story_title']));
+			if ($result['discussion_subject']) {
+				print " > ".stripslashes(urldecode($result['discussion_subject']));
+				print " (".$result['user_fname'].")";
+			}
 			print "</a></td></tr>";
-			print "<tr><td valign='top' class='contentinfo'>added by".$result['user_fname']." on ".$record_tag_tstamp."</td>";
+		//	print "<tr><td valign='top' class='contentinfo'>added by".$result['user_fname']." on ".$record_tag_tstamp."</td>";
 			print "</tr>";
 			print "<tr>";
-			print "<td class='list' colspan='2' valign='top' class='list'>";
-		//	printpre($a['story_text_short']);
-			$content = stripslashes(urldecode($result['story_text_short']));
-			$content .= stripslashes(urldecode($result['story_text_long']));			
-			//$content = find_abstract($content, $search);
-			//print $content;
+			print "<td class='list' valign='top'>";
+			if ($type == "content") {
+				$content = stripslashes(urldecode($result['story_text_short']));
+				$content .= stripslashes(urldecode($result['story_text_long']));
+			} else if ($type == "discussion") {
+				$content = stripslashes(urldecode($result['discussion_content']));
+			}
+			$wikiResolver =& WikiResolver::instance();
+			$content = $wikiResolver->parseText($content, $_REQUEST[site], $_REQUEST[section], $_REQUEST[page]);
+
+			$content = find_abstract($content, $search);
+			print $content;
 			print "</td>";
 			print "</tr>";		
 		//}
@@ -188,5 +207,125 @@ function searchContent ($search, $site) {
 
 }
 
+function searchDiscussions ($search, $site) {
 
+	$terms = explode(" ", $search);
+	foreach ($terms as $key => $term) {
+		$terms[$key] = " LIKE ('%".addslashes($term)."%')";
+	}
+
+	$limit = 10;
+	$query = "
+		SELECT
+			discussion_content, discussion_tstamp, discussion_subject, discussion_id, user_fname,
+			story_id, story_title, page_title, section_title, page_id, section_id, 
+			FK_author, user_uname
+		FROM
+			slot
+		INNER JOIN
+		 	section
+		 	ON section.FK_site = slot.FK_site
+		INNER JOIN
+			page
+			ON FK_section = section_id
+		INNER JOIN	
+			story
+			ON FK_page = page_id
+		INNER JOIN
+			discussion
+			ON story_id = FK_story
+		INNER JOIN
+			user
+				ON discussion.FK_author = user_id 				
+		WHERE
+			slot_name = '".addslashes($site)."'
+		AND (
+			";
+	
+	// Stories
+	$query .= "\n\n(";
+	foreach ($terms as $i => $term) {
+		if ($i > 0) {
+			$query .= "\n AND ";
+		}
+		$query .= "\n\t(";
+		$query .= "discussion_content ".$term;
+		$query .= "\n\tOR discussion_subject ".$term;
+		$query .= "\n\tOR user_fname ".$term;
+		$query .= ")";
+	}
+				
+	
+	$query .= "\n)";
+	
+	$query .= "
+			)
+		Order BY
+			 discussion_tstamp  DESC
+		LIMIT 0, $limit
+		";
+
+	//printpre($query);
+	$r = db_query($query);
+		
+	if (db_num_rows($r) > 0) {
+		$found_discussions = array();
+		while ($a = db_fetch_assoc($r)) {
+			$a[story_text_short] = stripslashes(urldecode($a['story_text_short']));
+			$found_discussions[] = $a;			
+		}
+	}
+
+	return $found_discussions;
+
+
+}
+
+function find_abstract ($content, $search, $numwords=25) {
+	$content = eregi_replace("<br>", "..", $content);
+	$content = eregi_replace("<br \/>", "..", $content);			
+//	$content = eregi_replace("\[\[linkpath\]\]", "...", $content);
+	$search = " ".$search;
+	
+	$htmlstring =& HtmlString::withValue($content);
+	$content = $htmlstring->stripTagsAndTrim(500);
+	$lowercontent = strtolower($content);
+	$searchstart = strpos($lowercontent, $search);
+	
+	if ($searchstart < 60) {
+		$searchbegin = 0;
+		$searchend = 150;
+	} else if ($searchstart == 0) {
+		$searchbegin = 0;
+		$searchend = 150;
+	} else {
+		$searchbegin = $searchstart - 50;
+		$searchend = $searchstart + 150;
+	}
+				
+	$content = substr($content, $searchbegin, 500);
+	
+	$htmlstring =& HtmlString::withValue($content);
+	$content = $htmlstring->stripTagsAndTrim(25);
+	
+	$clean = explode(" ", $content);
+	
+	$clean_content = "";
+	foreach ($clean as $word) {
+		if (strlen($word) > 50) $word = substr($word, 0, 50)."...";
+		$clean_content .= $word." "; 
+	}
+	
+	$search_term = "<span class='foundtext'>".$search."</span>";
+	$clean_content = eregi_replace($search, $search_term, $clean_content);
+				
+	if ($searchstart < 40) {
+		$clean_content = $clean_content."...";
+	} else {
+		$clean_content = "...".$clean_content."...";
+	}
+	
+	return $clean_content;
+
+}
 ?>

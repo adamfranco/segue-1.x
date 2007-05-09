@@ -149,6 +149,19 @@ select, textarea, input {
 	font-weight: bolder;
 }
 
+.title2 {
+	border-bottom: 1px solid #<? echo $c['title-color']; ?>;
+	padding: 3px;
+	font-size: 12px;
+	padding-left: 0px;
+	margin-bottom: 3px;
+<!--	font-variant: small-caps;-->
+}
+
+.foundtext {
+	font-weight: bold;
+}
+
 th {
 	font-size: 12px;
 	font-weight: normal;
