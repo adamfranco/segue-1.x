@@ -13,13 +13,9 @@ if ($_REQUEST['action'] == 'viewsite')
 else
 	$action = 'site';
 
-if ($tmp = $_REQUEST['flat_discussion']) {
-	$_SESSION['flat_discussion'] = ($tmp=='true')?true:false;
-}
-
-if ($tmp = $_REQUEST['order']) {
-	$_SESSION['order'] = $_REQUEST['order'];
-}
+//if ($tmp = $_REQUEST['order']) {
+//	$_SESSION['order'] = $_REQUEST['order'];
+//}
 
 /* if ($tmp2 = $_REQUEST['recent']) { */
 /* 	$_SESSION['recent'] = ($tmp2=='true')?true:false; */
@@ -100,7 +96,7 @@ function printContentItem($result) {
 			print "&page=".$result['page_id'];
 			print "&story=".$result['story_id'];
 			print "&detail=".$result['story_id'];
-			print " target=new_window>";
+			print ">";
 			print stripslashes(urldecode($result['section_title']));
 			print " > ".stripslashes(urldecode($result['page_title']));
 			if ($result['story_title']) print " > ".stripslashes(urldecode($result['story_title']));

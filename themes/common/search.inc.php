@@ -8,7 +8,7 @@ if (!$_REQUEST[nostatus]) {
 	foreach ($_GET as $key => $val) {
 		print "&amp;".$key."=".$val;
 	}
-	print "' id='search' name='search' method='post'>\n";
+	print "' id='search' name='search' method='get'>\n";
 	print "<div class='headerbox small' align='center'>\n";
 
 	//print "Login";
@@ -17,7 +17,10 @@ if (!$_REQUEST[nostatus]) {
 //	print "<input type='hidden' name='search' value='1'/>\n";
 	//print "<input type='hidden' name='getquery' value='".urlencode($QUERY_STRING)."'/>\n";
 	//print "<input type='hidden' name='gotourl' value='".urlencode($REQUEST_URI)."'/>\n";
-	//print "<input type='hidden' name='action' value='site'/>\n";
+	print "<input type='hidden' name='site' value='".$_REQUEST[site]."'/>\n";
+	print "<input type='hidden' name='section' value='".$_REQUEST[section]."'/>\n";
+	print "<input type='hidden' name='page' value='".$_REQUEST[page]."'/>\n";
+	print "<input type='hidden' name='action' value='".$_REQUEST[action]."'/>\n";
 	print "<input type='submit' class='button small' name='button' value='Find'/><br />\n";
 	print "</div>\n";
 	print "</form>\n";
