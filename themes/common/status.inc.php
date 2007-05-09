@@ -31,14 +31,24 @@ print "<script type=\"JavaScript\" src=\"themes/common/overlib.js\"></script>\n\
 
 
 if (!$_REQUEST[nostatus]) {
+
+	/******************************************************************************
+	 * Form action 
+	 ******************************************************************************/
+
 	print "<form action='$PHP_SELF?$sid";
 	foreach ($_GET as $key => $val) {
 		print "&amp;".$key."=".$val;
 	}
 	print "' id='loginform' name='loginform' method='post'>\n";
-	print "<div class='headerbox small' align='center'>\n";
+		
+	/******************************************************************************
+	 * if logged in
+	 ******************************************************************************/
 	
-	if ($_loggedin) {	//we're already logged in
+	if ($_loggedin) {
+	
+		// array of user types
 		$_userTypes = array(
 			"stud"=>"student",
 			"prof"=>"professor",
@@ -46,42 +56,75 @@ if (!$_REQUEST[nostatus]) {
 			"visitor"=>"visitor",
 			"guest"=>"guest",
 			"admin"=>"administrator");
+			
+		// not sure when partial status is used...
+		
 		if (!$_REQUEST[partialstatus]) {
-			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'
-&& $_SESSION[luser] != $_SESSION[auser])?" (acting as $_SESSION[afname])":"")."
-(".$_userTypes[$_SESSION[atype]]."): " ;
-			if ($_SESSION[ltype]=='admin') {
-				print "\n<br />";
-				print " change active user: <input type='text' name='changeauser' size='10' class='textfield small'/> <input type='submit' class='button small' value='GO'/>\n";
-				print "\n<br />";
+		
+			print "<table width='100%' cellspacing='0' cellpadding='0'>";
+			print "<tr><td align='left' class='small'>";
+
+			// home link
+			print "<a href='$PHP_SELF?".$sid."' class='navlink'>home</a> \n";
+		
+			// directory link
+			print " | <a href='username_lookup.php?$sid' onclick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>directory</a>";
+
+			// tracking link
+			if ( $_SESSION[auser] == $site_owner || $_SESSION[ltype]=='admin') {
+				print " | <a href='viewlogs.php?$sid".((is_object($site))?"":"&amp;site=$site")."' target='sites' onclick='doWindow(\"sites\",600,600)' class='navlink'>tracking</a>\n";
 			}
-			print "<a href='$PHP_SELF?login=logout&amp;$sid";
+			
+			// admin tools link
+			if ($_SESSION[ltype]=='admin') {
+				print " | <a href='users.php?$sid' target='sites' onclick='doWindow(\"sites\",700,600)' class='navlink'>admin tools</a>\n";
+			}
+
+			
+			print "</td>";
+			
+			print "<td align='right' class='headerbox small'>";		
+		
+			// username (+ acting as username for admins)
+			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'&& $_SESSION[luser] != $_SESSION[auser])?" (acting as $_SESSION[afname])":"")." (".$_userTypes[$_SESSION[atype]].") " ;
+			
+			// logout ?
+			print " | <a href='$PHP_SELF?login=logout&amp;$sid";
 			foreach ($_GET as $key => $val) {
 				print "&amp;".$key."=".$val;
 			}
 			print "' class='navlink'>logout</a>";
-			print " | <a href='username_lookup.php?$sid' onclick='doWindow(\"lookup\",300,300)' target='lookup' class='navlink'>directory</a>";
+			
+
+			//change active user form
 			if ($_SESSION[ltype]=='admin') {
+				print "\n<br />";
+				print " change active user: <input type='text' name='changeauser' size='10' class='textfield small'/> <input type='submit' class='button small' value='GO'/>\n";
+
 				print "<input type='hidden' name='action' value='change_auser' />";
 			}
-			if ( $_SESSION[auser] == $site_owner || $_SESSION[ltype]=='admin') {
-				print " | <a href='viewlogs.php?$sid".((is_object($site))?"":"&amp;site=$site")."' target='sites' onclick='doWindow(\"sites\",600,600)' class='navlink'>tracking</a>\n";
-			}
-			if ($_SESSION[ltype]=='admin') {
-				print " | <a href='users.php?$sid' target='sites' onclick='doWindow(\"sites\",700,600)' class='navlink'>admin tools</a>\n";
-			}
 			
-			print " | <a href='$PHP_SELF?".$sid."' class='navlink'>home</a> \n";
-		} else 
+			print "</td></tr>";
+			print "</table>";
+			
+		} else {
 			print $_SESSION[afname];
+		}
+			
+	/******************************************************************************
+	 * if not logged in print out login fields
+	 ******************************************************************************/
+			
 	} else {// print out the login thingy
 		//print "Login";
 		//printpre($name);
+		print "<div class='headerbox small' align='center'>\n";
 		print " Login: <input type='text' class='textfield small' name='name' size='9' value=''/> password: <input type='password' class='textfield small' name='password' size='9'/> \n";
 		print "<input type='hidden' name='loginform' value='1'/>\n";
 		print "<input type='hidden' name='getquery' value='".urlencode($QUERY_STRING)."'/>\n";
 		print "<input type='hidden' name='gotourl' value='".urlencode($REQUEST_URI)."'/>\n";
 		print "<input type='submit' class='button small' name='button' value='GO'/><br />\n";
+		
 		if ($cfg[auth_reset_on] == TRUE) {
 			print "<a href='passwd.php?action=reset' target='password' onclick='doWindow(\"password\",400,300)'>Forgot your password?</a>";
 			//print "<a href='passwd.php?action=change' target='password' onclick='doWindow(\"password\",400,300)'>Change?</a>)";
@@ -90,10 +133,17 @@ if (!$_REQUEST[nostatus]) {
 			print " | <a href='passwd.php?action=register' target='password' onclick='doWindow(\"password\",400,300)'>Visitor Registration</a>";
 			//print "<a href='passwd.php?action=change' target='password' onclick='doWindow(\"password\",400,300)'>Change?</a>)";
 		}
+		print "</div>\n";	
 	}
+	
+	
 	print "</form>\n";
-	print "</div>\n";
+	
+
+	
 } else {
-print "&nbsp;";
+
+	print "&nbsp;";
+	
 }
 ?>
