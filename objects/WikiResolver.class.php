@@ -344,6 +344,13 @@ $		# Anchor for the end of the line
 		}
 		
 		if ($site == $this->_currentSlotName) {
+			/*********************************************************
+			 * @todo
+			 * If we don't have a _currentSectionId or _currentPageId
+			 * it may just be because we are on the first page in a site
+			 * this needs to be fixed.
+			 *********************************************************/
+			
 			// if we have a current page, first check the stories of that page
 			if ($this->_currentPageId) {
 				$section = $this->_cachedSites[$site]->getChild($this->_currentSectionId);
@@ -352,13 +359,13 @@ $		# Anchor for the end of the line
 			}
 			
 			// Then check all pages, then stories below the current section
-			if (!isset($path) || !$path) {
+			if ((!isset($path) || !$path) && $this->_currentSectionId) {
 				$section = $this->_cachedSites[$site]->getChild($this->_currentSectionId);
 				$path = $section->searchBelow($title);
 			}
 			
 			// Then check all sections, then pages, then stories below the current site
-			if (!$path) {
+			if (!isset($path) || !$path) {
 				$path = $this->_cachedSites[$site]->searchBelow($title);
 			}
 			
