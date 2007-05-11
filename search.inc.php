@@ -125,7 +125,7 @@ function printContentItem($result, $type, $search="") {
 				$content = stripslashes(urldecode($result['discussion_content']));
 			}
 			$wikiResolver =& WikiResolver::instance();
-			$content = $wikiResolver->parseText($content, $_REQUEST[site], $_REQUEST[section], $_REQUEST[page]);
+			$content = $wikiResolver->parseText($content, $_REQUEST[site], $result['section_id'], $result['page_id']);
 
 			$content = find_abstract($content, $search);
 			print $content;

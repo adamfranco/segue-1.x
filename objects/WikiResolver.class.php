@@ -344,13 +344,6 @@ $		# Anchor for the end of the line
 		}
 		
 		if ($site == $this->_currentSlotName) {
-			/*********************************************************
-			 * @todo
-			 * If we don't have a _currentSectionId or _currentPageId
-			 * it may just be because we are on the first page in a site
-			 * this needs to be fixed.
-			 *********************************************************/
-			
 			// if we have a current page, first check the stories of that page
 			if ($this->_currentPageId) {
 				$section = $this->_cachedSites[$site]->getChild($this->_currentSectionId);
