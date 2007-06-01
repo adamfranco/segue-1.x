@@ -94,6 +94,7 @@ printc("<table cellpadding='5' cellspacing='0'>");
 /******************************************************************************
  * Publication Site Options
  ******************************************************************************/
+//printpre($_REQUEST);
 
 /*   enter author's name for publication site */
 if ($thisSite->getField("type") == 'publication') {
@@ -119,7 +120,7 @@ if ($thisSite->getField("type") == 'publication') {
 	}
 	printc("</div>");
 	
-} else if (isset($_REQUEST["title"])) {	
+} else if (isset($_REQUEST["title"]) && $_REQUEST["title"] !="") {	
 	printc("<tr><td>Title:</td><td><input type='text' size='50' name='title' value='".spchars($_REQUEST['title'])."' /></td></tr>");
 
 

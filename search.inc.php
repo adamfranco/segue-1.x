@@ -38,8 +38,10 @@ $storyObj->fetchFromDB();
 $storyObj->owningSiteObj->fetchFromDB();
 //$site_owner=slot::getOwner($story->owningSiteObj->name);
 $site_owner=$storyObj->owningSiteObj->owner;
+//$site_owner =$siteObj->owner;
 //print_r($story->owningSiteObj);
 //print $site_owner;
+//printpre($site_owner);
 
 if ($_REQUEST['search']) {
 	$search = $_REQUEST['search'];
@@ -86,54 +88,58 @@ if ($_REQUEST['search']) {
 
 
 function printContentItem($result, $type, $search="") {
-	global $_full_uri;
-	//printpre($result);
-		ob_start();
-		print "<tr>";
-		$record_tag_tstamp = timestamp2usdate($result[story_updated_tstamp]);
-		//if ($record_tag_tstamp != '0000-00-00 00:00:00') {
-			//$record_tag_tstamp =& TimeStamp::fromString($record_tag_tstamp);			
-			//$record_tag_time =& $record_tag_tstamp->asTime();
-		
-			//print "<td valign='top' class='listtext'>".$record_tag_tstamp->ymdString()."<br/>".$record_tag_time->string12(false)."</td>";
-		//	print "<td valign='top' class='listtext'>".$record_tag_tstamp."</td>";
-			print "<td valign='top'><a href=".$_full_uri."/index.php?&action=site&site=".$_REQUEST[site];
-			print "&section=".$result['section_id'];
-			print "&page=".$result['page_id'];
-			print "&story=".$result['story_id'];
-			print "&detail=".$result['story_id'];
-			if ($type == "discussion") {
-				print "#".$result['discussion_id'];
-			}
-			print ">";
-			print stripslashes(urldecode($result['section_title']));
-			print " > ".stripslashes(urldecode($result['page_title']));
-			if ($result['story_title']) print " > ".stripslashes(urldecode($result['story_title']));
-			if ($result['discussion_subject']) {
-				print " > ".stripslashes(urldecode($result['discussion_subject']));
-				print " (".$result['user_fname'].")";
-			}
-			print "</a></td></tr>";
-		//	print "<tr><td valign='top' class='contentinfo'>added by".$result['user_fname']." on ".$record_tag_tstamp."</td>";
-			print "</tr>";
+	global $_full_uri, $site_owner;
+		$foundSection =& new section($_REQUEST[site],$result['section_id']);
+		$foundPage =& new page($_REQUEST[site],$result['section_id'], $result['page_id']);
+		$foundContent =& new story($_REQUEST[site], $result['section_id'], $result['page_id'], $result['story_id']);
+		if (($foundSection->canview() && $foundPage->canview() && $foundContent->canview()) || $_SESSION[auser] == $site_owner) {
+			ob_start();
 			print "<tr>";
-			print "<td class='list' valign='top'>";
-			if ($type == "content") {
-				$content = stripslashes(urldecode($result['story_text_short']));
-				$content .= stripslashes(urldecode($result['story_text_long']));
-			} else if ($type == "discussion") {
-				$content = stripslashes(urldecode($result['discussion_content']));
-			}
-			$wikiResolver =& WikiResolver::instance();
-			$content = $wikiResolver->parseText($content, $_REQUEST[site], $result['section_id'], $result['page_id']);
-
-			$content = find_abstract($content, $search);
-			print $content;
-			print "</td>";
-			print "</tr>";		
-		//}
-		$contentItem = ob_get_clean();
-		printc($contentItem);  
+			$record_tag_tstamp = timestamp2usdate($result[story_updated_tstamp]);
+			//if ($record_tag_tstamp != '0000-00-00 00:00:00') {
+				//$record_tag_tstamp =& TimeStamp::fromString($record_tag_tstamp);			
+				//$record_tag_time =& $record_tag_tstamp->asTime();
+			
+				//print "<td valign='top' class='listtext'>".$record_tag_tstamp->ymdString()."<br/>".$record_tag_time->string12(false)."</td>";
+			//	print "<td valign='top' class='listtext'>".$record_tag_tstamp."</td>";
+				print "<td valign='top'><a href=".$_full_uri."/index.php?&action=site&site=".$_REQUEST[site];
+				print "&section=".$result['section_id'];
+				print "&page=".$result['page_id'];
+				print "&story=".$result['story_id'];
+				print "&detail=".$result['story_id'];
+				if ($type == "discussion") {
+					print "#".$result['discussion_id'];
+				}
+				print ">";
+				print stripslashes(urldecode($result['section_title']));
+				print " > ".stripslashes(urldecode($result['page_title']));
+				if ($result['story_title']) print " > ".stripslashes(urldecode($result['story_title']));
+				if ($result['discussion_subject']) {
+					print " > ".stripslashes(urldecode($result['discussion_subject']));
+					print " (".$result['user_fname'].")";
+				}
+				print "</a></td></tr>";
+			//	print "<tr><td valign='top' class='contentinfo'>added by".$result['user_fname']." on ".$record_tag_tstamp."</td>";
+				print "</tr>";
+				print "<tr>";
+				print "<td class='list' valign='top'>";
+				if ($type == "content") {
+					$content = stripslashes(urldecode($result['story_text_short']));
+					$content .= stripslashes(urldecode($result['story_text_long']));
+				} else if ($type == "discussion") {
+					$content = stripslashes(urldecode($result['discussion_content']));
+				}
+				$wikiResolver =& WikiResolver::instance();
+				$content = $wikiResolver->parseText($content, $_REQUEST[site], $result['section_id'], $result['page_id']);
+	
+				$content = find_abstract($content, $search);
+				print $content;
+				print "</td>";
+				print "</tr>";		
+			//}
+			$contentItem = ob_get_clean();
+			printc($contentItem);
+		}
 }
 
 
