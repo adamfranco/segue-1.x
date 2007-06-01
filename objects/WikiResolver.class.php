@@ -255,8 +255,8 @@ $		# Anchor for the end of the line
 			}
 			
 			ob_start();
-			print "<a href='".$cfg['full_uri']."/index.php?&action=site";
-			print "&site=".$targetSite;
+			print "<a href='".$cfg['full_uri']."/index.php?&amp;action=site";
+			print "&amp;site=".$targetSite;
 			print "'>";
 			print $display;
 			print "</a>";
@@ -288,15 +288,15 @@ $		# Anchor for the end of the line
 			
 			if ($targetPath) {
 				ob_start();
-				print "<a href='".$cfg['full_uri']."/index.php?&action=site";
-				print "&site=".$targetPath['site'];
+				print "<a href='".$cfg['full_uri']."/index.php?&amp;action=site";
+				print "&amp;site=".$targetPath['site'];
 				if ($targetPath['section'])
-					print "&section=".$targetPath['section'];
+					print "&amp;section=".$targetPath['section'];
 				if ($targetPath['page'])
-					print "&page=".$targetPath['page'];
+					print "&amp;page=".$targetPath['page'];
 				if ($targetPath['story']) {
-					print "&story=".$targetPath['story'];
-					print "&detail=".$targetPath['story'];
+					print "&amp;story=".$targetPath['story'];
+					print "&amp;detail=".$targetPath['story'];
 				}
 				if ($targetPost) {
 					print "#".$targetPost;
@@ -310,11 +310,11 @@ $		# Anchor for the end of the line
 			// Return an add-node link instead
 			else {
 				ob_start();
-				print "<a href='".$cfg['full_uri']."/index.php?&action=add_node";
-				print "&site=".$targetSite;
-				print "&section=".$this->_currentSectionId;
-				print "&page=".$this->_currentPageId;
-				print "&link_title=".urlencode($targetTitle);
+				print "<a href='".$cfg['full_uri']."/index.php?&amp;action=add_node";
+				print "&amp;site=".$targetSite;
+				print "&amp;section=".$this->_currentSectionId;
+				print "&amp;page=".$this->_currentPageId;
+				print "&amp;link_title=".urlencode($targetTitle);
 				print "'>";
 				print $display;
 				print " ?</a>";

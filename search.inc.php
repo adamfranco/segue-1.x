@@ -70,14 +70,14 @@ if ($_REQUEST['search']) {
 	if (count($contentResults) > 0) {
 		printc("<tr><td class='title2' >'$search' in text (".count($contentResults)." results)</td></tr>");	
 		foreach ($contentResults as $result) {
-			printContentItem($result, "content", $search);
+			printContentItem($result, "content", $siteObj, $search);
 		}
 	}
 
 	if (count($discussResults) > 0) {
 		printc("<tr><td class='title2' >'$search' in discussions (".count($discussResults)." results)</td></tr>");		
 		foreach ($discussResults as $result) {
-			printContentItem($result, "discussion");
+			printContentItem($result, "discussion", $siteObj);
 		}
 	}
 
@@ -87,11 +87,12 @@ if ($_REQUEST['search']) {
 }
 
 
-function printContentItem($result, $type, $search="") {
+function printContentItem($result, $type, & $siteObj, $search="") {
 	global $_full_uri, $site_owner;
-		$foundSection =& new section($_REQUEST[site],$result['section_id']);
-		$foundPage =& new page($_REQUEST[site],$result['section_id'], $result['page_id']);
-		$foundContent =& new story($_REQUEST[site], $result['section_id'], $result['page_id'], $result['story_id']);
+		$foundSection =& new section($_REQUEST[site],$result['section_id'], $siteObj);
+		$foundPage =& new page($_REQUEST[site],$result['section_id'], $result['page_id'], $foundSection);
+		$foundContent =& new story($_REQUEST[site], $result['section_id'], $result['page_id'], $result['story_id'], $foundPage);
+
 		if (($foundSection->canview() && $foundPage->canview() && $foundContent->canview()) || $_SESSION[auser] == $site_owner) {
 			ob_start();
 			print "<tr>";

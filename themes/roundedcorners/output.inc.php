@@ -104,27 +104,30 @@ include("themes/$theme/css.inc.php");
 <tr><td>
 	<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 		<tr>
-			<td class='r3c1'></td>
-			<td class='r3c2'></td>
-			<td class='status'>
-			<? include("themes/common/status.inc.php"); ?>
+			<td class='r3c1'> &nbsp; </td>
+			<td class='r2c2'> &nbsp; </td>
+			<td class='status' rowspan='3'>
+				<div style='height: 32px; overflow: hidden;'>
+					<? include("themes/common/status.inc.php"); ?>
+				</div>
 			</td>		
-			<td class='r3c4'></td>
-			<td class='r3c5'></td>
+			<td class='r2c4'> &nbsp; </td>
+			<td class='r3c5'> &nbsp; </td>
 		</tr>	
 		<tr>
-			<td class='r4c1'></td>
-			<td class='r4c2'></td>
-			<td class='r4c3'></td>
-			<td class='r4c4'></td>
-			<td class='r4c5'></td>
+			<td class='r3c1'> &nbsp; </td>
+			<td class='r3c2'> &nbsp; </td>
+			<!--<td class='r4c3'></td>-->
+			<td class='r3c4'> &nbsp; </td>
+			<td class='r3c5'> &nbsp; </td>
 		</tr>
-			<td class='r5c1'></td>
-			<td class='r5c2'></td>
-			<td class='r5c3'></td>
-			<td class='r5c4'></td>
-			<td class='r5c5'></td>
 		<tr>
+			<td class='r4c1'> &nbsp; </td>
+			<td class='r4c2'> &nbsp; </td>
+			<!--<td class='r4c3'></td>-->
+			<td class='r4c4'> &nbsp; </td>
+			<td class='r4c5'> &nbsp; </td>
+		</tr>
 	</table>
 </td></tr>
 <tr><td>	
@@ -136,6 +139,7 @@ include("themes/$theme/css.inc.php");
 		<td class='r1c4'></td>
 		<td class='r1c5'></td>
 	</tr>
+	<tr>
 		<td class='r2c1'></td>
 		<td class='r2c2'></td>
 		<td class='r2c3'></td>
@@ -154,12 +158,18 @@ include("themes/$theme/css.inc.php");
 			 * Site Header, Status bar, crumbs
 			 ******************************************************************************/ 
 			print $siteheader; 
+			
+			print "\n\t\t\t<div style='float: right; height: 20px; overflow: hidden;'>";
 			include("themes/common/search.inc.php"); 
+			print "\n\t\t\t</div>";
+			
+			print "\n\t\t\t<div style='float: left;'>";
 			print $sitecrumbs;
+			print "\n\t\t\t</div>";
 			?>
 			</div>
 			
-			<div class='topnav' align='center'>
+			<div class='topnav' align='center' style='clear: both;'>
 			<?
 			/******************************************************************************
 			 * Section Navigation
@@ -245,14 +255,15 @@ include("themes/$theme/css.inc.php");
 		<td class='r4c4'></td>
 		<td class='r4c5'></td>
 	</tr>
+	<tr>
 		<td class='r5c1'></td>
 		<td class='r5c2'></td>
 		<td class='r5c3'></td>
 		<td class='r5c4'></td>
 		<td class='r5c5'></td>
-	<tr>
+	</tr>
 	</table>
-	<br \>
+	<br />
 </td></tr>
 </table>
 </body>

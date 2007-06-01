@@ -44,6 +44,7 @@ include("$themesdir/common/css.inc.php");
 
 .topnav {
 	padding: 5px;
+	padding-top: 0px;
 /* 	background-color: #<? echo $c['topnav']; ?>; */
 }
 
@@ -84,6 +85,8 @@ include("$themesdir/common/css.inc.php");
 .status {
 	padding-top: 3px;
 	background: #<? echo $c['contentarea']; ?>;
+	border-bottom: 1px solid #AAA;
+	border-top: 1px solid #AAA;
 }
 
 
@@ -131,12 +134,14 @@ include("$themesdir/common/css.inc.php");
 	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c1.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 16px;
+	overflow: hidden;
 }
 
 .r2c2 {
 	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c2.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
+	overflow: hidden;
 }
 
 /* top border inner repeating image */
@@ -144,6 +149,7 @@ include("$themesdir/common/css.inc.php");
 .r2c3 {
 	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c3.gif"; ?>') repeat-x;
 	height: 16px;
+	overflow: hidden;
 }
 
 /* top right inner border images */
@@ -152,12 +158,14 @@ include("$themesdir/common/css.inc.php");
 	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c4.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
+	overflow: hidden;
 }
 
 .r2c5 {
 	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c5.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 16px;
+	overflow: hidden;
 }
 
 /* left side  repeating images */
