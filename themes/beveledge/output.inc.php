@@ -96,10 +96,40 @@ include("themes/$theme/css.inc.php");
 ?>
 <title><? echo $pagetitle; ?></title>
 </head>
-<body style='margin: 0px'>
+<body style='margin: 1px'>
 
 <? print $obContent; ?>
 
+<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
+<tr><td>
+
+<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
+	<tr>
+		<td class='topleft'></td>
+		<td class='top'></td>
+		<td class='topright'></td>
+	</tr>
+	<tr>
+		<td class='left'>
+			<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+		</td>
+		<td class='status'>
+			<? include("themes/common/status.inc.php"); ?>		
+		</td> 
+		<!-- end content table cell -->
+		<td class='right'>
+			<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='rightop' />
+		</td>
+	</tr>
+	<tr>
+		<td class='bottomleft'></td>
+		<td class='bottom'></td>
+		<td class='bottomright'></td>
+	</tr>
+	</table>
+</td></tr>
+
+<tr><td>
 <table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
 		<td class='topleft'></td>
@@ -116,13 +146,19 @@ include("themes/$theme/css.inc.php");
 /******************************************************************************
  * Site Header, Status bar, crumbs
  ******************************************************************************/ 
-print $siteheader; 
-include("themes/common/status.inc.php"); 
-print $sitecrumbs;
-?>
+			print $siteheader; 
+			
+			print "\n\t\t\t<div style='float: right; height: 20px; overflow: hidden;'>";
+			include("themes/common/search.inc.php"); 
+			print "\n\t\t\t</div>";
+			
+			print "\n\t\t\t<div style='float: left;'>";
+			print $sitecrumbs;
+			print "\n\t\t\t</div>";
+			?>
 			</div>
 
-			<div class='topnav' align='center'>
+			<div class='topnav' align='center' style='clear: both;'>
 <?
 /******************************************************************************
  * Section Navigation
@@ -193,9 +229,9 @@ print $sitefooter
 		</td>
 	</tr>
 	<tr>
-		<td class='bottomleft'>&nbsp;</td>
-		<td class='bottom'>&nbsp;</td>
-		<td class='bottomright'>&nbsp;</td>
+		<td class='bottomleft'></td>
+		<td class='bottom'></td>
+		<td class='bottomright'></td>
 	</tr>
 </table>
 </body>

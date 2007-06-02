@@ -68,23 +68,30 @@ include("$themesdir/common/css.inc.php"); ?>
 	background: #<? echo $c['contentarea']; ?>;
 }
 
+.status {
+	padding: 5px;
+	margin-right: 5px;
+	background: #<? echo $c['contentarea']; ?>;
+}
+
+
 /* more images */
 
 .topright {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/topright.gif"; ?>') no-repeat;
 	width: 25px;
-	height: 25px;
+	height: 7px;
 }
 
 .top {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/top.gif"; ?>') repeat-x;
-	height: 25px;
+	height: 7px;
 }
 
 .topleft {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/topleft.gif"; ?>') no-repeat;
 	width: 25px;
-	height: 25px;
+	height: 7px;
 }
 
 .right {
@@ -102,18 +109,18 @@ include("$themesdir/common/css.inc.php"); ?>
 .bottomleft {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomleft.gif"; ?>') no-repeat;
 	width: 25px;
-	height: 25px;
+	height: 7px;
 }
 
 .bottom {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottom.gif"; ?>') repeat-x;
-	height: 25px;
+	height: 7px;
 }
 
 .bottomright {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomright.gif"; ?>') no-repeat;
 	width: 25px;
-	height: 25px;
+	height: 7px;
 }
 
 /*  the images */

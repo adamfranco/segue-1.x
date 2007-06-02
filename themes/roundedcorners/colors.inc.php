@@ -21,7 +21,8 @@ $_theme_colors = array(
 			"topnav"=>				"fff",
 			"contentarea"=>			"fff",
 			"contentinfo"=>			"999",
-			"imagelocation"=>		"white"
+			"imagelocation"=>		"white",
+			"outerborders"=>		"AAA"
 	),
 	"yellow"=>array(
 			"font-size"=>			"12px",
@@ -42,7 +43,8 @@ $_theme_colors = array(
 			"topnav"=>				"909DAD",
 			"contentarea"=>			"FFFFCC",
 			"contentinfo"=>			"999",
-			"imagelocation"=>		"yellow"
+			"imagelocation"=>		"yellow",
+			"outerborders"=>		"AAA"
 	),
 	"black"=>array(
 			"font-size"=>			"12px",
@@ -63,7 +65,8 @@ $_theme_colors = array(
 			"topnav"=>				"fff",
 			"contentarea"=>			"000000",
 			"contentinfo"=>			"999",
-			"imagelocation"=>		"black"
+			"imagelocation"=>		"black",
+			"outerborders"=>		"000000"
 	),
 		"lightblue"=>array(
 			"font-size"=>			"12px",
@@ -83,7 +86,8 @@ $_theme_colors = array(
 			"header"=>				"A1AEBE",
 			"topnav"=>				"909DAD",
 			"contentarea"=>			"ebeFf5",
-			"contentinfo"=>			"999"
+			"contentinfo"=>			"999",
+			"outerborders"=>		"AAA"
 	),
 	"olive"=>array(
 			"font-size"=>			"12px",
@@ -103,7 +107,8 @@ $_theme_colors = array(
 			"header"=>				"898",
 			"topnav"=>				"aba",
 			"contentarea"=>			"bcb",
-			"contentinfo"=>			"999"
+			"contentinfo"=>			"999",
+			"outerborders"=>		"AAA"
 	),
 	"red"=>array(
 			"font-size"=>			"12px",
@@ -123,7 +128,8 @@ $_theme_colors = array(
 			"header"=>				"b88",
 			"topnav"=>				"c99",
 			"contentarea"=>			"edd",
-			"contentinfo"=>			"990000"
+			"contentinfo"=>			"990000",
+			"outerborders"=>		"AAA"
 	)
 );
 

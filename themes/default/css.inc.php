@@ -46,6 +46,8 @@ select, textarea, input {
 	text-align: left;
 }
 
+
+
 table, td { border: 0px solid black }
 
 .toppadding { padding: 5px; border-bottom: 1px solid #aaa; }

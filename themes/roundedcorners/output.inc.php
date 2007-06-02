@@ -97,7 +97,7 @@ include("themes/$theme/css.inc.php");
 ?>
 <title><? echo $pagetitle; ?></title>
 </head>
-<body style='margin: 0px'>
+<body style='margin: 2px'>
 
 <? print $obContent; ?>
 <table  width='<?php echo $sitewidth ?>' align='center' cellpadding='0' cellspacing='0'>
@@ -107,8 +107,12 @@ include("themes/$theme/css.inc.php");
 			<td class='r3c1'> &nbsp; </td>
 			<td class='r2c2'> &nbsp; </td>
 			<td class='status' rowspan='3'>
-				<div style='height: 32px; overflow: hidden;'>
-					<? include("themes/common/status.inc.php"); ?>
+			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
+					print "<div style='height: 32px; overflow: hidden;'>";
+				} else {
+					print "<div style='height: 16px; overflow: hidden;'>";
+				}
+				include("themes/common/status.inc.php"); ?>
 				</div>
 			</td>		
 			<td class='r2c4'> &nbsp; </td>

@@ -85,8 +85,8 @@ include("$themesdir/common/css.inc.php");
 .status {
 	padding-top: 3px;
 	background: #<? echo $c['contentarea']; ?>;
-	border-bottom: 1px solid #AAA;
-	border-top: 1px solid #AAA;
+	border-bottom: 1px solid #<? echo $c['outerborders']; ?>;
+	border-top: 1px solid #<? echo $c['outerborders']; ?>;
 }
 
 

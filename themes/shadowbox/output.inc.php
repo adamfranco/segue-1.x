@@ -102,9 +102,9 @@ include("themes/$theme/css.inc.php");
 <tr><td>
 <table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td class='topleft'></td>
+		<td class='top'></td>
+		<td class='topright'></td>
 	</tr>
 	<tr>
 		<td class='left'>
@@ -144,12 +144,18 @@ include("themes/$theme/css.inc.php");
 			 * Site Header, Status bar, crumbs
 			 ******************************************************************************/ 
 			print $siteheader; 
-			include("themes/common/status.inc.php"); 
-			print $sitecrumbs;
-			?>
-			</div>
 			
-			<div class='topnav' align='center'>
+			print "\n\t\t\t<div style='float: right; height: 20px; overflow: hidden;'>";
+			include("themes/common/search.inc.php"); 
+			print "\n\t\t\t</div>";
+			
+			print "\n\t\t\t<div style='float: left;'>";
+			print $sitecrumbs;
+			print "\n\t\t\t</div>";
+			?>
+
+			
+			<div class='topnav' align='center' style='clear: both;'>
 			<?
 			/******************************************************************************
 			 * Section Navigation
