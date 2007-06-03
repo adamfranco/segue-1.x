@@ -155,7 +155,7 @@ select, textarea, input {
 	font-size: 12px;
 	padding-left: 0px;
 	margin-bottom: 3px;
-<!--	font-variant: small-caps;-->
+
 }
 
 .foundtext {

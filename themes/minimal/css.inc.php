@@ -81,6 +81,13 @@ include("$themesdir/common/css.inc.php"); ?>
 
 }
 
+.status {
+	padding: 5px;
+	margin-right: 5px;
+
+	background: #<? echo $bg['bg']; ?>;
+}
+
 .subject { 
 	font-weight: bolder; 
 }

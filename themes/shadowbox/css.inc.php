@@ -121,18 +121,18 @@ include("$themesdir/common/css.inc.php");
 .bottomleft {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomleft.gif"; ?>') no-repeat;
 	width: 25px;
-	height: 12px;
+	height: 6px;
 }
 
 .bottom {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottom.gif"; ?>') repeat-x;
-	height: 12px;
+	height: 6px;
 }
 
 .bottomright {
 	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomright.gif"; ?>') no-repeat;
 	width: 25px;
-	height: 12px;
+	height: 6px;
 }
 
 /*  the images */

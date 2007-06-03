@@ -110,10 +110,29 @@ include("themes/$theme/css.inc.php");
 	<tr>	
 	<td class='header'>
 	<?
-	print $siteheader; 
-	include("themes/common/status.inc.php"); 
-	print $sitecrumbs;
-	
+			print "<div class='status'>";
+		   if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
+				print "<div style='height: 30px; overflow: hidden;'>";
+			} else {
+				print "<div style='height: 16px; overflow: hidden;'>";
+			}
+			include("themes/common/status.inc.php"); 
+			print "</div>";
+			print "<hr style='size: 1px; noshade;'>";
+			print $siteheader; 
+			
+			print "\n\t\t\t<div style='float: right; margin-right: 0px; height: 20px; overflow: hidden;'>";
+			include("themes/common/search.inc.php"); 
+			print "\n\t\t\t</div>";
+			
+			print "\n\t\t\t<div style='float: left; '>";
+			print $sitecrumbs;
+			print "\n\t\t\t</div>";
+
+//	print $siteheader; 
+//	include("themes/common/status.inc.php"); 
+//	print $sitecrumbs;
+//	
 	?>
 	</td>
 	</tr>

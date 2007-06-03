@@ -37,7 +37,7 @@ if ($themesettings[theme] == 'shadowbox') {   // indeed these settings are for t
 	$usenavsize = $themesettings[nav_size];
 
 }
-if (!$usebg) $usebg = 'white';
+if (!$usebg) $usebg = 'gray-white';
 $bg = $_bgcolor[$usebg];
 
 if (!$usecolor) $usecolor = 'white';
@@ -112,7 +112,8 @@ include("themes/$theme/css.inc.php");
 				} else {
 					print "<div style='height: 16px; overflow: hidden;'>";
 				}
-				include("themes/common/status.inc.php"); ?>
+				include("themes/common/status.inc.php"); 
+				?>
 				</div>
 			</td>		
 			<td class='r2c4'> &nbsp; </td>

@@ -192,8 +192,7 @@ do {
 	if ($thisPage) {
 		$thisPage->fetchDown();
 		if ($thisPage->hasPermissionDown("view"))
-		
-		
+				
 			/******************************************************************************
 			 * if hide sidebars then print out page pagination
 			 ******************************************************************************/

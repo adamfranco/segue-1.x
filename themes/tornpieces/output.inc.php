@@ -118,12 +118,26 @@ include("themes/$theme/css.inc.php");
 				 * Site Header, Status bar, crumbs
 				 ******************************************************************************/ 
 				print $siteheader; 
+			 if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
+					print "<div style='height: 32px; overflow: hidden;'>";
+				} else {
+					print "<div style='height: 16px; overflow: hidden;'>";
+				}
 				include("themes/common/status.inc.php"); 
-				print $sitecrumbs;
+				
+				print "</div>";
+							print "\n\t\t\t<div style='float: right; height: 20px; overflow: hidden;'>";
+			include("themes/common/search.inc.php"); 
+			print "\n\t\t\t</div>";
+			
+			print "\n\t\t\t<div style='float: left;'>";
+			print $sitecrumbs;
+			print "\n\t\t\t</div>";
+
 				?>
 			
 			</div>
-			<div class='topnav' align='center'>
+			<div class='topnav' align='center' style='clear: both;'>
 			
 				<?
 				/******************************************************************************

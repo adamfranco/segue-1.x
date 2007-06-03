@@ -111,7 +111,14 @@ include("themes/$theme/css.inc.php");
 			<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
 		</td>
 		<td class='status'>
-			<? include("themes/common/status.inc.php"); ?>		
+			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
+					print "<div style='height: 32px; overflow: hidden;'>";
+				} else {
+					print "<div style='height: 16px; overflow: hidden;'>";
+				}
+				include("themes/common/status.inc.php"); 
+				?>
+				</div>
 		</td> 
 		<!-- end content table cell -->
 		<td class='right'>
