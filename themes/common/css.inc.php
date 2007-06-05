@@ -40,7 +40,7 @@ a:hover {
 	text-decoration: underline;
 }
 
-div, p, td, span, input { 
+body { 
 <?php
 	if (isset($textcolor) && $textcolor)
 		print "\tcolor: #".$textcolor.";";

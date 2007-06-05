@@ -56,11 +56,11 @@ function MyCarpConfReset($set='default') {
 	} else if ($set=='rss_titles') {
 		CarpConf('cborder','link');
 		$carpconf['clinktarget'] = "_blank";
-		$carpconf['clinkstyle'] = "font-size: 75%;";
+		$carpconf['clinkstyle'] = "font-size: 9px%;";
 		$carpconf['acb'] = "\n<div style='border-bottom: 1px solid gray'></div>";
 		$carpconf['iorder'] = "link";
 		$carpconf['ilinktarget'] = "_blank";
-		$carpconf['ilinkstyle'] = "font-size: 75%;";
+		$carpconf['ilinkstyle'] = "font-size: 9px;";
 		$carpconf['maxititle'] = 50;
 		$carpconf['maxitems'] = 10;
 		

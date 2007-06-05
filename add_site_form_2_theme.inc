@@ -106,9 +106,16 @@ printc("<tr><td> </td><td valign=bottom align='center' style='border-bottom: 0px
 $i=0;
 foreach ($possible_themes as $themename=>$longname) {
 	printc("<tr><td align='center'><a name='row$i'>");
-	printc("<input type=radio name=theme value='$themename' ".(($_SESSION[siteObj]->getField("theme")==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
+	//printpre ($_SESSION['atype']);
+	if (!in_array($themename, $admin_themes) || $_SESSION['atype'] == 'admin' || $_SESSION[siteObj]->getField("theme") == $themename ) {
+		printc("<input type=radio name=theme value='$themename' ".(($_SESSION[siteObj]->getField("theme")==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
+	}
 	printc("<td align='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
-	printc("<td align='center' valign='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br /><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a></td>");
+	printc("<td align='center' valign='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br /><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a>");
+	if (in_array($themename, $admin_themes)) {
+		printc("<br /> This theme is available only for specific uses.  Contact a Segue Administrator for more information.");
+	}		
+	printc("</td>");
 	if ($_SESSION[siteObj]->getField("theme")==$themename)
 		printc("<td align='center' valign='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><input type=button class='small' value='Edit Theme Settings' onClick='openThemeSettings()'><div style='font-size: 9px;'>(disable popup window blocker)".helplink("theme","?")."</div></td>");
 	else 
