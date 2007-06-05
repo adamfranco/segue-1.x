@@ -23,10 +23,14 @@ $_nav_width = array(
 
 $_site_width = array(
 	"variable"=>				"95%",
-	"800 pixels"=>				"800",
-	"700 pixels"=>				"700",
 	"600 pixels"=>				"600",
+	"650 pixels"=>				"650",
+	"700 pixels"=>				"700",
+	"750 pixels"=>				"750",
+	"800 pixels"=>				"800",
+	"850 pixels"=>				"850",
 	"900 pixels"=>				"900",
+	"950 pixels"=>				"950",
 	"1000 pixels"=>				"1000"
 );
 
@@ -39,6 +43,7 @@ $_sectionnav_size = array(
 );
 
 $_nav_size = array(
+	"9 pixels"=>				"9",
 	"10 pixels"=>				"10",
 	"12 pixels"=>				"12",
 	"14 pixels"=>				"14",
