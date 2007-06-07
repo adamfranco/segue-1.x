@@ -151,6 +151,25 @@ $_bgcolor = array(
 			"bglink"=>			"666666",
 			"bgtext"=>			"999999"
 	),
+	"blue"=>array(
+			"bgshadow"=>		"blue",
+			"bg"=>				"003366",
+			"bglink"=>			"FFFFFF",
+			"bgtext"=>			"CCCCCC"
+	),	
+	"green"=>array(
+			"bgshadow"=>		"green",
+			"bg"=>				"CCFF99",
+			"bglink"=>			"333333",
+			"bgtext"=>			"666666"
+	),	
+
+	"pink"=>array(
+			"bgshadow"=>		"pink",
+			"bg"=>				"FFCCCC",
+			"bglink"=>			"707070",
+			"bgtext"=>			"999999"
+	),
 	"black"=>array(
 			"bgshadow"=>		"black",
 			"bg"=>				"000000",

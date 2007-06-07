@@ -18,7 +18,8 @@ $topics = array (
 	"sites" => "Site Types",
 	"template" => "Site Templates",
 	"theme" => "Themes",
-	"msword" => "Copying From MS Word&reg;"
+	"msword" => "Copying From MS Word&reg;",
+	"wiki" => "Wiki Linking"
 );
 
 asort($topics);

@@ -25,7 +25,7 @@ $section_pages = &$sections[$_REQUEST[section]]->pages;
 $section_pages[$_REQUEST[page]]->buildPermissionsArray();
 
 
-if ($_SESSION[settings][add]) printc("<div class='title'>Add Content for this link in \"".$thisSection->getField("title")."\"</div>");
+if ($_SESSION[settings][add]) printc("<div class='title'>Add Content for \"".$_REQUEST['link_title']."\" link in: ".$thisSection->getField("title")." > ".$thisPage->getField("title")."</div>");
 else printc("<div class='title'>Edit Item \"".$_SESSION[pageObj]->getField("title")."\" in Section \"".$thisSection->getField("title")."\"</div>");
 	
 //----Cancel/Save/Next/Previous Buttons -----
@@ -48,7 +48,7 @@ printc("<input type='hidden' value='0' name='prevbutton' />");
 printc("<input type='hidden' value='0' name='nextbutton' />");
 
 
-printc("<div class='title'>Item Type:".helplink("pagetypes")."</div>");
+printc("<div class='title'>Item Type:".helplink("wiki")."</div>");
 
 printc("<table width='90%'cellspacing='5' border='0'>");
 printc("<tr><td>");

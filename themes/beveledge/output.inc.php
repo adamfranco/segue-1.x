@@ -38,7 +38,7 @@ if ($themesettings[theme] == 'beveledge') {   // indeed these settings are for t
 
 	
 }
-if (!$usebg) $usebg = 'blue';
+if (!$usebg) $usebg = 'white';
 $bg = $_bgcolor[$usebg];
 
 if (!$usecolor) $usecolor = 'white';
@@ -106,30 +106,28 @@ include("themes/$theme/css.inc.php");
 <!--  Status Layout -->
 <table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
-		<td class='topleft-s'></td>
-		<td class='top-s'></td>
-		<td class='topright-s'></td>
+		<td width='22'></td>
+		<td></td>
+		<td width='22'></td>
 	</tr>
 	<tr>
-		<td class='left-s'>
-			<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop-s.gif"?>' alt='border' />
+		<td width='22'>
 		</td>
 		<td class='status'>
 			<? include("themes/common/status.inc.php"); ?>		
 		</td> 
 		<!-- end content table cell -->
-		<td class='right-s'>
-			<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop-s.gif"?>' alt='rightop' />
+		<td width='22'>
 		</td>
 	</tr>
 	<tr>
-		<td class='bottomleft-s'></td>
-		<td class='bottom-s'></td>
-		<td class='bottomright-s'></td>
+		<td width='22'></td>
+		<td></td>
+		<td width='22'></td>
 	</tr>
-	</table>
+</table>
+	
 </td></tr>
-
 <tr><td>
 
 <!--  Body Layout -->

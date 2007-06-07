@@ -364,7 +364,7 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 			 * 2. there is only 1 page and 
 			 * 3. action is not viewsite
 			 ******************************************************************************/
-			 
+			 //printpre($_REQUEST);
 			if ($samepage == 1 && (count($subnav) > 1 || $action == "viewsite" || $link_pagetype == 1)) {
 				print "\n\t<table width='100%' cellpadding='2' cellspacing='0'>";
 				foreach ($subnav as $item) {
@@ -422,7 +422,7 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 						if ($action == "viewsite") {
 							print "\n\t\t\t<table width='100%' cellspacing='0' cellpadding='1' class='page_sidebar_content'>";
 						} else {
-							print "\n\t\t\t<table width='100%' cellspacing='0' cellpadding=>";
+							print "\n\t\t\t<table width='100%' cellspacing='0' cellpadding='0'>";
 						}
 						if ($item[name]) {
 							print "\n\t\t\t\t<tr><td class='heading'>";
@@ -454,13 +454,13 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 						} else {
 							
 							// Reorder Links
-//							if ($_REQUEST['showorder'] == "page") {
-//								print "<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'";
-//								for ($i=0; $i<count($subnav); $i++) {
-//									print "<option value='".$i."'".(($i==$nextorder_page)?" selected":"").">".($i+1)."</option>\n";
-//								}
-//								print "</select>\n";
-//							}							
+							if ($_REQUEST['showorder'] == "page") {
+								print "<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>\n'";
+								for ($i=0; $i<count($subnav); $i++) {
+									print "<option value='".$i."'".(($i==$nextorder_page)?" selected":"").">".($i+1)."</option>\n";
+								}
+								print "</select>\n";
+							}							
 
 							print "\n\t\t\t\t<tr><td>$item[content]";				
 						}

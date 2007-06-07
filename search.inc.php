@@ -58,9 +58,9 @@ if ($_REQUEST['search']) {
 	
 	$totalResults = count($pageResults) + count($contentResults) + count($discussResults);
 //	printc($totalResults." found");
-	printc("<table width='100%' border=0 align = center cellpadding=4, cellspacing=0>");
-	printc("</td><td></td></tr>");
-	printc("<tr><td colspan=2 align='left' class='title'>Found: '$search' ($totalResults results)</td></tr>");
+	printc("<table width='100%' border='0' align='center' cellpadding='4' cellspacing='0'>");
+	printc("\n\t<tr><td></td><td></td></tr>");
+	printc("\n\t<tr><td colspan='2' align='left' class='title'>Found: '$search' ($totalResults results)</td></tr>");
 //	printc("<tr><td>Site</td><td>Author</td></tr>");
 	
 //	foreach ($pageResults as $result) {
@@ -68,14 +68,14 @@ if ($_REQUEST['search']) {
 //	}
 	
 	if (count($contentResults) > 0) {
-		printc("<tr><td class='title2' >'$search' in text (".count($contentResults)." results)</td></tr>");	
+		printc("\n\t<tr><td class='title2' >'$search' in text (".count($contentResults)." results)</td><td></td></tr>");	
 		foreach ($contentResults as $result) {
 			printContentItem($result, "content", $siteObj, $search);
 		}
 	}
 
 	if (count($discussResults) > 0) {
-		printc("<tr><td class='title2' >'$search' in discussions (".count($discussResults)." results)</td></tr>");		
+		printc("\n\t<tr><td class='title2' >'$search' in discussions (".count($discussResults)." results)</td><td></td></tr>");		
 		foreach ($discussResults as $result) {
 			printContentItem($result, "discussion", $siteObj);
 		}
@@ -95,7 +95,7 @@ function printContentItem($result, $type, & $siteObj, $search="") {
 
 		if (($foundSection->canview() && $foundPage->canview() && $foundContent->canview()) || $_SESSION[auser] == $site_owner) {
 			ob_start();
-			print "<tr>";
+			print "\n\t<tr>";
 			$record_tag_tstamp = timestamp2usdate($result[story_updated_tstamp]);
 			//if ($record_tag_tstamp != '0000-00-00 00:00:00') {
 				//$record_tag_tstamp =& TimeStamp::fromString($record_tag_tstamp);			
@@ -103,15 +103,15 @@ function printContentItem($result, $type, & $siteObj, $search="") {
 			
 				//print "<td valign='top' class='listtext'>".$record_tag_tstamp->ymdString()."<br/>".$record_tag_time->string12(false)."</td>";
 			//	print "<td valign='top' class='listtext'>".$record_tag_tstamp."</td>";
-				print "<td valign='top'><a href=".$_full_uri."/index.php?&action=site&site=".$_REQUEST[site];
-				print "&section=".$result['section_id'];
-				print "&page=".$result['page_id'];
-				print "&story=".$result['story_id'];
-				print "&detail=".$result['story_id'];
+				print "\n\t\t<td valign='top'><a href='".$_full_uri."/index.php?&amp;action=site&amp;site=".$_REQUEST[site];
+				print "&amp;section=".$result['section_id'];
+				print "&amp;page=".$result['page_id'];
+				print "&amp;story=".$result['story_id'];
+				print "&amp;detail=".$result['story_id'];
 				if ($type == "discussion") {
 					print "#".$result['discussion_id'];
 				}
-				print ">";
+				print "'>";
 				print stripslashes(urldecode($result['section_title']));
 				print " > ".stripslashes(urldecode($result['page_title']));
 				if ($result['story_title']) print " > ".stripslashes(urldecode($result['story_title']));
@@ -119,11 +119,11 @@ function printContentItem($result, $type, & $siteObj, $search="") {
 					print " > ".stripslashes(urldecode($result['discussion_subject']));
 					print " (".$result['user_fname'].")";
 				}
-				print "</a></td></tr>";
+				print "</a>\n\t\t</td>";
 			//	print "<tr><td valign='top' class='contentinfo'>added by".$result['user_fname']." on ".$record_tag_tstamp."</td>";
-				print "</tr>";
-				print "<tr>";
-				print "<td class='list' valign='top'>";
+				print "\n\t</tr>";
+				print "\n\t\t<tr>";
+				print "\n\t\t\t<td class='list' valign='top'>";
 				if ($type == "content") {
 					$content = stripslashes(urldecode($result['story_text_short']));
 					$content .= stripslashes(urldecode($result['story_text_long']));
@@ -135,8 +135,8 @@ function printContentItem($result, $type, & $siteObj, $search="") {
 	
 				$content = find_abstract($content, $search);
 				print $content;
-				print "</td>";
-				print "</tr>";		
+				print "\n\t\t</td>";
+				print "\n\t</tr>";		
 			//}
 			$contentItem = ob_get_clean();
 			printc($contentItem);

@@ -33,9 +33,9 @@ function doPreviewWin(theme, from) {
 	var edit = <? print $_SESSION[settings][edit]; ?>;
 	var sitename = "<? print $_SESSION[siteObj]->getField("name"); ?>";
 	if (edit) {
-		var preview = window.open("index.php?action=site&site="+sitename+"&themesettings="+themesettings+"&theme="+theme+"&themepreview=1&nostatus=1","preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
+		var preview = window.open("index.php?action=site&site="+sitename+"&themesettings="+themesettings+"&theme="+theme+"&themepreview=1&nostatus=0","preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
 	} else {
-		var preview = window.open("index.php?action=site&site=sample&nostatus=1&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
+		var preview = window.open("index.php?action=site&site=sample&nostatus=0&themesettings="+themesettings+"&theme="+theme,"preview","toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no,width=750,height=700");
 	}
 //	document.addform.previewhandle.value = preview;
 //	preview.focus();
@@ -106,7 +106,7 @@ printc("<tr><td> </td><td valign=bottom align='center' style='border-bottom: 0px
 $i=0;
 foreach ($possible_themes as $themename=>$longname) {
 	printc("<tr><td align='center'><a name='row$i'>");
-	//printpre ($_SESSION['atype']);
+	//printpre ($themename);
 	if (!in_array($themename, $admin_themes) || $_SESSION['atype'] == 'admin' || $_SESSION[siteObj]->getField("theme") == $themename ) {
 		printc("<input type=radio name=theme value='$themename' ".(($_SESSION[siteObj]->getField("theme")==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
 	}

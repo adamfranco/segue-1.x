@@ -251,6 +251,10 @@ do {
 			} else if ($_REQUEST['user']) {
 				//$o =& $thisPage->stories[$_REQUEST['versioning']];
 				//include("participation.inc.php");	
+				
+			} else if ($_REQUEST['search']) {
+				
+				include("search.inc.php");
 			
 			} else {
 				/******************************************************************************

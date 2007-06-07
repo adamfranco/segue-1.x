@@ -9,9 +9,10 @@ session_start();
 // include all necessary files
 include("includes.inc.php");
 include("objects/objects.inc.php");
+//printpre($_REQUEST);
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-$siteObj =& new site($site);
+$siteObj =& new site($_REQUEST['site']);
 $siteObj->fetchDown();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -34,7 +35,7 @@ table {
 
 th, td {
 	border: 0px;
-	background-color: #ddd;
+
 }
 
 .td1 { 
@@ -70,10 +71,27 @@ input {
 <? print $content; ?>
 <? 
 $sections = decode_array($sa['sections']);
+if ($_REQUEST['show'] == 'wiki') {
+	print "<table cellspacing='1' width='100%'>";	
+	print "<tr><td >";
+
+	print "<div style='font-size: 11px;'>";
+	print "Any of the titles below can be used to create a wiki link.  Simply copy and
+	paste a title into the Segue editor. <br /><br />";
+	print "</div>";
+	print "<div style='font-size: 10px;'>";
+	print "<i>(The double brackets indicate a wiki link.  For example, if you have a page 
+	whose title is \"Introduction\", to make a link to that page, use [[introduction]].)</i>";
+	print "<br />For more information, see:".helplink('wiki');
+	print "</div>";
 	
+	print "</td></tr>";
+	print "</table>";
+
+}
 print "<table cellspacing='1' width='100%'>";	
 print "<tr>";
-	print "<th>Site Map - ".$siteObj->getField("title")."</th>";
+print "<th>Site Map - ".$siteObj->getField("title")."</th>";
 print "</tr>";
 
 /******************************************************************************
@@ -139,7 +157,7 @@ function doEditorLine(&$o) {
 	print "\n\n<tr>";
 	print "\n<td style='background-color: $bgColor; padding-left: ".$indent."px; font-size: $textSize'>";
 	$noLinkTypes = array("url","heading","divider");
-	if (!in_array($o->getField("type"),$noLinkTypes)) {
+	if (!in_array($o->getField("type"),$noLinkTypes) && $_REQUEST['show'] != 'wiki') {
 		print "\n\t<a href='#' onClick$nl='opener.window.location=\"index.php?$sid&action=viewsite&site=".$o->owning_site;
 		if ($level == 1) print "&section=".$o->id; 
 		if ($level > 1) print "&section=".$o->owning_section;
@@ -154,12 +172,27 @@ function doEditorLine(&$o) {
 		print " &nbsp; ";
 		
 	if ($class == "story") {
-		if ($o->getField("title") !="") 
-			print $o->getField("title");
-		else 
-			print $o->getFirst(25);		
-	} else
-		print "\n\t".$o->getField("title");
+		if ($o->getField("title") !="") {
+			if ($_REQUEST['show'] != 'wiki') {
+				print $o->getField("title");
+			} else { 
+				print "[[".$o->getField("title")."]]";
+			}
+		} else if ($_REQUEST['show'] != 'wiki') {
+			print $o->getFirst(25);
+		} else {
+			print "no title...";
+			print "<span style='font-size: 9px;'><i>(".$o->getFirst(25).")</i></span>";
+			
+		}
+	} else {
+			if ($_REQUEST['show'] != 'wiki') {
+				print "\n\t".$o->getField("title");
+			} else { 
+				print "\n\t[[".$o->getField("title")."]]";
+			}
+
+	}
 	print "\n\t</a>";
 	print "\n</td>";
 	print "\n</tr>";

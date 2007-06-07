@@ -52,7 +52,7 @@ $bordercolor = $_bordercolor[$usebordercolor];
 if (!$usetextcolor) $usetextcolor = 'black';
 $textcolor = $_textcolor[$usetextcolor];
 
-if (!$uselinkcolor) $uselinkcolor = 'red';
+if (!$uselinkcolor) $uselinkcolor = 'blue';
 $linkcolor = $_linkcolor[$uselinkcolor];
 
 if (!$usenav) $usenav = 'Top Sections';
@@ -104,35 +104,26 @@ include("themes/$theme/css.inc.php");
 <!--  Status Layout -->
 <table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
-		<td class='topleft-s'></td>
-		<td class='top-s'></td>
-		<td class='topright-s'></td>
+		<td width='22'></td>
+		<td></td>
+		<td width='22'></td>
 	</tr>
 	<tr>
-		<td class='left-s'>
-			<img class='lefttop-s' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop-s.gif"?>' alt='border' />
+		<td width='22'>
 		</td>
 		<td class='status'>
-			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
-					print "<div style='height: 32px; overflow: hidden;'>";
-				} else {
-					print "<div style='height: 16px; overflow: hidden;'>";
-				}
-				include("themes/common/status.inc.php"); 
-				?>
-				</div>
+			<? include("themes/common/status.inc.php"); ?>		
 		</td> 
 		<!-- end content table cell -->
-		<td class='right-s'>
-			<img class='righttop-s' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop-s.gif"?>' alt='rightop' />
+		<td width='22'>
 		</td>
 	</tr>
 	<tr>
-		<td class='bottomleft-s'></td>
-		<td class='bottom-s'></td>
-		<td class='bottomright-s'></td>
+		<td width='22'></td>
+		<td></td>
+		<td width='22'></td>
 	</tr>
-	</table>
+</table>
 	
 	
 </td></tr>
@@ -166,7 +157,7 @@ include("themes/$theme/css.inc.php");
 			print $sitecrumbs;
 			print "\n\t\t\t</div>";
 			?>
-
+			</div>
 			
 			<div class='topnav' align='center' style='clear: both;'>
 			<?
