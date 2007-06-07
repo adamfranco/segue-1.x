@@ -135,19 +135,27 @@ $_bordercolor = array(
 $_bgcolor = array(
 	"white"=>array(
 			"bgshadow"=>		"white",
-			"bg"=>				"FFFFFF"					
+			"bg"=>				"FFFFFF",
+			"bglink"=>			"666666",
+			"bgtext"=>			"999999"
 	),
 	"gray"=>array(
 			"bgshadow"=>		"gray",
-			"bg"=>				"CCCCCC"					
+			"bg"=>				"CCCCCC",
+			"bglink"=>			"666666",
+			"bgtext"=>			"999999"
 	),
 	"yellow"=>array(
 			"bgshadow"=>		"yellow",
-			"bg"=>				"FFFFCC"					
+			"bg"=>				"FFFFCC",
+			"bglink"=>			"666666",
+			"bgtext"=>			"999999"
 	),
 	"black"=>array(
 			"bgshadow"=>		"black",
-			"bg"=>				"000000"					
+			"bg"=>				"000000",
+			"bglink"=>			"666666",
+			"bgtext"=>			"999999"
 	)	
 
 );

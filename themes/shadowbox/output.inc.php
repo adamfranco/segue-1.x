@@ -100,15 +100,17 @@ include("themes/$theme/css.inc.php");
 <? print $obContent; ?>
 <table  width='<?php echo $sitewidth ?>' align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
+
+<!--  Status Layout -->
 <table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
-		<td class='topleft'></td>
-		<td class='top'></td>
-		<td class='topright'></td>
+		<td class='topleft-s'></td>
+		<td class='top-s'></td>
+		<td class='topright-s'></td>
 	</tr>
 	<tr>
-		<td class='left'>
-			<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+		<td class='left-s'>
+			<img class='lefttop-s' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop-s.gif"?>' alt='border' />
 		</td>
 		<td class='status'>
 			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
@@ -121,18 +123,22 @@ include("themes/$theme/css.inc.php");
 				</div>
 		</td> 
 		<!-- end content table cell -->
-		<td class='right'>
-			<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='rightop' />
+		<td class='right-s'>
+			<img class='righttop-s' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop-s.gif"?>' alt='rightop' />
 		</td>
 	</tr>
 	<tr>
-		<td class='bottomleft'></td>
-		<td class='bottom'></td>
-		<td class='bottomright'></td>
+		<td class='bottomleft-s'></td>
+		<td class='bottom-s'></td>
+		<td class='bottomright-s'></td>
 	</tr>
 	</table>
+	
+	
 </td></tr>
 <tr><td>
+
+<!--  Body Layout -->
 <table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
 		<td class='topleft'></td>
