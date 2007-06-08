@@ -19,9 +19,13 @@ printc("<input type='hidden' name='typeswitch' value='0' />");
 
 $site_permissions = $_SESSION[obj]->getPermissions();
 
+// all sections in site
 $sections = &$_SESSION[obj]->sections;
 
+//all pages in current section
 $section_pages = &$sections[$_REQUEST[section]]->pages;
+
+//permissions for current page in current section
 $section_pages[$_REQUEST[page]]->buildPermissionsArray();
 
 
@@ -53,6 +57,7 @@ printc("<div class='title'>Item Type:".helplink("wiki")."</div>");
 printc("<table width='90%'cellspacing='5' border='0'>");
 printc("<tr><td>");
 
+
 /******************************************************************************
  * if user has permission to add to the current page 
  * then print out add node tupe and target
@@ -67,17 +72,29 @@ if ($_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDo
 	printc("Add a new: ");
 	printc("<select name='type' onchange='typeChange()'>");
 	
-	// check to see if user is owner or has site add permission
-	if ($_SESSION[obj]->owner == $_SESSION[auser] || $site_permissions[$_SESSION[auser]][0]) {
+// check to see if user is owner or has site add permission
+//	printpre("site owner:". $_SESSION[obj]->owner);
+//	printpre("acting user:". $_SESSION[auser]);
+//	printpre("site wide add permissions:".$site_permissions[$_SESSION[auser]][0]);
+//	printpre($site_permissions);
+	
+	if ($_SESSION[obj]->owner == $_SESSION[auser] || $site_permissions[$_SESSION[auser]][0] == "1") {
 		printc("<option value='section'".(($_SESSION[settings][type] =='section')?" selected='selected'":"").">Section</option>");
 	} else {
-		printc("<option value='section' disabled='disabled'>Section</option>");
+		//printc("<option value='section' disabled='disabled'>Section</option>");
 	}
+	
+//  check to see if user has permission to add to the current section
+//	printpre("permission to add page to current section:".$sections[$_REQUEST[section]]->hasPermission("add"));
+
 	if ($sections[$_REQUEST[section]]->hasPermission("add")) {
 		printc("<option value='page'".(($_SESSION[settings][type] =='page')?" selected='selected'":"").">Page</option>");	
-	}else {
-		printc("<option value='page' disabled='disabled'>Page</option>");
+	} else {
+		//printc("<option value='page' disabled='disabled'>Page</option>");
+		$_SESSION[settings][type] = 'content';
 	}
+	
+	//(permission to add to current page is checked above...
 	printc("<option value='content'".(($_SESSION[settings][type] =='content')?" selected='selected'":"").">Content</option>");
 	printc("</select>");
 	
@@ -98,9 +115,8 @@ if ($_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDo
 			if ($sections[$i]->hasPermissionDown("add") && $sections[$i]->hasPermission("add")) {
 				printc("<option value='".$sections[$i]->id."'".(($_SESSION[settings][location] == $sections[$i]->id)?" selected='selected'":"").">".$sections[$i]->getField('title')."</option>");			
 			} else {
-				printc("<option value='".$sections[$i]->id." 'disabled='disabled'>".$sections[$i]->getField('title')."</option>");			
-			}
-			
+				//printc("<option value='".$sections[$i]->id." 'disabled='disabled'>".$sections[$i]->getField('title')."</option>");			
+			}			
 		}		
 		printc("</select> section");
 		
@@ -111,17 +127,23 @@ if ($_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDo
 		
 		foreach ($sections as $i=>$o) {
 			$sections[$i]->buildPermissionsArray();
+			
+			//if has add permission for section create label and check for page permissions
 			if ($sections[$i]->hasPermissionDown("add")) {
 				printc("<optgroup label ='".$sections[$i]->getField('title')."'>");
 				$pages = &$sections[$i]->pages;
+				
+				
+				// for each page in section, check for add permissions
 				foreach ($pages as $i=>$o) {
-					if ($pages[$i]->hasPermissionDown("add") && $pages[$i]->getField('title') != "" && $pages[$i]->getField('type') != "rss") {
+					$pages[$i]->buildPermissionsArray();
+					if ($pages[$i]->hasPermissionDown("add") == 1 && $pages[$i]->getField('title') != "" && $pages[$i]->getField('type') != "rss") {
 						printc("<option value='".$pages[$i]->id."'".(($_SESSION[settings][location] == $pages[$i]->id)?" selected='selected'":"").">".$pages[$i]->getField('title')."</option>");					
-					} else if ($pages[$i]->getField('title') != "") {
-						printc("<option value='".$pages[$i]->id." 'disabled='disabled'>".$pages[$i]->getField('title')."</option>");
+					} else if ($pages[$i]->getField('title') != "" || $pages[$i]->hasPermissionDown("add") != 1) {
+						//printc("<option value='".$pages[$i]->id." 'disabled='disabled'>".$pages[$i]->getField('title')."</option>");
 					}
 				}
-				printc("<optgroup>");
+				printc("</optgroup>");
 			} 
 		}
 		printc("</select>");		

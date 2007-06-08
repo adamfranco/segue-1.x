@@ -63,20 +63,6 @@ if (!is_array($_SESSION[settings]) ) {
 		"title" => $_REQUEST[link_title]
 	);
 
-	// create session array for new node values and init
-	
-	//$_SESSION[pageObj] =& new page($thisSite->name,$thisSection->id,0,$thisSection);
-	
-	
-//	$_SESSION[new_node] = array();
-//	$_SESSION[new_node][title] = $_REQUEST[title];
-//	$_SESSION[new_node][site] = $_REQUEST[site];
-//	$_SESSION[new_node][section] = $_REQUEST[section];
-//	$_SESSION[new_node][page] = $_REQUEST[page];
-////	$_SESSION[new_node][story] = $_REQUEST[story];
-//	$_SESSION[new_node][type] = "page";
-	
-//	printpre($_SESSION[new_node]);
 	
 	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > ";
 
@@ -86,22 +72,6 @@ if (!is_array($_SESSION[settings]) ) {
 		$_SESSION[settings][edit]=0;
 		$_SESSION[settings][pagetitle] .= " Add content for this link";
 	}	
-//	if ($action == 'edit_page') { 
-//		$_SESSION[settings][add]=0;
-//		$_SESSION[settings][edit]=1;
-//		$_SESSION[settings][pagetitle] .= " Edit Item";
-//	}
-	
-//	if ($_SESSION[settings][add]) {
-//		$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
-//	}
-	
-//	if ($_SESSION[settings][edit]) {
-//		$_SESSION[pageObj]->fetchFromDB($_REQUEST[edit_page]);
-//		$_SESSION[pageObj]->buildPermissionsArray();
-//	}
-//	if ($thisSite->getField("type") == 'publication') $_SESSION[pageObj]->setField("url","");
-//	$_SESSION[pageObj]->initFormDates();
 }
 
 /******************************************************************************

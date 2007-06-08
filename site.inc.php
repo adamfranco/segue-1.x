@@ -34,6 +34,9 @@ if (!$thisSite->canview()) {
 	return;
 }	
 
+//printpre($_SESSION);
+//printpre($_REQUEST);
+
 // Do some checking to make sure that we have valid parts we are looking for.
 if (get_class($thisSite) == 'site')
 	$site=$thisSite->name;
