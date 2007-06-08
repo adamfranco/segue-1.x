@@ -125,10 +125,10 @@ if ($_SESSION[storyObj]->getField("type")!='rss') {
 	printc("\n<td>URL:</td><td><input type='text' name='url' value='".$_SESSION[storyObj]->getField("url")."' size='75' /></td>");
 	printc("\n</tr>");
 	printc("\n<tr>");
-	printc("\n<td>Number of items:</td><td><input type='text' name='shorttext' value='".$_SESSION[storyObj]->getField("shorttext")."' size='5' /> (standard view)</td>");
+	printc("\n<td>Number of items:</td><td><input type='text' name='shorttext' value='".$_SESSION[storyObj]->getField("shorttext")."' size='5' /> Intial view (items displayed on page)</td>");
 	printc("\n</tr>");
 	printc("\n<tr>");
-	printc("\n<td></td><td><input type='text' name='longertext' value='".$_SESSION[storyObj]->getField("longertext")."' size='5' /> (detail view)</td>");
+	printc("\n<td></td><td><input type='text' name='longertext' value='".$_SESSION[storyObj]->getField("longertext")."' size='5' /> Detail view (additional items available from \"more...\" link)</td>");
 	printc("\n</tr>");
 	
 }

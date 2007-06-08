@@ -206,16 +206,6 @@ include("themes/$theme/css.inc.php");
 <td class='contentarea'>
 
 <? 
-/******************************************************************************
- * Search UI
- ******************************************************************************/
-print "\n<table cellpadding='0' cellspacing='0' width='100%>";
-print "\n\t<tr><td>";
-//print "\n\t<div style='float: right; height: 25px; overflow: hidden;'>";
-include("themes/common/search.inc.php"); 
-//print "\n\t</div>";
-print "\n\t</td></tr>";
-print "\n</table>";
 
 print $content; 
 
