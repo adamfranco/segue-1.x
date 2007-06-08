@@ -48,6 +48,8 @@ if ($_REQUEST['search']) {
 
 		
 //	$pageResults = searchPages($search);
+	$sectionResults = searchSections($_REQUEST['search'], $_REQUEST[site]);
+	$pageResults = searchPages($_REQUEST['search'], $_REQUEST[site]);
 	$contentResults = searchContent($_REQUEST['search'], $_REQUEST[site]);
 	$discussResults = searchDiscussions($_REQUEST['search'], $_REQUEST[site]);
 
@@ -60,22 +62,32 @@ if ($_REQUEST['search']) {
 //	printc($totalResults." found");
 	printc("<table width='100%' border='0' align='center' cellpadding='4' cellspacing='0'>");
 	printc("\n\t<tr><td></td><td></td></tr>");
-	printc("\n\t<tr><td colspan='2' align='left' class='title'>Found: '$search' ($totalResults results)</td></tr>");
+	printc("\n\t<tr><td colspan='2' align='left' class='title'>Found: '$search'</td></tr>");
 //	printc("<tr><td>Site</td><td>Author</td></tr>");
 	
-//	foreach ($pageResults as $result) {
-//		printPageItem($result);
-//	}
+	if (count($sectionResults) > 0) {
+		printc("\n\t<tr><td class='title2' >Section titles containing: '$search'</td><td></td></tr>");	
+		foreach ($sectionResults as $result) {
+			printContentItem($result, "section", $siteObj, $search);
+		}
+	}
+ 
+ if (count($pageResults) > 0) {
+		printc("\n\t<tr><td class='title2' >Pages titles containing: '$search'</td><td></td></tr>");	
+		foreach ($pageResults as $result) {
+			printContentItem($result, "page", $siteObj, $search);
+		}
+	}
 	
 	if (count($contentResults) > 0) {
-		printc("\n\t<tr><td class='title2' >'$search' in text (".count($contentResults)." results)</td><td></td></tr>");	
+		printc("\n\t<tr><td class='title2' >'$search' in text</td><td></td></tr>");	
 		foreach ($contentResults as $result) {
 			printContentItem($result, "content", $siteObj, $search);
 		}
 	}
 
 	if (count($discussResults) > 0) {
-		printc("\n\t<tr><td class='title2' >'$search' in discussions (".count($discussResults)." results)</td><td></td></tr>");		
+		printc("\n\t<tr><td class='title2' >'$search' in discussions</td><td></td></tr>");		
 		foreach ($discussResults as $result) {
 			printContentItem($result, "discussion", $siteObj);
 		}
@@ -134,7 +146,9 @@ function printContentItem($result, $type, & $siteObj, $search="") {
 				$content = $wikiResolver->parseText($content, $_REQUEST[site], $result['section_id'], $result['page_id']);
 	
 				$content = find_abstract($content, $search);
-				print $content;
+				if ($type != "page" && $type != "section") {
+					print $content;
+				}
 				print "\n\t\t</td>";
 				print "\n\t</tr>";		
 			//}
@@ -286,6 +300,119 @@ function searchDiscussions ($search, $site) {
 	return $found_discussions;
 
 
+}
+
+function searchPages ($search, $site) {
+
+	$terms = explode(" ", $search);
+	foreach ($terms as $key => $term) {
+		$terms[$key] = " LIKE ('%".addslashes($term)."%')";
+	}
+
+	$limit = 10;
+	$query = "
+		SELECT
+			page_title, page_updated_tstamp, section_title, page_id, section_id
+		FROM
+			slot
+		INNER JOIN
+		 	section
+		 	ON section.FK_site = slot.FK_site
+		INNER JOIN
+			page
+			ON FK_section = section_id 				
+		WHERE
+			slot_name = '".addslashes($site)."'
+		AND (
+			";
+	
+	// Stories
+	$query .= "\n\n(";
+	foreach ($terms as $i => $term) {
+		if ($i > 0) {
+			$query .= "\n AND ";
+		}
+		$query .= "\n\t(";
+		$query .= "page_title ".$term;
+		$query .= ")";
+	}
+				
+	
+	$query .= "\n)";
+	
+	$query .= "
+			)
+		Order BY
+			 page_updated_tstamp  DESC
+		LIMIT 0, $limit
+		";
+
+	//printpre($query);
+	$r = db_query($query);
+		
+	if (db_num_rows($r) > 0) {
+		$found_pages = array();
+		while ($a = db_fetch_assoc($r)) {
+			$a[page_title] = stripslashes(urldecode($a['page_title']));
+			$found_pages[] = $a;			
+		}
+	}
+	return $found_pages;
+}
+
+function searchSections ($search, $site) {
+
+	$terms = explode(" ", $search);
+	foreach ($terms as $key => $term) {
+		$terms[$key] = " LIKE ('%".addslashes($term)."%')";
+	}
+
+	$limit = 10;
+	$query = "
+		SELECT
+			section_title, section_updated_tstamp, section_title, section_id
+		FROM
+			slot
+		INNER JOIN
+		 	section
+		 	ON section.FK_site = slot.FK_site				
+		WHERE
+			slot_name = '".addslashes($site)."'
+		AND (
+			";
+	
+	// Stories
+	$query .= "\n\n(";
+	foreach ($terms as $i => $term) {
+		if ($i > 0) {
+			$query .= "\n AND ";
+		}
+		$query .= "\n\t(";
+		$query .= "section_title ".$term;
+		$query .= ")";
+	}
+				
+	
+	$query .= "\n)";
+	
+	$query .= "
+			)
+		Order BY
+			 section_updated_tstamp  DESC
+		LIMIT 0, $limit
+		";
+
+	//printpre($query);
+	$r = db_query($query);
+		
+	if (db_num_rows($r) > 0) {
+		$found_sections = array();
+		while ($a = db_fetch_assoc($r)) {
+			$a[section_title] = stripslashes(urldecode($a['section_title']));
+			$found_sections[] = $a;			
+		}
+	}
+	return $found_sections;
 }
 
 function find_abstract ($content, $search, $numwords=25) {
