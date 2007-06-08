@@ -30,7 +30,7 @@ $section_pages[$_REQUEST[page]]->buildPermissionsArray();
 
 
 if ($_SESSION[settings][add]) printc("<div class='title'>Add Content for \"".$_REQUEST['link_title']."\" link in: ".$thisSection->getField("title")." > ".$thisPage->getField("title")."</div>");
-else printc("<div class='title'>Edit Item \"".$_SESSION[pageObj]->getField("title")."\" in Section \"".$thisSection->getField("title")."\"</div>");
+//else printc("<div class='title'>Edit Item \"".$_SESSION[pageObj]->getField("title")."\" in Section \"".$thisSection->getField("title")."\"</div>");
 	
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width='100%'><tr><td width='50%'>");
@@ -52,7 +52,7 @@ printc("<input type='hidden' value='0' name='prevbutton' />");
 printc("<input type='hidden' value='0' name='nextbutton' />");
 
 
-printc("<div class='title'>Item Type:".helplink("wiki")."</div>");
+printc("<div class='title'>Wiki Linking:".helplink("wiki")."</div>");
 
 printc("<table width='90%'cellspacing='5' border='0'>");
 printc("<tr><td>");
@@ -157,11 +157,11 @@ if ($_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDo
 printc("</td></tr>");
 printc("<tr><td>");
 
-if ($_SESSION[new_node][type] =='page') {
+if ($_SESSION[settings][type] =='page') {
 	printc("<div class='desc'>A new page is a sidebar link to a location where you can add any number of content blocks.</div>");
-} else if ($_SESSION[new_node][type] =='content') {
+} else if ($_SESSION[settings][type] =='content') {
 	printc("<div class='desc'>New Content adds content to whatever page you specify in this site.</div>");
-} else if ($_SESSION[new_node][type] =='section') {
+} else if ($_SESSION[settings][type] =='section') {
 	printc("<div class='desc'>A new section is a link to a location where you can add any number of pages</div>");
 }
 printc("</td><td></td></tr>");

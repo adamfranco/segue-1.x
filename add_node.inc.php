@@ -13,30 +13,8 @@
 //	printpre($_REQUEST);
 	
 if (is_array($_SESSION[settings])) {
-//if (is_array($_SESSION[new_node])) {
-	// if we have already started editing...
-
-	// --- Load any new variables into the array ---
-	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
-	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
 	if ($_REQUEST[type]) $_SESSION[settings][type] = $_REQUEST[type];	
 	if ($_REQUEST[location]) $_SESSION[settings][location] = $_REQUEST[location];
-	
-
-	
-	//---- If switching type, take values to defaults ----
-	if ($_REQUEST[typeswitch]) {
-	//	$_SESSION[pageObj]->init(1);		// init values... force form date variables
-	//	if ($thisSite->getField("type") == 'publication') $_SESSION[pageObj]->setField("url","");	
-		if ($_SESSION[settings][add]) {
-			//print "<p> deleting settings[permissions]....</p>";
-			//$_SESSION[settings][permissions] = "";
-			//$_SESSION[pageObj]->setPermissions($thisSection->getPermissions());
-		}
-	}
-		if ($_REQUEST[editor]) {
-		$_SESSION['html_editor'] = $_REQUEST[editor];
-	}
 }
 
 /******************************************************************************
@@ -57,7 +35,7 @@ if (!is_array($_SESSION[settings]) ) {
 		"section" => $thisSection->id,
 		"page" => $_REQUEST[page],
 		"story" => $_REQUEST[story],
-		"comingFrom" => "site",
+		"comingFrom" => "viewsite",
 		"type" => "page",
 		"location" => $_REQUEST[section],
 		"title" => $_REQUEST[link_title]
@@ -100,15 +78,16 @@ $page = "";
 $siteheader = "";
 $sitefooter = "";
 
-//if ($_REQUEST[cancel]) {
-//	$comingFrom = $_SESSION[settings][comingFrom];
-//	$site = $thisSite->name;
-////	session_unregister("settings"); // handled by index.php
-//	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site");
-//	else header("Location: index.php?$sid");
-//	
-//	exit;
-//}
+if ($_REQUEST[cancel]) {
+	$comingFrom = $_SESSION[settings][comingFrom];
+	$site = $thisSite->name;
+//	session_unregister("settings"); // handled by index.php
+	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site");
+	else header("Location: index.php?$sid");
+	
+	exit;
+}
+
 if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
 
