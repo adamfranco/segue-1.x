@@ -51,10 +51,18 @@ include("themes/$theme/css.inc.php");
 		 ******************************************************************************/ 	
 		include("themes/common/status.inc.php");
 		print ($siteheader)?"$siteheader":"";
+		
+		print "\n\t\t\t<div style='float: right; height: 20px; overflow: hidden;'>";
+		include("themes/common/search.inc.php"); 
+		print "\n\t\t\t</div>";
+		
+		print "\n\t\t\t<div style='float: left;'>";
 		print $sitecrumbs;
+		print "\n\t\t\t</div>";
+	//	print $sitecrumbs;
 		?>
 		
-			<table width='100%' cellspacing='0'>
+			<table width='100%' cellspacing='0' style='clear: both;'>
 				<tr>
 					<td align='center' class='toppadding'>&nbsp;</td>
 					

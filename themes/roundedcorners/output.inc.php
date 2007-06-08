@@ -102,11 +102,18 @@ include("themes/$theme/css.inc.php");
 <? print $obContent; ?>
 <table  width='<?php echo $sitewidth ?>' align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
-	<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
-		<tr>
-			<td class='r3c1'> &nbsp; </td>
-			<td class='r2c2'> &nbsp; </td>
-			<td class='status' rowspan='3'>
+
+<!--  Status Layout -->
+<table width='90%' cellpadding='0' cellspacing='0' align='center'>
+	<tr>
+		<td width='0'></td>
+		<td></td>
+		<td width='0'></td>
+	</tr>
+	<tr>
+		<td width='0'>
+		</td>
+		<td class='status'>
 			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
 					print "<div style='height: 32px; overflow: hidden;'>";
 				} else {
@@ -114,28 +121,22 @@ include("themes/$theme/css.inc.php");
 				}
 				include("themes/common/status.inc.php"); 
 				?>
-				</div>
-			</td>		
-			<td class='r2c4'> &nbsp; </td>
-			<td class='r3c5'> &nbsp; </td>
-		</tr>	
-		<tr>
-			<td class='r3c1'> &nbsp; </td>
-			<td class='r3c2'> &nbsp; </td>
-			<!--<td class='r4c3'></td>-->
-			<td class='r3c4'> &nbsp; </td>
-			<td class='r3c5'> &nbsp; </td>
-		</tr>
-		<tr>
-			<td class='r4c1'> &nbsp; </td>
-			<td class='r4c2'> &nbsp; </td>
-			<!--<td class='r4c3'></td>-->
-			<td class='r4c4'> &nbsp; </td>
-			<td class='r4c5'> &nbsp; </td>
-		</tr>
-	</table>
+		</td> 
+		<!-- end content table cell -->
+		<td width='0'>
+		</td>
+	</tr>
+	<tr>
+		<td width='0'></td>
+		<td></td>
+		<td width='0'></td>
+	</tr>
+</table>
+
 </td></tr>
 <tr><td>	
+
+<!--  Body Layout -->
 	<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>	
 	<tr>
 		<td class='r1c1'></td>

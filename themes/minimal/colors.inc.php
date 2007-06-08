@@ -130,27 +130,39 @@ $_bordercolor = array(
 $_bgcolor = array(
 	"turquoise"=>array(
 			"bgshadow"=>		"white",
-			"bg"=>				"A1AEBE"					
+			"bg"=>				"A1AEBE",
+			"bglink"=>			"666666",
+			"bgtext"=>			"333333"					
 	),
 	"white"=>array(
 			"bgshadow"=>		"white",
-			"bg"=>				"FFFFFF"					
+			"bg"=>				"FFFFFF",
+			"bglink"=>			"666666",
+			"bgtext"=>			"999999"					
 	),
 	"black"=>array(
 			"bgshadow"=>		"white",
-			"bg"=>				"000000"					
+			"bg"=>				"000000",
+			"bglink"=>			"666666",
+			"bgtext"=>			"999999"					
 	),
 	"yellow"=>array(
 			"bgshadow"=>		"white",
-			"bg"=>				"FFCC00"					
+			"bg"=>				"FFCC00",
+			"bglink"=>			"666666",
+			"bgtext"=>			"333333"					
 	),	
 	"olive"=>array(
 			"bgshadow"=>		"white",
-			"bg"=>				"898"					
+			"bg"=>				"898",
+			"bglink"=>			"666666",
+			"bgtext"=>			"333333"					
 	),	
 	"red"=>array(
 			"bgshadow"=>		"white",
-			"bg"=>				"b88"					
+			"bg"=>				"b88",
+			"bglink"=>			"FFFFFF",
+			"bgtext"=>			"333333"					
 	)	
 );
 

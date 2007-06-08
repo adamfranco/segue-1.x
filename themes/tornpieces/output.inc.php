@@ -37,7 +37,7 @@ if ($themesettings[theme] == 'tornpieces') {   // indeed these settings are for 
 	$usenavsize = $themesettings[nav_size];	
 	
 }
-if (!$usebg) $usebg = 'blue';
+if (!$usebg) $usebg = 'white';
 $bg = $_bgcolor[$usebg];
 
 if (!$usecolor) $usecolor = 'white';
@@ -99,7 +99,44 @@ include("themes/$theme/css.inc.php");
 <body style='margin: 0px'>
 
 <? print $obContent; ?>
+<table  width='<?php echo $sitewidth ?>' align='center' cellpadding='0' cellspacing='0'>
+<tr><td>
 
+<!--  Status Layout -->
+<table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
+	<tr>
+		<td width='22'></td>
+		<td></td>
+		<td width='22'></td>
+	</tr>
+	<tr>
+		<td width='22'>
+		</td>
+		<td class='status'>
+			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
+					print "<div style='height: 32px; overflow: hidden;'>";
+				} else {
+					print "<div style='height: 16px; overflow: hidden;'>";
+				}
+				include("themes/common/status.inc.php"); 
+				?>
+		</td> 
+		<!-- end content table cell -->
+		<td width='22'>
+		</td>
+	</tr>
+	<tr>
+		<td width='22'></td>
+		<td></td>
+		<td width='22'></td>
+	</tr>
+</table>
+	
+	
+</td></tr>
+<tr><td>
+
+<!--  Body Layout -->
 <table width='<?php echo $sitewidth ?>' cellpadding='0' cellspacing='0' align='center'>
 	<tr>
 		<td class='topleft'></td>
@@ -118,18 +155,10 @@ include("themes/$theme/css.inc.php");
 				 * Site Header, Status bar, crumbs
 				 ******************************************************************************/ 
 				print $siteheader; 
-			 if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
-					print "<div style='height: 32px; overflow: hidden;'>";
-				} else {
-					print "<div style='height: 16px; overflow: hidden;'>";
-				}
-				include("themes/common/status.inc.php"); 
-				
-				print "</div>";
-							print "\n\t\t\t<div style='float: right; height: 20px; overflow: hidden;'>";
+
+			print "\n\t\t\t<div style='float: right; height: 20px; overflow: hidden;'>";
 			include("themes/common/search.inc.php"); 
-			print "\n\t\t\t</div>";
-			
+			print "\n\t\t\t</div>";			
 			print "\n\t\t\t<div style='float: left;'>";
 			print $sitecrumbs;
 			print "\n\t\t\t</div>";
@@ -337,6 +366,9 @@ if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
 		<td class='bottom'>&nbsp;</td>
 		<td class='bottomright'>&nbsp;</td>
 	</tr>
+</table>
+
+</td></td>
 </table>
 <!-- end bottom table  -->
 

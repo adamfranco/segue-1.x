@@ -1,8 +1,9 @@
 <style type='text/css'>
 
 body {
-	 background-color: #<? echo $bg['bgcolor']; ?>; 
-	 background: url('<? echo "$themesdir/$theme/images/background/$bg[bgimage]"; ?>') repeat-x;
+	 	 background: url('<? echo "$themesdir/$theme/images/background/$bg[bgimage]"; ?>') repeat-x;
+	 	 background-color: #<? echo $bg['bgcolor']; ?>; 
+
 }
 
 <?
@@ -82,11 +83,29 @@ include("$themesdir/common/css.inc.php");
 	background: #<? echo $c['contentarea']; ?>;
 }
 
+/*
 .status {
 	padding-top: 3px;
 	background: #<? echo $c['contentarea']; ?>;
 	border-bottom: 1px solid #<? echo $c['outerborders']; ?>;
 	border-top: 1px solid #<? echo $c['outerborders']; ?>;
+}
+*/
+
+.status {
+	padding: 5px;
+	margin-right: 5px;
+	background: #<? echo $bg['status']; ?>;
+	color: #<? echo $bg['bgtext']; ?>;
+}
+
+.status a {
+	color: #<? echo $bg['bglink']; ?>;
+	text-decoration: none;
+}
+
+.status a:hover {
+	text-decoration: underline;
 }
 
 

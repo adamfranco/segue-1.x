@@ -33,7 +33,7 @@ select, textarea, input {
 	font-size: 10px;
 }
 
-.headerbox {
+.headerbox1 {
 	border: 1px solid #999;
 	background-color: #efefef;
 	padding: 5px;

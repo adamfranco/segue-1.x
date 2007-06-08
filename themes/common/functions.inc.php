@@ -152,7 +152,7 @@ function vertical_nav($navtype, $nav_items, $extra, $bordercolor='000000', $hide
 				if (!$navtype) $samepage = ($action && ($action == $item[id]))?1:0;
 				
 				//if story detail then keep link to page and bold
-				if ($samepage == 1 && $detail && $page==$item[id]) {
+				if ($samepage == 1 && $detail && $page==$item[id] || ($page==$item[id] && $_REQUEST['search'])) {
 					$samepage = 0;
 					$bold = 1;
 				}
@@ -323,7 +323,7 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 			}
 			
 			//if story detail then keep link to page and bold
-			if ($samepage == 1 && $detail && $page==$item[id]) {
+			if ($samepage == 1 && $detail && $page==$item[id] || ($page==$item[id] && $_REQUEST['search'])) {
 				$samepage = 0;
 				$bold = 1;
 			}
@@ -387,7 +387,7 @@ function side_nav($navtype,$leftnav,$subnav,$extra, $subextra, $bordercolor='000
 						}
 						
 						//if story detail then keep link to page and bold
-						if ($samepage == 1 && $detail && $page==$item[id]) {
+						if ($samepage == 1 && $detail && $page==$item[id] || ($page==$item[id] && $_REQUEST['search'])) {
 							$samepage = 0;
 							$bold = 1;
 						//if page is link type then not samepage (i.e. needs to be link...)

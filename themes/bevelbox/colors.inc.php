@@ -58,6 +58,15 @@ $_theme_colors = array(
 	)
 );
 
+$_bgcolor = array(
+	"white"=>array(
+			"bgshadow"=>		"white",
+			"bg"=>				"FFFFFF",
+			"bglink"=>			"666666",
+			"bgtext"=>			"999999"
+	)
+);
+
 $_linkcolor = array(
 	"red"=>					"990000"
 );

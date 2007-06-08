@@ -149,6 +149,22 @@ body {
 	background: #<? echo $c['contentarea']; ?>;
 }
 
+.status {
+	padding: 5px;
+	margin-right: 5px;
+	background: #<? echo $bg['status']; ?>;
+	color: #<? echo $bg['bgtext']; ?>;
+}
+
+.status a {
+	color: #<? echo $bg['bglink']; ?>;
+	text-decoration: none;
+}
+
+.status a:hover {
+	text-decoration: underline;
+}
+
 /* more images */
 
 .topright {

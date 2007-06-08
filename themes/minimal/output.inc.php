@@ -38,10 +38,10 @@ if ($themesettings[theme] == 'minimal') {   // indeed these settings are for thi
 
 	
 }
-if (!$usebg) $usebg = 'turquoise';
+if (!$usebg) $usebg = 'white';
 $bg = $_bgcolor[$usebg];
 
-if (!$usecolor) $usecolor = 'turquoise';
+if (!$usecolor) $usecolor = 'white';
 $c = $_theme_colors[$usecolor];
 
 if (!$useborder) $useborder = 'dashed';
@@ -101,6 +101,7 @@ include("themes/$theme/css.inc.php");
 
 <? print $obContent; ?>
 
+
 <table width='100%' cellpadding='0' cellspacing='0' >
 	<?
 	/******************************************************************************
@@ -109,16 +110,19 @@ include("themes/$theme/css.inc.php");
 	 ?>
 	<tr>	
 	<td class='header'>
+	<table  width='<?php echo $sitewidth ?>' align='center' cellpadding='0' cellspacing='0'>
+		<tr><td>
 	<?
 			print "<div class='status'>";
 		   if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
-				print "<div style='height: 30px; overflow: hidden;'>";
+				print "<div style='height: 32px; overflow: hidden;'>";
 			} else {
 				print "<div style='height: 16px; overflow: hidden;'>";
 			}
 			include("themes/common/status.inc.php"); 
 			print "</div>";
-			print "<hr style='size: 1px; noshade;'>";
+			print "</div>";
+			//print "<hr>";
 			print $siteheader; 
 			
 			print "\n\t\t\t<div style='float: right; margin-right: 0px; height: 20px; overflow: hidden;'>";
@@ -134,8 +138,9 @@ include("themes/$theme/css.inc.php");
 //	print $sitecrumbs;
 //	
 	?>
-	</td>
-	</tr>
+	</td></tr>
+	</table>
+	</td></tr>
 	<?
 	/******************************************************************************
 	 * Section Navigation

@@ -114,7 +114,14 @@ include("themes/$theme/css.inc.php");
 		<td width='22'>
 		</td>
 		<td class='status'>
-			<? include("themes/common/status.inc.php"); ?>		
+			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
+					print "<div style='height: 32px; overflow: hidden;'>";
+				} else {
+					print "<div style='height: 16px; overflow: hidden;'>";
+				}
+				include("themes/common/status.inc.php"); 
+				?>
+	
 		</td> 
 		<!-- end content table cell -->
 		<td width='22'>

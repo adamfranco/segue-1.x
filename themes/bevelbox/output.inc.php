@@ -31,6 +31,10 @@ if ($themesettings[theme] == 'bevelbox') {   // indeed these settings are for th
 	$usebordercolor = $themesettings[bordercolor];
 
 }
+
+if (!$usebg) $usebg = 'white';
+$bg = $_bgcolor[$usebg];
+
 if (!$use) $use = 'gray';
 $c = $_theme_colors[$use];
 
@@ -83,7 +87,43 @@ include("themes/$theme/css.inc.php");
 
 <? print $obContent; ?>
 
-<br />
+<table  width='90%' align='center' cellpadding='0' cellspacing='0'>
+<tr><td>
+
+<!--  Status Layout -->
+<table width='90%' cellpadding='0' cellspacing='0' align='center'>
+	<tr>
+		<td width='10'></td>
+		<td></td>
+		<td width='10'></td>
+	</tr>
+	<tr>
+		<td width='10'>
+		</td>
+		<td class='status'>
+			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
+					print "<div style='height: 32px; overflow: hidden;'>";
+				} else {
+					print "<div style='height: 16px; overflow: hidden;'>";
+				}
+				include("themes/common/status.inc.php"); 
+				?>
+		</td> 
+		<!-- end content table cell -->
+		<td width='10'>
+		</td>
+	</tr>
+	<tr>
+		<td width='10'></td>
+		<td></td>
+		<td width='10'></td>
+	</tr>
+</table>
+	
+	
+</td></tr>
+<tr><td>
+
 <table width='90%' align='center' cellpadding='0' cellspacing='0'>
 <tr><td>
 <?
@@ -125,12 +165,17 @@ print $siteheader;
 	/******************************************************************************
 	 * Status Bar, crumbs
 	 ******************************************************************************/	
-	include("themes/common/status.inc.php");
-	print $sitecrumbs; 
+	print "\n\t\t\t<div style='float: right; height: 20px; overflow: hidden;'>";
+	include("themes/common/search.inc.php"); 
+	print "\n\t\t\t</div>";
+	
+	print "\n\t\t\t<div style='float: left;'>";
+	print $sitecrumbs;
+	print "\n\t\t\t</div>"; 
 	
  	?>
 	</div>
-    <div class='topnav' align='center'>
+    <div class='topnav' align='center' style='clear: both;'>
 	<div class='nav'>
 	<?
 	/******************************************************************************
@@ -252,6 +297,8 @@ print $sitefooter
 </td></tr>
 </table>
 <br />
+</td></tr>
+</table>
 </body>
 </html>
 
