@@ -34,6 +34,7 @@ include("$themesdir/common/css.inc.php");
 .image_header {
 /* 	background-color: #<? echo $c['header']; ?>; */
 /* 	border-bottom: 1px solid #<? echo $c['borders']; ?>; */
+
  	margin-left: 6px; 
  	margin-right: 5px; 
 	margin-bottom: 0px;

@@ -181,12 +181,16 @@ include("themes/$theme/css.inc.php");
 					$hasHeader = true;
 					
 					// ensure that the image has the correct height
-					$imgTag = preg_replace('/\sheight=[\'"][^\'"]+[\'"]/', ' height="158px"', $imgTag);
-					$imgTag = preg_replace('/\swidth=[\'"][^\'"]+[\'"]/', '', $imgTag);
+	//				$imgTag = preg_replace('/\sheight=[\'"][^\'"]+[\'"]/', ' height="158px"', $imgTag);
+	//				$imgTag = preg_replace('/\swidth=[\'"][^\'"]+[\'"]/', '', $imgTag);
 					
-					print "\n\t\t\t<div class='image_header'>";
-					print $imgTag; 
-					print "\n\t\t\t</div>";
+	//				print "\n\t\t\t<div class='image_header'>";
+					print "<table style='padding-left: 7px;' cellspacing='0' cellpadding='0' width='100%'>";
+					print "<tr><td align='left' >";
+					print $siteheader; 
+					print "</td></tr>";
+					print "</table>";
+	//				print "\n\t\t\t</div>";
 				} else {
 					$hasHeader = false;
 				}
