@@ -35,13 +35,13 @@ include("$themesdir/common/css.inc.php");
 /* 	background-color: #<? echo $c['header']; ?>; */
 /* 	border-bottom: 1px solid #<? echo $c['borders']; ?>; */
 
- 	margin-left: 6px; 
- 	margin-right: 5px; 
-	margin-bottom: 0px;
+/* 	margin-left: 6px; */
+/* 	margin-right: 5px; */
+/*	margin-bottom: 0px;*/
 	
 	/* Image underlay styles */
 /*	height: 101px; */
-	text-align: left;
+/*	text-align: left;
 /*	z-index: -100;  */
 	
 /*	width: 760px; */
