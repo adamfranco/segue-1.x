@@ -474,6 +474,15 @@
 	 * custom themes - array of additional themesm
 	 ******************************************************************************/
 	$cfg['additional_themes'] = $additional_themes = array(
-//						"mycustomthemedir"=> "My Custom Theme"
+//						"mycustomtheme_directory_name"=> "My Custom Theme"
 						);
+						
+
+	/******************************************************************************
+	 * admin themes - array of themes that can be selected only by admin users
+	 ******************************************************************************/
+	$cfg['admin_themes'] = $admin_themes = array(
+						"myadminonlytheme_directory_name"=> "My Admin Only Theme"
+						);
+
 

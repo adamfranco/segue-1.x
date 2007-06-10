@@ -39,16 +39,17 @@ include("$themesdir/common/css.inc.php");
 	margin-bottom: 0px;
 	
 	/* Image underlay styles */
-	height: 101px;
+/*	height: 101px; */
 	text-align: left;
-	z-index: -100;
+/*	z-index: -100;  */
 	
 /*	width: 760px; */
 }
 
 .heading {
-	
+	text-transform: uppercase;
 	padding-top: 2px; padding-bottom: 2px;
+	
 }
 
 .heading2 {
@@ -60,18 +61,20 @@ include("$themesdir/common/css.inc.php");
 	background-repeat: no-repeat;*/
 	color: #FFFFFF;
 	font-size: 12px;
+	text-indent: 3px;
 }
 
 .navtop div {
-	position: relative;
-	padding-left: 7px;
-	top: -10px;
+/*	position: relative; */
+	padding-left: 9px;
+/*	top: -10px; */
 }
 
 .navtop img {
-	position: relative;
+/*	position: relative;
 	top: 15px;
-	left: -1px;
+	left: -1px; 
+*/
 }
 
 
@@ -83,7 +86,8 @@ include("$themesdir/common/css.inc.php");
 .leftnav {
 /* 	float: left; */
 	width: <? echo $navwidth; ?>px;
-	padding: 3px;
+	padding: 0px;
+	padding-left: 5px;
 	margin-right: 20px;
 /*	border-right: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>; */
 	vertical-align: top;
@@ -93,7 +97,7 @@ include("$themesdir/common/css.inc.php");
 /* 	float: left; */
 	width: <? echo $navwidth; ?>px;
 
-	padding-top: 57px;
+/*	padding-top: 57px; */
 	margin-left: 20px;
 /*	border-left: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;*/
 	vertical-align: top;

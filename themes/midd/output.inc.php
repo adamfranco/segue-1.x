@@ -119,7 +119,14 @@ include("themes/$theme/css.inc.php");
 		<tr>
 			<td width='22'></td>
 			<td class='status'>
-				<? include("themes/common/status.inc.php"); ?>		
+			<? if ($_SESSION['ltype'] == "admin" || !isset($_SESSION['ltype'])) {
+					print "<div style='height: 32px; overflow: hidden;'>";
+				} else {
+					print "<div style='height: 16px; overflow: hidden;'>";
+				}
+				include("themes/common/status.inc.php"); 
+				?>
+	
 			</td> 
 			<!-- end content table cell -->
 			<td width='22'></td>
@@ -197,18 +204,21 @@ include("themes/$theme/css.inc.php");
 					//printpre ($thisSite->getField("title"));
 					print "\n\t\t\t\t\t<td class='leftnav'>";
 					
-					print "\n\t\t\t\t\t<table cellspacing='0' cellpadding='0' width='100%'>";
+					// if no image header then put dog-eared left nav header
+					if (!$hasHeader) {
+						print "\n\t\t\t\t\t<table cellspacing='0' cellpadding='0' width='100%'>";
+						//print "\n\t\t\t\t\t<tr><td height='30px' class='navtop'>";
+						//print "\n\t\t\t\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border'/>";
+						print "\n\t\t\t\t\t<tr><td class='navtop' height='38px' background='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border''>";
+					//	print "\n\t\t\t\t\t\t<div>";
+						print $thisSite->getField('title');
+						print "\n\t\t\t\t\t\t</div>";
+						print "\n\t\t\t\t\t</td></tr>";
+						print "\n\t\t\t</table>";
+					}
 					
-					print "\n\t\t\t\t\t<tr><td height='38px' class='navtop'>";
-					print "\n\t\t\t\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border'/>";
-					print "\n\t\t\t\t\t\t<div>";
-					print $thisSite->getField('title');
-					print "\n\t\t\t\t\t\t</div>";
-					print "\n\t\t\t\t\t</td></tr>";
-					print "\n\t\t\t</table>";
-					
-					
-					print "\n\t\t\t\t\t<table cellspacing='0' cellpadding='0' width='98%' style='padding-right: 1px; padding-top: 2px'>";
+					// 				
+					print "\n\t\t\t\t\t<table cellspacing='0' cellpadding='0' width='98%' style='padding-right: 1px; padding-top: 0px'>";
 					print "\n\t\t\t\t\t<tr><td>";
 						
 					ob_start();
@@ -223,8 +233,13 @@ include("themes/$theme/css.inc.php");
 					
 					print "\n\t\t\t</td>";
 					print "\n\t\t\t</tr>";
+					print "\n\t\t\t\t\t<tr><td>";
+					print "\n\t\t\t\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/bottom.gif'  alt='border'/>";
+					print "\n\t\t\t\t\t</td></tr>";										
 					print "\n\t\t\t</table>";
-					print "\n\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/bottom.gif' alt='border' />";
+					
+					
+			//		print "\n\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/bottom.gif' alt='border' />";
 					print "\n\t\t\t</td>";
 					print "<!--   end left column   -->";
 				} 
@@ -238,7 +253,7 @@ include("themes/$theme/css.inc.php");
 					<td class='contentarea'
 					<?php
 					if ($hasHeader) {
-						print " style='padding-top: 60px;'";
+						//print " style='padding-top: 60px;'";
 					}				
 					?>
 					>
@@ -296,9 +311,12 @@ include("themes/$theme/css.inc.php");
 				<a href="http://go.middlebury.edu/bannerweb">Banner Web</a>
 				</div><br />
 				Middlebury Vermont 05753 802-443-5000<br />
+				<!--
 				<a href="/about/copyright/">©</a>
 				The President and Fellows of Middlebury College. All Rights Reserved.
 				<br /><br />
+				-->
+				
 	
 				<?
 				/******************************************************************************
