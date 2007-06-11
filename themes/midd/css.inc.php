@@ -31,20 +31,61 @@ include("$themesdir/common/css.inc.php");
 }
 
 
-.image_header {
-/* 	background-color: #<? echo $c['header']; ?>; */
-/* 	border-bottom: 1px solid #<? echo $c['borders']; ?>; */
+#site_header {
+	position: relative;
+	
+	width: 100%;
+ 	margin-left: 6px; 
+ 	margin-right: 5px; 
+	margin-bottom: 0px;
+	padding: 0px;
+}
 
-/* 	margin-left: 6px; */
-/* 	margin-right: 5px; */
-/*	margin-bottom: 0px;*/
+#site_header_images {
+	margin-left: 1px;
+	text-align: left;
+	width: 100%;
+}
+
+#site_header_images_spacer {
+	height: 35px;
+	width: 100%;
+	clear: both;
+}
+
+#site_header_title_bar {
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	width: 99%;
+	height: 36px;
+	overflow: hidden;
+}
+
+#site_header_title_dots {
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	z-index: 1;
 	
-	/* Image underlay styles */
-/*	height: 101px; */
-/*	text-align: left;
-/*	z-index: -100;  */
-	
-/*	width: 760px; */
+	filter: alpha(opacity=50); 
+	-moz-opacity: .50; 
+	opacity: .50;
+}
+
+#site_header_title_bg {
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	z-index: 2;
+}
+
+#site_header_title {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	z-index: 3;
+	text-transform: uppercase;
 }
 
 .heading {
@@ -116,6 +157,7 @@ include("$themesdir/common/css.inc.php");
 	border-bottom: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
 	border-top: 1px <? echo $borders; ?> #<? echo $bordercolor; ?>;
 */
+	clear: both;
 }
 
 

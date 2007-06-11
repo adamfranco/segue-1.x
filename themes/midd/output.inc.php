@@ -162,38 +162,48 @@ include("themes/$theme/css.inc.php");
 	
 				</div>
 				
+				<div>
 				<?
 				
 				$middHeader = file_get_contents("http://www.middlebury.edu/middcms/render/tools/getHeader.aspx");
 				print str_replace('src="/images/', 'src="http://www.middlebury.edu/images/', $middHeader);		
 				?>
+				</div>
 				
 				
 				<?php
 							
 				/******************************************************************************
 				 * Site Header, Status bar, crumbs
-				 ******************************************************************************/ 
+				 ******************************************************************************/
+				print "\n\t\t\t<div id='site_header'>";
 				
 				
-				if (preg_match('/(<img [^>]+>)/', $siteheader, $matches)) {
-					$imgTag = $matches[1];
-					$hasHeader = true;
-					
-					// ensure that the image has the correct height
-	//				$imgTag = preg_replace('/\sheight=[\'"][^\'"]+[\'"]/', ' height="158px"', $imgTag);
-	//				$imgTag = preg_replace('/\swidth=[\'"][^\'"]+[\'"]/', '', $imgTag);
-					
-	//				print "\n\t\t\t<div class='image_header'>";
-					print "<table style='padding-left: 7px;' cellspacing='0' cellpadding='0' width='100%'>";
-					print "<tr><td align='left' >";
-					print $siteheader; 
-					print "</td></tr>";
-					print "</table>";
-	//				print "\n\t\t\t</div>";
+				if (preg_match("/^<div align='center' style='margin-bottom: 3px'>(.+)<\/div>$/", $siteheader, $matches)) {
+					print "\n\t\t\t\t<div id='site_header_images'>\n\t\t\t\t\t";
+					print $matches[1]; 
+					print "\n\t\t\t\t</div>";
 				} else {
-					$hasHeader = false;
+					print "\n\t\t\t\t<div id='site_header_images_spacer'>&nbsp;</div>";
 				}
+				
+				print "\n\t\t\t\t<div style='clear: both;'></div>";
+
+				print "\n\t\t\t\t<div id='site_header_title_bar'>";
+				
+				print "\n\t\t\t\t\t<img id='site_header_title_dots' src='$themesdir/$theme/white_dots01.gif' alt='background image' />";
+				
+				print "\n\t\t\t\t\t<img id='site_header_title_bg' src='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif' alt='background image' />";
+ 				
+				
+				print "\n\t\t\t\t\t\t<div id='site_header_title'>";
+				print $thisSite->getField('title');
+				print "</div>";
+				
+				print "\n\t\t\t\t</div>";
+				
+				print "\n\t\t\t</div>";
+				
 				?>
 				
 	
@@ -209,17 +219,17 @@ include("themes/$theme/css.inc.php");
 					print "\n\t\t\t\t\t<td class='leftnav'>";
 					
 					// if no image header then put dog-eared left nav header
-					if (!$hasHeader) {
-						print "\n\t\t\t\t\t<table cellspacing='0' cellpadding='0' width='100%'>";
-						//print "\n\t\t\t\t\t<tr><td height='30px' class='navtop'>";
-						//print "\n\t\t\t\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border'/>";
-						print "\n\t\t\t\t\t<tr><td class='navtop' height='38px' background='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border''>";
-					//	print "\n\t\t\t\t\t\t<div>";
-						print $thisSite->getField('title');
-						print "\n\t\t\t\t\t\t</div>";
-						print "\n\t\t\t\t\t</td></tr>";
-						print "\n\t\t\t</table>";
-					}
+// 					if (!$hasHeader) {
+// 						print "\n\t\t\t\t\t<table cellspacing='0' cellpadding='0' width='100%'>";
+// 						//print "\n\t\t\t\t\t<tr><td height='30px' class='navtop'>";
+// 						//print "\n\t\t\t\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border'/>";
+// 						print "\n\t\t\t\t\t<tr><td class='navtop' height='38px' background='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border''>";
+// 					//	print "\n\t\t\t\t\t\t<div>";
+// 						print $thisSite->getField('title');
+// 						print "\n\t\t\t\t\t\t</div>";
+// 						print "\n\t\t\t\t\t</td></tr>";
+// 						print "\n\t\t\t</table>";
+// 					}
 					
 					// 				
 					print "\n\t\t\t\t\t<table cellspacing='0' cellpadding='0' width='98%' style='padding-right: 1px; padding-top: 0px'>";
@@ -254,13 +264,7 @@ include("themes/$theme/css.inc.php");
 				 ******************************************************************************/
 				?>
 					<!-- start center column -->
-					<td class='contentarea'
-					<?php
-					if ($hasHeader) {
-						//print " style='padding-top: 60px;'";
-					}				
-					?>
-					>
+					<td class='contentarea'>
 				<?
 
 				print "<div class='breadcrumbTop'>".$sitecrumbs."</div>";
