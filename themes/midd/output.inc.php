@@ -165,7 +165,7 @@ include("themes/$theme/css.inc.php");
 				<div>
 				<?
 				
-				$middHeader = file_get_contents("http://www.middlebury.edu/middcms/render/tools/getHeader.aspx");
+				$middHeader = file_get_contents("$themesdir/$theme/midd_header.html");
 				print str_replace('src="/images/', 'src="http://www.middlebury.edu/images/', $middHeader);		
 				?>
 				</div>
