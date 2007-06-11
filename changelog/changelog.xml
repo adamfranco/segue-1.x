@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
 	<version number="1.8.0" date="2007-06-14">
+		<change author='adam'>
+			Full editors of a given site can now view assessment mode
+			participant posts and participants will see full editor replies to
+			their posts
+		</change>
 		<fix author='adam'>
 			Adding wrapper div to 'Custom CSS' theme to enable offsetting the 
 			site-content from the background.
@@ -20,6 +25,10 @@
 		<new author='alex'>
 			 Added RSS content block display options for choosing the number of
 			 RSS items to display on both initial view and extended view
+		</new>
+		<new author='alex'>
+			 Added config option to specify admin-only themes.  These are themes
+			 that can be selected only by Segue administrators.
 		</new>
 		<new author='alex'>
 			 Added site width theme setting to all themes (except the Tabs theme)

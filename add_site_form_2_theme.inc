@@ -110,10 +110,22 @@ foreach ($possible_themes as $themename=>$longname) {
 	if (!in_array($themename, $admin_themes) || $_SESSION['atype'] == 'admin' || $_SESSION[siteObj]->getField("theme") == $themename ) {
 		printc("<input type=radio name=theme value='$themename' ".(($_SESSION[siteObj]->getField("theme")==$themename)?" checked":"")." onClick=\"selectTheme('$i')\"></td>");
 	}
-	printc("<td align='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'><a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
-	printc("<td align='center' valign='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br /><a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a>");
+	printc("<td align='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>");
+	
+	if (!in_array($themename, $admin_themes) || $_SESSION['atype'] == 'admin' || $_SESSION[siteObj]->getField("theme") == $themename ) {
+		printc("<a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
+	} else {
+		printc("<img src=$themesdir/$themename/thumbnail.jpg border=0></td>");
+	}
+	
+	printc("<td align='center' valign='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br />");
+	
+	if (!in_array($themename, $admin_themes) || $_SESSION['atype'] == 'admin' || $_SESSION[siteObj]->getField("theme") == $themename ) {
+		printc("<a href=JavaScript:doPreviewWin(\"$themename\")>(preview)</a>");
+	}
+	
 	if (in_array($themename, $admin_themes)) {
-		printc("<br /><div style='font-size: 10px;'>This theme is available only for specific uses.  Contact a Segue Administrator for more information.</div>");
+		printc("<br /><div style='font-size: 10px;'>This theme is available only for specific uses. <br /> Contact a Segue Administrator for more information.</div>");
 	}		
 	printc("</td>");
 	if ($_SESSION[siteObj]->getField("theme")==$themename)

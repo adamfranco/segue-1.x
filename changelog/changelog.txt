@@ -7,6 +7,16 @@ v. 1.8.0 (2007-06-14)
 ----------------------------------------------------
 		
 	* Change: 
+		Full editors of a given site can now view assessment mode participant posts
+		and participants will see full editor replies to their posts
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Adding wrapper div to 'Custom CSS' theme to enable offsetting the
+		site-content from the background.
+		(Adam Franco)
+		
+	* Change: 
 		Changed various theme color arrays to allow for theming of discussion
 		headers and versioning UI
 		(Alex Chapin)
@@ -25,6 +35,11 @@ v. 1.8.0 (2007-06-14)
 	* New feature: 
 		Added RSS content block display options for choosing the number of RSS items
 		to display on both initial view and extended view
+		(Alex Chapin)
+		
+	* New feature: 
+		Added config option to specify admin-only themes. These are themes that can
+		be selected only by Segue administrators.
 		(Alex Chapin)
 		
 	* New feature: 
