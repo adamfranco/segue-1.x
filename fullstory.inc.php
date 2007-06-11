@@ -263,10 +263,24 @@ if ($storyObj->getField("discuss")) {
 /******************************************************************************
  * Explain discuss/assess settings to participants 
  ******************************************************************************/
-	
+	$siteLevelEditors = $siteObj->getSiteLevelEditors();
+	//printpre($siteLevelEditors);
+		
 	// hide posts (assessment)
 	if ($showposts == 2 && $showallauthors == 1) {
-		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>.  Shown here are only your posts and any replies to your post by <i>$siteowner</i>.");
+		printc("Posts to this assessment are currently viewable only be the site owner, <i>$siteowner</i>");		
+		if (count($siteLevelEditors)) {
+			printc(" and full editors of this site");	
+		}
+		printc(".");
+		
+		printc("  Shown here are only your posts and any replies to your post by <i>$siteowner</i>");
+		if (count($siteLevelEditors)) {
+			printc(" and full editors of this site");	
+		}
+		printc(".");
+
+
 	// show posts, hide author names (Anonymous Discussion)
 	} else if ($showposts == 1 && $showallauthors == 2) {
 		printc("Author of posts to this discussion are known only to the site owner, <i>$siteowner</i>.  Other participants will not see your name associated with your posts (unless you include it in the subject or body of your post).");

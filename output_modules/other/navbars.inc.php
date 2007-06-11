@@ -202,15 +202,15 @@ if ($thisSection) {
 							 ******************************************************************************/
 							
 							$associatedExists = associatedSiteExists($uname, $site);
-							$contributions = participantContributions($uname, $site);							
-							$userDiscussions = participantDiscussions($uname, $site);
+						//	$contributions = participantContributions($uname, $site);							
+						//	$userDiscussions = participantDiscussions($uname, $site);
 							
 							
 							if ($associatedExists || $contributions || $userDiscussions) {
 							//	printpre("ok");
 								$slotname = $site."-".$uname;
-							//	$participantslist .= "<tr><td><a href='$cfg[full_uri]/sites/$slotname' target='new_window'>$fname</a>";
-								$participantslist .= "<tr><td><a href='$PHPSELF?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;action=$action&user=$uname'>$fname</a>";
+								$participantslist .= "<tr><td><a href='$cfg[full_uri]/sites/$slotname' target='new_window'>$fname</a>";
+							//	$participantslist .= "<tr><td><a href='$PHPSELF?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;action=$action&user=$uname'>$fname</a>";
 							} else {
 								$participantslist .= "<tr><td>";
 								$participantslist .= "<div class='nav'>$fname</div>";
@@ -221,6 +221,7 @@ if ($thisSection) {
 								$participantslist .= "</td></tr>";
 							}
 						}
+						
 						$participantslist .= "</table>";
 					}
 					
@@ -240,7 +241,7 @@ if ($thisSection) {
 								if ($contributions || $userDiscussions) {
 								//	printpre("ok");
 
-									$participantslist .= "<tr><td><a href='$PHPSELF?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;action=$action&user=$editor'>$fname</a>";
+							//		$participantslist .= "<tr><td><a href='$PHPSELF?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;action=$action&user=$editor'>$fname</a>";
 								} else {
 	
 									$editorslist .= "<tr><td><div class='nav'>$fname</div></td></tr>";
@@ -249,10 +250,15 @@ if ($thisSection) {
 						}
 						$editorslist .= "</table>";
 					}
+					
+		//			$participant_sites_link = "<a href='$cfg[full_uri]/add_students.php?$sid&amp;name=$site' ";
+		//			$participant_sites_link .= "onclick='window.open('','Roster','height=500,width=400,scrollbars=yes,toolbar=no,,resizable=yes,copyhistory=no');' target='new_window'>";
+		//			$participant_sites_link .= "Participant Sites</a><br />";
+
 
 				//	printpre($editors);	
 				//	printpre($participants);	
-					$content = $director.$participantslist.$editorslist;
+					$content = $director.$participantslist.$editorslist.$participant_sites_link;
 				
 				/******************************************************************************
 				 * Link type pages

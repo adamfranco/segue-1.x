@@ -1103,6 +1103,24 @@ FROM
 		return array_unique($this->editors);
 	}
 	
+	/**
+	 * Answer the users who have add, edit, and delete permission at the site
+	 * level
+	 * retun array The editor ids
+	 */
+	function getSiteLevelEditors () {
+		if (!isset($this->_siteLevelEditors)) {
+			$this->_siteLevelEditors = array();
+			foreach ($this->getEditors() as $editor) {
+				if ($this->owningSiteObj->hasPermission('add && edit && delete', $editor)) {
+					$this->_siteLevelEditors[] = $editor;
+				}
+			}
+		}
+		
+		return $this->_siteLevelEditors;
+	}
+	
 	function setPermissions($p) {
 		if (is_array($p)) {
 			$this->permissions = $p;

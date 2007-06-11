@@ -334,7 +334,10 @@ class discussion {
 		 ******************************************************************************/
 		
 		while($a = db_fetch_assoc($r)) {
-			$this->children[] = &new discussion($this->storyid,$a);
+			if ($this->storyObj)
+				$this->children[] = &new discussion($this->storyObj,$a);
+			else
+				$this->children[] = &new discussion($this->storyid,$a);
 			$this->numchildren++;
 		}
 		return true;
@@ -836,7 +839,30 @@ class discussion {
 		$parentAuthorId = db_get_value("discussion","FK_author","discussion_id='".addslashes($this->parentid)."'");
 		//print $siteOwnerId;
 		//printc("author=".$parentAuthorId);
-		if ($showposts == 1 || $o == 1 || $_SESSION[auser] == $this->authoruname || $site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId && $_SESSION[auser]) {
+
+		$siteObj =& $this->storyObj->owningSiteObj;
+		$siteLevelEditors = $siteObj->getSiteLevelEditors();
+		$isSiteEditor = in_array($_SESSION[auser], $siteLevelEditors);
+
+		
+		
+		if (
+			// Discussion mode, not assement
+			$showposts == 1 
+			// In assemment mode and one of the users that can view this post
+			|| (
+				// You are the author of the post
+				($_SESSION[auser] == $this->authoruname
+				// you are the site_owner
+				|| $o == 1
+				// you are a site-level editor
+				|| $isSiteEditor
+				// This is a reply to your post by the site owner
+				|| ($site_owner == $this->authoruname && $_SESSION[aid] == $parentAuthorId && $_SESSION[auser])
+				// This is a reply to your post by a site-level editor
+				|| (in_array($this->authoruname, $siteLevelEditors) && $_SESSION[aid] == $parentAuthorId && $_SESSION[auser])
+			)
+		)) {
 			// check to see if we have any info to commit
 			$this->_commithttpdata();
 			

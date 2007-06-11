@@ -213,7 +213,8 @@ function searchContent ($search, $site) {
 			story_updated_tstamp DESC
 		LIMIT 0, $limit
 		";
-
+		
+	//printpre($query);
 	$r = db_query($query);
 		
 	if (db_num_rows($r) > 0) {
