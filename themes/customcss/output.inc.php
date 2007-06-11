@@ -63,6 +63,8 @@ include("themes/common/header.inc.php");
 </head>
 <body>
 
+<div class='site_wrapper'>
+
 <? print $obContent; ?>
 
 	<div class='header'>
@@ -162,6 +164,9 @@ print $sitefooter
 ?>
 	
 	</div>
+	
+</div>
+
 </body>
 </html>
 

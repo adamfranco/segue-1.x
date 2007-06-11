@@ -77,7 +77,13 @@ margin-right: -150px;
  * Floating Column Styles - End
  ***********************************/
  
- 
+/**
+ * This is a div that surrounds the
+ * entire site, just inside the body
+ * tag. Style this element to offset 
+ * the content from the body.
+ */
+#site_wrapper {}
 
 /**
  * This is the area at the top of the 
