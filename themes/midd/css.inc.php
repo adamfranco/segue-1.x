@@ -86,6 +86,7 @@ include("$themesdir/common/css.inc.php");
 	top: 10px;
 	z-index: 3;
 	text-transform: uppercase;
+	color: #FFFFFF;
 }
 
 .heading {
