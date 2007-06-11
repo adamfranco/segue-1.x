@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
-	<version number="1.7.5" date="The Future">
+	<version number="1.8.0" date="2007-06-14">
 		<change author='alex'>
 			Changed various theme color arrays to allow for theming of discussion
 			headers and versioning UI

@@ -1158,7 +1158,7 @@ $_version = file_get_contents("version.txt");
 $sitefooter .= "\n<div align='right' style='color: #999; font-size: 10px;'>
 	Segue v.
 	<a href='changelog/changelog.html' target='credits' onclick='doWindow(\"credits\",400,300);'>$_version</a>
-	&copy;2004, Middlebury College: 
+	&copy;2007, Middlebury College: 
 	<a href='credits.php' target='credits' onclick='doWindow(\"credits\",400,300);'>credits</a>
 	</div>";
 
