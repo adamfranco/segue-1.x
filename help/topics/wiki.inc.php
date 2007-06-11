@@ -2,7 +2,7 @@
 
 
   <div class='desc'>
- <p>Links can be made to Segue content using wiki notation (e.g. [[link]]).
+ <p>Links can be made to Segue content using wiki notation (e.g. [[title]]).
  For example, if you have a page on your Segue site with the title "Introduction"
  you can create a link to this page by enclosing its title in double square 
  brackets (e.g. [[Introduction]]).</p>
@@ -21,16 +21,28 @@
  
 <h3>Supported Wiki Link Notation:</h3>
   <div class='desc'>
-  <p><strong>[[link]]</strong><br />
-  This will link to any content whose title = "link" or "Link"</p>
-  <p><strong>[[link | Links]]</strong><br />
-  This will link to any content whose title = "link" or "Link".
-  The " | " indicates that the title of this link (i.e. the text displayed) 
-  will be "Links.
-  <p><strong>[[site:ipod]]</strong><br />
-  This will link to a site in the same instance of Segue whose short name is "ipod"
-  </p>
 
+  Segue supports many of the same wiki linking notation standards used by Wikipedia.
+  These wiki links should NOT be created with the Segue editor link tool.  Instead
+  just include them in text and they will be converted to actual links when viewed.
+  
+  <p><strong>[[introduction]]</strong><br />
+  This will link to any content whose title = "introduction" or "Introduction"</p>
+  <p><strong>[[Introduction | Overview]]</strong><br />
+  This will link to any content whose title = "Introduction" or "introduction".
+  The " | " indicates that the title of this link (i.e. the text displayed) 
+  will be "Overview".
+  <p><strong>[[site:ipod]]</strong><br />
+  This will link to a site in the same instance of Segue whose short name is "ipod." 
+  [[site:ipod news]] will link to the first content found on that site whose title
+  is "news" (or "News").  [[site:ipod news | Latest News]] will display "Latest News"
+  as the link title.
+  </p>
+  <p><strong>[http://segue.middlebury.edu | Segue Project Page]</strong><br />
+  This will link to the site at "http://segue.middlebury.edu" and display "Segue Project Page"
+  as the title.
+  </p>
+  
   <p><strong>[[Wiki Markup#35047|What is Wiki Markup by Alex Chapin]]</strong><br />
   This will link to a discussion post with id 35047 that is part of the content block 
   whose title is "Wiki Markup" and will display "What is Wiki Markup by Alex Chapin"
@@ -44,7 +56,7 @@
    <p>If there is no content on your site that has a title which matches what is
   specified in the wiki link, then a special "create node" link will be created.
   A "create node" link looks like any other link except that it is followed 
-  by a question mark (e.g. link?).  When a participant who has been given 
+  by a question mark (e.g. Introduction ?).  When a participant who has been given 
   permission to add to the site clicks on this link, they will be given the 
   opportunity to add a new page, section or content block (depending on the extent
   of their editing permissions).</p>

@@ -162,15 +162,6 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 	$action_viewsite = "action=viewsite";
 	$action_site = "action=site";			
 	$text = eregi_replace($action_viewsite, $action_site, $text);
-	/******************************************************************************
-	 * Wiki Links instruction
-	 ******************************************************************************/
-	printc("\n<table width='90%' align='center' cellpadding='5' cellspacing='0' style='border: solid  1px;'><tr><td valign='top'>");
-	printc("\nWiki linking".helplink('wiki').":</td>");
-	printc("\n<td><div style='font-size:11px;'>To link to a page on your site whose title is \"Introduction\"");
-	printc(" use [[introduction]]. If no content with the title \"Introduction\" exists a link to create such content will be made.  To see all titles used in this site, see: ");
-	printc("<a href='site_map.php?site=".$_SESSION[settings][site]."&amp;show=wiki' onclick='window.open(\"\",\"Site Map\",\"height=500,width=400,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,resizable=yes,copyhistory=no\");' target='Site Map'>Site Map</a> </div>");	
-	printc("\n</td></tr></table><br />");
 
 	printc(addeditor ("longertext",100,26,$text));
 	printc("</td></tr></table>");
@@ -195,6 +186,17 @@ if ($_SESSION[storyObj]->getField("type")=='story') {
 		printc("<div class='desc' align='right'>Change this option on the previous screen.</div>");
 	}
 }
+
+	/******************************************************************************
+	 * Wiki Links instruction
+	 ******************************************************************************/
+	printc("\n<br /><table width='90%' align='center' cellpadding='5' cellspacing='0' style='border: solid  1px;'><tr><td valign='top'>");
+	printc("\nWiki linking".helplink('wiki').":</td>");
+	printc("\n<td><div style='font-size:11px;'>To link to a page on your site whose title is \"Introduction\"");
+	printc(" use [[introduction]]. If no content with the title \"Introduction\" exists a link to create such content will be made.  To see all titles used in this site, see: ");
+	printc("<a href='site_map.php?site=".$_SESSION[settings][site]."&amp;show=wiki' onclick='window.open(\"\",\"Site Map\",\"height=500,width=400,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,resizable=yes,copyhistory=no\");' target='Site Map'>Site Map</a> </div>");	
+	printc("\n</td></tr></table><br />");
+
 
 if ($_SESSION[storyObj]->getField("type") != 'story') printc("<br /><br />");
 
