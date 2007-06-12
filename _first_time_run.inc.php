@@ -582,42 +582,21 @@ if ($a[numslots] == 0) {
 	/******************************************************************************
 	 * Add in Segue 1.7.0 database updates
 	 ******************************************************************************/
-	$query = "
-		CREATE TABLE version (
-		  version_id int(10) unsigned NOT NULL auto_increment,
-		  FK_parent int(10) unsigned NOT NULL default '0',
-		  FK_createdby int(10) unsigned NOT NULL default '0',
-		  version_order INT( 10 ) unsigned NOT NULL  default '1',
-		  version_created_tstamp timestamp(14) NOT NULL,
-		  version_text_short mediumblob NOT NULL,
-		  version_text_long mediumblob NOT NULL,
-		  version_comments mediumblob NOT NULL,
-		  PRIMARY KEY  (version_id),
-		  KEY `FK_parent` (`FK_parent`)
-		) TYPE=MyISAM;
-	";
+	require_once(dirname(__FILE__).'/updates/update_1.7.0.inc.php');
+	$update =& new Update170;
+	$update->run();
 	
-	db_query($query);
-	if (mysql_error()) {
-		print "\n<hr />";
-		printpre($query);
-		printpre(mysql_error());
-	}
-
-	$query = "
-		ALTER TABLE 
-			page
-		ADD 
-			page_show_versions enum('0','1') NOT NULL default '0' AFTER page_show_date
-	";
-
-	db_query($query);
-	if (mysql_error()) {
-		print "\n<hr />";
-		printpre($query);
-		printpre(mysql_error());
-	}
+	/*********************************************************
+	 * Segue 1.8.0 update
+	 *********************************************************/
+	require_once(dirname(__FILE__).'/updates/update_1.8.0.inc.php');
+	$update =& new Update180;
+	$update->run();
 	
+	
+	/*********************************************************
+	 * RSS cache directories
+	 *********************************************************/
 	
 	$path = realpath($cfg[uploaddir]);
 		

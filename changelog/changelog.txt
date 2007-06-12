@@ -78,6 +78,11 @@ v. 1.8.0 (2007-06-12)
 		using their numeric [index] values rather than the string version. The
 		previous form had stopped working in MySQL 5.
 		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Now runs updaters automatically when first installing.
+		(Adam Franco)
 	
 v. 1.7.4 (2007-02-20)
 ----------------------------------------------------

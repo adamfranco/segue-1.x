@@ -56,6 +56,9 @@
 			into using their numeric [index] values rather than the string version. 
 			The previous form had stopped working in MySQL 5.
 		</fix>
+		<fix author='adam'>
+			Now runs updaters automatically when first installing.
+		</fix>
 	</version>
 	<version number="1.7.4" date="2007-02-20">
 		<fix author='adam' ref='1661595' reftype='bug'>
