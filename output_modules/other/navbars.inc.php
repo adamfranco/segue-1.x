@@ -278,16 +278,18 @@ if ($thisSection) {
 				
 				} else if ($o->getField("type") == 'content') {
 					$text = stripslashes(urldecode($o->getField("text")));
-					$wikiResolver =& WikiResolver::instance();
-					$text = $wikiResolver->parseText($text, $site, $section, $page);
-					$url = "#";
-
 					
 					/******************************************************************************
 					 * replace general media library urls (i.e. $mediapath/$sitename/filename)
 					 * replace general with specific
 					 ******************************************************************************/
 					$content = convertTagsToInteralLinks($site, $text);
+										
+					$wikiResolver =& WikiResolver::instance();
+					$text = $wikiResolver->parseText($text, $site, $section, $page);
+					$url = "#";
+
+					
 					//					printpre($site);
 					//exit;
 														
