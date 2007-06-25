@@ -2,9 +2,13 @@
 <changelog name="Segue ChangeLog">
 	<version number="1.8.1" date="the future">
 		<fix author='alex'>
+			Section default page order is now being set to "custom" instead of
+			null.
+		</fix>
+		<fix author='alex'>
 			Internal links and links to media from a site's media library were
 			not working in sidebar content pages because tokenized paths were
-			not being converted to appropriate urls.
+			not being converted to appropriate urls.  This is fixed
 		</fix>
 	</version>
 	<version number="1.8.0" date="2007-06-12">

@@ -94,8 +94,13 @@ do {
 	unset($o);
 	
 	if ($thisSection) {
+		$pageorder = $thisSection->getField("pageorder");
+		if ($pageorder=="") $thisSection->setField("pageorder", "custom");
+		
+		//if no page specified get first that can be viewed
 		if (!$thisPage && count($thisSection->getField("pages"))) {
 			$thisSection->fetchDown();
+						
 			foreach (array_keys($thisSection->pages) as $k=>$p) {
 				$o =& $thisSection->pages[$p];
 				if ($o->getField("type") == 'page' && $o->canview()) { $thisPage =& $o; break; }

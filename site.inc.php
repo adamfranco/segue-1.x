@@ -118,6 +118,9 @@ do {
 		$sitetype = $thisSite->getField("type");
 	}
 	if ($thisSection) {
+		$pageorder = $thisSection->getField("pageorder");
+		if ($pageorder=="") $thisSection->setField("pageorder", "custom");
+	
 		// if hide_sidebars then set hide_sidebar variable
 		if ($thisSection->getField("hide_sidebar") == 1) {
 			$hide_sidebar = 1;
