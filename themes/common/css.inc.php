@@ -221,6 +221,11 @@ th {
  *********************************************************/
 .subject { 
 	font-weight: bolder; 
+	font-color: #<? echo $bg['bglink']; ?>;
+}
+
+.subject a {
+	color: #<? echo $bg['bglink']; ?>;
 }
 
 .dtext {
@@ -230,33 +235,53 @@ th {
 	padding-right: 0px;
 }
 
+
 .dheader {
 	font-size: 14px;
+	font-color: #<? echo $bg['bglink']; ?>;
+	color: #<? echo $bg['bglink']; ?>;
 	border-top: 1px solid #<? echo $bordercolor; ?>;
 	border-bottom: 1px solid #<? echo $bordercolor; ?>;
 	background: #<? echo $bg['bg']; ?>;
 	padding-left: 5px;
 	padding-top: 5px;
+}
+
+.dheader a {
+	color: #<? echo $bg['bglink']; ?>;
 }
 
 .dheader2 {
 	border-top: 1px solid #<? echo $bordercolor; ?>;
 	border-bottom: 1px solid #<? echo $bordercolor; ?>;
 	background: #<? echo $bg['bg']; ?>;
+	color: #<? echo $bg['bglink']; ?>;
 	padding-right: 5px;
 	padding-top: 5px;
 }
 
+.dheader2 a {
+	color: #<? echo $bg['bglink']; ?>;
+}
+
+
 .dheader3 {
 	border: 1px solid #<? echo $bordercolor; ?>;
 	background: #<? echo $bg['bg']; ?>;
+	color: #<? echo $bg['bglink']; ?>;
+	font-color: #<? echo $bg['bglink']; ?>;
 	padding-left: 5px;
 	padding-right: 5px;
+}
+
+.dheader3 a {
+	color: #<? echo $bg['bglink']; ?>;
 }
 
 
 .dinfo1 {
 	border: 1px solid #000;
+	color: #<? echo $bg['bglink']; ?>;
 	padding-left: 2px;
 	padding-right: 2px;
 }
