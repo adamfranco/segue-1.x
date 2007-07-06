@@ -3,6 +3,20 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.1 (the future)
+----------------------------------------------------
+		
+	* Bug Fix: 
+		
+		Section default page order is now being set to "custom" instead of null.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Internal links and links to media from a site's media library were not
+		working in sidebar content pages because tokenized paths were not being
+		converted to appropriate urls. This is fixed
+		(Alex Chapin)
+	
 v. 1.8.0 (2007-06-12)
 ----------------------------------------------------
 		

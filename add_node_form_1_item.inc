@@ -1,5 +1,13 @@
 <? /* $Id$ */
 
+if (!SiteExists($_REQUEST[site])) {
+	if ($_SERVER['HTTP_REFERER'])
+		print "<a href='".$_SERVER['HTTP_REFERER']."'>&lt;&lt; back</a></span> | ";
+	
+	print "Site doesn't exist";
+	exit;
+
+}
 
 printc("<form action='$PHP_SELF?$sid' method='post' name='addform'>");
 printc("<input type='hidden' name='step' />");
@@ -10,37 +18,44 @@ printc("<input type='hidden' name='typeswitch' value='0' />");
  * Get permissions
  ******************************************************************************/
 
-//if (!is_object($_SESSION[obj])) {
+if (SiteExists($_REQUEST[site])) {
 	$_SESSION[obj] =& new site($_REQUEST[site]);
 	$_SESSION[obj]->fetchSiteAtOnceForeverAndEverAndDontForgetThePermissionsAsWell_Amen(0,1);
 	$_SESSION[obj]->spiderDownLockedFlag();
 	$_SESSION[obj]->buildPermissionsArray();
-//}
-
-$site_permissions = $_SESSION[obj]->getPermissions();
-
-// all sections in site
-$sections = &$_SESSION[obj]->sections;
-
-//all pages in current section
-$section_pages = &$sections[$_REQUEST[section]]->pages;
-
-//permissions for current page in current section
-$section_pages[$_REQUEST[page]]->buildPermissionsArray();
 
 
-if ($_SESSION[settings][add]) printc("<div class='title'>Add Content for \"".$_REQUEST['link_title']."\" link in: ".$thisSection->getField("title")." > ".$thisPage->getField("title")."</div>");
-//else printc("<div class='title'>Edit Item \"".$_SESSION[pageObj]->getField("title")."\" in Section \"".$thisSection->getField("title")."\"</div>");
+	$site_permissions = $_SESSION[obj]->getPermissions();
 	
+	// all sections in site
+	$sections = &$_SESSION[obj]->sections;
+	
+	//all pages in current section
+	$section_pages = &$sections[$_REQUEST[section]]->pages;
+	
+	//permissions for current page in current section
+	$section_pages[$_REQUEST[page]]->buildPermissionsArray();
+
+
+
+	if ($_SESSION[settings][add]) printc("<div class='title'>Add Content for \"".$_REQUEST['link_title']."\" link in: ".$thisSection->getField("title")." > ".$thisPage->getField("title")."</div>");
+	//else printc("<div class='title'>Edit Item \"".$_SESSION[pageObj]->getField("title")."\" in Section \"".$thisSection->getField("title")."\"</div>");
+}
+
 //----Cancel/Save/Next/Previous Buttons -----
 printc("<table width='100%'><tr><td width='50%'>");
 printc("<input type='button' value='Cancel' onclick='cancelForm()' />\n");
 printc("</td><td width='50%' align='right'>");
 /* 	printc("<input type='button' value='&larr; Previous' onclick='submitPrevButton()' />\n"); */
 	//if ($_SESSION[new_node][type] =='page') printc("<input type='button' value='Continue &rarr;' onclick='submitNextButton()' />\n");
+
+if (!SiteExists($_REQUEST[site])) {
+	printc("No site with the name: ".$_REQUEST[site]);
 	
-if ($section_pages[$_REQUEST[page]]->hasPermissionDown("add")) {
-	printc("<input type='submit' name='save' value='Continue  &rarr;' />\n");
+} else {
+	if ($section_pages[$_REQUEST[page]]->hasPermissionDown("add")) {
+		printc("<input type='submit' name='save' value='Continue  &rarr;' />\n");
+	}
 }
 
 printc("</td></tr><tr><td>");
@@ -63,7 +78,7 @@ printc("<tr><td>");
  * then print out add node tupe and target
  ******************************************************************************/
 	
-if ($_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDown("add")) {
+if (SiteExists($_REQUEST[site]) && $_SESSION[settings][add] && $section_pages[$_REQUEST[page]]->hasPermissionDown("add")) {
 
 	/******************************************************************************
 	 * Specify type of content to add (section, page or content)

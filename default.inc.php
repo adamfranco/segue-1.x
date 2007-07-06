@@ -465,10 +465,11 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 								$classSiteName = $className;
 							}
 							
-
+							// Your other sites
 							if (isset($userOwnedSlots[$classSiteName]))
 								printStudentSiteLine($classSiteName, $userOwnedSlots[$classSiteName]);
-								
+							
+							//Sites you can edit
 							else if (isset($anyLevelEditorSites[$classSiteName]))
 								printStudentSiteLine($classSiteName, $anyLevelEditorSites[$classSiteName]);
 					
@@ -715,7 +716,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	}
 
 	/*********************************************************
-	 * Other sites where user is owner
+	 * Other sites where user is owner (student, staff or faculty
 	 *********************************************************/
 	if ($allowclasssites) {
 		if ($_SESSION["expand_othersites"] == 0) {
@@ -991,13 +992,14 @@ function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 	global $_full_uri;
 
 	$name = $siteInfo['slot_name'];
+//	printpre($siteInfo);
 	
 
 	if (in_array($name,$sitesprinted)) return;
 	$sitesprinted[]=$name;
 
-	$exists = $siteInfo['site_exits'];
-	
+	$exists = $siteInfo['site_exists'];
+//	printpre("exists:".$exists);
 
 
 	$namelink = ($exists)?"$PHP_SELF?$sid&amp;action=site&amp;site=$name":"$PHP_SELF?$sid&amp;action=add_site&amp;sitename=$name";
@@ -1016,7 +1018,7 @@ function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 	printc("\n\t\t\t\t<table width='100%' cellpadding='0' cellspacing='0'>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td align='left'>");
 	
 	if ($isclass 
-		&& ((!$exists 
+		&& $_SESSION[atype] == 'prof' && ((!$exists 
 			&& (!$siteInfo['slot_owner'] 
 				|| $_SESSION[auser] == $siteInfo['slot_owner'])) 
 			|| ($exists && $_SESSION[auser] == $siteInfo['slot_owner']))) 
@@ -1035,6 +1037,7 @@ function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 	} else if (!$siteInfo['slot_owner'] || $_SESSION[auser] == $siteInfo['slot_owner']) {
 	// if the slot doesn't have an owner or we are the owner.
 		if ($_SESSION[atype] == 'prof' && $isclass) {
+		//if ($isclass) {
 			printc("\n\t\t\t\t\t\t\t<span style ='font-size:10px;'>");
 			printc("Create: <a href='$namelink'>Site</a> ");
 			printc("</span>");
@@ -1111,7 +1114,7 @@ function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 			// if the user is an editor
 			printc("\n\t\t\t\t\t <a href='edit_permissions.php?$sid&amp;site=$name' onclick='doWindow(\"permissions\",600,400)' target='permissions'>your permissions</a>");
 		}
-		if ($isclass) {
+		if ($isclass  && $_SESSION[atype] == 'prof') {
 			printc(" |\n\t\t\t\t\t <a href=\"Javascript:sendWindow('addstudents',500,400,'add_students.php?$sid&amp;name=".$name."')\">students</a> \n");
 		}
 
@@ -1133,12 +1136,29 @@ function printStudentSiteLine($className, $siteInfo) {
 
 	printc("\n\t\t\t\t<tr>\n\t\t\t\t\t<td class='td$studentSitesColor' width='150'>$className</td>");
 
-	if ($siteInfo['site_exits']) {
-		if ($siteInfo['site_active']) 
+	if ($siteInfo['site_exists']) {
+		if ($siteInfo['site_active']) {
 			printc("\n\t\t\t\t\t<td align='left' class='td$studentSitesColor'><a href='$PHP_SELF?$sid&amp;action=site&amp;site=".$siteInfo['slot_name']."'>".$siteInfo['site_title']."</a></td>");
-		else 
+					
+		} else { 
 			printc("\n\t\t\t\t\t<td style='color: #999' class='td$studentSitesColor'>created, not yet available</td>");
-	
+		}
+		
+		// check for an associated site slot and whether an associated site has been created for the current user
+		$assoc_siteinfo = associatedSiteCreated($_SESSION[auser], $className);
+		$assoc_site_title = $assoc_siteinfo['site_title'];
+
+		if ($assoc_site_title != "") {
+			 printSiteLine2($assoc_siteinfo, 0, 1);
+			 $studentSitesColor = 1-$studentSitesColor;
+		} else if (associatedSiteExists($_SESSION[auser], $className) == "true") {
+			$studentSitesColor = 1-$studentSitesColor;
+			printc("\n\t\t\t\t</tr><tr>\n\t\t\t\t\t<td class='td$studentSitesColor' width='150'>".$siteInfo['slot_name']."-".$_SESSION[auser]."</td>");
+			printc("\n\t\t\t\t\t<td align='left' class='td$studentSitesColor'>Create: <a href='$PHP_SELF?$sid&amp;action=add_site&amp;sitename=".$siteInfo['slot_name']."-".$_SESSION[auser]."'> Site</a> (this site will be associated with span6695a-l07)</td>");
+
+		}
+
+				
 	//check webcourses databases to see if course website was created in course folders (instead of Segue)
 	} else if ($course_site = coursefoldersite($className)) {
 		$course_url = urldecode($course_site['url']);

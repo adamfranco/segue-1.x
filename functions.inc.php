@@ -1920,6 +1920,32 @@ function nameMatches($filename, $anArrayOfRegExs) {
 	return FALSE;
 }
 
+function SiteExists($slotname) {
+	$site_exists = "false";
+	
+	$query = "
+	SELECT 
+		slot_name
+	FROM 
+		slot
+			LEFT JOIN
+		site
+			ON
+			FK_site  = site_id
+	WHERE
+		slot_name = '".addslashes($slotname)."'
+	";	
+	
+	$r = db_query($query);
+
+	
+	// if site slot  exists
+	if (db_num_rows($r)) {
+		$site_exists = "true";
+		return $site_exists;
+	}
+}
+
 function associatedSiteExists($uname, $class_id) {
 	$assoc_site = "false";
 	$slotname = $class_id."-".$uname;
@@ -1954,6 +1980,69 @@ function associatedSiteExists($uname, $class_id) {
 		return $assoc_site;
 	}
 }
+
+function associatedSiteCreated($uname, $class_id) {
+	$siteinfo = array();
+	$slotname = $class_id."-".$uname;
+	$user = $uname;
+	$query = "
+	SELECT
+		slot_name,
+		slot_type,
+		slot_owner.user_uname AS slot_owner,
+		(site_id IS NOT NULL) AS site_exists,
+		site_title,
+		createdby.user_uname AS site_addedby,
+		site_created_tstamp,
+		editedby.user_uname AS site_editedby,
+		site_updated_tstamp,
+		site_activate_tstamp,
+		site_deactivate_tstamp,
+		(	site_active = '1'
+			AND (site_activate_tstamp = '00000000000000'
+				OR site_activate_tstamp < CURRENT_TIMESTAMP())
+			AND (site_deactivate_tstamp = '00000000000000'
+				OR site_deactivate_tstamp > CURRENT_TIMESTAMP())
+		) AS site_active
+	FROM
+		slot
+			INNER JOIN
+				user AS slot_owner ON (
+										slot.FK_owner = slot_owner.user_id
+									AND
+										slot_owner.user_uname = '".addslashes($user)."'
+									)
+			INNER JOIN
+		site ON slot.FK_site = site_id
+			INNER JOIN
+				user AS createdby ON site.FK_createdby = createdby.user_id
+			INNER JOIN
+				user AS editedby ON site.FK_updatedby = editedby.user_id
+	WHERE
+		slot_name = '".addslashes($slotname)."'
+	";
+
+	
+	$r = db_query($query);
+	$a = db_fetch_assoc($r);
+	
+	// if associated site slot  exists, print add to array
+	if (db_num_rows($r)) {
+//		$siteInfo['slot_name'] = $a['slot_name'];
+//		$siteInfo['site_exists'] = $a['site_exists'];
+//		$siteInfo['site_active'] = $a['site_active'];
+//		$siteInfo['slot_owner'] = $a['slot_owner'];
+//		$siteInfo['site_title'] = $a['site_title'];
+//		$siteInfo['site_addedby'] = $a['site_addedby'];
+//		$siteInfo['site_added_timestamp'] = $a['site_added_timestamp'];
+//		$siteInfo['site_edited_timestamp'] = $a['site_edited_timestamp'];
+//		$siteInfo['site_editedby'] = $a['site_editedby'];
+		
+		
+		return $a;
+	}
+}
+
 
 function participantContributions($uname, $site) {
 

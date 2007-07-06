@@ -156,7 +156,7 @@ class WikiResolver {
 	[^\]\s]+	# the rest of the url
 )
 
-(?: \s ([^\]]+) )?	# optional display text
+(?: [\s|]* ([^\]]+) )?	# optional display text
 
 \s*		# optional whitespace
 
@@ -365,7 +365,10 @@ $		# Anchor for the end of the line
 			return $path;
 			
 		} else {
-			return $this->_cachedSites[$site]->searchBelow($title);
+			if (is_object($this->_cachedSites[$site]))
+				return $this->_cachedSites[$site]->searchBelow($title);
+			else
+				return null;
 		}
 	}
 	
@@ -427,7 +430,10 @@ ORDER BY
 		}
 		mysql_free_result($result);
 		
-		$this->_cachedSites[$slotName] =& $site;
+		if (is_object($site))		
+			$this->_cachedSites[$slotName] =& $site;
+		else
+			$this->_cachedSites[$slotName] = null;
 	}
 }
 

@@ -41,8 +41,9 @@ if (!is_array($_SESSION[settings]) ) {
 		"title" => $_REQUEST[link_title]
 	);
 
-	
-	$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > ";
+	if (SiteExists($_REQUEST[site])) {
+		$_SESSION[settings][pagetitle]=$thisSite->getField("title") . " > " . $thisSection->getField("title") . " > ";
+	}
 
 	// init to step 1	
 	if ($action == 'add_node') {
@@ -66,6 +67,7 @@ if ($_SESSION[settings][step] == 3 && $_SESSION[auser] != $site_owner) {
 }
 
 $pagetitle=$_SESSION[settings][pagetitle];
+
 
 /******************************************************************************
  * Cancel options
@@ -97,6 +99,7 @@ if ($_REQUEST[cancel]) {
 	
 	exit;
 }
+
 
 /******************************************************************************
  * Save values from session to object

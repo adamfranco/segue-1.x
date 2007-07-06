@@ -457,7 +457,7 @@ FROM
 			$infoArray[$a['slot_name']]['slot_name'] = $a['slot_name'];
 			$infoArray[$a['slot_name']]['slot_type'] = $a['slot_type'];
 			$infoArray[$a['slot_name']]['slot_owner'] = $a['owner_uname'];
-			$infoArray[$a['slot_name']]['site_exits'] = ($a['site_exists'] == '1')?true:false;
+			$infoArray[$a['slot_name']]['site_exists'] = ($a['site_exists'] == '1')?true:false;
 			$infoArray[$a['slot_name']]['site_title'] = stripslashes($a['site_title']);
 			$infoArray[$a['slot_name']]['is_classgroup'] = ($a['is_classgroup'] == '1')?true:false;
 			$infoArray[$a['slot_name']]['site_addedby'] = $a['site_addedby'];
