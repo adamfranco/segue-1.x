@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
 	<version number="1.8.1" date="the future">
+		<fix author='alex'>
+			Empty site (i.e. no sections or pages) now renders properly.
+		</fix>
 		<new author='alex'>
 			Added a Flash audio player for mp3 files in file-for-download content block 
 		</new>
