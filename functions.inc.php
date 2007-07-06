@@ -9,27 +9,33 @@ function makedownloadbar($o) {
 	ob_start();
 	print "\n";
 	print "\n<div class='downloadbar' style='margin-bottom: 10px'>";
-	print "\n\t<table width='100%' cellpadding='0' cellspacing='0'>\n\t<tr>\n\t\t<td>";
+//	print "\n\t<table width='100%' cellpadding='0' cellspacing='0'>\n\t<tr>\n\t\t<td>";
+
+	
 	if ($o->getField("title")) {
-		print "\n\t\t\t<strong><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id."'>";
-		print "".spchars($o->getField("title"))."</a></strong>\n\t\t\t<br />";
+		print "\n<div style='float: left; '><strong><a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=".$o->id."&amp;detail=".$o->id."'>";
+		print "".spchars($o->getField("title"))."</a></strong>\n\t\t\t</div>";
 	}
 	
 	printDownloadLink($b);
 	
-	print "\n\t\t\t\t\t<div style='font-size: smaller; margin-bottom: 10px;'>";
+	printMediaPlayer($b);
+	
+
+	
+	print "\n\t\t\t\t\t<div style='clear: left; font-size: smaller; margin-bottom: 10px; '>";
 	printCitation($b);
 	print "\n\t\t\t\t\t</div>";
 	
-//	print "<hr size='1' />";
 	if ($o->getField("shorttext")) print "".stripslashes($o->getField("shorttext"));
-	print "\n\t\t</td>\n\t</tr>\n\t</table>\n</div>\n";
+	print "</div>\n";
 	return ob_get_clean();
 }
 
-function printDownloadLink($mediaRow) {
-	global $site,$section,$page,$uploaddir,$uploadurl;
+function printMediaPlayer($mediaRow) {
+	global $site,$section,$page,$uploaddir,$uploadurl, $cfg;
 	$filename = urldecode($mediaRow[media_tag]);
+	$filetype = ereg(".mp3", $filename);
 /* 	print $filename; */
 	$dir = $mediaRow[slot_name];
 	$size =$mediaRow[media_size];
@@ -37,7 +43,44 @@ function printDownloadLink($mediaRow) {
 	$filepath = "$uploaddir/$dir/$filename";
 	$filesize = convertfilesize($size);
 	
-	print "\n\t\t\t<table width='100%' cellpadding='0' cellspacing='0' style='margin: 0px; border: 0px;'>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class='leftmargin' align='left'>\n\t\t\t\t\t\t<a href='$fileurl' target='new_window'>\n\t\t\t\t\t\t\t<img src='downarrow.gif' border='0' width='15' height='15' align='middle' alt='Download Arrow' />\n\t\t\t\t\t\t\t $filename\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td align='right' style='padding-right: 10px;'><b>$filesize</b></td>\n\t\t\t\t</tr>\n\t\t\t</table>";
+	if (ereg("\.mp3$", $filename)) {
+		if (!isset($GLOBALS['playerid']))
+			$GLOBALS['playerid'] = 0;
+		$GLOBALS['playerid']++;
+			
+		$audioplayer = "
+		<div style='clear: left; float: left; '>
+		<script type='text/javaScript' src='".$cfg['full_uri']."/audio-player/audio-player/audio-player.js'></script>
+		<object width='290' height='24' id='audioplayer".$GLOBALS['playerid']."' data='".$cfg['full_uri']."/audio-player/audio-player/player.swf' type='application/x-shockwave-flash'>
+		<param value='".$cfg['full_uri']."/audio-player/audio-player/player.swf' name='movie' />
+		<param value='playerID=".$GLOBALS['playerid']."&amp;soundFile=$fileurl' name='FlashVars' />
+		<param value='high' name='quality' />
+		<param value='false' name='menu' />
+		<param value='transparent' name='wmode' />
+		</object>
+		</div>
+		";
+
+	   print $audioplayer;
+	   
+	} 
+}
+	
+function printDownloadLink($mediaRow) {
+	global $site,$section,$page,$uploaddir,$uploadurl, $cfg;
+	$filename = urldecode($mediaRow[media_tag]);
+	$filetype = ereg(".mp3", $filename);
+/* 	print $filename; */
+	$dir = $mediaRow[slot_name];
+	$size =$mediaRow[media_size];
+	$fileurl = "$uploadurl/$dir/$filename";
+	$filepath = "$uploaddir/$dir/$filename";
+	$filesize = convertfilesize($size);
+	
+	//print "\n\t\t\t<table width='100%' cellpadding='0' cellspacing='0' style='margin: 0px; border: 0px;'>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class='leftmargin' align='left'>\n\t\t\t\t\t\t<a href='$fileurl' target='new_window'>\n\t\t\t\t\t\t\t<img src='downarrow.gif' border='0' width='15' height='15' align='middle' alt='Download Arrow' />\n\t\t\t\t\t\t\t $filename\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td align='right' style='padding-right: 10px;'><b>$filesize</b></td>\n\t\t\t\t</tr>\n\t\t\t</table>";
+	print "\n\t\t\t<div style=' float: right; text-align: right;'>";
+	print "$filename<br /><a href='$fileurl' target='new_window'><img src='downarrow.gif' border='0' width='15' height='15' align='top' alt='Download Arrow' /></a> <a href='$fileurl' target='new_window'>Download</a>";
+	print " <span style='font-size: smaller;'>($filesize)</span></div>";	
 }
 
 /**

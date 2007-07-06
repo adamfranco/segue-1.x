@@ -4,7 +4,7 @@
 //printpre($_REQUEST);
 
 if (!$_REQUEST[nostatus]) {
-	print "<form action='$PHP_SELF?&site=".$_REQUEST[site]."$section=".$_REQUEST[section]."page=".$_REQUEST[page];
+	print "<form action='$PHP_SELF?&amp;site=".$_REQUEST[site]."&amp;section=".$_REQUEST[section]."&amp;page=".$_REQUEST[page];
 	foreach ($_GET as $key => $val) {
 		print "&amp;".$key."=".$val;
 	}

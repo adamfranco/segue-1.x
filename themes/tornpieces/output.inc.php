@@ -119,6 +119,7 @@ include("themes/$theme/css.inc.php");
 					print "<div style='height: 16px; overflow: hidden;'>";
 				}
 				include("themes/common/status.inc.php"); 
+				print "</div>";
 				?>
 		</td> 
 		<!-- end content table cell -->
