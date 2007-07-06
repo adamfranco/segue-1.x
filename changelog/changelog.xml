@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
 	<version number="1.8.1" date="the future">
+		<change author='alex'>
+			Associated sites now listed below the site they are associated with
+		</change>
+		<fix author='adam'>
+			Wiki links to nonexistent Segue sites no longer throws errors
+		</fix>
 		<fix author='alex'>
 			Section default page order is now being set to "custom" instead of
 			null.

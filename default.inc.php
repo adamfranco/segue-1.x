@@ -1050,6 +1050,8 @@ function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 	
 	}
 	
+
+	
 	printc("\n\t\t\t\t\t\t</td>\n\t\t\t\t\t\t<td align='right'>");
 	printc((($active)?"\n\t\t\t\t\t\t\t[$active]":""));
 	printc("\n\t\t\t\t\t\t</td>\n\t\t\t\t\t</tr>\n\t\t\t\t</table>");
@@ -1124,6 +1126,21 @@ function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 	}
 		
 	printc("\n\t\t\t</td>\n\t\t</tr>");
+	
+		// check for an associated site slot and whether an associated site has been created for the current user
+	$assoc_siteinfo = associatedSiteCreated($_SESSION[auser], $name);
+	$assoc_site_title = $assoc_siteinfo['site_title'];
+
+	if ($assoc_site_title != "") {
+		 printSiteLine2($assoc_siteinfo, 0, 0);
+		 $studentSitesColor = 1-$studentSitesColor;
+	} else if (associatedSiteExists($_SESSION[auser], $className) == "true") {
+		$studentSitesColor = 1-$studentSitesColor;
+		printc("\n\t\t\t\t</tr><tr>\n\t\t\t\t\t<td class='td$studentSitesColor' width='150'>".$siteInfo['slot_name']."-".$_SESSION[auser]."</td>");
+		printc("\n\t\t\t\t\t<td align='left' class='td$studentSitesColor'>Create: <a href='$PHP_SELF?$sid&amp;action=add_site&amp;sitename=".$siteInfo['slot_name']."-".$_SESSION[auser]."'> Site</a> (this site will be associated with span6695a-l07)</td>");
+
+	}
+
 	
 	$color=1-$color;
 }
