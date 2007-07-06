@@ -66,26 +66,29 @@ function vertical_nav($navtype, $nav_items, $extra, $bordercolor='000000', $hide
 	$detail = $_REQUEST[detail];
 	$page = $_REQUEST[page];
 	$action = $_REQUEST[action];
-	if ($thisSection->getField('pageorder') == "editeddesc") {
-		$pageorder = "Recently Edited First";
-	} else if ($thisSection->getField('pageorder') == "editedasc") {
-		$pageorder = "Recently Edited Last";
-	} else if ($thisSection->getField('pageorder') == "addeddesc") {
-		$pageorder = "Recently First";
-	} else if ($thisSection->getField('pageorder') == "addedasc") {
-		$pageorder = "Recently Last";
-	} else if ($thisSection->getField('pageorder') == "titleasc") {
-		$pageorder = "Alphabetic Display";
-	} else if ($thisSection->getField('pageorder') == "custom") {
-		$pageorder = "Custom Order";
-	}
+	if ($thisSection) {
+		if ($thisSection->getField('pageorder') == "editeddesc") {
+			$pageorder = "Recently Edited First";
+		} else if ($thisSection->getField('pageorder') == "editedasc") {
+			$pageorder = "Recently Edited Last";
+		} else if ($thisSection->getField('pageorder') == "addeddesc") {
+			$pageorder = "Recently First";
+		} else if ($thisSection->getField('pageorder') == "addedasc") {
+			$pageorder = "Recently Last";
+		} else if ($thisSection->getField('pageorder') == "titleasc") {
+			$pageorder = "Alphabetic Display";
+		} else if ($thisSection->getField('pageorder') == "custom") {
+			$pageorder = "Custom Order";
+		}
+	
 
 	
 	
-	$numContentPages = 0;
-	foreach ($thisSection->pages as $pageObj) {
-		if ($pageObj->getField('type') == 'page')
-			$numContentPages++;
+		$numContentPages = 0;
+		foreach ($thisSection->pages as $pageObj) {
+			if ($pageObj->getField('type') == 'page')
+				$numContentPages++;
+		}
 	}
 	
 	//printpre($nav_items);
