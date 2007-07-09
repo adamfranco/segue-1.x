@@ -6,6 +6,51 @@ Name: Segue ChangeLog
 v. 1.8.1 (the future)
 ----------------------------------------------------
 		
+	* Change: 
+		Added additional options in content block number of items to display to
+		include 2, 3, 4 items per page.
+		(Alex Chapin)
+		
+	* Change: 
+		Included files attached to discussion posts as enclosures in the discussion
+		posts RSS feed.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		
+		Detail pages with discussion posts now valid HTML.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Discussion display options for threading or flat now being properly set for
+		session. 
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		
+		Empty site (i.e. no sections or pages) now renders properly.
+		(Alex Chapin)
+		
+	* New feature: 
+		Added a Flash audio player for mp3 files in file-for-download content block
+		and discussion posts
+		(Alex Chapin)
+		
+	* Change: 
+		Changed layout of file-for-download content block and the layout for files
+		attached to discussion posts
+		(Alex Chapin)
+		
+	* Change: 
+		
+		Associated sites now listed below the site they are associated with
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		
+		Wiki links to nonexistent Segue sites no longer throws errors
+		(Adam Franco)
+		
 	* Bug Fix: 
 		
 		Section default page order is now being set to "custom" instead of null.
