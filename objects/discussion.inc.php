@@ -986,21 +986,30 @@ class discussion {
 
 					$audioplayer = printMediaPlayer($mediaRow);
 					$downloadlink = printDownloadLink($mediaRow);
+//					$citation = printCitation($mediaRow);
 					
 					// if attached file is an .mp3 print out audio player
 					if ($audioplayer) {
-						printc ("<br />");
-
+						printc ("<table width='100%' cellpadding='2' border='0'>");
+						printc ("<tr><td>");
 						printc ($downloadlink."\n");
 						printc ($audioplayer."\n");
-						printc ("<br /><br />");
+						
+//						printc ("<div style='clear: left; font-size: smaller; margin-bottom: 10px; '>");
+//						printc ($citation."\n");
+//						printc ("</div>");
+						
+						printc ("</td></tr>");
+						printc ("</table>");
 									
 					// if attached file not .mp3 print out download link only
 					} else {
-						printc ("<br />");
+						printc ("<table width='100%' cellpadding='2' border='0'>");
+						printc ("<tr><td>");
 						printc ("<div style='clear: left; float: left; '>$media_link</div>\n");
 						printc ($downloadlink."\n");
-						printc ("<br /><br />");
+						printc ("</td></tr>");
+						printc ("</table>");
 					}
 				}
 				

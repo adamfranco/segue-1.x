@@ -21,7 +21,7 @@ function makedownloadbar($o) {
 	print printMediaPlayer($b);
 		
 	print "\n\t\t\t\t\t<div style='clear: left; font-size: smaller; margin-bottom: 10px; '>";
-	printCitation($b);
+	print printCitation($b);
 	print "\n\t\t\t\t\t</div>";
 	
 	if ($o->getField("shorttext")) print "".stripslashes($o->getField("shorttext"));
@@ -130,7 +130,7 @@ function printCitation ($mediaRow) {
 // 	if ($mediaRow['is_published'])
 // 		print " &copy; ";
 	
-	print trim(ob_get_clean());
+	return trim(ob_get_clean());
 }
 	
 function mkfilesize($filename) {
