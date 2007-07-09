@@ -149,21 +149,37 @@ $sitefooter = "";
 
 if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
-	$site = $thisSite->name;
-//	session_unregister("settings"); // handled by index.php
-	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site");
-	else header("Location: index.php?$sid");
-	
-	exit;
-}
-if ($_REQUEST[cancel]) {
-	$comingFrom = $_SESSION[settings][comingFrom];
 	print "cancelling...";
-	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$pageObj->id);
-	else header("Location: index.php?$sid&action=viewsite&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$pageObj->id);
+	if ($comingFrom) {	
+		$headerText = "Location: index.php?$sid&action=$comingFrom&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$_SESSION[pageObj]->id;
+	}
 	
+	unset($_SESSION[pageObj], $_SESSION[settings]);
+	header($headerText);
 	exit;
 }
+
+
+//if ($_REQUEST[cancel]) {
+//	$comingFrom = $_SESSION[settings][comingFrom];
+//	$site = $thisSite->name;
+////	session_unregister("settings"); // handled by index.php
+//	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=$site");
+//	else header("Location: index.php?$sid");
+//	
+//	exit;
+// }
+	
+
+
+//if ($_REQUEST[cancel]) {
+//	$comingFrom = $_SESSION[settings][comingFrom];
+//	print "cancelling...";
+//	if ($comingFrom) header("Location: index.php?$sid&action=$comingFrom&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$pageObj->id);
+//	else header("Location: index.php?$sid&action=viewsite&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$pageObj->id);
+//	
+//	exit;
+//}
 
 if ($_REQUEST[save]) {
 /* 	$error = 0; */
