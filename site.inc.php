@@ -524,7 +524,7 @@ do {
 		 ******************************************************************************/
 		if (count($stories) > $num_per_set && $num_per_set != 0)  {
 			printc("\n\t\t\t\t<br />\n\t\t\t\t<div class='multi_page_links'>");
-			printpre($num_per_set);
+
 			for ($j = 0; $j < (count($stories) / $num_per_set); $j++) {
 				if ($story_set == $j)
 					printc("<strong>".($j+1)."</strong> | ");
