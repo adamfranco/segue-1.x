@@ -66,7 +66,7 @@ if ($_SESSION[pageObj]->getField("type")=='page') {
 	printc("Number of content blocks to display: ");
 	printc("<select name='archiveby'>");
 //	$l = array("none"=>"Do not archive","week"=>"Week","month"=>"Month","year"=>"Year");
-	$l = array("none"=>"All","1"=>1,"5"=>5,"10"=>10,"20"=>20,"30"=>30,"50"=>50,"100"=>100,);
+	$l = array("none"=>"All","1"=>1,"2"=>2,"3"=>3,"4"=>4,"5"=>5,"10"=>10,"20"=>20,"30"=>30,"50"=>50,"100"=>100,);
 	
 	foreach ($l as $n=>$v) {
 		printc("<option value='$n'".(($_SESSION[pageObj]->getField("archiveby")==$n)?" selected='selected'":"").">$v\n");

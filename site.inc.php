@@ -337,6 +337,7 @@ do {
 				/******************************************************************************
 				 * Print out story pagination links
 				 ******************************************************************************/
+				
 				$pagelinks = array();
 				if (count($stories) > $num_per_set && $num_per_set != 0)  {
 					printc("\n\t\t\t\t<div class='multi_page_links'>");
@@ -346,7 +347,7 @@ do {
 							$pagelinks[] = "current";
 							printc("<strong>".($j+1)."</strong> | ");
 						} else {
-						if (!$_REQUEST["tag"]) $tag = "";
+							if (!$_REQUEST["tag"]) $tag = "";
 							$pagelinks[] = "?$sid&amp;$envvars&amp;action=site&amp;tag=$tag&amp;story_set=".($j+1);
 							printc("<a href='?$sid&amp;$envvars&amp;action=site&amp;tag=$tag&amp;story_set=".($j+1)."'>".($j+1)."</a> | ");
 						}
@@ -523,7 +524,7 @@ do {
 		 ******************************************************************************/
 		if (count($stories) > $num_per_set && $num_per_set != 0)  {
 			printc("\n\t\t\t\t<br />\n\t\t\t\t<div class='multi_page_links'>");
-			
+			printpre($num_per_set);
 			for ($j = 0; $j < (count($stories) / $num_per_set); $j++) {
 				if ($story_set == $j)
 					printc("<strong>".($j+1)."</strong> | ");

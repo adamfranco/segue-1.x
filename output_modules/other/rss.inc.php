@@ -30,8 +30,8 @@ MyCarpConfReset();
 MyCarpConfReset('rss_contentblock');
 
 if (is_numeric($o->getField("shorttext"))) {
-	$num_per_set = $o->getField("shorttext");
-	CarpConf('maxitems',$num_per_set);						
+	$num_per_page = $o->getField("shorttext");
+	CarpConf('maxitems',$num_per_page);						
 } else {
 	CarpConf('maxitems',5);
 }

@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
 	<version number="1.8.1" date="the future">
+		<change author='alex'>
+			Added additional options in content block number of items to display
+			to include 2, 3, 4 items per page.
+		</change>
+		<change author='alex'>
+			Included files attached to discussion posts as enclosures in the 
+			discussion posts RSS feed.
+		</change>
+		<fix author='alex'>
+			Detail pages with discussion posts now valid HTML.
+		</fix>
+		<fix author='alex'>
+			Discussion display options for threading or flat now being properly
+			set for session.
+		</fix>
 		<fix author='alex'>
 			Empty site (i.e. no sections or pages) now renders properly.
 		</fix>
 		<new author='alex'>
-			Added a Flash audio player for mp3 files in file-for-download content block 
+			Added a Flash audio player for mp3 files in file-for-download content block
+			and discussion posts
 		</new>
 		<change author='alex'>
-			Changed layout of file-for-download content block 
+			Changed layout of file-for-download content block and the layout for
+			files attached to discussion posts
 		</change>
 		<change author='alex'>
 			Associated sites now listed below the site they are associated with
