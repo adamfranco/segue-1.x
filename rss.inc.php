@@ -460,7 +460,7 @@ if ($error) {
 						$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id='".addslashes($o->getField("longertext"))."'");
 						$filename = $b[media_tag];
 						$filename = rawurlencode($filename);
-						if (ereg(".mp3", $filename)) {
+						if (ereg("\.mp3$", $filename)) {
 							$type = "audio/mpeg";
 						} else {
 							$type = "unknown";
@@ -487,7 +487,7 @@ if ($error) {
 							SELECT
 								discussion_id,discussion_tstamp,discussion_content,
 								discussion_subject,user_uname,user_fname,FK_story,
-								FK_author,FK_parent,media_tag
+								FK_author,FK_parent,media_tag,FK_media
 							FROM
 								discussion
 							INNER JOIN
@@ -538,6 +538,25 @@ if ($error) {
 							print "<description>";
 							print $description;
 							print "</description>\n";
+							
+							//if ($a["FK_media"]) {
+								$b = db_get_line("media INNER JOIN slot ON media.FK_site=slot.FK_site","media_id='".addslashes($a["FK_media"])."'");
+								$filename = $b[media_tag];
+								$filename = rawurlencode($filename);
+								if (ereg("\.mp3$", $filename)) {
+									$type = "audio/mpeg";
+								} else {
+									$type = "unknown";
+								}
+								/* 	print $filename; */
+								$dir = $b[slot_name];
+								$size = $b[media_size];
+								$fileurl = "$uploadurl/$dir/$filename";
+								$filepath = "$uploaddir/$dir/$filename";
+								$filesize = $size;
+								print "<enclosure url='$fileurl' length='$filesize' type='$type' />\n";					
+							//}
+
 							print "\t\t</item>\n";
 														
 						}													
