@@ -68,7 +68,7 @@ class WikiResolver {
 			print "} ";
 			print "return false; ";
 			print "\">";
-			print "<img src='".$cfg['full_uri']."/themes/common/images/WikiLink.gif' border='0'/>";
+			print "<img src='".$cfg['full_uri']."/themes/common/images/WikiLink.gif' alt='wikilink' border='0'/>";
 			print "</a>";
 			print "<input type='text' value=\"[[";
 			print $title;

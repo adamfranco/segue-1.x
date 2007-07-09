@@ -14,8 +14,16 @@ else
 	$action = 'site';
 
 
-if ($tmp = $_REQUEST['flat_discussion']) {
-	$_SESSION['flat_discussion'] = ($tmp=='true')?true:false;
+// Set the default to threaded
+if (!isset($_SESSION['flat_discussion'])) {
+	$_SESSION['flat_discussion'] = false;
+}
+
+if (isset($_REQUEST['discussion_threading'])) {
+	if ($_REQUEST['discussion_threading'] == 'flat')
+		$_SESSION['flat_discussion'] = true;
+	else
+		$_SESSION['flat_discussion'] = false;
 }
 
 if ($tmp = $_REQUEST['order']) {
@@ -189,6 +197,7 @@ if ($storyObj->getField('type') == "rss") {
 
 printc("\n</table>\n");
 
+	 
 /*********************************************************
  * Print out edit links if we are in viewsite mode
  *********************************************************/
@@ -236,11 +245,12 @@ if ($storyObj->getField("discuss")) {
 	
 	printc("\n\t\t\t<table>");
 	printc("\n\t\t\t\t<tr>\n\t\t\t\t\t<td>");
-	$f = $_SESSION['flat_discussion'];
+	
+
 	printc("\n\t\t\t\t\t\t<form action='index.php?$sid&amp;action=".$action."&amp;".$getinfo."' method='post' name='viewform'>");
-	printc("\n\t\t\t\t\t\t\t<select name='flat_discussion'>");
-	printc("\n\t\t\t\t\t\t\t\t<option value='true'".(($f)?" selected='selected'":"").">Flat</option>");
-	printc("\n\t\t\t\t\t\t\t\t<option value='false'".((!$f)?" selected='selected'":"").">Threaded</option>");
+	printc("\n\t\t\t\t\t\t\t<select name='discussion_threading'>");
+	printc("\n\t\t\t\t\t\t\t\t<option value='flat'".(($_SESSION['flat_discussion'])?" selected='selected'":"").">Flat</option>");
+	printc("\n\t\t\t\t\t\t\t\t<option value='threaded'".(($_SESSION['flat_discussion'])?"":" selected='selected'").">Threaded</option>");
 	printc("\n\t\t\t\t\t\t\t</select>");
 	//printc("</td><td>\n");
 
@@ -333,10 +343,13 @@ if ($storyObj->getField("discuss")) {
  * Instantiate a discussion object $ds from objects/discussion.inc.php
  * and pass it discussion settings: $order, $showposts, $showallauthors, $mailposts
  ******************************************************************************/
-	
 
 	$ds = & new discussion($storyObj);
-	if ($f) $ds->flat(); // must be called before _fetchchildren();
+	if ($_SESSION['flat_discussion']) {
+		$ds->flat(); // must be called before _fetchchildren();
+	} else {
+		$ds->threaded(); // must be called before _fetchchildren();
+	}
 	
 	if ($_REQUEST['order'] == 1) {
 		$ds->recentfirst();
@@ -388,7 +401,7 @@ if ($storyObj->getField("discuss")) {
 	$ds->outputAll($canReply,($_SESSION[auser]==$site_owner),true,$showposts,$showallauthors,$mailposts);
 	if (!$ds->count()) printc("\n\t<tr>\n\t\t<td>There have been no posts to this discussion.</td>\n\t</tr>");
 }
-		printc("<table>");
+	//	printc("<table>");
 printc("\n\t<tr>\n\t\t<td align='left'>\n\t\t\t<br /><a href='index.php?action=".$action."&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a> &gt; in depth</td>\n\t</tr>");
 printc("</table>\n");
 

@@ -7,7 +7,7 @@ class discussion {
 //	var $author = array("id"=>0,"uname"=>"","fname"=>"");
 	var $authorid=0,$authoruname,$authorfname,$authoremail;
 	
-	var $libraryfilename,$libraryfileid,$media_tag;
+	var $libraryfilename,$libraryfileid,$media_tag,$media_size;
 	var $tstamp,$content,$subject,$order;
 	var $rating = NULL;
 	
@@ -234,7 +234,7 @@ class discussion {
  ******************************************************************************/
 	
 	function _parseDBline($a) {
-		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","media_tag"=>"media_tag","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_rate"=>"rating","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname","user_email"=>"authoremail");
+		$_f = array("discussion_subject"=>"subject","FK_parent"=>"parentid","FK_author"=>"authorid","FK_story"=>"storyid","media_tag"=>"media_tag","media_size"=>"media_size","discussion_id"=>"id","discussion_tstamp"=>"tstamp","discussion_content"=>"content","discussion_rate"=>"rating","discussion_order"=>"order","user_uname"=>"authoruname","user_fname"=>"authorfname","user_email"=>"authoremail");
 		foreach ($_f as $f=>$v) {
 			if (isset($a[$f])) $this->$v = $a[$f];
 		}
@@ -257,7 +257,7 @@ class discussion {
 		
 		$query = "
 			SELECT
-				discussion_tstamp,discussion_content,discussion_subject,discussion_rate,user_uname,user_fname,FK_story,FK_author,FK_parent,media_tag
+				discussion_tstamp,discussion_content,discussion_subject,discussion_rate,user_uname,user_fname,FK_story,FK_author,FK_parent,media_tag,media_size
 			FROM
 				discussion
 			INNER JOIN
@@ -302,7 +302,7 @@ class discussion {
 				
 		$query = "
 			SELECT
-				FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,discussion_rate,FK_story,media_tag,discussion_order,user_uname,user_fname,user_last_name,user_email
+				FK_parent,discussion_subject,discussion_id,FK_author,discussion_tstamp,discussion_content,discussion_rate,FK_story,media_tag,media_size,discussion_order,user_uname,user_fname,user_last_name,user_email
 			FROM
 				discussion
 				LEFT JOIN
@@ -715,6 +715,12 @@ class discussion {
 		
 		if ($t == 'rate') {	
 			//printc ("Subject: <input type='text' size='50' name='subject' value='".spchars($s)."' readonly />");
+			if ($this->rating && isnumeric($this->rating)) {
+				$rating_value = $this->rating;
+			} else {
+				$rating_value = "";
+			}
+			
 			printc ("<td class='dheader3'>\n");
 							
 			printc ("<table width='100%' cellspacing='0px'>\n");
@@ -722,7 +728,7 @@ class discussion {
 			printc ("<span class='subject'><a name='".$this->id."'>\n");
 			printc ($s);
 			printc ("</a><input type='hidden' name='subject' value='".spchars($s)."' />\n");
-			printc (" (<input type='text' size='3' class='textfield small' name='rating' value=".$this->rating." />\n");
+			printc (" (<input type='text' size='3' class='textfield small' name='rating' value='".$rating_value."' />\n");
 			printc("<input type='submit' class='button small' value='rate' />");
 			printc(" <a href='".$_full_uri."/index.php?$sid&amp;action=site&amp;".$this->getinfo."#".$this->id."'><input type='button' class='button small' value='cancel' /></a>\n");
 			printc(" numeric only");
@@ -889,8 +895,8 @@ class discussion {
 			 ******************************************************************************/
 
 			if (!$this->id) return false;
-			//printc ("\n<tr><td class='dheader3'>");			
-			$s = "<a href='".$_full_uri."/index.php?$sid&amp;action=site&".$this->getinfo."&amp;expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>\n";
+			printc ("\n<tr>");			
+			$s = "<a href='".$_full_uri."/index.php?$sid&amp;action=site&amp;".$this->getinfo."&amp;expand=".$this->id."' name='".$this->id."'>".$this->subject."</a>\n";
 		//	printc ("</form>");
 	//		$s = $this->subject;
 			//printpre($_SESSION);
@@ -934,8 +940,8 @@ class discussion {
 				/******************************************************************************
 				 * discussion post header info (subject=$s, author and timestamp=$a, options=$c)
 				 ******************************************************************************/
-				 
-				printc ("\n<tr><td class='dheader3'>\n");
+				//printc ("<table width='100%' cellspacing='0px'>\n"); 
+				printc ("\n<td class='dheader3'>\n");
 				
 				printc ("<table width='100%' cellspacing='0px'>\n");
 				printc ("<tr><td align='left'>\n");
@@ -949,16 +955,12 @@ class discussion {
 				// link for rating
 				printc ("<td align='right'>$ratelink</td>\n");
 				printc ("</tr><tr>\n");
-				printc ("<td align='left'>$a\n");
-				// link to media
-				if ($this->media_tag) {
-					$media_link = "<a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target='media'>".$this->media_tag."</a>\n";
-					printc ("<br />attached: $media_link\n");
-				}				
-				printc ("</td>\n");
-				
-				printc ("<td align='right' valign='bottom'>$c</td></tr>\n"); 
-				printc("</table>\n");
+
+				printc ("<td>$a\n");
+				printc ("</td>\n");						
+				printc ("<td align='right' valign='bottom'>$c</td>"); 					
+
+				printc("</tr>\n</table>\n");
 				
 			/******************************************************************************
 			 * if there are no dicussion actions (rely | del | edit | rate) then 
@@ -974,19 +976,51 @@ class discussion {
 			 ******************************************************************************/
 			if ($this->opt("showcontent")) {
 				printc ("<tr><td class='dtext'>");
+				
+				if ($this->media_tag) {
+					
+					$media_link = "<a href='".$uploadurl."/".$_REQUEST[site]."/".$this->media_tag."' target='media'>".$this->media_tag."</a>\n";					
+					$mediaRow[media_tag] = $this->media_tag;
+					$mediaRow[slot_name] = $_REQUEST[site];
+					$mediaRow[media_size] = $this->media_size;
+
+					$audioplayer = printMediaPlayer($mediaRow);
+					$downloadlink = printDownloadLink($mediaRow);
+					
+					// if attached file is an .mp3 print out audio player
+					if ($audioplayer) {
+						printc ("<br />");
+
+						printc ($downloadlink."\n");
+						printc ($audioplayer."\n");
+						printc ("<br /><br />");
+									
+					// if attached file not .mp3 print out download link only
+					} else {
+						printc ("<br />");
+						printc ("<div style='clear: left; float: left; '>$media_link</div>\n");
+						printc ($downloadlink."\n");
+						printc ("<br /><br />");
+					}
+				}
+				
 				$content = convertTagsToInteralLinks ($_REQUEST[site], stripslashes($this->content));
 				$wikiResolver =& WikiResolver::instance();
 				$content = $wikiResolver->parseText($content, $_REQUEST[site], $_REQUEST[section],$_REQUEST[page]);
+				printc ("<div style='clear: both;'>\n");
 				printc($content);
+				printc ("</div>\n");
 				
 				//printc ("- [ $c]</td></tr>\n");
 				//printc ("<tr><td align='right'>$c</td></tr>\n"); 
 			}
 			// done
-		
+			
 			// now check if we're replying to this post
 			if ($_REQUEST['discuss'] == 'reply' && $_REQUEST['replyto'] == $this->id) $this->_outputform('reply');
 			//if ($_REQUEST['discuss'] == 'rate' && $_REQUEST['replyto'] == $this->id) $this->_outputform('rate');
+			
+			printc ("</td></tr>");
 		}
 	}
 	

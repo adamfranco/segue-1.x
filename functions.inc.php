@@ -17,12 +17,9 @@ function makedownloadbar($o) {
 		print "".spchars($o->getField("title"))."</a></strong>\n\t\t\t</div>";
 	}
 	
-	printDownloadLink($b);
-	
-	printMediaPlayer($b);
-	
-
-	
+	print printDownloadLink($b);	
+	print printMediaPlayer($b);
+		
 	print "\n\t\t\t\t\t<div style='clear: left; font-size: smaller; margin-bottom: 10px; '>";
 	printCitation($b);
 	print "\n\t\t\t\t\t</div>";
@@ -34,7 +31,11 @@ function makedownloadbar($o) {
 
 function printMediaPlayer($mediaRow) {
 	global $site,$section,$page,$uploaddir,$uploadurl, $cfg;
+	
+//	printpre($mediaRow);
+	
 	$filename = urldecode($mediaRow[media_tag]);
+//	printpre($mediaRow[media_tag]);
 	$filetype = ereg(".mp3", $filename);
 /* 	print $filename; */
 	$dir = $mediaRow[slot_name];
@@ -61,7 +62,7 @@ function printMediaPlayer($mediaRow) {
 		</div>
 		";
 
-	   print $audioplayer;
+	   return $audioplayer;
 	   
 	} 
 }
@@ -78,10 +79,12 @@ function printDownloadLink($mediaRow) {
 	$filesize = convertfilesize($size);
 	
 	//print "\n\t\t\t<table width='100%' cellpadding='0' cellspacing='0' style='margin: 0px; border: 0px;'>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class='leftmargin' align='left'>\n\t\t\t\t\t\t<a href='$fileurl' target='new_window'>\n\t\t\t\t\t\t\t<img src='downarrow.gif' border='0' width='15' height='15' align='middle' alt='Download Arrow' />\n\t\t\t\t\t\t\t $filename\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td align='right' style='padding-right: 10px;'><b>$filesize</b></td>\n\t\t\t\t</tr>\n\t\t\t</table>";
-	print "\n\t\t\t<div style=' float: right; text-align: right;'>";
-	print "<span style='font-size: smaller;'>$filename</span><br />";
-	print "<a href='$fileurl' target='new_window'><img src='downarrow.gif' border='0' width='15' height='15' align='top' alt='Download Arrow' /></a> <a href='$fileurl' target='new_window'>Download</a>";
-	print " <span style='font-size: smaller;'>($filesize)</span></div>";	
+	$downloadlink = "\n\t\t\t<div style=' float: right; text-align: right;'>";
+	$downloadlink .= "<span style='font-size: smaller;'>$filename</span><br />";
+	$downloadlink .= "<a href='$fileurl' target='new_window'><img src='downarrow.gif' border='0' width='15' height='15' align='top' alt='Download Arrow' /></a> <a href='$fileurl' target='new_window'>Download</a>";
+	$downloadlink .= " <span style='font-size: smaller;'>($filesize)</span></div>";	
+	
+	return $downloadlink;
 }
 
 /**

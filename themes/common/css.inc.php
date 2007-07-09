@@ -281,7 +281,7 @@ th {
 
 .dinfo1 {
 	border: 1px solid #000;
-	color: #<? echo $bg['bglink']; ?>;
+	border: 1px solid #<? echo $bordercolor; ?>;
 	padding-left: 2px;
 	padding-right: 2px;
 }
