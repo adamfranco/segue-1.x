@@ -243,5 +243,7 @@ print $sitefooter
 		<td class='bottomright'></td>
 	</tr>
 </table>
+</td></tr>
+</table>
 </body>
 </html>

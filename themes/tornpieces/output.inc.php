@@ -368,10 +368,9 @@ if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
 		<td class='bottomright'>&nbsp;</td>
 	</tr>
 </table>
-
-</td></td>
-</table>
 <!-- end bottom table  -->
 
+</td></tr>
+</table>
 </body>
 </html>
