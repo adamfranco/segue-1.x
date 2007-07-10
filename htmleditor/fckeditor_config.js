@@ -1,4 +1,21 @@
-﻿
+﻿/* FCKConfig.ToolbarSets["default"] = [ */
+/* 	['Source','DocProps','-','Save','NewPage','Preview','-','Templates'], */
+/* 	['Cut','Copy','Paste','PasteText','PasteWord','-','Print','SpellCheck'], */
+/* 	['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'], */
+/* 	['Form','Checkbox','Radio','TextField','Textarea','Select','Button','ImageButton','HiddenField'], */
+/* 	'/', */
+/* 	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'], */
+/* 	['OrderedList','UnorderedList','-','Outdent','Indent'], */
+/* 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'], */
+/* 	['Link','Unlink','Anchor'], */
+/* 	['Image','Flash','Table','Rule','Smiley','SpecialChar','PageBreak'], */
+/* 	'/', */
+/* 	['Style','FontFormat','FontName','FontSize'], */
+/* 	['TextColor','BGColor'], */
+/* 	['FitWindow','-','About'] */
+/* ] ; */
+
+
 FCKConfig.ToolbarSets["Story"] = [
 	['Source','-','Preview','-','Templates'],
 	['Cut','Copy','Paste','PasteText','PasteWord','-'],
@@ -7,7 +24,7 @@ FCKConfig.ToolbarSets["Story"] = [
 	'/',
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Link','Unlink','Anchor'],
-	['Image','Flash','Table','Rule','SpecialChar','UniversalKey'],['TextColor','BGColor'],
+	['Image','Flash','Table','Rule','SpecialChar'],['TextColor','BGColor'],
 	['OrderedList','UnorderedList','-','Outdent','Indent'],
 	['Style','FontFormat','FontName','FontSize','FitWindow','About']
 ] ;
@@ -38,10 +55,11 @@ FCKConfig.ToolbarSets["Page"] = [
 	'/',
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Link','Unlink','Anchor'],
-	['Image','Flash','Table','Rule','SpecialChar','UniversalKey'],
+	['Image','Flash','Table','Rule','SpecialChar'],
 	['Style','FontFormat'],
 	'/',
-	['FontName','FontSize'],['TextColor','BGColor']
+	['FontName','FontSize'],['TextColor','BGColor'],
+	['FitWindow','-','About']
 ] ;
 
 FCKConfig.ToolbarSets["Discuss"] = [
@@ -49,12 +67,12 @@ FCKConfig.ToolbarSets["Discuss"] = [
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Cut','Copy','Paste','PasteText','PasteWord','-'],
 	'/',
-	['FontName','FontSize'],['TextColor','BGColor'],['Table','Rule','SpecialChar','UniversalKey','FitWindow','About']
+	['FontName','FontSize'],['TextColor','BGColor'],['Table','Rule','SpecialChar','FitWindow','About']
 ] ;
 
 FCKConfig.ToolbarSets["Initsite"] = [
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],['TextColor','BGColor'],
-	['Bold','Italic','-','-','Link','Unlink','-'],['Table','Rule','SpecialChar','UniversalKey'],
+	['Bold','Italic','-','-','Link','Unlink','-'],['Table','Rule','SpecialChar'],
 	['FontFormat','FontName','FontSize']
 ] ;
 

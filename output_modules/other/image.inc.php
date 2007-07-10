@@ -11,6 +11,9 @@ $st = $o->getField("shorttext");
 $st = convertTagsToInteralLinks($site, $st);
 if ($o->getField("texttype") == 'text')
 	$st = nl2br($st);
+	
+$wikiResolver =& WikiResolver::instance();
+$st = $wikiResolver->parseText($st, $site, $section, $page);
 
 
 $filename = urldecode(db_get_value("media","media_tag","media_id='".addslashes($o->getField("longertext"))."'"));

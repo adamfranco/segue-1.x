@@ -18,7 +18,7 @@
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
  */
 
-include("FCKeditor/fckeditor.php") ;
+include("fckeditor/fckeditor.php") ;
 include("config.inc.php") ;
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -87,7 +87,7 @@ function ChangeLanguage( languageCode )
 $Lang = $_REQUEST['Lang'];
 $oFCKeditor = new FCKeditor($textarea) ;
 $oFCKeditor->Config['CustomConfigurationsPath'] = $cfg[full_uri]."/htmleditor/fckeditor_config.js";
-$oFCKeditor->BasePath	= $cfg[full_uri]."/htmleditor/FCKeditor/" ;
+$oFCKeditor->BasePath	= $cfg[full_uri]."/htmleditor/fckeditor/" ;
 $oFCKeditor->Value		= $text ;
 
 /******************************************************************************

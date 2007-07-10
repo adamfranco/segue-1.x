@@ -58,6 +58,7 @@ include("templates/descriptions.inc");
 
 printc ("<table width=100% cellspacing='0'>");
 $i=0;
+
 foreach ($_templates as $template=>$tname) {
 
 	// Get the site object and detrmine if it is active.

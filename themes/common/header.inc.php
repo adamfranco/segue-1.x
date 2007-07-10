@@ -234,12 +234,14 @@ function getElementsByAttribute(oElm, strTagName, strAttributeName, strAttribute
 		}
 		
 		.diff_table .diff-addedline {
+			color: #000;
 			text-align: left;
 			background-color: #CFC;
 			width: 45%;
 		}
 		
 		.diff_table .diff-deletedline {
+			color: #000;
 			text-align: left;
 			background-color: #FCC;
 			width: 45%;

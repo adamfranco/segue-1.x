@@ -273,7 +273,7 @@ if ($thisSite->getField("type") == 'publication') {
 	
 	//printc("<br />");
 			
-	$text = urldecode($_SESSION[pageObj]->getField("text"));
+	$text = stripslashes(urldecode($_SESSION[pageObj]->getField("text")));
 	
 	/******************************************************************************
 	 * replace general media library urls (i.e. $mediapath/$sitename/filename)

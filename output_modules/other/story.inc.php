@@ -10,9 +10,7 @@ $st = $o->getField("shorttext");
  ******************************************************************************/
 $st = convertTagsToInteralLinks($site, $st);
 if ($o->getField("texttype") == 'text')
-	$st = nl2br($st);
-
-//$st = convertWikiMarkupToLinks($site,$section,$page,$o->id, $page_title, $st);	
+	$st = nl2br($st);	
 
 $wikiResolver =& WikiResolver::instance();
 $st = $wikiResolver->parseText($st, $site, $section, $page);

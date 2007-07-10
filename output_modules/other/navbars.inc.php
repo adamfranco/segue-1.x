@@ -286,7 +286,7 @@ if ($thisSection) {
 					$content = convertTagsToInteralLinks($site, $text);
 										
 					$wikiResolver =& WikiResolver::instance();
-					$text = $wikiResolver->parseText($text, $site, $section, $page);
+					$content = $wikiResolver->parseText($content, $site, $section, $page);
 					$url = "#";
 
 					
