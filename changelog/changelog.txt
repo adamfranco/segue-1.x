@@ -3,8 +3,28 @@
 Name: Segue ChangeLog
 
 
-v. 1.8.1 (the future)
+v. 1.8.1 (2007-07-10)
 ----------------------------------------------------
+		
+	* Change: 
+		Changed the version difference styles so that the add and delete differences
+		always show black text
+		(Alex Chapin)
+		
+	* Change: 
+		
+		Add wiki-linking support to file-for-download and image type content blocks
+		(Alex Chapin)
+		
+	* Change: 
+		Removed the Universal keyboard from FCKeditor since this is no longer
+		supported by current versions of this editor
+		(Alex Chapin)
+		
+	* Change: 
+		
+		Updated FCKeditor from version 2.3.2 to version 2.4.3.
+		(Alex Chapin)
 		
 	* Change: 
 		Added additional options in content block number of items to display to
@@ -59,7 +79,7 @@ v. 1.8.1 (the future)
 	* Bug Fix: 
 		Internal links and links to media from a site's media library were not
 		working in sidebar content pages because tokenized paths were not being
-		converted to appropriate urls. This is fixed
+		converted to appropriate urls. This is fixed.
 		(Alex Chapin)
 	
 v. 1.8.0 (2007-06-12)
