@@ -79,7 +79,7 @@ function printDownloadLink($mediaRow) {
 	$filesize = convertfilesize($size);
 	
 	//print "\n\t\t\t<table width='100%' cellpadding='0' cellspacing='0' style='margin: 0px; border: 0px;'>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class='leftmargin' align='left'>\n\t\t\t\t\t\t<a href='$fileurl' target='new_window'>\n\t\t\t\t\t\t\t<img src='downarrow.gif' border='0' width='15' height='15' align='middle' alt='Download Arrow' />\n\t\t\t\t\t\t\t $filename\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td align='right' style='padding-right: 10px;'><b>$filesize</b></td>\n\t\t\t\t</tr>\n\t\t\t</table>";
-	$downloadlink = "\n\t\t\t<div style=' float: right; text-align: right;'>";
+	$downloadlink = "\n\t\t\t<div style='clear: both; float: right; text-align: right;'>";
 	$downloadlink .= "<span style='font-size: smaller;'>$filename</span><br />";
 	$downloadlink .= "<a href='$fileurl' target='new_window'><img src='downarrow.gif' border='0' width='15' height='15' align='top' alt='Download Arrow' /></a> <a href='$fileurl' target='new_window'>Download</a>";
 	$downloadlink .= " <span style='font-size: smaller;'>($filesize)</span></div>";	

@@ -400,8 +400,9 @@ if ($storyObj->getField("discuss")) {
 	printc("\n<table width='100%' cellspacing='1'>");
 	$ds->outputAll($canReply,($_SESSION[auser]==$site_owner),true,$showposts,$showallauthors,$mailposts);
 	if (!$ds->count()) printc("\n\t<tr>\n\t\t<td>There have been no posts to this discussion.</td>\n\t</tr>");
+	printc("\n</table>");
 }
-	//	printc("<table>");
+printc("<table>");
 printc("\n\t<tr>\n\t\t<td align='left'>\n\t\t\t<br /><a href='index.php?action=".$action."&amp;".$getinfo2."'>".spchars($pageObj->getField('title'))."</a> &gt; in depth</td>\n\t</tr>");
 printc("</table>\n");
 

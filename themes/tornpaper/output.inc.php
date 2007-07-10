@@ -153,7 +153,7 @@ include("themes/$theme/css.inc.php");
 			<?
 			
 			/******************************************************************************
-			 * Site Header, Status bar, crumbs
+			 * Site Header, crumbs
 			 ******************************************************************************/ 
 			print $siteheader; 
 			
@@ -175,48 +175,48 @@ include("themes/$theme/css.inc.php");
 			if ($nav_arrange==1) horizontal_nav($section, $topnav, $topnav_extra, $hide_sidebar);
 			?>
 			</div>
-			<table width='100%' class='contenttable'>
-				<tr>
-			<?
-			/******************************************************************************
-			 * Left Column
-			 ******************************************************************************/
-			if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)) {
-				print "\n\t\t\t\t\t<td class='leftnav'>\n";
-				if ($nav_arrange==1) {
-					vertical_nav($page, $leftnav, $leftnav_extra, $bordercolor, $hide_sidebar);		
-				} else {
-					side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra, $bordercolor);
+				<table width='100%' class='contenttable'>
+					<tr>
+				<?
+				/******************************************************************************
+				 * Left Column
+				 ******************************************************************************/
+				if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)) {
+					print "\n\t\t\t\t\t<td class='leftnav'>\n";
+					if ($nav_arrange==1) {
+						vertical_nav($page, $leftnav, $leftnav_extra, $bordercolor, $hide_sidebar);		
+					} else {
+						side_nav($section, $topnav, $leftnav, $topnav_extra, $leftnav_extra, $bordercolor);
+					}
+					print "\n\t\t\t\t\t</td>";	
+				} 
+				
+				/******************************************************************************
+				 * Center Column
+				 ******************************************************************************/
+				?>
+				<td class='contentarea'>
+				
+				<?
+				print $content;
+				?>
+				
+				</td>
+				<?
+				/******************************************************************************
+				 * Right Column
+				 ******************************************************************************/
+				 
+				if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
+					print "\n\t\t\t\t\t<td class='rightnav'>";
+					print vertical_nav($page, $rightnav, $leftnav_extra, $bordercolor, $hide_sidebar);
+					print "\n\t\t\t\t\t</td>";
 				}
-				print "\n\t\t\t\t\t</td>";	
-			} 
-			
-			/******************************************************************************
-			 * Center Column
-			 ******************************************************************************/
-			?>
-			<td class='contentarea'>
-			
-			<?
-			print $content;
-			?>
-			
-			</td>
-			<?
-			/******************************************************************************
-			 * Right Column
-			 ******************************************************************************/
-			 
-			if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
-				print "\n\t\t\t\t\t<td class='rightnav'>";
-				print vertical_nav($page, $rightnav, $leftnav_extra, $bordercolor, $hide_sidebar);
-				print "\n\t\t\t\t\t</td>";
-			}
-			
-			?>
-			
-				</tr>
-			</table>
+				
+				?>
+				
+					</tr>
+				</table>
 			
 			<div class='topnav' align='center'>
 			
@@ -248,6 +248,8 @@ include("themes/$theme/css.inc.php");
 		<td class='bottom'>&nbsp;</td>
 		<td class='bottomright'>&nbsp;</td>
 	</tr>
+</table>
+</td></tr>
 </table>
 </body>
 </html>
