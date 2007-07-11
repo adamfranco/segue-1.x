@@ -2,7 +2,7 @@
 <changelog name="Segue ChangeLog">
 	<version number="1.8.2" date="2007-07-11">
 		<change author='alex'>
-			Enclosed content block text in div tag instead of table
+			Enclosed content block text in div tags instead of table
 		</change>
 		<fix author='alex'>
 			Fixed HTML editor option dropdown for IE so that the option to choose

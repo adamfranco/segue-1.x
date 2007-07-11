@@ -3,6 +3,29 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.2 (2007-07-11)
+----------------------------------------------------
+		
+	* Change: 
+		
+		Enclosed content block text in div tags instead of table
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed HTML editor option dropdown for IE so that the option to choose no
+		editor is selectable.
+		(Alex Chapin)
+		
+	* Change: 
+		Changed new FCKeditor so that RETURN/ENTER key creates a br tag instead of a
+		p tag
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed new file-for-download content block layout so that all elements are
+		contained within downloadbar style.
+		(Alex Chapin)
+	
 v. 1.8.1 (2007-07-10)
 ----------------------------------------------------
 		
