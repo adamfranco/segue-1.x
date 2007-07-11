@@ -283,8 +283,8 @@ if ($_SESSION[storyObj]->getField("type") != 'rss') {
 			printc("\n<option value='fckeditor'".(($_SESSION['html_editor']=='fckeditor')?" selected='selected'":"").">FCKeditor</option>");
 			printc("\n<option value='htmlarea'".(($_SESSION['html_editor']=='htmlarea')?" selected='selected'":"").">HTMLarea</option>");
 			printc("\n<option value='activex'".(($_SESSION['html_editor']=='activex')?" selected='selected'":"").">Active-X</option>");
-			printc("\n</select></div>");
 			printc("\n<option value='txt'".(($_SESSION['html_editor']=='txt')?" selected='selected'":"").">None</option>");
+			printc("\n</select></div>");
 			//printc("\n<input type='button' value='Update' onclick='document.addform.submit()' />\n");						
 		} else {
 			printc("\n<div style='font-size:10px;'>Your web browser supports two different HTML editors.  ");

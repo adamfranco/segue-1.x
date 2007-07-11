@@ -18,9 +18,9 @@ $st = $wikiResolver->parseText($st, $site, $section, $page);
 /******************************************************************************
  * print out story content
  ******************************************************************************/
-printc("<table width='100%' cellpadding='0' cellspacing='0'><tr><td>");
+printc("<div class='story'>");
 printc(stripslashes($st));
-
+printc("</div>");
 
 /******************************************************************************
  * Append link to more and discussion
@@ -40,12 +40,10 @@ if ($o->getField("discuss") || $o->getField("longertext")) {
 		printc("<a href='".$link."'>"." ...more</a>\n");
 
 	}
-	printc("</td></tr></table>");	
 	include (dirname(__FILE__)."/discussionLink.inc.php");
 	
-} else {
-	printc("</td></tr></table>");
 }
+
 
 
 if ($tagged_section) $section = $source_section;

@@ -244,7 +244,7 @@ if ($thisSite->getField("type") == 'publication') {
 			printc("<option value='fckeditor'".(($_SESSION['html_editor']=='fckeditor')?" selected='selected'":"").">FCKeditor");
 			printc("<option value='htmlarea'".(($_SESSION['html_editor']=='htmlarea')?" selected='selected'":"").">HTMLarea");
 			printc("<option value='activex'".(($_SESSION['html_editor']=='activex')?" selected='selected'":"").">Active-X");
-			printc("\n<option value='txt'".(($_SESSION['html_editor']=='txt')?" selected='selected'":"").">None</option>");
+			printc("<option value='txt'".(($_SESSION['html_editor']=='txt')?" selected='selected'":"").">None");
 			printc("</select></div>");
 			//printc("<input type='button' value='Update' onclick='document.addform.submit()' />\n");						
 		} else {
