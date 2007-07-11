@@ -65,8 +65,9 @@ if ($_SESSION['auser']) {
 		CarpCacheShow($url);
 	}
 }
-
+printc("<div class='story'>");
 printc (ob_get_contents());
+printc("</div>");
 ob_clean();
 
 

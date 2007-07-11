@@ -639,7 +639,7 @@ class page extends segue {
 		if ($all || $this->changed[type]) $a[] = $this->_datafields[type][1][0]."='".addslashes($d[type])."'";
 		if ($all || $this->changed[locked]) $a[] = $this->_datafields[locked][1][0]."='".addslashes((($d[locked])?1:0))."'";
 //		if ($all || $this->changed[stories]) $a[] = "stories='".encode_array($d[stories])."'";
-//		if ($all || $this->changed[url]) $a[] = "url='$d[url]'";
+//		if ($all || $this->changed[url]) $a[] = $this->_datafields[url][1][0]."='".addslashes($d[url])."'";
 		if ($all || $this->changed[ediscussion]) $a[] = $this->_datafields[ediscussion][1][0]."='".addslashes((($d[ediscussion])?1:0))."'";
 		if ($all || $this->changed[archiveby]) $a[] = $this->_datafields[archiveby][1][0]."='$d[archiveby]'";
 		if ($all || $this->changed[showcreator]) $a[] = $this->_datafields[showcreator][1][0]."='".addslashes((($d[showcreator])?1:0))."'";

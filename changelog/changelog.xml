@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
+	<version number="1.8.2" date="2007-07-11">
+		<change author='alex'>
+			Enclosed content block text in div tag instead of table
+		</change>
+		<fix author='alex'>
+			Fixed HTML editor option dropdown for IE so that the option to choose
+			no editor is selectable.
+		</fix>
+		<change author='alex'>
+			Changed new FCKeditor so that RETURN/ENTER key creates a br tag instead
+			of a p tag
+		</change>
+		<fix author='alex'>
+			Fixed new file-for-download content block layout so that all 
+			elements are contained within downloadbar style.
+		</fix>
+	</version>
 	<version number="1.8.1" date="2007-07-10">
 		<change author='alex'>
 			Changed the version difference styles so that the add and delete
