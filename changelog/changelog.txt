@@ -6,6 +6,11 @@ Name: Segue ChangeLog
 v. 1.8.2 (2007-07-11)
 ----------------------------------------------------
 		
+	* Bug Fix: 
+		Flash audio player is now displayed only for mp3 files that do not have
+		special characters.
+		(Alex Chapin)
+		
 	* Change: 
 		
 		Enclosed content block text in div tags instead of table

@@ -37,8 +37,7 @@ function printMediaPlayer($mediaRow) {
 	
 //	printpre($mediaRow);
 	
-	$filename = urldecode($mediaRow[media_tag]);
-//	printpre($mediaRow[media_tag]);
+	$filename = htmlspecialchars(urldecode($mediaRow[media_tag]));
 	$filetype = ereg(".mp3", $filename);
 /* 	print $filename; */
 	$dir = $mediaRow[slot_name];
@@ -47,7 +46,7 @@ function printMediaPlayer($mediaRow) {
 	$filepath = "$uploaddir/$dir/$filename";
 	$filesize = convertfilesize($size);
 	
-	if (ereg("\.mp3$", $filename)) {
+	if (ereg("\.mp3$", $filename) && !preg_match('/[^\x00-\x7F]/', $filename) ) {
 		if (!isset($GLOBALS['playerid']))
 			$GLOBALS['playerid'] = 0;
 		$GLOBALS['playerid']++;
