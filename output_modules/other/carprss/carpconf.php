@@ -72,7 +72,7 @@ function MyCarpConfReset($set='default') {
 		$carpconf['actitle'] = " (RSS)";
 		$carpconf['acb'] = "\n<div class='hr'><hr /></div>";
 		
-		$carpconf['bitems'] = "\n<table>";
+		$carpconf['bitems'] = "\n<table width='100%'>";
 		$carpconf['bi'] = "\n\t<tr>\n\t\t<td>\n\t\t\t";
 				
 		$carpconf['ilinktarget'] = "_blank";

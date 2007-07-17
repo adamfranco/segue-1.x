@@ -56,10 +56,21 @@ div.hr {
     background-color: #<? echo $bordercolor; ?>;
     margin-top: 5px;
 	margin-bottom: 5px;
+	clear: both;
 }
 
- div.hr hr {
+div.hr hr {
   display: none;
+}
+
+
+div.story {
+	clear: both;
+}
+
+div.edit_links {
+	 clear: both;
+	 text-align: right;
 }
 
 

@@ -3,6 +3,29 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.3 (2007-07-17)
+----------------------------------------------------
+		
+	* Change: 
+		
+		Added 1pixelout Audio Player Wordpress plugin to Segue credits page.
+		(Alex Chapin)
+		
+	* Change: 
+		
+		Changed the width of the table enclosing content block RSS feeds to 100%
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed div tags enclosing content blocks to ensure no overlap with other
+		content blocks.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Change in new FCKeditor that made RETURN/ENTER key default a br tag instead
+		of a p tag now properly configured.
+		(Alex Chapin)
+	
 v. 1.8.2 (2007-07-11)
 ----------------------------------------------------
 		

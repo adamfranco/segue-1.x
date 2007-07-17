@@ -74,8 +74,14 @@ li { margin-bottom: 3px; }
 	The GPL version 3.5.2 (3/10/2004), with minor modifications by Adam Franco, is used to
 	display RSS Feeds.</li>
 	
-	<li><a href='http://drupal.org'>Drupal</a> / <a href='http://phpwiki.sf.net'>PhpWiki</a> -
-	Segue makes use of the <a href='http://cvs.drupal.org/viewcvs/drupal/contributions/modules/diff/DiffEngine.php'>DiffEngine</a> from Drupal, a library for showing highlighted differences. This library was originally part of PhpWiki, but was reformatted when it was added to Drupal.</li>
+	<li><a href='http://drupal.org' target="new_window">Drupal</a> / <a href='http://phpwiki.sf.net' target="new_window">PhpWiki</a> -
+	Segue makes use of the <a href='http://cvs.drupal.org/viewcvs/drupal/contributions/modules/diff/DiffEngine.php' target="new_window">DiffEngine</a> from Drupal, a library for showing highlighted differences. This library was originally part of PhpWiki, but was reformatted when it was added to Drupal.</li>
+
+	<li><a href='http://www.1pixelout.net/code/audio-player-wordpress-plugin/' target="new_window">1pixelout: Audio Player Wordpress plugin</a>  -
+	Segue makes use of a Wordpress Flash audio player developed by <a href='http://www.1pixelout.net/' target="new_window">1pixelout</a>, based a <a href='http://www.macloo.com/examples/audio_player/' target="new_window">tutorial</a>
+	written by <a href='http://mindymcadams.com/' target="new_window">Mindy Adams</a>
+	</li>
+
 </ul>
 
 <h2>Thanks to:</h2>

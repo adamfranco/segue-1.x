@@ -21,7 +21,7 @@ if ($thisPage) $page = $thisPage->id;
 function printStoryEditLinks() {
 	global $thisSite, $thisSection, $thisPage, $thisStory, $tagged_page, 
 		$site_owner, $o, $story_set, $s, $sid, $site, $section, $page;
-	printc("<div align='right'>");
+	printc("<div class='edit_links'>");
 
 	/******************************************************************************
 	 * edit, delete options 

@@ -397,7 +397,7 @@ do {
 					
 					if ($o && $o->canview() && indaterange($o->getField("activatedate"), $o->getField("deactivatedate"))) {
 						if (($thisPage->getField("showhr") || $_REQUEST["tag"]) && $i!=0) {
-							printc("\n\t\t\t\t<div class='hr'><hr /></div>");
+							printc("\n\t\t\t\t<div class='hr' ><hr /></div>");
 						}
 														
 						

@@ -76,7 +76,8 @@ FCKConfig.ToolbarSets["Initsite"] = [
 	['FontFormat','FontName','FontSize']
 ] ;
 
-
+FCKConfig.EnterMode = 'br' ;			// p | div | br
+FCKConfig.ShiftEnterMode = 'p' ;	// p | div | br
 
 FCKConfig.LinkDlgHideTarget		= false ;
 FCKConfig.LinkDlgHideAdvanced	= false ;
