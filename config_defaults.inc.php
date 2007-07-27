@@ -95,6 +95,8 @@ $cfg['defaultWhitelist'] = $defaultWhitelist = array(
 	'txt',			// 
 	'xls',			// 
 	'xml',			// 
+	'mht',			// 
+
 	
 // Archives
 	'bz2',			// 
