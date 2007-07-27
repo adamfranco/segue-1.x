@@ -811,7 +811,7 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 	if (is_array($userOwnedSlots)) {	
 		foreach (array_keys($userOwnedSlots) as $name) {
 			$info =& $userOwnedSlots[$name];
-			if ($info['site_exits'])
+			if ($info['site_exists'])
 				$allExistingSites[] = $name;
 			else
 				$allExistingSlots[] = $name;
