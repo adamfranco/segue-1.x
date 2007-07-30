@@ -6,6 +6,7 @@ ob_start();
 session_start();
 
 include("includes.inc.php");
+//printpre($_REQUEST);
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 //printpre($_REQUEST);
@@ -73,6 +74,7 @@ if ($action == "add" && $addstudent) {
 				FK_user='".addslashes($user_id)."',
 				FK_ugroup='".addslashes($ugroup_id)."'			
 		";
+		
 		db_query($query);
 	} else {
 		error("invalid username");
@@ -115,9 +117,21 @@ if ($_REQUEST[n]) {
  ******************************************************************************/
 
 if (isset($_REQUEST[name])) {
-	$ugroup_name = $_REQUEST[name];
-	$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '".addslashes($ugroup_name)."'");
-	$class_id = $ugroup_name;
+	//$ugroup_name = $_REQUEST[name];
+	$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '".addslashes($_REQUEST[name])."'");
+	
+	// if the slot name has no group id then must be a grouped site
+	if (!isset($ugroup_id)) {
+		$classlist = group::getClassesFromName($_REQUEST[name]);
+		$list = implode(", ",$classlist);
+		$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '".$classlist[0]."'");
+		$class_id = $_REQUEST[name];
+	
+	} else {
+		$ugroup_name = $_REQUEST[name];
+		$class_id = $ugroup_name;
+	}
+	
 	$_REQUEST[ugroup_id] = $ugroup_id;
 	$participants = getclassstudents($class_id);
 
@@ -223,7 +237,7 @@ function delStudentSite(id, name) {
 <form action="<? echo $PHP_SELF ?>" method='get' name='lookup'>
 <input type='hidden' name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>' />
 <input type='hidden' name='participants' value='<?=$_REQUEST[name]?>' />
-<!-- <input type='hidden' name='ugroup_id' value='<? $ugroup_id ?>' /> -->
+<input type='hidden' name='name' value='<?=$_REQUEST[name]?>' /><!-- <input type='hidden' name='ugroup_id' value='<? $ugroup_id ?>' /> -->
 
 <?
 print "\n\t\t\t\t\t\t\t\t<input type='hidden' name='scope' value='".$_REQUEST['scope']."' />";
@@ -417,6 +431,7 @@ foreach (array_keys($participants) as $key) {
 
 <form name='addsiteform'>
 <input type='hidden' name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>' />
+<input type='hidden' name='name' value='<?=$_REQUEST[name]?>'/>
 <input type='hidden' name='addclassid' />
 <input type='hidden' name='adduname' />
 <input type='hidden' name="action" />
@@ -429,6 +444,7 @@ foreach (array_keys($participants) as $key) {
 <form name='addform'>
 <input type='hidden' name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>'/>
 <!-- <input type='hidden' name='ugroup_id' value='<? $ugroup_id ?>' /> -->
+<input type='hidden' name='name' value='<?=$_REQUEST[name]?>'/>
 <input type='hidden' name='addstudent' />
 <input type='hidden' name="action" />
 <?php
@@ -440,6 +456,7 @@ foreach (array_keys($participants) as $key) {
 
 <form name='delform'>
 <input type='hidden' name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>' />
+<input type='hidden' name='name' value='<?=$_REQUEST[name]?>'/>
 <input type='hidden' name='delstudent' />
 <input type='hidden' name="action" />
 <input type='hidden' name="comingfrom" value="<? echo $comingfrom ?>" />
@@ -451,6 +468,7 @@ foreach (array_keys($participants) as $key) {
 
 <form name='delsiteform'>
 <input type='hidden' name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>' >
+<input type='hidden' name='name' value='<?=$_REQUEST[name]?>'/>
 <input type='hidden' name='delstudentsite' />
 <input type='hidden' name='deluname' />
 <input type='hidden' name="action" />
