@@ -7,6 +7,9 @@
 			content blocks.
 		</fix>
 		<fix author='alex'>
+			Link to edit groups UI now appears whenever there are groups that can be edited
+		</fix>
+		<fix author='alex'>
 			Edit groups UI now shows all slot names that are part of a given group
 			only once.
 		</fix>
