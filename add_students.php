@@ -17,7 +17,13 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
  ******************************************************************************/
 
 if ($action == "addsite" && $addclassid && $adduname) {
-
+	$user_id = db_get_value("user","user_id","user_uname='".addslashes($adduname)."'");
+	
+	if(!isset($user_id)) {
+		error("User has not logged into Segue yet");
+	}
+	
+	
 	$slotname = $addclassid."-".$adduname;
 //	printpre($slotname);
 	$obj = &new slot($slotname);

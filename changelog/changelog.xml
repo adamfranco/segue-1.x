@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
 	<version number="1.8.4" date="the future">
+		<change author='alex'>
+			Added error message to Roster UI that indicates a user has not logged into Segue when
+			atttempted to add an associated site for that user.			
+		</change>
 		<fix author='alex'>
 			Fixed Roster UI so that site owners can add students to grouped sites (i.e. sites
 			that are composed of 2 or more separate class slots
