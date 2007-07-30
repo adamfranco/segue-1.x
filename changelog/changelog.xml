@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
+	<version number="1.8.4" date="the future">
+		<fix author='alex'>
+			Fixed div tags enclosing content blocks to ensure that the content block
+			title also does not overlap with other content blocks
+			content blocks.
+		</fix>
+		<fix author='alex'>
+			Edit groups UI now shows all slot names that are part of a given group
+			only once.
+		</fix>
+	</version>
 	<version number="1.8.3" date="2007-07-17">
 		<change author='alex'>
 			Added 1pixelout Audio Player Wordpress plugin to Segue credits page.			

@@ -157,8 +157,11 @@ if ($numGroups) {
 					INNER JOIN
 				class
 					ON
-						FK_classgroup = $a[classgroup_id]
+						FK_classgroup = classgroup_id
+			WHERE
+				classgroup_id = $a[classgroup_id]
 		";
+
 		$r2 = db_query($query);
 		while($b = db_fetch_assoc($r2)){
 			print "<tr>";
