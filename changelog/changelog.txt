@@ -3,6 +3,44 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.4 (the future)
+----------------------------------------------------
+		
+	* Bug Fix: 
+		
+		Reorder UI now works properly in Tabs theme.
+		(Alex Chapin)
+		
+	* Change: 
+		Added error message to Roster UI that indicates a user has not logged into
+		Segue when atttempted to add an associated site for that user.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed Roster UI so that site owners can add students to grouped sites (i.e.
+		sites that are composed of 2 or more separate class slots
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed div tags enclosing content blocks to ensure that the content block
+		title also does not overlap with other content blocks content blocks.
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Link to edit groups UI now appears whenever there are groups that can be
+		edited 
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Edit groups UI now shows all slot names that are part of a given group only
+		once. 
+		(Alex Chapin)
+		
+	* Bug Fix: 
+		Fixed copy site UI so it now appears whenever a user has a slot they can
+		copy to and also now shows correct slots to copy from and to.
+		(Alex Chapin)
+	
 v. 1.8.3 (2007-07-17)
 ----------------------------------------------------
 		

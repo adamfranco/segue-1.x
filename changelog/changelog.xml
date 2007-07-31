@@ -24,6 +24,10 @@
 			Edit groups UI now shows all slot names that are part of a given group
 			only once.
 		</fix>
+		<fix author='alex'>
+			Fixed copy site UI so it now appears whenever a user has a slot they can copy to and also
+			now shows correct slots to copy from and to.
+		</fix>
 	</version>
 	<version number="1.8.3" date="2007-07-17">
 		<change author='alex'>
