@@ -36,6 +36,7 @@ if (!defined("CONFIGS_INCLUDED"))
  ******************************************************************************/
 include("themes/common/header.inc.php");
 include("themes/$theme/css.inc.php"); 
+
 ?>
 </head>
 <body>
@@ -70,13 +71,26 @@ include("themes/$theme/css.inc.php");
 					/******************************************************************************
 					 * Section Navigation
 					 ******************************************************************************/
+					$nextorder = 0;
 					foreach ($topnav as $item) {
+						$reorderUrl = $_SERVER['PHP_SELF']."?&amp;action=reorder&amp;site=".$site."&amp;section=".$section."&amp;page=".$page."&amp;reorderSection=".$item['id']."&amp;newPosition=";
+						
 						$samepage = (isset($section) && ($section == $item[id]))?1:0;
 						if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
 						print "\n\t\t\t\t\t<td class='toptab' style='white-space: nowrap; ".(($samepage)?"border-bottom: 0px;":"background-color: #eee;") . "' align='center'>";
+	
+						if ($_REQUEST['showorder'] == "section") {
+							print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+							for ($i=0; $i<count($topnav); $i++) {
+								print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+							}
+							print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+						}
+
 						print "\n\t\t\t\t\t\t".makelink($item,$samepage);
 						print "\n\t\t\t\t\t</td>";
 						print "\n\t\t\t\t\t<td class='toppadding'>&nbsp;</td>";
+						$nextorder++;
 					}		
 					print "\n\t\t\t\t\t<td class='toppadding' align='right' width='100%'>\n\t\t\t\t\t\t&nbsp; " . $topnav_extra . "\n\t\t\t\t\t</td>";
 					?>
@@ -100,12 +114,26 @@ include("themes/$theme/css.inc.php");
 									<?
 			/******************************************************************************
 									 * Left Column
-									 ******************************************************************************/			
+									 ******************************************************************************/	
+									$nextorder = 0;
 									foreach ($leftnav as $item) {
+										$reorderUrl = $_SERVER['PHP_SELF']."?&amp;action=reorder&amp;site=".$site."&amp;section=".$section."&amp;page=".$page."&amp;reorderPage=".$item['id']."&amp;newPosition=";
+
 										if ($item[type] == 'normal') {
 											$samepage = (isset($page) && ($page == $item[id]))?1:0;
 											if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
+											
 											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td align='right' valign='middle' class='".(($samepage)?"leftnavsel":"leftnav")."' style='white-space: nowrap;'>";
+											
+											// reorder UI
+											if ($_REQUEST['showorder'] == "page") {
+												print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+												for ($i=0; $i<count($leftnav); $i++) {
+													print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+												}
+												print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+											}
+
 											print "\n\t\t\t\t\t\t\t\t\t\t\t\t".makelink($item,$samepage,'',1);
 											print "\n\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
 										}
@@ -117,6 +145,16 @@ include("themes/$theme/css.inc.php");
 											} else {
 												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<table width='150' cellspacing='0' cellpadding='0' style='white-space: nowrap;'>";
 											}
+											
+											// reorder UI
+											if ($_REQUEST['showorder'] == "page") {
+												print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+												for ($i=0; $i<count($leftnav); $i++) {
+													print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+												}
+												print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+											}
+
 											if ($item[name]) print "\n\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<td style='border-top: 1px solid #$bordercolor; border-bottom: 1px solid #$bordercolor; padding-top: 2px; padding-bottom: 2px;'>$item[name]</td>\n\t\t\t\t\t\t\t\t\t\t\t\t</tr>";
 											if ($item[type] == 'content') {
 												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<td>$item[content]<br />";
@@ -129,11 +167,33 @@ include("themes/$theme/css.inc.php");
 											print "\n\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t</tr>";
 									}
 										if ($item[type] == 'divider') {
-											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='leftpadding' align='right'>&nbsp;$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='leftpadding' align='right'>";
+
+											if ($_REQUEST['showorder'] == "page") {
+												print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+												for ($i=0; $i<count($leftnav); $i++) {
+													print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+												}
+												print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+											}
+
+											print "&nbsp;$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
 										}
 										if ($item[type] == 'heading') {
-											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='leftpadding' align='right'>\n\t\t\t\t\t\t\t\t\t\t\t\t<div class='heading'>$item[name]</div>$item[extra]\n\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='leftpadding' align='right'>";
+											
+											if ($_REQUEST['showorder'] == "page") {
+												print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+												for ($i=0; $i<count($leftnav); $i++) {
+													print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+												}
+												print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+											}
+										print"\n\t\t\t\t\t\t\t\t\t\t\t\t<div class='heading'>$item[name]</div>$item[extra]\n\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
 										}
+										$nextorder++;
 									}
 									print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='leftpadding' valign='top' height='100%'>".$leftnav_extra."&nbsp;</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
 									?>
@@ -158,11 +218,22 @@ include("themes/$theme/css.inc.php");
 									/******************************************************************************
 									 * Right Column
 									 ******************************************************************************/
+									$nextorder = 0;
 									foreach ($rightnav as $item) {
+										$reorderUrl = $_SERVER['PHP_SELF']."?&amp;action=reorder&amp;site=".$site."&amp;section=".$section."&amp;page=".$page."&amp;reorderPage=".$item['id']."&amp;newPosition=";
 										if ($item[type] == 'normal') {
 											$samepage = (isset($page) && ($page == $item[id]))?1:0;
 											if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
 											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td align='left' valign='middle' class=".(($samepage)?"rightnavsel":"rightnav")." style='white-space: nowrap;'>";
+
+											if ($_REQUEST['showorder'] == "page") {
+												print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+												for ($i=0; $i<count($rightnav); $i++) {
+													print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+												}
+												print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+											}
+
 											print makelink($item,$samepage,'',1);
 											print "</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
 										}
@@ -175,6 +246,17 @@ include("themes/$theme/css.inc.php");
 												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<table width='150' cellspacing='0' cellpadding='0' style='white-space: normal;'>";
 											}
 											if ($item[name]) print "\n\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td style='border-top: 1px solid #$bordercolor; border-bottom: 1px solid #$bordercolor; padding-top: 2px; padding-bottom: 2px;'>$item[name]</td>\n\t\t\t\t\t\t\t\t\t\t\t\t</tr>";
+
+
+											if ($_REQUEST['showorder'] == "page") {
+												print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+												for ($i=0; $i<count($rightnav); $i++) {
+													print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+												}
+												print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+											}
+
+
 											if ($item[type] == 'content') {
 												print "\n\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<td>$item[content]<br />";
 											} else {
@@ -187,11 +269,32 @@ include("themes/$theme/css.inc.php");
 										}
 						
 										if ($item[type] == 'divider') {
-											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='rightpadding' align='right'>&nbsp;$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='rightpadding' align='right'>";
+
+											if ($_REQUEST['showorder'] == "page") {
+												print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+												for ($i=0; $i<count($rightnav); $i++) {
+													print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+												}
+												print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+											}
+
+											print"&nbsp;$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
 										}
 										if ($item[type] == 'heading') {
-											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='rightpadding' align='right'><div style='font-size: 12px; font-weight: bold;' align='left'>$item[name]</div>$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
+											print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='rightpadding' align='right'>";
+
+											if ($_REQUEST['showorder'] == "page") {
+												print "\n\t\t\t\t\t\t\t\t\t\t<select name='reorder2' style = 'font-size: 9px; class='pageOrder' onchange='window.location = \"".$reorderUrl."\" + this.value;'>'";
+												for ($i=0; $i<count($rightnav); $i++) {
+													print "\n\t\t\t\t\t\t\t\t\t\t\t<option value='".$i."'".(($i==$nextorder)?" selected":"").">".($i+1)."</option>";
+												}
+												print "\n\t\t\t\t\t\t\t\t\t\t</select>";
+											}
+
+											print"<div style='font-size: 12px; font-weight: bold;' align='left'>$item[name]</div>$item[extra]</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
 										}
+										$nextorder++;
 									}
 									print "\n\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t<td class='rightpadding' valign='top' height='100%'>".$leftnav_extra."&nbsp;</td>\n\t\t\t\t\t\t\t\t\t\t</tr>";
 									

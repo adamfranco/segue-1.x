@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
 	<version number="1.8.4" date="the future">
+		<fix author='alex'>
+			Reorder UI now works properly in Tabs theme.
+		</fix>
 		<change author='alex'>
 			Added error message to Roster UI that indicates a user has not logged into Segue when
 			atttempted to add an associated site for that user.			
