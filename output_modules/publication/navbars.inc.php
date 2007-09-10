@@ -1,6 +1,6 @@
 <? /* $Id$ */
 
-//if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
+//if ($action == 'viewsite') $topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&".$envvars."&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 
 $isediting = 0;
 if ($action == 'viewsite') $isediting=1;
@@ -74,7 +74,7 @@ if ($thisSite->sections) {
 				}
 				if ($isediting) {
 					$extra .= ($thisSite->hasPermission("edit"))?"\n<a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$s&amp;action=edit_section&amp;edit_section=$s&amp;comingFrom=viewsite' class='small' title='Edit the title and properties of this section'>edit</a>":"";
-					$extra .= ($thisSite->hasPermission("delete"))?"\n<a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHP_SELF?$sid&$envvars&action=delete_section&delete_section=$s\")' class='small' title='Delete this section'>del</a>":"";
+					$extra .= ($thisSite->hasPermission("delete"))?"\n<a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHP_SELF?$sid&".$envvars."&action=delete_section&delete_section=$s\")' class='small' title='Delete this section'>del</a>":"";
 				}
 				add_link(leftnav2,$o->getField("title"),$link,$extra,$s,$target);
 			
@@ -85,7 +85,7 @@ if ($thisSite->sections) {
 }
 
 if ($isediting) {
-	$leftnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='small' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add issue</a>":"";
+	$leftnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&".$envvars."&amp;action=add_section&amp;comingFrom=viewsite' class='small' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add issue</a>":"";
 }
 
 /******************************************************************************

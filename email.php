@@ -639,16 +639,16 @@ printerr();
 								
 								if ($prev != $lowerlimit)
 									if (!$userfname) {
-										print "\n\t\t\t\t\t\t\t\t<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables&action=$curraction\"' />";
+										print "\n\t\t\t\t\t\t\t\t<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=".$prev."&".$getvariables."&action=".$curraction."\"' />";
 									} else {
 										//$userfname = urlencode($userfname);
-										print "\n\t\t\t\t\t\t\t\t<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$prev&$getvariables&action=$curraction&userfname=$userfname&userid=$userid\"' />";
+										print "\n\t\t\t\t\t\t\t\t<input type='button' value='&lt;&lt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=".$prev."&".$getvariables."&action=$curraction&userfname=$userfname&userid=$userid\"' />";
 									}
 								if ($next != $lowerlimit && $next > $lowerlimit)
 									if (!$userfname) {
-										print "\n\t\t\t\t\t\t\t\t<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction\"' />";
+										print "\n\t\t\t\t\t\t\t\t<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=".$next."&".$getvariables."&action=$curraction\"' />";
 									} else {
-										print "\n\t\t\t\t\t\t\t\t<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=$next&$getvariables&action=$curraction&userfname=$userfname&userid=$userid\"' />";
+										print "\n\t\t\t\t\t\t\t\t<input type='button' value='&gt;&gt;' onclick='window.location=\"$PHP_SELF?$sid&lowerlimit=".$next."&".$getvariables."&action=$curraction&userfname=$userfname&userid=$userid\"' />";
 									}
 								}
 						
@@ -683,7 +683,7 @@ printerr();
 					
 					// lists all participants with summary of posts and avg. rating
 					if ($curraction == "list") {
-						//print "<a href='$PHP_SELF?$sid&amp;action=email&$getvariables$getusers'>Email</a> | ";
+						//print "<a href='$PHP_SELF?$sid&amp;action=email&".$getvariables.$getusers."'>Email</a> | ";
 						print "\n\t\t\t\t\t\t\tList | ";
 						print "\n\t\t\t\t\t\t\t<a href='$PHP_SELF?$sid&amp;action=review&amp;".htmlspecialchars($getvariables)."&amp;order=$order'>Review</a> - ";
 						print $numparticipants." participants";

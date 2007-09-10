@@ -1,7 +1,7 @@
 <? /* $Id$ */
 
 if ($action == 'viewsite' || ereg('preview_edit_as', $action)) {
-	//$topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
+	//$topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&".$envvars."&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 	if ($thisSite->hasPermission("add")) {
 		$topnav_extra = " <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>";
 	}

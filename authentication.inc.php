@@ -72,8 +72,8 @@ if (!$_loggedin) {
 			$_loggedin=1;
 //			header("Location: index.php?$sid&$newquerystring");
 			if (!ereg('\?',$newurl)) $g = '?';
-			//print "$newurl$g&$sid";
-			header("Location: $newurl$g&$sid");
+			//print $newurl.$g."&".$sid;
+			header("Location: ".$newurl.$g."&".$sid);
 			exit;
 		} else {
 		// username or passwd incorrect
