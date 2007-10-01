@@ -27,7 +27,10 @@ $themesettings -- existing theme settings
 // print_r(unserialize(stripslashes($themesettings)))."<br />";  
 // print "$theme - $updatemethod - $site"."<br />";  
  
-$themesettings = unserialize(stripslashes(($themesettings))); 
+$themesettings = unserialize(stripslashes(($_REQUEST['themesettings']))); 
+$theme = $_REQUEST['theme'];
+if (!preg_match('/^[a-z0-9_-]+$/i', $theme))
+	die('Error: invalid theme name, "'.$theme.'"');
 $filename = "$themesdir/$theme/themesettings.inc.php";
  
  

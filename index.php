@@ -199,7 +199,10 @@ if ($_REQUEST[site]) {						// we are in a site
 	
 	$site_owner = $thisSlot->getField("owner");
 	if ($_GET[theme]) $sid .= "&amp;theme=$_REQUEST[theme]";
-	if ($_GET[themesettings]) {$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); $sid.="&amp;themesettings=$themesettings";}
+	if ($_GET[themesettings]) {
+		$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); 
+		$sid.="&amp;themesettings=".$_REQUEST[themesettings];
+	}
 	if ($_REQUEST[nostatus]) $sid .= "&amp;nostatus=1";
 	if ($_REQUEST[themepreview]) $sid .= "&amp;themepreview=1";
 	if (!isset($theme)) $theme = $thisSite->getField("theme");
@@ -289,7 +292,7 @@ if ($nav) {
 
 // Load non-pervasive theme for "program" actions
 // the theme and settings are defined in the config.inc.php
-if (!preg_match('/^[a-z_0-9-\s]+$/', $theme))
+if ($theme && !preg_match('/^[a-z_0-9-\s]+$/', $theme))
 	die("Error: Invalid theme, can only contain letters and numbers.");
 
 if (!$pervasivethemes && in_array($action,$pervasiveActions)) {
