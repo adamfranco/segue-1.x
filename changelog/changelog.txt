@@ -3,6 +3,14 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.5 (2007-10-01)
+----------------------------------------------------
+		
+	* Bug Fix: 
+		Fixing Security hole where request variables were imported after config was
+		set enabling overriding of any config variable.
+		(Adam Franco)
+	
 v. 1.8.4 (2007-08-02)
 ----------------------------------------------------
 		
