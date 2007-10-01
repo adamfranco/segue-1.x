@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
+	<version number="1.8.5" date="2007-10-01">
+		<fix author='adam' date='2007-10-01'>
+			Fixing Security hole where request variables were imported after config was set enabling overriding of any config variable.
+		</fix>
+	</version>
 	<version number="1.8.4" date="2007-08-02">
 		<fix author='alex'>
 			Reorder UI now works properly in Tabs theme.

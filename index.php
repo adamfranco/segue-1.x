@@ -289,6 +289,8 @@ if ($nav) {
 
 // Load non-pervasive theme for "program" actions
 // the theme and settings are defined in the config.inc.php
+if ($theme && !preg_match('/^[a-z_0-9-\s]+$/', $theme))
+	die("Error: Invalid theme, can only contain letters and numbers.");
 
 if (!$pervasivethemes && in_array($action,$pervasiveActions)) {
 	$theme = $programtheme;
