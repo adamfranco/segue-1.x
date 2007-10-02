@@ -2,9 +2,6 @@
 <changelog name="Segue ChangeLog">
 	<version number="1.8.8" date="2007-10-02">
 		<fix author='adam' date='2007-10-02'>
-			Add Students UI is now working.
-		</fix>
-		<fix author='adam' date='2007-10-02'>
 			Went through each and every variable-include statement -- found by grepping for
 			/(include|require)(_once)?\s*\([^;]*\$/  -- and made sure that every variable
 			parameter into the include path has been filtered to prevent directory
@@ -13,6 +10,12 @@
 		<change author='adam' date='2007-10-02'>
 			The themes directory is no longer configurable.
 		</change>
+		<fix author='adam' date='2007-10-02'>
+			Add Students UI is now working.
+		</fix>
+		<fix author='adam' date='2007-10-02'>
+			Username lookup is now working.
+		</fix>
 	</version>
 	<version number="1.8.7" date="2007-10-02">
 		<fix author='adam' date='2007-10-02'>
