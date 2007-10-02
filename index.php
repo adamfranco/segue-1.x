@@ -161,9 +161,9 @@ if ($_loggedin) {
 	
 	if (!isset($_SESSION["__classMembership"][$_SESSION['auser']])) {
 		$_SESSION["__classMembership"][$_SESSION['auser']] = array(
-				'currentclasses' => getuserclasses($auser,"now"),
-				'oldclasses' => getuserclasses($auser,"past"),
-				'futureclasses' => getuserclasses($auser,"future")
+				'currentclasses' => getuserclasses($_SESSION['auser'],"now"),
+				'oldclasses' => getuserclasses($_SESSION['auser'],"past"),
+				'futureclasses' => getuserclasses($_SESSION['auser'],"future")
 			);
 	}
 	

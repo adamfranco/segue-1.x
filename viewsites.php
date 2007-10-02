@@ -13,7 +13,7 @@ session_start();
 // include all necessary files
 include("includes.inc.php");
 
-//if ($ltype != 'admin') exit;
+//if ($_SESSION['ltype'] != 'admin') exit;
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
@@ -174,7 +174,7 @@ $r = db_query($query);
 						<td>
 							<form action='<?echo "$PHP_SELF?$sid"?>' method='post' name='searchform'>
 								<?								
-								if ($ltype != 'admin') {
+								if ($_SESSION['ltype'] != 'admin') {
 									print "Activity on $site";
 								} else {
 								?>

@@ -9,7 +9,7 @@ session_start();
 // include all necessary files
 include("includes.inc.php");
 
-//if ($ltype != 'admin') exit;
+//if ($_SESSION['ltype'] != 'admin') exit;
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 $siteinfo = db_get_line("site INNER JOIN slot on site_id = FK_site","slot_name='".addslashes($site)."'");
@@ -184,7 +184,7 @@ function changeOrder(order) {
         <?
         //while ($a=db_fetch_assoc($r1))
         //    print "<option".(($type==$a[type])?" selected":"").">$a[type]\n";
-        if ($ltype != 'admin') {
+        if ($_SESSION['ltype'] != 'admin') {
             print "Users for $site";
         } else {
         ?>

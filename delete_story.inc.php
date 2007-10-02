@@ -3,7 +3,7 @@
 /* $stories = decode_array(db_get_value("pages","stories","id=$page")); */
 /*  */
 /* print count($stories) . " stories in array<br />"; */
-/* print permission($auser,PAGE,DELETE,$page) . " permission<br />"; */
+/* print permission($_SESSION['auser'],PAGE,DELETE,$page) . " permission<br />"; */
 /* print "$site_owner is the owner. should be ". db_get_value("sites","addedby","name='$site'") ."<br />"; */
 
 if ($thisPage->hasPermission("delete",$_SESSION[auser])) {

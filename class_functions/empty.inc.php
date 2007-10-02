@@ -4,12 +4,10 @@
 require_once(dirname(__FILE__)."/common.inc.php");
 
 function isclass ($class) {
-	global $auser,$_isclass_cache;
+	global $_isclass_cache;
 	
 	if (isset($_isclass_cache[$class])) 
 		return $_isclass_cache[$class];
-		
-	$auser = strtolower($auser);
 	
 	// Check the name against the form of our class codes
 	$isClass = ereg("^(([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2}))$",$class);

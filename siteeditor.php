@@ -91,7 +91,7 @@ input,select {
 	print "</td>";
 	print "</tr>";
 	
-	if ($auser == $site_owner) {
+	if ($_SESSION['auser'] == $site_owner) {
 		$edlist = explode(",",$sitea[editors]);
 		if (count($edlist)) {
 			print "<tr><td colspan='5' class='pad'>";

@@ -12,7 +12,7 @@ session_start();
 require("includes.inc.php"); 
 require("sniffer.inc.php");
  
-//if ($ltype != 'admin') exit; 
+//if ($_SESSION['ltype'] != 'admin') exit; 
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
@@ -42,17 +42,17 @@ if (!is_object($_SESSION[origSiteObj])) {
  * Make sure that the user try to move, has permission to delete the origional
  ******************************************************************************/
 	if ($_SESSION[type] == "section") {
-		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->hasPermission("delete",$auser)) {
+		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->hasPermission("delete",$_SESSION['auser'])) {
 			$_SESSION[onlyCopy] = 1;
 			$action = "COPY";
 		}
 	} else if ($_SESSION[type] == "page") {
-		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->hasPermission("delete",$auser)) {
+		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->hasPermission("delete",$_SESSION['auser'])) {
 			$_SESSION[onlyCopy] = 1;
 			$action = "COPY";
 		}
 	} else {
-		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]]->hasPermission("delete",$auser)) {
+		if (!$_SESSION[origSiteObj]->sections[$_SESSION[origSection]]->pages[$_SESSION[origPage]]->stories[$_SESSION[origStory]]->hasPermission("delete",$_SESSION['auser'])) {
 			$_SESSION[onlyCopy] = 1;
 			$action = "COPY";
 		}
@@ -61,13 +61,13 @@ if (!is_object($_SESSION[origSiteObj])) {
 /******************************************************************************
  * Get the sites that a person is the owner or editor of.
  ******************************************************************************/
-	$sitesArray = segue::getAllSites($auser);
-	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($auser));
+	$sitesArray = segue::getAllSites($_SESSION['auser']);
+	$sitesArray = array_merge($sitesArray, segue::getAllSitesWhereUserIsEditor($_SESSION['auser']));
 	foreach ($sitesArray as $s) {
 /* 		print $s."<br />"; */
 		$temp =& new site($s);
 		$temp->fetchDown();
-		if ($temp->hasPermissionDown("add",$auser) || $temp->name == $_REQUEST[site] || $temp->site_owner == $auser) {
+		if ($temp->hasPermissionDown("add",$_SESSION['auser']) || $temp->name == $_REQUEST[site] || $temp->site_owner == $_SESSION['auser']) {
 			$_SESSION[sites][$s] = $temp;
 /* 			$title = $sites[$s]->getField("title"); */
 /* 			print "title = $title <br />"; */
@@ -134,7 +134,7 @@ if (($_SESSION[type] == "story" && !isset($page)) || ($selecttype == "site" || $
 /* 	$newpages = array(); */
 /* 	foreach ($pages as $p) { */
 /* 		$pagetype = db_get_value("pages","type","id=$p"); */
-/* 		if (permission($auser,PAGE,ADD,$p) && $pagetype == "page") */
+/* 		if (permission($_SESSION['auser'],PAGE,ADD,$p) && $pagetype == "page") */
 /* 			array_push($newpages,$p); */
 /* 	} */
 /* 	$pages = $newpages; */
@@ -384,7 +384,7 @@ print "<tr>";
 			print "background-color: #F33;";
 			$cantmovehere=1;
 			$cantmovereason = "You can not move this section to the same place it exists. Try copying or moving to a new location instead.";
-/* 		} else if (!$siteObj->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) { */
+/* 		} else if (!$siteObj->movePermission($action,$_SESSION['auser'],$_SESSION[origSite],$_SESSION[type])) { */
 /* 	//		print "background-color: #F33;"; */
 /* 			$cantmovehere=1; */
 /* 			$cantmovereason = "You do not have permission to $actionlc this section here."; */
@@ -426,7 +426,7 @@ if ($_SESSION[type] != "section") {
 					print "background-color: #F33;";
 					$cantmovehere=1;
 					$cantmovereason = "You can not move this page to the same place it exists. Try copying or moving to a new location instead.";
-				} else if (!$siteObj->sections[$section]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
+				} else if (!$siteObj->sections[$section]->movePermission($action,$_SESSION['auser'],$_SESSION[origSite],$_SESSION[type])) {
 					print "background-color: #F33;";
 					$cantmovehere=1;
 					if ($siteObj->sections[$section]->getField("type") != "section")
@@ -443,7 +443,7 @@ if ($_SESSION[type] != "section") {
 					print "<option value='$s'";
 					print (($siteObj->sections[$s]->id == $section)?" selected":"");
 					print " style='";
-					print ((!$siteObj->sections[$s]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$s]->id == $_SESSION[origSection] && $action == "MOVE" && $_SESSION[type] == "page"))?"background-color: #F33;":"background-color: #FFF;");
+					print ((!$siteObj->sections[$s]->movePermission($action,$_SESSION['auser'],$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$s]->id == $_SESSION[origSection] && $action == "MOVE" && $_SESSION[type] == "page"))?"background-color: #F33;":"background-color: #FFF;");
 					print (($siteObj->sections[$s]->id == $_SESSION[origSection])?" font-weight: bold;":" font-weight: normal;");
 					print "'";
 					print ">$title\n";
@@ -476,7 +476,7 @@ if ($_SESSION[type] == "story") {
 					print "background-color: #F33;";
 					$cantmovehere=1;
 					$cantmovereason = "You can not move this story to the same place it exists. Try copying or moving to a new location instead.";
-				} else if (!$siteObj->sections[$section]->pages[$page]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type])) {
+				} else if (!$siteObj->sections[$section]->pages[$page]->movePermission($action,$_SESSION['auser'],$_SESSION[origSite],$_SESSION[type])) {
 					print "background-color: #F33;";
 					$cantmovehere=1;
 					if ($siteObj->sections[$section]->pages[$page]->getField("type") != "page")
@@ -492,7 +492,7 @@ if ($_SESSION[type] == "story") {
 					print "<option value='$p'";
 					print (($siteObj->sections[$section]->pages[$p]->id == $page)?" selected":"");
 					print " style='";
-					print ((!$siteObj->sections[$section]->pages[$p]->movePermission($action,$auser,$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$section]->pages[$p]->id == $_SESSION[origPage] && $action=="MOVE"))?"background-color: #F33;":"background-color: #FFF;");
+					print ((!$siteObj->sections[$section]->pages[$p]->movePermission($action,$_SESSION['auser'],$_SESSION[origSite],$_SESSION[type]) || ($siteObj->sections[$section]->pages[$p]->id == $_SESSION[origPage] && $action=="MOVE"))?"background-color: #F33;":"background-color: #FFF;");
 					if ($siteObj->sections[$section]->pages[$p]->id == $_SESSION[origPage]) print "font-weight: bold;";
 					else print "font-weight: normal;";
 					print "'>$title\n";

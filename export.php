@@ -16,12 +16,11 @@ if ($site) {
 }
 
 function serverCopySite($orig,$dest) {
-	global $auser;
 	$sections = decode_array(db_get_value("sites","sections","name='$orig'"));
 	$nsections = array();
 	foreach ($sections as $s) {
 		$sa = db_get_line("sections","id=$s");
-		$squery = "insert into sections set addedby='$auser', addedtimestamp=NOW()";
+		$squery = "insert into sections set addedby='".addslashes($_SESSION['auser'])."', addedtimestamp=NOW()";
 		$squery .= ",title='$sa[title]', active=$sa[active], type='$sa[type]', url='$sa[url]'";
 		
 		
@@ -29,14 +28,14 @@ function serverCopySite($orig,$dest) {
 		$npages = array();
 		foreach ($pages as $p) {
 			$pa = db_get_line("pages","id=$p");
-			$pquery = "insert into pages set addedby='$auser', addedtimestamp=NOW()";
+			$pquery = "insert into pages set addedby='".addslashes($_SESSION['auser'])."', addedtimestamp=NOW()";
 			$pquery .= ",ediscussion=1,archiveby='$pa[archiveby]',url='$pa[url]',type='$pa[type]',title='$pa[title]', showcreator=$pa[showcreator], showdate=$pa[showdate], locked=$pa[locked], active=$pa[active]";
 			
 			$stories = decode_array($pa[stories]);
 			$nstories = array();
 			foreach ($stories as $st) {
 				$sta = db_get_line("stories","id=$st");
-				$stquery = "insert into stories set addedby='$auser', addedtimestamp=NOW()";
+				$stquery = "insert into stories set addedby='".addslashes($_SESSION['auser'])."', addedtimestamp=NOW()";
 				$stquery.=",type='$sta[type]',texttype='$sta[texttype]',category='$sta[category]',title='$sta[title]', discuss=$sta[discuss], discusspermissions='$sta[discusspermissions]', shorttext='$sta[shorttext]', longertext='$sta[longertext]', locked=$sta[locked], url='$sa[url]'";
 				db_query($stquery);
 //				print "$stquery<br />";

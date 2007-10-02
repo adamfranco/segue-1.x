@@ -18,7 +18,7 @@ require_once("auth_not_req_actions.inc.php");
 
 // first off, if el user is already logged in, lets make sure their info is good
 if ($_SESSION[luser]) {
-	if (!loginvalid($luser,$lpass,1)) $loginerror=1;
+	if (!loginvalid($_SESSION['luser'],$_SESSION['lpass'],1)) $loginerror=1;
 	else $_loggedin=1;
 } 
 
@@ -98,14 +98,12 @@ if (!$_loggedin) {
 
 
 function loginvalid($user,$pass,$alreadyloggedin=0) {
-//	global $lmethod,$lid,$luser,$lpass,$lfname,$lemail,$ltype;
-//	global $auser,$aemail,$afname,$atype,$aid;
 	global $_auth_mods;
 		
 	// we have two choices in this function. either the user has already logged in
 	// or we have to check for them
 	if ($alreadyloggedin) {	
-//		print "lmethod: $lmethod - $luser<br />";
+//		print "lmethod: $_SESSION['lmethod'] - $_SESSION['luser']<br />";
 		if (!$_SESSION[lmethod]) {
 			error("An unknown error happened during authentication. Please <a href='index.php?login'>logout</a> and try again. Ignore the error(s) below.");
 			return 0;

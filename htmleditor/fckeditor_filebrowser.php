@@ -16,7 +16,7 @@ include("../sniffer.inc.php");
 include("../objects/objects.inc.php");
  
 //$siteObj = new site ($site);
-//if ($ltype != 'admin') exit; 
+//if ($_SESSION['ltype'] != 'admin') exit; 
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb); 
 
@@ -52,7 +52,7 @@ if ($_REQUEST[site]) {
 //printpre($settings[site]);
 
 $w = array(); 
-if ($ltype == 'admin') { 
+if ($_SESSION['ltype'] == 'admin') { 
 	if ($_REQUEST[site]) 
 		$w[]="slot_name='$_REQUEST[site]'"; 
 	else if ($all) $w[]="slot_name like '%'"; 
@@ -248,7 +248,7 @@ if ($upload) {
  ******************************************************************************/
  
 if ($clear) {
-	if ($ltype == 'admin') {
+	if ($_SESSION['ltype'] == 'admin') {
 		$user = ""; 
 		$site = ""; 
 		$name = ""; 
@@ -264,7 +264,7 @@ if ($clear) {
  ******************************************************************************/
 
 $w = array(); 
-if ($ltype == 'admin') { 
+if ($_SESSION['ltype'] == 'admin') { 
 	if ($site) $w[]="slot_name='".addslashes($site)."'"; 
 	else if ($all) $w[]="slot_name like '%'"; 
 	else $w[]="slot_name='".addslashes($settings[site])."'"; 
@@ -302,7 +302,7 @@ if (!isset($order)) $order = "media_updated_tstamp desc";
 $orderby = " ORDER BY $order"; 
  
 $w = array(); 
-if ($ltype == 'admin') { 
+if ($_SESSION['ltype'] == 'admin') { 
 	if ($site) $w[]="slot_name='".addslashes($site)."'"; 
 	else if ($all) $w[]="slot_name like '%'"; 
 	else $w[]="slot_name='".addslashes($settings[site])."'"; 
@@ -538,7 +538,7 @@ function changePage(lolim) {
 <table cellspacing='1' width='100%'> 
  
 	<tr> 
-		<td colspan='<? print (($ltype=='admin')?"10":"9"); ?>'> 
+		<td colspan='<? print (($_SESSION['ltype']=='admin')?"10":"9"); ?>'> 
 			<table width='100%' > 
 				<tr> 
 				<td style='text-align: center; padding-top: 5px; border: 0px solid #FFF' valign='top'> 
@@ -640,12 +640,12 @@ function changePage(lolim) {
 if (1) { 
 ?> 
 <tr> 
-	<td colspan='<? print (($ltype=='admin')?"10":"9"); ?>'> 
+	<td colspan='<? print (($_SESSION['ltype']=='admin')?"10":"9"); ?>'> 
 		<table width='100%'> 
 		<tr><td style='text-align: left'> 
 		<form action='<?echo "$PHP_SELF?$sid"?>' method='post' name='searchform'> 
 		<? 
-		if ($ltype == 'admin') { 
+		if ($_SESSION['ltype'] == 'admin') { 
 		?> 
 			filename: <input type='text' name='name' size='15' value='<?echo $name?>' /> 
 			site: <input type='text' name='site' size='10' value='<?echo $site?>' /> 
@@ -656,7 +656,7 @@ if (1) {
 		<? } ?> 
 		<input type='submit' value='search' /> 
 		<input type='submit' name='clear' value='clear' /> 
-		<? if ($ltype == 'admin') print "Search all sites: <input type='checkbox' name='all' value='all sites'".(($all)?" checked='checked'":"")." />"; ?> 
+		<? if ($_SESSION['ltype'] == 'admin') print "Search all sites: <input type='checkbox' name='all' value='all sites'".(($all)?" checked='checked'":"")." />"; ?> 
 		<input type='hidden' name='order' value='<? echo $order ?>' /> 
 		<input type='hidden' name='editor' value='<? echo $editor ?>' /> 
 		<input type='hidden' name='source' value='<? echo $source ?>' /> 
@@ -733,7 +733,7 @@ if (1) {
 	if ($order =='media_size desc') print " &and;";	 
 	print "</a></th>"; 
 	 
-	if ($ltype == 'admin') { 
+	if ($_SESSION['ltype'] == 'admin') { 
 		print "<th><a href=# onclick=\"changeOrder('"; 
 		if ($order =='slot_name asc') print "slot_name desc"; 
 		else print "slot_name asc"; 
@@ -857,7 +857,7 @@ if (db_num_rows($r)) {
 			print "$a[media_size]"; 
 		print "</td>\n"; 
 		 
-		if ($ltype == 'admin') { 
+		if ($_SESSION['ltype'] == 'admin') { 
 			print "<td class='td$color'>"; 
 			print "$a[slot_name]"; 
 		print "</td>\n"; 
@@ -882,7 +882,7 @@ if (db_num_rows($r)) {
 		$color = 1-$color; 
 	} 
 } else { 
-	print "<tr><td colspan=".(($ltype=='admin')?"10":"9")." style='text-align: left'>No media.</td></tr>"; 
+	print "<tr><td colspan=".(($_SESSION['ltype']=='admin')?"10":"9")." style='text-align: left'>No media.</td></tr>"; 
 } 
 ?> 
  

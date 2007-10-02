@@ -14,15 +14,15 @@
 //------------------------------------
 
 // first check if we are allowed to edit this site at all
-/* if ($auser != $site_owner && $auser != $_SESSION[settings][site_owner] && !is_editor($auser,$site) && !is_editor($auser,$_SESSION[settings][site])) { */
+/* if ($_SESSION['auser'] != $site_owner && $_SESSION['auser'] != $_SESSION[settings][site_owner] && !is_editor($_SESSION['auser'],$site) && !is_editor($_SESSION['auser'],$_SESSION[settings][site])) { */
 /* 	error("You're not even an editor for this site! Bad person!"); */
 /* 	return; */
 /* } */
-/* if ($edit && !permission($auser,SECTION,EDIT,$section) && !permission($auser,SECTION,EDIT,$_SESSION[settings][section])) { */
+/* if ($edit && !permission($_SESSION['auser'],SECTION,EDIT,$section) && !permission($_SESSION['auser'],SECTION,EDIT,$_SESSION[settings][section])) { */
 /* 	error("You don't have permission to edit this page. Nice try."); */
 /* 	return; */
 /* } */
-/* if ($add && !permission($auser,SECTION,ADD,$section)  && !permission($auser,SECTION,ADD,$_SESSION[settings][section])) { */
+/* if ($add && !permission($_SESSION['auser'],SECTION,ADD,$section)  && !permission($_SESSION['auser'],SECTION,ADD,$_SESSION[settings][section])) { */
 /* 	error("You don't have permission to add sections to this site. Nice try."); */
 /* 	return; */
 /* } */
@@ -231,7 +231,7 @@ if ($_REQUEST[save]) {
 		if ($_SESSION[settings][edit]) { 
 			$_SESSION[pageObj]->updateDB();
 			log_entry("edit_page","$_SESSION[auser] edited page id ".$_SESSION[pageObj]->id." in site ".$_SESSION[pageObj]->owning_site.", section ".$_SESSION[pageObj]->owning_section,$_SESSION[pageObj]->owning_site,$_SESSION[pageObj]->id,"page");
- 		//	$query = "update pages set editedby='$auser',"; $where = " where id=$_SESSION[settings][page]";
+ 		//	$query = "update pages set editedby='$_SESSION['auser']',"; $where = " where id=$_SESSION[settings][page]";
  	//		printpre($_REQUEST[location]);
  		//	exit();
 		}
@@ -254,8 +254,8 @@ if ($_REQUEST[save]) {
 			foreach ($stories as $s) {
 				$sa = db_get_line("stories","id='".addslashes($s)."'");
 				$chg = array();
-				if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active='".addslashes($_SESSION[settings][active])."'";
-				if (count($_SESSION[settings][copydownpermissions]) && $auser == $_SESSION[settings][site_owner]) {
+				if ($recursiveenable && permission($_SESSION['auser'],PAGE,EDIT,$p)) $chg[] = "active='".addslashes($_SESSION[settings][active])."'";
+				if (count($_SESSION[settings][copydownpermissions]) && $_SESSION['auser'] == $_SESSION[settings][site_owner]) {
 					$sp = decode_array($sa['permissions']);
 					foreach ($_SESSION[settings][copydownpermissions] as $e) $sp[$e] = $_SESSION[settings][permissions][$e];
 					$sp = encode_array($sp);

@@ -18,12 +18,12 @@ if ($del = $_REQUEST[del]) { // we're deleting something
 		db_query($query);
 		$query = "DELETE FROM classgroup WHERE classgroup_id='".addslashes($group)."'";
 		db_query($query);
-		log_entry("classgroups","$auser removed group ".db_get_value("classgroup","classgroup_name","classgroup_id='".addslashes($group)."'"),"NULL",'".addslashes($group)."',"classgroup");
+		log_entry("classgroups","$_SESSION['auser'] removed group ".db_get_value("classgroup","classgroup_name","classgroup_id='".addslashes($group)."'"),"NULL",'".addslashes($group)."',"classgroup");
 	}
 	if ($del=='class') {
 		$query = "UPDATE class SET FK_classgroup=NULL WHERE class_id='".addslashes($class)."'";
 		db_query($query);
-		log_entry("classgroup","$auser removed $class from group ".db_get_value("classgroup","classgroup_name","classgroup_id=$group"),"NULL",$group,"classgroup");
+		log_entry("classgroup","$_SESSION['auser'] removed $class from group ".db_get_value("classgroup","classgroup_name","classgroup_id=$group"),"NULL",$group,"classgroup");
 	}
 	print<<<END
 
@@ -53,7 +53,7 @@ $query = "
 			ON
 				classgroup.FK_owner = user_id 
 	WHERE 
-		user_uname='".addslashes($auser)."'
+		user_uname='".addslashes($_SESSION['auser'])."'
 ";
 /* echo $query; */
 $r = db_query($query);
@@ -70,7 +70,7 @@ $query = "
 			ON
 				classgroup.FK_owner = user_id 
 	WHERE 
-		user_uname='".addslashes($auser)."'
+		user_uname='".addslashes($_SESSION['auser'])."'
 ";
 /* echo $query; */
 $r = db_query($query);
@@ -130,7 +130,7 @@ print "<body".(($del)?" onload='updater()'":"").">";
 <table cellspacing='1' width='100%'>
 <tr>
 	<td colspan='2' style='font-variant: small-caps'>
-		Class groups for <?echo $auser?>
+		Class groups for <?echo $_SESSION['auser']?>
 	</td>
 </tr>
 <tr>

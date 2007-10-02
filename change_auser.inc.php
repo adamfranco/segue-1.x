@@ -4,7 +4,7 @@
 $changeauser = strtolower($_REQUEST[changeauser]);
 //print "change_auser started with $changeauser...<br />";
 $debug = 0;
-if ($ltype == 'admin') {	// must be admin to do this:
+if ($_SESSION['ltype'] == 'admin') {	// must be admin to do this:
 //	print "we are admin.";
 	//printpre($_auth_mods);
 
@@ -26,7 +26,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 		$_SESSION[atype] = $x[type];
 		$_SESSION[aid] = $x[id];
 		$_SESSION[amethod] = $x[method];
-		log_entry("change_auser","$luser as $auser");
+		log_entry("change_auser","$_SESSION['luser'] as $_SESSION['auser']");
 		
 		
 		unset($_SESSION["discussion_set"]);
@@ -41,7 +41,7 @@ if ($ltype == 'admin') {	// must be admin to do this:
 	}
 }
 
-//printpre("<p>$aid, $afname, $auser, $aemail, $atype<br />");
+//printpre("<p>$_SESSION['aid'], $_SESSION['afname'], $_SESSION['auser'], $_SESSION['aemail'], $_SESSION['atype']<br />");
 //exit();
 $getVars = "";
 foreach ($_GET as $key => $val) {

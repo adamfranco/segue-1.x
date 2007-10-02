@@ -71,12 +71,12 @@ $sections = decode_array($sa['sections']);
 
 
 $nl='';
-if (!$user) $user = $auser;
+if (!$user) $user = $_SESSION['auser'];
 else $nl = 'disabled';
 
 $site_owner = db_get_value("sites","addedby","name='".addslashes($site)."'");
 
-if ($auser == $site_owner) {
+if ($_SESSION['auser'] == $site_owner) {
 //	print $sa[editors];	// Debug
 	$editors = explode(",",$sa[editors]);
 	$total_columns = count($editors)*3 +1;

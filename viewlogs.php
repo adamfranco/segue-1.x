@@ -11,7 +11,7 @@ session_start();
 include("includes.inc.php");
 
 
-//if ($ltype != 'admin') exit;
+//if ($_SESSION['ltype'] != 'admin') exit;
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
@@ -237,7 +237,7 @@ $r = db_query($query);
 						<td>
 							<form action='<?echo "$PHP_SELF?$sid"?>/' method='post' name='searchform'>
 								<?
-								if ($ltype != 'admin') {
+								if ($_SESSION['ltype'] != 'admin') {
 									print "\n\t\t\t\t\t\t\t\t<input type='hidden' name='site' value='$site' />";
 									print "\n\t\t\t\t\t\t\t\tLogs of $site <br />";
 								}
@@ -258,7 +258,7 @@ $r = db_query($query);
 								</select>
 							
 								<?
-								if ($ltype == 'admin') {
+								if ($_SESSION['ltype'] == 'admin') {
 								?>
 								
 									user: <input type='text' name='user' size='15' value='<?echo $user?>' />

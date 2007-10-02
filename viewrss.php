@@ -13,7 +13,7 @@ session_start();
 include("includes.inc.php");
 
 
-//if ($ltype != 'admin') exit;
+//if ($_SESSION['ltype'] != 'admin') exit;
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 

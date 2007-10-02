@@ -164,8 +164,8 @@ if ($_REQUEST[save]) {
 //			foreach ($stories as $s) {
 //				$sa = db_get_line("stories","id='".addslashes($s)."'");
 //				$chg = array();
-//				if ($recursiveenable && permission($auser,PAGE,EDIT,$p)) $chg[] = "active='".addslashes($_SESSION[settings][active])."'";
-//				if (count($_SESSION[settings][copydownpermissions]) && $auser == $_SESSION[settings][site_owner]) {
+//				if ($recursiveenable && permission($_SESSION['auser'],PAGE,EDIT,$p)) $chg[] = "active='".addslashes($_SESSION[settings][active])."'";
+//				if (count($_SESSION[settings][copydownpermissions]) && $_SESSION['auser'] == $_SESSION[settings][site_owner]) {
 //					$sp = decode_array($sa['permissions']);
 //					foreach ($_SESSION[settings][copydownpermissions] as $e) $sp[$e] = $_SESSION[settings][permissions][$e];
 //					$sp = encode_array($sp);

@@ -1,15 +1,15 @@
 <? /* $Id$ */
 
 // first check if we are allowed to edit this site at all
-/* if ($auser != $site_owner && $auser != $settings[site_owner] && !is_editor($auser,$site) && !is_editor($auser,$settings[site])) { */
+/* if ($_SESSION['auser'] != $site_owner && $_SESSION['auser'] != $settings[site_owner] && !is_editor($_SESSION['auser'],$site) && !is_editor($_SESSION['auser'],$settings[site])) { */
 /* 	error("You're not even an editor for this site! Bad person!"); */
 /* 	return; */
 /* } */
-/* if ($edit && !permission($auser,SECTION,EDIT,$section) && !permission($auser,SECTION,EDIT,$settings[section])) { */
+/* if ($edit && !permission($_SESSION['auser'],SECTION,EDIT,$section) && !permission($_SESSION['auser'],SECTION,EDIT,$settings[section])) { */
 /* 	error("You don't have permission to edit this page. Nice try."); */
 /* 	return; */
 /* } */
-/* if ($add && !permission($auser,SECTION,ADD,$section)  && !permission($auser,SECTION,ADD,$settings[section])) { */
+/* if ($add && !permission($_SESSION['auser'],SECTION,ADD,$section)  && !permission($_SESSION['auser'],SECTION,ADD,$settings[section])) { */
 /* 	error("You don't have permission to add sections to this site. Nice try."); */
 /* 	return; */
 /* } */
