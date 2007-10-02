@@ -3,6 +3,24 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.7 (2007-10-02)
+----------------------------------------------------
+		
+	* Bug Fix: 
+		
+		Can now access discussion posts.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Can now upload media.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		
+		Permissions step is now maintained between screens.
+		(Adam Franco)
+	
 v. 1.8.6 (2007-10-02)
 ----------------------------------------------------
 		
