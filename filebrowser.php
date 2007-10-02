@@ -25,8 +25,8 @@ include("objects/objects.inc.php");
  
 db_connect($dbhost, $dbuser, $dbpass, $dbdb); 
 
-if ($delete) { 
-	deleteuserfile($filetodelete); 
+if ($_REQUEST['delete']) { 
+	deleteuserfile($_REQUEST['filetodelete']); 
 	printerr2(); 
 } 
 
@@ -113,7 +113,7 @@ if ($_REQUEST[comingFrom]) {
  * Uploads files: check if media limit is reached..
  ******************************************************************************/
  
-if ($upload) { 
+if ($_REQUEST['upload']) { 
 	
 	$query = "
 		SELECT 

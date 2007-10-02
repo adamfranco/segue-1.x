@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
+	<version number="1.8.7" date="2007-10-02">
+		<fix author='adam' date='2007-10-02'>
+			Can now access discussion posts.
+		</fix>
+		<fix author='adam' date='2007-10-02'>
+			Can now upload media.
+		</fix>
+	</version>
 	<version number="1.8.6" date="2007-10-02">
 		<fix author='adam' date='2007-10-02'>
 			Fixed change-user function.
