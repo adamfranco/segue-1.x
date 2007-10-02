@@ -38,7 +38,8 @@ if (!$_REQUEST[nostatus]) {
 
 	print "<form action='$PHP_SELF?$sid";
 	foreach ($_GET as $key => $val) {
-		print "&amp;".$key."=".$val;
+		if (!in_array($key, array('theme', 'themesettings')))
+			print "&amp;".$key."=".$val;
 	}
 	print "' id='loginform' name='loginform' method='post'>\n";
 		
@@ -89,9 +90,10 @@ if (!$_REQUEST[nostatus]) {
 			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'&& $_SESSION[luser] != $_SESSION[auser])?" (acting as ".$_SESSION[afname].")":"")." (".$_userTypes[$_SESSION[atype]].") " ;
 			
 			// logout ?
-			print " | <a href='$PHP_SELF?login=logout&amp;$sid";
+			print " | <a href='$PHP_SELF?login=logout$sid";
 			foreach ($_GET as $key => $val) {
-				print "&amp;".$key."=".$val;
+				if (!in_array($key, array('theme', 'themesettings')))
+					print "&amp;".$key."=".$val;
 			}
 			print "' class='navlink'>logout</a>";
 			

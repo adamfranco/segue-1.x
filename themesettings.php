@@ -8,8 +8,6 @@ include_once("includes.inc.php");
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
  
-include("$themesdir/common/header.inc.php"); 
- 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb); 
  
 /* 
@@ -44,13 +42,13 @@ if (file_exists($filename)) {
  
  
  
-if ($submitted) { 
+if ($_REQUEST['submitted']) { 
 	$onLoad = ' onload="'; 
 	$themesettings = encode_array($themesettings); 
-	if ($updatemethod == 'javascript') { 
+	if ($_REQUEST['updatemethod'] == 'javascript') { 
 		$onLoad .= 'update()'; 
 	} 
-	if ($updatemethod == 'db') { 
+	if ($_REQUEST['updatemethod'] == 'db') { 
 		$onLoad .= 'window.close()'; 
 		// update the database 
 	} 
@@ -59,8 +57,8 @@ if ($submitted) {
 	// print out theme form 
 	printc("<form action='$PHP_SELF?$sid' method='post' name='settings'>"); 
 	printc("<input type='hidden' name='submitted' value='1' />"); 
-	printc("<input type='hidden' name='updatemethod' value='$updatemethod' />"); 
-	printc("<input type='hidden' name='site' value='$site' />"); 
+	printc("<input type='hidden' name='updatemethod' value='".$_REQUEST['updatemethod']."' />"); 
+	printc("<input type='hidden' name='site' value='".$_REQUEST['site']."' />"); 
 	printc("<input type='hidden' name='theme' value='$theme' />"); 
 	printc($settings_form); 
 	printc("<div align='right'>");
@@ -71,12 +69,15 @@ if ($submitted) {
 } 
  
  
-?> 
- 
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<?php 
+// include("$themesdir/common/header.inc.php"); 
+?>
 
 <script type='text/javascript'>
 // <![CDATA[ 

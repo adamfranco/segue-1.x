@@ -10,6 +10,9 @@
 		<fix author='adam' date='2007-10-02'>
 			Permissions step is now maintained between screens.
 		</fix>
+		<fix author='adam' date='2007-10-02'>
+			Themesettings can now be changed.
+		</fix>
 	</version>
 	<version number="1.8.6" date="2007-10-02">
 		<fix author='adam' date='2007-10-02'>

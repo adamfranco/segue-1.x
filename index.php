@@ -198,15 +198,20 @@ if ($_REQUEST[site]) {						// we are in a site
 //	$thisSite->buildPermissionsArray(1,1);
 	
 	$site_owner = $thisSlot->getField("owner");
-	if ($_GET[theme]) $sid .= "&amp;theme=$_REQUEST[theme]";
+	if ($_GET[theme] && preg_match('/^[a-z0-9_-]+$/i', $_REQUEST['theme'])) {
+		$sid .= "&amp;theme=".$_REQUEST['theme'];
+		$theme = $_REQUEST['theme'];
+	}
 	if ($_GET[themesettings]) {
-		$themesettings=urlencode(stripslashes($_REQUEST[themesettings])); 
-		$sid.="&amp;themesettings=".$_REQUEST[themesettings];
+		$sid.="&amp;themesettings=".urlencode(stripslashes($_REQUEST[themesettings]));
+		$themesettings = $_REQUEST['themesettings'];
 	}
 	if ($_REQUEST[nostatus]) $sid .= "&amp;nostatus=1";
 	if ($_REQUEST[themepreview]) $sid .= "&amp;themepreview=1";
-	if (!isset($theme)) $theme = $thisSite->getField("theme");
-	if (!isset($themesettings)) $themesettings = $thisSite->getField("themesettings");
+	if (!isset($theme)) 
+		$theme = $thisSite->getField("theme");
+	if (!isset($themesettings)) 
+		$themesettings = $thisSite->getField("themesettings");
 
 	$siteheader = "<div align='center' style='margin-bottom: 3px'>";
 	

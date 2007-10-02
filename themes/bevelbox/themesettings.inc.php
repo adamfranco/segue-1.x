@@ -18,6 +18,11 @@ $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
 $nav_widths = array();
 
+$colorscheme = $_REQUEST['colorscheme'];
+$linkcolor = $_REQUEST['linkcolor'];
+$nav_arrange = $_REQUEST['nav_arrange'];
+$sectionnav_size = $_REQUEST['sectionnav_size'];
+$nav_size = $_REQUEST['nav_size'];
 
 if ($themesettings[theme] == 'bevelbox') {
 	$colorscheme = $themesettings[colorscheme];

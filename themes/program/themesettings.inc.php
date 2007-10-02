@@ -11,7 +11,7 @@ if ($themesettings[theme] == 'program') {
 	$colorscheme = $themesettings[colorscheme];
 } else {
 	$themesettings[theme] = 'program';
-	$themesettings[colorscheme] = $colorscheme;
+	$themesettings[colorscheme] = $_REQUEST['colorscheme'];
 }
 
 ?>

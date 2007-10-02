@@ -23,7 +23,17 @@ $site_widths = array_keys($_site_width);
 $sectionnav_sizes = array_keys($_sectionnav_size);
 $nav_sizes = array_keys($_nav_size);
 
-
+$bgcolor = $_REQUEST['bgcolor'];
+$colorscheme = $_REQUEST['colorscheme'];
+$borderstyle = $_REQUEST['borderstyle'];
+$bordercolor = $_REQUEST['bordercolor'];
+$textcolor = $_REQUEST['textcolor'];
+$linkcolor = $_REQUEST['linkcolor'];
+$nav_arrange = $_REQUEST['nav_arrange'];
+$nav_width = $_REQUEST['nav_width'];
+$sectionnav_size = $_REQUEST['sectionnav_size'];
+$nav_size = $_REQUEST['nav_size'];
+$site_width = $_REQUEST['site_width'];
 
 if ($themesettings[theme] == 'minimal') {
 	$bgcolor = $themesettings[bgcolor];
