@@ -4,7 +4,7 @@ ob_start();
 
 include("includes.inc.php");
 
-$site = trim($PATH_INFO," /");
+$site = trim($_SERVER['PATH_INFO']," /");
 $site = ereg_replace("[^a-zA-Z0-9]+$","",$site);
 
 if ($allowclasssites != $allowpersonalsites) {

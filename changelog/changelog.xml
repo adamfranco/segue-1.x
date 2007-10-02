@@ -2,6 +2,12 @@
 <changelog name="Segue ChangeLog">
 	<version number="1.8.6" date="2007-10-02">
 		<fix author='adam' date='2007-10-02'>
+			Fixed change-user function.
+		</fix>
+		<fix author='adam' date='2007-10-02'>
+			Fixed site shortcuts.	
+		</fix>
+		<fix author='adam' date='2007-10-02'>
 			Updated all instances of $luser, $auser, $ltype, $atype, etcetera to
 			look in the $_SESSION so they will work properly without the semi-register-globals
 			hack that caused the recent security vulnerability.
