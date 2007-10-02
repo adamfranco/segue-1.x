@@ -15,20 +15,22 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 /******************************************************************************
  * Add Associated Site: 
  ******************************************************************************/
+if ($_SESSION['atype'] != 'prof' && $_SESSION['atype'] != 'admin')
+	die("Error: You must be a prof or admin in order to add students.");
 
-if ($action == "addsite" && $addclassid && $adduname) {
-	$user_id = db_get_value("user","user_id","user_uname='".addslashes($adduname)."'");
+if ($_REQUEST['action'] == "addsite" && $_REQUEST['addclassid'] && $_REQUEST['adduname']) {
+	$user_id = db_get_value("user","user_id","user_uname='".addslashes($_REQUEST['adduname'])."'");
 	
 	if(!isset($user_id)) {
 		error("User has not logged into Segue yet");
 	}
 	
 	
-	$slotname = $addclassid."-".$adduname;
+	$slotname = $_REQUEST['addclassid']."-".$_REQUEST['adduname'];
 //	printpre($slotname);
 	$obj = &new slot($slotname);
-	$obj->owner = strtolower($adduname);
-	$obj->assocSite = strtolower($addclassid);
+	$obj->owner = strtolower($_REQUEST['adduname']);
+	$obj->assocSite = strtolower($_REQUEST['addclassid']);
 	$obj->type = 'class';
 	$obj->uploadlimit = 'NULL';
 	
@@ -40,9 +42,9 @@ if ($action == "addsite" && $addclassid && $adduname) {
  * Delete Associated Site:
  ******************************************************************************/
 
-if ($action == "deletesite" && $delstudentsite) {
-	$slot_name = $delstudentsite;
-	$id = db_get_value("slot","slot_id","slot_name='".addslashes($slot_name)."'");	
+if ($_REQUEST['action'] == "deletesite" && $_REQUEST['delstudentsite']) {
+	$slot_name = $_REQUEST['delstudentsite'];
+	$id = db_get_value("slot","slot_id","slot_name='".addslashes($slot_name)."'");
 	if ($id > 0) {
 		// delete a slot
 		$slotObj = new slot("","","","",$id);
@@ -54,13 +56,13 @@ if ($action == "deletesite" && $delstudentsite) {
  * Add student to a class site
  ******************************************************************************/
 
-if ($action == "add" && $addstudent) {
+if ($_REQUEST['action'] == "add" && $_REQUEST['addstudent']) {
 	// make sure the user is in the db
 	$valid = 0;
 	foreach ($_auth_mods as $_auth) {
 		$func = "_valid_".$_auth;
 //		print "<br />AUTH: trying ".$_auth ."..."; //debug
-		if ($x = $func($addstudent,"",1)) {
+		if ($x = $func($_REQUEST['addstudent'],"",1)) {
 			$valid = 1;
 			
 			break;
@@ -70,7 +72,7 @@ if ($action == "add" && $addstudent) {
 	if ($valid) {
 		// Get their db id
 		
-		$user_id = db_get_value("user","user_id","user_uname='".addslashes($addstudent)."'");
+		$user_id = db_get_value("user","user_id","user_uname='".addslashes($_REQUEST['addstudent'])."'");
 		
 		// add them to the ugroup
 		$query = "
@@ -78,7 +80,7 @@ if ($action == "add" && $addstudent) {
 				ugroup_user
 			SET
 				FK_user='".addslashes($user_id)."',
-				FK_ugroup='".addslashes($ugroup_id)."'			
+				FK_ugroup='".addslashes($_REQUEST['ugroup_id'])."'			
 		";
 		
 		db_query($query);
@@ -91,15 +93,15 @@ if ($action == "add" && $addstudent) {
  * Delete student from a class site
  ******************************************************************************/
 
-if ($action == "delete" && $delstudent) {
+if ($_REQUEST['action'] == "delete" && $_REQUEST['delstudent']) {
 	$query = "
 		DELETE
 		FROM
 			ugroup_user
 		WHERE
-			FK_ugroup = '".addslashes($ugroup_id)."'
+			FK_ugroup = '".addslashes($_REQUEST['ugroup_id'])."'
 				AND
-			FK_user = '".addslashes($delstudent)."'	
+			FK_user = '".addslashes($_REQUEST['delstudent'])."'	
 	";
 	db_query($query);
 }
@@ -240,7 +242,7 @@ function delStudentSite(id, name) {
 </script>
 
 </style>
-<form action="<? echo $PHP_SELF ?>" method='get' name='lookup'>
+<form action="<? echo $_SERVER['PHP_SELF']; ?>" method='get' name='lookup'>
 <input type='hidden' name='ugroup_id' value='<?=$_REQUEST[ugroup_id]?>' />
 <input type='hidden' name='participants' value='<?=$_REQUEST[name]?>' />
 <input type='hidden' name='name' value='<?=$_REQUEST[name]?>' /><!-- <input type='hidden' name='ugroup_id' value='<? $ugroup_id ?>' /> -->
