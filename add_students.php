@@ -131,10 +131,14 @@ if (isset($_REQUEST[name])) {
 	// if the slot name has no group id then must be a grouped site
 	if (!isset($ugroup_id)) {
 		$classlist = group::getClassesFromName($_REQUEST[name]);
-		$list = implode(", ",$classlist);
-		$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '".$classlist[0]."'");
-		$class_id = $_REQUEST[name];
-	
+		if (is_array($classlist)) {
+			$list = implode(", ",$classlist);
+			$ugroup_id = db_get_value("ugroup","ugroup_id","ugroup_name = '".$classlist[0]."'");
+			$class_id = $_REQUEST[name];
+		} else {
+			$ugroup_name = $_REQUEST[name];
+			$class_id = $ugroup_name;
+		}
 	} else {
 		$ugroup_name = $_REQUEST[name];
 		$class_id = $ugroup_name;

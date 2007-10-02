@@ -6,7 +6,7 @@ Name: Segue ChangeLog
 v. 1.8.8 (2007-10-02)
 ----------------------------------------------------
 		
-	* Bug Fix: 
+	* Change: 
 		Went through each and every variable-include statement -- found by grepping
 		for /(include|require)(_once)?\s*\([^;]*\$/ -- and made sure that every
 		variable parameter into the include path has been filtered to prevent

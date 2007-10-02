@@ -125,8 +125,10 @@ if ($_REQUEST['userfname'] && !$_REQUEST['useruname']) {
 
 if ($_REQUEST['storyid']) $storyid = $_REQUEST['storyid'];
 
+
 $siteid = $_REQUEST['siteid'];
 $class_id = $_REQUEST['site'];
+$site = $_REQUEST['site'];
 
 
 /******************************************************************************
