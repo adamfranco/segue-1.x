@@ -12,8 +12,8 @@ session_start();
 // include all necessary files
 include("includes.inc.php");
 
-if ($name) {
-	$usernames=userlookup($name,LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
+if ($_REQUEST['name']) {
+	$usernames=userlookup($_REQUEST['name'],LDAP_BOTH,LDAP_WILD,LDAP_LASTNAME,0);
 }
 
 // sort alphabetically
@@ -46,7 +46,7 @@ if (count($usernames)) {
 		<tr>
 			<td colspan='3'>
 				<form action="<? echo $PHP_SELF ?>" method='get' name='searchform'>
-				Name: <input type='text' name='name' size='20' value='<?echo $name?>'/> <input type='submit' value='Find' />
+				Name: <input type='text' name='name' size='20' value='<?echo $_REQUEST['name']?>'/> <input type='submit' value='Find' />
 				</form>
 				<? if (!$usernames) print "No matching names found. Enter a name or part of a name above."; ?>
 			</td>
