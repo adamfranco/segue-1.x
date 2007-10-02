@@ -110,6 +110,7 @@ if ($isOwner && $_REQUEST[edaction] == 'del') {
 /******************************************************************************
  * switch between forms 1 and 2
  ******************************************************************************/
+$step = $_REQUEST['step'];
 if (!$isOwner && $isEditor) {
 	if (!count($_SESSION[editors])) {
 		if (in_array($_SESSION[auser],$_SESSION[obj]->getEditors())) 
