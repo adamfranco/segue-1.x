@@ -292,11 +292,11 @@ do {
 				
 		if ($thisPage->stories || $thisPage->getField("type") == "tags") {
 			//if detail then print only story detail ie full text/discussion
-			if ($detail) {
-				$o =& $thisPage->stories[$detail];
+			if ($_REQUEST['detail']) {
+				$o =& $thisPage->stories[$_REQUEST['detail']];
 				include("fullstory.inc.php");
 			} else if ($_REQUEST['versioning'] || $_REQUEST['version']) {
-				$o =& $thisPage->stories[$detail];
+				$o =& $thisPage->stories[$_REQUEST['detail']];
 				include("versions.inc.php");
 				
 			} else if ($_REQUEST['search']) {
