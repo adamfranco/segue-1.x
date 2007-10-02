@@ -251,7 +251,7 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 	}
 	if (!$r) {
 		print "Upload file error!<br />";
-		log_entry("media_error","File upload attempt by $_SESSION[auser] in site $site failed.",$site,$siteid,"site");
+		log_entry("media_error","File upload attempt by ".$_SESSION[auser]." in site $site failed.",$site,$siteid,"site");
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
@@ -338,11 +338,11 @@ function deleteuserfile($fileid) {
 			db_query($query);
 			log_entry("media_delete","$_SESSION[auser] deleted file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name"),$siteObj->name,$siteObj->id,"site");
 		} else {
-			log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $_SESSION[auser]",$siteObj->name,$siteObj->id,"site");
+			log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by ".$_SESSION[auser],$siteObj->name,$siteObj->id,"site");
 			error("File could not be Deleted");
 		}
 	} else {
-		log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by $_SESSION[auser]. File does not exist. Removed entry.",$siteObj->name,$siteObj->id,"site");
+		log_entry("media_error","Delete failed of file: ".$a[media_tag].", id: $fileid, from site ".$siteObj->getField("name")." by ".$_SESSION[auser].". File does not exist. Removed entry.",$siteObj->name,$siteObj->id,"site");
 		error("File does not exist. Its Entry was deleted");
 		$query = "DELETE FROM media WHERE media_id='".addslashes($fileid)."' LIMIT 1";
 		db_query($query);

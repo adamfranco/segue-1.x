@@ -86,7 +86,7 @@ if (!$_REQUEST[nostatus]) {
 			print "<td align='right' class='headerbox small'>";		
 		
 			// username (+ acting as username for admins)
-			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'&& $_SESSION[luser] != $_SESSION[auser])?" (acting as $_SESSION[afname])":"")." (".$_userTypes[$_SESSION[atype]].") " ;
+			print "$_SESSION[lfname]". (($_SESSION[ltype]=='admin'&& $_SESSION[luser] != $_SESSION[auser])?" (acting as ".$_SESSION[afname].")":"")." (".$_userTypes[$_SESSION[atype]].") " ;
 			
 			// logout ?
 			print " | <a href='$PHP_SELF?login=logout&amp;$sid";

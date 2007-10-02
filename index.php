@@ -242,12 +242,14 @@ if ($_REQUEST[page]) {
 // compatibility:
 if (isset($_REQUEST[action])) 
 	$action = preg_replace('/[^a-z0-9_-]/i', '', $_REQUEST[action]);
+else if ($action)
+	$action = preg_replace('/[^a-z0-9_-]/i', '', $action);
 //print"ok"; exit();
 
 // if we don't already have content (probably login error messages), then output some shite
 if (!$loginerror) {
 	
-	$try = "$action.$_SESSION[ltype].inc.php";			// first try a ltype-specific action file
+	$try = $action.".".$_SESSION[ltype].".inc.php";			// first try a ltype-specific action file
 	if (file_exists($try)) {					// yes, indeed
 		include($try);
 	} else {
