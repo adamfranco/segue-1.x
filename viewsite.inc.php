@@ -73,7 +73,8 @@ function printStoryEditLinks() {
 
 do {
 	// for publication sites
-	if ($supplement = preg_replace('/[^a-z0-9_-]/i', '', $_REQUEST[supplement])) {
+	$supplement = preg_replace('/[^a-z0-9_-]/i', '', $_REQUEST[supplement]);
+	if ($supplement) {
 		if ($thisSite->getField("type")=='publication' && ($supplement == 'listarticles' || $supplement == 'listissues')) {
 			include("$supplement.inc.php");
 			break;
@@ -166,7 +167,8 @@ do {
 	
 //	$thisSection->handlePageOrder();
 	// build the navbar
-	include ("output_modules/".$thisSite->getField("type")."/navbars.inc.php");
+	$siteType = preg_replace('/[^a-z0-9_-]/i', '', $thisSite->getField("type"));
+	include ("output_modules/".$siteType."/navbars.inc.php");
 	
 	if ((!is_object($thisSection) &&is_object($thisSite) && count($thisSite->sections == 0))) 
 	{
@@ -422,8 +424,9 @@ do {
 							printc("</div>\n");
 						}
 						
-	
-						$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
+						$siteType = preg_replace('/[^a-z0-9_-]/i', '', $thisSite->getField("type"));
+						$oType = preg_replace('/[^a-z0-9_-]/i', '', $o->getField("type"));
+						$incfile = "output_modules/".$siteType."/".$oType.".inc.php";
 		/* 				print "<br />".$incfile; */
 						include($incfile);
 						
@@ -587,6 +590,6 @@ print "\n\t</td>";
 
 print "\n\t</tr>\n</table>\n</div>";
 
-print "\n\n<br /><div align='right'><a href='http://segue.sourceforge.net' target='_blank'><img border='0' src='$cfg[themesdir]/common/images/segue_logo_trans_solid.gif' alt='Segue Logo' /></a></div>";
+print "\n\n<br /><div align='right'><a href='http://segue.sourceforge.net' target='_blank'><img border='0' src='themes/common/images/segue_logo_trans_solid.gif' alt='Segue Logo' /></a></div>";
 $sitefooter = $sitefooter . ob_get_contents();
 ob_end_clean();

@@ -29,8 +29,7 @@ function checkConfig () {
 							"dbuser",
 							"dbdb",
 							"network",
-							"programtheme",
-							"themesdir",
+							"programtheme"
 						);
 	
 	$requiredArrays = array(

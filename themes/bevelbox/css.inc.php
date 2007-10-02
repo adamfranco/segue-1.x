@@ -5,7 +5,10 @@
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-include("$themesdir/common/css.inc.php"); ?>
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+include("themes/common/css.inc.php"); ?>
 
 /* ------------------------------------------ */
 /* THEME-SPECIFIC CLASSES */
@@ -168,7 +171,7 @@ body {
 /* more images */
 
 .topright {
-	background: white url('<? echo "$themesdir/$theme/images/blue/topright.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/blue/topright.gif"; ?>') no-repeat;
 	width: 8px;
 	height: 8px;
 }
@@ -179,91 +182,91 @@ body {
 }
 
 .top {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/top.gif"; ?>') repeat-x;
+	background: url('<? echo "themes/$theme/images/$c[bg]/top.gif"; ?>') repeat-x;
 	height: 43px;
 }
 
 .topcenter {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topcenter.gif"; ?>') repeat-x;
+	background: url('<? echo "themes/$theme/images/$c[bg]/topcenter.gif"; ?>') repeat-x;
 	height: 15px;
 }
 
 .topright {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topright.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/topright.gif"; ?>') no-repeat;
 	width: 9px;
 	height: 43px;
 }
 
 .topright1 {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topright1.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/topright1.gif"; ?>') no-repeat;
 	width: 11px;
 	height: 15px;
 }
 
 .topleft {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/topleft.gif"; ?>') no-repeat;
 	width: 147px;
 	height: 43px;
 }
 
 .topleft1 {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft1.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/topleft1.gif"; ?>') no-repeat;
 	width: 147px;
 	height: 43px;
 }
 
 .topleft2 {
 	background-color: #003366;
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft2.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/topleft2.gif"; ?>') no-repeat;
 	width: 147px;
 	height: 64px;
 }
 
 .topleft3 {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/topleft3.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/topleft3.gif"; ?>') no-repeat;
 	width: 147px;
 	height: 15px;
 }
 
 .left {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/left.gif"; ?>') repeat-y;
+	background: url('<? echo "themes/$theme/images/$c[bg]/left.gif"; ?>') repeat-y;
 	width: 147px;
 	vertical-align: top;
 }
 
 .right {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/right.gif"; ?>') repeat-y;
+	background: url('<? echo "themes/$theme/images/$c[bg]/right.gif"; ?>') repeat-y;
 	width: 9px;
 	vertical-align: top;
 }
 
 .right2 {
 	background-color: #003366;
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/right2.gif"; ?>') repeat-y;
+	background: url('<? echo "themes/$theme/images/$c[bg]/right2.gif"; ?>') repeat-y;
 	width: 11px;
 	vertical-align: top;
 }
 
 
 .bottomleft {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/bottomleft.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/bottomleft.gif"; ?>') no-repeat;
 	width: 147px;
 	height: 76px;
 }
 
 .bottom {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/bottom.gif"; ?>') repeat-x;
+	background: url('<? echo "themes/$theme/images/$c[bg]/bottom.gif"; ?>') repeat-x;
 	height: 76px;
 }
 
 .bottomright1 {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/bottomright1.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/bottomright1.gif"; ?>') no-repeat;
 	width: 11px;
 	height: 76px;
 }
 
 .bottomright2 {
-	background: url('<? echo "$themesdir/$theme/images/$c[bg]/bottomright2.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[bg]/bottomright2.gif"; ?>') no-repeat;
 	width: 9px;
 	height: 76px;
 }

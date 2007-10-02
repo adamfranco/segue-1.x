@@ -14,11 +14,12 @@ if (!defined("CONFIGS_INCLUDED"))
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
-//print "$themesdir/$theme";
-include("$themesdir/common/functions.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+include("themes/common/functions.inc.php");
 
-if (file_exists("$themesdir/$theme/colors.inc.php"))
-	include("$themesdir/$theme/colors.inc.php");
+if (file_exists("themes/$theme/colors.inc.php"))
+	include("themes/$theme/colors.inc.php");
 	
 //$nav_arrange=2;
 
@@ -151,7 +152,7 @@ include("themes/$theme/css.inc.php");
 	</tr>
 	<tr>
 		<td class='left'>
-			<img class='lefttop' src='<? echo "$themesdir/$theme/images/bg/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+			<img class='lefttop' src='<? echo "themes/$theme/images/bg/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
 		</td>
 		<td class='content' >
 			<div class='content_wrapper'>
@@ -166,7 +167,7 @@ include("themes/$theme/css.inc.php");
 				<div>
 				<?
 				
-				$middHeader = file_get_contents("$themesdir/$theme/midd_header.html");
+				$middHeader = file_get_contents("themes/$theme/midd_header.html");
 				print str_replace('src="/images/', 'src="https://www.middlebury.edu/images/', $middHeader);		
 				?>
 				</div>
@@ -192,9 +193,9 @@ include("themes/$theme/css.inc.php");
 
 				print "\n\t\t\t\t<div id='site_header_title_bar'>";
 				
-				print "\n\t\t\t\t\t<img id='site_header_title_dots' src='$themesdir/$theme/white_dots01.gif' alt='background image' />";
+				print "\n\t\t\t\t\t<img id='site_header_title_dots' src='themes/$theme/white_dots01.gif' alt='background image' />";
 				
-				print "\n\t\t\t\t\t<img id='site_header_title_bg' src='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif' alt='background image' />";
+				print "\n\t\t\t\t\t<img id='site_header_title_bg' src='themes/$theme/images/sidenav/$c[imagelocation]/top.gif' alt='background image' />";
  				
 				
 				print "\n\t\t\t\t\t\t<div id='site_header_title'>";
@@ -223,8 +224,8 @@ include("themes/$theme/css.inc.php");
 // 					if (!$hasHeader) {
 // 						print "\n\t\t\t\t\t<table cellspacing='0' cellpadding='0' width='100%'>";
 // 						//print "\n\t\t\t\t\t<tr><td height='30px' class='navtop'>";
-// 						//print "\n\t\t\t\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border'/>";
-// 						print "\n\t\t\t\t\t<tr><td class='navtop' height='38px' background='$themesdir/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border''>";
+// 						//print "\n\t\t\t\t\t\t<img src='themes/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border'/>";
+// 						print "\n\t\t\t\t\t<tr><td class='navtop' height='38px' background='themes/$theme/images/sidenav/$c[imagelocation]/top.gif'  alt='border''>";
 // 					//	print "\n\t\t\t\t\t\t<div>";
 // 						print $thisSite->getField('title');
 // 						print "\n\t\t\t\t\t\t</div>";
@@ -249,12 +250,12 @@ include("themes/$theme/css.inc.php");
 					print "\n\t\t\t</td>";
 					print "\n\t\t\t</tr>";
 					print "\n\t\t\t\t\t<tr><td>";
-					print "\n\t\t\t\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/bottom.gif'  alt='border'/>";
+					print "\n\t\t\t\t\t\t<img src='themes/$theme/images/sidenav/$c[imagelocation]/bottom.gif'  alt='border'/>";
 					print "\n\t\t\t\t\t</td></tr>";										
 					print "\n\t\t\t</table>";
 					
 					
-			//		print "\n\t\t\t<img src='$themesdir/$theme/images/sidenav/$c[imagelocation]/bottom.gif' alt='border' />";
+			//		print "\n\t\t\t<img src='themes/$theme/images/sidenav/$c[imagelocation]/bottom.gif' alt='border' />";
 					print "\n\t\t\t</td>";
 					print "<!--   end left column   -->";
 				} 
@@ -339,7 +340,7 @@ include("themes/$theme/css.inc.php");
 		</td> 
 		<!-- end content table cell -->
 		<td class='right'>
-			<img class='righttop' src='<? echo "$themesdir/$theme/images/bg/$bg[bgshadow]/righttop.gif"?>' alt='rightop' />
+			<img class='righttop' src='<? echo "themes/$theme/images/bg/$bg[bgshadow]/righttop.gif"?>' alt='rightop' />
 		</td>
 	</tr>
 	<tr>

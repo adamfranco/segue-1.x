@@ -29,7 +29,7 @@ $themesettings = unserialize(stripslashes(($_REQUEST['themesettings'])));
 $theme = $_REQUEST['theme'];
 if (!preg_match('/^[a-z0-9_-]+$/i', $theme))
 	die('Error: invalid theme name, "'.$theme.'"');
-$filename = "$themesdir/$theme/themesettings.inc.php";
+$filename = "themes/$theme/themesettings.inc.php";
  
  
 if (file_exists($filename)) { 
@@ -76,7 +76,7 @@ if ($_REQUEST['submitted']) {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <?php 
-// include("$themesdir/common/header.inc.php"); 
+// include("themes/common/header.inc.php"); 
 ?>
 
 <script type='text/javascript'>

@@ -3,14 +3,16 @@
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
-//print "$themesdir/$theme";
 //exit();
 
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-if (file_exists("$themesdir/$theme/colors.inc.php"))
-	include("$themesdir/$theme/colors.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+if (file_exists("themes/$theme/colors.inc.php"))
+	include("themes/$theme/colors.inc.php");
 
 if ($themesettings[theme] == 'program') {   // indeed these settings are for this theme
 	$use = $themesettings[colorscheme];
@@ -184,7 +186,7 @@ include("themes/$theme/css.inc.php");
 			print "\n\t\t\t\t".$item[extra]."<br />";
 		}
 		if ($item[type] == 'heading') {
-			print "\n\t\t\t\t<img src='$themesdir/breadloaf/images/bullet.gif' border='0' align='absmiddle' alt='bullet icon' /> $item[name] :";
+			print "\n\t\t\t\t<img src='themes/breadloaf/images/bullet.gif' border='0' align='absmiddle' alt='bullet icon' /> $item[name] :";
 			if ($item[extra]) {
 				print "\n\t\t\t\t<div align='right'>";
 				print "\n\t\t\t\t\t".$item[extra];

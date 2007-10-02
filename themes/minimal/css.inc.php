@@ -10,7 +10,7 @@ body {
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-include("$themesdir/common/css.inc.php"); ?>
+include("themes/common/css.inc.php"); ?>
 
 /* ------------------------------------------ */
 /* THEME-SPECIFIC CLASSES */

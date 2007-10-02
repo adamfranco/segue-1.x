@@ -113,9 +113,9 @@ foreach ($possible_themes as $themename=>$longname) {
 	printc("<td align='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>");
 	
 	if (!in_array($themename, $admin_themes) || $_SESSION['atype'] == 'admin' || $_SESSION[siteObj]->getField("theme") == $themename ) {
-		printc("<a href=JavaScript:doPreviewWin(\"$themename\")><img src=$themesdir/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
+		printc("<a href=JavaScript:doPreviewWin(\"$themename\")><img src=themes/$themename/thumbnail.jpg border=0 title='Click here to preview this theme'></a></td>");
 	} else {
-		printc("<img src=$themesdir/$themename/thumbnail.jpg border=0></td>");
+		printc("<img src=themes/$themename/thumbnail.jpg border=0></td>");
 	}
 	
 	printc("<td align='center' valign='center' style='border-top: 1px solid #aaa;".(($_SESSION[siteObj]->getField("theme")==$themename)?" background-color: #eee":"")."'>$longname<br />");

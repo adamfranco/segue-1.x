@@ -464,11 +464,6 @@
 						"template4"=>"Advanced: Single Section",
 						"template5"=>"Advanced: Blank"
 						);
-						
-	/******************************************************************************
-	 * themesdir - the folder where all the themes are kept. shouldn't need changing
-	 ******************************************************************************/
-	$cfg['themesdir'] = $themesdir = "themes";
 	
 	/******************************************************************************
 	 * custom themes - array of additional themesm

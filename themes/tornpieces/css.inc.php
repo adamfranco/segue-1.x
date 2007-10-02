@@ -7,8 +7,11 @@ body {
 
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
+	
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
 
-include("$themesdir/common/css.inc.php"); ?>
+include("themes/common/css.inc.php"); ?>
 
 
 
@@ -86,47 +89,47 @@ body {
 /* more images */
 
 .topright {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/topright.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/topright.gif"; ?>') no-repeat;
 	width: 10px;
 	height: 12px;
 }
 
 .top {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/top.gif"; ?>') repeat-x;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/top.gif"; ?>') repeat-x;
 	height: 12px;
 }
 
 .topleft {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/topleft.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/topleft.gif"; ?>') no-repeat;
 	width: 10px;
 	height: 10px;
 }
 
 .right {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/right.gif"; ?>') repeat-y;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/right.gif"; ?>') repeat-y;
 	width: 10px;
 	vertical-align: top;
 }
 
 .left {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/left.gif"; ?>') repeat-y;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/left.gif"; ?>') repeat-y;
 	width: 10px;
 	vertical-align: top;
 }
 
 .bottomleft {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomleft.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottomleft.gif"; ?>') no-repeat;
 	width: 10px;
 	height: 18px;
 }
 
 .bottom {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottom.gif"; ?>') repeat-x;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottom.gif"; ?>') repeat-x;
 	height: 18px;
 }
 
 .bottomright {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomright.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottomright.gif"; ?>') no-repeat;
 	width: 10px;
 	height: 18px;
 }

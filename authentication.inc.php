@@ -6,8 +6,11 @@
 // - but adds functionality specific to segue. i may eventually combine these two into one
 
 // include the authentication modules
-foreach ($_auth_mods as $i) 
-	include("auth_mods/".urlencode($i).".inc.php");
+foreach ($_auth_mods as $i) {
+	if (!preg_match('/^[a-z_0-9]+$/i', $i))
+		die ('Error: invalid auth module, '.$i.'.');
+	include("auth_mods/".urlencode($i).".inc.php");	
+}
 
 $loginerror=0;
 $_loggedin=0;

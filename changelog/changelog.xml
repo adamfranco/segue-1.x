@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
+	<version number="1.8.8" date="2007-10-02">
+		<fix author='adam' date='2007-10-02'>
+			Went through each and every variable-include statement -- found by grepping for
+			/(include|require)(_once)?\s*\([^;]*\$/  -- and made sure that every variable
+			parameter into the include path has been filtered to prevent directory
+			or network traversal.
+		</fix>
+		<change author='adam' date='2007-10-02'>
+			The themes directory is no longer configurable.
+		</change>
+	</version>
 	<version number="1.8.7" date="2007-10-02">
 		<fix author='adam' date='2007-10-02'>
 			Can now access discussion posts.

@@ -9,7 +9,10 @@ div, p, td, span, input {
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-include("$themesdir/$theme/colors.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+include("themes/$theme/colors.inc.php");
 
 $colorschemes = array_keys($_theme_colors);
 $linkcolors = array_keys($_linkcolor);
@@ -58,5 +61,5 @@ foreach ($colorschemes as $s) {
 <?
 
 //All settings for Navigation are included here
-include("$themesdir/common/settings.inc.php");
+include("themes/common/settings.inc.php");
 ?>

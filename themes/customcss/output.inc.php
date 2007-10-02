@@ -14,10 +14,12 @@ if (!defined("CONFIGS_INCLUDED"))
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
-//print "$themesdir/$theme";
-include("$themesdir/common/functions.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
 
-include("$themesdir/common/nav.inc.php");
+include("themes/common/functions.inc.php");
+
+include("themes/common/nav.inc.php");
 
 if (!$themesettings['nav_arrange']) $nav_arrange = '1';
 $nav_arrange = $_nav_arrange[$themesettings['nav_arrange']];
@@ -53,7 +55,7 @@ include("themes/common/header.inc.php");
 		<? if ($themesettings['css'])
 				echo str_replace("\n", "\n\t\t", $themesettings['css']); 
 			else {
-				include("$themesdir/$theme/defaults.inc.php");
+				include("themes/$theme/defaults.inc.php");
 				echo str_replace("\n", "\n\t\t", $css); 
 			}
 		?>

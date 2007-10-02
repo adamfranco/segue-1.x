@@ -71,7 +71,8 @@ else if ($thisPage
 
 do {
 	// for publication sites
-	if ($supplement = preg_replace('/[^a-z0-9_-]/i', '', $_REQUEST[supplement])) {
+	$supplement = preg_replace('/[^a-z0-9_-]/i', '', $_REQUEST[supplement]);
+	if ($supplement) {
 		if ($thisSite->getField("type")=='publication' && ($supplement == 'listarticles' || $supplement == 'listissues')) {
 			include("$supplement.inc.php");
 			break;
@@ -193,7 +194,8 @@ do {
 	$topsections = !ereg("Side\+Sections",$thisSite->getField("themesettings"));
 	
 	// build the navbars
-	include("output_modules/".$thisSite->getField("type")."/navbars.inc.php");
+	$siteType = preg_replace('/[^a-z0-9_-]/i', '', $thisSite->getField("type"));
+	include("output_modules/".$siteType."/navbars.inc.php");
 	
 	if ($thisPage) {
 		$thisPage->fetchDown();
@@ -443,7 +445,9 @@ do {
 						 * include story output module
 						 ******************************************************************************/
 						printc("\n\t\t\t\t<div class='story'>\n\t\t\t\t\t");
-						$incfile = "output_modules/".$thisSite->getField("type")."/".$o->getField("type").".inc.php";
+						$siteType = preg_replace('/[^a-z0-9_-]/i', '', $thisSite->getField("type"));
+						$oType = preg_replace('/[^a-z0-9_-]/i', '', $o->getField("type"));
+						$incfile = "output_modules/".$siteType."/".$oType.".inc.php";
 					//	print $incfile; // debug
 						include($incfile);
 						printc("\n\t\t\t\t</div>");
@@ -547,7 +551,7 @@ do {
 		 * Print out link for stories RSS
 		 ******************************************************************************/
 		if (is_object($thisPage) && $thisPage->hasPermission("view", "everyone")) {
-			printc("\n\t\t\t\t<br />\n\t\t\t\t<div class='rss_link'>\n\t\t\t\t\t<a href='".preg_replace("/action=(viewsite|site)/","action=rss", htmlentities($_SERVER['REQUEST_URI']))."'>\n\t\t\t\t\t\t<img border='0' src='$cfg[themesdir]/common/images/rss_icon02.png' alt='rss' title='RSS feed of this page'/> RSS\n\t\t\t\t\t</a>\n\t\t\t\t</div>");
+			printc("\n\t\t\t\t<br />\n\t\t\t\t<div class='rss_link'>\n\t\t\t\t\t<a href='".preg_replace("/action=(viewsite|site)/","action=rss", htmlentities($_SERVER['REQUEST_URI']))."'>\n\t\t\t\t\t\t<img border='0' src='themes/common/images/rss_icon02.png' alt='rss' title='RSS feed of this page'/> RSS\n\t\t\t\t\t</a>\n\t\t\t\t</div>");
 		}	
 	
 	} // end if this page
@@ -581,10 +585,10 @@ if ($thisSite->isEditor()
 	print "\n<input type='submit' class='button' value='Edit This Site' onclick=\"window.location='$u&amp;$sid'\" />\n</div><br />";
 }
 if (is_object($thisPage) && $thisPage->hasPermission("view", "everyone")) {
-	print "<div style='font-size: 9px;' align='right'><img border='0' src='$cfg[themesdir]/common/images/rss_icon02.png' alt='rss' /> <a href='viewrss.php?site=$site' target='rss' onclick='doWindow(\"rss\",450,200)' class='navlink' title='click for more RSS feeds...'>More RSS...</a></div>";
+	print "<div style='font-size: 9px;' align='right'><img border='0' src='themes/common/images/rss_icon02.png' alt='rss' /> <a href='viewrss.php?site=$site' target='rss' onclick='doWindow(\"rss\",450,200)' class='navlink' title='click for more RSS feeds...'>More RSS...</a></div>";
 }	
 
-print "\n<br />\n<div align='right'>\n<div style='font-size: 1px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border='0' src='$cfg[themesdir]/common/images/segue_logo_trans_solid.gif' alt='segue_logo'/>\n</a>\n</div>";
+print "\n<br />\n<div align='right'>\n<div style='font-size: 1px;'>powered by segue</div>\n<a href='http://segue.sourceforge.net' target='_blank'>\n<img border='0' src='themes/common/images/segue_logo_trans_solid.gif' alt='segue_logo'/>\n</a>\n</div>";
 
 $sitefooter = $sitefooter . ob_get_contents();
 ob_end_clean();

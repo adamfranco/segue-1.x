@@ -48,6 +48,8 @@ if (!defined("CONFIGS_INCLUDED"))
 require_once($myDir."authentication.inc.php");
 
 // include the appropriate class functions for this network (stored in $_network)
+if (!preg_match('/^[a-z_0-9]+$/i', $_network))
+		die ('Error: invalid network, '.$_network.'.');
 $_f = $myDir."class_functions/" . $_network . ".inc.php";
 
 if (file_exists($_f)) {

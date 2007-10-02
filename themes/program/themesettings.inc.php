@@ -3,7 +3,10 @@
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-include("$themesdir/$theme/colors.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+include("themes/$theme/colors.inc.php");
 
 $schemes = array_keys($_theme_colors);
 

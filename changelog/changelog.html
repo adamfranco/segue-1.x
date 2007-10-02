@@ -22,7 +22,20 @@
 </head>
 <body>
 <h1>Segue ChangeLog</h1>
-<h2>Version 1.8.7</h2>
+<h2>Version 1.8.8</h2>
+<h3>2007-10-02</h3>
+<ul>
+		<li> Bug Fix:  
+			Went through each and every variable-include statement -- found by grepping for
+			/(include|require)(_once)?\s*\([^;]*\$/  -- and made sure that every variable
+			parameter into the include path has been filtered to prevent directory
+			or network traversal.
+		 (<em>Adam Franco</em>)</li>
+		<li> Change:  
+			The themes directory is no longer configurable.
+		 (<em>Adam Franco</em>)</li>
+	</ul>
+<br><h2>Version 1.8.7</h2>
 <h3>2007-10-02</h3>
 <ul>
 		<li> Bug Fix:  

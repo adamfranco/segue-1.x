@@ -14,11 +14,12 @@ if (!defined("CONFIGS_INCLUDED"))
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
-//print "$themesdir/$theme";
-include("$themesdir/common/functions.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+include("themes/common/functions.inc.php");
 
-if (file_exists("$themesdir/$theme/colors.inc.php"))
-	include("$themesdir/$theme/colors.inc.php");
+if (file_exists("themes/$theme/colors.inc.php"))
+	include("themes/$theme/colors.inc.php");
 	
 //$nav_arrange=2;
 
@@ -146,7 +147,7 @@ include("themes/$theme/css.inc.php");
 	</tr>	
 	<tr>
 		<td class='left'>
-			<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+			<img class='lefttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
 		</td>
 		<td class='content'>
 			<div class='header'>
@@ -179,7 +180,7 @@ include("themes/$theme/css.inc.php");
 			</div>
 		</td>
 		<td class='right'>
-			<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
+			<img class='righttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
 		</td>
 	</tr>
 	<tr>
@@ -211,7 +212,7 @@ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)
 				</tr>
 				<tr>
 					<td class='left'>
-						<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+						<img class='lefttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
 					</td>
 					<td class='content'>
 					
@@ -228,7 +229,7 @@ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)
 					
 					</td>
 					<td class='right'>
-						<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
+						<img class='lefttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
 					</td>
 				</tr>
 				<tr>
@@ -254,7 +255,7 @@ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)
 				</tr>
 				<tr>
 					<td class='left'>
-						<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+						<img class='lefttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
 					</td>
 					<td class='content'>
 					<?
@@ -262,7 +263,7 @@ if ($action == "viewsite" || $leftnav && ($hide_sidebar != 1 || $nav_arrange==2)
 					?>
 					</td>
 					<td class='right'>
-						<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
+						<img class='righttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
 					</td>
 				</tr>
 				<tr>
@@ -289,7 +290,7 @@ if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
 				</tr>
 				<tr>
 					<td class='left'>
-						<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+						<img class='lefttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
 					</td>
 					<td class='content'>
 					
@@ -302,7 +303,7 @@ if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
 					
 					</td>
 					<td class='right'>
-						<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
+						<img class='lefttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
 					</td>
 				</tr>
 				<tr>
@@ -333,7 +334,7 @@ if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
 	</tr>
 	<tr>
 		<td class='left'>
-			<img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
+			<img class='lefttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' />
 		</td>
 		<td class='content'>
 			<div class='topnav' align='center'>
@@ -359,7 +360,7 @@ if ($rightnav && ($hide_sidebar != 1 || $action == "viewsite")) {
 		
 	<!-- end content table cell -->
 		<td class='right'>
-			<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
+			<img class='righttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='border' />
 		</td>
 	</tr>
 	<tr>

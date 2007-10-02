@@ -398,7 +398,8 @@ if ($error) {
 				
 				if ($o->canview()) {
 					//get type of content
-					$incfile = "output_modules/rss/".$o->getField("type").".inc.php";
+					$oType = preg_replace('/[^a-z0-9_-]/i', '', $o->getField("type"));
+					$incfile = "output_modules/rss/".$oType.".inc.php";
 					
 					ob_start();
 					include($incfile);

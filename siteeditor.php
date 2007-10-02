@@ -12,7 +12,7 @@ include_once("includes.inc.php");
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 	
-include("$themesdir/common/header.inc.php");
+include("themes/common/header.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 

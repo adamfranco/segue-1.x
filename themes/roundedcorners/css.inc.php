@@ -1,7 +1,7 @@
 <style type='text/css'>
 
 body {
-	 	 background: url('<? echo "$themesdir/$theme/images/background/$bg[bgimage]"; ?>') repeat-x;
+	 	 background: url('<? echo "themes/$theme/images/background/$bg[bgimage]"; ?>') repeat-x;
 	 	 background-color: #<? echo $bg['bgcolor']; ?>; 
 
 }
@@ -11,7 +11,10 @@ body {
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-include("$themesdir/common/css.inc.php"); 
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+include("themes/common/css.inc.php"); 
 
 ?>
 
@@ -112,13 +115,13 @@ include("$themesdir/common/css.inc.php");
 /* top left outer border images */
 
 .r1c1 {
-	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c1.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "themes/$theme/images/$c[imagelocation]/r1c1.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 2px;
 }
 
 .r1c2 {
-	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c2.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "themes/$theme/images/$c[imagelocation]/r1c2.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 2px;
 }
@@ -127,7 +130,7 @@ include("$themesdir/common/css.inc.php");
 /* top border outer repeating image */
 
 .r1c3 {
-	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c3.gif"; ?>') repeat-x;*/
+	/*background:  url('<? echo "themes/$theme/images/$c[imagelocation]/r1c3.gif"; ?>') repeat-x;*/
 	height: 2px;
 }
 
@@ -135,14 +138,14 @@ include("$themesdir/common/css.inc.php");
 /* top right outer border images */
 
 .r1c4 {
-	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c4.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "themes/$theme/images/$c[imagelocation]/r1c4.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 2px;
 }
 
 
 .r1c5 {
-	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r1c5.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "themes/$theme/images/$c[imagelocation]/r1c5.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 2px;
 }
@@ -150,14 +153,14 @@ include("$themesdir/common/css.inc.php");
 /* top left inner border images */
 
 .r2c1 {
-	/*background:  url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c1.gif"; ?>') no-repeat;*/
+	/*background:  url('<? echo "themes/$theme/images/$c[imagelocation]/r2c1.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 16px;
 	overflow: hidden;
 }
 
 .r2c2 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c2.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[imagelocation]/r2c2.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 	overflow: hidden;
@@ -166,7 +169,7 @@ include("$themesdir/common/css.inc.php");
 /* top border inner repeating image */
 
 .r2c3 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c3.gif"; ?>') repeat-x;
+	background: url('<? echo "themes/$theme/images/$c[imagelocation]/r2c3.gif"; ?>') repeat-x;
 	height: 16px;
 	overflow: hidden;
 }
@@ -174,14 +177,14 @@ include("$themesdir/common/css.inc.php");
 /* top right inner border images */
 
 .r2c4 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c4.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[imagelocation]/r2c4.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 	overflow: hidden;
 }
 
 .r2c5 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r2c5.gif"; ?>') no-repeat;*/
+	/*background: url('<? echo "themes/$theme/images/$c[imagelocation]/r2c5.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 16px;
 	overflow: hidden;
@@ -190,13 +193,13 @@ include("$themesdir/common/css.inc.php");
 /* left side  repeating images */
 
 .r3c1 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r3c1.gif"; ?>') repeat-y;*/
+	/*background: url('<? echo "themes/$theme/images/$c[imagelocation]/r3c1.gif"; ?>') repeat-y;*/
 	width: 16px;
 	vertical-align: top;
 }
 
 .r3c2 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r3c2.gif"; ?>') repeat-y;
+	background: url('<? echo "themes/$theme/images/$c[imagelocation]/r3c2.gif"; ?>') repeat-y;
 	width: 16px;
 	vertical-align: top;
 }
@@ -204,13 +207,13 @@ include("$themesdir/common/css.inc.php");
 /* right side  repeating images */
 
 .r3c4 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r3c4.gif"; ?>') repeat-y;
+	background: url('<? echo "themes/$theme/images/$c[imagelocation]/r3c4.gif"; ?>') repeat-y;
 	width: 16px;
 	vertical-align: top;
 }
 
 .r3c5 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r3c5.gif"; ?>') repeat-y;*/
+	/*background: url('<? echo "themes/$theme/images/$c[imagelocation]/r3c5.gif"; ?>') repeat-y;*/
 	width: 16px;
 	vertical-align: top;
 }
@@ -219,13 +222,13 @@ include("$themesdir/common/css.inc.php");
 /* bottom left inner border images */
 
 .r4c1 {
-	//background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c1.gif"; ?>') no-repeat;
+	//background: url('<? echo "themes/$theme/images/$c[imagelocation]/r4c1.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 }
 
 .r4c2 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c2.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[imagelocation]/r4c2.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 }
@@ -233,7 +236,7 @@ include("$themesdir/common/css.inc.php");
 /* bottom border inner repeating image */
 
 .r4c3 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c3.gif"; ?>') repeat-x;
+	background: url('<? echo "themes/$theme/images/$c[imagelocation]/r4c3.gif"; ?>') repeat-x;
 	height: 16px;
 }
 
@@ -241,14 +244,14 @@ include("$themesdir/common/css.inc.php");
 /* bottom right inner border images */
 
 .r4c4 {
-	background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c4.gif"; ?>') no-repeat;
+	background: url('<? echo "themes/$theme/images/$c[imagelocation]/r4c4.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 }
 
 
 .r4c5 {
-	//background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r4c5.gif"; ?>') no-repeat;
+	//background: url('<? echo "themes/$theme/images/$c[imagelocation]/r4c5.gif"; ?>') no-repeat;
 	width: 16px;
 	height: 16px;
 }
@@ -256,14 +259,14 @@ include("$themesdir/common/css.inc.php");
 /* bottom left outer border images */
 
 .r5c1 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c1.gif"; ?>') no-repeat;*/
+	/*background: url('<? echo "themes/$theme/images/$c[imagelocation]/r5c1.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 2px;
 }
 
 
 .r5c2 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c2.gif"; ?>') no-repeat;*/
+	/*background: url('<? echo "themes/$theme/images/$c[imagelocation]/r5c2.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 2px;
 }
@@ -271,7 +274,7 @@ include("$themesdir/common/css.inc.php");
 /* bottom border outer repeating image */
 
 .r5c3 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c3.gif"; ?>') repeat-x;*/
+	/*background: url('<? echo "themes/$theme/images/$c[imagelocation]/r5c3.gif"; ?>') repeat-x;*/
 	height: 2px;
 }
 
@@ -279,14 +282,14 @@ include("$themesdir/common/css.inc.php");
 /* bottom right outer border images */
 
 .r5c4 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c4.gif"; ?>') no-repeat;*/
+	/*background: url('<? echo "themes/$theme/images/$c[imagelocation]/r5c4.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 2px;
 }
 
 
 .r5c5 {
-	/*background: url('<? echo "$themesdir/$theme/images/$c[imagelocation]/r5c5.gif"; ?>') no-repeat;*/
+	/*background: url('<? echo "themes/$theme/images/$c[imagelocation]/r5c5.gif"; ?>') no-repeat;*/
 	width: 16px;
 	height: 2px;
 }

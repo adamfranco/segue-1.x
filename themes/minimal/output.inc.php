@@ -14,11 +14,12 @@ if (!defined("CONFIGS_INCLUDED"))
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
-//print "$themesdir/$theme";
-include("$themesdir/common/functions.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+include("themes/common/functions.inc.php");
 
-if (file_exists("$themesdir/$theme/colors.inc.php"))
-	include("$themesdir/$theme/colors.inc.php");
+if (file_exists("themes/$theme/colors.inc.php"))
+	include("themes/$theme/colors.inc.php");
 	
 //$nav_arrange=2;
 

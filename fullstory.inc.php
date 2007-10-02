@@ -85,7 +85,9 @@ if ($storyObj->getField("type") == 'story') {
 	$fulltext .= makedownloadbar($storyObj);
 } else {
 	$fulltext = "<br />";
-	$incfile = "output_modules/".$siteObj->getField("type")."/".$storyObj->getField("type").".inc.php";
+	$siteType = preg_replace('/[^a-z0-9_-]/i', '', $siteObj->getField("type"));
+	$storyType = preg_replace('/[^a-z0-9_-]/i', '', $storyObj->getField("type"));
+	$incfile = "output_modules/".$siteType."/".$storyType.".inc.php";
 	//	print $incfile; // debug
 		include($incfile);
 	$fulltext .= $content;

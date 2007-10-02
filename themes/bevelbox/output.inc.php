@@ -15,11 +15,14 @@ if (!defined("CONFIGS_INCLUDED"))
 //$nav_arrange = 2;	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
-//print "$themesdir/$theme";
-include("$themesdir/common/functions.inc.php");
 
-if (file_exists("$themesdir/$theme/colors.inc.php"))
-	include("$themesdir/$theme/colors.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+include("themes/common/functions.inc.php");
+
+if (file_exists("themes/$theme/colors.inc.php"))
+	include("themes/$theme/colors.inc.php");
 
 if ($themesettings[theme] == 'bevelbox') {   // indeed these settings are for this theme
 
@@ -150,7 +153,7 @@ print $siteheader;
     <? echo $title ?>
 	</td>
 	<td>
-    <div align="right"><img src='<? echo "$themesdir/$theme/images/$c[bg]/midd.gif" ?>' alt='midd' width="121px" height="43px" /></div>
+    <div align="right"><img src='<? echo "themes/$theme/images/$c[bg]/midd.gif" ?>' alt='midd' width="121px" height="43px" /></div>
     </td>
     </tr>
     </table>

@@ -74,5 +74,5 @@ $_linkcolor = array(
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-include("$themesdir/common/nav.inc.php");
+include("themes/common/nav.inc.php");
 

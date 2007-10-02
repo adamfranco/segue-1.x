@@ -12,8 +12,11 @@ if (!defined("CONFIGS_INCLUDED"))
 /*********************************************************
  * Navigation defaults
  *********************************************************/
-include("$themesdir/common/nav.inc.php");
-include("$themesdir/$theme/defaults.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+include("themes/common/nav.inc.php");
+include("themes/$theme/defaults.inc.php");
 
 $nav_arranges = array_keys($_nav_arrange);
 

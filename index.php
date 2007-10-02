@@ -253,12 +253,13 @@ else if ($action)
 
 // if we don't already have content (probably login error messages), then output some shite
 if (!$loginerror) {
-	
+	if (!preg_match('/^[a-z_0-9]+$/i', $_SESSION[ltype]))
+		die ('Error: invalid ltype, '.$_SESSION[ltype].'.');
 	$try = $action.".".$_SESSION[ltype].".inc.php";			// first try a ltype-specific action file
 	if (file_exists($try)) {					// yes, indeed
 		include($try);
 	} else {
-		$try = "$action.inc.php";				// try a general one
+		$try = $action.".inc.php";				// try a general one
 		if (file_exists($try)) {
 			//print $action; exit();
 			include($try);
@@ -320,7 +321,11 @@ if ($themesettings) $themesettings = decode_array($themesettings);
 //output the HTML
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
-include("$themesdir/$theme/output.inc.php");
+
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+		
+include("themes/$theme/output.inc.php");
 
 // ------------------
 // if register_globals is off, we have to do some hacking to get things to work:

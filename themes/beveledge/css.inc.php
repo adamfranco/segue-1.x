@@ -8,7 +8,10 @@ body {
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-include("$themesdir/common/css.inc.php"); ?>
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+include("themes/common/css.inc.php"); ?>
 
 
 /* ------------------------------------------ */
@@ -89,47 +92,47 @@ include("$themesdir/common/css.inc.php"); ?>
 /* Body images */
 
 .topright {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/topright.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/topright.gif"; ?>') no-repeat;
 	width: 25px;
 	height: 7px;
 }
 
 .top {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/top.gif"; ?>') repeat-x;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/top.gif"; ?>') repeat-x;
 	height: 7px;
 }
 
 .topleft {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/topleft.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/topleft.gif"; ?>') no-repeat;
 	width: 25px;
 	height: 7px;
 }
 
 .right {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/right.gif"; ?>') repeat-y;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/right.gif"; ?>') repeat-y;
 	width: 25px;
 	vertical-align: top;
 }
 
 .left {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/left.gif"; ?>') repeat-y;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/left.gif"; ?>') repeat-y;
 	width: 25px;
 	vertical-align: top;
 }
 
 .bottomleft {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomleft.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottomleft.gif"; ?>') no-repeat;
 	width: 25px;
 	height: 7px;
 }
 
 .bottom {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottom.gif"; ?>') repeat-x;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottom.gif"; ?>') repeat-x;
 	height: 7px;
 }
 
 .bottomright {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomright.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottomright.gif"; ?>') no-repeat;
 	width: 25px;
 	height: 7px;
 }
@@ -143,47 +146,47 @@ include("$themesdir/common/css.inc.php"); ?>
 
 /*  Status Images */
 .topright-s {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/topright-s.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/topright-s.gif"; ?>') no-repeat;
 	width: 25px;
 	height: 7px;
 }
 
 .top-s {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/top-s.gif"; ?>') repeat-x;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/top-s.gif"; ?>') repeat-x;
 	height: 7px;
 }
 
 .topleft-s {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/topleft-s.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/topleft-s.gif"; ?>') no-repeat;
 	width: 25px;
 	height: 7px;
 }
 
 .right-s {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/right-s.gif"; ?>') repeat-y;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/right-s.gif"; ?>') repeat-y;
 	width: 25px;
 	vertical-align: top;
 }
 
 .left-s {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/left-s.gif"; ?>') repeat-y;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/left-s.gif"; ?>') repeat-y;
 	width: 25px;
 	vertical-align: top;
 }
 
 .bottomleft-s {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomleft-s.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottomleft-s.gif"; ?>') no-repeat;
 	width: 25px;
 	height: 7px;
 }
 
 .bottom-s {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottom-s.gif"; ?>') repeat-x;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottom-s.gif"; ?>') repeat-x;
 	height: 7px;
 }
 
 .bottomright-s {
-	background: white url('<? echo "$themesdir/$theme/images/$bg[bgshadow]/bottomright-s.gif"; ?>') no-repeat;
+	background: white url('<? echo "themes/$theme/images/$bg[bgshadow]/bottomright-s.gif"; ?>') no-repeat;
 	width: 25px;
 	height: 7px;
 }

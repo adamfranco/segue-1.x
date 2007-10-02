@@ -14,11 +14,14 @@ if (!defined("CONFIGS_INCLUDED"))
 	
 /* -------------- THEME SETTINGS ---------------------	*/
 /*		handle the $themesettings array					*/
-//print "$themesdir/$theme";
-include("$themesdir/common/functions.inc.php");
 
-if (file_exists("$themesdir/$theme/colors.inc.php"))
-	include("$themesdir/$theme/colors.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+
+include("themes/common/functions.inc.php");
+
+if (file_exists("themes/$theme/colors.inc.php"))
+	include("themes/$theme/colors.inc.php");
 	
 //$nav_arrange=2;
 
@@ -146,7 +149,7 @@ include("themes/$theme/css.inc.php");
 		<td class='topright'></td>
 	</tr>
 	<tr>
-		<td class='left'><img class='lefttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' /></td>
+		<td class='left'><img class='lefttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/lefttop.gif"?>' alt='border' /></td>
 		<td class='content'>
 			<div class='header'>
 			
@@ -234,7 +237,7 @@ print $sitefooter
 		</td> 
 <!-- end content table cell -->
 		<td class='right'>
-			<img class='righttop' src='<? echo "$themesdir/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='rightop' />
+			<img class='righttop' src='<? echo "themes/$theme/images/$bg[bgshadow]/righttop.gif"?>' alt='rightop' />
 		</td>
 	</tr>
 	<tr>

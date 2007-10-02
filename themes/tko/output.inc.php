@@ -14,10 +14,13 @@
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");;
 
-include("$themesdir/common/functions.inc.php");
+include("themes/common/functions.inc.php");
 
-if (file_exists("$themesdir/$theme/colors.inc.php"))
-	include("$themesdir/$theme/colors.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+		
+if (file_exists("themes/$theme/colors.inc.php"))
+	include("themes/$theme/colors.inc.php");
 
 
 /* ------------------- END THEME SETTINGS---------------------	*/
@@ -54,8 +57,8 @@ include("themes/$theme/css.inc.php");
 
 <table border='0' width='700' cellpadding='0' cellspacing='0'>
 <tr>
-<td width='700' height='150' background='<? echo "$themesdir/$theme/images/banner.gif"; ?>'>
-	<img src='<? echo "$themesdir/$theme/images/150spacer.gif"; ?>' border='0' height='120' width='1' /><br />
+<td width='700' height='150' background='<? echo "themes/$theme/images/banner.gif"; ?>'>
+	<img src='<? echo "themes/$theme/images/150spacer.gif"; ?>' border='0' height='120' width='1' /><br />
 	<!-- main header content -->
 	<table border='0' width='100%' style='height: 30px' cellpadding='0' cellspacing='0'>
 	<tr>
@@ -108,7 +111,7 @@ include("themes/$theme/css.inc.php");
 		if ($item[type] == 'normal') {
 			$samepage = (isset($page) && ($page == $item[id]))?1:0;
 			if (!$page) $samepage = ($action && ($action == $item[id]))?1:0;
-			$gif = "$themesdir/$theme/images/". (($samepage)?"lis.gif":"li.gif");
+			$gif = "themes/$theme/images/". (($samepage)?"lis.gif":"li.gif");
 			print "<td valign='middle'><img src='$gif' border='0' style='padding-right: 4px; padding-top: 1px' /></td>";
 			print "<td class='nav'>";
 			print tkoMakelink($item,0," class='navlink' ",1);
@@ -130,7 +133,7 @@ include("themes/$theme/css.inc.php");
 		if ($item[type] == 'normal') {
 			$samepage = (isset($section) && ($section == $item[id]))?1:0;
 			if (!$section) $samepage = ($action && ($action == $item[id]))?1:0;
-			$gif = "$themesdir/$theme/images/". (($samepage)?"lis.gif":"li.gif");
+			$gif = "themes/$theme/images/". (($samepage)?"lis.gif":"li.gif");
 			print "<td valign='middle'><img src='$gif' border='0' style='padding-right: 4px; padding-top: 1px' /></td>";
 			print "<td class='nav'>";
 			print tkoMakelink($item,0," class='navlink' ",1);

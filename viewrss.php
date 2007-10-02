@@ -40,13 +40,13 @@ All the content blocks on Segue pages that are public are available in RSS forma
 </tr><tr>
 <td align='left'>
 <?
-print "<img border='0' src='".$cfg[themesdir]."/common/images/rss_icon02.png' alt='rss' /> ";
+print "<img border='0' src='themes/common/images/rss_icon02.png' alt='rss' /> ";
 print "<a href='".$_full_uri."/index.php?site=$site&amp;action=rss&amp;scope=allcontent' target='new_window'>";
 print "Recently Edited Content RSS</a><br />";
 print "This is an RSS feed of recently edited content on this site that is publicly viewable.";
 print "</td></tr>";
 print "<tr><td align='left'>";
-print "<img border='0' src='".$cfg[themesdir]."/common/images/rss_icon02.png' alt='rss' /> ";
+print "<img border='0' src='themes/common/images/rss_icon02.png' alt='rss' /> ";
 print "<a href='".$_full_uri."/index.php?site=$site&amp;action=rss&amp;scope=alldiscuss' target='new_window'>";
 print "Recent Discussion Posts RSS</a><br />";
 print "This is an RSS feed of recent discussions on this site that are publicly viewable.";

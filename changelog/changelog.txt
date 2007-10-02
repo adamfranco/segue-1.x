@@ -3,6 +3,21 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.8 (2007-10-02)
+----------------------------------------------------
+		
+	* Bug Fix: 
+		Went through each and every variable-include statement -- found by grepping
+		for /(include|require)(_once)?\s*\([^;]*\$/ -- and made sure that every
+		variable parameter into the include path has been filtered to prevent
+		directory or network traversal.
+		(Adam Franco)
+		
+	* Change: 
+		
+		The themes directory is no longer configurable.
+		(Adam Franco)
+	
 v. 1.8.7 (2007-10-02)
 ----------------------------------------------------
 		

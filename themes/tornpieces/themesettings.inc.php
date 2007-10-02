@@ -9,7 +9,10 @@ div, p, td, span, input {
 if (!defined("CONFIGS_INCLUDED"))
 	die("Error: improper application flow. Configuration must be included first.");
 
-include("$themesdir/$theme/colors.inc.php");
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+		die ('Error: invalid theme, "'.$theme.'".');
+		
+include("themes/$theme/colors.inc.php");
 
 $bgcolors = array_keys($_bgcolor);
 $colorschemes = array_keys($_theme_colors);
@@ -135,5 +138,5 @@ Note: Make sure that your text stands out from background and that your text and
 <?
 
 //All settings for Navigation are included here
-include("$themesdir/common/settings.inc.php");
+include("themes/common/settings.inc.php");
 ?>

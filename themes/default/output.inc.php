@@ -34,6 +34,8 @@ if (!defined("CONFIGS_INCLUDED"))
 /******************************************************************************
  * Commom header stuff
  ******************************************************************************/
+if (!preg_match('/^[a-z_0-9]+$/i', $theme))
+	die ('Error: invalid theme, "'.$theme.'".');
 include("themes/common/header.inc.php");
 include("themes/$theme/css.inc.php"); 
 

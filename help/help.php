@@ -2,7 +2,7 @@
 
 include("../config.inc.php");
 
-$helptopic = urlencode($_REQUEST["helptopic"]);
+$helptopic = urlencode($storyType = preg_replace('/[^a-z0-9_-\s]/i', '', $_REQUEST["helptopic"]));
 
 $file = "topics/$helptopic.inc.php";
 //print $file;

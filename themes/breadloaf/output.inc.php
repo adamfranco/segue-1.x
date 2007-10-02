@@ -85,7 +85,7 @@ while (ob_get_level())
 			if ($item[type] == 'heading') {
 				if (!defined("CONFIGS_INCLUDED"))
 					die("Error: improper application flow. Configuration must be included first.");
-				print "<img src='$themesdir/breadloaf/images/bullet.gif' border='0' align='absmiddle' /> $item[name] :";
+				print "<img src='themes/breadloaf/images/bullet.gif' border='0' align='absmiddle' /> $item[name] :";
 				if ($item[extra]) print "<div align='right'>$item[extra]</div>";
 			}
 		}
