@@ -26,7 +26,7 @@ if ($_SESSION['ltype'] == 'admin') {	// must be admin to do this:
 		$_SESSION[atype] = $x[type];
 		$_SESSION[aid] = $x[id];
 		$_SESSION[amethod] = $x[method];
-		log_entry("change_auser","$_SESSION['luser'] as $_SESSION['auser']");
+		log_entry("change_auser",$_SESSION['luser']." as ".$_SESSION['auser']);
 		
 		
 		unset($_SESSION["discussion_set"]);
