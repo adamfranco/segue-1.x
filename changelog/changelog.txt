@@ -3,6 +3,15 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.6 (2007-10-02)
+----------------------------------------------------
+		
+	* Bug Fix: 
+		Updated all instances of $luser, $auser, $ltype, $atype, etcetera to look in
+		the $_SESSION so they will work properly without the semi-register-globals
+		hack that caused the recent security vulnerability.
+		(Adam Franco)
+	
 v. 1.8.5 (2007-10-01)
 ----------------------------------------------------
 		
