@@ -3,6 +3,14 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.9 (2007-10-02)
+----------------------------------------------------
+		
+	* Bug Fix: 
+		
+		Fixed "invalid ltype" error when not authenticated.
+		(Adam Franco)
+	
 v. 1.8.8 (2007-10-02)
 ----------------------------------------------------
 		

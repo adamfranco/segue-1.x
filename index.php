@@ -251,9 +251,9 @@ else if ($action)
 	$action = preg_replace('/[^a-z0-9_-]/i', '', $action);
 //print"ok"; exit();
 
-// if we don't already have content (probably login error messages), then output some shite
+// if we don't already have content (probably login error messages), then output some stuff
 if (!$loginerror) {
-	if (!preg_match('/^[a-z_0-9]+$/i', $_SESSION[ltype]))
+	if ($_SESSION[ltype] && !preg_match('/^[a-z_0-9]+$/i', $_SESSION[ltype]))
 		die ('Error: invalid ltype, '.$_SESSION[ltype].'.');
 	$try = $action.".".$_SESSION[ltype].".inc.php";			// first try a ltype-specific action file
 	if (file_exists($try)) {					// yes, indeed

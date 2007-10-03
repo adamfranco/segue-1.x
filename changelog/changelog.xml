@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
+	<version number="1.8.9" date="2007-10-02">
+		<fix author='adam' date='2007-10-02'>
+			Fixed "invalid ltype" error when not authenticated.
+		</fix>
+	</version>
 	<version number="1.8.8" date="2007-10-02">
 		<change author='adam' date='2007-10-02'>
 			Went through each and every variable-include statement -- found by grepping for
