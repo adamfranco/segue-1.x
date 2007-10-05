@@ -76,7 +76,7 @@ if ($_REQUEST['revert']) {
 
 	$version_short = stripslashes(urldecode($version[0]['version_text_short']));
 	$version_long = stripslashes(urldecode($version[0]['version_text_long']));
-	$story_id = $story;
+	$story_id = $_REQUEST['story'];
 	$version_comments = "reverted to revision ".$_REQUEST['revert'];
 	
 	save_version ($version_short, $version_long, $story_id, $version_comments);
@@ -92,7 +92,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	$_SESSION['oldversion'][$_REQUEST['story']] = $_REQUEST['oldversion'];
 	$_SESSION['newversion'][$_REQUEST['story']] = $_REQUEST['newversion'];
 		
-	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;versioning=".$_REQUEST['story']."'>All Versions</a>");
 	printc(" > Selected Versions");
 	
 } else if ($_REQUEST['versioning']) {
@@ -116,7 +116,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	$smalltext = urldecode($smalltext);
 	$fulltext = urldecode($fulltext);
 		
-	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;versioning=".$_REQUEST['story']."'>All Versions</a>");
 	printc(" > Selected Versions");
 	
 	printc("<tr><td>");
@@ -126,7 +126,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	
 	// revert to this version link (top)
 	if ($storyObj->hasPermission("edit")) {
-		printc("<a class='btnlink2' href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;revert=$version_num&amp;versioning=$story&amp;comingFrom=viewsite'>Revert to this Version</a>\n");		
+		printc("<a class='btnlink2' href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;revert=".$version_num."&amp;versioning=".$_REQUEST['story']."&amp;comingFrom=viewsite'>Revert to this Version</a>\n");		
 	}
 	
 	printc("</td></td></table><br />");
@@ -150,9 +150,9 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	require_once('DiffEngine.php');
 	$formatter =& new SegueTableDiffFormatter;
 
-	$version01 = get_versions($story, $_REQUEST['oldversion']);
+	$version01 = get_versions($_REQUEST['story'], $_REQUEST['oldversion']);
 	$version01_num = $version01[0]['version_order'];
-	$version02 = get_versions($story, $_REQUEST['newversion']);
+	$version02 = get_versions($_REQUEST['story'], $_REQUEST['newversion']);
 	$version02_num = $version02[0]['version_order'];
 	$smalltext01 = convertTagsToInteralLinks($siteObj->name, stripslashes(urldecode($version01[0]['version_text_short'])));
 	$smalltext02 = convertTagsToInteralLinks($siteObj->name, stripslashes(urldecode($version02[0]['version_text_short'])));	
@@ -167,13 +167,13 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	ob_start();
 	print "\n<tr>";
 	print "\n\t<th>";
-	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version01_num'>Revision ".$version01_num."</a> ";
+	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;version=".$_REQUEST['version01_num']."'>Revision ".$_REQUEST['version01_num']."</a> ";
 	print "<span class='timestamp'>";
 	print "(".$version01[0]['version_created_tstamp']." - ".$version01[0]['FK_createdby'].")\n";
 	print "</span>";
 	print "</th>";
 	print "\n\t<th>";
-	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version02_num'>Revision ".$version02_num."</a> ";
+	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;version=".$_REQUEST['version02_num']."'>Revision ".$_REQUEST['version02_num']."</a> ";
 	print "<span class='timestamp'>";
 	print "(".$version02[0]['version_created_tstamp']." - ".$version02[0]['FK_createdby'].")\n";
 	print "</span>";
@@ -262,7 +262,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 
 } else if ($_REQUEST['versioning']) {
 	printc("\n<tr>\n\t<td>\n\t\t");
-	$u = "$PHP_SELF?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=1";
+	$u = "$PHP_SELF?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;versioning=1";
 	printc("<form action='$u' method='post'>\n");
 	
 	ob_start();
@@ -361,7 +361,7 @@ END;
 	// compare selected versions button (top)
 	printc("<table cellspacing='3' width='100%'>\n\t<tr>");
 	if ($action == "viewsite") {
-		printc("\n\t<td align='left'><a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=$site&amp;section=$section&amp;page=$page&amp;edit_story=$story&amp;comingFrom=viewsite'>Edit current version</a></td>\n");
+		printc("\n\t<td align='left'><a class='btnlink2' href='index.php?$sid&amp;action=edit_story&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;edit_story=".$_REQUEST['story']."&amp;comingFrom=viewsite'>Edit current version</a></td>\n");
 	}
 	printc("\n\t<td align='right'><button type='submit' class='button' value='compare' onclick=\"window.location='$u'\">Compare selected revisions &gt;&gt;</button></td>");
 	printc("\n\t</tr>\n</table>");
@@ -443,12 +443,12 @@ END;
 			printc("<td  class='");
 		printc($shadeStyle);
 		printc("'>");
-		printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;detail=$story'>Revision $version_num</a> (current)</td>");
+		printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;detail=".$_REQUEST['story']."'>Revision ".$version_num."</a> (current)</td>");
 		} else {
 			printc("<td class='");
 		printc($shadeStyle);
 		printc("'>");
-		printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;version=$version_num'>Revision $version_num</a></td>");
+		printc("<a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;version=".$version_num."'>Revision ".$version_num."</a></td>");
 		}
 		
 		printc("<td class='");
@@ -492,7 +492,7 @@ END;
 // Revert to this version link (bottom location)
 if ($_REQUEST['version']  && $storyObj->hasPermission("edit")) {
 	printc("\n\t<tr><td align='center'><br />");
-	printc("<a class='btnlink2' href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;revert=$version_num&amp;versioning=$story&amp;comingFrom=viewsite'>Revert to this Version</a>\n");		
+	printc("<a class='btnlink2' href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;revert=".$version_num."&amp;versioning=".$_REQUEST['story']."&amp;comingFrom=viewsite'>Revert to this Version</a>\n");		
 	printc("</td></tr>\n");
 }
 
@@ -509,7 +509,7 @@ if ($storyObj->getField('title')) {
 }
 
 if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
-	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;versioning=".$_REQUEST['story']."'>All Versions</a>");
 	printc(" > Selected Versions");
 	
 } else if ($_REQUEST['versioning']) {
@@ -520,7 +520,7 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
  ******************************************************************************/
  
 } else if ($_REQUEST['version']) {
-	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=$site&amp;section=$section&amp;page=$page&amp;story=$story&amp;versioning=$story'>All Versions</a>");
+	printc(" > <a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;versioning=".$_REQUEST['story']."'>All Versions</a>");
 	printc(" > Revision ".$version_num);
 	
 } else {
