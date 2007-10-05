@@ -167,13 +167,13 @@ if ($_REQUEST['oldversion'] && $_REQUEST['newversion']) {
 	ob_start();
 	print "\n<tr>";
 	print "\n\t<th>";
-	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;version=".$_REQUEST['version01_num']."'>Revision ".$_REQUEST['version01_num']."</a> ";
+	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;version=".$version01_num."'>Revision ".$version01_num."</a> ";
 	print "<span class='timestamp'>";
 	print "(".$version01[0]['version_created_tstamp']." - ".$version01[0]['FK_createdby'].")\n";
 	print "</span>";
 	print "</th>";
 	print "\n\t<th>";
-	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;version=".$_REQUEST['version02_num']."'>Revision ".$_REQUEST['version02_num']."</a> ";
+	print "<a href='index.php?$sid&amp;action=".$action."&amp;site=".$_REQUEST['site']."&amp;section=".$_REQUEST['section']."&amp;page=".$_REQUEST['page']."&amp;story=".$_REQUEST['story']."&amp;version=".$version02_num."'>Revision ".$version02_num."</a> ";
 	print "<span class='timestamp'>";
 	print "(".$version02[0]['version_created_tstamp']." - ".$version02[0]['FK_createdby'].")\n";
 	print "</span>";
