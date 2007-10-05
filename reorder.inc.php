@@ -100,7 +100,7 @@ if ($_REQUEST['reorderPage']) {
 		FROM
 			story
 		WHERE
-			FK_page = '".addslashes($page)."'
+			FK_page = '".addslashes($_REQUEST['page'])."'
 		ORDER BY story_order			
 	";
 	
