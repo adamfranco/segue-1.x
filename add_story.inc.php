@@ -199,13 +199,12 @@ $sitefooter = "";
 
 if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
-	print "cancelling...";
 	if ($comingFrom) {	
-		$headerText = "Location: index.php?$sid&action=$comingFrom&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page.(($_SESSION[settings][story_set])?"&story_set=".($_SESSION[settings][story_set]):"");
+		$headerText = "Location: index.php?$sid&action=$comingFrom&site=".$_SESSION[storyObj]->owning_site."&section=".$_SESSION[storyObj]->owning_section."&page=".$_SESSION[storyObj]->owning_page.(($_SESSION[settings][story_set])?"&story_set=".($_SESSION[settings][story_set]):"");
 	} else if ($_SESSION[settings][goback]) {
 		$headerText = "Location: index.php?$sid&action=site&site=".$thisSite->name."&section=".$thisSection->id."&page=".$thisPage->id."&story=".$_SESSION[storyObj]->id."&detail=".$_SESSION[storyObj]->id;
 	} else {
-		$headerText = "Location: index.php?$sid&action=viewsite&site=".$storyObj->owning_site."&section=".$storyObj->owning_section."&page=".$storyObj->owning_page.(($_SESSION[settings][story_set])?"&story_set=".($_SESSION[settings][story_set]):"");
+		$headerText = "Location: index.php?$sid&action=viewsite&site=".$_SESSION[storyObj]->owning_site."&section=".$_SESSION[storyObj]->owning_section."&page=".$_SESSION[storyObj]->owning_page.(($_SESSION[settings][story_set])?"&story_set=".($_SESSION[settings][story_set]):"");
 	}
 	
 	unset($_SESSION[storyObj], $_SESSION[settings]);

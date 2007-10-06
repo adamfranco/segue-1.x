@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue ChangeLog">
 	<version number="1.8.10" date="The Future">
+		<fix author='adam' date='2007-10-05' ref='1808317' reftype='bug'>
+			Move/Copy UI now works.
+		</fix>
+		<fix author='adam' date='2007-10-05' ref='1808405' reftype='bug'>
+			Cancel buttons in story and page wizards are now working.
+		</fix>
 		<fix author='adam' date='2007-10-05' ref='1808316' reftype='bug'>
 			Reordering of content blocks now works.
 		</fix>

@@ -1,6 +1,4 @@
 <? /* $Id$ */
-// error_reporting(E_PARSE | E_ERROR);
-
 
 	// this file controls pretty much the entire program, taking input and executing the correct scripts accordingly
 

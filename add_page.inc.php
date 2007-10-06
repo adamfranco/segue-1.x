@@ -151,7 +151,7 @@ if ($_REQUEST[cancel]) {
 	$comingFrom = $_SESSION[settings][comingFrom];
 	print "cancelling...";
 	if ($comingFrom) {	
-		$headerText = "Location: index.php?$sid&action=$comingFrom&site=".$pageObj->owning_site."&section=".$pageObj->owning_section."&page=".$_SESSION[pageObj]->id;
+		$headerText = "Location: index.php?$sid&action=$comingFrom&site=".$_SESSION[pageObj]->owning_site."&section=".$_SESSION[pageObj]->owning_section."&page=".$_SESSION[pageObj]->id;
 	}
 	
 	unset($_SESSION[pageObj], $_SESSION[settings]);
@@ -166,10 +166,10 @@ if ($_REQUEST[save]) {
 		error("You must enter a title.");
 	
 	} else if ($_SESSION[pageObj]->getField("type")=='page') {
-		$page_titles = getPageTitles ($pageObj->owning_section);
+		$page_titles = getPageTitles ($_SESSION[pageObj]->owning_section);
 		
 		foreach ($page_titles as $page_title => $page_id) {			
-			if (strtolower($_SESSION[pageObj]->getField("title") == strtolower($page_title)) && ($pageObj->id != $page_id)) {
+			if (strtolower($_SESSION[pageObj]->getField("title") == strtolower($page_title)) && ($_SESSION[pageObj]->id != $page_id)) {
 				error("This section already has a title with this name.  Please choose another title");
 			}
 		}	
