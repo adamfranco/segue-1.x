@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
--- Segue v. 1.0.0
+-- Segue v. 1.x
 --						INSTALLATION INSTRUCTIONS
 --
--- All files, code, etc are copyright 2003 Middlebury College unless otherwise
+-- All files, code, etc are copyright 2007 Middlebury College unless otherwise
 -- noted.
 -- 
 -- $Id$
@@ -17,7 +17,7 @@ The following services are required:
 
 1) A web server (preferrably Apache)
 2) PHP > 4.3.0
-3) a MySQL server
+3) a MySQL server > 4.1.22
 
 PHP configuration:
 1) register_globals must be ON due to a session-related bug in PHP4 in how it handles

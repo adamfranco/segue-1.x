@@ -3,6 +3,44 @@
 Name: Segue ChangeLog
 
 
+v. 1.8.10 (2007-10-05)
+----------------------------------------------------
+		
+	* Bug Fix: #1808317 
+		
+		Move/Copy UI now works.
+		(Adam Franco)
+		
+	* Bug Fix: #1808405 
+		
+		Cancel buttons in story and page wizards are now working.
+		(Adam Franco)
+		
+	* Bug Fix: #1808316 
+		
+		Reordering of content blocks now works.
+		(Adam Franco)
+		
+	* Bug Fix: #1808315 
+		
+		Comparing and reverting of versions now works.
+		(Adam Franco)
+		
+	* Bug Fix: #1808314 
+		
+		Delete Site now works.
+		(Adam Franco)
+		
+	* Change: #1808390 
+		
+		Minor Updates to documentation
+		(Adam Franco)
+		
+	* Change: #1808391 
+		
+		Minor Updates to documentation
+		(Adam Franco)
+	
 v. 1.8.9 (2007-10-02)
 ----------------------------------------------------
 		
