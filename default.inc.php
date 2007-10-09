@@ -1201,13 +1201,13 @@ if (!isset($_SESSION['SegueVersion'])) {
 	if (preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/', $versionDateMatches[1], $dateMatches))
 		$_SESSION['SegueCopyrightYear'] = $dateMatches[1];
 	else
-		$_SESSION['SegueCopyrightYear'] = "2006";
+		$_SESSION['SegueCopyrightYear'] = "2007";
 }
 
 $sitefooter .= "\n<div align='right' style='color: #999; font-size: 10px;'>
 	Segue v.
 	<a href='changelog/changelog.html' target='credits' onclick='doWindow(\"credits\",400,300);'>".$_SESSION['SegueVersion']."</a>
-	&copy;".$_SESSION['SegueCopyrightYear'].", Middlebury College: 
+	&copy;2003-".$_SESSION['SegueCopyrightYear'].", Middlebury College: 
 	<a href='credits.php' target='credits' onclick='doWindow(\"credits\",400,300);'>credits</a>
 	</div>";
 

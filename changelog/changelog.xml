@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.8.11" date="The Future">
+		<releaseNotes>
+			
+		</releaseNotes>
+		<change author='adam' date='2007-10-09'>
+			Now pulling segue version information from the changelog instead of the
+			version.txt file.
+		</change>
+	</version>
 	<version number="1.8.10" date="2007-10-05">
 		<fix author='adam' date='2007-10-05' ref='1808317' reftype='bug'>
 			Move/Copy UI now works.

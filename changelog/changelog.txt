@@ -4,6 +4,16 @@ Name: Segue Change Log
 
 
 
+v. 1.8.11 (The Future)
+----------------------------------------------------
+
+		
+		
+	* Change: 
+		Now pulling segue version information from the changelog instead of the
+		version.txt file.
+		(2007-10-09 - Adam Franco)
+	
 v. 1.8.10 (2007-10-05)
 ----------------------------------------------------
 
