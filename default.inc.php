@@ -1191,11 +1191,23 @@ function printStudentSiteLine($className, $siteInfo) {
 }
 
 //$sitefooter .= "\n<div align='right' style='color: #999; font-size: 10px;'>by <a style='font-weight: normal; text-decoration: underline' href='mailto: gschineATmiddleburyDOTedu'>Gabriel Schine</a>, <a href='mailto:achapinATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Alex Chapin</a>, <a href='mailto:afrancoATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Adam Franco</a> and <a href='mailto:dradichkATmiddleburyDOTedu' style='font-weight: normal; text-decoration: underline'>Dobo Radichkov</a></div>";
-$_version = file_get_contents("version.txt");
+if (!isset($_SESSION['SegueVersion'])) {
+	$changelogXml = file_get_contents("changelog/changelog.xml");
+		
+	preg_match('/<version.*number="([0-9a-z\s-.]+)"/', $changelogXml, $matches);
+	$_SESSION['SegueVersion'] = $matches[1];
+	
+	preg_match('/<version.*date="([0-9a-z\s-]+)"/i', $changelogXml, $versionDateMatches);
+	if (preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/', $versionDateMatches[1], $dateMatches))
+		$_SESSION['SegueCopyrightYear'] = $dateMatches[1];
+	else
+		$_SESSION['SegueCopyrightYear'] = "2006";
+}
+
 $sitefooter .= "\n<div align='right' style='color: #999; font-size: 10px;'>
 	Segue v.
-	<a href='changelog/changelog.html' target='credits' onclick='doWindow(\"credits\",400,300);'>$_version</a>
-	&copy;2007, Middlebury College: 
+	<a href='changelog/changelog.html' target='credits' onclick='doWindow(\"credits\",400,300);'>".$_SESSION['SegueVersion']."</a>
+	&copy;".$_SESSION['SegueCopyrightYear'].", Middlebury College: 
 	<a href='credits.php' target='credits' onclick='doWindow(\"credits\",400,300);'>credits</a>
 	</div>";
 
