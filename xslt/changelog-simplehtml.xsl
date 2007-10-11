@@ -173,8 +173,9 @@
 	<xsl:param name="str"/>
 	<xsl:choose>
 		<xsl:when test="contains($str,',')">
-			<xsl:value-of select="//authors/name[@short=substring-before($str,',')]" />
-			
+			<xsl:call-template name="authors">
+				<xsl:with-param name="str" select="substring-before($str,',')"/>
+			</xsl:call-template>			
 			<xsl:text>, </xsl:text>
 			<xsl:call-template name="authors">
 				<xsl:with-param name="str" select="substring-after($str,',')"/>
@@ -197,8 +198,9 @@
 	<xsl:param name="str"/>
 	<xsl:choose>
 	<xsl:when test="contains($str,',')">
-		<xsl:value-of select="//reporters/name[@short=substring-before($str,',')]" />
-		
+		<xsl:call-template name="reporters">
+			<xsl:with-param name="str" select="substring-before($str,',')"/>
+		</xsl:call-template>
 		<xsl:text>, </xsl:text>
 		<xsl:call-template name="reporters">
 			<xsl:with-param name="str" select="substring-after($str,',')"/>
