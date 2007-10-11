@@ -21,6 +21,7 @@ v. 1.8.10 (2007-10-05)
 	* Bug Fix: #1808317 
 		Move/Copy UI now works.
 		(2007-10-05 - Adam Franco)
+		(reported by Melanie Hoag of Southwestern University)
 		
 	* Bug Fix: #1808405 
 		Cancel buttons in story and page wizards are now working.
@@ -29,22 +30,27 @@ v. 1.8.10 (2007-10-05)
 	* Bug Fix: #1808316 
 		Reordering of content blocks now works.
 		(2007-10-05 - Adam Franco)
+		(reported by Melanie Hoag of Southwestern University)
 		
 	* Bug Fix: #1808315 
 		Comparing and reverting of versions now works.
 		(2007-10-05 - Adam Franco)
+		(reported by Melanie Hoag of Southwestern University)
 		
 	* Bug Fix: #1808314 
 		Delete Site now works.
 		(2007-10-05 - Adam Franco)
+		(reported by Melanie Hoag of Southwestern University)
 		
 	* Change: #1808390 
 		Minor Updates to documentation
 		(2007-10-05 - Adam Franco)
+		(reported by Mike Edwards of University of Illinois Urbana Champaign)
 		
 	* Change: #1808391 
 		Minor Updates to documentation
 		(2007-10-05 - Adam Franco)
+		(reported by Mike Edwards of University of Illinois Urbana Champaign)
 	
 v. 1.8.9 (2007-10-02)
 ----------------------------------------------------
@@ -560,6 +566,7 @@ v. 1.5.11 (2006-11-15)
 		binding. Thank you to Melanie Hoag and her team at Southwestern University
 		for help locating this bug.
 		(Adam Franco)
+		(reported by Melanie Hoag of Southwestern University)
 	
 v. 1.5.10 (2006-10-25)
 ----------------------------------------------------
@@ -572,6 +579,7 @@ v. 1.5.10 (2006-10-25)
 		Thank you to Melanie Hoag and her team at Southwestern University for help
 		locating this bug.
 		(Adam Franco)
+		(reported by Melanie Hoag of Southwestern University)
 	
 v. 1.5.9 (2006-10-24)
 ----------------------------------------------------

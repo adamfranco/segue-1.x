@@ -10,25 +10,25 @@
 		</change>
 	</version>
 	<version number="1.8.10" date="2007-10-05">
-		<fix author='adam' date='2007-10-05' ref='1808317' reftype='bug'>
+		<fix author='adam' date='2007-10-05' ref='1808317' reftype='bug' reporter="mel_hoag">
 			Move/Copy UI now works.
 		</fix>
 		<fix author='adam' date='2007-10-05' ref='1808405' reftype='bug'>
 			Cancel buttons in story and page wizards are now working.
 		</fix>
-		<fix author='adam' date='2007-10-05' ref='1808316' reftype='bug'>
+		<fix author='adam' date='2007-10-05' ref='1808316' reftype='bug' reporter="mel_hoag">
 			Reordering of content blocks now works.
 		</fix>
-		<fix author='adam' date='2007-10-05' ref='1808315' reftype='bug'>
+		<fix author='adam' date='2007-10-05' ref='1808315' reftype='bug' reporter="mel_hoag">
 			Comparing and reverting of versions now works.
 		</fix>
-		<fix author='adam' date='2007-10-05' ref='1808314' reftype='bug'>
+		<fix author='adam' date='2007-10-05' ref='1808314' reftype='bug' reporter="mel_hoag">
 			Delete Site now works.
 		</fix>
-		<change author='adam' date='2007-10-05' ref='1808390' reftype='bug'>
+		<change author='adam' date='2007-10-05' ref='1808390' reftype='bug' reporter="mike_edwards">
 			Minor Updates to documentation
 		</change>
-		<change author='adam' date='2007-10-05' ref='1808391' reftype='bug'>
+		<change author='adam' date='2007-10-05' ref='1808391' reftype='bug' reporter="mike_edwards">
 			Minor Updates to documentation
 		</change>
 	</version>
@@ -432,7 +432,7 @@
 		</fix>
 	</version>
 	<version number="1.5.11" date="2006-11-15">
-		<fix author='adam'>
+		<fix author='adam' reporter="mel_hoag">
 			Added a check for a non-zero length password to prevent login from
 			occuring without a password when the LDAP server is configured to allow
 			anonymous binding. Thank you to Melanie Hoag and her team
@@ -440,7 +440,7 @@
 		</fix>
 	</version>
 	<version number="1.5.10" date="2006-10-25">
-		<fix author='adam'>
+		<fix author='adam' reporter="mel_hoag">
 			Added exit() statements after sending redirect headers to prevent
 			continued execution that was resulting in an authentication
 			race-condition that had the effect of populating empty class-lists
@@ -1914,6 +1914,16 @@ Mac Safari. Removed browser specific code from filebrowser.php
 		<name short="max">Max Ovsjanikov</name>
 		<name short="alex">Alex Chapin</name>
 	</authors>
+	<reporters>
+		<reporter short="mel_hoag">
+			<name>Melanie Hoag</name>
+			<institution>Southwestern University</institution>
+		</reporter>
+		<reporter short="mike_edwards">
+			<name>Mike Edwards</name>
+			<institution>University of Illinois Urbana Champaign</institution>
+		</reporter>
+	</reporters>
 	<reftypes>
 		<reftype name="bug">565234</reftype>
 		<reftype name="fr">565237</reftype>
