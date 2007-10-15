@@ -4,6 +4,10 @@
 		<releaseNotes>
 			
 		</releaseNotes>
+		<fix author='alex' date='2007-10-15' reporter="mary_ellen">
+			The discussion header text is now visible on for all themes (some theme settings resulted
+			in white on white text)
+		</fix>
 		<fix author='alex' date='2007-10-15' ref='1811162' reftype='bug' reporter="mel_hoag">
 			Can now view and update class groups.
 		</fix>
@@ -1938,6 +1942,10 @@ Mac Safari. Removed browser specific code from filebrowser.php
 		<reporter short="mike_edwards">
 			<name>Mike Edwards</name>
 			<institution>University of Illinois Urbana Champaign</institution>
+		</reporter>
+		<reporter short="mary_ellen">
+			<name>Mary Ellen Bertolini</name>
+			<institution>Middlebury College</institution>
 		</reporter>
 	</reporters>
 	<reftypes>

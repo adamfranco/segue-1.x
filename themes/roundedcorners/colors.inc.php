@@ -138,7 +138,7 @@ $_bgcolor = array(
 	"blue-white"=>array(
 			"bgcolor"=>		"FFFFFF",
 			"bgimage"=>		"blue-white.jpg",
-			"bglink"=>			"FFFFFF",
+			"bglink"=>			"666666",
 			"bgtext"=>			"666666"				
 	),
 	"green-white"=>array(
@@ -150,7 +150,7 @@ $_bgcolor = array(
 	"red gradient"=>array(
 			"bgcolor"=>		"E99292",
 			"bgimage"=>		"red_gradient.jpg",
-			"bglink"=>			"FFFFFF",
+			"bglink"=>			"000000",
 			"bgtext"=>			"CCCCCC"					
 	),		
 	"black-gray"=>array(
