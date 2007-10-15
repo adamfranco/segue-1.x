@@ -4,6 +4,9 @@
 		<releaseNotes>
 			
 		</releaseNotes>
+		<fix author='alex' date='2007-10-15' ref='1811162' reftype='bug' reporter="mel_hoag">
+			Can now view and update class groups.
+		</fix>
 		<fix author='alex' date='2007-10-15' ref='1811157' reftype='bug' reporter="mel_hoag">
 			Can now search admin tools > add/edit classes UI by year and by owner.
 		</fix>

@@ -14,16 +14,17 @@ db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 if ($del = $_REQUEST[del]) { // we're deleting something
 //	print $del;
 	if ($del=='group') {
-		$query = "UPDATE class SET FK_classgroup=NULL WHERE FK_classgroup='".addslashes($group)."'";
+		$query = "UPDATE class SET FK_classgroup=NULL WHERE FK_classgroup='".addslashes($_REQUEST['group'])."'";
 		db_query($query);
-		$query = "DELETE FROM classgroup WHERE classgroup_id='".addslashes($group)."'";
+		$query = "DELETE FROM classgroup WHERE classgroup_id='".addslashes($_REQUEST['group'])."'";
 		db_query($query);
-		log_entry("classgroups","$_SESSION['auser'] removed group ".db_get_value("classgroup","classgroup_name","classgroup_id='".addslashes($group)."'"),"NULL",'".addslashes($group)."',"classgroup");
+ 		log_entry("classgroups","".$_SESSION['auser']." removed group ".db_get_value("classgroup","classgroup_name","classgroup_id='".addslashes($_REQUEST[group])."'"),"NULL",'".addslashes($group)."',"classgroup");
 	}
 	if ($del=='class') {
-		$query = "UPDATE class SET FK_classgroup=NULL WHERE class_id='".addslashes($class)."'";
+		$query = "UPDATE class SET FK_classgroup=NULL WHERE class_id='".addslashes($_REQUEST['class'])."'";
+		printpre($query);
 		db_query($query);
-		log_entry("classgroup","$_SESSION['auser'] removed $class from group ".db_get_value("classgroup","classgroup_name","classgroup_id=$group"),"NULL",$group,"classgroup");
+		log_entry("classgroup","".$_SESSION['auser']." removed $class from group ".db_get_value("classgroup","classgroup_name","classgroup_id='".addslashes($_REQUEST[group])."'"),"NULL",$_REQUEST[group],"classgroup");
 	}
 	print<<<END
 
