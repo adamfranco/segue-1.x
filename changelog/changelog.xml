@@ -4,6 +4,10 @@
 		<releaseNotes>
 			
 		</releaseNotes>
+		<fix author='alex' date='2007-10-15' ref='1811095' reftype='bug' reporter="mel_hoag">
+			Revert to version button now properly reverts current version to previous version
+			as specified in the revert to version form.
+		</fix>
 		<fix author='alex' date='2007-10-15' ref='1811075' reftype='bug' reporter="mel_hoag">
 			Public site listing can once again be searched (by user, title or site).
 		</fix>

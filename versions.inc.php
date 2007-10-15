@@ -78,7 +78,8 @@ if ($_REQUEST['revert']) {
 	$version_long = stripslashes(urldecode($version[0]['version_text_long']));
 	$story_id = $_REQUEST['story'];
 	$version_comments = "reverted to revision ".$_REQUEST['revert'];
-	
+// 	printpre($version_short);
+// 	exit;
 	save_version ($version_short, $version_long, $story_id, $version_comments);
 }
 

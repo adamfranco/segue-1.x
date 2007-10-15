@@ -811,9 +811,9 @@ function save_version ($version_short, $version_long, $story_id, $version_commen
 		}
 	}
 
+	// add previous version to the version table
 	if ($last_version_text_short != $version_short) {
-//		printpre("not equal...");
-// 		exit;
+
 		$query = " 
 		INSERT INTO
 			version
@@ -826,10 +826,30 @@ function save_version ($version_short, $version_long, $story_id, $version_commen
 			version_text_long = '".addslashes(urlencode($version_long))."',
 			version_comments = '".addslashes($version_comments)."'
 		";
-	//	printpre($query);
-	//	exit;
+
 		$r = db_query($query);
+		
+		// update story table with new version		
+		$query = " 
+		UPDATE
+			story
+		SET
+			FK_updatedby ='".addslashes($_SESSION[aid])."',
+			story_updated_tstamp = NOW(), 
+			story_text_short  = '".addslashes(urlencode($version_short))."', 
+			story_text_long = '".addslashes(urlencode($version_long))."'
+		WHERE
+			story_id = '".addslashes($story_id)."'
+		";
+
+		$r = db_query($query);
+		
 	}
+	
+
+	
+	
+	
 
 }
 
