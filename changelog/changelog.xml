@@ -4,6 +4,9 @@
 		<releaseNotes>
 			
 		</releaseNotes>
+		<fix author='alex' date='2007-10-15' ref='1811157' reftype='bug' reporter="mel_hoag">
+			Can now search admin tools > add/edit classes UI by year and by owner.
+		</fix>
 		<fix author='alex' date='2007-10-15' ref='1811095' reftype='bug' reporter="mel_hoag">
 			Revert to version button now properly reverts current version to previous version
 			as specified in the revert to version form.

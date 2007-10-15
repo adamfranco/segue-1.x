@@ -188,6 +188,8 @@ $class_external_id = $_REQUEST['class_external_id'];
 $class_name = $_REQUEST['class_name'];
 $class_dept = $_REQUEST['class_dept'];
 $semester = $_REQUEST['semester'];
+$class_year = $_REQUEST['class_year'];
+$class_owner = $_REQUEST['class_owner'];
 
 if ($curraction == 'edit') {
 	$where = "class_id ='".addslashes($id)."'";
