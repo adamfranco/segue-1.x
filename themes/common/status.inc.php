@@ -123,8 +123,8 @@ if (!$_REQUEST[nostatus]) {
 		print "<div class='headerbox small' align='center'>\n";
 		print " Login: <input type='text' class='textfield small' name='name' size='9' value=''/> password: <input type='password' class='textfield small' name='password' size='9'/> \n";
 		print "<input type='hidden' name='loginform' value='1'/>\n";
-		print "<input type='hidden' name='getquery' value='".urlencode($QUERY_STRING)."'/>\n";
-		print "<input type='hidden' name='gotourl' value='".urlencode($REQUEST_URI)."'/>\n";
+		print "<input type='hidden' name='getquery' value='".urlencode(getenv("QUERY_STRING"))."'/>\n";
+		print "<input type='hidden' name='gotourl' value='".urlencode($_SERVER['REQUEST_URI'])."'/>\n";
 		print "<input type='submit' class='button small' name='button' value='GO'/><br />\n";
 		
 		if ($cfg[auth_reset_on] == TRUE) {

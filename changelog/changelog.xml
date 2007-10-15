@@ -4,6 +4,12 @@
 		<releaseNotes>
 			
 		</releaseNotes>
+		<fix author='alex' date='2007-10-15' ref='1811075' reftype='bug' reporter="mel_hoag">
+			Public site listing can once again be searched (by user, title or site).
+		</fix>
+		<fix author='alex' date='2007-10-15' ref='1809729' reftype='bug' reporter="alex">
+			Logging in from any page in Segue now returns users to that page after authentication.
+		</fix>
 		<change author='adam' date='2007-10-09'>
 			Now pulling segue version information from the changelog instead of the
 			version.txt file.

@@ -34,7 +34,7 @@ if (!isset($order)
 
 $orderby = " ORDER BY $order";
 
-
+//printpre ($_REQUEST);
 
 $w = array();$wExtra=array();
 //if ($_REQUEST[type]) $w[]="slot_type like '%$type%'";
@@ -42,9 +42,9 @@ if ($cfg[allowpersonalsites] && $cfg[allowclasssites])
 	$w[]="(slot_type='personal' OR slot_type='class' OR slot_type='other')";
 else if ($cfg[allowpersonalsites]) $w[]="(slot_type='personal' OR slot_type='other')";
 else if ($cfg[allowclasssites]) $w[]="slot_type='class'";
-if ($_REQUEST[user]) $wExtra[]="user_uname like '%".addslashes($user)."%'";
-if ($_REQUEST[site]) $wExtra[]="slot_name like '%".addslashes($site)."%'";
-if ($_REQUEST[title]) $wExtra[]="site_title like '%".addslashes($title)."%'";
+if ($_REQUEST[user]) $wExtra[]="user_uname like '%".addslashes($_REQUEST[user])."%'";
+if ($_REQUEST[site]) $wExtra[]="slot_name like '%".addslashes($_REQUEST[site])."%'";
+if ($_REQUEST[title]) $wExtra[]="site_title like '%".addslashes($_REQUEST[title])."%'";
 $w[] = "site_active='1'";
 $w[] = "site_listed='1'";
 //if ($_REQUEST[active]) $w[]="site_active like '%$active%'";
@@ -88,6 +88,8 @@ $query = "
 $r=db_query($query); 
 $a = db_fetch_assoc($r);
 $numSites = $a[log_count];
+
+//printpre ($query);
 
 //if (!isset($lowerlimit)) $lowerlimit = 0;
 //if ($lowerlimit < 0) $lowerlimit = 0;
@@ -189,9 +191,9 @@ function changeOrder(order) {
 		if (true) {
 		?>
 			<!-- </select> -->
-			site: <input type='text' name='site' size='10' value='<?echo $site?>' />
-			title: <input type='text' name='title' size='10' value='<?echo $title?>' />
-			user: <input type='text' name='user' size='10' value='<?echo $user?>' />
+			site: <input type='text' name='site' size='10' value='<?echo $_REQUEST[site] ?>' />
+			title: <input type='text' name='title' size='10' value='<?echo $_REQUEST[title] ?>' />
+			user: <input type='text' name='user' size='10' value='<?echo $_REQUEST[user] ?>' />
 			<!--
 			type: <select name='type'>
 				<option<?=($type=='%')?" selected":""?>>all

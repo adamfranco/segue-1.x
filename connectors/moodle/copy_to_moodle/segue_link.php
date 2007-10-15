@@ -4,17 +4,10 @@ require_once("../config.php");
 require_once("../lib/datalib.php");
 require_once("../lib/moodlelib.php");
 require_once("../course/lib.php");
+require_once("connector.conf.php");
 error_reporting(E_ALL & ~E_NOTICE);
-/******************************************************************************
- * variables for accessing segue-moodle linking database
- ******************************************************************************/
 
-$dblink_host = "localhost";
-$dblink_user = "test";
-$dblink_pass = "test";
-$dblink_db = "achapin_segue-moodle";
-
-$segue_url = "http://slug.middlebury.edu/~achapin/segue-moodle_connect-v2/";
+ob_start();
 
 $cid = mysql_pconnect($dblink_host,$dblink_user,$dblink_pass);
 mysql_select_db($dblink_db);
@@ -129,7 +122,7 @@ if ($_REQUEST['id']) {
 	
 	//if corresponding site, go to home page of that site
 	$segue_slot = $a['site_slot'];
-	print "Segue site url: ".$segue_url."sites/".$segue_slot."<br \>";
+//	print "Segue site url: ".$segue_url."sites/".$segue_slot."<br \>";
 	header("Location: ".$segue_url."sites/".$segue_slot);
 	exit;
 
@@ -210,14 +203,14 @@ if (!isset($_REQUEST['userid']) || !$_REQUEST['userid']) {
 				authentication.user_id = '".addslashes($segue_user_id)."'				
 	";
 	
-	print $query."<br>";
+//	print $query."<br>";
 	//exit;
 	$r = mysql_query($query, $cid);
 	$a = mysql_fetch_assoc($r);
 	
 	$moodle_user_id = $a['user_id'];
-	print "moodle_user_id:".$moodle_user_id."<br \>";
-	//exit;
+// 	print "moodle_user_id:".$moodle_user_id."<br \>";
+// exit;
 	
 	/******************************************************************************
 	 * If corresponding Moodle user found in user_link table
@@ -245,21 +238,18 @@ if (!isset($_REQUEST['userid']) || !$_REQUEST['userid']) {
 //	 }
 }
 
-print "moodle_user_id:".$moodle_user_id."<br \>";
-print "segue_user_id:".$segue_user_id."<br \>";
+//print "moodle_user_id:".$moodle_user_id."<br \>";
+//print "segue_user_id:".$segue_user_id."<br \>";
 //exit;
 
+
 /******************************************************************************
- * Create new Moodle user if no user exists that corresponds to Segue user
- * add key to that user in user_link table in segue-moodle database
- * New Moodle user code is adapted from:
- * moodle/admin/users.php
+ * If no record of linked Moodle user in linking table, check to see
+ * if there is a LDAP Moodle user with same username
  ******************************************************************************/
 
 if ($moodle_user_id == 0) {
 
-	print "<hr>Creating new Moodle user...<br>";
-	
 	// get info about the linked user
 	$query = "
 		SELECT 
@@ -272,9 +262,7 @@ if ($moodle_user_id == 0) {
 			AND DATE_ADD(auth_time, INTERVAL 1 MINUTE) > NOW()
 			
 	";
-		
-	print $query."<br>";
-	//exit;
+	
 	$r = mysql_query($query, $cid);
 	
 	// failed auth_token test
@@ -282,69 +270,140 @@ if ($moodle_user_id == 0) {
 		print "<div class='error'>No matching authentication token or user id...</div>";
 		print "</body</html>";
 		exit;
-		
+	} 
+
 	// passed auth_token test so get Segue user info
-	} else {
-		while ($a = mysql_fetch_assoc($r)) {
-			$firstname = ereg_replace("['\"]", "", $a['firstname']);
-			$lastname = ereg_replace("['\"]", "", $a['lastname']);
-			$email = $a['email'];
-			$user_uname = $a['username'];
-			$auth_id = $a['auth_id'];
+	while ($a = mysql_fetch_assoc($r)) {
+		$firstname = ereg_replace("['\"]", "", $a['firstname']);
+		$lastname = ereg_replace("['\"]", "", $a['lastname']);
+		$email = $a['email'];
+		$user_uname = $a['username'];
+		$auth_id = $a['auth_id'];
+	}
+	
+/******************************************************************************
+* Check for LDAP Moodle user with same username
+* If one exists then update linking table
+******************************************************************************/
+
+	if ($user = get_record('user', 'username', $user_uname)) {
+		//verify user is an LDAP user
+		if ($user->auth == "ldap") {
+			$moodle_user_id = $user->id;
+		
+			//update user_link table				
+			$query = "
+				UPDATE
+					user_link
+				SET
+					user_id = '".addslashes($moodle_user_id)."',
+					system = 'moodle'
+				WHERE
+					FK_auth_id = '".addslashes($auth_id)."'
+			";			
+			//	print $query."<br>";
+			//	exit;		
+			$r = mysql_query($query, $cid);	
 		}
 		
-		print "firstname: ".$firstname."<br \>";
-		print "lastname: ".$lastname."<br \>";
-		print "email: ".$email."<br \>";
-		print "user_uname: ".$user_uname."<br \>";
-		print "auth_id: ".$auth_id."<br \>";
+/******************************************************************************
+* If No LDAP Moodle user with same username, then
+* Create new Moodle user if no user exists that corresponds to Segue user
+* add key to that user in user_link table in segue-moodle database
+* New Moodle user code is adapted from:
+* moodle/admin/users.php
+* NEED TO TEST NEW USER CREATION, UPDATING OF LINKING TABLE
+******************************************************************************/
 	
-	}
-	//exit;
-
-	
-	//create new moodle user (need user fname, lname, email)
-	// adapted from: moodle/admin/users.php
-
-	$user->firstname = $firstname;
-	$user->username = $user_uname;
-	$user->lastname = $lastname;
-	$user->email = $email;
-	$user->firstaccess = time();
-	$user->auth = "ldap";
-	$user->password = "not cached";
-	$user->lang = "en_utf8";
-	$user->confirmed = 1;
-	
-//	printpre ($user);a	
-//	exit;
-	
-	if (! ($user->id = insert_record("user", $user)) ) {
-		error("Could not add your record to the database!");
-		
 	} else {
-		$moodle_user_id = $user->id;
+	
+		print "<hr>Creating new Moodle user...<br>";
 		
-		//update user_link table
-				
-		$query = "
-			UPDATE
-				user_link
-			SET
-				user_id = '".addslashes($moodle_user_id)."',
-				system = 'moodle'
-			WHERE
-			    FK_auth_id = '".addslashes($auth_id)."'
-		";
-
-		print $query."<br>";
-	//	exit;		
-		$r = mysql_query($query, $cid);
+		// get info about the linked user
+// 		$query = "
+// 			SELECT 
+// 				username, firstname, lastname,  email, auth_id  
+// 			FROM 
+// 				authentication
+// 			WHERE 
+// 				user_id = '".addslashes($_REQUEST['userid'])."'
+// 				AND auth_token = '".addslashes($_REQUEST['auth_token'])."'
+// 				AND DATE_ADD(auth_time, INTERVAL 1 MINUTE) > NOW()
+// 				
+// 		";
+// 			
+// 	//	print $query."<br>";
+// 		//exit;
+// 		$r = mysql_query($query, $cid);
+// 		
+// 		// failed auth_token test
+// 		if (mysql_num_rows($r) == 0) {
+// 			print "<div class='error'>No matching authentication token or user id...</div>";
+// 			print "</body</html>";
+// 			exit;
+// 			
+// 		// passed auth_token test so get Segue user info
+// 		} else {
+// 			while ($a = mysql_fetch_assoc($r)) {
+// 				$firstname = ereg_replace("['\"]", "", $a['firstname']);
+// 				$lastname = ereg_replace("['\"]", "", $a['lastname']);
+// 				$email = $a['email'];
+// 				$user_uname = $a['username'];
+// 				$auth_id = $a['auth_id'];
+// 			}
+// 			
+// 	//		print "firstname: ".$firstname."<br \>";
+// 	//		print "lastname: ".$lastname."<br \>";
+// 	//		print "email: ".$email."<br \>";
+// 	//		print "user_uname: ".$user_uname."<br \>";
+// 	//		print "auth_id: ".$auth_id."<br \>";
+// 		
+// 		}
+// 		//exit;
+	
 		
+		//create new moodle user (need user fname, lname, email)
+		// adapted from: moodle/admin/users.php
+	
+		$user->firstname = $firstname;
+		$user->username = $user_uname;
+		$user->lastname = $lastname;
+		$user->email = $email;
+		$user->firstaccess = time();
+		$user->auth = "ldap";
+		$user->password = "not cached";
+		$user->lang = "en_utf8";
+		$user->confirmed = 1;
+		
+	//	printpre ($user);a	
+	//	exit;
+		
+		if (! ($user->id = insert_record("user", $user)) ) {
+			error("Could not add your record to the database!");
+			
+		} else {
+			$moodle_user_id = $user->id;
+			
+			//update user_link table					
+			$query = "
+				UPDATE
+					user_link
+				SET
+					user_id = '".addslashes($moodle_user_id)."',
+					system = 'moodle'
+				WHERE
+					FK_auth_id = '".addslashes($auth_id)."'
+			";
+	
+			print $query."<br>";
+		//	exit;		
+			$r = mysql_query($query, $cid);
+			
+		}
+	//	print "new moodle user_id: ".$moodle_user_id."<br>";
+		link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="user_added",$description="Measure user created");
+		//exit;
 	}
-	print "new moodle user_id: ".$moodle_user_id."<br>";
-	link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="user_added",$description="Measure user created");
-	//exit;
 }
 
 /******************************************************************************
@@ -375,7 +434,7 @@ $moodle_site_id = $a['FK_moodle_site_id'];
 /******************************************************************************
  * 	Get the Segue site owner and title from the site_link table
  ******************************************************************************/
-print "<hr>Segue site owner and title site";
+//print "<hr>Segue site owner and title site";
 
 $query = "
 	SELECT 
@@ -397,19 +456,19 @@ while ($a = mysql_fetch_assoc($r)) {
 	$site_theme = $a['site_theme'];
 }
 
-print "site_title: ".$site_title."<br \>";
-print "site_slot: ".$site_slot."<br \>";
-print "site_owner_id: ".$site_owner_id."<br \>";
-print "site_theme: ".$site_theme."<br \><hr>";
+//print "site_title: ".$site_title."<br \>";
+//print "site_slot: ".$site_slot."<br \>";
+//print "site_owner_id: ".$site_owner_id."<br \>";
+//print "site_theme: ".$site_theme."<br \><hr>";
 
 if ($site_theme == "shadowbox") {
-	$site_theme = "Segue_Shadow";
+	$site_theme = "standardlogo";
 } else if ($site_theme == "beveledge") {
-	$site_theme = "Segue_Bevelbox";
+	$site_theme = "standardlogo";
 } else if ($site_theme == "tornpaper") {
-	$site_theme = "Segue_Tornpaper";
+	$site_theme = "standardlogo";
 } else {
-	$site_theme = "Segue_Bevelbox";
+	$site_theme = "standardlogo";
 }
 
 //exit;
@@ -431,7 +490,7 @@ if ($site_theme == "shadowbox") {
 				FK_moodle_site_id = '".addslashes($moodle_site_id)."'
 		";
 
-		print $query."<br>";
+//		print $query."<br>";
 		//exit;		
 		$r = mysql_query($query, $cid);
 		$moodle_site_id = 0;
@@ -439,7 +498,7 @@ if ($site_theme == "shadowbox") {
  }
  
 
-print "moodle_site_id: ".$moodle_site_id."<br \>";
+//print "moodle_site_id: ".$moodle_site_id."<br \>";
 //exit;
 
 
@@ -448,16 +507,15 @@ print "moodle_site_id: ".$moodle_site_id."<br \>";
  * and add key to that site in segue-moodle table
  * new Moodle site code adapted from:
  * moodle/course/edit.php
- * NEED TO TEST ENROLLABLE SETTING
  ******************************************************************************/
 
 if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {	
 
-	print "<hr>Creating new Moodle site...<br>";
+//	print "<hr>Creating new Moodle site...<br>";
     require_once("../course/lib.php");
     require_once($CFG->libdir."/blocklib.php");
 	
-	print "<hr>Creating new Moodle site...<br>";
+//	print "<hr>Creating new Moodle site...<br>";
 	
 	fix_course_sortorder();
 	$form->startdate = make_timestamp($form->startyear, $form->startmonth, $form->startday);	
@@ -507,11 +565,11 @@ if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {
 			FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'
 			
 		";
-	print $query."<br>";
+//	print $query."<br>";
 	//exit;
 	$r = mysql_query($query, $cid);
 
-	print "new moodle site_id: ".$moodle_site_id."<br>";
+//	print "new moodle site_id: ".$moodle_site_id."<br>";
 	link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="site_added",$description="Measure site created");
 	//exit;
 		
@@ -522,42 +580,12 @@ if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {
  ******************************************************************************/
 
 /******************************************************************************
- * if new course id and the auth user is the site owner then make that user a teacher 
- * moodle_site_id, moodle_user_id and site_owner_id set above
- * segue_user_id from request array
- * code adapted from:
- * moodle/course/teacher.php
- ******************************************************************************/
-
-if ($newcourseid && $segue_user_id == $site_owner_id) {
-
-	print "<hr>New Moodle Course created<br>";	
-	print "newcourseid: ".$newcourseid."<br>";
-	print "moodle_user_id: ".$moodle_user_id."<br>";
-
-	$newteacher = NULL;
-	$newteacher->userid = $moodle_user_id;
-	$newteacher->course = $newcourseid;
-	$newteacher->authority = 1;   // First teacher is the main teacher
-	$newteacher->editall = 1;     // Course creator can edit their own course
-	$newteacher->enrol = "manual";     // enroll the teacher in the course
-	
-	if (!$newteacher->id = insert_record("user_teachers", $newteacher)) {
-		error("Could not add you to this new course!");
-	}
-	print "moodle_user_id: ".$moodle_user_id." made the owner of new moodle course id:".$newcourseid."<br>";
-	//exit;
-	
-	$USER->teacher[$newcourseid] = true;
-	$USER->teacheredit[$newcourseid] = true;
-
-/******************************************************************************
  * if the Segue user is not the site owner, then enrol them as student
  * code adapted from:
  * moodle/course/student.php
  ******************************************************************************/
 	
-} else if ($segue_user_id != $site_owner_id){
+if ($segue_user_id != $site_owner_id){
 	print "<hr>Adding student to site<br>";
 	print "moodle_site_id: ".$moodle_site_id;
 	$addstudent = $moodle_user_id;
@@ -566,8 +594,47 @@ if ($newcourseid && $segue_user_id == $site_owner_id) {
 	if (! enrol_student($addstudent, $moodle_site_id, $timestart, $timeend)) {
 		error("Could not add student with id $addstudent to this course!");
 	}
+
+/******************************************************************************
+ * if new course id and the auth user is the site owner then make that user a teacher 
+ * moodle_site_id, moodle_user_id and site_owner_id set above
+ * segue_user_id from request array
+ * code adapted from:
+ * moodle/course/info.php
+ ******************************************************************************/
+
+} else if ($newcourseid && $segue_user_id == $site_owner_id) {
+
+	print "<hr>New Moodle Course created<br>";	
+	print "newcourseid: ".$newcourseid."<br>";
+	print "moodle_user_id: ".$moodle_user_id."<br>";
+	
+	//need to get the context for the new course
+	$context = get_context_instance(CONTEXT_COURSE, $newcourseid);
+	$contextid = $context->id;
+// 	print $contextid;
+// 	exit;
+	
+	// change role to teacher
+	$newteacher = NULL;
+	$newteacher->userid = $moodle_user_id;
+	$newteacher->contextid = $contextid;
+	$newteacher->roleid = 3;
+// 	$newteacher->authority = 1;   // First teacher is the main teacher
+// 	$newteacher->editall = 1;     // Course creator can edit their own course
+	$newteacher->enrol = "manual";     // enroll the teacher in the course
+	
+	if (!$newteacher->id = insert_record("role_assignments", $newteacher)) {
+		error("Could not add you to this new course!");
+	}
+//	print "moodle_user_id: ".$moodle_user_id." made the owner of new moodle course id:".$newcourseid."<br>";
+	//exit;
+	
+	$USER->teacher[$newcourseid] = true;
+	$USER->teacheredit[$newcourseid] = true;
 }
-exit;
+
+//exit;
 
 /******************************************************************************
  * end Moodle permissions assignment (i.e. adding teacher, students)
@@ -583,7 +650,7 @@ exit;
  $user_id = $moodle_user_id;
  
 if ($user = get_record('user', 'id', $user_id)) {
-	print "<hr>logging into Moodle..."; 
+//	print "<hr>logging into Moodle..."; 
 	$user = get_complete_user_data('username', $user->username);
 	
 	$USER = $user;
@@ -644,11 +711,11 @@ if ($user = get_record('user', 'id', $user_id)) {
 	
 	if ($_REQUEST[mod]) {
 		$module_url = $CFG->wwwroot."/mod/".$_REQUEST[mod]."/view.php?id=".$module_id;
-		print $module_url;
+//		print $module_url;
 		header("Location: ".$module_url);
 	} else {
 		//print "<hr>Go to: <a href='".$CFG->wwwroot."/mod/".$_REQUEST[mod]."/view.php?id=$module_id'>module id= ".$module_id."</a> | ";
-		print "<a href='".$urltogo."'>Moodle Home</a><hr>";
+//		print "<a href='".$urltogo."'>Moodle Home</a><hr>";
 	}
 	redirect($urltogo);
 }
