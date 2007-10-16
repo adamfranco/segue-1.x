@@ -9,6 +9,33 @@ v. 1.8.11 (The Future)
 
 		
 		
+	* Bug Fix: #1811150 
+		Error no longer displayed after creating group sites.
+		(2007-10-15 - Adam Franco)
+		(reported by Melanie Hoag of Southwestern University)		
+	* Bug Fix: 
+		Site and Logs search UI once again working properly.
+		(2007-10-15 - Alex Chapin)
+		
+	* Bug Fix: 
+		Media Library search UI once again working properly.
+		(2007-10-15 - Alex Chapin)
+		
+	* Bug Fix: 
+		Media Library pagination once again working properly.
+		(2007-10-15 - Alex Chapin)
+		(reported by Sasha Woolson of Middlebury College)
+		
+	* Bug Fix: 
+		RSS type pages (i.e. sidebar RSS) once again properly save urls and display
+		feeds. 
+		(2007-10-15 - Alex Chapin)
+		
+	* Bug Fix: 
+		Link type pages (e.g. sidebar links) once again properly save urls and
+		display link.
+		(2007-10-15 - Alex Chapin)
+		
 	* Bug Fix: 
 		Removed the link to "add students of 'slot-name'" as editors in the edit
 		permissions UI for all non-class sites.
