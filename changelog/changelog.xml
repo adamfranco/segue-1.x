@@ -4,7 +4,10 @@
 		<releaseNotes>
 		</releaseNotes>
 		<fix author='alex' date='2007-10-15'>
-			Link type pages once again properly save urls and display link.
+			RSS type pages (i.e. sidebar RSS) once again properly save urls and display feeds.
+		</fix>
+		<fix author='alex' date='2007-10-15'>
+			Link type pages (e.g. sidebar links) once again properly save urls and display link.
 		</fix>
 		<fix author='alex' date='2007-10-15'>
 			Removed the link to "add students of 'slot-name'" as editors in the edit permissions UI

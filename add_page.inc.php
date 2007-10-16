@@ -204,8 +204,6 @@ if ($_REQUEST[save]) {
 			
 			$url = convertInteralLinksToTags($_SESSION[settings][site], $_REQUEST[url]);
 			
-// 			printpre($url);
-// 			exit;
 			// save general internal_linkpath to object	
 			$_SESSION[pageObj]->setField("url",$url);
 		
@@ -221,7 +219,7 @@ if ($_REQUEST[save]) {
 			$_SESSION[pageObj]->setField("text",$content);
 			
 		} else if ($_SESSION[pageObj]->getField("type")=='rss') {
-			$url = convertInteralLinksToTags($_SESSION[settings][site], $url);
+			$url = convertInteralLinksToTags($_SESSION[settings][site], $_REQUEST[url]);
 
 			$_SESSION[pageObj]->setField("url",$url);
 		}
