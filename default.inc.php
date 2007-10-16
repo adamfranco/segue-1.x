@@ -1,4 +1,32 @@
 <?
+
+
+/******************************************************************************
+ * handle group adding backend here
+ ******************************************************************************/
+if (count($_REQUEST[group]) && ($_REQUEST[newgroup] || $_REQUEST[groupname])) { // they chose a group
+	if (!$_REQUEST[newgroup]) $_REQUEST[newgroup] = $_REQUEST[groupname];
+	if (ereg("^[a-zA-Z0-9_-]{1,20}$",$_REQUEST[newgroup])) {
+		$groupObj = new group($_REQUEST[newgroup],$_SESSION[auser]);
+		if (group::exists($_REQUEST[newgroup])) { // already exists
+			if ($groupObj->fetchFromDB()) {
+				$groupObj->addClasses($_REQUEST[group]);
+				$groupObj->updateDB();
+				$list = implode(",",$groupObj->classes);
+
+				log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list","NULL",$groupObj->id,"classgroup");
+			} else 
+				$groupAddError = "Somebody has already created a class group with that name. Please try another name.";
+		} else {	// new group
+			$groupObj->addClasses($_REQUEST[group]);
+			$groupObj->updateDB();
+			log_entry("classgroups","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes),"NULL",$groupObj->id,"classgroup");
+		}
+	} else
+		$groupAddError = "Your group name is invalid. It may only contain alphanumeric characters, '_', '-', and be under 21 characters. No spaces, punctuation, etc.";
+
+}
+
 // default page
 $defaultStartQueries = $_totalQueries;
 
@@ -493,30 +521,10 @@ if ($_SESSION["expand_recentactivity"] != 0) {
 		}
 	}
 
-	 /******************************************************************************
-	 * handle group adding backend here
-	 ******************************************************************************/
-	if (count($_REQUEST[group]) && ($_REQUEST[newgroup] || $_REQUEST[groupname])) { // they chose a group
-		if (!$_REQUEST[newgroup]) $_REQUEST[newgroup] = $_REQUEST[groupname];
-		if (ereg("^[a-zA-Z0-9_-]{1,20}$",$_REQUEST[newgroup])) {
-			$groupObj = new group($_REQUEST[newgroup],$_SESSION[auser]);
-			if (group::exists($_REQUEST[newgroup])) { // already exists
-				if ($groupObj->fetchFromDB()) {
-					$groupObj->addClasses($_REQUEST[group]);
-					$groupObj->updateDB();
-					$list = implode(",",$groupObj->classes);
-/*					   log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list","$_REQUEST[newgroup]"); */
-					log_entry("classgroups","$_SESSION[auser] updated $_REQUEST[newgroup] to be $list","NULL",$groupObj->id,"classgroup");
-				} else error("Somebody has already created a class group with that name. Please try another name.");
-			} else {	// new group
-				$groupObj->addClasses($_REQUEST[group]);
-				$groupObj->updateDB();
-				log_entry("classgroups","$_SESSION[auser] added $_REQUEST[newgroup] with ".implode(",",$groupObj->classes),"NULL",$groupObj->id,"classgroup");
-			}
-		} else
-			error("Your group name is invalid. It may only contain alphanumeric characters, '_', '-', and be under 21 characters. No spaces, punctuation, etc.");
-
-	}
+	 
+	
+	if (isset($groupAddError) && $groupAddError)
+		error($groupAddError);
 	
 
 //	printc("\n<div class='title'>Sites".helplink("sites")."</div>");

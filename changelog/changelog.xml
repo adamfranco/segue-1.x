@@ -3,6 +3,11 @@
 	<version number="1.8.11" date="The Future">
 		<releaseNotes>
 		</releaseNotes>
+		<fix author='adam' date='2007-10-15' ref='1811150' reftype='bug' reporter="mel_hoag">
+			Error no longer displayed after creating group sites.
+		</fix>		<fix author='alex' date='2007-10-15'>
+			Site and Logs search UI once again working properly.
+		</fix>
 		<fix author='alex' date='2007-10-15'>
 			Media Library search UI once again working properly.
 		</fix>
