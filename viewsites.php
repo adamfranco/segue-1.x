@@ -17,14 +17,6 @@ include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-if ($clear) {
-	$type = "";
-	$user = "";
-	$site = "";
-	$title = "";
-	//$type = "%";
-	//$active = "%";
-}
 
 if ($_REQUEST[order]) 
 	$order = $_REQUEST[order];
@@ -36,13 +28,41 @@ if (!isset($order)
 $orderby = " ORDER BY $order";
 
 $w = array();
-//if ($_REQUEST[type]) $w[]="slot_type like '%$type%'";
-if ($_REQUEST[user]) $w[]="user_uname like '%".addslashes($user)."%'";
-//if ($site) $w[]="site like '%$name%'";
-if ($_REQUEST[site]) $w[]="slot_name like '%".addslashes($site)."%'";
-if ($_REQUEST[title]) $w[]="site_title like '%".addslashes($title)."%'";
-//if ($_REQUEST[active]) $w[]="site_active like '%$active%'";
+
+if ($_REQUEST[user]) {
+	$user = $_REQUEST[user];
+} else {
+	$user = "";
+}
+$w[]="user_uname like '%".addslashes($user)."%'";
+
+
+if ($_REQUEST[site]) {
+	$site = $_REQUEST[site];
+} else {
+	$site ="";
+}
+$w[]="slot_name like '%".addslashes($site)."%'";
+
+
+if ($_REQUEST[title]) {
+	$title = $_REQUEST[title];
+} else {
+	$title = "";
+}
+$w[]="site_title like '%".addslashes($title)."%'";
+
 if (count($w)) $where = " where ".implode(" and ",$w);
+
+if ($_REQUEST[clear]) {
+	$type = "";
+	$user = "";
+	$site = "";
+	$title = "";
+	//$type = "%";
+	//$active = "%";
+}
+
 
 $query = "
 	SELECT 
@@ -96,7 +116,7 @@ $query = "
 		FK_owner = user_id
 	$where $orderby $limit";
 
-
+//printpre($query);
 $r = db_query($query);
 
 /******************************************************************************

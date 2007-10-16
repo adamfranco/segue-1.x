@@ -40,11 +40,12 @@ $enddate = $_REQUEST[enddate];
 $startdate = $_REQUEST[startdate];
 $type = $_REQUEST[type];
 $site = $_REQUEST[site];
+$user = $_REQUEST[user];
 $_auser = $_REQUEST[_auser];
 $_luser = $_REQUEST[_luser];
 
 
-if ($clear) {
+if ($_REQUEST[clear]) {
 	$type = "";
 	$user = "";
 	$site = "";

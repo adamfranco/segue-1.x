@@ -3,7 +3,7 @@
 	<version number="1.8.11" date="The Future">
 		<releaseNotes>
 		</releaseNotes>
-		<fix author='alex' date='2007-10-15' reporter="sasha_woolson">
+		<fix author='alex' date='2007-10-15'>
 			Media Library search UI once again working properly.
 		</fix>
 		<fix author='alex' date='2007-10-15' reporter="sasha_woolson">
