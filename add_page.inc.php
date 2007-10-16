@@ -40,7 +40,7 @@ if (is_array($_SESSION[settings]) && is_object($_SESSION[pageObj])) {
 	// --- Load any new variables into the array ---
 	// Checkboxes need a "if ($_SESSION[settings][step] == 1 && !$link)" tag.
 	// True/False radio buttons need a "if ($var != "")" tag to get the "0" values
-	
+
 	
 	if ($_REQUEST[type]) $_SESSION[pageObj]->setField("type",$_REQUEST[type]);	
 	$_SESSION[pageObj]->handleFormDates();	// handle de/activate dates
@@ -201,9 +201,11 @@ if ($_REQUEST[save]) {
 		 ******************************************************************************/
 
 		if ($_SESSION[pageObj]->getField("type")=='link') {
-		
-			$url = convertInteralLinksToTags($_SESSION[settings][site], $url);
 			
+			$url = convertInteralLinksToTags($_SESSION[settings][site], $_REQUEST[url]);
+			
+// 			printpre($url);
+// 			exit;
 			// save general internal_linkpath to object	
 			$_SESSION[pageObj]->setField("url",$url);
 		

@@ -4,6 +4,9 @@
 		<releaseNotes>
 		</releaseNotes>
 		<fix author='alex' date='2007-10-15'>
+			Link type pages once again properly save urls and display link.
+		</fix>
+		<fix author='alex' date='2007-10-15'>
 			Removed the link to "add students of 'slot-name'" as editors in the edit permissions UI
 			for all non-class sites.
 		</fix>
