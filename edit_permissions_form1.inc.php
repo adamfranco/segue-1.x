@@ -1,5 +1,5 @@
 <? /* $Id$ */
-
+//printpre($_SESSION[obj]);
 /******************************************************************************
  * table & form definition
  ******************************************************************************/
@@ -33,7 +33,7 @@ $buttons .= "\n\t\t\t\t<input type='button' name='checkall' value='Check All' on
 $buttons .= "\n\t\t\t\t<input type='button' name='uncheckall' value='Uncheck All' onclick='uncheckAll()' /> ";
 $buttons .= "\n\t\t\t\t<input type='button' name='add' value='Add Editor' onclick=\"sendWindow('addeditor',400,250,'add_editor.php?$sid')\" />";
 $edlist = $_SESSION[obj]->getEditors();
-$buttons .= (($className && !in_array($className,$edlist))?"\n\t\t\t\t<div><a href='#' onclick='addClassEditor();'>Add students in ".$className."</a></div>":"");
+$buttons .= ((isclass ($className) && !in_array($className,$edlist))?"\n\t\t\t\t<div><a href='#' onclick='addClassEditor();'>Add students in ".$className."</a></div>":"");
 $buttons .= "\n\t\t\t</th>\n\t\t\t<th align='right'>";
 $buttons .= "\n\t\t\t\t<input type='submit' name='editpermissions' value='Edit Permissions of Checked -&gt;' />";
 $buttons .= "\n\t\t\t</th>\n\t\t</tr>";

@@ -9,6 +9,50 @@ v. 1.8.11 (The Future)
 
 		
 		
+	* Bug Fix: 
+		Removed the link to "add students of 'slot-name'" as editors in the edit
+		permissions UI for all non-class sites.
+		(2007-10-15 - Alex Chapin)
+		
+	* Change: 
+		Have removed the "class" type from the add/edit slots UI since this UI does
+		not really generated "class" type slots in the same way as the add/edit
+		classes UI does.
+		(2007-10-15 - Alex Chapin)
+		
+	* Bug Fix: 
+		The discussion header text is now visible on for all themes (some theme
+		settings resulted in white on white text)
+		(2007-10-15 - Alex Chapin)
+		(reported by Mary Ellen Bertolini of Middlebury College)
+		
+	* Bug Fix: #1811162 
+		Can now view and update class groups.
+		(2007-10-15 - Alex Chapin)
+		(reported by Melanie Hoag of Southwestern University)
+		
+	* Bug Fix: #1811157 
+		Can now search admin tools &gt; add/edit classes UI by year and by owner.
+		(2007-10-15 - Alex Chapin)
+		(reported by Melanie Hoag of Southwestern University)
+		
+	* Bug Fix: #1811095 
+		Revert to version button now properly reverts current version to previous
+		version as specified in the revert to version form.
+		(2007-10-15 - Alex Chapin)
+		(reported by Melanie Hoag of Southwestern University)
+		
+	* Bug Fix: #1811075 
+		Public site listing can once again be searched (by user, title or site).
+		(2007-10-15 - Alex Chapin)
+		(reported by Melanie Hoag of Southwestern University)
+		
+	* Bug Fix: #1809729 
+		Logging in from any page in Segue now returns users to that page after
+		authentication. 
+		(2007-10-15 - Alex Chapin)
+		(reported by alex)
+		
 	* Change: 
 		Now pulling segue version information from the changelog instead of the
 		version.txt file.

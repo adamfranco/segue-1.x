@@ -420,7 +420,7 @@ function doSlotForm($slot,$p='',$e=0) {
 		print $slot[$p.'type']."<input type='hidden' name='type' value='".$slot[$p.'type']."' />";
 	 } else { ?>
 		<select name='type'>
-		<option<?=($slot[$p.'type']=='class')?" selected='selected'":""?>>class</option>
+		<!-- <option<?=($slot[$p.'type']=='class')?" selected='selected'":""?>>class</option> -->
 		<option<?=($slot[$p.'type']=='other')?" selected='selected'":""?>>other</option>
 		<option<?=($slot[$p.'type']=='personal')?" selected='selected'":""?>>personal</option>
 		<option<?=($slot[$p.'type']=='system')?" selected='selected'":""?>>system</option>

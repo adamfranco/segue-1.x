@@ -11,7 +11,7 @@ require("objects/objects.inc.php");
 
 ob_start();
 session_start();
-
+//printpre($classname);
 // include all necessary files
 require("includes.inc.php");
 

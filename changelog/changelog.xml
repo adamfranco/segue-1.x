@@ -2,8 +2,15 @@
 <changelog name="Segue">
 	<version number="1.8.11" date="The Future">
 		<releaseNotes>
-			
 		</releaseNotes>
+		<fix author='alex' date='2007-10-15'>
+			Removed the link to "add students of 'slot-name'" as editors in the edit permissions UI
+			for all non-class sites.
+		</fix>
+		<change author='alex' date='2007-10-15'>
+			Have removed the "class" type from the add/edit slots UI since this UI does not really
+			generated "class" type slots in the same way as the add/edit classes UI does.
+		</change>
 		<fix author='alex' date='2007-10-15' reporter="mary_ellen">
 			The discussion header text is now visible on for all themes (some theme settings resulted
 			in white on white text)
