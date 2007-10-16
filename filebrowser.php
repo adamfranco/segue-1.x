@@ -388,9 +388,9 @@ $numrows = $a[media_count];
 $numperpage = 20; 
  
  
-if (!isset($lowerlimit)) $lowerlimit = 0; 
+if (!isset($_REQUEST[lowerlimit])) $lowerlimit = 0; 
 if ($lowerlimit < 0) $lowerlimit = 0; 
-$lowerlimit = addslashes($lowerlimit);
+$lowerlimit = addslashes($_REQUEST[lowerlimit]);
 $limit = " LIMIT $lowerlimit,$numperpage"; 
  
 $query = "

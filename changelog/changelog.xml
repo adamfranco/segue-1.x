@@ -3,6 +3,9 @@
 	<version number="1.8.11" date="The Future">
 		<releaseNotes>
 		</releaseNotes>
+		<fix author='alex' date='2007-10-15' reporter="sasha_woolson">
+			Media Library pagination once again working properly.
+		</fix>
 		<fix author='alex' date='2007-10-15'>
 			RSS type pages (i.e. sidebar RSS) once again properly save urls and display feeds.
 		</fix>
@@ -1958,6 +1961,10 @@ Mac Safari. Removed browser specific code from filebrowser.php
 		</reporter>
 		<reporter short="mary_ellen">
 			<name>Mary Ellen Bertolini</name>
+			<institution>Middlebury College</institution>
+		</reporter>
+		<reporter short="sasha_woolson">
+			<name>Sasha Woolson</name>
 			<institution>Middlebury College</institution>
 		</reporter>
 	</reporters>
