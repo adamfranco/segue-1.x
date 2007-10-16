@@ -35,6 +35,9 @@ $owner = $_REQUEST[owner];
 $editor = $_REQUEST[editor];
 $site = $_SESSION[settings][site];
 $order = $_REQUEST[order];
+$lowerlimit = $_REQUEST[lowerlimit];
+$user = $_REQUEST[user];
+$name = $_REQUEST[name];
 
 /* if (isset($_SESSION[settings][sitename])) { */
 /* 	$site = $_SESSION[settings][sitename]; */
@@ -358,11 +361,20 @@ $order = addslashes($order);
 $orderby = " ORDER BY $order"; 
  
 $w = array(); 
+
 if ($_SESSION['ltype'] == 'admin') { 
-	if ($site) $w[]="slot_name='".addslashes($site)."'"; 
-	else if ($all) $w[]="slot_name like '%'"; 
-	else $w[]="slot_name='".addslashes($settings[site])."'"; 
-} else $w[]="slot_name='".(($site)?"".addslashes($site)."":"".addslashes($settings[site])."")."'"; 
+	if ($site) {
+		$w[]="slot_name='".addslashes($site)."'"; 
+	} else if ($all) {
+		$w[]="slot_name like '%'"; 
+	} else {
+		$w[]="slot_name='".addslashes($settings[site])."'"; 
+	}
+	
+} else {
+	$w[]="slot_name='".(($site)?"".addslashes($site)."":"".addslashes($settings[site])."")."'"; 
+}
+
 if ($user) $w[]="user_uname LIKE '%".addslashes($user)."%'"; 
 if ($name) $w[]="media_tag LIKE '%".addslashes($name)."%'"; 
  
@@ -388,9 +400,9 @@ $numrows = $a[media_count];
 $numperpage = 20; 
  
  
-if (!isset($_REQUEST[lowerlimit])) $lowerlimit = 0; 
+if (!isset($lowerlimit)) $lowerlimit = 0; 
 if ($lowerlimit < 0) $lowerlimit = 0; 
-$lowerlimit = addslashes($_REQUEST[lowerlimit]);
+$lowerlimit = addslashes($lowerlimit);
 $limit = " LIMIT $lowerlimit,$numperpage"; 
  
 $query = "
