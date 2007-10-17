@@ -23,7 +23,7 @@ mysql_select_db($dblink_db);
 ?>
 <html>
 <head>
-<title>Segue - Measure Error</title>
+<title>Segue - Measure Connection</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
 a {
@@ -45,6 +45,15 @@ a:hover {
 	padding: 5px;
 }
 
+.connection {	
+	font-size: 16px;
+	text-align: center;
+	padding: 10px;
+	margin: 50px;
+	border: 1px dotted #666666;
+
+}
+
 </style>
 </head>
 <body>
@@ -53,12 +62,15 @@ a:hover {
 /******************************************************************************
  * Provide links back to referer and/or Measure home
  ******************************************************************************/
+print "<div class='connection'>";
 
-if ($_SERVER['HTTP_REFERER'])
-	print "<span class='back'><a href='".$_SERVER['HTTP_REFERER']."'>&lt;&lt; back</a></span> | ";
+print "Connnecting to Moodle...<br/><br/>";
 
-print "<span class='back'><a href='".$segue_url."'>Segue Home</a></span>";
+if ($_SERVER['HTTP_REFERER']) print "<a href='".$_SERVER['HTTP_REFERER']."'>&lt;&lt; back</a> | ";
+print "<a href='".$segue_url."'>Segue Home</a>";
 
+
+print "</div>";
 //exit;
 
 /******************************************************************************
@@ -88,7 +100,7 @@ if ($_REQUEST['id']) {
 	
 		$a = mysql_fetch_assoc($r);
 		if ($a['referer']) {
-			print "Segue site url: ".$a['referer']."<br \>";
+			//print "Segue site url: ".$a['referer']."<br \>";
 			header("Location: ".$a['referer']);		
 			exit;
 		}
@@ -113,10 +125,10 @@ if ($_REQUEST['id']) {
 	
 	//if no corresponding site, go to Segue home
 	if (mysql_num_rows($r) == 0) {
-		print "No matching Segue site...<br>";
+		$admin_report = "No matching Segue site...<br>";
 		//print $segue_url;
 		link_log(0, 0, $category="errors",$description="No linked Segue site");
-		header("Location: ".$segue_url);
+		header("Location: ".$PHP_SELF);
 		exit;
 	}
 	
@@ -312,12 +324,11 @@ if ($moodle_user_id == 0) {
 * add key to that user in user_link table in segue-moodle database
 * New Moodle user code is adapted from:
 * moodle/admin/users.php
-* NEED TO TEST NEW USER CREATION, UPDATING OF LINKING TABLE
 ******************************************************************************/
 	
 	} else {
 	
-		print "<hr>Creating new Moodle user...<br>";
+		$admin_report .= "<hr>Creating new Moodle user...<br>";
 		
 		// get info about the linked user
 // 		$query = "
@@ -373,6 +384,7 @@ if ($moodle_user_id == 0) {
 		$user->auth = "ldap";
 		$user->password = "not cached";
 		$user->lang = "en_utf8";
+		$user->mnethostid = 1;
 		$user->confirmed = 1;
 		
 	//	printpre ($user);a	
@@ -395,7 +407,7 @@ if ($moodle_user_id == 0) {
 					FK_auth_id = '".addslashes($auth_id)."'
 			";
 	
-			print $query."<br>";
+		//	print $query."<br>";
 		//	exit;		
 			$r = mysql_query($query, $cid);
 			
@@ -490,10 +502,12 @@ if ($site_theme == "shadowbox") {
 				FK_moodle_site_id = '".addslashes($moodle_site_id)."'
 		";
 
-//		print $query."<br>";
-		//exit;		
+		
 		$r = mysql_query($query, $cid);
+	//	print $query."<br>";
+	//	exit;
 		$moodle_site_id = 0;
+		$moodle_site_deleted = 1;
 	}
  }
  
@@ -556,19 +570,29 @@ if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {
 	 ******************************************************************************/
 	$moodle_site_id = $newcourseid;
 	
-	$query = "
-		UPDATE
-			segue_moodle
-		SET
-			FK_moodle_site_id = '".addslashes($moodle_site_id)."'
-		WHERE
-			FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'
-			
-		";
+	if ($moodle_site_deleted == 1) {
+		$query = "
+			INSERT INTO
+				segue_moodle
+			SET
+				FK_moodle_site_id = '".addslashes($moodle_site_id)."',
+				FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'				
+			";	
+	} else {	
+		$query = "
+			UPDATE
+				segue_moodle
+			SET
+				FK_moodle_site_id = '".addslashes($moodle_site_id)."'
+			WHERE
+				FK_segue_site_id = '".addslashes($_REQUEST['siteid'])."'
+				
+			";
+	}
+
+	$r = mysql_query($query, $cid);
 //	print $query."<br>";
 	//exit;
-	$r = mysql_query($query, $cid);
-
 //	print "new moodle site_id: ".$moodle_site_id."<br>";
 	link_log($_REQUEST['userid'], $_REQUEST['siteid'], $category="site_added",$description="Measure site created");
 	//exit;
@@ -586,8 +610,8 @@ if ($moodle_site_id == 0 && $segue_user_id == $site_owner_id) {
  ******************************************************************************/
 	
 if ($segue_user_id != $site_owner_id){
-	print "<hr>Adding student to site<br>";
-	print "moodle_site_id: ".$moodle_site_id;
+	//print "<hr>Adding student to site<br>";
+	//print "moodle_site_id: ".$moodle_site_id;
 	$addstudent = $moodle_user_id;
 	
 	$timestart = $timeend = 0;
@@ -605,9 +629,9 @@ if ($segue_user_id != $site_owner_id){
 
 } else if ($newcourseid && $segue_user_id == $site_owner_id) {
 
-	print "<hr>New Moodle Course created<br>";	
-	print "newcourseid: ".$newcourseid."<br>";
-	print "moodle_user_id: ".$moodle_user_id."<br>";
+// 	print "<hr>New Moodle Course created<br>";	
+// 	print "newcourseid: ".$newcourseid."<br>";
+// 	print "moodle_user_id: ".$moodle_user_id."<br>";
 	
 	//need to get the context for the new course
 	$context = get_context_instance(CONTEXT_COURSE, $newcourseid);

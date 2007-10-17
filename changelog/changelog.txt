@@ -9,37 +9,50 @@ v. 1.8.11 (The Future)
 
 		
 		
+	* Change: 
+		Have updated the Moodle connector to work with Moodle version 1.8.3. This
+		code is still experimental.
+		(2007-10-17 - Alex Chapin)		
+		
+	* Bug Fix: 
+		Files uploaded to the media library with the same name as files already in
+		the media library will once again overwrite old files. As well messages
+		relating to uploads once again being printed.
+		(2007-10-17 - Alex Chapin)
+		(reported by Sasha Woolson of Middlebury College)		
+		
 	* Bug Fix: #1811150 
 		Error no longer displayed after creating group sites.
-		(2007-10-15 - Adam Franco)
+		(2007-10-16 - Adam Franco)
 		(reported by Melanie Hoag of Southwestern University)		
+		
 	* Bug Fix: 
 		Site and Logs search UI once again working properly.
-		(2007-10-15 - Alex Chapin)
+		(2007-10-16 - Alex Chapin)
 		
 	* Bug Fix: 
 		Media Library search UI once again working properly.
-		(2007-10-15 - Alex Chapin)
+		(2007-10-16 - Alex Chapin)
 		
-	* Bug Fix: 
+	* Bug Fix: #1814739 
 		Media Library pagination once again working properly.
-		(2007-10-15 - Alex Chapin)
-		(reported by Sasha Woolson of Middlebury College)
+		(2007-10-16 - Alex Chapin)
+		(reported by Sasha Woolson of Middlebury College,  mel_hoag)
 		
 	* Bug Fix: 
 		RSS type pages (i.e. sidebar RSS) once again properly save urls and display
 		feeds. 
-		(2007-10-15 - Alex Chapin)
+		(2007-10-16 - Alex Chapin)
 		
 	* Bug Fix: 
 		Link type pages (e.g. sidebar links) once again properly save urls and
 		display link.
-		(2007-10-15 - Alex Chapin)
+		(2007-10-16 - Alex Chapin)
 		
 	* Bug Fix: 
 		Removed the link to "add students of 'slot-name'" as editors in the edit
 		permissions UI for all non-class sites.
-		(2007-10-15 - Alex Chapin)
+		(2007-10-16 - Alex Chapin)
 		
 	* Change: 
 		Have removed the "class" type from the add/edit slots UI since this UI does

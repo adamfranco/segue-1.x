@@ -10,13 +10,17 @@ ob_start();
 
 $cid = db_connect ($dbhost, $dbuser, $dbpass, $dbdb);
 
+//printpre ($_SESSION);
+//printpre ($_SERVER);
+//printpre ($_REQUEST);
+
 /******************************************************************************
  * start HTML output
  ******************************************************************************/
 ?>
 <html>
 <head>
-<title>Segue - Measure Error</title>
+<title>Segue - Measure Connector</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
 a {
@@ -32,21 +36,25 @@ a:hover {
 	font-size: 14px;
 
 }
-.back {	
+.connection {	
 	font-size: 16px;
-	align: center;
-	padding: 5px;
+	text-align: center;
+	padding: 10px;
+	margin: 50px;
+	border: 1px dotted #666666;
+
 }
 
 </style>
 </head>
 <body>
 <?
-	if ($_SERVER['HTTP_REFERER'])
-		print "<span class='back'><a href='".$_SERVER['HTTP_REFERER']."'>&lt;&lt; back</a></span> | ";
-	
-	print "<span class='back'><a href='".$cfg['full_uri']."'>Segue Home</a></span>";
-		
+print "<div class='connection'>";
+
+print "Connnecting to Moodle...<br/><br/>";
+
+if ($_SERVER['HTTP_REFERER']) print "<a href='".$_SERVER['HTTP_REFERER']."'>&lt;&lt; back</a> | ";	
+print "<a href='".$cfg['full_uri']."'>Segue Home</a>";
 
 
 /******************************************************************************
@@ -75,6 +83,8 @@ if (!isset($_REQUEST[site]) || !$_REQUEST[site]) {
 	$node_id = $_REQUEST[node];		
 }
 
+print "</div>";
+//exit;
 
 /******************************************************************************
  * Get Segue user information from Segue session array
@@ -107,10 +117,11 @@ $query = "
 			site_id = '".addslashes($segue_site_id)."'				
 	";
 	
-print $query."<br>";
+//print $query."<br>";
 
 $r = db_query($query);
 $a = db_fetch_assoc($r);
+$site_id = $segue_site_id;
 $site_title = $a['site_title'];
 $site_theme = $a['site_theme'];
 $segue_site_owner = $a['FK_createdby'];
@@ -148,7 +159,7 @@ if (!isset($segue_site_id) || !$segue_site_id) {
 $r = db_query($query);
 
 if (db_num_rows($r) > 0) {
-//	print "linked moodle site found<br>";
+	$admin_report = "linked moodle site found<br>"; 
 	
 } else if (!isset($segue_site_owner) || !$segue_site_owner ||  !isset($site_title) || !$site_title || !isset($site_theme) || !site_theme) {
 	print "<div class='error'>Data needed for this link is missing...</div>";
@@ -156,7 +167,7 @@ if (db_num_rows($r) > 0) {
 	exit;
 	
 } else {
-//	print "no linked moodle site found<br>";
+	$admin_report = "no linked moodle site found<br>";
 			
 	$query = "
 		INSERT INTO
@@ -211,77 +222,113 @@ if (!isset($segue_user_id) || !$segue_user_id) {
 $r = db_query($query);
 
 
-// create an auth token for validation
+/******************************************************************************
+ * Create an auth token for validation
+ ******************************************************************************/
 $auth_token = md5(time().rand(1, 1000));
 //print "auth_token: ".$auth_token."<hr \>";
 
-if ($_SERVER['HTTP_REFERER'] 
-	&& (strpos($_SERVER['HTTP_REFERER'], $cfg['full_uri']) === 0
-		|| strpos($_SERVER['HTTP_REFERER'], $cfg['classsitesurl']) === 0
-		|| strpos($_SERVER['HTTP_REFERER'], $cfg['personalsitesurl']) === 0
-	))
-{
-	$referer = "'".addslashes($_SERVER['HTTP_REFERER'])."'";
-} else {
-	$referer = "NULL";
-}
 
-
-// linked user found
-if (db_num_rows($r) > 0) {
-//	print "linked moodle user found<br>";	
+/******************************************************************************
+ * Store the referrer so link to Segue in Moodle is more accurate
+ * (i.e. to specific page in linked Segue where Moodle link is...)
+ ******************************************************************************/
+	if ($_REQUEST['referer']) {
+		$referer = "'".addslashes($_REQUEST['referer'])."'";
 	
-	// update authentication table with new auth_token
-	$query = "
-		Update
-			authentication
-		SET
-			auth_token = '".addslashes($auth_token)."',
-			auth_time = NOW(),
-			referer = ".$referer."
-		WHERE
-			user_id = '".addslashes($segue_user_id)."'		
-	";
+	} else if ($_SERVER['HTTP_REFERER'] 
+		&& (strpos($_SERVER['HTTP_REFERER'], $cfg['full_uri']) === 0
+			|| strpos($_SERVER['HTTP_REFERER'], $cfg['classsitesurl']) === 0
+			|| strpos($_SERVER['HTTP_REFERER'], $cfg['personalsitesurl']) === 0
+		))
+	{
+		$referer = "'".addslashes($_SERVER['HTTP_REFERER'])."'";
+	} else {
+		$referer = "NULL";
+	}
 	
-//	print $query."<br>";
-	$r = db_query($query);	
-
-//no linked user found	
-} else {
-//	print "no linked moodle user found<br>";
-
-	$query = "
-		INSERT INTO
-			authentication
-		SET
-			system = 'segue',
-			username = '".addslashes($_SESSION[auser])."',
-			firstname = '".addslashes($firstname)."',
-			lastname = '".addslashes($lastname)."',
-			email = '".addslashes($_SESSION[aemail])."',
-			user_id = '".addslashes($segue_user_id)."',
-			auth_token = '".addslashes($auth_token)."',
-			auth_time = NOW(),
-			referer = ".$referer."
-		";
-//	print $query."<br>";
-//	exit;
-	$r = db_query($query);
 	
-	$auth_id = lastid($r);		
-	$query = "
-		INSERT INTO
-			user_link
-		SET
-			FK_auth_id = '".addslashes($auth_id)."'
-		";
-//	print $query."<br>";
-	$r = db_query($query);		
+	// linked user found
+	if (db_num_rows($r) > 0) {
+	//	print "linked moodle user found<br>";	
 		
-}
+		// update authentication table with new auth_token
+		$query = "
+			Update
+				authentication
+			SET
+				auth_token = '".addslashes($auth_token)."',
+				auth_time = NOW(),
+				referer = ".$referer."
+			WHERE
+				user_id = '".addslashes($segue_user_id)."'		
+		";
+		
+	//	print $query."<br>";
+		$r = db_query($query);	
+	
+	//no linked user found	
+	} else {
+	//	print "no linked moodle user found<br>";
+	
+		$query = "
+			INSERT INTO
+				authentication
+			SET
+				system = 'segue',
+				username = '".addslashes($_SESSION[auser])."',
+				firstname = '".addslashes($firstname)."',
+				lastname = '".addslashes($lastname)."',
+				email = '".addslashes($_SESSION[aemail])."',
+				user_id = '".addslashes($segue_user_id)."',
+				auth_token = '".addslashes($auth_token)."',
+				auth_time = NOW(),
+				referer = ".$referer."
+			";
+	//	print $query."<br>";
+	//	exit;
+		$r = db_query($query);
+		
+		$auth_id = lastid($r);		
+		$query = "
+			INSERT INTO
+				user_link
+			SET
+				FK_auth_id = '".addslashes($auth_id)."'
+			";
+	//	print $query."<br>";
+		$r = db_query($query);		
+			
+	}
+
+
 
 //exit;
-header("Location: ".$moodle_url."/segue/segue_link.php?userid=".addslashes($segue_user_id)."&siteid=".addslashes($segue_site_id)."&auth_token=".addslashes($auth_token));
+if ($_REQUEST['continue'] == "1" || $_SESSION[ltype] != "admin") {
+	header("Location: ".$moodle_url."/segue/segue_link.php?userid=".addslashes($segue_user_id)."&siteid=".addslashes($segue_site_id)."&auth_token=".addslashes($auth_token));
+}
+
+/******************************************************************************
+ * Segue Admin Report
+ ******************************************************************************/
+if ($_SESSION[ltype] == "admin") {
+	print "<div class='connection'>";
+	print "Segue Administrator Reference<br /><br />";
+	print "<form action='$PHP_SELF' method='post'>";
+	print "<table align='center' cellpadding='5'>";
+	print "";
+	print "<tr><td>Segue Site Title:</td><td>".$site_title." (id:".$segue_site_id.")</td></tr>"; 
+	print "<tr><td>Segue Site Owner:</td><td>".$_SESSION[afname]." (id:".$segue_site_owner.")</td></tr>"; 
+	print "<tr><td></td></tr>"; 
+	print "<tr><td>Moodle Link Status:</td><td>".$admin_report."</td></tr>"; 
+	print "</table>";
+	print "<input type='hidden' name='continue' value='1'";
+	print "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."'>";
+	print "<div style='text-align: right;'><input type='submit' value='Continue'></div>";
+	print "</form>";
+	print "</div>";
+	exit;
+}
 
 
 function link_log($auth_id="",$site_link_id="",$category="event",$description="") {
@@ -301,5 +348,18 @@ function link_log($auth_id="",$site_link_id="",$category="event",$description=""
 	//exit;
 	$r = db_query($query);
 }
+
+// function printpre($array, $return=FALSE) {
+// 	ob_start();
+// 	print "\n<pre>";
+// 	print_r($array);
+// 	print "\n</pre>";
+// 	
+// 	if ($return)
+// 		return ob_get_clean();
+// 	else
+// 		ob_end_flush();
+// }
+
 
 ?>
