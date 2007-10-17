@@ -38,6 +38,7 @@ $order = $_REQUEST[order];
 $lowerlimit = $_REQUEST[lowerlimit];
 $user = $_REQUEST[user];
 $name = $_REQUEST[name];
+$upload = $_REQUEST[upload];
 
 /* if (isset($_SESSION[settings][sitename])) { */
 /* 	$site = $_SESSION[settings][sitename]; */
@@ -149,7 +150,8 @@ if ($_REQUEST['upload']) {
 	$r = db_query($query); 
 	$filename = ereg_replace("[\x27\x22]",'',trim($_FILES[file][name])); 
 	
-	
+// 	printpre ($_REQUEST);
+// 	exit;
 	
 	if ($_FILES['file']['tmp_name'] == 'none') { 
 		$upload_results = "<li>No file selected";
@@ -230,7 +232,9 @@ if ($_REQUEST['upload']) {
 			
 			if (($_FILES[file][size] + $totalsize) > $dirlimit) {
 				$upload_results = "<li>There is not enough room in your directory for $filename."; 
-			} else if ($overwrite && $nameUsed) {
+
+			} else if ($_REQUEST[overwrite] && $nameUsed) {
+				
 				$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),1,$usedId,0);
 				if ($newID && $newID != 'ERROR') {
 					$upload_results = "<li>$filename successfully uploaded to ID $newID. <li>The origional file was overwritten. <li>If the your new version does not appear, please reload your page. If the new version still doesn't appear, clear your browser cache."; 
@@ -244,6 +248,7 @@ if ($_REQUEST['upload']) {
 				$upload_results = "<li>Filename, $filename, is already in use. <li>Please change the filename before uploading or check \"overwrite\" to OVERWRITE"; 
 			} else { 
 				$newID = copyuserfile($_FILES['file'],(($_REQUEST[site])?"$_REQUEST[site]":"$settings[site]"),0,0);
+				printpre($newID);
 				if ($newID && $newID != 'ERROR') {
 					$upload_results = "<li>$filename successfully uploaded to ID $newID"; 
 				} else {
