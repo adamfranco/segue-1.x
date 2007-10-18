@@ -4,9 +4,9 @@ Name: Segue Change Log
 
 
 
-v. 1.8.11 (The Future)
+v. 1.8.11 (2007-10-18)
 ----------------------------------------------------
-
+This release fixes the remaining known bugs introduced in the 1.8.5 security patch.
 		
 		
 	* Change: 
@@ -37,7 +37,7 @@ v. 1.8.11 (The Future)
 	* Bug Fix: #1814739 
 		Media Library pagination once again working properly.
 		(2007-10-16 - Alex Chapin)
-		(reported by Sasha Woolson of Middlebury College,  mel_hoag)
+		(reported by Sasha Woolson of Middlebury College, Melanie Hoag of Southwestern University)
 		
 	* Bug Fix: 
 		RSS type pages (i.e. sidebar RSS) once again properly save urls and display

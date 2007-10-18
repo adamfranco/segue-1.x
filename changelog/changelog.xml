@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
-	<version number="1.8.11" date="The Future">
+	<version number="1.8.11" date="2007-10-18">
 		<releaseNotes>
+			This release fixes the remaining known bugs introduced in the 1.8.5
+			security patch.
 		</releaseNotes>
 		<change author='alex' date='2007-10-17'>
 			Have updated the Moodle connector to work with Moodle version 1.8.3. This code is still
