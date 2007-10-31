@@ -6,7 +6,7 @@
 			security patch. See the changelog for details.
 		</releaseNotes>
 		<fix author='alex' date='2007-10-31' ref='1818790' reporter="mel_hoag">
-			The public site listing clear button is working once again.
+			The public site listing and Media Library clear button is working once again.
 		</fix>		
 		<fix author='alex' date='2007-10-31' ref='1818788' reporter="mel_hoag">
 			The public site listing pagination is working once again.

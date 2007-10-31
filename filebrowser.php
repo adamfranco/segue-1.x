@@ -63,10 +63,10 @@ if ($_REQUEST[site]) {
 $w = array(); 
 if ($_SESSION['ltype'] == 'admin') { 
 	if ($_REQUEST[site]) 
-		$w[]="slot_name='".addslashes($_REQUEST[site])."'"; 
+		$w[]="slot_name='".addslashes($site)."'"; 
 	else if ($all) $w[]="slot_name like '%'"; 
 	else $w[]="slot_name='".addslashes($settings[site])."'"; 
-} else $w[]="slot_name='".(($_REQUEST[site])?"".addslashes($_REQUEST[site])."":"".addslashes($settings[site])."")."'"; 
+} else $w[]="slot_name='".(($site)?"".addslashes($site)."":"".addslashes($settings[site])."")."'"; 
 if (count($w)) $where = " WHERE ".implode(" and ",$w); 
 
 $query = "
@@ -309,15 +309,15 @@ if (($upload && $newID) || $_REQUEST['update_id']) {
  * clears filename search UI??
  ******************************************************************************/
  
-if ($clear) {
+if ($_REQUEST[clear]) {
 	if ($_SESSION['ltype'] == 'admin') {
 		$user = ""; 
 		$site = ""; 
 		$name = ""; 
 	} else {
 		$name = "";
-		$user = $_REQUEST[user];
-		$site = $_REQUEST[site];
+		$user = $user;
+		$site = $site;
 	}
 } 
 
