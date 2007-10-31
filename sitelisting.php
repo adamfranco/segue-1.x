@@ -16,7 +16,29 @@ include("includes.inc.php");
 
 db_connect($dbhost, $dbuser, $dbpass, $dbdb);
 
-if ($clear) {
+
+if ($_REQUEST[order]) 
+	$order = $_REQUEST[order];
+	
+if ($_REQUEST[site]) 
+	$site = $_REQUEST[site];
+	
+if ($_REQUEST[user]) 
+	$user = $_REQUEST[user];
+
+if ($_REQUEST[title]) {
+	$title = $_REQUEST[title];
+} else {
+	$title = "";
+}
+	
+if (!isset($order)
+	|| !preg_match('/^[a-z0-9_.]+( (ASC|DESC))?$/i', $order))
+	$order = "editedtimestamp DESC";
+
+$orderby = " ORDER BY $order";
+
+if ($_REQUEST[clear]=="clear") {
 	$type = "";
 	$user = "";
 	$site = "";
@@ -25,14 +47,6 @@ if ($clear) {
 	//$active = "%";
 }
 
-if ($_REQUEST[order]) 
-	$order = $_REQUEST[order];
-	
-if (!isset($order)
-	|| !preg_match('/^[a-z0-9_.]+( (ASC|DESC))?$/i', $order))
-	$order = "editedtimestamp DESC";
-
-$orderby = " ORDER BY $order";
 
 //printpre ($_REQUEST);
 
@@ -42,9 +56,9 @@ if ($cfg[allowpersonalsites] && $cfg[allowclasssites])
 	$w[]="(slot_type='personal' OR slot_type='class' OR slot_type='other')";
 else if ($cfg[allowpersonalsites]) $w[]="(slot_type='personal' OR slot_type='other')";
 else if ($cfg[allowclasssites]) $w[]="slot_type='class'";
-if ($_REQUEST[user]) $wExtra[]="user_uname like '%".addslashes($_REQUEST[user])."%'";
-if ($_REQUEST[site]) $wExtra[]="slot_name like '%".addslashes($_REQUEST[site])."%'";
-if ($_REQUEST[title]) $wExtra[]="site_title like '%".addslashes($_REQUEST[title])."%'";
+if ($user) $wExtra[]="user_uname like '%".addslashes($user)."%'";
+if ($site) $wExtra[]="slot_name like '%".addslashes($site)."%'";
+if ($title) $wExtra[]="site_title like '%".addslashes($title)."%'";
 $w[] = "site_active='1'";
 $w[] = "site_listed='1'";
 //if ($_REQUEST[active]) $w[]="site_active like '%$active%'";
@@ -191,9 +205,9 @@ function changeOrder(order) {
 		if (true) {
 		?>
 			<!-- </select> -->
-			site: <input type='text' name='site' size='10' value='<?echo $_REQUEST[site] ?>' />
-			title: <input type='text' name='title' size='10' value='<?echo $_REQUEST[title] ?>' />
-			user: <input type='text' name='user' size='10' value='<?echo $_REQUEST[user] ?>' />
+			site: <input type='text' name='site' size='10' value='<?echo $site ?>' />
+			title: <input type='text' name='title' size='10' value='<?echo $title ?>' />
+			user: <input type='text' name='user' size='10' value='<?echo $user ?>' />
 			<!--
 			type: <select name='type'>
 				<option<?=($type=='%')?" selected":""?>>all

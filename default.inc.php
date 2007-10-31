@@ -99,8 +99,10 @@ END;
 /******************************************************************************
  * handle site copy
  ******************************************************************************/
-if ($copysite && $newname && $origname) {
-	$origSite =& new site($origname);
+ 
+if ($_REQUEST[copysite] && $_REQUEST[newname] && $_REQUEST[origname]) {
+	$newname = $_REQUEST[newname];
+	$origSite =& new site($_REQUEST[origname]);
 	$origSite->fetchDown(1);
 
 	/******************************************************************************

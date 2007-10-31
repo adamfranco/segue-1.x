@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.8.12" date="the future">
+		<releaseNotes>
+			This release fixes newly discovered bugs that were introduced in the 1.8.5
+			security patch. See the changelog for details.
+		</releaseNotes>
+		<fix author='alex' date='2007-10-31' ref='1818790' reporter="mel_hoag">
+			The public site listing clear button is working once again.
+		</fix>		
+		<fix author='alex' date='2007-10-31' ref='1818788' reporter="mel_hoag">
+			The public site listing pagination is working once again.
+		</fix>		
+		<fix author='alex' date='2007-10-31' ref='1820189' reporter="mel_hoag">
+			The copy site function is working once again.
+		</fix>		
+	</version>
 	<version number="1.8.11" date="2007-10-18">
 		<releaseNotes>
 			This release fixes the remaining known bugs introduced in the 1.8.5
