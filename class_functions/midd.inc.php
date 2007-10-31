@@ -13,9 +13,6 @@ function isclass ($class) {
 	$SlotType = db_get_value("slot", "slot_type", "slot_name ='".addslashes($class)."'");
 //	printpre($SlotType);
 	
-// 	if ($SlotType == "class") 
-// 		$isClass = TRUE;	
-	
 	// Check the name against the form of our class codes
 	$isClass = ereg("^(([a-zA-Z]{0,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2}))$",$class);
 		

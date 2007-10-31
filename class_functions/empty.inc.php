@@ -16,7 +16,7 @@ function isclass ($class) {
 	$isClass = ereg("^(([a-zA-Z]{1,})([0-9]{1,})([a-zA-Z]{0,})-([a-zA-Z]{1,})([0-9]{2}))$",$class);
 	
 	// If this isn't a class, but itself, but is a class group, then it is a class.
-	if (!$isClass && isgroup($class && $SlotType == "class")) 
+	if (!$isClass && isgroup($class) && $SlotType == "class") 
 		$isClass = TRUE;
 	
 	$_isclass_cache[$class] = $isClass;

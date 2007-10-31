@@ -5,6 +5,11 @@
 			This release fixes newly discovered bugs that were introduced in the 1.8.5
 			security patch. See the changelog for details.
 		</releaseNotes>
+		<fix author='alex' date='2007-10-31' ref='1819482' reporter="mel_hoag">
+			Removed link to "add students of 'slot-name'" as editors in the edit permissions UI
+			for all non-class sites, including sites whose slot type is "other" but whose slot name
+			conforms to the class code naming convention.
+		</fix>		
 		<fix author='alex' date='2007-10-31' ref='1818790' reporter="mel_hoag">
 			The public site listing and Media Library clear button is working once again.
 		</fix>		
