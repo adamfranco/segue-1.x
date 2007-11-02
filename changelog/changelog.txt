@@ -4,6 +4,35 @@ Name: Segue Change Log
 
 
 
+v. 1.8.12 (2007-11-02)
+----------------------------------------------------
+This release fixes newly discovered bugs that were introduced in the 1.8.5 security
+patch. See the changelog for details.
+		
+		
+	* Bug Fix: #1819482 
+		Removed link to "add students of 'slot-name'" as editors in the edit
+		permissions UI for all non-class sites, including sites whose slot type is
+		"other" but whose slot name conforms to the class code naming convention.
+		(2007-10-31 - Alex Chapin)
+		(reported by Melanie Hoag of Southwestern University)		
+		
+	* Bug Fix: #1818790 
+		The public site listing and Media Library clear button is working once
+		again. 
+		(2007-10-31 - Alex Chapin)
+		(reported by Melanie Hoag of Southwestern University)		
+		
+	* Bug Fix: #1818788 
+		The public site listing pagination is working once again.
+		(2007-10-31 - Alex Chapin)
+		(reported by Melanie Hoag of Southwestern University)		
+		
+	* Bug Fix: #1820189 
+		The copy site function is working once again.
+		(2007-10-31 - Alex Chapin)
+		(reported by Melanie Hoag of Southwestern University)		
+	
 v. 1.8.11 (2007-10-18)
 ----------------------------------------------------
 This release fixes the remaining known bugs introduced in the 1.8.5 security patch.
