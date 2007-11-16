@@ -4,6 +4,16 @@ Name: Segue Change Log
 
 
 
+v. 1.8.13 (2007-11-16)
+----------------------------------------------------
+This release fixes the bug in Segue email site participants UI.
+		
+		
+	* Bug Fix: 
+		Segue site participant email UI is once again functioning properly.
+		(2007-11-16 - Alex Chapin)
+		(reported by Mary Ellen Bertolini of Middlebury College)		
+	
 v. 1.8.12 (2007-11-02)
 ----------------------------------------------------
 This release fixes newly discovered bugs that were introduced in the 1.8.5 security

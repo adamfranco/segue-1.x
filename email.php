@@ -47,7 +47,7 @@ if ($_REQUEST['email']) {
  * Determine which subsets of participants will be checked
  ******************************************************************************/
 
-if ($_REQUEST[checkclass] == "Check Class only") $checkgroup = "Check Class only";
+if ($_REQUEST[checkclass] == "Check Class only") $_REQUEST[checkgroup] = "Check Class only";
 
 //$checkgroup = $_REQUEST['checkgroup'];
 //$checkgroup = "Check Class only";
@@ -885,8 +885,15 @@ printerr();
 				 ******************************************************************************/
 		
 				} else if ($curraction == 'send') {
+					
+					$to = $_REQUEST[to];
+					$body = $_REQUEST[body];
+					$headers = $_REQUEST[headers];
+					
 					if ($_SESSION['ltype']=='admin' && $_SESSION['lfname'] != $_SESSION['afname']) {
-						$subject = $subject." (sent by Segue Admin: ".$_SESSION['lfname'].")";
+						$subject = $_REQUEST[subject]." (sent by Segue Admin: ".$_SESSION['lfname'].")";
+					} else {
+						$subject = $_REQUEST[subject];
 					}
 					print "\n\t\t\t\t\t<table>";
 					print "\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>To:</td>\n\t\t\t\t\t\t<td>".$to."</td>\n\t\t\t\t\t</tr>";

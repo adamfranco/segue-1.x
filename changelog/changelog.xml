@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.8.13" date="2007-11-16">
+		<releaseNotes>
+			This release fixes the bug in Segue email site participants UI.
+		</releaseNotes>
+		<fix author='alex' date='2007-11-16' reporter="mary_ellen">
+			Segue site participant email UI is once again functioning properly.
+		</fix>		
+	</version>
 	<version number="1.8.12" date="2007-11-02">
 		<releaseNotes>
 			This release fixes newly discovered bugs that were introduced in the 1.8.5
