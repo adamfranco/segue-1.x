@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
-	<version number="1.8.14" date="the future">
+	<version number="1.8.14" date="2007-11-27">
 		<releaseNotes>
 			This release fixes primarily more bugs in Segue that resulted for security updates.
 		</releaseNotes>
 		<fix author='alex' date='2007-11-26' reporter="bryan">
 			Categories for a given content block can once again be edited.
 		</fix>		
+		<fix author='alex' date='2007-11-26' ref='1827636'>
+			Segue docs/install.txt updated to remove register global requirement
+		</fix>		
 	</version>
-
-
 	<version number="1.8.13" date="2007-11-16">
 		<releaseNotes>
 			This release fixes the bug in Segue email site participants UI.

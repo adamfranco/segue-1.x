@@ -20,9 +20,7 @@ The following services are required:
 3) a MySQL server > 4.1.22
 
 PHP configuration:
-1) register_globals must be ON due to a session-related bug in PHP4 in how it handles
-variable references.
-2) gpc_magic_quotes should be ON
+1) gpc_magic_quotes should be ON
 
 
 STEP 1

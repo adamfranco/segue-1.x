@@ -4,6 +4,20 @@ Name: Segue Change Log
 
 
 
+v. 1.8.14 (2007-11-27)
+----------------------------------------------------
+This release fixes primarily more bugs in Segue that resulted for security updates.
+		
+		
+	* Bug Fix: 
+		Categories for a given content block can once again be edited.
+		(2007-11-26 - Alex Chapin)
+		(reported by Bryan Carson of Middlebury College)		
+		
+	* Bug Fix: #1827636 
+		Segue docs/install.txt updated to remove register global requirement
+		(2007-11-26 - Alex Chapin)		
+	
 v. 1.8.13 (2007-11-16)
 ----------------------------------------------------
 This release fixes the bug in Segue email site participants UI.
