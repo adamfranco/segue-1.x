@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.8.14" date="the future">
+		<releaseNotes>
+			This release fixes primarily more bugs in Segue that resulted for security updates.
+		</releaseNotes>
+		<fix author='alex' date='2007-11-26' reporter="bryan">
+			Categories for a given content block can once again be edited.
+		</fix>		
+	</version>
+
+
 	<version number="1.8.13" date="2007-11-16">
 		<releaseNotes>
 			This release fixes the bug in Segue email site participants UI.
@@ -1999,6 +2009,10 @@ Mac Safari. Removed browser specific code from filebrowser.php
 		<name short="alex">Alex Chapin</name>
 	</authors>
 	<reporters>
+		<reporter short="bryan">
+			<name>Bryan Carson</name>
+			<institution>Middlebury College</institution>
+		</reporter>
 		<reporter short="mel_hoag">
 			<name>Melanie Hoag</name>
 			<institution>Southwestern University</institution>

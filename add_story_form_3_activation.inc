@@ -38,7 +38,9 @@ printc("<br /><br /><div class=title style='font-size: 14px'>Category</div>");
 
 
 if (!isset($_SESSION[settings][story_categories])) {
-	$record_tags = get_record_tags($_SESSION[settings][site],$_SESSION[storyObj]->id, $_SESSION[aid], "story");
+	$record_tags = get_record_tags($_SESSION[storyObj]->id);
+//	$record_tags = get_record_tags($_SESSION[settings][site],$_SESSION[storyObj]->id, $_SESSION[aid], "story");
+
 	if (is_array($record_tags)) {
 		foreach($record_tags as $tag) {
 			$_SESSION[settings][story_categories][] = urldecode($tag);	
@@ -55,7 +57,7 @@ if (!isset($_SESSION[settings][story_categories])) {
 
 
 $story_tags = "";
-//printpre($_SESSION[settings][story_categories]);
+// printpre($_SESSION[settings][story_categories]);
 if (is_array($_SESSION[settings][story_categories])) {	
 	foreach ($_SESSION[settings][story_categories] as $c) {
 		//printc("<option value='$c'".(($_SESSION[storyObj]->getField("category")==$c)?" selected":"").">$c");

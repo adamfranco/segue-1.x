@@ -89,7 +89,7 @@ while (ob_get_level())
 <html>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-<link rel="stylesheet" type="text/css" media="screen" href="http://www.middlebury.edu/css/styles.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="https://www.middlebury.edu/css/styles.css" />
 
 <?
 /******************************************************************************

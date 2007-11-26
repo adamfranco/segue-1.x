@@ -167,7 +167,7 @@ include("themes/common/css.inc.php");
 
 .breadcrumbTop {
 
-	background-image: url(http://www.middlebury.edu//images/nav/nav_gateway_dotted_rule.gif);
+	background-image: url(https://www.middlebury.edu//images/nav/nav_gateway_dotted_rule.gif);
 	background-attachment: scroll;
 	background-x-position: top;
 	background-y-position: bottom;
