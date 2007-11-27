@@ -708,7 +708,7 @@ class discussion {
 				
 		$p = ($t=='reply')?" style='padding-left: 15px'":'';
 		
-		printc ("\n<form action='".$_full_uri."/index.php?$sid&amp;action=site&amp;".$this->getinfo."#".$this->id."' method='post' name='postform'>\n");
+		printc ("\n<form action='".$_full_uri."/index.php?$sid&amp;action=site&amp;".$this->getinfo."#".$this->id."' method='post' name='addform'>\n");
 		printc ("<tr><td$p><b>$d</b></td></tr>\n");
 		printc ("<tr><td$p>\n");
 		printc ("<table width='100%'  cellspacing='0px'>\n");
@@ -824,7 +824,7 @@ class discussion {
 		 * print file upload UI
 		 ******************************************************************************/
 		 
-		if ($t != 'rate'  && $_SESSION[auser]) {		
+		if ($t != 'rate'  && $_SESSION[auser]) {	
 			printc ("<br />Upload a File:<input type='text' class='textfield small' name='libraryfilename' value='".$_REQUEST['libraryfilename']."' size='25' readonly />\n<input type='button' class='button small' name='browsefiles' value='Browse...' onclick='sendWindow(\"filebrowser\",700,600,\"filebrowser.php?site=$site&amp;source=discuss&amp;owner=$site_owner&amp;editor=none\")' target='filebrowser' style='text-decoration: none' />\n\n");
 			if ($_SESSION['aid']) printc ("<br />You will be able to edit your post as long as no-one replies to it.\n");
 			else printc ("<br />Once submitted, you will not be able to modify your post.\n");

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.8.15" date="the future">
+		<releaseNotes>
+			This release fixes minors bugs in Segue.
+		</releaseNotes>
+		<fix author='alex' date='2007-11-26' ref='1839660' reporter="jim_witte">
+			Bug with adding attachments to discussion posts is now fixed.
+		</fix>			
+	</version>
 	<version number="1.8.14" date="2007-11-27">
 		<releaseNotes>
 			This release fixes primarily more bugs in Segue that resulted for security updates.
@@ -2010,6 +2018,10 @@ Mac Safari. Removed browser specific code from filebrowser.php
 		<name short="alex">Alex Chapin</name>
 	</authors>
 	<reporters>
+		<reporter short="jim_witte">
+			<name>Jim Witte</name>
+			<institution>University of Illinois Urbana-Champaign</institution>
+		</reporter>
 		<reporter short="bryan">
 			<name>Bryan Carson</name>
 			<institution>Middlebury College</institution>

@@ -4,6 +4,16 @@ Name: Segue Change Log
 
 
 
+v. 1.8.15 (the future)
+----------------------------------------------------
+This release fixes minors bugs in Segue.
+		
+		
+	* Bug Fix: #1839660 
+		Bug with adding attachments to discussion posts is now fixed.
+		(2007-11-26 - Alex Chapin)
+		(reported by Jim Witte of University of Illinois Urbana-Champaign)			
+	
 v. 1.8.14 (2007-11-27)
 ----------------------------------------------------
 This release fixes primarily more bugs in Segue that resulted for security updates.
