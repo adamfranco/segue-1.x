@@ -4,7 +4,7 @@ Name: Segue Change Log
 
 
 
-v. 1.8.15 (the future)
+v. 1.8.15 (2007-12-13)
 ----------------------------------------------------
 This release fixes minors bugs in Segue.
 		

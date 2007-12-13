@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
-	<version number="1.8.15" date="the future">
+	<version number="1.8.15" date="2007-12-13">
 		<releaseNotes>
 			This release fixes minors bugs in Segue.
 		</releaseNotes>
