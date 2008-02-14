@@ -28,9 +28,8 @@ class HtmlString
 	 * @access public
 	 * @static
 	 */
-	function &withValue($value) {
-		$string =& new HtmlString($value);
-		return $string;
+	function withValue($value) {
+		return new HtmlString($value);
 	}
 	
 	/**

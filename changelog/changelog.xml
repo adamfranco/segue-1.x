@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.8.16" date="The Future">
+		<releaseNotes>
+			This release add support for exporting sites to a Segue2 instance.
+		</releaseNotes>
+		<change author='adam' date='2008-02-14'>
+			Export: Added story History, ids, page location to existing exported nodes.
+			Now also exports RSSFeeds and page-level content.
+		</change>
+	</version>
 	<version number="1.8.15" date="2007-12-13">
 		<releaseNotes>
 			This release fixes minors bugs in Segue.

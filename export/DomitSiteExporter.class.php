@@ -132,11 +132,13 @@ class DomitSiteExporter {
 		$this->_document->appendChild($siteElement);
 		
 		// site id and type
-		$siteElement->setAttribute('id', $site->getField('name'));
 		$siteElement->setAttribute('owner', slot::getOwner($site->getField('name')));
 		$siteElement->setAttribute('type', $site->getField('type'));
 		
 		$this->addCommonProporties($site, $siteElement);
+		
+		// use the slot-name for backwards-compatability
+		$siteElement->setAttribute('id', $site->getField('name'));
 		
 		// header
 		$header =& $this->_document->createElement('header');
@@ -186,6 +188,10 @@ class DomitSiteExporter {
  				$this->addHeading($section->pages[$key], $sectionElement);
  			else if ($section->pages[$key]->getField('type') == 'divider')
  				$this->addDivider($section->pages[$key], $sectionElement);
+ 			else if ($section->pages[$key]->getField('type') == 'content')
+ 				$this->addPageContent($section->pages[$key], $sectionElement);
+ 			else if ($section->pages[$key]->getField('type') == 'rss')
+ 				$this->addPageRSS($section->pages[$key], $sectionElement);
  			else
  				$this->addPage($section->pages[$key], $sectionElement);
 		}
@@ -213,6 +219,17 @@ class DomitSiteExporter {
 		if (!$archiving = $page->getField('archiveby'))
 			$archiving = "none";
 		$pageElement->setAttribute('archiving', $archiving);
+		
+		if ($page->getField('location') == 'right')
+			$pageElement->setAttribute('location', 'right');
+		else
+			$pageElement->setAttribute('location', 'left');
+			
+		$pageElement->setAttribute('type', $page->getField('type'));
+		
+// 		if (strlen($page->getField('url')))
+// 			$pageElement->appendChild($this->_document->createElement('url'))->appendChild(
+// 				$this->_document->createCDATASection($page->getField('url')));
 		
 		foreach ($page->stories as $key => $val) {
   			if ($page->stories[$key]->getField('type') == 'link')
@@ -277,6 +294,34 @@ class DomitSiteExporter {
 		$url =& $this->_document->createElement('url');
 		$linkElement->appendChild($url);
 		$url->appendChild($this->_document->createTextNode(htmlspecialchars($link->getField('url'))));
+		
+		if ($link->getField('location') == 'right')
+			$linkElement->setAttribute('location', 'right');
+		else
+			$linkElement->setAttribute('location', 'left');
+	}
+	
+	/**
+	 * Adds an RSS page block to the buffer.
+	 *
+	 * @param object link $link The link to add.
+	 * @param integer $indent The indent level of the object
+	 */
+	function addPageRSS(& $link, & $parentElement) {
+		$linkElement =& $this->_document->createElement('pageRSS');
+		$parentElement->appendChild($linkElement);
+		
+		$this->addCommonProporties($link, $linkElement);
+		
+		// url
+		$url =& $this->_document->createElement('url');
+		$linkElement->appendChild($url);
+		$url->appendChild($this->_document->createTextNode(htmlspecialchars($link->getField('url'))));
+		
+		if ($link->getField('location') == 'right')
+			$linkElement->setAttribute('location', 'right');
+		else
+			$linkElement->setAttribute('location', 'left');
 	}
 
 	/**
@@ -290,6 +335,32 @@ class DomitSiteExporter {
 		$parentElement->appendChild($headingElement);
 		
 		$this->addCommonProporties($heading, $headingElement);
+		
+		if ($heading->getField('location') == 'right')
+			$headingElement->setAttribute('location', 'right');
+		else
+			$headingElement->setAttribute('location', 'left');
+	}
+	
+	/**
+	 * Adds a page content to the buffer.
+	 *
+	 * @param object page $page The pageContent to add.
+	 * @param integer $indent The indent level of the object
+	 */
+	function addPageContent(& $page, & $parentElement) {
+		$element = $parentElement->appendChild(
+			$this->_document->createElement('pageContent'));
+		
+		$this->addCommonProporties($page, $element);
+		
+		$element->appendChild($this->_document->createElement('text'))->appendChild(
+			$this->_document->createCDATASection($page->getField('text')));
+		
+		if ($page->getField('location') == 'right')
+			$element->setAttribute('location', 'right');
+		else
+			$element->setAttribute('location', 'left');
 	}
 	
 	/**
@@ -312,6 +383,11 @@ class DomitSiteExporter {
 		$hasPerms = $this->getPermissions($divider, $permissions);
 		if ($hasPerms)
 			$dividerElement->appendChild($permissions);
+		
+		if ($divider->getField('location') == 'right')
+			$dividerElement->setAttribute('location', 'right');
+		else
+			$dividerElement->setAttribute('location', 'left');
 	}
 
 	/**
@@ -411,6 +487,79 @@ class DomitSiteExporter {
 		$edited_time =& $this->_document->createElement('last_edited_time');
 		$historyElement->appendChild($edited_time);
 		$edited_time->appendChild($this->_document->createTextNode($obj->getField('editedtimestamp')));
+		
+		$versions = $this->getVersions($obj);
+		if ($versions)
+			$historyElement->appendChild($versions);
+	}
+	
+	/**
+	 * Answer a list of version or null if not supported
+	 * 
+	 * @param object $obj
+	 * @return mixed DOMITElement or null
+	 * @access protected
+	 * @since 2/13/08
+	 */
+	protected function getVersions ($obj) {
+		if (strtolower(get_class($obj)) != 'story')
+			return null;
+		
+		$element = $this->_document->createElement('versions');
+		$versions = get_versions($obj->id);
+		foreach ($versions as $version) {
+			$element->appendChild($this->getVersion($version, $obj->getField('type')));
+		}
+		return $element;
+	}
+	
+	/**
+	 * Answer an element that represents a version of a story.
+	 * 
+	 * @param array $version
+	 * @return DOMITElement
+	 * @access protected
+	 * @since 2/13/08
+	 */
+	protected function getVersion (array $version, $storyType) {
+		$element = $this->_document->createElement('version');
+		$element->setAttribute('id', $version['version_id']);
+		$element->setAttribute('number', $version['version_order']);
+		$element->setAttribute('time_stamp', $version['create_time_stamp']);
+		$element->setAttribute('agent_id', $version['author_uname']);
+		
+		switch ($storyType) {
+			case 'link':
+			case 'rss':
+				$field1 = 'description';
+				$field2 = 'url';
+				$value1 = urldecode($version['version_text_short']);
+				$value2 = urldecode($version['version_text_long']);
+				break;
+			case 'file':
+			case 'image':
+				$field1 = 'description';
+				$field2 = 'filename';
+				$value1 = urldecode($version['version_text_short']);
+				$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id='".addslashes(urldecode($version['version_text_long']))."'")));
+				$value2 = htmlspecialchars($filename);
+				break;
+			default:
+				$field1 = 'shorttext';
+				$field2 = 'longertext';
+				$value1 = urldecode($version['version_text_short']);
+				$value2 = urldecode($version['version_text_long']);
+		}
+		$commentElement = $element->appendChild($this->_document->createElement('comment'));
+		$commentElement->appendChild($this->_document->createCDATASection($version['version_comments']));
+		
+		$shortText = $element->appendChild($this->_document->createElement($field1));
+		$shortText->appendChild($this->_document->createCDATASection($value1));
+		
+		$shortText = $element->appendChild($this->_document->createElement($field2));
+		$shortText->appendChild($this->_document->createCDATASection($value2));
+		
+		return $element;
 	}
 	
 	function getPermissions(& $obj, &$permissionsElement) {
@@ -527,6 +676,9 @@ class DomitSiteExporter {
 	}
 	
 	function addCommonProporties (& $partObj, & $element) {
+		if (isset($partObj->id))
+			$element->setAttribute('id', $partObj->id);
+		
 		// title
 		$title =& $this->_document->createElement('title');
 		$element->appendChild($title);
@@ -553,6 +705,9 @@ class DomitSiteExporter {
 	function addDiscussionNode(& $node, & $parentElement) {
 		$discussionNode =& $this->_document->createElement('discussion_node');
 		$parentElement->appendChild($discussionNode);
+		
+		if (isset($node->id))
+			$discussionNode->setAttribute('id', $node->id);
 		
 		// Add the creator, title, timestamp, and text.
 		// creator

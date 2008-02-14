@@ -889,6 +889,7 @@ function get_versions ($story_id, $version_num = 0) {
 		$version_author = $a[FK_createdby];
 		$version_authorname = db_get_value("user", "user_fname", "user_id = '".addslashes($version_author)."'");
 		$version_created = timestamp2usdate($a[version_created_tstamp]);
+		
 		$version[FK_createdby]= $version_authorname;
 		$version[version_order]= $a[version_order];
 		$version[version_created_tstamp]= $version_created;
@@ -896,6 +897,12 @@ function get_versions ($story_id, $version_num = 0) {
 		$version[version_text_long]= $a[version_text_long];
 		$version[version_comments]= $a[version_comments];
 		$version[version_id]= $a[version_id];
+		
+		// New for export:
+		$version['author_uname'] = trim(db_get_value("user", "user_uname", "user_id = '".addslashes($version_author)."'"));
+		$version['create_time_stamp'] = $a['version_created_tstamp'];
+		
+		
 		$versions[] = $version;
 	}
 	return $versions;
