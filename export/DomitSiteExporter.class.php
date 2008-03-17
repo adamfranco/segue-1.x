@@ -508,7 +508,7 @@ class DomitSiteExporter {
 		$element = $this->_document->createElement('versions');
 		$versions = get_versions($obj->id);
 		foreach ($versions as $version) {
-			$element->appendChild($this->getVersion($version, $obj->getField('type')));
+			$element->appendChild($this->getVersion($version, $obj->getField('type'), $obj->getField('texttype')));
 		}
 		return $element;
 	}
@@ -517,11 +517,13 @@ class DomitSiteExporter {
 	 * Answer an element that represents a version of a story.
 	 * 
 	 * @param array $version
+	 * @param string $storyType One of link, rss, file, image, text
+	 * @param optional string $textType text or html
 	 * @return DOMITElement
 	 * @access protected
 	 * @since 2/13/08
 	 */
-	protected function getVersion (array $version, $storyType) {
+	protected function getVersion (array $version, $storyType, $textType = 'html') {
 		$element = $this->_document->createElement('version');
 		$element->setAttribute('id', $version['version_id']);
 		$element->setAttribute('number', $version['version_order']);
@@ -550,14 +552,17 @@ class DomitSiteExporter {
 				$value1 = urldecode($version['version_text_short']);
 				$value2 = urldecode($version['version_text_long']);
 		}
+		
 		$commentElement = $element->appendChild($this->_document->createElement('comment'));
 		$commentElement->appendChild($this->_document->createCDATASection($version['version_comments']));
 		
 		$shortText = $element->appendChild($this->_document->createElement($field1));
 		$shortText->appendChild($this->_document->createCDATASection($value1));
+		$shortText->setAttribute('texttype', $textType);
 		
 		$shortText = $element->appendChild($this->_document->createElement($field2));
 		$shortText->appendChild($this->_document->createCDATASection($value2));
+		$shortText->setAttribute('texttype', $textType);
 		
 		return $element;
 	}
