@@ -8,6 +8,16 @@
 			Export: Added story History, ids, page location to existing exported nodes.
 			Now also exports RSSFeeds and page-level content.
 		</change>
+		<change author='adam' date='2008-03-17'>
+			Export: Added text-type (plain vs html) to the exported content.
+		</change>
+		<change author='adam' date='2008-03-17'>
+			Export: Added output scripts for migrating sites to Segue 2.
+		</change>
+		<change author='adam' date='2008-03-17'>
+			Export/Config: Added configuration lines to the sample configuration
+			to support Segue 2 migration.
+		</change>
 	</version>
 	<version number="1.8.15" date="2007-12-13">
 		<releaseNotes>

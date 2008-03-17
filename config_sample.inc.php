@@ -481,3 +481,6 @@
 						);
 
 
+// define('DATAPORT_SEGUE1_SECRET_KEY', 'sadfjasdf234j1');
+// define('DATAPORT_SEGUE1_SECRET_VALUE', '28usafnjm023jasdffa0235rhj2052');
+// define('DATAPORT_TMP_DIR', '/tmp');
