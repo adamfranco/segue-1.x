@@ -9,7 +9,10 @@
 			Now also exports RSSFeeds and page-level content.
 		</change>
 		<change author='adam' date='2008-03-17'>
-			Export: Added text-type (plain vs html) to the exported content.
+			Export: Now decodes page content.
+		</change>
+		<change author='adam' date='2008-03-17'>
+			Export: Added text-type (text vs html) to the exported versions.
 		</change>
 		<change author='adam' date='2008-03-17'>
 			Export: Added output scripts for migrating sites to Segue 2.

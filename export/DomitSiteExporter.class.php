@@ -355,7 +355,7 @@ class DomitSiteExporter {
 		$this->addCommonProporties($page, $element);
 		
 		$element->appendChild($this->_document->createElement('text'))->appendChild(
-			$this->_document->createCDATASection($page->getField('text')));
+			$this->_document->createCDATASection(urldecode($page->getField('text'))));
 		
 		if ($page->getField('location') == 'right')
 			$element->setAttribute('location', 'right');
@@ -558,11 +558,11 @@ class DomitSiteExporter {
 		
 		$shortText = $element->appendChild($this->_document->createElement($field1));
 		$shortText->appendChild($this->_document->createCDATASection($value1));
-		$shortText->setAttribute('texttype', $textType);
+		$shortText->setAttribute('text_type', $textType);
 		
 		$shortText = $element->appendChild($this->_document->createElement($field2));
 		$shortText->appendChild($this->_document->createCDATASection($value2));
-		$shortText->setAttribute('texttype', $textType);
+		$shortText->setAttribute('text_type', $textType);
 		
 		return $element;
 	}
