@@ -890,6 +890,7 @@ class DomitSiteExporter {
 						'text_color' => 'textcolor',
 						'link_color' => 'linkcolor',
 						'navigation_arrangement' => 'nav_arrange',
+						'site_width' => 'site_width',
 						'navigation_width' => 'nav_width',
 						'section_nav_size' => 'sectionnav_size',
 						'page_nav_size' => 'nav_size'
