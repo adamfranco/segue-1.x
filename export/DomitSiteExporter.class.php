@@ -405,12 +405,6 @@ class DomitSiteExporter {
 		$parentElement->appendChild($element);
 		
 		$this->addCommonProporties($participantList, $element);
-	
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($participantList, $permissions);
-		if ($hasPerms)
-			$element->appendChild($permissions);
 		
 		if ($participantList->getField('location') == 'right')
 			$element->setAttribute('location', 'right');
@@ -429,12 +423,6 @@ class DomitSiteExporter {
 		$parentElement->appendChild($element);
 		
 		$this->addCommonProporties($categoryList, $element);
-	
-		// permissions
-		$permissions =& $this->_document->createElement('permissions');
-		$hasPerms = $this->getPermissions($categoryList, $permissions);
-		if ($hasPerms)
-			$element->appendChild($permissions);
 		
 		if ($categoryList->getField('location') == 'right')
 			$element->setAttribute('location', 'right');
