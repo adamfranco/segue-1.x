@@ -192,6 +192,10 @@ class DomitSiteExporter {
  				$this->addPageContent($section->pages[$key], $sectionElement);
  			else if ($section->pages[$key]->getField('type') == 'rss')
  				$this->addPageRSS($section->pages[$key], $sectionElement);
+ 			else if ($section->pages[$key]->getField('type') == 'participants')
+ 				$this->addParticipantList($section->pages[$key], $sectionElement);
+ 			else if ($section->pages[$key]->getField('type') == 'tags')
+ 				$this->addCategoryList($section->pages[$key], $sectionElement);
  			else
  				$this->addPage($section->pages[$key], $sectionElement);
 		}
@@ -389,7 +393,55 @@ class DomitSiteExporter {
 		else
 			$dividerElement->setAttribute('location', 'left');
 	}
-
+	
+	/**
+	 * Adds a participant list to the buffer.
+	 *
+	 * @param object $participantList
+	 * @param integer $indent The indent level of the object
+	 */
+	function addParticipantList(& $participantList, & $parentElement) {
+		$element =& $this->_document->createElement('participantList');
+		$parentElement->appendChild($element);
+		
+		$this->addCommonProporties($participantList, $element);
+	
+		// permissions
+		$permissions =& $this->_document->createElement('permissions');
+		$hasPerms = $this->getPermissions($participantList, $permissions);
+		if ($hasPerms)
+			$element->appendChild($permissions);
+		
+		if ($participantList->getField('location') == 'right')
+			$element->setAttribute('location', 'right');
+		else
+			$element->setAttribute('location', 'left');
+	}
+	
+	/**
+	 * Adds a category list to the buffer.
+	 *
+	 * @param object $categoryList
+	 * @param integer $indent The indent level of the object
+	 */
+	function addCategoryList(& $categoryList, & $parentElement) {
+		$element =& $this->_document->createElement('categoryList');
+		$parentElement->appendChild($element);
+		
+		$this->addCommonProporties($categoryList, $element);
+	
+		// permissions
+		$permissions =& $this->_document->createElement('permissions');
+		$hasPerms = $this->getPermissions($categoryList, $permissions);
+		if ($hasPerms)
+			$element->appendChild($permissions);
+		
+		if ($categoryList->getField('location') == 'right')
+			$element->setAttribute('location', 'right');
+		else
+			$element->setAttribute('location', 'left');
+	}
+	
 	/**
 	 * Adds a file to the buffer.
 	 *

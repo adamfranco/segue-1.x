@@ -21,6 +21,9 @@
 			Export/Config: Added configuration lines to the sample configuration
 			to support Segue 2 migration.
 		</change>
+		<change author='adam' date='2008-03-19'>
+			Export: Now exports participant lists and category lists.
+		</change>
 	</version>
 	<version number="1.8.15" date="2007-12-13">
 		<releaseNotes>
