@@ -26,7 +26,7 @@ if ($_SESSION[settings] && is_object($_SESSION[sectionObj])) {
 /* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setPermissions($_REQUEST[permissions]); */
 /* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[sectionObj]->setField("locked",$_REQUEST[locked]); */
 /* 	if ($_SESSION[settings][step] == 3 && !$_REQUEST[link]) $_SESSION[settings][copydownpermissions] = $_REQUEST[copydownpermissions]; */
-	if ($_REQUEST[url]) $_SESSION[sectionObj]->setField("url",$url);
+	if ($_REQUEST[url])	$_SESSION[sectionObj]->setField("url",$_REQUEST['url']);
 	
 	//---- If switching type, take values to defaults ----
 	if ($_REQUEST[typeswitch]) {

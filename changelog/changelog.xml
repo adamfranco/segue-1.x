@@ -27,6 +27,10 @@
 		<change author='adam' date='2008-03-19'>
 			Export: Now exports the site width theme setting.
 		</change>
+		<fix author='adam' date='2008-03-20'>
+			Sections: Now can create Section Links again. The URL variable needed
+			updating to work with register_globals off.
+		</fix>
 	</version>
 	<version number="1.8.15" date="2007-12-13">
 		<releaseNotes>
