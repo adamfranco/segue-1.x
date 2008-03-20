@@ -159,7 +159,7 @@ class DomitSiteExporter {
 		// sections
  		foreach ($site->sections as $key => $val) {
   			if ($site->sections[$key]->getField('type') == 'link')
-  				$this->addNavLink($site->sections[$key], $siteElement);
+  				$this->addSectionNavLink($site->sections[$key], $siteElement);
   			else if ($site->sections[$key]->getField('type') == 'heading')
   				$this->addHeading($site->sections[$key], $siteElement);
   			else if ($site->sections[$key]->getField('type') == 'divider')
@@ -183,7 +183,7 @@ class DomitSiteExporter {
 			
 		foreach ($section->pages as $key => $val) {
  			if ($section->pages[$key]->getField('type') == 'link')
- 				$this->addNavLink($section->pages[$key], $sectionElement);
+ 				$this->addPageNavLink($section->pages[$key], $sectionElement);
  			else if ($section->pages[$key]->getField('type') == 'heading')
  				$this->addHeading($section->pages[$key], $sectionElement);
  			else if ($section->pages[$key]->getField('type') == 'divider')
@@ -288,7 +288,25 @@ class DomitSiteExporter {
 	 * @param object link $link The link to add.
 	 * @param integer $indent The indent level of the object
 	 */
-	function addNavLink(& $link, & $parentElement) {
+	function addSectionNavLink(& $link, & $parentElement) {
+		$linkElement =& $this->_document->createElement('navlink');
+		$parentElement->appendChild($linkElement);
+		
+		$this->addCommonProporties($link, $linkElement);
+		
+		// url
+		$url =& $this->_document->createElement('url');
+		$linkElement->appendChild($url);
+		$url->appendChild($this->_document->createTextNode(htmlspecialchars($link->getField('url'))));
+	}
+	
+	/**
+	 * Adds a link to the buffer.
+	 *
+	 * @param object link $link The link to add.
+	 * @param integer $indent The indent level of the object
+	 */
+	function addPageNavLink(& $link, & $parentElement) {
 		$linkElement =& $this->_document->createElement('navlink');
 		$parentElement->appendChild($linkElement);
 		

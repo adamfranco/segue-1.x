@@ -27,6 +27,9 @@
 		<change author='adam' date='2008-03-19'>
 			Export: Now exports the site width theme setting.
 		</change>
+		<new author='adam' date='2008-03-20'>
+			Export: No more errors when exporting section-level links.
+		</new>
 		<fix author='adam' date='2008-03-20'>
 			Sections: Now can create Section Links again. The URL variable needed
 			updating to work with register_globals off.
