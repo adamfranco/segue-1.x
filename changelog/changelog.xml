@@ -30,6 +30,9 @@
 		<new author='adam' date='2008-03-20'>
 			Export: No more errors when exporting section-level links.
 		</new>
+		<new author='adam' date='2008-03-20'>
+			Export: New script to allow checking of the existance of a site.
+		</new>
 		<fix author='adam' date='2008-03-20'>
 			Sections: Now can create Section Links again. The URL variable needed
 			updating to work with register_globals off.
