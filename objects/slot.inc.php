@@ -39,6 +39,11 @@ class slot {
 			array("slot_type"),
 			"slot_id"
 		),
+		"quota" => array(
+			"slot",
+			array("slot_uploadlimit"),
+			"slot_id"
+		),
 		"site" => array(
 			"slot",
 			array("FK_site"),

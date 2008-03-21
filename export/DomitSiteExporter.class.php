@@ -135,6 +135,12 @@ class DomitSiteExporter {
 		$siteElement->setAttribute('owner', slot::getOwner($site->getField('name')));
 		$siteElement->setAttribute('type', $site->getField('type'));
 		
+		// Media quota
+		$slot = new Slot($site->getField('name'));
+		$quota = $slot->getField('quota');
+		if ($quota)
+			$siteElement->setAttribute('mediaQuota', $quota);
+		
 		$this->addCommonProporties($site, $siteElement);
 		
 		// use the slot-name for backwards-compatability

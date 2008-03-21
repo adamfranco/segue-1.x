@@ -33,6 +33,12 @@
 		<new author='adam' date='2008-03-20'>
 			Export: New script to allow checking of the existance of a site.
 		</new>
+		<new author='adam' date='2008-03-21'>
+			Export: Can now export medial library quotas.
+		</new>
+		<new author='adam' date='2008-03-21'>
+			Slots: can now access media library quotas from the slot object.
+		</new>
 		<fix author='adam' date='2008-03-20'>
 			Sections: Now can create Section Links again. The URL variable needed
 			updating to work with register_globals off.
