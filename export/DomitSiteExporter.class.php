@@ -225,6 +225,8 @@ class DomitSiteExporter {
 		$pageElement->setAttribute('story_order', $order);
 		$pageElement->setAttribute('horizontal_rule', (($page->getField('showhr'))?"TRUE":"FALSE"));
 		$pageElement->setAttribute('show_creator', (($page->getField('showcreator'))?"TRUE":"FALSE"));
+		$pageElement->setAttribute('show_editor', (($page->getField('showeditor'))?"TRUE":"FALSE"));
+		$pageElement->setAttribute('show_versions', (($page->getField('showversions'))?"TRUE":"FALSE"));
 		$pageElement->setAttribute('show_date', (($page->getField('showdate'))?"TRUE":"FALSE"));
 		if (!$archiving = $page->getField('archiveby'))
 			$archiving = "none";

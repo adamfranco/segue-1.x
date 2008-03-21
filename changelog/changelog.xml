@@ -37,6 +37,9 @@
 			Export: Can now export medial library quotas.
 		</new>
 		<new author='adam' date='2008-03-21'>
+			Export: Can now export show-editor and show-history settings.
+		</new>
+		<new author='adam' date='2008-03-21'>
 			Slots: can now access media library quotas from the slot object.
 		</new>
 		<fix author='adam' date='2008-03-20'>
