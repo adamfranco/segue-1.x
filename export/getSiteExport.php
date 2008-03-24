@@ -14,6 +14,7 @@
 require_once("Archive/Tar.php");
 
 require_once(dirname(__FILE__).'/DomitSiteExporter.class.php');
+require_once(dirname(__FILE__).'/Segue2DomitSiteExporter.class.php');
 
 require_once(dirname(__FILE__).'/domit/xml_domit_getelementsbypath.php');
 require_once(dirname(__FILE__).'/domit/xml_domit_nodemaps.php');
@@ -96,7 +97,7 @@ $imagepath = $uploaddir.'/'.$sitename.'/';
 
 	
 // Get the XML for the site
-$siteExporter =& new DomitSiteExporter();
+$siteExporter =& new Segue2DomitSiteExporter();
 $siteXML =& $siteExporter->export($site);
 
 // make a directory for the site contents
