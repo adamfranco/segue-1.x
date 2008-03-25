@@ -4,7 +4,7 @@ Name: Segue Change Log
 
 
 
-v. 1.8.16 (The Future)
+v. 1.8.16 (2008-03-25)
 ----------------------------------------------------
 This release add support for exporting sites to a Segue2 instance.
 		
@@ -15,7 +15,11 @@ This release add support for exporting sites to a Segue2 instance.
 		(2008-02-14 - Adam Franco)
 		
 	* Change: 
-		Export: Added text-type (plain vs html) to the exported content.
+		Export: Now decodes page content.
+		(2008-03-17 - Adam Franco)
+		
+	* Change: 
+		Export: Added text-type (text vs html) to the exported versions.
 		(2008-03-17 - Adam Franco)
 		
 	* Change: 
@@ -26,6 +30,39 @@ This release add support for exporting sites to a Segue2 instance.
 		Export/Config: Added configuration lines to the sample configuration to
 		support Segue 2 migration.
 		(2008-03-17 - Adam Franco)
+		
+	* Change: 
+		Export: Now exports participant lists and category lists.
+		(2008-03-19 - Adam Franco)
+		
+	* Change: 
+		Export: Now exports the site width theme setting.
+		(2008-03-19 - Adam Franco)
+		
+	* New feature: 
+		Export: No more errors when exporting section-level links.
+		(2008-03-20 - Adam Franco)
+		
+	* New feature: 
+		Export: New script to allow checking of the existance of a site.
+		(2008-03-20 - Adam Franco)
+		
+	* New feature: 
+		Export: Can now export medial library quotas.
+		(2008-03-21 - Adam Franco)
+		
+	* New feature: 
+		Export: Can now export show-editor and show-history settings.
+		(2008-03-21 - Adam Franco)
+		
+	* New feature: 
+		Slots: can now access media library quotas from the slot object.
+		(2008-03-21 - Adam Franco)
+		
+	* Bug Fix: 
+		Sections: Now can create Section Links again. The URL variable needed
+		updating to work with register_globals off.
+		(2008-03-20 - Adam Franco)
 	
 v. 1.8.15 (2007-12-13)
 ----------------------------------------------------
