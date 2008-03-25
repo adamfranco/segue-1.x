@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
-	<version number="1.8.16" date="2008-03-25">
+	<version number="1.9.0" date="2008-03-25">
 		<releaseNotes>
 			This release add support for exporting sites to a Segue2 instance.
 		</releaseNotes>

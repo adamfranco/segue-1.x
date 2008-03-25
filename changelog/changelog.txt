@@ -4,7 +4,7 @@ Name: Segue Change Log
 
 
 
-v. 1.8.16 (2008-03-25)
+v. 1.9.0 (2008-03-25)
 ----------------------------------------------------
 This release add support for exporting sites to a Segue2 instance.
 		
