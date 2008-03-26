@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.9.1" date="The Future">
+		<releaseNotes>
+			This release adds support for redirecting to a Segue 2 if a site exists
+			there but not in the Segue 1 instance.
+		</releaseNotes>
+		<new author='adam' date='2008-03-26' ref='1926129' reftype='fr'>
+			Migration: If a site doesn't exist and a Segue 2 instance is configured,
+			the Segue 2 instance will be checked for the site and forwarded to if
+			appropriate.
+		</new>
+		<important author='adam' date='2008-03-26'>
+			Migration: Added a configuration option to support url forwarding: DATAPORT_SEGUE2_BASE_URL
+		</important>
+	</version>
 	<version number="1.9.0" date="2008-03-25">
 		<releaseNotes>
 			This release add support for exporting sites to a Segue2 instance.

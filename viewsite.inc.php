@@ -118,9 +118,28 @@ do {
 	}
 	$pagetitle = $previewTitle . $thisSite->getField("title") . $st . $pt;
 	
+	if ($thisSite->site_does_not_exist) {
+		
+		// Check for a Segue 2 site if appropriate, and forward if it exists.
+		if (defined('DATAPORT_SEGUE2_BASE_URL')) {
+			$result = @file_get_contents(DATAPORT_SEGUE2_BASE_URL
+				."?module=dataport&action=site_exists&site=".$_REQUEST['site']);
+			
+			if ($result === 'true') {
+				// Send our same query string to Segue 2 and see if it can resolve it.
+				$url = DATAPORT_SEGUE2_BASE_URL."?".$_SERVER['QUERY_STRING'];
+				header("Location: ".$url);
+				
+			} else if ($result === false) {
+				print "\n		<li>Configuration error: could not check Segue 2.</li>";
+			}
+		}
+	}
+	
 	if (!$thisSite->isEditor()
 		|| !$thisSite->hasPermissionDown("add || edit || delete")) 
 	{
+		
 		error("You do not have permission to edit this site.");
 		return;
 	}
