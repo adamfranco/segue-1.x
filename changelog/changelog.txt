@@ -4,6 +4,23 @@ Name: Segue Change Log
 
 
 
+v. 1.9.1 (2008-03-26)
+----------------------------------------------------
+This release adds support for redirecting to a Segue 2 if a site exists there but
+not in the Segue 1 instance.
+		
+		
+	* New feature: #1926129 
+		Migration: If a site doesn't exist and a Segue 2 instance is configured, the
+		Segue 2 instance will be checked for the site and forwarded to if
+		appropriate. 
+		(2008-03-26 - Adam Franco)
+		
+	**** IMPORTANT *** Change: 
+		Migration: Added a configuration option to support url forwarding:
+		DATAPORT_SEGUE2_BASE_URL 
+		(2008-03-26 - Adam Franco)
+	
 v. 1.9.0 (2008-03-25)
 ----------------------------------------------------
 This release add support for exporting sites to a Segue2 instance.

@@ -3,6 +3,12 @@ Name: Segue Release Notes
 (See the Segue change log for more details)
 
 
+v. 1.9.1 (2008-03-26)
+----------------------------------------------------
+This release adds support for redirecting to a Segue 2 if a site exists there but
+not in the Segue 1 instance.
+
+
 v. 1.9.0 (2008-03-25)
 ----------------------------------------------------
 This release add support for exporting sites to a Segue2 instance.
