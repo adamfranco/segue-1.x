@@ -2,8 +2,12 @@
 <changelog name="Segue">
 	<version number="1.9.2" date="The Future">
 		<releaseNotes>
-			
+			This release fixes several bugs that were found when testing 1.9.1, related to 
+			the new migration and forwarding functions.
 		</releaseNotes>
+		<fix author='adam' date='2008-03-28'>
+			Migration: Fix to allow redirects to work when users are not authenticated.
+		</fix>
 		<fix author='adam' date='2008-03-26'>
 			Migration: Fixes to allow Migration scripts to run under PHP4.
 		</fix>
