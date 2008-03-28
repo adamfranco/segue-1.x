@@ -43,12 +43,13 @@ require_once(dirname(__FILE__).'/SegueErrorPrinter.class.php');
 	 */
 	function deleteRecursive ($path) {
 		if (is_dir($path)) {
-			$entries = scandir($path);
-			foreach ($entries as $entry) {
+			$handle  = opendir($path);
+			while (false !== ($entry = readdir($handle))) {
 				if ($entry != '.' && $entry != '..') {
 					deleteRecursive($path.DIRECTORY_SEPARATOR.$entry);
 				}
 			}
+			closedir($path);
 			rmdir($path);
 		} else {
 			unlink($path);

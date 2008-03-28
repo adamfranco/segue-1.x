@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.9.2" date="The Future">
+		<releaseNotes>
+			
+		</releaseNotes>
+		<fix author='adam' date='2008-03-26'>
+			Migration: Fixes to allow Migration scripts to run under PHP4.
+		</fix>
+	</version>
 	<version number="1.9.1" date="2008-03-26">
 		<releaseNotes>
 			This release adds support for redirecting to a Segue 2 if a site exists

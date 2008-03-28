@@ -36,7 +36,7 @@ class Segue2DomitSiteExporter
 	 * @access public
 	 * @since 3/24/08
 	 */
-	public function addStory (&$story, &$pageElement) {
+	function addStory (&$story, &$pageElement) {
 		$storyElement =& $this->_document->createElement('story');
 		$pageElement->appendChild($storyElement);
 		
@@ -74,7 +74,7 @@ class Segue2DomitSiteExporter
 	 * @access protected
 	 * @since 3/24/08
 	 */
-	protected function getVersion (array $version, $storyType, $textType = 'html') {
+	function getVersion ($version, $storyType, $textType = 'html') {
 		$element = $this->_document->createElement('version');
 		$element->setAttribute('id', $version['version_id']);
 		$element->setAttribute('number', $version['version_order']);

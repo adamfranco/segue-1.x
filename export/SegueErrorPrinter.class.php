@@ -31,7 +31,7 @@ class SegueErrorPrinter {
 	 * @access public
 	 * @since 2/26/08
 	 */
-	public function doError ($code, $message) {
+	function doError ($code, $message) {
 		header('HTTP/1.1 '.$code.' '.SegueErrorPrinter::getCodeString($code));
 		$this->printMessage($message, $code);
 		exit;
@@ -48,7 +48,7 @@ class SegueErrorPrinter {
 	 * @access private
 	 * @since 2/21/08
 	 */
-	private function printMessage ($message, $code) {
+	function printMessage ($message, $code) {
 		$codeString = SegueErrorPrinter::getCodeString($code);
 		$errorString = _('Error');
 		$logMessage = '';
@@ -116,7 +116,7 @@ END;
 	 * @since 2/21/08
 	 * @static
 	 */
-	public static function getCodeString ($code) {
+	function getCodeString ($code) {
 		switch ($code) {
 			case 400:
 				return _('Bad Request');

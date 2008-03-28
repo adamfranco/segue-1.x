@@ -384,7 +384,8 @@ class DomitSiteExporter {
 		
 		$this->addCommonProporties($page, $element);
 		
-		$element->appendChild($this->_document->createElement('text'))->appendChild(
+		$textElement = $element->appendChild($this->_document->createElement('text'));
+		$textElement->appendChild(
 			$this->_document->createCDATASection(urldecode($page->getField('text'))));
 		
 		if ($page->getField('location') == 'right')
@@ -567,7 +568,7 @@ class DomitSiteExporter {
 	 * @access protected
 	 * @since 2/13/08
 	 */
-	protected function getVersions ($obj) {
+	function getVersions ($obj) {
 		if (strtolower(get_class($obj)) != 'story')
 			return null;
 		
@@ -589,7 +590,7 @@ class DomitSiteExporter {
 	 * @access protected
 	 * @since 2/13/08
 	 */
-	protected function getVersion (array $version, $storyType, $textType = 'html') {
+	function getVersion ($version, $storyType, $textType = 'html') {
 		$element = $this->_document->createElement('version');
 		$element->setAttribute('id', $version['version_id']);
 		$element->setAttribute('number', $version['version_order']);
