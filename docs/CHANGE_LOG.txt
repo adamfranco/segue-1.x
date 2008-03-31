@@ -4,6 +4,20 @@ Name: Segue Change Log
 
 
 
+v. 1.9.2 (2008-03-31)
+----------------------------------------------------
+This release fixes several bugs that were found when testing 1.9.1, related to the
+new migration and forwarding functions.
+		
+		
+	* Bug Fix: 
+		Migration: Fix to allow redirects to work when users are not authenticated.
+		(2008-03-28 - Adam Franco)
+		
+	* Bug Fix: 
+		Migration: Fixes to allow Migration scripts to run under PHP4.
+		(2008-03-26 - Adam Franco)
+	
 v. 1.9.1 (2008-03-26)
 ----------------------------------------------------
 This release adds support for redirecting to a Segue 2 if a site exists there but

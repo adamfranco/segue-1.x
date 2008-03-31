@@ -3,6 +3,12 @@ Name: Segue Release Notes
 (See the Segue change log for more details)
 
 
+v. 1.9.2 (2008-03-31)
+----------------------------------------------------
+This release fixes several bugs that were found when testing 1.9.1, related to the
+new migration and forwarding functions.
+
+
 v. 1.9.1 (2008-03-26)
 ----------------------------------------------------
 This release adds support for redirecting to a Segue 2 if a site exists there but
