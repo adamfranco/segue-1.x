@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.9.3" date="the future">
+		<releaseNotes>
+			This release fixes several bugs that were found when testing 1.9.2, related to 
+			the new migration and forwarding functions.
+		</releaseNotes>
+		<fix author='adam' date='2008-04-17' reporter="alex">
+			Migration: Fixed incorrect closedir parameter that was causing export errors.
+		</fix>
+	</version>
 	<version number="1.9.2" date="2008-03-31">
 		<releaseNotes>
 			This release fixes several bugs that were found when testing 1.9.1, related to 
@@ -2094,6 +2103,10 @@ Mac Safari. Removed browser specific code from filebrowser.php
 		<reporter short="jim_witte">
 			<name>Jim Witte</name>
 			<institution>University of Illinois Urbana-Champaign</institution>
+		</reporter>
+		<reporter short="akex">
+			<name>Alex Chapin</name>
+			<institution>Middlebury College</institution>
 		</reporter>
 		<reporter short="bryan">
 			<name>Bryan Carson</name>

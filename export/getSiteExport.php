@@ -49,7 +49,7 @@ require_once(dirname(__FILE__).'/SegueErrorPrinter.class.php');
 					deleteRecursive($path.DIRECTORY_SEPARATOR.$entry);
 				}
 			}
-			closedir($path);
+			closedir($handle);
 			rmdir($path);
 		} else {
 			unlink($path);
