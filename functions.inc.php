@@ -629,6 +629,35 @@ function get_record_tags($record_id) {
 }
 
 /******************************************************************************
+ * Gets all tag information for a given record (story or discussion or...)
+ ******************************************************************************/
+
+function get_record_tags_info($record_id) {
+	global $dbhost, $dbuser,$dbpass, $dbdb;
+
+	$tags = array();
+	$query = " 
+		SELECT
+			record_tag, user_uname, record_tag_added
+		FROM
+			tags
+		INNER JOIN
+			user
+			ON FK_user_id = user_id
+		WHERE
+			FK_record_id = '".addslashes($record_id)."'
+		";
+	$r = db_query($query);
+	while ($a = db_fetch_assoc($r)) {
+		$tags[$a[record_tag]][time_stamp] = $a[record_tag_added];
+		$tags[$a[record_tag]][agent_id] = $a[user_uname];
+	}
+	
+	return $tags;
+}
+
+
+/******************************************************************************
  * deletes all tags for a given record (story or discussion or...)
  ******************************************************************************/
 

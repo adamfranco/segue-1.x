@@ -179,6 +179,7 @@ class SiteExporter {
 		
 		$this->addContent($story, 'short', $indent+1);
 		$this->addContent($story, 'longer', $indent+1);
+//		$this->addCategories($story, $indent+1);
 		
 //		foreach ($story->storys as $key => $val) {
 //			$this->addStory($story->storys[$key], $indent+1);
@@ -187,6 +188,46 @@ class SiteExporter {
 		$this->_buffer .='
 '.$tabs.'</story>';
 	}
+	
+	/**
+	 * Adds categories on a story to the buffer.
+	 *
+	 * @param object story $story The story to add.
+	 * @param integer $indent The indent level of the object
+	 */
+// 	function addCategories(& $story, $indent) {
+// 		$tabs = $this->_getTabs($indent);		
+// 		$tags = get_record_tags_info($story->getField('id'));
+// 
+// 		$this->_buffer .= '
+// '.$tabs.'<tags>';
+// 		if (count($tags) > 0) {
+// 			$this->addCategory($tags, $indent);	
+// 		}
+// 		$this->_buffer .='
+// '.$tabs.'</tags>';
+// 
+// 	}
+
+	/**
+	 * Adds categories on a story to the buffer.
+	 *
+	 * @param object story $story The story to add.
+	 * @param integer $indent The indent level of the object
+	 */
+// 	function addCategory($tags, $indent) {
+// 		$tabs = $this->_getTabs($indent);		
+// 		foreach($tags as $tag) {
+// 			$this->_buffer .= '
+// '.$tabs.'<tag';
+// 			$this->_buffer .= ' agent_id="'.addslashes($tag['agent_id']).'"';	
+// 			$this->_buffer .= ' create_date="'.addslashes($tag['time_stamp']).'">';
+// 			$this->_buffer .= $tag['value'];
+// 			$this->_buffer .='
+// '.$tabs.'</tag>';
+// 		}
+// 
+// 	}
 	
 	/**
 	 * Adds a link to the buffer.

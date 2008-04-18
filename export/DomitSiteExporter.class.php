@@ -718,11 +718,30 @@ class DomitSiteExporter {
 	
 	function addStoryProporties (& $story, & $storyElement) {		
 		// category
-		if ($story->getField('category')) {
-			$category =& $this->_document->createElement('category');
-			$storyElement->appendChild($category);
-			$category->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('category'))));
+// 		if ($story->getField('category')) {
+// 			$category =& $this->_document->createElement('category');
+// 			$storyElement->appendChild($category);
+// 			$category->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('category'))));
+// 		}
+
+		// categories
+		$tags = get_record_tags_info($story->getField('id'));
+		
+		$tagsElement =& $this->_document->createElement('tags');
+		$storyElement->appendChild($tagsElement);
+		
+		if (count($tags) > 0) {
+			foreach($tags as $tag => $infoArray) {
+				$tagElement =& $this->_document->createElement('tag');
+				$tag_value = $tag;
+				$tagsElement->appendChild($tagElement);
+				$tagElement->appendChild($this->_document->createTextNode(htmlspecialchars($tag_value)));
+				
+				$tagElement->setAttribute('agent_id', $infoArray['agent_id']);
+				$tagElement->setAttribute('create_date', $infoArray['time_stamp']);
+			}
 		}
+		
 		
 		// discussions
 		if ($story->getField('discuss')) {
@@ -746,6 +765,7 @@ class DomitSiteExporter {
 			}
 		}
 	}
+
 	
 	function addCommonProporties (& $partObj, & $element) {
 		if (isset($partObj->id))

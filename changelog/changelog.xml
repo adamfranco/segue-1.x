@@ -3,8 +3,12 @@
 	<version number="1.9.3" date="the future">
 		<releaseNotes>
 			This release fixes several bugs that were found when testing 1.9.2, related to 
-			the new migration and forwarding functions.
+			the new migration and forwarding functions.  As well, it adds support for exporting
+			categories
 		</releaseNotes>
+		<change author='alex' date='2008-04-18' ref='1940489' reftype='fr'>
+			Added support for exporting out categories to Segue v2.
+		</change>
 		<fix author='adam' date='2008-04-17' reporter="alex">
 			Migration: Fixed incorrect closedir parameter that was causing export errors.
 		</fix>
