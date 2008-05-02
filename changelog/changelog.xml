@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
-	<version number="1.9.3" date="the future">
+	<version number="1.9.3" date="2008-05-02">
 		<releaseNotes>
 			This release fixes several bugs that were found when testing 1.9.2, related to 
 			the new migration and forwarding functions.  As well, it adds support for exporting

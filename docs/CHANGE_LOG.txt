@@ -4,6 +4,23 @@ Name: Segue Change Log
 
 
 
+v. 1.9.3 (2008-05-02)
+----------------------------------------------------
+This release fixes several bugs that were found when testing 1.9.2, related to the
+new migration and forwarding functions. As well, it adds support for exporting
+categories 
+		
+		
+	* Change: #1940489 
+		Added support for exporting out categories to Segue v2.
+		(2008-04-18 - Alex Chapin)
+		
+	* Bug Fix: 
+		Migration: Fixed incorrect closedir parameter that was causing export
+		errors. 
+		(2008-04-17 - Adam Franco)
+		(reported by alex)
+	
 v. 1.9.2 (2008-03-31)
 ----------------------------------------------------
 This release fixes several bugs that were found when testing 1.9.1, related to the
