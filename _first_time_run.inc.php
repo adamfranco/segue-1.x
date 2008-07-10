@@ -57,8 +57,8 @@ if (!$allTablesExist) {
 	$query = "
 		CREATE TABLE class (
 		  class_id int(10) unsigned NOT NULL auto_increment,
-		  class_external_id varchar(255) default NULL,
-		  class_department varchar(255) default NULL,
+		  class_external_id varchar(100) default NULL,
+		  class_department varchar(100) default NULL,
 		  class_number varchar(15) NOT NULL default '000',
 		  class_section varchar(50) default NULL,
 		  class_name varchar(255) NOT NULL default '',
