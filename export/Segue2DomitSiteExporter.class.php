@@ -81,14 +81,20 @@ class Segue2DomitSiteExporter
 		$element->setAttribute('time_stamp', $version['create_time_stamp']);
 		$element->setAttribute('agent_id', $version['author_uname']);
 		
+		$commentElement = $element->appendChild($this->_document->createElement('comment'));
+		$commentElement->appendChild(
+			$this->_document->createCDATASection($version['version_comments']));
+		
 		switch ($storyType) {
 			case 'link':
-			case 'rss':
 				$field1 = 'description';
 				$field2 = 'url';
 				$value1 = urldecode($version['version_text_short']);
 				$value2 = urldecode($version['version_text_long']);
 				break;
+			case 'rss':
+				// RSS url info is not in the version, so just return it empty
+				return $element;
 			case 'file':
 			case 'image':
 				$field1 = 'description';
@@ -104,8 +110,7 @@ class Segue2DomitSiteExporter
 				$value2 = stripslashes(urldecode($version['version_text_long']));
 		}
 		
-		$commentElement = $element->appendChild($this->_document->createElement('comment'));
-		$commentElement->appendChild($this->_document->createCDATASection($version['version_comments']));
+		
 		
 		$shortText = $element->appendChild($this->_document->createElement($field1));
 		$shortText->appendChild($this->_document->createCDATASection($value1));

@@ -246,6 +246,8 @@ class DomitSiteExporter {
 		foreach ($page->stories as $key => $val) {
   			if ($page->stories[$key]->getField('type') == 'link')
   				$this->addLink($page->stories[$key], $pageElement);
+  			else if ($page->stories[$key]->getField('type') == 'rss')
+  				$this->addRss($page->stories[$key], $pageElement);
   			else if ($page->stories[$key]->getField('type') == 'file')
   				$this->addFile($page->stories[$key], $pageElement);
   			else if ($page->stories[$key]->getField('type') == 'image')
@@ -534,6 +536,35 @@ class DomitSiteExporter {
 		$this->addStoryProporties($story, $storyElement);
 	}
 	
+	/**
+	 * Add an Rss feed to the buffer
+	 * 
+	 * @param object story $story The link to add.
+	 * @param object DOMITElement $pageElement
+	 * @return void
+	 * @access public
+	 * @since 7/9/08
+	 */
+	public function addRss(& $story, & $pageElement) {		
+		$storyElement =& $this->_document->createElement('rss');
+		$pageElement->appendChild($storyElement);
+		
+		$this->addCommonProporties($story, $storyElement);
+		
+ 		// Get the values
+ 		$url = $story->getField('url');
+ 		$maxItems = $story->getField('shorttext');
+ 		$extendedMaxItems = $story->getField('longertext');
+ 		
+ 		$urlElement =& $storyElement->appendChild($this->_document->createElement('url'));
+ 		$urlElement->appendChild($this->_document->createTextNode(str_replace('&', '&amp;', $url)));
+		
+		$urlElement->setAttribute('maxItems', $maxItems);
+		$urlElement->setAttribute('extendedMaxItems', $extendedMaxItems);
+		
+		$this->addStoryProporties($story, $storyElement);
+	}
+	
 	function getHistory(& $obj, &$historyElement) {
 		// Creator
 		$creator =& $this->_document->createElement('creator');
@@ -597,14 +628,20 @@ class DomitSiteExporter {
 		$element->setAttribute('time_stamp', $version['create_time_stamp']);
 		$element->setAttribute('agent_id', $version['author_uname']);
 		
+		$commentElement = $element->appendChild($this->_document->createElement('comment'));
+		$commentElement->appendChild(
+			$this->_document->createCDATASection($version['version_comments']));
+		
 		switch ($storyType) {
 			case 'link':
-			case 'rss':
 				$field1 = 'description';
 				$field2 = 'url';
 				$value1 = urldecode($version['version_text_short']);
 				$value2 = urldecode($version['version_text_long']);
 				break;
+			case 'rss':
+				// RSS url info is not in the version, so just return it empty
+				return $element;
 			case 'file':
 			case 'image':
 				$field1 = 'description';
@@ -619,9 +656,6 @@ class DomitSiteExporter {
 				$value1 = urldecode($version['version_text_short']);
 				$value2 = urldecode($version['version_text_long']);
 		}
-		
-		$commentElement = $element->appendChild($this->_document->createElement('comment'));
-		$commentElement->appendChild($this->_document->createCDATASection($version['version_comments']));
 		
 		$shortText = $element->appendChild($this->_document->createElement($field1));
 		$shortText->appendChild($this->_document->createCDATASection($value1));
