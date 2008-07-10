@@ -1,0 +1,16 @@
+# Ignore external libraries
+htmleditor/fckeditor/editor/*
+htmleditor/fckeditor/fckconfig.js
+htmleditor/fckeditor/fckeditor.js
+htmleditor/fckeditor/fckeditor.php
+htmleditor/fckeditor/fckeditor_php4.php
+htmleditor/fckeditor/fckeditor_php5.php
+htmleditor/fckeditor/fckpackager.xml
+htmleditor/fckeditor/fckstyles.xml
+htmleditor/fckeditor/fcktemplates.xml
+htmleditor/fckeditor/htaccess.txt
+htmleditor/fckeditor/license.txt
+
+
+# Ignore custom configs 
+config.inc.php
