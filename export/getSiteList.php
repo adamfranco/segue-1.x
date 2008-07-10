@@ -126,7 +126,9 @@ foreach ($userOwnedGroups as $classSiteName) {
 		$userOwnedSlots[$classSiteName]['site_exits'] = false;
 	}
 }
-$siteLevelEditorSites = segue::getSiteInfoWhereUserIsSiteLevelEditor($_GET['user']);		
+$siteLevelEditorSites = segue::getSiteInfoWhereUserIsSiteLevelEditor($_GET['user']);
+if (!is_array($siteLevelEditorSites))
+	$siteLevelEditorSites = array();
 // $anyLevelEditorSites = segue::getSiteInfoWhereUserIsEditor($_GET['user']);
 
 $allSlots = array_merge($userOwnedSlots, $userOwnedGroups, $siteLevelEditorSites);
