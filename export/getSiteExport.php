@@ -101,6 +101,11 @@ $imagepath = $uploaddir.'/'.$sitename.'/';
 $siteExporter =& new Segue2DomitSiteExporter();
 $siteXML =& $siteExporter->export($site);
 
+// Debug
+// header("Content-Type: text/xml;");
+// print $siteXML;
+// exit;
+
 // make a directory for the site contents
 $siteDir = $exportpath.'/'.$sitename.'/';
 if (file_exists($siteDir))
