@@ -350,6 +350,8 @@ class DomitSiteExporter {
 		$linkElement->appendChild($url);
 		$url->appendChild($this->_document->createTextNode(htmlspecialchars($link->getField('url'))));
 		
+		$url->setAttribute('maxItems', $link->getField("archiveby"));
+		
 		if ($link->getField('location') == 'right')
 			$linkElement->setAttribute('location', 'right');
 		else
