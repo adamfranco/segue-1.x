@@ -1693,17 +1693,52 @@ function convertInteralLinksToTags ($sitename, $text) {
 	$patterns = array();
 	$replacements = array();
 	
+	// get https and http versions of urls
+	if (ereg("https", $cfg['full_uri'])) {
+		$alternative_full_uri = ereg_replace("https", "http", $cfg['full_uri']);
+	} else {
+		$alternative_full_uri = ereg_replace("http", "https", $cfg['full_uri']);
+	}
+
+	if (ereg("https", $cfg['personalsitesurl'])) {
+		$alternative_personalsitesurl = ereg_replace("https", "http", $cfg['personalsitesurl']);
+	} else {
+		$alternative_personalsitesurl = ereg_replace("http", "https", $cfg['personalsitesurl']);
+	}
+
+	if (ereg("https", $cfg['classsitesurl'])) {
+		$alternative_classsitesurl = ereg_replace("https", "http", $cfg['classsitesurl']);
+	} else {
+		$alternative_classsitesurl = ereg_replace("http", "https", $cfg['classsitesurl']);
+	}
+	
+	
+	
 	// replace internal link urls with constant [[linkpath]]
+
 	$patterns[] = $cfg['full_uri'];
 	$replacements[] = "\[\[linkpath\]\]";
+	$patterns[] = $alternative_full_uri;	
+	$replacements[] = "\[\[linkpath\]\]";
+	
 	if ($cfg['personalsitesurl']) {
 		$patterns[] = $cfg['personalsitesurl'];
+		$replacements[] = "\[\[linkpath\]\]";
+		$patterns[] = $alternative_personalsitesurl;
 		$replacements[] = "\[\[linkpath\]\]";
 	}
 	if ($cfg['classsitesurl']) {
 		$patterns[] = $cfg['classsitesurl'];
 		$replacements[] = "\[\[linkpath\]\]";
+		$patterns[] = $alternative_classsitesurl;	
+		$replacements[] = "\[\[linkpath\]\]";
 	}
+	
+	//look for <a href="index.php and replace with <a href="[[linkpath]]/index.php
+	$patterns[] = 'href=(["\'])index.php';
+	$replacements[] = 'href=\1\[\[linkpath\]\]/index.php';
+
+		
 	
 	// replace specific site reference with general
 	$patterns[] = "site=".$sitename;
@@ -1721,6 +1756,8 @@ function convertInteralLinksToTags ($sitename, $text) {
 	// Remove any PHPSESSID components from the URL
 	$patterns[]  = "&?PHPSESSID=[a-zA-Z0-9]+";
 	$replacements[] = "";
+	
+	printpre($patterns); exit;
 	
 	for ($i=0; $i < count($patterns); $i++) {
 		$text = eregi_replace($patterns[$i], $replacements[$i], $text);

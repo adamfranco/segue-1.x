@@ -278,14 +278,14 @@ class DomitSiteExporter {
  		if ($story->getField('shorttext')) {
  			$shorttext =& $this->_document->createElement('shorttext');
 			$storyElement->appendChild($shorttext);
-			$shorttext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('shorttext'))));
+			$shorttext->appendChild($this->_document->createTextNode(htmlspecialchars(convertInteralLinksToTags($story->owning_site, $story->getField('shorttext')))));
 			$shorttext->setAttribute('text_type', $texttype);
  		}
  		
  		if ($story->getField('longertext')) {
  			$longertext =& $this->_document->createElement('longertext');
 			$storyElement->appendChild($longertext);
-			$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($story->getField('longertext'))));
+			$longertext->appendChild($this->_document->createTextNode(htmlspecialchars(convertInteralLinksToTags($story->owning_site, $story->getField('longertext')))));
 			$longertext->setAttribute('text_type', $texttype);
  		}
  		
@@ -608,7 +608,7 @@ class DomitSiteExporter {
 		$element = $this->_document->createElement('versions');
 		$versions = get_versions($obj->id);
 		foreach ($versions as $version) {
-			$element->appendChild($this->getVersion($version, $obj->getField('type'), $obj->getField('texttype')));
+			$element->appendChild($this->getVersion($version, $obj->getField('type'), $obj->getField('texttype'), $obj));
 		}
 		return $element;
 	}

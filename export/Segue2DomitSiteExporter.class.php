@@ -50,14 +50,14 @@ class Segue2DomitSiteExporter
  		if ($story->getField('shorttext')) {
  			$shorttext =& $this->_document->createElement('shorttext');
 			$storyElement->appendChild($shorttext);
-			$shorttext->appendChild($this->_document->createCDATASection(stripslashes($story->getField('shorttext'))));
+			$shorttext->appendChild($this->_document->createCDATASection(convertInteralLinksToTags($story->owning_site, stripslashes($story->getField('shorttext')))));
 			$shorttext->setAttribute('text_type', $texttype);
  		}
  		
  		if ($story->getField('longertext')) {
  			$longertext =& $this->_document->createElement('longertext');
 			$storyElement->appendChild($longertext);
-			$longertext->appendChild($this->_document->createCDATASection(stripslashes($story->getField('longertext'))));
+			$longertext->appendChild($this->_document->createCDATASection(convertInteralLinksToTags($story->owning_site, stripslashes($story->getField('longertext')))));
 			$longertext->setAttribute('text_type', $texttype);
  		}
  		
@@ -74,7 +74,7 @@ class Segue2DomitSiteExporter
 	 * @access protected
 	 * @since 3/24/08
 	 */
-	function getVersion ($version, $storyType, $textType = 'html') {
+	function getVersion ($version, $storyType, $textType = 'html', $obj = null) {
 		$element = $this->_document->createElement('version');
 		$element->setAttribute('id', $version['version_id']);
 		$element->setAttribute('number', $version['version_order']);
@@ -106,8 +106,8 @@ class Segue2DomitSiteExporter
 			default:
 				$field1 = 'shorttext';
 				$field2 = 'longertext';
-				$value1 = stripslashes(urldecode($version['version_text_short']));
-				$value2 = stripslashes(urldecode($version['version_text_long']));
+				$value1 = stripslashes(convertInteralLinksToTags($obj->owning_site, urldecode($version['version_text_short'])));
+				$value2 = stripslashes(convertInteralLinksToTags($obj->owning_site, urldecode($version['version_text_long'])));
 		}
 		
 		
