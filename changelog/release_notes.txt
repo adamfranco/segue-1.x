@@ -3,6 +3,19 @@ Name: Segue Release Notes
 (See the Segue change log for more details)
 
 
+v. 1.9.4 (2008-07-15)
+----------------------------------------------------
+This release fixes bugs in local link tokinization to make it more accurate,
+consistent and thorough.
+
+
+v. 1.9.3 (2008-05-02)
+----------------------------------------------------
+This release fixes several bugs that were found when testing 1.9.2, related to the
+new migration and forwarding functions. As well, it adds support for exporting
+categories 
+
+
 v. 1.9.2 (2008-03-31)
 ----------------------------------------------------
 This release fixes several bugs that were found when testing 1.9.1, related to the

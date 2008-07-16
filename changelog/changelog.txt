@@ -4,6 +4,34 @@ Name: Segue Change Log
 
 
 
+v. 1.9.4 (2008-07-15)
+----------------------------------------------------
+This release fixes bugs in local link tokinization to make it more accurate,
+consistent and thorough.
+		
+		
+	* Change: 
+		Fixed bugs in local link tokenization.
+		(Alex Chapin)		
+		
+	* Change: 
+		Migration: Export now includes the number of items to display for Page-level
+		RSS feeds.
+		(Adam Franco)		
+		
+	* Change: 
+		Migration: Export now outputs Story-level RSS feed information.
+		(Adam Franco)
+		
+	* Bug Fix: 
+		Migration: fixed function callback that was preventing migration for
+		instances of Segue v1 with only one site.
+		(Adam Franco)
+		
+	* Change: 
+		Reduced column size to enable valid key lengths for new installs.
+		(2008-07-10 - Adam Franco)
+	
 v. 1.9.3 (2008-05-02)
 ----------------------------------------------------
 This release fixes several bugs that were found when testing 1.9.2, related to the
