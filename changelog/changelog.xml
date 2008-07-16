@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
-	<version number="1.9.3" date="2008-05-02">
+	<version number="1.9.4" date="2008-07-15">
+		<releaseNotes>
+			This release fixes bugs in local link tokinization to make it more accurate, consistent
+			and thorough.
+		</releaseNotes>
+		<change author='alex'>
+			Fixed bugs in local link tokenization.
+		</change>		
+		<change author='adam'>
+			Migration: Export now includes the number of items to display for Page-level RSS feeds.
+		</change>		
+		<change author='adam'>
+			Migration: Export now outputs Story-level RSS feed information.
+		</change>
+		<fix author='adam'>
+			Migration: fixed function callback that was preventing migration for instances of Segue
+			v1 with only one site.
+		</fix>
+		<change author='adam' date='2008-07-10'>
+			Reduced column size to enable valid key lengths for new installs.
+		</change>
+	</version>	<version number="1.9.3" date="2008-05-02">
 		<releaseNotes>
 			This release fixes several bugs that were found when testing 1.9.2, related to 
 			the new migration and forwarding functions.  As well, it adds support for exporting
