@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
-	<version number="1.9.4" date="2008-07-15">
+	<version number="1.9.4" date="2008-07-16">
 		<releaseNotes>
 			This release fixes bugs in local link tokinization to make it more accurate, consistent
 			and thorough.
