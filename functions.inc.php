@@ -1710,16 +1710,20 @@ function convertInteralLinksToTags ($sitename, $text) {
 		$alternative_classsitesurl = ereg_replace("https", "http", $cfg['classsitesurl']);
 	} else {
 		$alternative_classsitesurl = ereg_replace("http", "https", $cfg['classsitesurl']);
-	}
+	}	
+
+//	printpre (htmlentities($text));
 	
+	//check for missing index.php and add in	
+	$text = str_replace('\[\[linkpath\]\]/?', '\[\[linkpath\]\]/index.php?', $text);
+
 	
 	
 	// replace internal link urls with constant [[linkpath]]
-
 	$patterns[] = $cfg['full_uri'];
 	$replacements[] = "\[\[linkpath\]\]";
 	$patterns[] = $alternative_full_uri;	
-	$replacements[] = "\[\[linkpath\]\]";
+	$replacements[] = "\[\[linkpath\]\]";	
 	
 	if ($cfg['personalsitesurl']) {
 		$patterns[] = $cfg['personalsitesurl'];
@@ -1737,7 +1741,6 @@ function convertInteralLinksToTags ($sitename, $text) {
 	//look for <a href="index.php and replace with <a href="[[linkpath]]/index.php
 	$patterns[] = 'href=(["\'])index.php';
 	$replacements[] = 'href=\1\[\[linkpath\]\]/index.php';
-
 		
 	
 	// replace specific site reference with general
@@ -1757,12 +1760,16 @@ function convertInteralLinksToTags ($sitename, $text) {
 	$patterns[]  = "&?PHPSESSID=[a-zA-Z0-9]+";
 	$replacements[] = "";
 	
-	printpre($patterns); exit;
+// 	printpre($patterns); 
+// 	printpre($replacements); 
+	
 	
 	for ($i=0; $i < count($patterns); $i++) {
 		$text = eregi_replace($patterns[$i], $replacements[$i], $text);
 	}
 	
+// 	printpre (htmlentities($text));
+// 	exit;
 	return $text;
 }
 
