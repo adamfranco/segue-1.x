@@ -547,7 +547,7 @@ class DomitSiteExporter {
 	 * @access public
 	 * @since 7/9/08
 	 */
-	public function addRss(& $story, & $pageElement) {		
+	function addRss(& $story, & $pageElement) {		
 		$storyElement =& $this->_document->createElement('rss');
 		$pageElement->appendChild($storyElement);
 		

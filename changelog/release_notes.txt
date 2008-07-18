@@ -3,6 +3,11 @@ Name: Segue Release Notes
 (See the Segue change log for more details)
 
 
+v. 1.9.5 (2008-07-18)
+----------------------------------------------------
+This release fixes PHP4 support for migration.
+
+
 v. 1.9.4 (2008-07-16)
 ----------------------------------------------------
 This release fixes bugs in local link tokinization to make it more accurate,
