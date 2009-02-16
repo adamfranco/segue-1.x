@@ -1049,7 +1049,8 @@ function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 		if ($_SESSION[atype] == 'prof' && $isclass) {
 		//if ($isclass) {
 			printc("\n\t\t\t\t\t\t\t<span style ='font-size:10px;'>");
-			printc("Create: <a href='$namelink'>Site</a> ");
+			printc("Create: site (disabled)");
+			//printc("Create: <a href='$namelink'>Site</a> ");
 			printc("</span>");
 		} else {
 			printc("\n\t\t\t\t\t\t\t<span style ='font-size:10px;'><a href='$namelink'>Create Site</a></span>");		    
@@ -1147,7 +1148,10 @@ function printSiteLine2($siteInfo, $ed=0, $isclass=0, $atype='stud') {
 	} else if (associatedSiteExists($_SESSION[auser], $className) == "true") {
 		$studentSitesColor = 1-$studentSitesColor;
 		printc("\n\t\t\t\t</tr><tr>\n\t\t\t\t\t<td class='td$studentSitesColor' width='150'>".$siteInfo['slot_name']."-".$_SESSION[auser]."</td>");
-		printc("\n\t\t\t\t\t<td align='left' class='td$studentSitesColor'>Create: <a href='$PHP_SELF?$sid&amp;action=add_site&amp;sitename=".$siteInfo['slot_name']."-".$_SESSION[auser]."'> Site</a></td>");
+		printc("\n\t\t\t\t\t<td align='left' class='td$studentSitesColor'>");
+		printc("Create: site (disabled)");
+	//	printc ("Create: <a href='$PHP_SELF?$sid&amp;action=add_site&amp;sitename=".$siteInfo['slot_name']."-".$_SESSION[auser]."'> Site</a>");
+		printc("</td>");
 
 	}
 
@@ -1181,7 +1185,10 @@ function printStudentSiteLine($className, $siteInfo) {
 		} else if (associatedSiteExists($_SESSION[auser], $className) == "true") {
 			$studentSitesColor = 1-$studentSitesColor;
 			printc("\n\t\t\t\t</tr><tr>\n\t\t\t\t\t<td class='td$studentSitesColor' width='150'>".$siteInfo['slot_name']."-".$_SESSION[auser]."</td>");
-			printc("\n\t\t\t\t\t<td align='left' class='td$studentSitesColor'>Create: <a href='$PHP_SELF?$sid&amp;action=add_site&amp;sitename=".$siteInfo['slot_name']."-".$_SESSION[auser]."'> Site</a></td>");
+			printc("\n\t\t\t\t\t<td align='left' class='td$studentSitesColor'>");
+			printc("Create: site (disabled)");
+			//printc("Create: <a href='$PHP_SELF?$sid&amp;action=add_site&amp;sitename=".$siteInfo['slot_name']."-".$_SESSION[auser]."'> Site</a>");
+			printc("</td>");
 
 		}
 
