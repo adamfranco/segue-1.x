@@ -484,6 +484,37 @@ class DomitSiteExporter {
 		$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext"))));
 		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($filename)));
 		
+		// file metadata
+		$title_whole = & $this->_document->createElement('title_whole');
+		$storyElement->appendChild($title_whole);		
+		$title_whole_value = addslashes(urldecode(db_get_value("media","title_whole","media_id=".$story->getField("longertext"))));
+		$title_whole->appendChild($this->_document->createTextNode(htmlspecialchars($title_whole_value)));
+
+		$title_part = & $this->_document->createElement('title_part');
+		$storyElement->appendChild($title_part);		
+		$title_part_value = addslashes(urldecode(db_get_value("media","title_part","media_id=".$story->getField("longertext"))));
+		$title_part->appendChild($this->_document->createTextNode(htmlspecialchars($title_part_value)));
+
+		$author = & $this->_document->createElement('author');
+		$storyElement->appendChild($author);		
+		$author_value = addslashes(urldecode(db_get_value("media","author","media_id=".$story->getField("longertext"))));
+		$author->appendChild($this->_document->createTextNode(htmlspecialchars($author_value)));
+
+		$pagerange = & $this->_document->createElement('pagerange');
+		$storyElement->appendChild($pagerange);		
+		$pagerange_value = addslashes(urldecode(db_get_value("media","pagerange","media_id=".$story->getField("longertext"))));
+		$pagerange->appendChild($this->_document->createTextNode(htmlspecialchars($pagerange_value)));
+		
+		$publisher = & $this->_document->createElement('publisher');
+		$storyElement->appendChild($publisher);		
+		$publisher_value = addslashes(urldecode(db_get_value("media","publisher","media_id=".$story->getField("longertext"))));
+		$publisher->appendChild($this->_document->createTextNode(htmlspecialchars($publisher_value)));
+
+		$pubyear = & $this->_document->createElement('pubyear');
+		$storyElement->appendChild($pubyear);		
+		$pubyear_value = addslashes(urldecode(db_get_value("media","pubyear","media_id=".$story->getField("longertext"))));
+		$pubyear->appendChild($this->_document->createTextNode(htmlspecialchars($pubyear_value)));		
+		
 		$this->addStoryProporties($story, $storyElement);
 	}
 	
