@@ -482,38 +482,7 @@ class DomitSiteExporter {
 		$longertext =& $this->_document->createElement('filename');
 		$storyElement->appendChild($longertext);
 		$filename = addslashes(urldecode(db_get_value("media","media_tag","media_id=".$story->getField("longertext"))));
-		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($filename)));
-		
-		// file metadata
-		$title_whole = & $this->_document->createElement('title_whole');
-		$storyElement->appendChild($title_whole);		
-		$title_whole_value = addslashes(urldecode(db_get_value("media","title_whole","media_id=".$story->getField("longertext"))));
-		$title_whole->appendChild($this->_document->createTextNode(htmlspecialchars($title_whole_value)));
-
-		$title_part = & $this->_document->createElement('title_part');
-		$storyElement->appendChild($title_part);		
-		$title_part_value = addslashes(urldecode(db_get_value("media","title_part","media_id=".$story->getField("longertext"))));
-		$title_part->appendChild($this->_document->createTextNode(htmlspecialchars($title_part_value)));
-
-		$author = & $this->_document->createElement('author');
-		$storyElement->appendChild($author);		
-		$author_value = addslashes(urldecode(db_get_value("media","author","media_id=".$story->getField("longertext"))));
-		$author->appendChild($this->_document->createTextNode(htmlspecialchars($author_value)));
-
-		$pagerange = & $this->_document->createElement('pagerange');
-		$storyElement->appendChild($pagerange);		
-		$pagerange_value = addslashes(urldecode(db_get_value("media","pagerange","media_id=".$story->getField("longertext"))));
-		$pagerange->appendChild($this->_document->createTextNode(htmlspecialchars($pagerange_value)));
-		
-		$publisher = & $this->_document->createElement('publisher');
-		$storyElement->appendChild($publisher);		
-		$publisher_value = addslashes(urldecode(db_get_value("media","publisher","media_id=".$story->getField("longertext"))));
-		$publisher->appendChild($this->_document->createTextNode(htmlspecialchars($publisher_value)));
-
-		$pubyear = & $this->_document->createElement('pubyear');
-		$storyElement->appendChild($pubyear);		
-		$pubyear_value = addslashes(urldecode(db_get_value("media","pubyear","media_id=".$story->getField("longertext"))));
-		$pubyear->appendChild($this->_document->createTextNode(htmlspecialchars($pubyear_value)));		
+		$longertext->appendChild($this->_document->createTextNode(htmlspecialchars($filename)));		
 		
 		$this->addStoryProporties($story, $storyElement);
 	}
@@ -909,6 +878,7 @@ class DomitSiteExporter {
 	function addMedia(& $site, & $siteElement) {
 		$query = "
 			SELECT 
+				media_id AS id,
 				media_tag AS filename,
 				media_updated_tstamp AS last_edited_time,
 				media_type AS type,
@@ -964,6 +934,37 @@ class DomitSiteExporter {
 				$typeElement =& $this->_document->createElement('type');
 				$fileElement->appendChild($typeElement);
 				$typeElement->appendChild($this->_document->createTextNode(htmlspecialchars($a['type'])));
+
+				// file metadata
+				$title_whole = & $this->_document->createElement('title_whole');
+				$fileElement->appendChild($title_whole);		
+				$title_whole_value = addslashes(urldecode(db_get_value("media","title_whole","media_id=".$a['id'])));
+				$title_whole->appendChild($this->_document->createTextNode(htmlspecialchars($title_whole_value)));
+		
+				$title_part = & $this->_document->createElement('title_part');
+				$fileElement->appendChild($title_part);		
+				$title_part_value = addslashes(urldecode(db_get_value("media","title_part","media_id=".$a['id'])));
+				$title_part->appendChild($this->_document->createTextNode(htmlspecialchars($title_part_value)));
+		
+				$author = & $this->_document->createElement('author');
+				$fileElement->appendChild($author);		
+				$author_value = addslashes(urldecode(db_get_value("media","author","media_id=".$a['id'])));
+				$author->appendChild($this->_document->createTextNode(htmlspecialchars($author_value)));
+		
+				$pagerange = & $this->_document->createElement('pagerange');
+				$fileElement->appendChild($pagerange);		
+				$pagerange_value = addslashes(urldecode(db_get_value("media","pagerange","media_id=".$a['id'])));
+				$pagerange->appendChild($this->_document->createTextNode(htmlspecialchars($pagerange_value)));
+				
+				$publisher = & $this->_document->createElement('publisher');
+				$fileElement->appendChild($publisher);		
+				$publisher_value = addslashes(urldecode(db_get_value("media","publisher","media_id=".$a['id'])));
+				$publisher->appendChild($this->_document->createTextNode(htmlspecialchars($publisher_value)));
+		
+				$pubyear = & $this->_document->createElement('pubyear');
+				$fileElement->appendChild($pubyear);		
+				$pubyear_value = addslashes(urldecode(db_get_value("media","pubyear","media_id=".$a['id'])));
+				$pubyear->appendChild($this->_document->createTextNode(htmlspecialchars($pubyear_value)));
 			}
 		}
 	}
