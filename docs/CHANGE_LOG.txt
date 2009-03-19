@@ -4,6 +4,16 @@ Name: Segue Change Log
 
 
 
+v. 1.9.5 (2009-03-19)
+----------------------------------------------------
+This release makes changes to the site exporter to include file metadata in exported
+XML 
+		
+		
+	* Change: 
+		Added file metadata to site export XML.
+		(Alex Chapin)		
+	
 v. 1.9.4 (2008-07-16)
 ----------------------------------------------------
 This release fixes bugs in local link tokinization to make it more accurate,
