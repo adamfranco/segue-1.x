@@ -3,6 +3,12 @@ Name: Segue Release Notes
 (See the Segue change log for more details)
 
 
+v. 1.9.6 (2009-03-19)
+----------------------------------------------------
+This release makes changes to the site exporter to include file metadata in exported
+XML 
+
+
 v. 1.9.5 (2008-07-18)
 ----------------------------------------------------
 This release fixes PHP4 support for migration.
