@@ -4,6 +4,25 @@ Name: Segue Change Log
 
 
 
+v. 1.9.7 (2009-04-04)
+----------------------------------------------------
+This release makes changes to the copy/move functions so that file metadata is
+copied/moved 
+		
+		
+	* Change: 
+		Added file metadata to copy/move functions.
+		(Alex Chapin)		
+	
+v. 1.9.5 (2008-07-18)
+----------------------------------------------------
+This release fixes PHP4 support for migration.
+		
+		
+	* Bug Fix: #2021460 
+		Migration: Removed 'public' keyword that was causing parse errors in PHP4.
+		(2008-07-18 - Adam Franco)
+	
 v. 1.9.6 (2009-03-19)
 ----------------------------------------------------
 This release makes changes to the site exporter to include file metadata in exported

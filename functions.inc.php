@@ -255,7 +255,21 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		return "ERROR";
 	} else if ($replace) {
 		$size = filesize($userdir."/".$name);
-		$query = "UPDATE media SET media_updated_tstamp=NOW(),FK_updatedby='".addslashes($_SESSION[aid])."',media_size='".addslashes($size)."' WHERE media_id='".addslashes($replace_id)."'";
+		$query = "UPDATE media SET
+			media_updated_tstamp=NOW(),
+			FK_updatedby='".addslashes($_SESSION[aid])."',
+			media_size='".addslashes($size)."',
+			is_published ='". $file['is_published']."',
+			title_whole ='". $file['title_whole']."',
+			title_part ='". $file['title_part']."',
+			author ='". $file['author']."',
+			pagerange ='". $file['pagerange']."',
+			publisher ='". $file['publisher']."',
+			pubyear ='". $file['pubyear']."',
+			isbn ='". $file['isbn']."'
+		WHERE 
+			media_id='".addslashes($replace_id)."'
+		";
 		/* print $query."<br />"; */
 		db_query($query);
 		print mysql_error()."<br />";
@@ -266,8 +280,20 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		return $media_id;
 	} else {
 		$size = filesize($userdir."/".$name);
-		$query = "INSERT INTO media SET media_tag='".addslashes($name)."',FK_site='".addslashes($siteid)."',FK_createdby='".addslashes($_SESSION[aid])."',FK_updatedby='".addslashes($_SESSION[aid])."',media_type='".addslashes($type)."',media_size='".addslashes($size)."'";
-//		print $query."<br />";
+		$query = "INSERT INTO media SET
+			media_tag='".addslashes($name)."',			
+			FK_site='".addslashes($siteid)."',			FK_createdby='".addslashes($_SESSION[aid])."',			FK_updatedby='".addslashes($_SESSION[aid])."',
+			media_type='".addslashes($type)."',
+			media_size='".addslashes($size)."',
+			is_published ='". $file['is_published']."',
+			title_whole ='". $file['title_whole']."',
+			title_part ='". $file['title_part']."',
+			author ='". $file['author']."',
+			pagerange ='". $file['pagerange']."',
+			publisher ='". $file['publisher']."',
+			pubyear ='". $file['pubyear']."',
+			isbn ='". $file['isbn']."'							
+		";
 		db_query($query);
 //		print mysql_error()."<br />";
 		
@@ -292,7 +318,43 @@ function copy_media($id,$newsitename) {
 	if (file_exists($new_file_path)) {
 		$newid = db_get_value("media INNER JOIN slot ON media.FK_site = slot.FK_site","media_id","slot_name='".addslashes($newsitename)."' && media_tag='".addslashes($file_name)."'");
 	} else {
+	
+		$query = "
+			SELECT 
+				is_published,
+				title_whole,
+				title_part,
+				author,
+				pagerange,
+				publisher,
+				pubyear,
+				isbn
+			FROM 
+				media
+					INNER JOIN
+				slot
+					ON media.FK_site = slot.FK_site
+					INNER JOIN
+				user
+					ON media.FK_createdby = user_id
+			WHERE
+				media_id='".addslashes($id)."'
+		"; 
+		// printpre($query);
+		 
+		$r = db_query($query);
 		$file = array();
+		
+		while ($a = db_fetch_assoc($r)) {
+			$file['is_published'] = $a['is_published'];
+			$file['title_whole'] = $a['title_whole'];
+			$file['title_part'] = $a['title_part'];
+			$file['author'] = $a['author'];
+			$file['pagerange'] = $a['pagerange'];
+			$file['publisher'] = $a['publisher'];
+			$file['pubyear'] = $a['pubyear'];
+			$file['isbn'] = $a['isbn'];			
+		}
 		$file[name] = $file_name;
 		$file[tmp_name] = $old_file_path;
 //		print_r ($file);
