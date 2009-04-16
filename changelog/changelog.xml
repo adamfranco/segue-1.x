@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.9.8" date="2009-04-14">
+		<releaseNotes>
+			This release makes refines changes to the copy/move functions so that file metadata is copied/moved
+		</releaseNotes>
+		<change author='alex'>
+			Refined file metadata to copy/move functions.
+		</change>		
+	</version>	
 	<version number="1.9.7" date="2009-04-04">
 		<releaseNotes>
 			This release makes changes to the copy/move functions so that file metadata is copied/moved

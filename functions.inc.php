@@ -282,7 +282,9 @@ function copyuserfile($file,$site,$replace,$replace_id,$allreadyuploaded=0) {
 		$size = filesize($userdir."/".$name);
 		$query = "INSERT INTO media SET
 			media_tag='".addslashes($name)."',			
-			FK_site='".addslashes($siteid)."',			FK_createdby='".addslashes($_SESSION[aid])."',			FK_updatedby='".addslashes($_SESSION[aid])."',
+			FK_site='".addslashes($siteid)."',			
+			FK_createdby='".addslashes($_SESSION[aid])."',			
+			FK_updatedby='".addslashes($_SESSION[aid])."',
 			media_type='".addslashes($type)."',
 			media_size='".addslashes($size)."',
 			is_published ='". $file['is_published']."',
@@ -346,14 +348,14 @@ function copy_media($id,$newsitename) {
 		$file = array();
 		
 		while ($a = db_fetch_assoc($r)) {
-			$file['is_published'] = $a['is_published'];
-			$file['title_whole'] = $a['title_whole'];
-			$file['title_part'] = $a['title_part'];
-			$file['author'] = $a['author'];
-			$file['pagerange'] = $a['pagerange'];
-			$file['publisher'] = $a['publisher'];
-			$file['pubyear'] = $a['pubyear'];
-			$file['isbn'] = $a['isbn'];			
+			$file['is_published'] = addslashes($a['is_published']);
+			$file['title_whole'] = addslashes($a['title_whole']);
+			$file['title_part'] = addslashes($a['title_part']);
+			$file['author'] = addslashes($a['author']);
+			$file['pagerange'] = addslashes($a['pagerange']);
+			$file['publisher'] = addslashes($a['publisher']);
+			$file['pubyear'] = addslashes($a['pubyear']);
+			$file['isbn'] = addslashes($a['isbn']);			
 		}
 		$file[name] = $file_name;
 		$file[tmp_name] = $old_file_path;

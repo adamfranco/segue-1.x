@@ -4,6 +4,16 @@ Name: Segue Change Log
 
 
 
+v. 1.9.8 (2009-04-14)
+----------------------------------------------------
+This release makes refines changes to the copy/move functions so that file metadata
+is copied/moved
+		
+		
+	* Change: 
+		Refined file metadata to copy/move functions.
+		(Alex Chapin)		
+	
 v. 1.9.7 (2009-04-04)
 ----------------------------------------------------
 This release makes changes to the copy/move functions so that file metadata is

@@ -3,6 +3,12 @@ Name: Segue Release Notes
 (See the Segue change log for more details)
 
 
+v. 1.9.8 (2009-04-14)
+----------------------------------------------------
+This release makes refines changes to the copy/move functions so that file metadata
+is copied/moved
+
+
 v. 1.9.7 (2009-04-04)
 ----------------------------------------------------
 This release makes changes to the copy/move functions so that file metadata is
