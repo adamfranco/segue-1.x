@@ -630,7 +630,11 @@ if ($thisSite->isEditor()
 	$u = "$PHP_SELF?$sid".$editAction."&amp;site=$site".(($supplement)?"&amp;supplement=$supplement":"");
 	if ($section) $u .= "&amp;section=$section";
 	if ($page) $u .= "&amp;page=$page";
-	print "\n<input type='submit' class='button' value='Edit This Site' onclick=\"window.location='$u&amp;$sid'\" />\n</div><br />";
+	if ($cfg['disable_edit_content'] == TRUE && $_SESSION['atype'] != 'admin') {
+		print "\n<input type='submit' class='button' value='Editing disabled'";
+	} else {
+		print "\n<input type='submit' class='button' value='Edit This Site' onclick=\"window.location='$u&amp;$sid'\" />\n</div><br />";
+	}
 }
 if (is_object($thisPage) && $thisPage->hasPermission("view", "everyone")) {
 	print "<div style='font-size: 9px;' align='right'><img border='0' src='themes/common/images/rss_icon02.png' alt='rss' /> <a href='viewrss.php?site=$site' target='rss' onclick='doWindow(\"rss\",450,200)' class='navlink' title='click for more RSS feeds...'>More RSS...</a></div>";
