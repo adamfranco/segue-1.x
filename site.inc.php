@@ -630,7 +630,7 @@ if ($thisSite->isEditor()
 	$u = "$PHP_SELF?$sid".$editAction."&amp;site=$site".(($supplement)?"&amp;supplement=$supplement":"");
 	if ($section) $u .= "&amp;section=$section";
 	if ($page) $u .= "&amp;page=$page";
-	if ($cfg['disable_edit_content'] == TRUE && $_SESSION['atype'] != 'admin') {
+	if ($cfg['disable_edit_content'] == TRUE && $_SESSION['ltype'] != 'admin') {
 		print "\n<input type='submit' class='button' value='Editing disabled'";
 	} else {
 		print "\n<input type='submit' class='button' value='Edit This Site' onclick=\"window.location='$u&amp;$sid'\" />\n</div><br />";

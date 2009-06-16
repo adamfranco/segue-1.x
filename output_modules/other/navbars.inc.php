@@ -3,7 +3,7 @@
 if ($action == 'viewsite' || ereg('preview_edit_as', $action)) {
 	//$topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&".$envvars."&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 	if ($thisSite->hasPermission("add")) {
-		if ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin') {
+		if ($cfg['disable_edit_content'] != TRUE || $_SESSION['ltype'] == 'admin') {
 			$topnav_extra = " <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>";
 		}
 	}
@@ -37,7 +37,7 @@ if ($thisSite->sections) {
 					$extra = "[hidden]";
 				}
 
-				if ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin') {
+				if ($cfg['disable_edit_content'] != TRUE || $_SESSION['ltype'] == 'admin') {
 					if ($thisSite->hasPermission("edit")) {
 					
 					
@@ -101,7 +101,7 @@ if ($thisSection) {
 				if (($action == 'viewsite' || ereg('preview_edit_as', $action)) && ($p == $page || $o->getField("type") != 'page')) {
 	
 	
-					if ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin') {
+					if ($cfg['disable_edit_content'] != TRUE || $_SESSION['ltype'] == 'admin') {
 						/******************************************************************************
 						 * Pages get same extras (ie edit options) regardless of navigation arrangement
 						 ******************************************************************************/
@@ -419,7 +419,7 @@ if ($thisSection) {
 	if ($action == 'viewsite' || ereg('preview_edit_as', $action)) {
 		//$leftnav_extra = ($thisSection->hasPermission("add"))?"<div align='right'><span style='white-space: nowrap;'><a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$section&amp;action=add_page&amp;comingFrom=viewsite' class='".(($topsections)?"small":"btnlink")."' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></span></div>":"";
 		if ($thisSection->hasPermission("add")) {
-			if ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin') {
+			if ($cfg['disable_edit_content'] != TRUE || $_SESSION['ltype'] == 'admin') {
 				$leftnav_extra = "<div align='right'><span style='white-space: nowrap;'><a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$section&amp;action=add_page&amp;comingFrom=viewsite' class='small' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></span></div>";
 				$leftnav_extra .= (($topsections)?" ":"<hr />");
 			}

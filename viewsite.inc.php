@@ -23,7 +23,7 @@ function printStoryEditLinks() {
 		$site_owner, $o, $story_set, $s, $sid, $site, $section, $page, $cfg;
 		
 	printc("<div class='edit_links'>");	
-	if ($cfg['disable_edit_content'] == TRUE && $_SESSION['atype'] != 'admin') {
+	if ($cfg['disable_edit_content'] == TRUE && $_SESSION['ltype'] != 'admin') {
 		printc ("<div align='right'>editing disabled</div>");
 	} else {
 		
@@ -445,7 +445,7 @@ do {
 								$urltag = urlencode($tag);
 								printc("<a href='index.php?$sid&amp;action=site&amp;site=$site&amp;section=$section&amp;page=$page&amp;tag=$urltag'>".urldecode($tag)."</a>\n");
 							}
-							if ($cfg['disable_edit_content'] != TRUE && $_SESSION['atype'] != 'admin') {
+							if ($cfg['disable_edit_content'] != TRUE && $_SESSION['ltype'] != 'admin') {
 								printc(" <a href='index.php?$sid&amp;action=edit_story&amp;edit_story=".$o->id."&amp;comingFrom=viewsite&amp;step=3&amp;site=$site&amp;section=$section&amp;page=$page&amp;".(($story_set)?"&amp;story_set=".($story_set+1):"")."'>[edit]</a>");
 							}									
 							printc("</div>\n");							
@@ -544,7 +544,7 @@ do {
 			&& !($_REQUEST['versioning'] || $_REQUEST['detail'] || $_REQUEST['version'])) 
 		{
 
-			if ($cfg['disable_edit_content'] == TRUE && $_SESSION['atype'] != 'admin') {
+			if ($cfg['disable_edit_content'] == TRUE && $_SESSION['ltype'] != 'admin') {
 				printc ("<div align='right'>adding content disabled</div>");
 			} else {			
 				printc("<br /><hr class='block' /><div align='right'><a href='$PHP_SELF?$sid$envvars&amp;action=add_story&amp;comingFrom=viewsite' class='small' title='Add a new Content Block. This can be text, an image, a file for download, or a link.'>+ add content</a></div>");
