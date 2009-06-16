@@ -921,17 +921,19 @@ class discussion {
 			 * 	 collect possible actions to current post (rely | del | edit | rate)
 			 ******************************************************************************/
 			$b = array();
-			if ($cr) 
-				$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;replyto=".$this->id."&amp;action=site&amp;discuss=reply#reply'>reply</a>\n";
-				
-			if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) 
-				$b[] = "| <a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;action=site&amp;discuss=del&amp;id=".$this->id."'>delete</a>\n";
-				
-			if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
-				$b[] = " | <a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;id=".$this->id."&amp;action=site&amp;discuss=edit#".$this->id."'>edit</a>\n";
-				
-			if ($o) 
-				$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;id=".$this->id."&amp;action=site&amp;discuss=rate#".$this->id."'>rate</a>\n";
+			if ($cfg['disable_discussion'] == TRUE && $_SESSION['atype'] != 'admin') {
+				if ($cr) 
+					$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;replyto=".$this->id."&amp;action=site&amp;discuss=reply#reply'>reply</a>\n";
+					
+				if ($o || ($_SESSION[auser] == $this->authoruname && !$this->dbcount())) 
+					$b[] = "| <a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;action=site&amp;discuss=del&amp;id=".$this->id."'>delete</a>\n";
+					
+				if ($_SESSION[auser] == $this->authoruname && !$this->dbcount()) 
+					$b[] = " | <a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;id=".$this->id."&amp;action=site&amp;discuss=edit#".$this->id."'>edit</a>\n";
+					
+				if ($o) 
+					$ratelink = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;id=".$this->id."&amp;action=site&amp;discuss=rate#".$this->id."'>rate</a>\n";
+			}
 			
 			/******************************************************************************
 			 * if there are dicussion actions (reply | del | edit | rate) then print 
