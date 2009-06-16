@@ -112,7 +112,7 @@ if ($_REQUEST[cancel]) {
 	exit;
 }
 
-if ($_REQUEST[save]) {
+if ($_REQUEST[save] && ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin')) {
 	//printpre ($_SESSION);
 	//exit();
 	// error checking

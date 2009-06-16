@@ -165,7 +165,7 @@ if ($_REQUEST[cancel]) {
 /******************************************************************************
  * Save
  ******************************************************************************/
-if ($_REQUEST[save]) {
+if ($_REQUEST[save] && ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin')) {
 	if (!$error) { // save it to the database
 		
 		print "<br /><br />".$_SESSION[settings][sitename]."<br /><br />";

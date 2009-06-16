@@ -219,7 +219,8 @@ if ($_REQUEST[cancel]) {
  * Save: error checking
  ******************************************************************************/
 
-if ($_REQUEST[save]) {
+if ($_REQUEST[save] && ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin')) {
+	
 //	$error = 0;
 	// error checking
 	if ($_SESSION[storyObj]->getField("type")=='story' && (!$_SESSION[storyObj]->getField("shorttext") || trim($_SESSION[storyObj]->getField("shorttext"))=='' || trim($_SESSION[storyObj]->getField("shorttext"))=='<br />'))
