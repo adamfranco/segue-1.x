@@ -4,6 +4,18 @@ Name: Segue Change Log
 
 
 
+v. 1.9.9 (2009-06-15)
+----------------------------------------------------
+This release adds configuration options for gracefully disabling segue
+functionality. 
+		
+		
+	* Change: 
+		Added configuration options for disabling new site creation, disabling
+		editing of sites and disabling discussion posts. Segue administrators will
+		still be able to access all disabled functionality while logged in as admins
+		(Alex Chapin)		
+	
 v. 1.9.8 (2009-04-14)
 ----------------------------------------------------
 This release makes refines changes to the copy/move functions so that file metadata

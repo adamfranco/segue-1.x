@@ -3,6 +3,12 @@ Name: Segue Release Notes
 (See the Segue change log for more details)
 
 
+v. 1.9.9 (2009-06-15)
+----------------------------------------------------
+This release adds configuration options for gracefully disabling segue
+functionality. 
+
+
 v. 1.9.8 (2009-04-14)
 ----------------------------------------------------
 This release makes refines changes to the copy/move functions so that file metadata

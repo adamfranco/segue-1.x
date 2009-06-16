@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <changelog name="Segue">
+	<version number="1.9.9" date="2009-06-15">
+		<releaseNotes>
+			This release adds configuration options for gracefully disabling segue functionality.
+		</releaseNotes>
+		<change author='alex'>
+			Added configuration options for disabling new site creation, disabling editing of sites
+			and disabling discussion posts. Segue administrators will still be able to access all
+			disabled functionality while logged in as admins
+		</change>		
+	</version>	
 	<version number="1.9.8" date="2009-04-14">
 		<releaseNotes>
 			This release makes refines changes to the copy/move functions so that file metadata is copied/moved
