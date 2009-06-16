@@ -455,7 +455,7 @@ class discussion {
 				printerr2();
 				printc ("</td></tr>\n");
 				
-				if ($_REQUEST['discuss'] == 'newpost' && ($cfg['disable_discussion'] != TRUE || $_SESSION['atype'] == 'admin')) {
+				if ($_REQUEST['discuss'] == 'newpost' && ($cfg['disable_discussion'] != TRUE || $_SESSION['ltype'] == 'admin')) {
 					$this->_outputform('newpost');
 				} else {
 					//$newpostbar='';
@@ -463,7 +463,7 @@ class discussion {
 					if (!$_SESSION[auser] && $showposts != 1) {	
 						$newpostbar.="You must be logged in to do this assessment.\n";
 					} else {
-						if ($cfg['disable_discussion'] == TRUE && $_SESSION['atype'] != 'admin') {
+						if ($cfg['disable_discussion'] == TRUE && $_SESSION['ltype'] != 'admin') {
 							$newpostbar.="<div align='right'>Discussion posting has been disabled</div>";
 						} else {
 							$newpostbar.="<div align='right'><a href='".$_SERVER['SCRIPT_NAME']."?$sid&amp;".$this->getinfo."&amp;action=site&amp;discuss=newpost#new'>new post</a></div>\n";
@@ -552,7 +552,7 @@ class discussion {
 		global $mailposts, $cfg;
 		
 		//require_once("htmleditor/editor.inc.php");
-		if ($_REQUEST['commit'] && ($cfg['disable_discussion'] != TRUE || $_SESSION['atype'] == 'admin')) { // indeed, we are supposed to commit
+		if ($_REQUEST['commit'] && ($cfg['disable_discussion'] != TRUE || $_SESSION['ltype'] == 'admin')) { // indeed, we are supposed to commit
 			$site = $_REQUEST['site'];
 			$action = $_REQUEST['action'];
 			$a = $_REQUEST['discuss'];
@@ -921,7 +921,7 @@ class discussion {
 			 * 	 collect possible actions to current post (rely | del | edit | rate)
 			 ******************************************************************************/
 			$b = array();
-			if ($cfg['disable_discussion'] != TRUE && ($cfg['disable_discussion'] != TRUE && $_SESSION['atype'] == 'admin')) {
+			if ($cfg['disable_discussion'] != TRUE && ($cfg['disable_discussion'] != TRUE && $_SESSION['ltype'] == 'admin')) {
 				if ($cr) 
 					$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;replyto=".$this->id."&amp;action=site&amp;discuss=reply#reply'>reply</a>\n";
 					

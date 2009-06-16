@@ -219,7 +219,7 @@ if ($_REQUEST[cancel]) {
  * Save: error checking
  ******************************************************************************/
 
-if ($_REQUEST[save] && ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin')) {
+if ($_REQUEST[save] && ($cfg['disable_edit_content'] != TRUE || $_SESSION['ltype'] == 'admin')) {
 	
 //	$error = 0;
 	// error checking

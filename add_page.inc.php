@@ -159,7 +159,7 @@ if ($_REQUEST[cancel]) {
 	exit;
 }
 
-if ($_REQUEST[save] && ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin')) {
+if ($_REQUEST[save] && ($cfg['disable_edit_content'] != TRUE || $_SESSION['ltype'] == 'admin')) {
 /* 	$error = 0; */
 	// error checking
 	if ($_SESSION[pageObj]->getField("type")=='page' && (!$_SESSION[pageObj]->getField("title") || $_SESSION[pageObj]->getField("title")=='')) {
