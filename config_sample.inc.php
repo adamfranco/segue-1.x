@@ -489,6 +489,9 @@
 //	$cfg['disable_edit_content'] = $disable_edit_content = TRUE;
 //	$cfg['disable_discussion'] = $disable_discussion = TRUE;
 
+	/******************************************************************************
+	 * Configuration needed to allow for site migration from Segue v1 to v2
+	 ******************************************************************************/
 
 // define('DATAPORT_SEGUE1_SECRET_KEY', 'sadfjasdf234j1');
 // define('DATAPORT_SEGUE1_SECRET_VALUE', '28usafnjm023jasdffa0235rhj2052');
