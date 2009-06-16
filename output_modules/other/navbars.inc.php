@@ -3,7 +3,9 @@
 if ($action == 'viewsite' || ereg('preview_edit_as', $action)) {
 	//$topnav_extra = ($thisSite->hasPermission("add"))?" <a href='$PHP_SELF?$sid&".$envvars."&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>":"";
 	if ($thisSite->hasPermission("add")) {
-		$topnav_extra = " <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>";
+		if ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin') {
+			$topnav_extra = " <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=add_section&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Add a new Section to this site. A section can hold one or many pages of content. You can also add a Link here instead of a Section.'>+ add section</a>";
+		}
 	}
 }
 $i=0;
@@ -35,26 +37,30 @@ if ($thisSite->sections) {
 					$extra = "[hidden]";
 				}
 
-				if ($thisSite->hasPermission("edit")) {
-					if ($_REQUEST['showorder'] == "section") {
-						$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0' class='btnlink' title='hide order sections in this section'>hide order</a>";
-					} else {
-						$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=section' class='btnlink' title='Reorder sections in this site'>reorder</a>";
-					}
-
-					if ($i != 0) {
+				if ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin') {
+					if ($thisSite->hasPermission("edit")) {
 					
-//						$extra .= " <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=section&amp;direction=up&amp;id=$s' class='";
-//						$extra .= (($topsections)?"btnlink":"small")."' title='Move this section ";
-//						$extra .= (($topsections)?"left":"up")."'><b>".(($topsections)?"&larr;":"&uarr;")."</b></a>";
+					
+						if ($_REQUEST['showorder'] == "section") {
+							$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0' class='btnlink' title='hide order sections in this section'>hide order</a>";
+						} else {
+							$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=section' class='btnlink' title='Reorder sections in this site'>reorder</a>";
+						}
+	
+						if ($i != 0) {
+						
+	//						$extra .= " <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=section&amp;direction=up&amp;id=$s' class='";
+	//						$extra .= (($topsections)?"btnlink":"small")."' title='Move this section ";
+	//						$extra .= (($topsections)?"left":"up")."'><b>".(($topsections)?"&larr;":"&uarr;")."</b></a>";
+						}
+						//if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=section&amp;direction=down&amp;id=$s' class=".(($topsections)?"btnlink":"small")." title='Move this section ".(($topsections)?"right":"down")."'><b>".(($topsections)?"&rarr;":"&darr;")."</b></a>";
 					}
-					//if ($i != count($thisSite->sections)-1) $extra .= " <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;reorder=section&amp;direction=down&amp;id=$s' class=".(($topsections)?"btnlink":"small")." title='Move this section ".(($topsections)?"right":"down")."'><b>".(($topsections)?"&rarr;":"&darr;")."</b></a>";
+					
+					$extra .= ($thisSite->hasPermission("edit"))?" ".(($topsections)?"":"| ")."<a href='copy_parts.php?$sid&amp;site=$site&amp;section=$s&amp;type=section' class='".(($topsections)?"btnlink":"small")."' title='Move/Copy this section to another site' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
+					$extra .= ($thisSite->hasPermission("edit"))?" ".(($topsections)?"":"| ")."<a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$s&amp;action=edit_section&amp;edit_section=$s&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Edit the title and properties of this section'>edit</a>":"";
+					$extra .= ($thisSite->hasPermission("delete"))?" ".(($topsections)?"":"| ")."<a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHP_SELF?$sid&amp;$envvars&amp;action=delete_section&amp;delete_section=$s\")' class='".(($topsections)?"btnlink":"small")."' title='Delete this section'>del</a>":"";
+					//$extra .= (($topsections)?" ":"<hr />");	
 				}
-				
-				$extra .= ($thisSite->hasPermission("edit"))?" ".(($topsections)?"":"| ")."<a href='copy_parts.php?$sid&amp;site=$site&amp;section=$s&amp;type=section' class='".(($topsections)?"btnlink":"small")."' title='Move/Copy this section to another site' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
-				$extra .= ($thisSite->hasPermission("edit"))?" ".(($topsections)?"":"| ")."<a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$s&amp;action=edit_section&amp;edit_section=$s&amp;comingFrom=viewsite' class='".(($topsections)?"btnlink":"small")."' title='Edit the title and properties of this section'>edit</a>":"";
-				$extra .= ($thisSite->hasPermission("delete"))?" ".(($topsections)?"":"| ")."<a href='javascript:doconfirm(\"Are absolutely sure you want to PERMANENTLY DELETE this section, including anything that may be held within it?? (you better be SURE!)\",\"$PHP_SELF?$sid&amp;$envvars&amp;action=delete_section&amp;delete_section=$s\")' class='".(($topsections)?"btnlink":"small")."' title='Delete this section'>del</a>":"";
-				//$extra .= (($topsections)?" ":"<hr />");
 			}
 			$i++;
 			add_link(topnav,$o->getField("title"),$link,$extra,$s,$target);
@@ -93,37 +99,40 @@ if ($thisSection) {
 			$nextorder = 1;
 			if ($o->canview() || $o->hasPermissionDown("add or edit or delete")) {
 				if (($action == 'viewsite' || ereg('preview_edit_as', $action)) && ($p == $page || $o->getField("type") != 'page')) {
-					
-					/******************************************************************************
-					 * Pages get same extras (ie edit options) regardless of navigation arrangement
-					 ******************************************************************************/
-					if (!indaterange($o->getField("activatedate"), $o->getField("deactivatedate"))) {
-						$extra .= "<div class='small' align='left'><a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_page&amp;step=2&amp;edit_page=$p&amp;comingFrom=viewsite'>[inactive]</a></div>";
-					}
-					if (!$o->getField("active")) {
-						$extra .= "<div class='small' align='left'><a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_page&amp;step=2&amp;edit_page=$p&amp;comingFrom=viewsite'>[hidden]</a></div>";
-					}
-
-					if ($thisSection->hasPermission("edit")) {
-						if ($thisSection->getField("pageorder") == "custom") {
-							if ($_REQUEST['showorder'] == "page") {
-								$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0' class='small' title='HIde reorder fields in this section'>hide order</a>";
-							} else {
-								$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=page' class='small' title='Reorder pages in this section'>reorder</a>";
-							}
+	
+	
+					if ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin') {
+						/******************************************************************************
+						 * Pages get same extras (ie edit options) regardless of navigation arrangement
+						 ******************************************************************************/
+						if (!indaterange($o->getField("activatedate"), $o->getField("deactivatedate"))) {
+							$extra .= "<div class='small' align='left'><a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_page&amp;step=2&amp;edit_page=$p&amp;comingFrom=viewsite'>[inactive]</a></div>";
 						}
-
-
-//						$extra .= "<a style='cursor: pointer;' onclick=\"var orderFields = getElementsByAttribute(document.body, 'select', 'class', 'pageOrder'); for (var i = 0; i < orderFields.length; i++) {orderFields[i].style.display='inline';} this.style.display='none'; this.nextSibling.style.display='inline';\" class='small' title='Reorder pages in this section'>order</a>";
-//						$extra .= "<a style='cursor: pointer; display: none' onclick=\"var orderFields = getElementsByAttribute(document.body, 'select', 'class', 'pageOrder'); for (var i = 0; i < orderFields.length; i++) {orderFields[i].style.display='none';} this.style.display='none'; this.previousSibling.style.display='inline';\" class='small' title='Hide the reorder fields'>hide order</a>";
-						
+						if (!$o->getField("active")) {
+							$extra .= "<div class='small' align='left'><a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_page&amp;step=2&amp;edit_page=$p&amp;comingFrom=viewsite'>[hidden]</a></div>";
+						}
+	
+						if ($thisSection->hasPermission("edit")) {
+							if ($thisSection->getField("pageorder") == "custom") {
+								if ($_REQUEST['showorder'] == "page") {
+									$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=0' class='small' title='HIde reorder fields in this section'>hide order</a>";
+								} else {
+									$extra .= "<a href='$PHP_SELF?$sid&amp;$envvars&amp;action=viewsite&amp;showorder=page' class='small' title='Reorder pages in this section'>reorder</a>";
+								}
+							}
+	
+	
+	//						$extra .= "<a style='cursor: pointer;' onclick=\"var orderFields = getElementsByAttribute(document.body, 'select', 'class', 'pageOrder'); for (var i = 0; i < orderFields.length; i++) {orderFields[i].style.display='inline';} this.style.display='none'; this.nextSibling.style.display='inline';\" class='small' title='Reorder pages in this section'>order</a>";
+	//						$extra .= "<a style='cursor: pointer; display: none' onclick=\"var orderFields = getElementsByAttribute(document.body, 'select', 'class', 'pageOrder'); for (var i = 0; i < orderFields.length; i++) {orderFields[i].style.display='none';} this.style.display='none'; this.previousSibling.style.display='inline';\" class='small' title='Hide the reorder fields'>hide order</a>";
+							
+						}
+						// move
+						$extra .= ($thisSection->hasPermission("edit"))?" | <a href='copy_parts.php?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;type=page' class='small' title='Move/Copy this page to another section' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
+						// edit
+						$extra .= ($thisSection->hasPermission("edit"))?" | <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_page&amp;edit_page=$p&amp;comingFrom=viewsite' class='small' title='Edit the name/settings for this page/link/heading/divider'>edit</a>":"";
+						// delete
+						$extra .= ($thisSection->hasPermission("delete"))?" | <a href='javascript:doconfirm(\"Are you sure you want to permanently delete this item and any data that may be contained within it?\",\"$PHPSELF?$sid&amp;$envvars&amp;action=delete_page&amp;delete_page=$p\")' class='small' title='Delete this page/link/heading/divider'>del</a>":"";
 					}
-					// move
-					$extra .= ($thisSection->hasPermission("edit"))?" | <a href='copy_parts.php?$sid&amp;site=$site&amp;section=$section&amp;page=$p&amp;type=page' class='small' title='Move/Copy this page to another section' onclick=\"doWindow('copy_parts','300','250')\" target='copy_parts'>move</a>":"";
-					// edit
-					$extra .= ($thisSection->hasPermission("edit"))?" | <a href='$PHP_SELF?$sid&amp;$envvars&amp;action=edit_page&amp;edit_page=$p&amp;comingFrom=viewsite' class='small' title='Edit the name/settings for this page/link/heading/divider'>edit</a>":"";
-					// delete
-					$extra .= ($thisSection->hasPermission("delete"))?" | <a href='javascript:doconfirm(\"Are you sure you want to permanently delete this item and any data that may be contained within it?\",\"$PHPSELF?$sid&amp;$envvars&amp;action=delete_page&amp;delete_page=$p\")' class='small' title='Delete this page/link/heading/divider'>del</a>":"";
 
 				}
 				
@@ -410,8 +419,10 @@ if ($thisSection) {
 	if ($action == 'viewsite' || ereg('preview_edit_as', $action)) {
 		//$leftnav_extra = ($thisSection->hasPermission("add"))?"<div align='right'><span style='white-space: nowrap;'><a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$section&amp;action=add_page&amp;comingFrom=viewsite' class='".(($topsections)?"small":"btnlink")."' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></span></div>":"";
 		if ($thisSection->hasPermission("add")) {
-			$leftnav_extra = "<div align='right'><span style='white-space: nowrap;'><a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$section&amp;action=add_page&amp;comingFrom=viewsite' class='small' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></span></div>";
-			$leftnav_extra .= (($topsections)?" ":"<hr />");
+			if ($cfg['disable_edit_content'] != TRUE || $_SESSION['atype'] == 'admin') {
+				$leftnav_extra = "<div align='right'><span style='white-space: nowrap;'><a href='$PHP_SELF?$sid&amp;site=$site&amp;section=$section&amp;action=add_page&amp;comingFrom=viewsite' class='small' title='Add a new item to this section. This can be a Page that holds content, a link, a divider, or a heading.'>+ add item</a></span></div>";
+				$leftnav_extra .= (($topsections)?" ":"<hr />");
+			}
 
 		}		
 	}
