@@ -455,15 +455,19 @@ class discussion {
 				printerr2();
 				printc ("</td></tr>\n");
 				
-				if ($_REQUEST['discuss'] == 'newpost') {
+				if ($_REQUEST['discuss'] == 'newpost' && ($cfg['disable_discussion'] != TRUE || $_SESSION['atype'] == 'admin')) {
 					$this->_outputform('newpost');
 				} else {
 					//$newpostbar='';
 					//$newpostbar.="<tr><td align='right'>";
 					if (!$_SESSION[auser] && $showposts != 1) {	
 						$newpostbar.="You must be logged in to do this assessment.\n";
-					} else {				
-						$newpostbar.="<div align='right'><a href='".$_SERVER['SCRIPT_NAME']."?$sid&amp;".$this->getinfo."&amp;action=site&amp;discuss=newpost#new'>new post</a></div>\n";
+					} else {
+						if ($cfg['disable_discussion'] == TRUE && $_SESSION['atype'] != 'admin') {
+							$newpostbar.="<div align='right'>Discussion posting has been disabled</div>";
+						} else {
+							$newpostbar.="<div align='right'><a href='".$_SERVER['SCRIPT_NAME']."?$sid&amp;".$this->getinfo."&amp;action=site&amp;discuss=newpost#new'>new post</a></div>\n";
+						}
 					}
 				//	$newpostbar.="</td></tr>";
 				}
