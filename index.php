@@ -4,6 +4,7 @@
 
 // we need to include object files before session_start() or registered
 // objects will be broken.
+//error_reporting(0);
 include("objects/objects.inc.php");
 
 
