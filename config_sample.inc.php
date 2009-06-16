@@ -480,6 +480,15 @@
 						"myadminonlytheme_directory_name"=> "My Admin Only Theme"
 						);
 
+	/******************************************************************************
+	 * Disable site creation, editing content and discussion posts across all site
+	 * for all users EXCEPT Segue admins
+	 ******************************************************************************/
+	
+//	$cfg['disable_new_sites'] = $disable_new_sites = TRUE;
+//	$cfg['disable_edit_content'] = $disable_edit_content = TRUE;
+//	$cfg['disable_discussion'] = $disable_discussion = TRUE;
+
 
 // define('DATAPORT_SEGUE1_SECRET_KEY', 'sadfjasdf234j1');
 // define('DATAPORT_SEGUE1_SECRET_VALUE', '28usafnjm023jasdffa0235rhj2052');
