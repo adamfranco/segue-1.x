@@ -552,7 +552,7 @@ class discussion {
 		global $mailposts, $cfg;
 		
 		//require_once("htmleditor/editor.inc.php");
-		if ($_REQUEST['commit']) { // indeed, we are supposed to commit
+		if ($_REQUEST['commit'] && ($cfg['disable_discussion'] != TRUE || $_SESSION['atype'] == 'admin')) { // indeed, we are supposed to commit
 			$site = $_REQUEST['site'];
 			$action = $_REQUEST['action'];
 			$a = $_REQUEST['discuss'];
@@ -921,7 +921,7 @@ class discussion {
 			 * 	 collect possible actions to current post (rely | del | edit | rate)
 			 ******************************************************************************/
 			$b = array();
-			if ($cfg['disable_discussion'] == TRUE && $_SESSION['atype'] != 'admin') {
+			if ($cfg['disable_discussion'] != TRUE && ($cfg['disable_discussion'] != TRUE && $_SESSION['atype'] == 'admin')) {
 				if ($cr) 
 					$b[] = "<a href='".$_full_uri."/index.php?$sid".$this->getinfo."&amp;replyto=".$this->id."&amp;action=site&amp;discuss=reply#reply'>reply</a>\n";
 					
